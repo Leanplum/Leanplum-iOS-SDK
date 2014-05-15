@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.0
+//  Leanplum iOS SDK Version 1.2.8
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
@@ -60,12 +60,19 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 } \
 }
 
+// Use this code in development mode (or in production), to use the advertising ID.
+// It's useful in development mode so that we remember your device even if you reinstall your app.
+// Since it's a MACRO, this won't get compiled into your app in production, and will be safe
+// to submit to Apple.
+#define LEANPLUM_USE_ADVERTISING_ID [Leanplum setDeviceId:[[[NSClassFromString(@"ASIdentifierManager") \
+    performSelector:NSSelectorFromString(@"sharedManager")] \
+    performSelector:NSSelectorFromString(@"advertisingIdentifier")] \
+    performSelector:NSSelectorFromString(@"UUIDString")]]
+
 @class LPActionContext;
 
 typedef void (^LeanplumStartBlock)(BOOL success);
 typedef void (^LeanplumVariablesChangedBlock)();
-typedef void (^LeanplumInterfaceChangedBlock)();
-typedef void (^LeanplumEventsChangedBlock)();
 // Returns whether the action was handled.
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
 typedef void (^LeanplumRegisterDeviceResponseBlock)(NSString *email);
@@ -92,18 +99,6 @@ typedef enum {
     kLeanplumActionKindMessage = 0b1,
     kLeanplumActionKindAction = 0b10,
 } LeanplumActionKind;
-
-// What type of device ID to use.
-// By default, we use the identifier for vendor.
-// However, if you need to link to some third-party attribution frameworks, switch to the
-// identifier for advertisers.
-typedef enum {
-    kLeanplumDeviceIdModeAdvertisingIdentifier = 2,
-    kLeanplumDeviceIdModeVendorIdentifier = 3,
-    // Default. This is useful if you frequently uninstall the app on your test devices, as
-    // the device ID doesn't change.
-    kLeanplumDeviceIdModeVendorIdentifierInProdAndAdvertisingIdentifierInDev = 4
-} LeanplumDeviceIdMode;
 
 @interface Leanplum : NSObject
 
@@ -137,41 +132,9 @@ typedef enum {
 + (void)setAppId:(NSString *)appId withDevelopmentKey:(NSString *)accessKey;
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey;
 
-// Call this before start if you want to update the UI on the fly with the WYSIWYG editor.
-// This would update your UIViewController interfaces and events on viewWillAppear: automatically
-// Alternatively, you can do it manually with the two update methods below.
-+ (void)syncViews;
-// Call this to manually update the UI of your ViewController
-// Typically this would be inside the viewWillAppear method of your UIViewController,
-// if you didn't call [Leanplum syncViews].
-+ (void)updateViewControllerInterface:(UIViewController *)viewController;
-// Call this to manually update the cells of your ViewController tables.
-// Typically this would be inside the tableView:cellForRowAtIndexPath: method of your
-// UITableViewDataSource, if you didn't call [Leanplum syncViews].
-+ (void)updateInterfaceForViewController:(UIViewController *)viewController
-                               tableView:(UITableView *)tableView
-                                    cell:(UITableViewCell *)cell
-                             atIndexPath:(NSIndexPath *)indexPath;
-// Call this to manually update the events of your ViewController.
-// Typically this would be inside the viewWillAppear method of your UIViewController,
-// if you didn't call [Leanplum syncViews].
-+ (void)updateViewControllerEvents:(UIViewController *)viewController;
-
-// Call this to manually show a view controller interface preview.
-// Use this only in a selector passed to [Leanplum addInterfaceChangedResponder:withSelector:]
-// or in the block passed to [Leanplum onInterfaceChanged:]
-+ (void)showViewControllerInterfacePreview:(UIViewController *)viewController;
-// Call this to manually show a preview of updated cells of your ViewController tables.
-// Typically this would be inside the tableView:cellForRowAtIndexPath: method of your
-// UITableViewDataSource, if you didn't call [Leanplum syncViews].
-+ (void)showInterfacePreviewForViewController:(UIViewController *)viewController
-                                    tableView:(UITableView *)tableView
-                                         cell:(UITableViewCell *)cell
-                                  atIndexPath:(NSIndexPath *)indexPath;
-
-// Sets what type of device ID to use.
-// By default, we use kLeanplumDeviceIdModeVendorIdentifier.
-+ (void)setDeviceIdMode:(LeanplumDeviceIdMode)mode;
+// Sets a custom device ID. For example, you may want to pass the advertising ID to do attribution.
+// By default, the device ID is the identifier for vendor.
++ (void)setDeviceId:(NSString *)deviceId;
 
 // Syncs resources between Leanplum and the current app.
 // You should only call one of these methods once, and before [Leanplum start].
@@ -213,16 +176,6 @@ typedef enum {
 // that can update in realtime.
 + (void)onVariablesChanged:(LeanplumVariablesChangedBlock)block;
 
-// Block to call when the interface receive new values from the server.
-// This will be called on start, and also later on if the user is in an experiment
-// that can update in realtime.
-+ (void)onInterfaceChanged:(LeanplumInterfaceChangedBlock)block;
-
-// Block to call when the events receive new values from the server.
-// This will be called on start, and also later on if the user is in an experiment
-// that can update in realtime.
-+ (void)onEventsChanged:(LeanplumEventsChangedBlock)block;
-
 // Block to call when no more file downloads are pending (either when
 // no files needed to be downloaded or all downloads have been completed).
 + (void)onVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
@@ -263,14 +216,10 @@ typedef enum {
 // Similar to the methods above but uses NSInvocations instead of blocks.
 + (void)addStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
-+ (void)addInterfaceChangedResponder:(id)responder withSelector:(SEL)selector;
-+ (void)addEventsChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 + (void)removeStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
-+ (void)removeInterfaceChangedResponder:(id)responder withSelector:(SEL)selector;
-+ (void)removeEventsChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 
