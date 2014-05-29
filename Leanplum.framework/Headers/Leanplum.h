@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.8
+//  Leanplum iOS SDK Version 1.2.9
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
@@ -64,10 +64,14 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 // It's useful in development mode so that we remember your device even if you reinstall your app.
 // Since it's a MACRO, this won't get compiled into your app in production, and will be safe
 // to submit to Apple.
-#define LEANPLUM_USE_ADVERTISING_ID [Leanplum setDeviceId:[[[NSClassFromString(@"ASIdentifierManager") \
-    performSelector:NSSelectorFromString(@"sharedManager")] \
-    performSelector:NSSelectorFromString(@"advertisingIdentifier")] \
-    performSelector:NSSelectorFromString(@"UUIDString")]]
+#define LEANPLUM_USE_ADVERTISING_ID \
+    _Pragma("clang diagnostic push") \
+    _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
+    [Leanplum setDeviceId:[[[NSClassFromString(@"ASIdentifierManager") \
+        performSelector:NSSelectorFromString(@"sharedManager")] \
+        performSelector:NSSelectorFromString(@"advertisingIdentifier")] \
+        performSelector:NSSelectorFromString(@"UUIDString")]] \
+    _Pragma("clang diagnostic pop")
 
 @class LPActionContext;
 
@@ -257,6 +261,11 @@ typedef enum {
 
 // Resumes the current state.
 + (void)resumeState;
+
+// Automatically tracks all of the screens in the app as states.
+// You should not use this in conjunction with advanceTo as the user can only be in
+// 1 state at a time.
++ (void)trackAllAppScreens;
 
 // Logs a particular event in your application. The string can be
 // any value of your choosing, and will show up in the dashboard.
