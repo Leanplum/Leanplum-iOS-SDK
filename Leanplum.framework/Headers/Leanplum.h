@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.11
+//  Leanplum iOS SDK Version 1.2.12
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
@@ -277,6 +277,8 @@ typedef enum {
 // See above for the explanation of params.
 + (void)track:(NSString *)event withParameters:(NSDictionary *)params;
 + (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary *)params;
++ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info andParameters:(NSDictionary *)params;
+
 
 // Gets the path for a particular resource. The resource can be overridden by the server.
 + (NSString *)pathForResource:(NSString *)name ofType:(NSString *)extension;
@@ -358,6 +360,7 @@ typedef enum {
 - (id)objectForKey:(NSString *)key;
 - (id)objectAtIndex:(NSUInteger )index;
 - (id)objectForKeyPath:(id)firstComponent, ... NS_REQUIRES_NIL_TERMINATION;
+- (id)objectForKeyPathComponents:(NSArray *)pathComponents;
 - (NSUInteger)count;
 
 - (NSNumber *)numberValue;
