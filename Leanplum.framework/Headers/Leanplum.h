@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.12
+//  Leanplum iOS SDK Version 1.2.14
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
@@ -444,6 +444,12 @@ typedef enum {
 + (id)objectForKeyPath:(id)firstComponent, ... NS_REQUIRES_NIL_TERMINATION;
 + (id)objectForKeyPathComponents:(NSArray *)pathComponents;
 /**@}*/
+
+/**
+ * Gets a list of variants that are currently active for this user.
+ * Each variant is a dictionary containing an id.
+ */
++ (NSArray *)variants;
 
 /**
  * Forces content to update from the server. If variables have changed, the
