@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/leanplum'
   s.platform = :ios, '5.0'
   s.requires_arc = true
-  s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag =>  '1.2.14'}
+  s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag =>  '1.2.15'}
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC' }
