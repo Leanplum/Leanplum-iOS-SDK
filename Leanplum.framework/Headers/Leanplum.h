@@ -1,9 +1,12 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.14
+//  Leanplum iOS SDK Version 1.2.15
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
+
+#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
 static void __attribute__((constructor)) initialize_##name() { \
@@ -81,6 +84,7 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
     _Pragma("clang diagnostic pop")
 
 @class LPActionContext;
+@class SKPaymentTransaction;
 
 /**
  * @defgroup _ Callback Blocks
@@ -91,9 +95,6 @@ typedef void (^LeanplumStartBlock)(BOOL success);
 typedef void (^LeanplumVariablesChangedBlock)();
 // Returns whether the action was handled.
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
-typedef void (^LeanplumRegisterDeviceResponseBlock)(NSString *email);
-typedef void (^LeanplumRegisterDeviceBlock)(LeanplumRegisterDeviceResponseBlock response);
-typedef void (^LeanplumRegisterDeviceFinishedBlock)(BOOL success);
 typedef void (^LeanplumHandleNotificationBlock)();
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
@@ -103,16 +104,6 @@ typedef int LeanplumUIBackgroundFetchResult;
 #endif
 typedef void (^LeanplumFetchCompletionBlock)(LeanplumUIBackgroundFetchResult result);
 /**@}*/
-
-/**
- * The different registration modes when starting Leanplum in development modes.
- * @deprecated Register devices on the Dashboard instead.
- */
-typedef enum {
-    kLeanplumRegistrationModeOnlyWhenUnregistered = 1,
-    kLeanplumRegistrationModeAlways = 2,
-    kLeanplumRegistrationModeNever = 3,
-} LeanplumRegistrationMode;
 
 /**
  * Leanplum Action Kind Message types
@@ -151,15 +142,6 @@ typedef enum {
  */
 + (void)setCanDownloadContentMidSessionInProductionMode:(BOOL)value;
 
-// Development mode options:
-/**
- * @{
- * Whether to check for new SDK versions.
- * By default, Leanplum will check for updates to the Leanplum SDK in development mode
- * and notify you when your app starts if an update is available.
- */
-+ (void)setUpdateCheckingEnabledInDevelopmentMode:(BOOL)enabled;
-
 /**
  * Modifies the file hashing setting in development mode.
  * By default, Leanplum will hash file variables to determine if they're modified and need
@@ -168,14 +150,6 @@ typedef enum {
  * that Leanplum will not always have the most up-to-date versions of your resources.
  */
 + (void)setFileHashingEnabledInDevelopmentMode:(BOOL)enabled;
-
-/**
- * Choose when to show the registration prompt.
- * Default: kLeanplumRegistrationModeOnlyWhenUnregistered.
- * @deprecated Register devices on the Dashboard instead.
- */
-+ (void)setRegistrationRequiredInDevelopmentMode:(LeanplumRegistrationMode)mode;
-/**@}*/
 
 /**
  * @{
@@ -205,12 +179,26 @@ typedef enum {
  * @{
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
+ * Deprecated. Use {@link syncResourcesAsync:} instead.
  */
-+ (void)syncResources;
++ (void)syncResources __attribute__((deprecated));
 
 /**
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ *     index the app's resources. If async is set, resources may not be available immediately
+ *     when the app starts.
+ */
++ (void)syncResourcesAsync:(BOOL)async;
+
+/**
+ * Syncs resources between Leanplum and the current app.
+ * You should only call this once, and before {@link start}.
+ * Deprecated. Use {@link syncResourcePaths:excluding:async} instead.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ * index the app's resources. If async is set, resources may not be available immediately
+ * when the app starts.
  * @param patternsToIncludeOrNil Limit paths
  *     to only those matching at least one pattern in this list.
  *     Supply null to indicate no inclusion patterns.
@@ -220,7 +208,30 @@ typedef enum {
  *     matching at least one of these patterns.
  *     Supply null to indicate no exclusion patterns.
  */
-+ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil excluding:(NSArray *)patternsToExcludeOrNil;
++ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
+                excluding:(NSArray *)patternsToExcludeOrNil __attribute__((deprecated));
+
+/**
+ * Syncs resources between Leanplum and the current app.
+ * You should only call this once, and before {@link start}.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ * index the app's resources. If async is set, resources may not be available immediately
+ * when the app starts.
+ * @param patternsToIncludeOrNil Limit paths
+ *     to only those matching at least one pattern in this list.
+ *     Supply null to indicate no inclusion patterns.
+ *     Paths start with the folder name within the res folder,
+ *     e.g. "layout/main.xml".
+ * @param patternsToExcludeOrNil Exclude paths
+ *     matching at least one of these patterns.
+ *     Supply null to indicate no exclusion patterns.
+ * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
+ *     index the app's resources. If async is set, resources may not be available immediately
+ *     when the app starts.
+ */
++ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
+                excluding:(NSArray *)patternsToExcludeOrNil
+                    async:(BOOL)async;
 /**@}*/
 
 /**
@@ -310,17 +321,6 @@ typedef enum {
  * Overrides the default behavior of showing an alert view with the notification message.
  */
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block;
-
-/** 
- * Block to call when the device needs to be registered in development mode.
- * This block will get called instead of the prompt showing up.
- */
-+ (void)onRegisterDevice:(LeanplumRegisterDeviceBlock)block;
-
-/**
- * Block to call when the device has been registered in development mode.
- */
-+ (void)onRegisterDeviceDidFinish:(LeanplumRegisterDeviceFinishedBlock)block;
 
 /**
  * @{
@@ -418,12 +418,23 @@ typedef enum {
  * 1 state at a time.
  */
 + (void)trackAllAppScreens;
+
+/**
+ * Automatically tracks InApp purchase and does server side receipt validation.
+ */
++ (void)trackInAppPurchases;
+
+/**
+ * Manually tracks InApp purchase and does server side receipt validation.
+ */
++ (void)trackInAppPurchase:(SKPaymentTransaction *)transaction;
 /**@}*/
 
 /**
  * @{
  * Logs a particular event in your application. The string can be
  * any value of your choosing, and will show up in the dashboard.
+ * To track a purchase, use LP_PURCHASE_EVENT.
  */
 + (void)track:(NSString *)event;
 + (void)track:(NSString *)event withValue:(double)value;
@@ -571,7 +582,7 @@ typedef enum {
 - (void)onValueChanged:(LeanplumVariablesChangedBlock)block;
 
 /**
- * Sets the delegate of the variable in order to use 
+ * Sets the delegate of the variable in order to use
  * {@link LPVarDelegate::fileIsReady:} and {@link LPVarDelegate::valueDidChange:}
  */
 - (void)setDelegate:(id <LPVarDelegate>)delegate;
