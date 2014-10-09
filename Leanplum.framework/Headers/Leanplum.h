@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.15
+//  Leanplum iOS SDK Version 1.2.16
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
@@ -314,6 +314,20 @@ typedef enum {
  */
 + (void)handleNotification:(NSDictionary *)userInfo
     fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+
+/**
+ * Call this to handle custom actions for local notifications.
+ */
++ (void)handleActionWithIdentifier:(NSString *)identifier
+              forLocalNotification:(UILocalNotification *)notification
+                 completionHandler:(void (^)())completionHandler;
+
+/**
+ * Call this to handle custom actions for remote notifications.
+ */
++ (void)handleActionWithIdentifier:(NSString *)identifier
+             forRemoteNotification:(NSDictionary *)notification
+                 completionHandler:(void (^)())completionHandler;
 
 /*
  * Block to call that decides whether a notification should be displayed when it is
