@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.18
+//  Leanplum iOS SDK Version 1.2.19
 //
 //  Copyright (c) 2014 Leanplum. All rights reserved.
 //
@@ -85,6 +85,7 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 
 @class LPActionContext;
 @class SKPaymentTransaction;
+@class NSExtensionContext;
 
 /**
  * @defgroup _ Callback Blocks
@@ -168,6 +169,12 @@ typedef enum {
  */
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey;
 /**@}*/
+
+/**
+ * Apps running as extensions need to call this before start.
+ * @param context The current extensionContext. You can get this from UIViewController.
+ */
++ (void)setExtensionContext:(NSExtensionContext *)context;
 
 /**
  * Sets a custom device ID. For example, you may want to pass the advertising ID to do attribution.
