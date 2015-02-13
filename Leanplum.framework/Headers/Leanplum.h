@@ -1,8 +1,8 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.19
+//  Leanplum iOS SDK Version 1.2.20
 //
-//  Copyright (c) 2014 Leanplum. All rights reserved.
+//  Copyright (c) 2015 Leanplum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -85,7 +85,9 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 
 @class LPActionContext;
 @class SKPaymentTransaction;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 @class NSExtensionContext;
+#endif
 
 /**
  * @defgroup _ Callback Blocks
@@ -170,11 +172,13 @@ typedef enum {
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey;
 /**@}*/
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 /**
  * Apps running as extensions need to call this before start.
  * @param context The current extensionContext. You can get this from UIViewController.
  */
 + (void)setExtensionContext:(NSExtensionContext *)context;
+#endif
 
 /**
  * Sets a custom device ID. For example, you may want to pass the advertising ID to do attribution.
@@ -367,6 +371,13 @@ typedef enum {
  * attributes will be preserved.
  */
 + (void)setUserAttributes:(NSDictionary *)attributes;
+
+/**
+ * Sets the traffic source info for the current user.
+ * Keys in info must be one of: publisherId, publisherName, publisherSubPublisher,
+ * publisherSubSite, publisherSubCampaign, publisherSubAdGroup, publisherSubAd.
+ */
++ (void)setTrafficSourceInfo:(NSDictionary *)info;
 
 /**
  * Updates a user ID after session start.
