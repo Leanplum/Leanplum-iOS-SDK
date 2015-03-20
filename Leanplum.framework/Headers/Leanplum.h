@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.2.21
+//  Leanplum iOS SDK Version 1.2.22
 //
 //  Copyright (c) 2015 Leanplum. All rights reserved.
 //
