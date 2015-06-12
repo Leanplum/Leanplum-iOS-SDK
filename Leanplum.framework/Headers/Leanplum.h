@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.1
+//  Leanplum iOS SDK Version 1.3.2
 //
 //  Copyright (c) 2015 Leanplum. All rights reserved.
 //
@@ -107,6 +107,7 @@ typedef UIBackgroundFetchResult LeanplumUIBackgroundFetchResult;
 typedef int LeanplumUIBackgroundFetchResult;
 #endif
 typedef void (^LeanplumFetchCompletionBlock)(LeanplumUIBackgroundFetchResult result);
+typedef void (^LeanplumPushSetupBlock)();
 /**@}*/
 
 /**
@@ -547,7 +548,25 @@ typedef enum {
  * Used to enable or disable test mode. Test mode prevents Leanplum from
  * communicating with the server. This is useful for unit tests.
  */
-+ (void)setTestModeEnabled:(BOOL)isTestModEnabled;
++ (void)setTestModeEnabled:(BOOL)isTestModeEnabled;
+
+/**
+ * Customize push setup. If this API should be called before [Leanplum start]. If this API is not
+ * used the default push setup from the docs will be used for "Push Ask to Ask" and 
+ * "Register For Push".
+ */
++ (void)setPushSetup:(LeanplumPushSetupBlock)block;
+
+/**
+ * Get the push setup block.
+ */
++ (LeanplumPushSetupBlock)pushSetupBlock;
+
+/**
+ * Returns YES if the app existed on the device more than a day previous to a version built with
+ * Leanplum was installed.
+ */
++ (BOOL)isPreLeanplumInstall;
 
 @end
 
