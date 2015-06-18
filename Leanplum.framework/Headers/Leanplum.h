@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.2
+//  Leanplum iOS SDK Version 1.3.3
 //
 //  Copyright (c) 2015 Leanplum. All rights reserved.
 //
@@ -567,6 +567,18 @@ typedef enum {
  * Leanplum was installed.
  */
 + (BOOL)isPreLeanplumInstall;
+
+/**
+ * Returns the deviceId in the current Leanplum session. This should only be called after
+ * [Leanplum start].
+ */
++ (NSString *)deviceId;
+
+/**
+ * Returns the userId in the current Leanplum session. This should only be called after
+ * [Leanplum start].
+ */
++ (NSString *)userId;
 
 @end
 
