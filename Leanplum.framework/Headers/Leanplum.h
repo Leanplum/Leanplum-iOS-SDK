@@ -480,6 +480,25 @@ typedef enum {
 + (void)trackAllAppScreens;
 
 /**
+ * LPTrackScreenMode enum.
+ * LPTrackScreenModeDefault mans that states are the full view controller type name.
+ * LPTrackScreenModeStripViewController will cause the string "ViewController" to be stripped from
+ * the end of the state.
+ */
+typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
+    LPTrackScreenModeDefault = 0,
+    LPTrackScreenModeStripViewController
+};
+
+/**
+ * Automatically tracks all of the screens in the app as states.
+ * You should not use this in conjunction with advanceTo as the user can only be in
+ * 1 state at a time.
+ * @param trackScreenMode Choose mode for display. Default is the view controller type name.
+ */
++ (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode;
+
+/**
  * Automatically tracks InApp purchase and does server side receipt validation.
  */
 + (void)trackInAppPurchases;
