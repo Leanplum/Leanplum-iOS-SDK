@@ -1,12 +1,13 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.7
+//  Leanplum iOS SDK Version 1.3.8
 //
 //  Copyright (c) 2015 Leanplum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "LPNewsfeed.h"
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
 static void __attribute__((constructor)) initialize_##name() { \
@@ -598,6 +599,11 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  * [Leanplum start].
  */
 + (NSString *)userId;
+
+/**
+ * Returns an instance to the singleton LPNewsfeed object.
+ */
++ (LPNewsfeed *)newsfeed;
 
 @end
 
