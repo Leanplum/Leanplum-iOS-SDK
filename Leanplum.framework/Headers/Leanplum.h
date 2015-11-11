@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.8.1
+//  Leanplum iOS SDK Version 1.3.9
 //
 //  Copyright (c) 2015 Leanplum. All rights reserved.
 //
@@ -8,6 +8,10 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "LPNewsfeed.h"
+
+#ifndef LP_NOT_TV
+#define LP_NOT_TV (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
+#endif
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
 static void __attribute__((constructor)) initialize_##name() { \
@@ -102,7 +106,7 @@ typedef void (^LeanplumInterfaceChangedBlock)();
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
 typedef void (^LeanplumHandleNotificationBlock)();
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000 && LP_NOT_TV
 typedef UIBackgroundFetchResult LeanplumUIBackgroundFetchResult;
 #else
 typedef int LeanplumUIBackgroundFetchResult;
@@ -132,6 +136,7 @@ typedef enum {
  * @param ssl Whether to use SSL
  */
 + (void)setApiHostName:(NSString *)hostName withServletName:(NSString *)servletName usingSsl:(BOOL)ssl;
+
 /**
  * Optional. Adjusts the network timeouts.
  * The default timeout is 10 seconds for requests, and 15 seconds for file downloads.
@@ -140,6 +145,12 @@ typedef enum {
 + (void)setNetworkTimeoutSeconds:(int)seconds;
 + (void)setNetworkTimeoutSeconds:(int)seconds forDownloads:(int)downloadSeconds;
 /**@}*/
+
+/**
+ * Sets whether to show the network activity indicator in the status bar when making requests.
+ * Default: YES.
+ */
++ (void)setNetworkActivityIndicatorEnabled:(BOOL)enabled;
 
 /**
  * Advanced: Whether new variables can be downloaded mid-session. By default, this is disabled.
@@ -353,12 +364,14 @@ typedef enum {
 + (void)handleNotification:(NSDictionary *)userInfo
     fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 
+#if LP_NOT_TV
 /**
  * Call this to handle custom actions for local notifications.
  */
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)())completionHandler;
+#endif
 
 /**
  * Call this to handle custom actions for remote notifications.
