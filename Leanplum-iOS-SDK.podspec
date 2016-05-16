@@ -15,6 +15,7 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC' }
   s.preserve_paths = 'Leanplum.framework'
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
+  s.source_files = 'Leanplum.framework/Headers/*.h'
   s.public_header_files = 'Leanplum.framework/Headers/*.h'
   s.vendored_frameworks = 'Leanplum.framework'
 end
