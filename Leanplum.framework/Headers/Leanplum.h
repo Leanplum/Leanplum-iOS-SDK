@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.10.1
+//  Leanplum iOS SDK Version 1.3.11
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
@@ -360,9 +360,17 @@ typedef enum {
 /**
  * Handles a push notification for apps that use Background Notifications.
  * Without background notifications, Leanplum handles them automatically.
+ * Deprecated. Leanplum calls handleNotification automatically now. If you
+ * implement application:didReceiveRemoteNotification:fetchCompletionHandler:
+ * in your app delegate, you should remove any calls to [Leanplum handleNotification]
+ * and call the completion handler yourself.
  */
 + (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+    __attribute__((deprecated("Leanplum calls handleNotification automatically now. If you "
+        "implement application:didReceiveRemoteNotification:fetchCompletionHandler: in your app "
+        "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
+        "completion handler yourself.")));
 
 #if LP_NOT_TV
 /**
