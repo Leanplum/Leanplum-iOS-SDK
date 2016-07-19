@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.11
+//  Leanplum iOS SDK Version 1.3.12
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
@@ -475,7 +475,7 @@ typedef enum {
  * A state is a section of your app that the user is currently in.
  * You can specify up to 200 types of parameters per app across all events and state.
  * The parameter keys must be strings, and values either strings or numbers.
- * @param state The name of the state.
+ * @param state The name of the state. (nullable)
  * @param info Anything else you want to log with the state. For example, if the state
  * is watchVideo, info could be the video ID.
  * @param params A dictionary with custom parameters.
