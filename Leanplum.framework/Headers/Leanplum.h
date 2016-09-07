@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.3.12
+//  Leanplum iOS SDK Version 1.4.0
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
@@ -82,10 +82,16 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 #define LEANPLUM_USE_ADVERTISING_ID \
     _Pragma("clang diagnostic push") \
     _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
-    [Leanplum setDeviceId:[[[NSClassFromString(@"ASIdentifierManager") \
-        performSelector:NSSelectorFromString(@"sharedManager")] \
-        performSelector:NSSelectorFromString(@"advertisingIdentifier")] \
-        performSelector:NSSelectorFromString(@"UUIDString")]] \
+    id LeanplumIdentifierManager = [NSClassFromString(@"ASIdentifierManager") \
+                            performSelector:NSSelectorFromString(@"sharedManager")]; \
+    if (floor(NSFoundationVersionNumber) <= 1299 /* NSFoundationVersionNumber_iOS_9_x_Max */ || \
+        [LeanplumIdentifierManager performSelector: \
+          NSSelectorFromString(@"isAdvertisingTrackingEnabled")]) { \
+        /* < iOS10 || isAdvertisingTrackingEnabled */ \
+        [Leanplum setDeviceId:[[LeanplumIdentifierManager performSelector: \
+                                NSSelectorFromString(@"advertisingIdentifier")] \
+                               performSelector:NSSelectorFromString(@"UUIDString")]]; \
+    } \
     _Pragma("clang diagnostic pop")
 
 @class LPActionContext;
