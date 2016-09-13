@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.4.0
+//  Leanplum iOS SDK Version 1.4.0.1
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
@@ -382,9 +382,12 @@ typedef enum {
 /**
  * Call this to handle custom actions for local notifications.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)())completionHandler;
+#pragma clang diagnostic pop
 #endif
 
 /**
