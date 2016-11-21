@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.4.0.2
+//  Leanplum iOS SDK Version 1.4.1
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
@@ -230,6 +230,14 @@ typedef enum {
  * By default, the device ID is the identifier for vendor.
  */
 + (void)setDeviceId:(NSString *)deviceId;
+
+/**
+ * By default, Leanplum reports the version of your app using CFBundleVersion, which
+ * can be used for reporting and targeting on the Leanplum dashboard.
+ * If you wish to use CFBundleShortVersionString or any other string as the version,
+ * you can call this before your call to [Leanplum start]
+ */
++ (void)setAppVersion:(NSString *)appVersion;
 
 /**
  * @{
@@ -571,6 +579,12 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  * Each variant is a dictionary containing an id.
  */
 + (NSArray *)variants;
+
+/**
+ * Returns metadata for all active in-app messages.
+ * Recommended only for debugging purposes and advanced use cases.
+ */
++ (NSDictionary *)messageMetadata;
 
 /**
  * Forces content to update from the server. If variables have changed, the
