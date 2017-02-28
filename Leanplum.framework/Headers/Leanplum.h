@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.4.3
+//  Leanplum iOS SDK Version 1.5.0
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
@@ -844,6 +844,7 @@ typedef enum {
 - (NSDictionary *)dictionaryNamed:(NSString *)name;
 - (NSArray *)arrayNamed:(NSString *)name;
 - (UIColor *)colorNamed:(NSString *)name;
+- (NSString *)htmlWithTemplateNamed:(NSString *)templateName;
 
 /**
  * Runs the action given by the "name" key.
