@@ -1,13 +1,13 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 1.5.1
+//  Leanplum iOS SDK Version 1.6.0
 //
 //  Copyright (c) 2016 Leanplum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "LPNewsfeed.h"
+#import "LPInbox.h"
 
 #ifndef LP_NOT_TV
 #define LP_NOT_TV (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
@@ -642,9 +642,15 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (NSString *)userId;
 
 /**
- * Returns an instance to the singleton LPNewsfeed object.
+ * Returns an instance to the singleton LPInbox object.
  */
-+ (LPNewsfeed *)newsfeed;
++ (LPInbox *)inbox;
+
+/**
+ * Returns an instance to the singleton LPNewsfeed object.
+ * Deprecated. Use {@link inbox} instead.
+ */
++ (LPNewsfeed *)newsfeed __attribute__((deprecated("Use inbox instead.")));
 
 /**
  * Types of location accuracy. Higher value implies better accuracy.
@@ -668,6 +674,18 @@ typedef enum {
  */
 + (void)setDeviceLocationWithLatitude:(double)latitude
                             longitude:(double)longitude
+                                 type:(LPLocationAccuracyType)type;
+
+/**
+ * Set location manually. Best if used in after calling setDeviceLocationWithLatitude:.
+ * If you have the CLPlacemark info: city is locality, region is administrativeArea,
+ * and country is ISOcountryCode.
+ */
++ (void)setDeviceLocationWithLatitude:(double)latitude
+                            longitude:(double)longitude
+                                 city:(NSString *)city
+                               region:(NSString *)region
+                              country:(NSString *)country
                                  type:(LPLocationAccuracyType)type;
 
 /**
