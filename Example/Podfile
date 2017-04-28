@@ -1,0 +1,11 @@
+target 'Leanplum-SDK_Example' do
+  platform :ios, '6.0'
+
+  pod 'Leanplum-SDK', :path => '../'
+end
+
+target 'Leanplum-tvOS-SDK_Example' do
+  platform :tvos, '6.0'
+
+  pod 'Leanplum-SDK', :path => '../'
+end

@@ -1,5 +1,4 @@
 # Leanplum-Apple-SDK
-Please refer to the active development branch develop to see the latest source code.
 ## Installation & Usage
 Please refer to: https://www.leanplum.com/docs#/setup/ios
 ## Contributing

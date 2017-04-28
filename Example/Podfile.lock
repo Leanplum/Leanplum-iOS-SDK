@@ -1,0 +1,16 @@
+PODS:
+  - Leanplum-SDK (2.0.0-SNAPSHOT)
+
+DEPENDENCIES:
+  - Leanplum-SDK (from `../`)
+
+EXTERNAL SOURCES:
+  Leanplum-SDK:
+    :path: ../
+
+SPEC CHECKSUMS:
+  Leanplum-SDK: a66cf039623fe61e30aa7dac1247145f837dcd02
+
+PODFILE CHECKSUM: aa5c2fc90212bc8158367c704357a2877f93faff
+
+COCOAPODS: 1.2.1
