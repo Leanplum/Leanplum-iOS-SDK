@@ -1,8 +1,11 @@
 # Leanplum-Apple-SDK
 ## Installation & Usage
 Please refer to: https://www.leanplum.com/docs#/setup/ios
+## Development Workflow
+- We are using GitFlow branching model: https://github.com/nvie/gitflow
+- We use the Conventional Changelog Commit Style for commit messages: https://github.com/commitizen/cz-cli
 ## Contributing
-Please send a pull request to `develop` branch.
+Please follow the Conventional Changelog Commit Style and send a pull request to `develop` branch.
 ## License
 See LICENSE file.
 ## Support
