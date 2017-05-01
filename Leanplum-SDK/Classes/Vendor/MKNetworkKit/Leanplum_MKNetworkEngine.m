@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
 
-#import "MKNetworkKit.h"s
+#import "MKNetworkKit.h"
 #import "Constants.h"
 #define kFreezableOperationExtension @"mknetworkkitfrozenoperation"
 
