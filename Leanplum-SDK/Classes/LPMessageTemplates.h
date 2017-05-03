@@ -1,7 +1,7 @@
 //
 //  LPMessageTemplates.h
 //
-//  Copyright 2017 Leanplum, Inc.
+//  Copyright 2016 Leanplum, Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

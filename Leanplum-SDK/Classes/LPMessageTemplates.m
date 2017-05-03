@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Andrew First on 9/12/13.
-//  Copyright 2017 Leanplum, Inc.
+//  Copyright 2013 Leanplum, Inc.
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy
 //  of this software and associated documentation files (the "Software"), to deal
