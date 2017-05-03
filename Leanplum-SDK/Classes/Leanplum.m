@@ -334,14 +334,14 @@ BOOL inForeground = NO;
 {
     [self throwError:@"Leanplum UI Editor has moved to separate Pod."
      "Please remove this method call and include this "
-     "line in your Podfile: pod 'Leanplum-iOS-Editor'"];
+     "line in your Podfile: pod 'Leanplum-iOS-UIEditor'"];
 }
 
 + (BOOL)interfaceEditingEnabled
 {
     [self throwError:@"Leanplum UI Editor has moved to separate Pod."
      "Please remove this method call and include this "
-     "line in your Podfile: pod 'Leanplum-iOS-Editor'"];
+     "line in your Podfile: pod 'Leanplum-iOS-UIEditor'"];
     return NO;
 }
 
