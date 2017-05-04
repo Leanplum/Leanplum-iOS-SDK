@@ -24,7 +24,7 @@ Analytics.
     :git => 'https://github.com/Leanplum/Leanplum-SDK-Internal.git', :tag => s.version.to_s
   }
   s.ios.deployment_target = '6.0'
-  s.tvos.deployment_target = '6.0'
+  s.tvos.deployment_target = '8.0'
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC', 'BITCODE_GENERATION_MODE' => 'bitcode' }
