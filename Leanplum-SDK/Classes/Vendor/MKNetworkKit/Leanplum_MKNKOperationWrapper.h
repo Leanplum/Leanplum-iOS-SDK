@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Alexis Oyama on 11/14/16.
-//  Copyright (c) 2016 Leanplum. All rights reserved.
+//  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
 //
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
 
