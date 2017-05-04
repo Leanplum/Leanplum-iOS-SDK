@@ -3,7 +3,7 @@
 //  Leanplum-SDK
 //
 //  Created by Ben Marten on 08/29/2016.
-//  Copyright (c) 2016 Leanplum. All rights reserved.
+//  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file

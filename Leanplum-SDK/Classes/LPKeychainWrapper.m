@@ -2,7 +2,7 @@
 //  LPKeychainWrapper.m
 //  Leanplum
 //
-//  Copyright (c) 2017 Leanplum. All rights reserved.
+//  Copyright (c) 2017 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file

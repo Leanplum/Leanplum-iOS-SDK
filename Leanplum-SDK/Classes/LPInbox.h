@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Aleksandar Gyorev on 05/08/15.
-//  Copyright (c) 2015 Leanplum. All rights reserved.
+//  Copyright (c) 2015 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file

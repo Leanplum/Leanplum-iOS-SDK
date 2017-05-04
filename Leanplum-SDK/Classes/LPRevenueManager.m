@@ -3,7 +3,7 @@
 //  Leanplum iOS SDK
 //
 //  Created by Atanas Dobrev on 9/9/14
-//  Copyright (c) 2014 Leanplum. All rights reserved.
+//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
