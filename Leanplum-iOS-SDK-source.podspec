@@ -7,7 +7,7 @@
 #
 
 Pod::Spec.new do |s|
-  s.name = 'Leanplum-SDK'
+  s.name = 'Leanplum-iOS-SDK-source'
   s.version = '2.0.0-SNAPSHOT'
   s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
   s.description = <<-DESC
