@@ -1,16 +1,16 @@
 PODS:
-  - Leanplum-SDK (2.0.0-SNAPSHOT)
+  - Leanplum-iOS-SDK-source (2.0.0-SNAPSHOT)
 
 DEPENDENCIES:
-  - Leanplum-SDK (from `../`)
+  - Leanplum-iOS-SDK-source (from `../`)
 
 EXTERNAL SOURCES:
-  Leanplum-SDK:
+  Leanplum-iOS-SDK-source:
     :path: ../
 
 SPEC CHECKSUMS:
-  Leanplum-SDK: a66cf039623fe61e30aa7dac1247145f837dcd02
+  Leanplum-iOS-SDK-source: 0d2582cebafe4250e294d6c4002c694efb3d60e1
 
-PODFILE CHECKSUM: aa5c2fc90212bc8158367c704357a2877f93faff
+PODFILE CHECKSUM: 1cea41e3ec43f3e90e798b4220cdfc437c86ce22
 
 COCOAPODS: 1.2.1
