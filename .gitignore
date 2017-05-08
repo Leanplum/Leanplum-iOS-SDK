@@ -90,3 +90,9 @@ DerivedData
 
 Carthage
 Pods/
+
+## Custom
+
+Release
+Podfile.lock
+
