@@ -5,7 +5,7 @@ target 'Leanplum-SDK_Example' do
 end
 
 target 'Leanplum-tvOS-SDK_Example' do
-  platform :tvos, '6.0'
+  platform :tvos, '8.0'
 
-  pod 'Leanplum-iOS-SDK-source', :path => '../'
+  pod 'Leanplum-tvOS-SDK', :path => '../'
 end
