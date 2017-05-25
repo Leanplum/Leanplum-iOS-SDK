@@ -366,10 +366,9 @@ static NSDictionary *_requestHheaders;
         }
         finished = YES;
         LP_TRY
-        if (completedOperation.HTTPStatusCode == 408
-            || completedOperation.HTTPStatusCode == 502
-            || completedOperation.HTTPStatusCode == 503
-            || completedOperation.HTTPStatusCode == 504
+        NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
+        if (httpStatusCode == 408
+            || (httpStatusCode >= 500 && httpStatusCode < 600)
             || err.code == kCFURLErrorCannotConnectToHost
             || err.code == kCFURLErrorDNSLookupFailed
             || err.code == kCFURLErrorNotConnectedToInternet
