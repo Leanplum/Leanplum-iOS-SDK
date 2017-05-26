@@ -27,7 +27,6 @@
 @interface LPRequestStorage : NSObject {
     @private
     NSTimeInterval _lastSentTime;
-    NSMutableArray *_requests;
     NSUserDefaults *_defaults;
 }
 
