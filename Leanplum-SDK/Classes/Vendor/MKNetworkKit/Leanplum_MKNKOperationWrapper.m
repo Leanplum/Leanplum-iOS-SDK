@@ -5,9 +5,9 @@
 //  Created by Alexis Oyama on 11/14/16.
 //  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
 //
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
-
 #import "Leanplum_MKNKOperationWrapper.h"
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
 
 @implementation Leanplum_MKNKOperationWrapper
 

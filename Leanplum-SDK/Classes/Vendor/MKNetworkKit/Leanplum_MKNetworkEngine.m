@@ -22,10 +22,11 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
-
 #import "MKNetworkKit.h"
 #import "Constants.h"
+
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+
 #define kFreezableOperationExtension @"mknetworkkitfrozenoperation"
 
 #ifdef __OBJC_GC__

@@ -23,6 +23,7 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define IOS_6_SUPPORTED defined(_ARM_ARCH_7) || defined(__i386__) || defined(__LP64__)
 
