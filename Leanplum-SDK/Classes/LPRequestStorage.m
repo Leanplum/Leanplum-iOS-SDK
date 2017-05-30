@@ -124,22 +124,20 @@
  */
 - (NSMutableArray *)loadRequests
 {
-    @synchronized (self) {
-        NSData *requestData = [NSData dataWithContentsOfFile:self.documentsFilePath];
-        if (requestData) {
-            NSError *error = nil;
-            NSMutableArray *requests = [NSPropertyListSerialization
-                                             propertyListWithData:requestData
-                                             options:NSPropertyListMutableContainers
-                                             format:NULL error:&error];
-            if (error) {
-                LPLog(LPDebug, @"Error in loading requets: %@", error);
-            } else {
-                LPLog(LPDebug, @"Loaded %lu requests", (unsigned long) requests.count);
-            }
-            
-            return requests;
+    NSData *requestData = [NSData dataWithContentsOfFile:self.documentsFilePath];
+    if (requestData) {
+        NSError *error = nil;
+        NSMutableArray *requests = [NSPropertyListSerialization
+                                         propertyListWithData:requestData
+                                         options:NSPropertyListMutableContainers
+                                         format:NULL error:&error];
+        if (error) {
+            LPLog(LPDebug, @"Error in loading requets: %@", error);
+        } else {
+            LPLog(LPDebug, @"Loaded %lu requests", (unsigned long) requests.count);
         }
+        
+        return requests;
     }
     
     return [NSMutableArray new];

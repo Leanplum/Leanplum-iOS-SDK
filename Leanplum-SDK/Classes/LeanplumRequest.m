@@ -369,10 +369,11 @@ static NSDictionary *_requestHheaders;
         NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
         if (httpStatusCode == 408
             || (httpStatusCode >= 500 && httpStatusCode < 600)
-            || err.code == kCFURLErrorCannotConnectToHost
-            || err.code == kCFURLErrorDNSLookupFailed
-            || err.code == kCFURLErrorNotConnectedToInternet
-            || err.code == kCFURLErrorTimedOut) {
+            || err.code == NSURLErrorBadServerResponse
+            || err.code == NSURLErrorCannotConnectToHost
+            || err.code == NSURLErrorDNSLookupFailed
+            || err.code == NSURLErrorNotConnectedToInternet
+            || err.code == NSURLErrorTimedOut) {
             NSLog(@"Leanplum: %@", err);
             [LeanplumRequest pushUnsentRequests:requestsToSend];
         } else {
