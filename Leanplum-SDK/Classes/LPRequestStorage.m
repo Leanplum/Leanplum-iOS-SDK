@@ -175,11 +175,22 @@
     return [NSString stringWithFormat:LEANPLUM_DEFAULTS_ITEM_KEY, index];
 }
 
+#pragma mark Public Methods
+
 - (void)pushRequest:(NSDictionary *)requestData
 {
     @synchronized (self) {
         NSMutableArray *requests = [self loadRequests];
         [requests addObject:requestData];
+        [self saveRequests:requests];
+    }
+}
+
+- (void)pushRequests:(NSArray *)requestDatas
+{
+    @synchronized (self) {
+        NSMutableArray *requests = [self loadRequests];
+        [requests addObjectsFromArray:requestDatas];
         [self saveRequests:requests];
     }
 }
@@ -201,7 +212,6 @@
             }
         }
     }
-    NSLog(@"pop: %@", requests);
     return requests;
 }
 

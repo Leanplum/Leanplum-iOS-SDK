@@ -89,8 +89,6 @@
 + (int)numPendingDownloads;
 + (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block;
 
-+ (void)saveRequests;
-
 @end
 
 @interface LPResponse : NSObject

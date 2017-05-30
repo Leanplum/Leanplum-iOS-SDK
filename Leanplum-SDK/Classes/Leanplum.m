@@ -1055,8 +1055,6 @@ BOOL inForeground = NO;
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
                     [[LeanplumRequest post:LP_METHOD_STOP params:nil]
                         sendIfConnectedSync:exitOnSuspend];
-                    [LeanplumRequest saveRequests];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                     LP_END_TRY
                 }];
 
@@ -1066,8 +1064,6 @@ BOOL inForeground = NO;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
             [[LeanplumRequest post:LP_METHOD_HEARTBEAT params:nil] sendIfDelayed];
-            [[LeanplumRequest class] performSelector:@selector(saveRequests) withObject:nil
-                                          afterDelay:LP_REQUEST_RESUME_DELAY + 1.0];
         }
         LP_END_TRY
     } repeats:YES];

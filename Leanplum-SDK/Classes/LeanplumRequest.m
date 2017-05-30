@@ -449,9 +449,8 @@ static NSDictionary *_requestHheaders;
             retryCount = @([retryCount integerValue] + 1);
         }
         args[@"retryCount"] = retryCount;
-        [[LPRequestStorage sharedStorage] pushRequest:args];
     }
-    [LeanplumRequest saveRequests];
+    [[LPRequestStorage sharedStorage] pushRequests:requestData];
 }
 
 + (NSString *)getSizeAsString:(int)size
@@ -703,13 +702,6 @@ static NSDictionary *_requestHheaders;
 + (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block
 {
     noPendingDownloadsBlock = block;
-}
-
-+ (void)saveRequests
-{
-    LP_TRY
-    [[LPRequestStorage sharedStorage] performSelectorInBackground:@selector(saveRequests) withObject:nil];
-    LP_END_TRY
 }
 
 @end
