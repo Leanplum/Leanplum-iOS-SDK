@@ -886,7 +886,6 @@ BOOL inForeground = NO;
         state.hasStarted = YES;
         state.startSuccessful = YES;
         NSDictionary *response = [LPResponse getLastResponse:json];
-        NSLog(@"RESPONSE: %@", response);
         NSDictionary *values = response[LP_KEY_VARS];
         NSString *token = response[LP_KEY_TOKEN];
         NSDictionary *messages = response[LP_KEY_MESSAGES];

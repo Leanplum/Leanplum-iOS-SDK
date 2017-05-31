@@ -27,7 +27,6 @@
 @interface LPRequestStorage : NSObject {
     @private
     NSTimeInterval _lastSentTime;
-    NSUserDefaults *_defaults;
 }
 
 @property (nonatomic, readonly) NSTimeInterval lastSentTime;

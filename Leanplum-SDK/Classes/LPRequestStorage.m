@@ -33,7 +33,6 @@
 - (id)init
 {
     if (self = [super init]) {
-        _defaults = [NSUserDefaults standardUserDefaults];
         [self migrateRequests];
     }
     return self;
@@ -44,7 +43,7 @@
     static LPRequestStorage *_sharedStorage = nil;
     static dispatch_once_t sharedStorageToken;
     dispatch_once(&sharedStorageToken, ^{
-        _sharedStorage = [[self alloc] init];
+        _sharedStorage = [self new];
     });
     return _sharedStorage;
 }
@@ -72,18 +71,19 @@
         
         // For compatibility with older SDKs.
         NSMutableArray *requests = [NSMutableArray array];
-        NSInteger count = [_defaults integerForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger count = [defaults integerForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
         if (count) {
             for (NSInteger i = 0; i < count; i++) {
                 NSString *itemKey = [LPRequestStorage itemKeyForIndex:i];
-                NSDictionary *requestArgs = [_defaults dictionaryForKey:itemKey];
+                NSDictionary *requestArgs = [defaults dictionaryForKey:itemKey];
                 if (requestArgs) {
                     [requests addObject:requestArgs];
                 }
-                [_defaults removeObjectForKey:itemKey];
+                [defaults removeObjectForKey:itemKey];
             }
-            [_defaults removeObjectForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
-            [_defaults synchronize];
+            [defaults removeObjectForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
+            [defaults synchronize];
             if (![[NSFileManager defaultManager] fileExistsAtPath:self.documentsFilePath]) {
                 [self saveRequests:requests];
             }
@@ -98,8 +98,8 @@
 - (void)saveRequests:(NSMutableArray *)requests
 {
     if (requests.count > MAX_STORED_API_CALLS) {
-        NSRange range = NSMakeRange(requests.count - MAX_STORED_API_CALLS, MAX_STORED_API_CALLS);
-        requests = [[requests subarrayWithRange:range] mutableCopy];
+        NSRange range = NSMakeRange(0, requests.count - MAX_STORED_API_CALLS);
+        [requests removeObjectsInRange:range];
     }
     
     NSError *error = nil;
