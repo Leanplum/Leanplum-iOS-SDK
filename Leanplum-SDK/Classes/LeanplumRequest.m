@@ -369,10 +369,11 @@ static NSDictionary *_requestHheaders;
         NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
         if (httpStatusCode == 408
             || (httpStatusCode >= 500 && httpStatusCode < 600)
-            || err.code == kCFURLErrorCannotConnectToHost
-            || err.code == kCFURLErrorDNSLookupFailed
-            || err.code == kCFURLErrorNotConnectedToInternet
-            || err.code == kCFURLErrorTimedOut) {
+            || err.code == NSURLErrorBadServerResponse
+            || err.code == NSURLErrorCannotConnectToHost
+            || err.code == NSURLErrorDNSLookupFailed
+            || err.code == NSURLErrorNotConnectedToInternet
+            || err.code == NSURLErrorTimedOut) {
             NSLog(@"Leanplum: %@", err);
             [LeanplumRequest pushUnsentRequests:requestsToSend];
         } else {
@@ -449,9 +450,8 @@ static NSDictionary *_requestHheaders;
             retryCount = @([retryCount integerValue] + 1);
         }
         args[@"retryCount"] = retryCount;
-        [[LPRequestStorage sharedStorage] pushRequest:args];
     }
-    [LeanplumRequest saveRequests];
+    [[LPRequestStorage sharedStorage] pushRequests:requestData];
 }
 
 + (NSString *)getSizeAsString:(int)size
@@ -703,13 +703,6 @@ static NSDictionary *_requestHheaders;
 + (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block
 {
     noPendingDownloadsBlock = block;
-}
-
-+ (void)saveRequests
-{
-    LP_TRY
-    [[LPRequestStorage sharedStorage] performSelectorInBackground:@selector(saveRequests) withObject:nil];
-    LP_END_TRY
 }
 
 @end

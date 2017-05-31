@@ -27,16 +27,25 @@
 @interface LPRequestStorage : NSObject {
     @private
     NSTimeInterval _lastSentTime;
-    NSMutableArray *_requests;
-    NSUserDefaults *_defaults;
 }
+
+@property (nonatomic, readonly) NSTimeInterval lastSentTime;
 
 + (LPRequestStorage *)sharedStorage;
 
+/**
+ * Push request to file by read, append, and then write.
+ */
 - (void)pushRequest:(NSDictionary *)requestData;
-- (NSArray *)popAllRequests;
-- (void)saveRequests;
 
-@property (nonatomic, readonly) NSTimeInterval lastSentTime;
+/**
+ * Push multiple requests to file by read, append, and then write.
+ */
+- (void)pushRequests:(NSArray *)requestDatas;
+
+/**
+ * Read all requests and delete the file.
+ */
+- (NSArray *)popAllRequests;
 
 @end
