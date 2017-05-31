@@ -994,7 +994,7 @@ BOOL inForeground = NO;
 
     // Pause.
     [[NSNotificationCenter defaultCenter]
-        addObserverForName:UIApplicationDidEnterBackgroundNotification
+        addObserverForName:UIApplicationWillResignActiveNotification
                     object:nil
                      queue:nil
                 usingBlock:^(NSNotification *notification) {
@@ -1009,7 +1009,7 @@ BOOL inForeground = NO;
 
     // Resume.
     [[NSNotificationCenter defaultCenter]
-        addObserverForName:UIApplicationWillEnterForegroundNotification
+        addObserverForName:UIApplicationDidBecomeActiveNotification
                     object:nil
                      queue:nil
                 usingBlock:^(NSNotification *notification) {
