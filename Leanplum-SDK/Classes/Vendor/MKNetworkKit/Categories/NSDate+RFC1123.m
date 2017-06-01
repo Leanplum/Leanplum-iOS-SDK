@@ -6,9 +6,11 @@
 //  http://blog.mro.name/2009/08/nsdateformatter-http-header/
 //
 //  No obvious license attached
-#import "NSDate+RFC1123.h"
+#import <Foundation/Foundation.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+
+#import "NSDate+RFC1123.h"
 
 @implementation LPRFC1123
 

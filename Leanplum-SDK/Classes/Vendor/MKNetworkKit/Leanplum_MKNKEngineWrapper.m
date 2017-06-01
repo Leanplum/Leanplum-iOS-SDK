@@ -5,10 +5,12 @@
 //  Created by Alexis Oyama on 11/14/16.
 //  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
 //
-#import "Leanplum_MKNKEngineWrapper.h"
-#import "Leanplum_MKNKOperationWrapper.h"
+#import <Foundation/Foundation.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+
+#import "Leanplum_MKNKEngineWrapper.h"
+#import "Leanplum_MKNKOperationWrapper.h"
 
 @implementation Leanplum_MKNKEngineWrapper
 

@@ -22,10 +22,12 @@
 //  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
-#import "NSString+MKNetworkKitAdditions.h"
-#import <CommonCrypto/CommonDigest.h>
+#import <Foundation/Foundation.h>
 
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
+
+#import "NSString+MKNetworkKitAdditions.h"
+#import <CommonCrypto/CommonDigest.h>
 
 @implementation LPNetworkKitAdditions
 
