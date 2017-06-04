@@ -1,3 +1,7 @@
+if ! ENV['LP_STATIC']
+  use_frameworks!
+end
+
 target 'Leanplum-SDK_Example' do
   platform :ios, '6.0'
 
