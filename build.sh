@@ -67,7 +67,7 @@ main() {
   if [[ -z "${BUILD_NUMBER+x}" ]]; then 
     BUILD_NUMBER=$(date "+%s")
   fi
-  export IOS_VERSION_STRING="$IOS_VERSION+$BUILD_NUMBER"
+  export IOS_VERSION_STRING=${IOS_VERSION_STRING:-"$IOS_VERSION.$BUILD_NUMBER"}
 
   SDK_DIR=${SDK_DIR:-"$(pwd)/."}
   RELEASE_DIR_BASE=${RELEASE_DIR_BASE:-"$SDK_DIR/Release"}
