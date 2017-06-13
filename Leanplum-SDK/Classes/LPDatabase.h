@@ -1,9 +1,9 @@
 //
-//  LPRequestStorage.h
+//  LPDatabase.h
 //  Leanplum
 //
-//  Created by Andrew First on 10/23/14.
-//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
+//  Created by Alexis Oyama on 6/9/17.
+//  Copyright (c) 2017 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -24,38 +24,33 @@
 
 #import <Foundation/Foundation.h>
 
-/**
- * Request Storage is deprecated from 2.0.2.
- * Use LPEventDataManager instead. 
- * Do not use this class other than migrating.
- */
-@interface LPRequestStorage : NSObject {
-    @private
-    NSTimeInterval _lastSentTime;
+@interface LPDatabase : NSObject
+{
+    id sqliteObject;
 }
 
-@property (nonatomic, readonly) NSTimeInterval lastSentTime;
-
-+ (LPRequestStorage *)sharedStorage;
+/**
+ * Returns shared database.
+ */
++ (LPDatabase *)database;
 
 /**
- * Push request to file by read, append, and then write.
+ * Returns a file path of sqlite from the documents directory.
  */
-- (void)pushRequest:(NSDictionary *)requestData;
++ (NSString *)sqliteFilePath;
 
 /**
- * Push multiple requests to file by read, append, and then write.
+ * Runs a query. 
+ * Use this to create, insert, update, and delete.
  */
-- (void)pushRequests:(NSArray *)requestDatas;
+- (void)runQuery:(NSString *)query;
 
 /**
- * Read all requests and delete the file.
+ * Return rows as array from the query. 
+ * Use this for fetching data.
+ * Datas are saved as NSDictionary. Key is the column's name.
  */
-- (NSArray *)popAllRequests;
+- (NSArray *)rowsFromQuery:(NSString *)query;
 
-/**
- * This file path returns the one in documents directory. Requests should be stored here.
- */
-- (NSString *)documentsFilePath;
 
 @end

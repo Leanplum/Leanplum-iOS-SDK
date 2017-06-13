@@ -95,6 +95,8 @@ NSString *LEANPLUM_DEFAULTS_SDK_VERSION = @"__leanplum_version";
 NSString *LEANPLUM_DEFAULTS_INBOX_KEY = @"__leanplum_newsfeed";
 NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
 
+NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
+
 NSString *LP_METHOD_START = @"start";
 NSString *LP_METHOD_GET_VARS = @"getVars";
 NSString *LP_METHOD_SET_VARS = @"setVars";

@@ -28,8 +28,8 @@
 #import "Constants.h"
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
-#import "LPRequestStorage.h"
 #import "LPKeychainWrapper.h"
+#import "LPEventDataManager.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *appId;
@@ -46,6 +46,7 @@ static NSMutableDictionary *fileUploadProgress;
 static NSString *fileUploadProgressString;
 static NSMutableDictionary *pendingUploads;
 static NSOperationQueue *sendNowQueue;
+static NSTimeInterval lastSentTime;
 
 static NSDictionary *_requestHheaders;
 
@@ -212,7 +213,6 @@ static NSDictionary *_requestHheaders;
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         NSTimeInterval delay;
-        NSTimeInterval lastSentTime = [LPRequestStorage sharedStorage].lastSentTime;
         if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_DEVELOPMENT_MAX_DELAY) {
             delay = LP_REQUEST_DEVELOPMENT_MIN_DELAY;
         } else {
@@ -240,7 +240,6 @@ static NSDictionary *_requestHheaders;
         [self send];
     } else {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-        NSTimeInterval lastSentTime = [LPRequestStorage sharedStorage].lastSentTime;
         if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {
             [self sendIfConnected];
         }
@@ -294,14 +293,17 @@ static NSDictionary *_requestHheaders;
     [self sendEventually];
 
     void (^operationBlock)() = ^void() {
-        NSArray *requestsToSend = [[LPRequestStorage sharedStorage] popAllRequests];
+        // Simulate pop all requests.
+        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_STORED_API_CALLS];
+        // !!!: Remove in next commit (New Network flow).
+        [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+        lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         
         if (requestsToSend.count == 0) {
             return;
         }
 
-        NSString *requestData = [LeanplumRequest jsonEncodeUnsentRequests:requestsToSend];
-
+        NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
         LPConstantsState *constants = [LPConstantsState sharedState];
         NSMutableDictionary *multiRequestArgs = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                                  requestData, LP_PARAM_DATA,
@@ -441,13 +443,8 @@ static NSDictionary *_requestHheaders;
     if (!_sent) {
         _sent = YES;
         NSMutableDictionary *args = [self createArgsDictionary];
-        [[LPRequestStorage sharedStorage] pushRequest:args];
+        [LPEventDataManager addEvent:args];
     }
-}
-
-+ (NSString *)jsonEncodeUnsentRequests:(NSArray *)requestData
-{
-    return [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestData}];
 }
 
 + (void)pushUnsentRequests:(NSArray *)requestData
@@ -461,7 +458,7 @@ static NSDictionary *_requestHheaders;
         }
         args[@"retryCount"] = retryCount;
     }
-    [[LPRequestStorage sharedStorage] pushRequests:requestData];
+    [LPEventDataManager addEvents:requestData];
 }
 
 + (NSString *)getSizeAsString:(int)size
