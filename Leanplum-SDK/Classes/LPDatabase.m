@@ -47,9 +47,8 @@
         // Create tables.
         [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
                             "id INTEGER PRIMARY KEY,"
-                            "data TEXT"
+                            "data TEXT NOT NULL"
                         ");"];
-        NSLog(@"This is okay?");
     }
     return self;
 }
@@ -64,6 +63,9 @@
     return _database;
 }
 
+/**
+ * Returns the file path of sqlite.
+ */
 + (NSString *)sqliteFilePath
 {
     return [[LPFileManager documentsDirectory] stringByAppendingPathComponent:LEANPLUM_SQLITE_NAME];
@@ -74,10 +76,15 @@
  * Used by both runQuery: and rowsFromQuery.
  */
 - (sqlite3_stmt *)sqliteStatementFromQuery:(NSString *)query
+                               bindObjects:(NSArray *)objectsToBind
 {
+    if (!query) {
+        return nil;
+    }
+    
     const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
     sqlite3 *sqlite;
-    int result = sqlite3_open(sqliteFilePath, &sqlite);
+    int __block result = sqlite3_open(sqliteFilePath, &sqlite);
     if (result != SQLITE_OK) {
         LPLog(LPError, @"Fail to open SQLite with result of %d", result);
         return nil;
@@ -91,12 +98,35 @@
         return nil;
     }
     
+    // Bind objects.
+    // It is recommended to use this instead of making a full query in NSString to
+    // prevent from SQL injection attacks and errors from having a quotation mark in text.
+    [objectsToBind enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        if (![obj isKindOfClass:[NSString class]]) {
+            LPLog(LPError, @"Bind object have to be NSString.");
+        }
+        
+        result = sqlite3_bind_text(statement, (int)idx+1, [obj UTF8String],
+                                   (int)[obj lengthOfBytesUsingEncoding:NSUTF8StringEncoding],
+                                   SQLITE_TRANSIENT);
+        
+        if (result != SQLITE_OK) {
+            LPLog(LPError, @"Binding %@ to %ld: %s (%d)", obj, idx+1, sqlite3_errmsg(sqlite),
+                  result);
+        }
+    }];
+    
     return statement;
 }
 
 - (void)runQuery:(NSString *)query
 {
-    sqlite3_stmt *statement = [self sqliteStatementFromQuery:query];
+    [self runQuery:query bindObjects:nil];
+}
+
+- (void)runQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
+{
+    sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
     if (!statement) {
         return;
     }
@@ -110,8 +140,14 @@
 
 - (NSArray *)rowsFromQuery:(NSString *)query
 {
+    return [self rowsFromQuery:query bindObjects:nil];
+}
+
+- (NSArray *)rowsFromQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
+{
     NSMutableArray *rows = [NSMutableArray new];
-    sqlite3_stmt *statement = [self sqliteStatementFromQuery:query];
+    sqlite3_stmt *statement = [self sqliteStatementFromQuery:query
+                                                 bindObjects:objectsToBind];
     if (!statement) {
         return @[];
     }
@@ -119,18 +155,25 @@
     // Iterate through rows.
     while (sqlite3_step(statement) == SQLITE_ROW) {
         // Get column data as dictionary where column name is the key
-        // and value will be a string. This is a safe conversion.
-        // For more details: http://www.sqlite.org/c3ref/column_blob.html
+        // and value will be a blob or a string. This is a safe conversion.
+        // Details: http://www.sqlite.org/c3ref/column_blob.html
         NSMutableDictionary *columnData = [NSMutableDictionary new];
         int columnsCount = sqlite3_column_count(statement);
         for (int i=0; i<columnsCount; i++){
             char *columnKeyUTF8 = (char *)sqlite3_column_name(statement, i);
             NSString *columnKey = [NSString stringWithUTF8String:columnKeyUTF8];
             
-            char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
-            NSString *columnValue = [NSString stringWithUTF8String:columnValueUTF8];
-            
-            columnData[columnKey] = columnValue;
+            if (sqlite3_column_type(statement, i) == SQLITE_BLOB) {
+                NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
+                                                             length:sqlite3_column_bytes(statement, i)];
+                columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
+            } else {
+                char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
+                if (columnValueUTF8) {
+                    NSString *columnValue = [NSString stringWithUTF8String:columnValueUTF8];
+                    columnData[columnKey] = columnValue;
+                }
+            }
         }
         [rows addObject:columnData];
     }

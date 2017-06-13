@@ -25,9 +25,6 @@
 #import <Foundation/Foundation.h>
 
 @interface LPDatabase : NSObject
-{
-    id sqliteObject;
-}
 
 /**
  * Returns shared database.
@@ -41,9 +38,15 @@
 
 /**
  * Runs a query. 
- * Use this to create, insert, update, and delete.
+ * Use this to create, update, and delete.
  */
 - (void)runQuery:(NSString *)query;
+
+/**
+ * Runs a query with objects to bind. Use this to insert.
+ * Use ? in the query and pass array of NSString objects to bindObjects.
+ */
+- (void)runQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind;
 
 /**
  * Return rows as array from the query. 
@@ -52,5 +55,10 @@
  */
 - (NSArray *)rowsFromQuery:(NSString *)query;
 
+/**
+ * Return rows as array from the query with objects.
+ * Use ? in the query and pass array of NSString objects to bindObjects.
+ */
+- (NSArray *)rowsFromQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind;
 
 @end

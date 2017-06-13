@@ -296,7 +296,8 @@ static NSDictionary *_requestHheaders;
         // Simulate pop all requests.
         NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_STORED_API_CALLS];
         // !!!: Remove in next commit (New Network flow).
-        [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+        [LPEventDataManager deleteEventsWithLastEvent:requestsToSend.lastObject
+                                  uponFailureUseLimit:requestsToSend.count];
         lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         
         if (requestsToSend.count == 0) {

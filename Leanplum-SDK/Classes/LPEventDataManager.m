@@ -45,9 +45,9 @@
 
 + (void)addEvent:(NSDictionary *)event
 {
-    NSString *query = [NSString stringWithFormat:@"INSERT INTO event (data) VALUES ('%@')",
-                       [LPJSON stringFromJSON:event]];
-    [[LPDatabase database] runQuery:query];
+    NSString *query = @"INSERT INTO event (data) VALUES (?);";
+    NSArray *objectsToBind = @[[LPJSON stringFromJSON:event]];
+    [[LPDatabase database] runQuery:query bindObjects:objectsToBind];
 }
 
 + (void)addEvents:(NSArray *)events
@@ -57,20 +57,24 @@
     }
     
     NSMutableString *query = [@"INSERT INTO event (data) VALUES " mutableCopy];
+    NSMutableArray *objectsToBind = [NSMutableArray new];
     [events enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        NSString *postfix = idx >= events.count-1 ? @";" : @", ";
-        NSString *valueString = [NSString stringWithFormat:@"(%@)%@",
-                                 [LPJSON stringFromJSON:obj], postfix];
+        NSString *postfix = idx >= events.count-1 ? @";" : @",";
+        NSString *valueString = [NSString stringWithFormat:@"(?)%@", postfix];
         [query appendString:valueString];
+        
+        NSString *objString = [LPJSON stringFromJSON:obj];
+        [objectsToBind addObject:objString];
     }];
-    [[LPDatabase database] runQuery:query];
+    [[LPDatabase database] runQuery:query bindObjects:objectsToBind];
 }
 
 + (NSArray *)eventsWithLimit:(NSInteger)limit
 {
-    NSString *query = [NSString stringWithFormat:@"SELECT data FROM event ORDER BY id "
+    NSString *query = [NSString stringWithFormat:@"SELECT * FROM event ORDER BY id "
                                                   "LIMIT %ld", limit];
     NSArray *rows = [[LPDatabase database] rowsFromQuery:query];
+    
     // Convert row data to event.
     NSMutableArray *events = [NSMutableArray new];
     for (NSDictionary *row in rows) {
@@ -78,7 +82,7 @@
         if (!event || !event.count) {
             continue;
         }
-        [events addObject:event];
+        [events addObject:[event mutableCopy]];
     }
     
     return events;
@@ -89,6 +93,34 @@
     NSString *query = [NSString stringWithFormat:@"DELETE FROM event ORDER BY id "
                                                   "LIMIT %ld", limit];
     [[LPDatabase database] runQuery:query];
+}
+
++ (BOOL)deleteEventsWithLastEvent:(NSDictionary *)event
+{
+    if (!event) {
+        return NO;
+    }
+    
+    NSString *query = @"SELECT id FROM event WHERE data == ?;";
+    NSArray *objectsToBind = @[[LPJSON stringFromJSON:event]];
+    NSArray *rows = [[LPDatabase database] rowsFromQuery:query bindObjects:objectsToBind];
+    if (!rows.count || !rows.firstObject[@"id"]) {
+        return NO;
+    }
+    
+    NSInteger lastRowId = [rows.firstObject[@"id"] integerValue];
+    query = [NSString stringWithFormat:@"DELETE FROM event WHERE id <= %ld", lastRowId];
+    [[LPDatabase database] runQuery:query];
+    return YES;
+}
+
++ (void)deleteEventsWithLastEvent:(NSDictionary *)event
+              uponFailureUseLimit:(NSInteger)limit
+{
+    BOOL success = [LPEventDataManager deleteEventsWithLastEvent:event];
+    if (!success) {
+        [LPEventDataManager deleteEventsWithLimit:limit];
+    }
 }
 
 @end
