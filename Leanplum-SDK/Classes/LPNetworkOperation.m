@@ -161,6 +161,10 @@
             self.response = response;
             self.dataFromResponse = data;
 
+            if (synchronous) {
+                dispatch_semaphore_signal(sem);
+            }
+
             if (error) {
                 if (self.errorBlock) {
                     self.errorBlock(self, error);
@@ -171,10 +175,6 @@
                 }
             }
             [self.session finishTasksAndInvalidate];
-            
-            if (synchronous) {
-                dispatch_semaphore_signal(sem);
-            }
         };
 
         // Callback on the main queue
