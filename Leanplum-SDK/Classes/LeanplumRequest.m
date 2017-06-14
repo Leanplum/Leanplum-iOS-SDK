@@ -301,18 +301,22 @@ static NSDictionary *_requestHheaders;
     }
         
     [self sendEventually];
+    [self sendRequests:async];
+}
 
+- (void)sendRequests:(BOOL)async
+{
     void (^operationBlock)() = ^void() {
         [LeanplumRequest generateUUID];
         
         // Simulate pop all requests.
-        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_ACTIONS_PER_API_CALL];
+        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
         lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         
         if (requestsToSend.count == 0) {
             return;
         }
-
+        
         NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
         LPConstantsState *constants = [LPConstantsState sharedState];
         NSMutableDictionary *multiRequestArgs = [NSMutableDictionary dictionaryWithObjectsAndKeys:
@@ -324,12 +328,12 @@ static NSDictionary *_requestHheaders;
         [self attachApiKeys:multiRequestArgs];
         int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
         id<LPNetworkOperationProtocol> op = [engine operationWithPath:constants.apiServlet
-                                                             params:multiRequestArgs
-                                                         httpMethod:_httpMethod
-                                                                ssl:constants.apiSSL
-                                                     timeoutSeconds:timeout];
+                                                               params:multiRequestArgs
+                                                           httpMethod:_httpMethod
+                                                                  ssl:constants.apiSSL
+                                                       timeoutSeconds:timeout];
         __block BOOL finished = NO;
-
+        
         // Schedule timeout.
         [LPTimerBlocks scheduledTimerWithTimeInterval:timeout block:^() {
             if (finished) {
@@ -345,14 +349,14 @@ static NSDictionary *_requestHheaders;
             }
             LP_END_TRY
         } repeats:NO];
-
+        
         [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (finished) {
                 return;
             }
             finished = YES;
             LP_TRY
-
+            
             // Handle errors that don't return an HTTP error code.
             NSUInteger numResponses = [LPResponse numResponsesInDictionary:json];
             for (NSUInteger i = 0; i < numResponses; i++) {
@@ -377,6 +381,11 @@ static NSDictionary *_requestHheaders;
             
             // Delete events on success.
             [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+            
+            // Send another request if the last request had maximum events per api call.
+            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                [self sendRequests:async];
+            }
             LP_END_TRY
             if (_response != nil) {
                 _response(operation, json);
@@ -423,7 +432,7 @@ static NSDictionary *_requestHheaders;
             }
             LP_END_TRY
         }];
-
+        
         // Execute synchronously. Don't block for more than 'timeout' seconds.
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [engine runSynchronously:op];
@@ -459,7 +468,7 @@ static NSDictionary *_requestHheaders;
         NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
         NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
         NSInteger count = [LPEventDataManager count];
-        if (!uuid || count % MAX_ACTIONS_PER_API_CALL == 0) {
+        if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
             uuid = [LeanplumRequest generateUUID];
         }
         
