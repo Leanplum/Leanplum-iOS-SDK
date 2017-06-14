@@ -48,20 +48,4 @@
  */
 + (void)deleteEventsWithLimit:(NSInteger)limit;
 
-/**
- * Delete events until the last event.
- * Returns false when it did not succeed in getting the last event's id.
- */
-+ (BOOL)deleteEventsWithLastEvent:(NSDictionary *)event;
-
-/**
- * Delete all the events until the last event.
- * If it fails it uses the limit as a fallback option.
- * This method was created because limit method was creating
- * off by one error that was caused by empty data (text was null).
- * The problem is fixed but this method is safer.
- */
-+ (void)deleteEventsWithLastEvent:(NSDictionary *)event
-              uponFailureUseLimit:(NSInteger)limit;
-
 @end

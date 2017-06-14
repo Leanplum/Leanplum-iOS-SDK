@@ -95,32 +95,4 @@
     [[LPDatabase database] runQuery:query];
 }
 
-+ (BOOL)deleteEventsWithLastEvent:(NSDictionary *)event
-{
-    if (!event) {
-        return NO;
-    }
-    
-    NSString *query = @"SELECT id FROM event WHERE data == ?;";
-    NSArray *objectsToBind = @[[LPJSON stringFromJSON:event]];
-    NSArray *rows = [[LPDatabase database] rowsFromQuery:query bindObjects:objectsToBind];
-    if (!rows.count || !rows.firstObject[@"id"]) {
-        return NO;
-    }
-    
-    NSInteger lastRowId = [rows.firstObject[@"id"] integerValue];
-    query = [NSString stringWithFormat:@"DELETE FROM event WHERE id <= %ld", lastRowId];
-    [[LPDatabase database] runQuery:query];
-    return YES;
-}
-
-+ (void)deleteEventsWithLastEvent:(NSDictionary *)event
-              uponFailureUseLimit:(NSInteger)limit
-{
-    BOOL success = [LPEventDataManager deleteEventsWithLastEvent:event];
-    if (!success) {
-        [LPEventDataManager deleteEventsWithLimit:limit];
-    }
-}
-
 @end
