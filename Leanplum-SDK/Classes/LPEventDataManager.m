@@ -95,4 +95,14 @@
     [[LPDatabase database] runQuery:query];
 }
 
++ (NSInteger)count
+{
+    NSArray *rows = [[LPDatabase database] rowsFromQuery:@"SELECT count(*) FROM event;"];
+    if (!rows || !rows.count) {
+        return 0;
+    }
+    
+    return [rows.firstObject[@"count(*)"] integerValue];
+}
+
 @end

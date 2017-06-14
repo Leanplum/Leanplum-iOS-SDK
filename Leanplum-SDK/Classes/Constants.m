@@ -94,6 +94,7 @@ NSString *LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY = @"__leanplum_pre_leanplum
 NSString *LEANPLUM_DEFAULTS_SDK_VERSION = @"__leanplum_version";
 NSString *LEANPLUM_DEFAULTS_INBOX_KEY = @"__leanplum_newsfeed";
 NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
+NSString *LEANPLUM_DEFAULTS_UUID_KEY = @"__leanplum_uuid";
 
 NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
 
@@ -172,6 +173,7 @@ NSString *LP_PARAM_BACKGROUND = @"background";
 NSString *LP_PARAM_INBOX_MESSAGES = @"newsfeedMessages";
 NSString *LP_PARAM_INBOX_MESSAGE_ID = @"newsfeedMessageId";
 NSString *LP_PARAM_RICH_PUSH_ENABLED = @"richPushEnabled";
+NSString *LP_PARAM_UUID = @"uuid";
 
 NSString *LP_KEY_REASON = @"reason";
 NSString *LP_KEY_STACK_TRACE = @"stackTrace";
