@@ -28,29 +28,44 @@
 #import "Constants.h"
 #import <sqlite3.h>
 
+static sqlite3 *sqlite;
+static BOOL retryOnCorrupt;
+static BOOL willSendErrorLog;
+
 @implementation LPDatabase
+
+- (id)init
+{
+    if (self = [super init]) {
+        retryOnCorrupt = NO;
+        willSendErrorLog = NO;
+        [self initSQLite];
+    }
+    return self;
+}
 
 /**
  * Create/Open SQLite database.
  */
-- (id)init
+- (void)initSQLite
 {
-    if (self = [super init]) {
-        const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
-        sqlite3 *sqlite;
-        int result = sqlite3_open(sqliteFilePath, &sqlite);
-        if (result != SQLITE_OK) {
-            LPLog(LPError, @"Fail to open SQLite with result of %d", result);
-            return self;
-        }
-        
-        // Create tables.
-        [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
-                            "id INTEGER PRIMARY KEY,"
-                            "data TEXT NOT NULL"
-                        ");"];
+    const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
+    int result = sqlite3_open(sqliteFilePath, &sqlite);
+    if (result != SQLITE_OK) {
+        [self handleSQLiteError:@"SQLite fail to open" errorResult:result query:nil];
+        return;
     }
-    return self;
+    retryOnCorrupt = NO;
+    
+    // Create tables.
+    [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
+                        "data TEXT NOT NULL"
+                    ");"];
+}
+
+- (void)dealloc
+{
+    sqlite3_close(sqlite);
 }
 
 + (LPDatabase *)database
@@ -72,6 +87,35 @@
 }
 
 /**
+ * Helper function that logs and sends to the server.
+ */
+- (void)handleSQLiteError:(NSString *)errorName errorResult:(int)result query:(NSString *)query
+{
+    NSString *reason = [NSString stringWithFormat:@"%s (%d)", sqlite3_errmsg(sqlite), result];
+    if (query) {
+        reason = [NSString stringWithFormat:@"'%@' %@", query, reason];
+    }
+    LPLog(LPError, @"%@: %@", errorName, reason);
+    
+    // Send error log. Using willSendErrorLog to prevent infinte loop.
+    if (!willSendErrorLog) {
+        willSendErrorLog = YES;
+        NSException *exception = [NSException exceptionWithName:errorName
+                                                         reason:reason
+                                                       userInfo:nil];
+        leanplumInternalError(exception);
+    }
+    
+    // If SQLite is corrupted create a new one.
+    // Using retryOnCorrupt to prevent infinite loop.
+    if (result == SQLITE_CORRUPT || !retryOnCorrupt) {
+        [[NSFileManager defaultManager] removeItemAtPath:[LPDatabase sqliteFilePath] error:nil];
+        retryOnCorrupt = YES;
+        [self initSQLite];
+    }
+}
+
+/**
  * Helper method that returns sqlite statement from query.
  * Used by both runQuery: and rowsFromQuery.
  */
@@ -82,16 +126,8 @@
         return nil;
     }
     
-    const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
-    sqlite3 *sqlite;
-    int __block result = sqlite3_open(sqliteFilePath, &sqlite);
-    if (result != SQLITE_OK) {
-        LPLog(LPError, @"Fail to open SQLite with result of %d", result);
-        return nil;
-    }
-    
     sqlite3_stmt *statement;
-    result = sqlite3_prepare_v2(sqlite, [query UTF8String], -1, &statement, NULL);
+    int __block result = sqlite3_prepare_v2(sqlite, [query UTF8String], -1, &statement, NULL);
     if (result != SQLITE_OK) {
         LPLog(LPError, @"Preparing '%@': %s (%d)", query, sqlite3_errmsg(sqlite),
               result);
@@ -126,16 +162,19 @@
 
 - (void)runQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
 {
-    sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
-    if (!statement) {
-        return;
+    @synchronized (self) {
+        sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
+        if (!statement) {
+            return;
+        }
+        
+        int result = sqlite3_step(statement);
+        if (result != SQLITE_DONE) {
+            [self handleSQLiteError:@"SQLite fail to run query" errorResult:result query:query];
+        }
+        willSendErrorLog = NO;
+        sqlite3_finalize(statement);
     }
-    
-    int result = sqlite3_step(statement);
-    if (result != SQLITE_DONE) {
-        LPLog(LPError, @"Fail to runQuery with result of %d", result);
-    }
-    sqlite3_finalize(statement);
 }
 
 - (NSArray *)rowsFromQuery:(NSString *)query
@@ -145,41 +184,43 @@
 
 - (NSArray *)rowsFromQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
 {
-    NSMutableArray *rows = [NSMutableArray new];
-    sqlite3_stmt *statement = [self sqliteStatementFromQuery:query
-                                                 bindObjects:objectsToBind];
-    if (!statement) {
-        return @[];
-    }
-    
-    // Iterate through rows.
-    while (sqlite3_step(statement) == SQLITE_ROW) {
-        // Get column data as dictionary where column name is the key
-        // and value will be a blob or a string. This is a safe conversion.
-        // Details: http://www.sqlite.org/c3ref/column_blob.html
-        NSMutableDictionary *columnData = [NSMutableDictionary new];
-        int columnsCount = sqlite3_column_count(statement);
-        for (int i=0; i<columnsCount; i++){
-            char *columnKeyUTF8 = (char *)sqlite3_column_name(statement, i);
-            NSString *columnKey = [NSString stringWithUTF8String:columnKeyUTF8];
-            
-            if (sqlite3_column_type(statement, i) == SQLITE_BLOB) {
-                NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
-                                                             length:sqlite3_column_bytes(statement, i)];
-                columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
-            } else {
-                char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
-                if (columnValueUTF8) {
-                    NSString *columnValue = [NSString stringWithUTF8String:columnValueUTF8];
-                    columnData[columnKey] = columnValue;
+    @synchronized (self) {
+        NSMutableArray *rows = [NSMutableArray new];
+        sqlite3_stmt *statement = [self sqliteStatementFromQuery:query
+                                                     bindObjects:objectsToBind];
+        if (!statement) {
+            return @[];
+        }
+        
+        // Iterate through rows.
+        while (sqlite3_step(statement) == SQLITE_ROW) {
+            // Get column data as dictionary where column name is the key
+            // and value will be a blob or a string. This is a safe conversion.
+            // Details: http://www.sqlite.org/c3ref/column_blob.html
+            NSMutableDictionary *columnData = [NSMutableDictionary new];
+            int columnsCount = sqlite3_column_count(statement);
+            for (int i=0; i<columnsCount; i++){
+                char *columnKeyUTF8 = (char *)sqlite3_column_name(statement, i);
+                NSString *columnKey = [NSString stringWithUTF8String:columnKeyUTF8];
+                
+                if (sqlite3_column_type(statement, i) == SQLITE_BLOB) {
+                    NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
+                                                                 length:sqlite3_column_bytes(statement, i)];
+                    columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
+                } else {
+                    char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
+                    if (columnValueUTF8) {
+                        NSString *columnValue = [NSString stringWithUTF8String:columnValueUTF8];
+                        columnData[columnKey] = columnValue;
+                    }
                 }
             }
+            [rows addObject:columnData];
         }
-        [rows addObject:columnData];
+        sqlite3_finalize(statement);
+        return rows;
     }
-    sqlite3_finalize(statement);
-    
-    return rows;
+    return @[];
 }
 
 @end

@@ -71,7 +71,7 @@
 
 + (NSArray *)eventsWithLimit:(NSInteger)limit
 {
-    NSString *query = [NSString stringWithFormat:@"SELECT * FROM event ORDER BY id "
+    NSString *query = [NSString stringWithFormat:@"SELECT data FROM event ORDER BY rowid "
                                                   "LIMIT %ld", limit];
     NSArray *rows = [[LPDatabase database] rowsFromQuery:query];
     
@@ -90,7 +90,7 @@
 
 + (void)deleteEventsWithLimit:(NSInteger)limit
 {
-    NSString *query = [NSString stringWithFormat:@"DELETE FROM event ORDER BY id "
+    NSString *query = [NSString stringWithFormat:@"DELETE FROM event ORDER BY rowid "
                                                   "LIMIT %ld", limit];
     [[LPDatabase database] runQuery:query];
 }

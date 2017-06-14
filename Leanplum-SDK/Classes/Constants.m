@@ -316,7 +316,7 @@ void leanplumInternalError(NSException *e)
                         params:@{
                                  LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                  LP_PARAM_MESSAGE: [e description],
-                                 @"stackTrace": [[e callStackSymbols] description],
+                                 @"stackTrace": [[e callStackSymbols] description] ?: @"",
                                  LP_PARAM_VERSION_NAME: versionName
                                  }] send];
         NSLog(@"Leanplum: INTERNAL ERROR: %@\n%@", e, [e callStackSymbols]);
