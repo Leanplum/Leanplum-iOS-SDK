@@ -741,8 +741,10 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         finishCallback();
     }
     
-    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
+        [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
         ((UIWebView *)_popupView).delegate = nil;
+        [(UIWebView *)_popupView stopLoading];
     }
 
     _popupView = nil;
