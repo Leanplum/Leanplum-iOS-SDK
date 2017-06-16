@@ -26,6 +26,7 @@ Analytics.
   s.ios.deployment_target = '6.0'
   s.tvos.deployment_target = '6.0'
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
+  s.library = 'sqlite3'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC', 'BITCODE_GENERATION_MODE' => 'bitcode' }
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
