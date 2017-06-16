@@ -81,8 +81,6 @@
  */
 - (void)sendDatasNow:(NSDictionary *)datas;
 
-+ (void)pushUnsentRequests:(NSArray *)requestData;
-
 - (void)downloadFile:(NSString *)path;
 
 + (int)numPendingDownloads;

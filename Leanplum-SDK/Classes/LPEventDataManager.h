@@ -48,4 +48,9 @@
  */
 + (void)deleteEventsWithLimit:(NSInteger)limit;
 
+/**
+ * Returns the number of total events stored.
+ */
++ (NSInteger)count;
+
 @end

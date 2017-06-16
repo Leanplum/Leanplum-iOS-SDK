@@ -60,7 +60,7 @@ static BOOL willSendErrorLog;
     // Create tables.
     [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
                         "data TEXT NOT NULL"
-                    ");"];
+                    "); PRAGMA user_version = 1;"];
 }
 
 - (void)dealloc

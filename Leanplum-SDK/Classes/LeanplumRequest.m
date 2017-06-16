@@ -178,6 +178,15 @@ static NSDictionary *_requestHheaders;
     return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
++ (NSString *)generateUUID
+{
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
+    [userDefaults synchronize];
+    return uuid;
+}
+
 - (void)onResponse:(LPNetworkResponseBlock)response
 {
     _response = [response copy];
@@ -191,15 +200,16 @@ static NSDictionary *_requestHheaders;
 - (NSMutableDictionary *)createArgsDictionary
 {
     LPConstantsState *constants = [LPConstantsState sharedState];
-    NSMutableDictionary *args = [NSMutableDictionary
-                                 dictionaryWithObjectsAndKeys:
-                                 _apiMethod, LP_PARAM_ACTION,
-                                 deviceId ? deviceId : @"", LP_PARAM_DEVICE_ID,
-                                 userId ? userId : @"", LP_PARAM_USER_ID,
-                                 constants.sdkVersion, LP_PARAM_SDK_VERSION,
-                                 constants.client, LP_PARAM_CLIENT,
-                                 @(constants.isDevelopmentModeEnabled), LP_PARAM_DEV_MODE,
-                                 [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]], LP_PARAM_TIME, nil];
+    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    NSMutableDictionary *args = [@{
+                                   LP_PARAM_ACTION: _apiMethod,
+                                   LP_PARAM_DEVICE_ID: deviceId ?: @"",
+                                   LP_PARAM_USER_ID: userId ?: @"",
+                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                   LP_PARAM_CLIENT: constants.client,
+                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
+                                   LP_PARAM_TIME: timestamp,
+                                   } mutableCopy];
     if (token) {
         args[LP_PARAM_TOKEN] = token;
     }
@@ -291,59 +301,44 @@ static NSDictionary *_requestHheaders;
     }
         
     [self sendEventually];
+    [self sendRequests:async];
+}
 
+- (void)sendRequests:(BOOL)async
+{
     void (^operationBlock)() = ^void() {
-        // Simulate pop all requests.
-        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_STORED_API_CALLS];
-        // !!!: Remove in next commit (New Network flow).
-        [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+        [LeanplumRequest generateUUID];
         lastSentTime = [NSDate timeIntervalSinceReferenceDate];
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
+        // Simulate pop all requests.
+        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
         if (requestsToSend.count == 0) {
             return;
         }
-
+        
+        // Set up request operation.
         NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
+        NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
         LPConstantsState *constants = [LPConstantsState sharedState];
-        NSMutableDictionary *multiRequestArgs = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                                 requestData, LP_PARAM_DATA,
-                                                 constants.sdkVersion, LP_PARAM_SDK_VERSION,
-                                                 constants.client, LP_PARAM_CLIENT,
-                                                 LP_METHOD_MULTI, LP_PARAM_ACTION,
-                                                 [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]], LP_PARAM_TIME, nil];
+        NSMutableDictionary *multiRequestArgs = [@{
+                                                   LP_PARAM_DATA: requestData,
+                                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                                   LP_PARAM_CLIENT: constants.client,
+                                                   LP_PARAM_ACTION: LP_METHOD_MULTI,
+                                                   LP_PARAM_TIME: timestamp
+                                                   } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
         int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
         id<LPNetworkOperationProtocol> op = [engine operationWithPath:constants.apiServlet
-                                                             params:multiRequestArgs
-                                                         httpMethod:_httpMethod
-                                                                ssl:constants.apiSSL
-                                                     timeoutSeconds:timeout];
-        __block BOOL finished = NO;
-
-        // Schedule timeout.
-        [LPTimerBlocks scheduledTimerWithTimeInterval:timeout block:^() {
-            if (finished) {
-                return;
-            }
-            finished = YES;
-            LP_TRY
-            NSLog(@"Leanplum: Request %@ timed out", _apiMethod);
-            [op cancel];
-            [LeanplumRequest pushUnsentRequests:requestsToSend];
-            if (_error != nil) {
-                _error([NSError errorWithDomain:@"Leanplum" code:1
-                                       userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
-            }
-            LP_END_TRY
-        } repeats:NO];
-
+                                                               params:multiRequestArgs
+                                                           httpMethod:_httpMethod
+                                                                  ssl:constants.apiSSL
+                                                       timeoutSeconds:timeout];
+        
+        // Request callbacks.
         [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-            if (finished) {
-                return;
-            }
-            finished = YES;
             LP_TRY
-
             // Handle errors that don't return an HTTP error code.
             NSUInteger numResponses = [LPResponse numResponsesInDictionary:json];
             for (NSUInteger i = 0; i < numResponses; i++) {
@@ -361,19 +356,27 @@ static NSDictionary *_requestHheaders;
                             _error([NSError errorWithDomain:@"Leanplum" code:2
                                                    userInfo:@{NSLocalizedDescriptionKey: errorMessage}]);
                         }
+                        dispatch_semaphore_signal(semaphore);
                         return;
                     }
                 }
             }
+            
+            // Delete events on success.
+            [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+            
+            // Send another request if the last request had maximum events per api call.
+            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                [self sendRequests:async];
+            }
+            dispatch_semaphore_signal(semaphore);
             LP_END_TRY
+            
             if (_response != nil) {
                 _response(operation, json);
             }
+            
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
-            if (finished) {
-                return;
-            }
-            finished = YES;
             LP_TRY
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
@@ -384,7 +387,6 @@ static NSDictionary *_requestHheaders;
                 || err.code == NSURLErrorNotConnectedToInternet
                 || err.code == NSURLErrorTimedOut) {
                 NSLog(@"Leanplum: %@", err);
-                [LeanplumRequest pushUnsentRequests:requestsToSend];
             } else {
                 id errorResponse = completedOperation.responseJSON;
                 NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
@@ -403,23 +405,37 @@ static NSDictionary *_requestHheaders;
                 } else {
                     NSLog(@"Leanplum: %@", err);
                 }
+                
+                // Delete on permanant error state.
+                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
             }
             if (_error != nil) {
                 _error(err);
             }
+            dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
-
+        
         // Execute synchronously. Don't block for more than 'timeout' seconds.
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [engine runSynchronously:op];
-        });
-        NSTimeInterval startTime = [[NSDate date] timeIntervalSince1970];
-        while (!finished && [[NSDate date] timeIntervalSince1970] - startTime < timeout) {
-            [NSThread sleepForTimeInterval:0.1];
+        [engine enqueueOperation:op];
+        dispatch_time_t dispatchTimeout = dispatch_time(DISPATCH_TIME_NOW, timeout*NSEC_PER_SEC);
+        long status = dispatch_semaphore_wait(semaphore, dispatchTimeout);
+        
+        // Request timed out.
+        if (status != 0) {
+            LP_TRY
+            NSLog(@"Leanplum: Request %@ timed out", _apiMethod);
+            [op cancel];
+            if (_error != nil) {
+                _error([NSError errorWithDomain:@"Leanplum" code:1
+                                       userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
+            }
+            LP_END_TRY
         }
     };
     
+    // Send. operationBlock will run synchronously.
+    // Adding to OperationQueue puts it in the background.
     if (async) {
         [sendNowQueue addOperationWithBlock:operationBlock];
     } else {
@@ -442,23 +458,17 @@ static NSDictionary *_requestHheaders;
     RETURN_IF_TEST_MODE;
     if (!_sent) {
         _sent = YES;
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+        NSInteger count = [LPEventDataManager count];
+        if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
+            uuid = [LeanplumRequest generateUUID];
+        }
+        
         NSMutableDictionary *args = [self createArgsDictionary];
+        args[LP_PARAM_UUID] = uuid;
         [LPEventDataManager addEvent:args];
     }
-}
-
-+ (void)pushUnsentRequests:(NSArray *)requestData
-{
-    for (NSMutableDictionary *args in requestData) {
-        NSNumber *retryCount = args[@"retryCount"];
-        if (!retryCount) {
-            retryCount = @1;
-        } else {
-            retryCount = @([retryCount integerValue] + 1);
-        }
-        args[@"retryCount"] = retryCount;
-    }
-    [LPEventDataManager addEvents:requestData];
 }
 
 + (NSString *)getSizeAsString:(int)size
@@ -710,6 +720,11 @@ static NSDictionary *_requestHheaders;
 + (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block
 {
     noPendingDownloadsBlock = block;
+}
+
++ (NSOperationQueue *)sendNowQueue
+{
+    return sendNowQueue;
 }
 
 @end

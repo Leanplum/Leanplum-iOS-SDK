@@ -139,6 +139,7 @@
     if (self.task) {
         [self.task suspend];
     }
+    [self.session finishTasksAndInvalidate];
 }
 
 - (void)run
