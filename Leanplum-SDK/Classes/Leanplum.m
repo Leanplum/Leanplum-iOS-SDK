@@ -3466,7 +3466,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
 {
     if ([Utils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext boolNamed:] Empty name parameter provided."];
-        return NO;
+        return nil;
     }
     LP_TRY
     id object = [self objectNamed:name];

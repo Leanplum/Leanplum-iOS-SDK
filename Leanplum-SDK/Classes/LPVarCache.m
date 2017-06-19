@@ -229,6 +229,8 @@ static RegionInitBlock regionInitBlock;
 
 + (void)computeMergedDictionary
 {
+    // Merger helper will mutate diffs.
+    // We need to lock it in case multiple threads will be accessing this.
     @synchronized (diffs) {
         merged = [self mergeHelper:valuesFromClient withDiffs:diffs];
     }
@@ -422,8 +424,10 @@ static RegionInitBlock regionInitBlock;
 + (void)saveDiffs
 {
     RETURN_IF_NOOP;
-    // Stores the variables on the device in case we don't have a connection
-    // next time the app is opened.
+    // Stores the variables on the device in case we don't have a connection.
+    // Restores next time when the app is opened.
+    // Diffs need to be locked incase other thread changes the diffs using
+    // mergeHelper:.
     @synchronized (diffs) {
         NSMutableData *diffsData = [[NSMutableData alloc] init];
         NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];

@@ -58,13 +58,13 @@
     
     NSMutableString *query = [@"INSERT INTO event (data) VALUES " mutableCopy];
     NSMutableArray *objectsToBind = [NSMutableArray new];
-    [events enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+    [events enumerateObjectsUsingBlock:^(id data, NSUInteger idx, BOOL *stop) {
         NSString *postfix = idx >= events.count-1 ? @";" : @",";
         NSString *valueString = [NSString stringWithFormat:@"(?)%@", postfix];
         [query appendString:valueString];
         
-        NSString *objString = [LPJSON stringFromJSON:obj];
-        [objectsToBind addObject:objString];
+        NSString *dataString = [LPJSON stringFromJSON:data];
+        [objectsToBind addObject:dataString];
     }];
     [[LPDatabase database] runQuery:query bindObjects:objectsToBind];
 }
