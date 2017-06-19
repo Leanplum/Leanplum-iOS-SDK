@@ -229,7 +229,11 @@ static RegionInitBlock regionInitBlock;
 
 + (void)computeMergedDictionary
 {
-    merged = [self mergeHelper:valuesFromClient withDiffs:diffs];
+    // Merger helper will mutate diffs.
+    // We need to lock it in case multiple threads will be accessing this.
+    @synchronized (diffs) {
+        merged = [self mergeHelper:valuesFromClient withDiffs:diffs];
+    }
 }
 
 + (id)mergeHelper:(id)vars withDiffs:(id)diff
@@ -420,32 +424,35 @@ static RegionInitBlock regionInitBlock;
 + (void)saveDiffs
 {
     RETURN_IF_NOOP;
-    // Stores the variables on the device in case we don't have a connection
-    // next time the app is opened.
+    // Stores the variables on the device in case we don't have a connection.
+    // Restores next time when the app is opened.
+    // Diffs need to be locked incase other thread changes the diffs using
+    // mergeHelper:.
+    @synchronized (diffs) {
+        NSMutableData *diffsData = [[NSMutableData alloc] init];
+        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
+        [archiver encodeObject:diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
+        [archiver encodeObject:messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
+        [archiver encodeObject:updateRulesDiffs forKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
+        [archiver encodeObject:eventRulesDiffs forKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
+        [archiver encodeObject:variants forKey:LP_KEY_VARIANTS];
+        [archiver encodeObject:regions forKey:LP_KEY_REGIONS];
+        [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
+        [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
+        [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
+        [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
+        [archiver finishEncoding];
 
-    NSMutableData *diffsData = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
-    [archiver encodeObject:diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
-    [archiver encodeObject:messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
-    [archiver encodeObject:updateRulesDiffs forKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
-    [archiver encodeObject:eventRulesDiffs forKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
-    [archiver encodeObject:variants forKey:LP_KEY_VARIANTS];
-    [archiver encodeObject:regions forKey:LP_KEY_REGIONS];
-    [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
-    [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
-    [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
-    [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
-    [archiver finishEncoding];
+        NSData *encryptedDiffs = [LPAES encryptedDataFromData:diffsData];
 
-    NSData *encryptedDiffs = [LPAES encryptedDataFromData:diffsData];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-    [defaults setObject:encryptedDiffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
-    
-    [defaults setObject:LEANPLUM_SDK_VERSION forKey:LEANPLUM_DEFAULTS_SDK_VERSION];
-    
-    [Leanplum synchronizeDefaults];
+        [defaults setObject:encryptedDiffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
+        
+        [defaults setObject:LEANPLUM_SDK_VERSION forKey:LEANPLUM_DEFAULTS_SDK_VERSION];
+        
+        [Leanplum synchronizeDefaults];
+    }
 }
 
 + (void)applyVariableDiffs:(NSDictionary *)diffs_

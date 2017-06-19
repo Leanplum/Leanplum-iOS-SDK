@@ -1,9 +1,9 @@
 //
-//  LPRequestStorage.h
+//  LPEventDataManager.h
 //  Leanplum
 //
-//  Created by Andrew First on 10/23/14.
-//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
+//  Created by Alexis Oyama on 6/9/17.
+//  Copyright (c) 2017 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -24,38 +24,32 @@
 
 #import <Foundation/Foundation.h>
 
-/**
- * Request Storage is deprecated from 2.0.2.
- * Use LPEventDataManager instead. 
- * Do not use this class other than migrating.
- */
-@interface LPRequestStorage : NSObject {
-    @private
-    NSTimeInterval _lastSentTime;
-}
-
-@property (nonatomic, readonly) NSTimeInterval lastSentTime;
-
-+ (LPRequestStorage *)sharedStorage;
+@interface LPEventDataManager : NSObject
 
 /**
- * Push request to file by read, append, and then write.
+ * Add event to database.
  */
-- (void)pushRequest:(NSDictionary *)requestData;
++ (void)addEvent:(NSDictionary *)event;
 
 /**
- * Push multiple requests to file by read, append, and then write.
+ * Add multiple events to database.
  */
-- (void)pushRequests:(NSArray *)requestDatas;
++ (void)addEvents:(NSArray *)events;
 
 /**
- * Read all requests and delete the file.
+ * Fetch events with limit. 
+ * Usually you pass the maximum events server can handle.
  */
-- (NSArray *)popAllRequests;
++ (NSArray *)eventsWithLimit:(NSInteger)limit;
 
 /**
- * This file path returns the one in documents directory. Requests should be stored here.
+ * Delete first X events using limit.
  */
-- (NSString *)documentsFilePath;
++ (void)deleteEventsWithLimit:(NSInteger)limit;
+
+/**
+ * Returns the number of total events stored.
+ */
++ (NSInteger)count;
 
 @end

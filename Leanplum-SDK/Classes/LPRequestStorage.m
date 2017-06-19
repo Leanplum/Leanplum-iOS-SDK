@@ -97,8 +97,8 @@
  */
 - (void)saveRequests:(NSMutableArray *)requests
 {
-    if (requests.count > MAX_STORED_API_CALLS) {
-        NSRange range = NSMakeRange(0, requests.count - MAX_STORED_API_CALLS);
+    if (requests.count > MAX_EVENTS_PER_API_CALL) {
+        NSRange range = NSMakeRange(0, requests.count - MAX_EVENTS_PER_API_CALL);
         [requests removeObjectsInRange:range];
     }
     
