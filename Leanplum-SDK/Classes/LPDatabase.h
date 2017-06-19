@@ -29,7 +29,7 @@
 /**
  * Returns shared database.
  */
-+ (LPDatabase *)database;
++ (LPDatabase *)sharedDatabase;
 
 /**
  * Returns a file path of sqlite from the documents directory.

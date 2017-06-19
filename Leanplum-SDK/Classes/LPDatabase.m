@@ -68,7 +68,7 @@ static BOOL willSendErrorLog;
     sqlite3_close(sqlite);
 }
 
-+ (LPDatabase *)database
++ (LPDatabase *)sharedDatabase
 {
     static id _database = nil;
     static dispatch_once_t databaseToken;

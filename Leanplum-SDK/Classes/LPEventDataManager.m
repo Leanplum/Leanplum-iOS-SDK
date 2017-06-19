@@ -47,7 +47,7 @@
 {
     NSString *query = @"INSERT INTO event (data) VALUES (?);";
     NSArray *objectsToBind = @[[LPJSON stringFromJSON:event]];
-    [[LPDatabase database] runQuery:query bindObjects:objectsToBind];
+    [[LPDatabase sharedDatabase] runQuery:query bindObjects:objectsToBind];
 }
 
 + (void)addEvents:(NSArray *)events
@@ -66,14 +66,14 @@
         NSString *dataString = [LPJSON stringFromJSON:data];
         [objectsToBind addObject:dataString];
     }];
-    [[LPDatabase database] runQuery:query bindObjects:objectsToBind];
+    [[LPDatabase sharedDatabase] runQuery:query bindObjects:objectsToBind];
 }
 
 + (NSArray *)eventsWithLimit:(NSInteger)limit
 {
     NSString *query = [NSString stringWithFormat:@"SELECT data FROM event ORDER BY rowid "
                                                   "LIMIT %ld", limit];
-    NSArray *rows = [[LPDatabase database] rowsFromQuery:query];
+    NSArray *rows = [[LPDatabase sharedDatabase] rowsFromQuery:query];
     
     // Convert row data to event.
     NSMutableArray *events = [NSMutableArray new];
@@ -92,12 +92,12 @@
 {
     NSString *query = [NSString stringWithFormat:@"DELETE FROM event ORDER BY rowid "
                                                   "LIMIT %ld", limit];
-    [[LPDatabase database] runQuery:query];
+    [[LPDatabase sharedDatabase] runQuery:query];
 }
 
 + (NSInteger)count
 {
-    NSArray *rows = [[LPDatabase database] rowsFromQuery:@"SELECT count(*) FROM event;"];
+    NSArray *rows = [[LPDatabase sharedDatabase] rowsFromQuery:@"SELECT count(*) FROM event;"];
     if (!rows || !rows.count) {
         return 0;
     }
