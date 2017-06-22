@@ -3581,9 +3581,17 @@ void LPLog(LPLogType type, NSString *format, ...) {
         if (message) {
             LPActionContext *chainedActionContext =
                     [Leanplum createActionContextForMessageId:messageId];
-            chainedActionContext->_parentContext = self;
+            chainedActionContext.contextualValues = self.contextualValues;
+            chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
+            chainedActionContext->_isRooted = _isRooted;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [Leanplum triggerAction:chainedActionContext];
+                [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
+                    if (success) {
+                        // Track when the chain message is viewed.
+                        [[LPInternalState sharedState].actionManager
+                         recordMessageImpression:[chainedActionContext messageId]];
+                    }
+                }];
             });
             return;
         }
