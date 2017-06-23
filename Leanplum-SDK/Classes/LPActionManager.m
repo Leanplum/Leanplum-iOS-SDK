@@ -48,13 +48,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 @implementation NSObject (LeanplumExtension)
 
-- (NSString *)leanplum_createTokenKey
-{
-    return [NSString stringWithFormat:
-            LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
-            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
-}
-
 - (void)leanplum_disableAskToAsk
 {
 #if LP_NOT_TV
@@ -77,26 +70,24 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [self leanplum_disableAskToAsk];
     }
     
-    // Send push token on every launch. This is required because push token may not be sent if the
-    // user force quit the app. This is due to how LPRequestStorage keeps the data in memory and
-    // we don't support response block on batch.
+    // Format push token.
     NSString *formattedToken = [deviceToken description];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
-    [Leanplum onStartResponse:^(BOOL success) {
-        LP_END_USER_CODE
-        [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES
-                        params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
-        LP_BEGIN_USER_CODE
-    }];
 
-    // Update push token if it's different.
-    NSString *tokenKey = [self leanplum_createTokenKey];
+    // Send push token if we don't have one and when the token changed.
+    // We no longer send in start's response because saved push token will be send in start too.
+    NSString *tokenKey = [Leanplum pushTokenKey];
     NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
-    if (![existingToken isEqualToString: formattedToken]) {
-        [[NSUserDefaults standardUserDefaults] setObject: formattedToken forKey:tokenKey];
+    if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
+        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        if ([Leanplum hasStarted]) {
+            [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES
+                            params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
+        }
     }
     LP_END_TRY
 
@@ -140,7 +131,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 {
     LP_TRY
     [self leanplum_disableAskToAsk];
-    NSString *tokenKey = [self leanplum_createTokenKey];
+    NSString *tokenKey = [Leanplum pushTokenKey];
     if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -322,7 +313,7 @@ static dispatch_once_t leanplum_onceToken;
     if (![existingSettings isEqualToDictionary:settings]) {
         [[NSUserDefaults standardUserDefaults] setObject:settings forKey:settingsKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *tokenKey = [self leanplum_createTokenKey];
+        NSString *tokenKey = [Leanplum pushTokenKey];
         NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
         NSMutableDictionary *params = [@{
                 LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
