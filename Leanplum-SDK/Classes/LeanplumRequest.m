@@ -745,7 +745,10 @@ static NSDictionary *_requestHheaders;
 
 + (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary
 {
-    return [dictionary[@"response"] objectAtIndex:index];
+    if (index < [LPResponse numResponsesInDictionary:dictionary]) {
+        return [dictionary[@"response"] objectAtIndex:index];
+    }
+    return [dictionary[@"response"] lastObject];
 }
 
 + (NSDictionary *)getLastResponse:(NSDictionary *)dictionary
