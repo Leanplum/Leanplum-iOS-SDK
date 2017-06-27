@@ -134,6 +134,7 @@ static NSDictionary *_requestHheaders;
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
+        _eventIndex = -1;
         if (engine == nil) {
             if (!_requestHheaders) {
                 _requestHheaders = [LeanplumRequest createHeaders];
@@ -301,6 +302,7 @@ static NSDictionary *_requestHheaders;
     }
         
     [self sendEventually];
+    _eventIndex = [LPEventDataManager count] - 1;
     [self sendRequests:async];
 }
 
@@ -372,8 +374,11 @@ static NSDictionary *_requestHheaders;
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
             
-            if (_response != nil) {
-                _response(operation, json);
+            if (_eventIndex >= requestsToSend.count) {
+               _eventIndex -= requestsToSend.count;
+            } else if (_response) {
+                id response = [LPResponse getResponseAt:_eventIndex fromDictionary:json];
+                _response(operation, response);
             }
             
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
@@ -412,6 +417,7 @@ static NSDictionary *_requestHheaders;
             if (_error != nil) {
                 _error(err);
             }
+            [sendNowQueue cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -430,6 +436,7 @@ static NSDictionary *_requestHheaders;
                 _error([NSError errorWithDomain:@"Leanplum" code:1
                                        userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
             }
+            [sendNowQueue cancelAllOperations];
             LP_END_TRY
         }
     };
