@@ -891,7 +891,6 @@ BOOL inForeground = NO;
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
-    params[LP_PARAM_DEVICE_PUSH_TOKEN] = @"123";
 
     // Issue start API call.
     LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
