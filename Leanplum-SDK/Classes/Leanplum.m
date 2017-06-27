@@ -914,9 +914,6 @@ BOOL inForeground = NO;
         // [LPVarCache saveUserAttributes];
         [self triggerStartResponse:YES];
 
-        // Upload alternative app icons.
-        [LPAppIconManager uploadAppIconsOnDevMode];
-
         // Allow bidirectional realtime variable updates.
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
             // Register device.
@@ -966,6 +963,9 @@ BOOL inForeground = NO;
                                         }] send];
             }
         }
+
+        // Upload alternative app icons.
+        [LPAppIconManager uploadAppIconsOnDevMode];
 
         if (!startedInBackground) {
             inForeground = YES;
