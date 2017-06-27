@@ -84,10 +84,8 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        if ([LPInternalState sharedState].calledStart) {
-            [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES
-                            params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
-        }
+        [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES
+                        params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
     }
     LP_END_TRY
 
