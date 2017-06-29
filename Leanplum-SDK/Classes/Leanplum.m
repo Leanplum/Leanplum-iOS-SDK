@@ -424,6 +424,12 @@ BOOL inForeground = NO;
     });
 }
 
++ (NSString *)pushTokenKey
+{
+    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
+            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
+}
+
 + (void)start
 {
     [self startWithUserId:nil userAttributes:nil responseHandler:nil];
@@ -878,6 +884,13 @@ BOOL inForeground = NO;
 
     // Get the current Inbox messages on the device.
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
+    
+    // Push token.
+    NSString *pushTokenKey = [Leanplum pushTokenKey];
+    NSString *pushToken = [[NSUserDefaults standardUserDefaults] stringForKey:pushTokenKey];
+    if (pushToken) {
+        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+    }
 
     // Issue start API call.
     LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
