@@ -45,11 +45,8 @@ static NSMutableDictionary *fileUploadSize;
 static NSMutableDictionary *fileUploadProgress;
 static NSString *fileUploadProgressString;
 static NSMutableDictionary *pendingUploads;
-static NSOperationQueue *sendNowQueue;
 static NSTimeInterval lastSentTime;
-
 static NSDictionary *_requestHheaders;
-static NSMutableDictionary *sendNowCallbackMap;
 
 @implementation LeanplumRequest
 
@@ -142,15 +139,6 @@ static NSMutableDictionary *sendNowCallbackMap;
             }
             engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                        customHeaderFields:_requestHheaders];
-        }
-        
-        if (!sendNowQueue) {
-            sendNowQueue = [NSOperationQueue new];
-            sendNowQueue.maxConcurrentOperationCount = 1;
-        }
-        
-        if (!sendNowCallbackMap) {
-            sendNowCallbackMap = [NSMutableDictionary new];
         }
     }
     return self;
@@ -307,10 +295,6 @@ static NSMutableDictionary *sendNowCallbackMap;
     }
         
     [self sendEventually];
-    _eventIndex = [LPEventDataManager count] - 1;
-    if (_response) {
-        sendNowCallbackMap[@(_eventIndex)] = [_response copy];
-    }
     [self sendRequests:async];
 }
 
@@ -383,41 +367,41 @@ static NSMutableDictionary *sendNowCallbackMap;
                     }
                 }
             }
-            
-            // Delete events on success.
-            [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
-            
-            // Send another request if the last request had maximum events per api call.
-            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                [self sendRequests:async];
-            }
-            dispatch_semaphore_signal(semaphore);
             LP_END_TRY
             
-//            // Loop through all the possible callbacks.
-//            // Note we need to do this because Request can steal future sendNow callbacks.
-//            // Callback map will either have to be updated or removed.
-//            NSMutableDictionary *updatedCallbackMap = [NSMutableDictionary new];
-//            for (NSNumber *eventIndexObject in sendNowCallbackMap.allKeys) {
-//                NSInteger eventIndex = [eventIndexObject integerValue];
-//                LPNetworkResponseBlock responseBlock = sendNowCallbackMap[eventIndexObject];
-//                [sendNowCallbackMap removeObjectForKey:eventIndexObject];
-//                
-//                if (eventIndex >= requestsToSend.count) {
-//                    eventIndex -= requestsToSend.count;
-//                    updatedCallbackMap[@(eventIndex)] = responseBlock;
-//                } else {
-//                    id response = [LPResponse getResponseAt:eventIndex fromDictionary:json];
-//                    responseBlock(operation, response);
-//                }
-//            }
-//            [sendNowCallbackMap addEntriesFromDictionary:updatedCallbackMap];
-            
-            if (_eventIndex >= requestsToSend.count) {
-               _eventIndex -= requestsToSend.count;
-            } else if (_response) {
-                id response = [LPResponse getResponseAt:_eventIndex fromDictionary:json];
-                _response(operation, response);
+            // We need to lock sendNowCallbackMap so that new event callback won't be triggered
+            // right after it gets deleted.
+            NSMutableDictionary *callbackMap = [LeanplumRequest sendNowCallbackMap];
+            @synchronized (callbackMap) {
+                LP_TRY
+                // Delete events on success.
+                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+                
+                // Send another request if the last request had maximum events per api call.
+                if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                    [self sendRequests:async];
+                }
+                dispatch_semaphore_signal(semaphore);
+                LP_END_TRY
+                
+                // Loop through all the possible callbacks.
+                // Note we need to do this because Request can steal future sendNow callbacks.
+                // Callback map will either have to be updated or removed.
+                NSMutableDictionary *updatedCallbackMap = [NSMutableDictionary new];
+                for (NSNumber *eventIndexObject in callbackMap.allKeys) {
+                    NSInteger eventIndex = [eventIndexObject integerValue];
+                    LPNetworkResponseBlock responseBlock = callbackMap[eventIndexObject];
+                    [callbackMap removeObjectForKey:eventIndexObject];
+                    
+                    if (eventIndex >= requestsToSend.count) {
+                        eventIndex -= requestsToSend.count;
+                        updatedCallbackMap[@(eventIndex)] = responseBlock;
+                    } else {
+                        id response = [LPResponse getResponseAt:eventIndex fromDictionary:json];
+                        responseBlock(operation, response);
+                    }
+                }
+                [callbackMap addEntriesFromDictionary:updatedCallbackMap];
             }
             
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
@@ -461,7 +445,7 @@ static NSMutableDictionary *sendNowCallbackMap;
             if (_error != nil) {
                 _error(err);
             }
-            [sendNowQueue cancelAllOperations];
+            [[LeanplumRequest sendNowQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -480,7 +464,7 @@ static NSMutableDictionary *sendNowCallbackMap;
                 _error([NSError errorWithDomain:@"Leanplum" code:1
                                        userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
             }
-            [sendNowQueue cancelAllOperations];
+            [[LeanplumRequest sendNowQueue] cancelAllOperations];
             LP_END_TRY
         }
     };
@@ -489,7 +473,7 @@ static NSMutableDictionary *sendNowCallbackMap;
     // Adding to OperationQueue puts it in the background.
     if (async) {
         [requestOperation addExecutionBlock:operationBlock];
-        [sendNowQueue addOperation:requestOperation];
+        [[LeanplumRequest sendNowQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }
@@ -520,6 +504,14 @@ static NSMutableDictionary *sendNowCallbackMap;
         NSMutableDictionary *args = [self createArgsDictionary];
         args[LP_PARAM_UUID] = uuid;
         [LPEventDataManager addEvent:args];
+        _eventIndex = count;
+        
+        NSMutableDictionary *callbackMap = [LeanplumRequest sendNowCallbackMap];
+        @synchronized (callbackMap) {
+            if (_response) {
+                callbackMap[@(_eventIndex)] = [_response copy];
+            }
+        }
     }
 }
 
@@ -774,9 +766,31 @@ static NSMutableDictionary *sendNowCallbackMap;
     noPendingDownloadsBlock = block;
 }
 
+/**
+ * Static sendNowQueue with thread protection.
+ */
 + (NSOperationQueue *)sendNowQueue
 {
-    return sendNowQueue;
+    static NSOperationQueue *_sendNowQueue;
+    static dispatch_once_t sendNowQueueToken;
+    dispatch_once(&sendNowQueueToken, ^{
+        _sendNowQueue = [NSOperationQueue new];
+        _sendNowQueue.maxConcurrentOperationCount = 1;
+    });
+    return _sendNowQueue;
+}
+
+/**
+ * Static sendNowCallbackMap with thread protection.
+ */
++ (NSMutableDictionary *)sendNowCallbackMap
+{
+    static NSMutableDictionary *_sendNowCallbackMap;
+    static dispatch_once_t sendNowCallbackMapToken;
+    dispatch_once(&sendNowCallbackMapToken, ^{
+        _sendNowCallbackMap = [NSMutableDictionary new];
+    });
+    return _sendNowCallbackMap;
 }
 
 @end
