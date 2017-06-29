@@ -22,7 +22,6 @@
 		07E5C8B91F052B7800A4B092 /* MessageTemplatesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */; };
 		07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8821F052B7800A4B092 /* NewsfeedTest.m */; };
 		07E5C8BB1F052B7800A4B092 /* RequestStorageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8831F052B7800A4B092 /* RequestStorageTest.m */; };
-		07E5C8BC1F052B7800A4B092 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8861F052B7800A4B092 /* CustomViewController.m */; };
 		07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8881F052B7800A4B092 /* LeanplumHelper.m */; };
 		07E5C8BE1F052B7800A4B092 /* UtilitiesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8891F052B7800A4B092 /* UtilitiesTest.m */; };
 		07E5C8BF1F052B7800A4B092 /* GoldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88C1F052B7800A4B092 /* GoldIcon.png */; };
@@ -121,7 +120,6 @@
 		07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumReachability+Category.m"; sourceTree = "<group>"; };
 		07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumRequest+Categories.h"; sourceTree = "<group>"; };
 		07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumRequest+Categories.m"; sourceTree = "<group>"; };
-		07E5C8751F052B7800A4B092 /* LPInterfaceEditor+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPInterfaceEditor+Extensions.h"; sourceTree = "<group>"; };
 		07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkEngine+Category.h"; sourceTree = "<group>"; };
 		07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkEngine+Category.m"; sourceTree = "<group>"; };
 		07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkOperation+Category.h"; sourceTree = "<group>"; };
@@ -134,8 +132,6 @@
 		07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTemplatesTest.m; sourceTree = "<group>"; };
 		07E5C8821F052B7800A4B092 /* NewsfeedTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsfeedTest.m; sourceTree = "<group>"; };
 		07E5C8831F052B7800A4B092 /* RequestStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestStorageTest.m; sourceTree = "<group>"; };
-		07E5C8851F052B7800A4B092 /* CustomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomViewController.h; sourceTree = "<group>"; };
-		07E5C8861F052B7800A4B092 /* CustomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomViewController.m; sourceTree = "<group>"; };
 		07E5C8871F052B7800A4B092 /* LeanplumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumHelper.h; sourceTree = "<group>"; };
 		07E5C8881F052B7800A4B092 /* LeanplumHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumHelper.m; sourceTree = "<group>"; };
 		07E5C8891F052B7800A4B092 /* UtilitiesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilitiesTest.m; sourceTree = "<group>"; };
@@ -269,7 +265,6 @@
 				07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */,
 				07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */,
 				07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */,
-				07E5C8751F052B7800A4B092 /* LPInterfaceEditor+Extensions.h */,
 				07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */,
 				07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */,
 				07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */,
@@ -282,8 +277,6 @@
 		07E5C8841F052B7800A4B092 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
-				07E5C8851F052B7800A4B092 /* CustomViewController.h */,
-				07E5C8861F052B7800A4B092 /* CustomViewController.m */,
 				07E5C8871F052B7800A4B092 /* LeanplumHelper.h */,
 				07E5C8881F052B7800A4B092 /* LeanplumHelper.m */,
 			);
@@ -838,7 +831,6 @@
 				07E5C8AC1F052B7800A4B092 /* AppIconManagerTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* ActionManagerTest.m in Sources */,
-				07E5C8BC1F052B7800A4B092 /* CustomViewController.m in Sources */,
 				07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */,
 				07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */,
 				07E5C8BE1F052B7800A4B092 /* UtilitiesTest.m in Sources */,
