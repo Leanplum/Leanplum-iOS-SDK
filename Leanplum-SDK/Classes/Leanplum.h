@@ -150,7 +150,7 @@ typedef enum {
 
 /**
  * Optional. Sets the API server. The API path is of the form http[s]://hostname/servletName
- * @param hostName The name of the API host, such as www.leanplum.com
+ * @param hostName The name of the API host, such as api.leanplum.com
  * @param servletName The name of the API servlet, such as api
  * @param ssl Whether to use SSL
  */

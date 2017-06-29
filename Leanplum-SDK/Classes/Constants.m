@@ -42,10 +42,11 @@
 
 - (id)init {
     if (self = [super init]) {
-        _apiHostName = @"www.leanplum.com";
+        _apiHostName = @"api.leanplum.com";
+        _apiServlet = @"api";
+        _apiSSL = YES;
         _socketHost = @"dev.leanplum.com";
         _socketPort = 443;
-        _apiSSL = YES;
         _networkTimeoutSeconds = 10;
         _networkTimeoutSecondsForDownloads = 15;
         _syncNetworkTimeoutSeconds = 5;
@@ -53,7 +54,6 @@
         _isDevelopmentModeEnabled = NO;
         _loggingEnabled = NO;
         _canDownloadContentMidSessionInProduction = NO;
-        _apiServlet = @"api";
         _isTestMode = NO;
         _isInPermanentFailureState = NO;
         _verboseLoggingInDevelopmentMode = NO;
