@@ -49,6 +49,7 @@ static NSOperationQueue *sendNowQueue;
 static NSTimeInterval lastSentTime;
 
 static NSDictionary *_requestHheaders;
+static NSMutableDictionary *sendNowCallbackMap;
 
 @implementation LeanplumRequest
 
@@ -146,6 +147,10 @@ static NSDictionary *_requestHheaders;
         if (!sendNowQueue) {
             sendNowQueue = [NSOperationQueue new];
             sendNowQueue.maxConcurrentOperationCount = 1;
+        }
+        
+        if (!sendNowCallbackMap) {
+            sendNowCallbackMap = [NSMutableDictionary new];
         }
     }
     return self;
@@ -303,12 +308,22 @@ static NSDictionary *_requestHheaders;
         
     [self sendEventually];
     _eventIndex = [LPEventDataManager count] - 1;
+    if (_response) {
+        sendNowCallbackMap[@(_eventIndex)] = [_response copy];
+    }
     [self sendRequests:async];
 }
 
 - (void)sendRequests:(BOOL)async
 {
+    NSBlockOperation *requestOperation = [NSBlockOperation new];
+    __weak NSBlockOperation *weakOperation = requestOperation;
+    
     void (^operationBlock)() = ^void() {
+        if ([weakOperation isCancelled]) {
+            return;
+        }
+        
         [LeanplumRequest generateUUID];
         lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -340,6 +355,11 @@ static NSDictionary *_requestHheaders;
         
         // Request callbacks.
         [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if ([weakOperation isCancelled]) {
+                dispatch_semaphore_signal(semaphore);
+                return;
+            }
+            
             LP_TRY
             // Handle errors that don't return an HTTP error code.
             NSUInteger numResponses = [LPResponse numResponsesInDictionary:json];
@@ -374,6 +394,25 @@ static NSDictionary *_requestHheaders;
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
             
+//            // Loop through all the possible callbacks.
+//            // Note we need to do this because Request can steal future sendNow callbacks.
+//            // Callback map will either have to be updated or removed.
+//            NSMutableDictionary *updatedCallbackMap = [NSMutableDictionary new];
+//            for (NSNumber *eventIndexObject in sendNowCallbackMap.allKeys) {
+//                NSInteger eventIndex = [eventIndexObject integerValue];
+//                LPNetworkResponseBlock responseBlock = sendNowCallbackMap[eventIndexObject];
+//                [sendNowCallbackMap removeObjectForKey:eventIndexObject];
+//                
+//                if (eventIndex >= requestsToSend.count) {
+//                    eventIndex -= requestsToSend.count;
+//                    updatedCallbackMap[@(eventIndex)] = responseBlock;
+//                } else {
+//                    id response = [LPResponse getResponseAt:eventIndex fromDictionary:json];
+//                    responseBlock(operation, response);
+//                }
+//            }
+//            [sendNowCallbackMap addEntriesFromDictionary:updatedCallbackMap];
+            
             if (_eventIndex >= requestsToSend.count) {
                _eventIndex -= requestsToSend.count;
             } else if (_response) {
@@ -382,6 +421,11 @@ static NSDictionary *_requestHheaders;
             }
             
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
+            if ([weakOperation isCancelled]) {
+                dispatch_semaphore_signal(semaphore);
+                return;
+            }
+            
             LP_TRY
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
@@ -444,7 +488,8 @@ static NSDictionary *_requestHheaders;
     // Send. operationBlock will run synchronously.
     // Adding to OperationQueue puts it in the background.
     if (async) {
-        [sendNowQueue addOperationWithBlock:operationBlock];
+        [requestOperation addExecutionBlock:operationBlock];
+        [sendNowQueue addOperation:requestOperation];
     } else {
         operationBlock();
     }
