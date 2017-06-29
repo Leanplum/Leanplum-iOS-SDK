@@ -85,9 +85,10 @@
 
 @interface LPConstantsState : NSObject {
     NSString *_apiHostName;
+    NSString *_apiServlet;
+    BOOL _apiSSL;
     NSString *_socketHost;
     int _socketPort;
-    BOOL _apiSSL;
     int _networkTimeoutSeconds;
     int _networkTimeoutSecondsForDownloads;
     int _syncNetworkTimeoutSeconds;
@@ -95,7 +96,6 @@
     BOOL _isDevelopmentModeEnabled;
     BOOL _loggingEnabled;
     BOOL _canDownloadContentMidSessionInProduction;
-    NSString *_apiServlet;
     BOOL _isTestMode;
     BOOL _isInPermanentFailureState;
     BOOL _verboseLoggingInDevelopmentMode;
