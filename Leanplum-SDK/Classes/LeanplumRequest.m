@@ -45,9 +45,7 @@ static NSMutableDictionary *fileUploadSize;
 static NSMutableDictionary *fileUploadProgress;
 static NSString *fileUploadProgressString;
 static NSMutableDictionary *pendingUploads;
-static NSOperationQueue *sendNowQueue;
 static NSTimeInterval lastSentTime;
-
 static NSDictionary *_requestHheaders;
 
 @implementation LeanplumRequest
@@ -134,17 +132,13 @@ static NSDictionary *_requestHheaders;
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
+        _eventIndex = -1;
         if (engine == nil) {
             if (!_requestHheaders) {
                 _requestHheaders = [LeanplumRequest createHeaders];
             }
             engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                        customHeaderFields:_requestHheaders];
-        }
-        
-        if (!sendNowQueue) {
-            sendNowQueue = [NSOperationQueue new];
-            sendNowQueue.maxConcurrentOperationCount = 1;
         }
     }
     return self;
@@ -306,7 +300,14 @@ static NSDictionary *_requestHheaders;
 
 - (void)sendRequests:(BOOL)async
 {
+    NSBlockOperation *requestOperation = [NSBlockOperation new];
+    __weak NSBlockOperation *weakOperation = requestOperation;
+    
     void (^operationBlock)() = ^void() {
+        if ([weakOperation isCancelled]) {
+            return;
+        }
+        
         [LeanplumRequest generateUUID];
         lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
@@ -338,6 +339,11 @@ static NSDictionary *_requestHheaders;
         
         // Request callbacks.
         [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if ([weakOperation isCancelled]) {
+                dispatch_semaphore_signal(semaphore);
+                return;
+            }
+            
             LP_TRY
             // Handle errors that don't return an HTTP error code.
             NSUInteger numResponses = [LPResponse numResponsesInDictionary:json];
@@ -361,22 +367,49 @@ static NSDictionary *_requestHheaders;
                     }
                 }
             }
-            
-            // Delete events on success.
-            [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
-            
-            // Send another request if the last request had maximum events per api call.
-            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                [self sendRequests:async];
-            }
-            dispatch_semaphore_signal(semaphore);
             LP_END_TRY
             
-            if (_response != nil) {
-                _response(operation, json);
+            // We need to lock sendNowCallbackMap so that new event callback won't be triggered
+            // right after it gets deleted.
+            NSMutableDictionary *callbackMap = [LeanplumRequest sendNowCallbackMap];
+            @synchronized (callbackMap) {
+                LP_TRY
+                // Delete events on success.
+                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+                
+                // Send another request if the last request had maximum events per api call.
+                if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                    [self sendRequests:async];
+                }
+                dispatch_semaphore_signal(semaphore);
+                LP_END_TRY
+                
+                // Loop through all the possible callbacks.
+                // Note we need to do this because Request can steal future sendNow callbacks.
+                // Callback map will either have to be updated or removed.
+                NSMutableDictionary *updatedCallbackMap = [NSMutableDictionary new];
+                for (NSNumber *eventIndexObject in callbackMap.allKeys) {
+                    NSInteger eventIndex = [eventIndexObject integerValue];
+                    LPNetworkResponseBlock responseBlock = callbackMap[eventIndexObject];
+                    [callbackMap removeObjectForKey:eventIndexObject];
+                    
+                    if (eventIndex >= requestsToSend.count) {
+                        eventIndex -= requestsToSend.count;
+                        updatedCallbackMap[@(eventIndex)] = responseBlock;
+                    } else {
+                        id response = [LPResponse getResponseAt:eventIndex fromDictionary:json];
+                        responseBlock(operation, response);
+                    }
+                }
+                [callbackMap addEntriesFromDictionary:updatedCallbackMap];
             }
             
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
+            if ([weakOperation isCancelled]) {
+                dispatch_semaphore_signal(semaphore);
+                return;
+            }
+            
             LP_TRY
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
@@ -412,6 +445,7 @@ static NSDictionary *_requestHheaders;
             if (_error != nil) {
                 _error(err);
             }
+            [[LeanplumRequest sendNowQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -430,6 +464,7 @@ static NSDictionary *_requestHheaders;
                 _error([NSError errorWithDomain:@"Leanplum" code:1
                                        userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
             }
+            [[LeanplumRequest sendNowQueue] cancelAllOperations];
             LP_END_TRY
         }
     };
@@ -437,7 +472,8 @@ static NSDictionary *_requestHheaders;
     // Send. operationBlock will run synchronously.
     // Adding to OperationQueue puts it in the background.
     if (async) {
-        [sendNowQueue addOperationWithBlock:operationBlock];
+        [requestOperation addExecutionBlock:operationBlock];
+        [[LeanplumRequest sendNowQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }
@@ -468,6 +504,14 @@ static NSDictionary *_requestHheaders;
         NSMutableDictionary *args = [self createArgsDictionary];
         args[LP_PARAM_UUID] = uuid;
         [LPEventDataManager addEvent:args];
+        _eventIndex = count;
+        
+        NSMutableDictionary *callbackMap = [LeanplumRequest sendNowCallbackMap];
+        @synchronized (callbackMap) {
+            if (_response) {
+                callbackMap[@(_eventIndex)] = [_response copy];
+            }
+        }
     }
 }
 
@@ -722,9 +766,38 @@ static NSDictionary *_requestHheaders;
     noPendingDownloadsBlock = block;
 }
 
+/**
+ * Static sendNowQueue with thread protection.
+ * Returns an operation queue that manages sendNow to run in order.
+ * This is required to prevent from having out of order error in the backend.
+ * Also it is very crucial with the uuid logic.
+ */
 + (NSOperationQueue *)sendNowQueue
 {
-    return sendNowQueue;
+    static NSOperationQueue *_sendNowQueue;
+    static dispatch_once_t sendNowQueueToken;
+    dispatch_once(&sendNowQueueToken, ^{
+        _sendNowQueue = [NSOperationQueue new];
+        _sendNowQueue.maxConcurrentOperationCount = 1;
+    });
+    return _sendNowQueue;
+}
+
+/**
+ * Static sendNowCallbackMap with thread protection.
+ * Returns dictionary that maps event index to response callback.
+ * Since requests are batched there can be a case where other LeanplumRequest
+ * can take future LeanplumRequest events. We need to ensure all callbacks are
+ * called from any instance.
+ */
++ (NSMutableDictionary *)sendNowCallbackMap
+{
+    static NSMutableDictionary *_sendNowCallbackMap;
+    static dispatch_once_t sendNowCallbackMapToken;
+    dispatch_once(&sendNowCallbackMapToken, ^{
+        _sendNowCallbackMap = [NSMutableDictionary new];
+    });
+    return _sendNowCallbackMap;
 }
 
 @end
@@ -738,7 +811,10 @@ static NSDictionary *_requestHheaders;
 
 + (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary
 {
-    return [dictionary[@"response"] objectAtIndex:index];
+    if (index < [LPResponse numResponsesInDictionary:dictionary]) {
+        return [dictionary[@"response"] objectAtIndex:index];
+    }
+    return [dictionary[@"response"] lastObject];
 }
 
 + (NSDictionary *)getLastResponse:(NSDictionary *)dictionary

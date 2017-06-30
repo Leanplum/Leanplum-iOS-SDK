@@ -352,15 +352,14 @@ static dispatch_once_t leanplum_onceToken;
                                              LP_PARAM_INCLUDE_DEFAULTS: @(NO),
                                              LP_PARAM_INCLUDE_MESSAGE_ID: messageId
                                              }];
-            [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
-                NSDictionary *getVariablesResponse = [LPResponse getLastResponse:json];
-                NSDictionary *values = getVariablesResponse[LP_KEY_VARS];
-                NSDictionary *messages = getVariablesResponse[LP_KEY_MESSAGES];
-                NSArray *updateRules = getVariablesResponse[LP_KEY_UPDATE_RULES];
-                NSArray *eventRules = getVariablesResponse[LP_KEY_EVENT_RULES];
-                NSArray *variants = getVariablesResponse[LP_KEY_VARIANTS];
-                NSDictionary *regions = getVariablesResponse[LP_KEY_REGIONS];
+                NSDictionary *values = response[LP_KEY_VARS];
+                NSDictionary *messages = response[LP_KEY_MESSAGES];
+                NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+                NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+                NSArray *variants = response[LP_KEY_VARIANTS];
+                NSDictionary *regions = response[LP_KEY_REGIONS];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
                     [values isEqualToDictionary:LPVarCache.diffs]) {
                     values = nil;
