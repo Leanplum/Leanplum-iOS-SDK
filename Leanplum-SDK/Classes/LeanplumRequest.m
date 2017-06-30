@@ -768,6 +768,9 @@ static NSDictionary *_requestHheaders;
 
 /**
  * Static sendNowQueue with thread protection.
+ * Returns an operation queue that manages sendNow to run in order.
+ * This is required to prevent from having out of order error in the backend.
+ * Also it is very crucial with the uuid logic.
  */
 + (NSOperationQueue *)sendNowQueue
 {
@@ -782,6 +785,10 @@ static NSDictionary *_requestHheaders;
 
 /**
  * Static sendNowCallbackMap with thread protection.
+ * Returns dictionary that maps event index to response callback.
+ * Since requests are batched there can be a case where other LeanplumRequest
+ * can take future LeanplumRequest events. We need to ensure all callbacks are
+ * called from any instance.
  */
 + (NSMutableDictionary *)sendNowCallbackMap
 {
