@@ -72,7 +72,7 @@
 + (NSArray *)eventsWithLimit:(NSInteger)limit
 {
     NSString *query = [NSString stringWithFormat:@"SELECT data FROM event ORDER BY rowid "
-                                                  "LIMIT %ld", limit];
+                                                  "LIMIT %ld", (long)limit];
     NSArray *rows = [[LPDatabase sharedDatabase] rowsFromQuery:query];
     
     // Convert row data to event.
@@ -91,7 +91,7 @@
 + (void)deleteEventsWithLimit:(NSInteger)limit
 {
     NSString *query = [NSString stringWithFormat:@"DELETE FROM event ORDER BY rowid "
-                                                  "LIMIT %ld", limit];
+                                                  "LIMIT %ld", (long)limit];
     [[LPDatabase sharedDatabase] runQuery:query];
 }
 
