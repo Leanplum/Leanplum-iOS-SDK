@@ -33,13 +33,45 @@
     }
   },
   "2": {
+    "action": "Confirm",
+    "countdown": 86400,
+    "vars": {
+      "Cancel action": "",
+      "Message": "priority-30-b",
+      "Title": "priority-30-b",
+      "__name__": "Confirm",
+      "Accept text": "Yes",
+      "Cancel text": "No",
+      "Accept action": ""
+    },
+    "whenLimits": {
+      "verb": "AND",
+      "children": [
+        {
+          "objects": [],
+          "noun": "999",
+          "subject": "times",
+          "verb": "limitUser"
+        }
+      ]
+    },
+    "priority": 30,
+    "whenTriggers": {
+      "verb": "OR",
+      "children": [
+        {
+          "objects": [],
+          "subject": "start",
+          "verb": ""
+        }
+      ]
+    }
+  },
+  "3": {
     "action": "Alert",
     "countdown": 86400,
     "vars": {
-      "Dismiss action": {
-        "Chained message": "1",
-        "__name__": "Chain to Existing Message"
-      },
+      "Dismiss action": "",
       "Message": "NO-priority",
       "Title": "NO-priority",
       "Dismiss text": "OK",
@@ -56,6 +88,15 @@
         }
       ]
     },
-    "priority": 1000
+    "whenTriggers": {
+      "verb": "OR",
+      "children": [
+        {
+          "objects": [],
+          "subject": "start",
+          "verb": ""
+        }
+      ]
+    }
   }
 }

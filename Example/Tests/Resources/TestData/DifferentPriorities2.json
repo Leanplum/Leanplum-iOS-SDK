@@ -36,10 +36,7 @@
     "action": "Alert",
     "countdown": 86400,
     "vars": {
-      "Dismiss action": {
-        "Chained message": "1",
-        "__name__": "Chain to Existing Message"
-      },
+      "Dismiss action": "",
       "Message": "NO-priority",
       "Title": "NO-priority",
       "Dismiss text": "OK",
@@ -56,6 +53,44 @@
         }
       ]
     },
-    "priority": 1000
+    "priority": 1000,
+    "whenTriggers": {
+      "verb": "OR",
+      "children": [
+        {
+          "objects": [],
+          "subject": "start",
+          "verb": ""
+        }
+      ]
+    }
+  },
+  "3": {
+    "action": "Alert",
+    "countdown": 86400,
+    "vars": {
+      "Dismiss action": "",
+      "Message": "priority-5-NA-b",
+      "Title": "priority-5-NA-b",
+      "Dismiss text": "OK",
+      "__name__": "Alert"
+    },
+    "whenLimits": {
+      "objects": [],
+      "subject": null,
+      "children": []
+    },
+    "priority": 5,
+    "whenTriggers": {
+      "verb": "OR",
+      "children": [
+        {
+          "objects": [],
+          "noun": "Nowhere",
+          "subject": "enterRegion",
+          "verb": ""
+        }
+      ]
+    }
   }
 }
