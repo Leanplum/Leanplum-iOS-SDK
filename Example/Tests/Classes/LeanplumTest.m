@@ -1509,7 +1509,7 @@
     NSString* host = @"test_host";
     NSString* servlet = @"servlet";
     
-    XCTAssertEqualObjects([LPConstantsState sharedState].apiHostName, @"www.leanplum.com");
+    XCTAssertEqualObjects([LPConstantsState sharedState].apiHostName, @"api.leanplum.com");
     XCTAssertEqualObjects([LPConstantsState sharedState].apiServlet, @"api");
     
     [Leanplum setApiHostName:host withServletName:servlet usingSsl:true];

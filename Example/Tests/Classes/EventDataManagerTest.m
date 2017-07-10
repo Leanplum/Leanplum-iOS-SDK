@@ -166,9 +166,9 @@
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];;
     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSData *responseData = [@"Success" dataUsingEncoding:NSUTF8StringEncoding];
-        return [[OHHTTPStubsResponse responseWithData:responseData statusCode:200
-                                              headers:@{@"Content-Type":@"application/json"}]
+        NSString *response_file = OHPathForFile(@"action_response.json", self.class);
+        return [[OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}]
                 requestTime:1.0 responseTime:1.0];
     }];
     
@@ -192,6 +192,9 @@
     [[LeanplumRequest post:@"test2" params:nil] sendNow:YES];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
+    
+    [NSThread sleepForTimeInterval:1.1];
+    [OHHTTPStubs removeAllStubs];
 }
 
 - (void)test_uuid
@@ -221,7 +224,7 @@
     XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
     
     // After sending, the last one should have a different uuid.
-    [NSThread sleepForTimeInterval:0.1];
+    [NSThread sleepForTimeInterval:0.2];
     [Leanplum track:@"sample4"];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 4);
@@ -259,8 +262,6 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     NSInteger __block requestCount = 0;
     [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
-        NSArray *events = [LPEventDataManager eventsWithLimit:900000];
-        
         requestCount++;
         if (requestCount == 1) {
             return NO;

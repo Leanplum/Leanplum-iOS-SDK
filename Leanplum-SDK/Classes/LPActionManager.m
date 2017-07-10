@@ -342,7 +342,9 @@ static dispatch_once_t leanplum_onceToken;
     [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
         LP_END_USER_CODE
         if (!messageId || LPVarCache.messages[messageId]) {
-            onCompleted();
+            if (onCompleted) {
+                onCompleted();
+            }
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
@@ -383,7 +385,9 @@ static dispatch_once_t leanplum_onceToken;
                                         eventRules:eventRules
                                           variants:variants
                                            regions:regions];
-                    onCompleted();
+                    if (onCompleted) {
+                        onCompleted();
+                    }
                 }
                 LP_END_TRY
              }];

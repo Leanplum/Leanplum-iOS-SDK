@@ -362,8 +362,6 @@ static NSDictionary *_requestHheaders;
                             _error([NSError errorWithDomain:@"Leanplum" code:2
                                                    userInfo:@{NSLocalizedDescriptionKey: errorMessage}]);
                         }
-                        dispatch_semaphore_signal(semaphore);
-                        return;
                     }
                 }
             }
