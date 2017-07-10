@@ -59,6 +59,7 @@
 @interface LeanplumRequest(UnitTest)
 
 - (void)sendNow:(BOOL)async;
++ (NSOperationQueue *)sendNowQueue;
 
 @end
 
@@ -193,7 +194,9 @@
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     
-    [NSThread sleepForTimeInterval:1.1];
+    // Clean up.
+    [[LeanplumRequest sendNowQueue] cancelAllOperations];
+    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
     [OHHTTPStubs removeAllStubs];
 }
 
@@ -217,6 +220,7 @@
     // UUID should be the same.
     [Leanplum track:@"sample"];
     [Leanplum track:@"sample2"];
+    NSLog(@"%ld", [[LeanplumRequest sendNowQueue] operationCount]);
     [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 3);
@@ -224,7 +228,7 @@
     XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
     
     // After sending, the last one should have a different uuid.
-    [NSThread sleepForTimeInterval:0.2];
+    [NSThread sleepForTimeInterval:0.4];
     [Leanplum track:@"sample4"];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 4);
@@ -245,7 +249,7 @@
     }];
     
     
-    [[LeanplumRequest post:@"sample4" params:nil] sendNow:YES];
+    [[LeanplumRequest post:@"sample4" params:nil] sendNow:NO];
     [NSThread sleepForTimeInterval:0.1];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 0);
