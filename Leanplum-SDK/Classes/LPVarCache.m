@@ -128,26 +128,30 @@ static RegionInitBlock regionInitBlock;
 
 + (id)traverse:(id)collection withKey:(id)key autoInsert:(BOOL)autoInsert
 {
+    id result = nil;
     if ([collection respondsToSelector:@selector(objectForKey:)]) {
-        id result = [collection objectForKey:key];
+        result = [collection objectForKey:key];
         if (autoInsert && !result && [key isKindOfClass:NSString.class]) {
             result = [NSMutableDictionary dictionary];
             [collection setObject:result forKey:key];
         }
-        return result;
     } else if ([collection isKindOfClass:[NSArray class]]) {
         int index = [key intValue];
         NSArray *arrayCollection = collection;
         if (arrayCollection.count > index) {
-            id result = arrayCollection[index];
+            result = arrayCollection[index];
             if (autoInsert && !result && [key isKindOfClass:NSString.class]) {
                 result = [NSMutableArray array];
                 [collection setObject:result atIndex:index];
             }
-            return result;
         }
     }
-    return nil;
+    
+    if ([result isKindOfClass:[NSNull class]]) {
+        return nil;
+    }
+    
+    return result;
 }
 
 + (void)registerFile:(NSString *)stringValue withDefaultValue:(NSString *)defaultValue
