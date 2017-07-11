@@ -59,6 +59,7 @@
 @interface LeanplumRequest(UnitTest)
 
 - (void)sendNow:(BOOL)async;
++ (NSOperationQueue *)sendNowQueue;
 
 @end
 
@@ -166,9 +167,9 @@
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];;
     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSData *responseData = [@"Success" dataUsingEncoding:NSUTF8StringEncoding];
-        return [[OHHTTPStubsResponse responseWithData:responseData statusCode:200
-                                              headers:@{@"Content-Type":@"application/json"}]
+        NSString *response_file = OHPathForFile(@"action_response.json", self.class);
+        return [[OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}]
                 requestTime:1.0 responseTime:1.0];
     }];
     
@@ -192,6 +193,11 @@
     [[LeanplumRequest post:@"test2" params:nil] sendNow:YES];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
+    
+    // Clean up.
+    [[LeanplumRequest sendNowQueue] cancelAllOperations];
+    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    [OHHTTPStubs removeAllStubs];
 }
 
 - (void)test_uuid
@@ -214,6 +220,7 @@
     // UUID should be the same.
     [Leanplum track:@"sample"];
     [Leanplum track:@"sample2"];
+    NSLog(@"%ld", [[LeanplumRequest sendNowQueue] operationCount]);
     [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 3);
@@ -221,7 +228,7 @@
     XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
     
     // After sending, the last one should have a different uuid.
-    [NSThread sleepForTimeInterval:0.1];
+    [NSThread sleepForTimeInterval:0.4];
     [Leanplum track:@"sample4"];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 4);
@@ -242,7 +249,7 @@
     }];
     
     
-    [[LeanplumRequest post:@"sample4" params:nil] sendNow:YES];
+    [[LeanplumRequest post:@"sample4" params:nil] sendNow:NO];
     [NSThread sleepForTimeInterval:0.1];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 0);
@@ -259,8 +266,6 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     NSInteger __block requestCount = 0;
     [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
-        NSArray *events = [LPEventDataManager eventsWithLimit:900000];
-        
         requestCount++;
         if (requestCount == 1) {
             return NO;
