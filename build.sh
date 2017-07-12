@@ -129,43 +129,42 @@ main() {
 #   None
 #######################################
 build_ios() {
-  echo "Starting build for Leanplum-SDK (iOS)"
+  echo "Starting static build for Leanplum-SDK (iOS)"
 
   run "Building Leanplum-SDK (device/armv7) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (device/armv7s) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (device/arm64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (simulator/i386) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='i386' VALID_ARCHS='i386' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X86_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (simulator/x86_64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
 
   mkdir "${RELEASE_DIR}/Leanplum.framework/"
-  echo "RELEASE DIRECTORY IS:"
   run "Combining builds to universal fat library ..." \
     lipo -create -output "${RELEASE_DIR}/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK-source/libLeanplum-iOS-SDK-source.a" \
-    "${CURRENTCONFIG_ARMV7S_DEVICE_DIR}/Leanplum-iOS-SDK-source/libLeanplum-iOS-SDK-source.a" \
-    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK-source/libLeanplum-iOS-SDK-source.a" \
-    "${CURRENTCONFIG_X86_DEVICE_DIR}/Leanplum-iOS-SDK-source/libLeanplum-iOS-SDK-source.a" \
-    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK-source/libLeanplum-iOS-SDK-source.a"
+    "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/libLeanplum-iOS-SDK-source-iOS.a" \
+    "${CURRENTCONFIG_ARMV7S_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/libLeanplum-iOS-SDK-source-iOS.a" \
+    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/libLeanplum-iOS-SDK-source-iOS.a" \
+    "${CURRENTCONFIG_X86_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/libLeanplum-iOS-SDK-source-iOS.a" \
+    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK-source-iOS/libLeanplum-iOS-SDK-source-iOS.a"
 
   # Create .framework package.
   mkdir -p "${RELEASE_DIR}/Leanplum.framework"
@@ -199,43 +198,43 @@ EOF
 #   None
 #######################################
 build_ios_dylib() {
-  echo "Starting build for Leanplum-SDK (iOS)"
+  echo "Starting dylib build for Leanplum-SDK (iOS)"
   run "Building Leanplum-SDK (device/armv7) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (device/armv7s) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (device/arm64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (simulator/i386) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='i386' VALID_ARCHS='i386' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X86_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK (simulator/x86_64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source-iOS" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
 
   run "Combining builds to universal fat library ..." \
     lipo -create -output "${RELEASE_DIR}/Leanplum" \
-    "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_ARMV7S_DEVICE_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_X86_DEVICE_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework/Leanplum"
+    "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_ARMV7S_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_X86_DEVICE_DIR}/Leanplum-iOS-SDK-source-iOS/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK-source-iOS/Leanplum.framework/Leanplum"
 
   # Copy generated framework
-  cp -r "${BUILD_DIR}$ARMV7_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK-source/Leanplum.framework/" \
+  cp -r "${BUILD_DIR}$ARMV7_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK-source-iOS/Leanplum.framework/" \
     "${RELEASE_DIR}/Leanplum.framework"
   rm -f "${RELEASE_DIR}/Leanplum.framework/Leanplum"
   mv "${RELEASE_DIR}/Leanplum" "${RELEASE_DIR}/Leanplum.framework/"
