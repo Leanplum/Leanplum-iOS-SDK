@@ -30,6 +30,7 @@
 #import "NSTimer+Blocks.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
+#import "LPEventCallbackManager.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *appId;
@@ -132,7 +133,7 @@ static NSDictionary *_requestHheaders;
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
-        _eventIndex = -1;
+        
         if (engine == nil) {
             if (!_requestHheaders) {
                 _requestHheaders = [LeanplumRequest createHeaders];
@@ -344,33 +345,9 @@ static NSDictionary *_requestHheaders;
                 return;
             }
             
-            LP_TRY
-            // Handle errors that don't return an HTTP error code.
-            NSUInteger numResponses = [LPResponse numResponsesInDictionary:json];
-            for (NSUInteger i = 0; i < numResponses; i++) {
-                NSDictionary *response = [LPResponse getResponseAt:i fromDictionary:json];
-                if (![LPResponse isResponseSuccess:response]) {
-                    NSString *errorMessage = [LPResponse getResponseError:response];
-                    if (!errorMessage) {
-                        errorMessage = @"API error";
-                    } else {
-                        errorMessage = [NSString stringWithFormat:@"API error: %@", errorMessage];
-                    }
-                    NSLog(@"Leanplum: %@", errorMessage);
-                    if (i == numResponses - 1) {
-                        if (_error != nil) {
-                            _error([NSError errorWithDomain:@"Leanplum" code:2
-                                                   userInfo:@{NSLocalizedDescriptionKey: errorMessage}]);
-                        }
-                    }
-                }
-            }
-            LP_END_TRY
-            
             // We need to lock sendNowCallbackMap so that new event callback won't be triggered
             // right after it gets deleted.
-            NSMutableDictionary *callbackMap = [LeanplumRequest sendNowCallbackMap];
-            @synchronized (callbackMap) {
+            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
                 LP_TRY
                 // Delete events on success.
                 [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
@@ -379,28 +356,14 @@ static NSDictionary *_requestHheaders;
                 if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
                     [self sendRequests:async];
                 }
-                dispatch_semaphore_signal(semaphore);
                 LP_END_TRY
+
                 
-                // Loop through all the possible callbacks.
-                // Note we need to do this because Request can steal future sendNow callbacks.
-                // Callback map will either have to be updated or removed.
-                NSMutableDictionary *updatedCallbackMap = [NSMutableDictionary new];
-                for (NSNumber *eventIndexObject in callbackMap.allKeys) {
-                    NSInteger eventIndex = [eventIndexObject integerValue];
-                    LPNetworkResponseBlock responseBlock = callbackMap[eventIndexObject];
-                    [callbackMap removeObjectForKey:eventIndexObject];
-                    
-                    if (eventIndex >= requestsToSend.count) {
-                        eventIndex -= requestsToSend.count;
-                        updatedCallbackMap[@(eventIndex)] = responseBlock;
-                    } else {
-                        id response = [LPResponse getResponseAt:eventIndex fromDictionary:json];
-                        responseBlock(operation, response);
-                    }
-                }
-                [callbackMap addEntriesFromDictionary:updatedCallbackMap];
+                [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
+                                                                 requests:requestsToSend
+                                                                operation:operation];
             }
+            dispatch_semaphore_signal(semaphore);
             
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
             if ([weakOperation isCancelled]) {
@@ -409,6 +372,7 @@ static NSDictionary *_requestHheaders;
             }
             
             LP_TRY
+            // Retry on 500 and other network failures.
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
                 || (httpStatusCode >= 500 && httpStatusCode < 600)
@@ -421,17 +385,17 @@ static NSDictionary *_requestHheaders;
             } else {
                 id errorResponse = completedOperation.responseJSON;
                 NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
-                if (errorMessage && [errorMessage hasPrefix:@"App not found"]) {
-                    errorMessage = @"No app matching the provided app ID was found.";
-                    constants.isInPermanentFailureState = YES;
-                } else if (errorMessage && [errorMessage hasPrefix:@"Invalid access key"]) {
-                    errorMessage = @"The access key you provided is not valid for this app.";
-                    constants.isInPermanentFailureState = YES;
-                } else if (errorMessage && [errorMessage hasPrefix:@"Development mode requested but not permitted"]) {
-                    errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
-                    constants.isInPermanentFailureState = YES;
-                }
                 if (errorMessage) {
+                    if ([errorMessage hasPrefix:@"App not found"]) {
+                        errorMessage = @"No app matching the provided app ID was found.";
+                        constants.isInPermanentFailureState = YES;
+                    } else if ([errorMessage hasPrefix:@"Invalid access key"]) {
+                        errorMessage = @"The access key you provided is not valid for this app.";
+                        constants.isInPermanentFailureState = YES;
+                    } else if ([errorMessage hasPrefix:@"Development mode requested but not permitted"]) {
+                        errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
+                        constants.isInPermanentFailureState = YES;
+                    }
                     NSLog(@"Leanplum: %@", errorMessage);
                 } else {
                     NSLog(@"Leanplum: %@", err);
@@ -440,9 +404,9 @@ static NSDictionary *_requestHheaders;
                 // Delete on permanant error state.
                 [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
             }
-            if (_error != nil) {
-                _error(err);
-            }
+            
+            // Invoke errors on all requests.
+            [LPEventCallbackManager invokeErrorCallbacksWithError:err];
             [[LeanplumRequest sendNowQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
@@ -499,16 +463,14 @@ static NSDictionary *_requestHheaders;
             uuid = [LeanplumRequest generateUUID];
         }
         
-        NSMutableDictionary *args = [self createArgsDictionary];
-        args[LP_PARAM_UUID] = uuid;
-        [LPEventDataManager addEvent:args];
-        _eventIndex = count;
-        
-        NSMutableDictionary *callbackMap = [LeanplumRequest sendNowCallbackMap];
-        @synchronized (callbackMap) {
-            if (_response) {
-                callbackMap[@(_eventIndex)] = [_response copy];
-            }
+        @synchronized ([LPEventCallbackManager eventCallbackMap]) {
+            NSMutableDictionary *args = [self createArgsDictionary];
+            args[LP_PARAM_UUID] = uuid;
+            [LPEventDataManager addEvent:args];
+            
+            [LPEventCallbackManager addEventCallbackAt:count
+                                             onSuccess:_response
+                                               onError:_error];
         }
     }
 }
@@ -779,23 +741,6 @@ static NSDictionary *_requestHheaders;
         _sendNowQueue.maxConcurrentOperationCount = 1;
     });
     return _sendNowQueue;
-}
-
-/**
- * Static sendNowCallbackMap with thread protection.
- * Returns dictionary that maps event index to response callback.
- * Since requests are batched there can be a case where other LeanplumRequest
- * can take future LeanplumRequest events. We need to ensure all callbacks are
- * called from any instance.
- */
-+ (NSMutableDictionary *)sendNowCallbackMap
-{
-    static NSMutableDictionary *_sendNowCallbackMap;
-    static dispatch_once_t sendNowCallbackMapToken;
-    dispatch_once(&sendNowCallbackMapToken, ^{
-        _sendNowCallbackMap = [NSMutableDictionary new];
-    });
-    return _sendNowCallbackMap;
 }
 
 @end
