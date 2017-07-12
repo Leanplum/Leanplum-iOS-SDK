@@ -158,6 +158,7 @@ build_ios() {
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
 
   mkdir "${RELEASE_DIR}/Leanplum.framework/"
+  echo "RELEASE DIRECTORY IS:"
   run "Combining builds to universal fat library ..." \
     lipo -create -output "${RELEASE_DIR}/Leanplum.framework/Leanplum" \
     "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK-source/libLeanplum-iOS-SDK-source.a" \
@@ -199,7 +200,6 @@ EOF
 #######################################
 build_ios_dylib() {
   echo "Starting build for Leanplum-SDK (iOS)"
-
   run "Building Leanplum-SDK (device/armv7) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
