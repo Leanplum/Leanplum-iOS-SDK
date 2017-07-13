@@ -1560,39 +1560,6 @@
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSecondsForDownloads, timeout);
 }
 
-- (void)test_push_token
-{
-    // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
-                                           ^BOOL(NSURLRequest * _Nonnull request) {
-       return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-       NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-       return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                  headers:@{@"Content-Type":@"application/json"}];
-    }];
-    
-    XCTAssertTrue([LeanplumHelper start_production_test]);
-    
-    // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
-    
-    // Remove Push Token.
-    NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
-    
-    UIApplication *app = [UIApplication sharedApplication];
-    AppDelegate *appDelegate = (AppDelegate *)[app delegate];
-    
-    [appDelegate application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
-    
-    // Test push token is sent on clean start.
-    
-    // Test push token will not be sent with the same token.
-    
-    // Test push token is sent if the token changes.
-    
-}
-
 #pragma mark - Selectors
 
 /**
