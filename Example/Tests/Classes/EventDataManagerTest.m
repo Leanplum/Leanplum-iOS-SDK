@@ -237,7 +237,6 @@
     // Third one should be different.
     XCTAssertFalse([events[0][@"uuid"] isEqual:events[3][@"uuid"]]);
     
-    
     // Delete events on success.
     [OHHTTPStubs removeStub:stubs];
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
@@ -247,7 +246,6 @@
         return [OHHTTPStubsResponse responseWithData:responseData statusCode:200
                                              headers:@{@"Content-Type":@"application/json"}];
     }];
-    
     
     [[LeanplumRequest post:@"sample4" params:nil] sendNow:NO];
     [NSThread sleepForTimeInterval:0.1];

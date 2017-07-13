@@ -42,6 +42,7 @@
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+- (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
 @end
 
 @interface ActionManagerTest : XCTestCase
@@ -240,4 +241,65 @@
     messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     XCTAssertEqual(messageId, @"messageId");
 }
+
+- (void)test_push_token
+{
+    XCTAssertTrue([LeanplumHelper start_production_test]);
+    
+    // Partial mock Action Manager.
+    LPActionManager *manager = [LPActionManager sharedManager];
+    id actionManagerMock = OCMPartialMock(manager);
+    OCMStub([actionManagerMock sharedManager]).andReturn(actionManagerMock);
+    OCMStub([actionManagerMock respondsToSelector:
+             @selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]).andReturn(NO);
+    
+    // Remove Push Token.
+    NSString *pushTokenKey = [Leanplum pushTokenKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:pushTokenKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    // Test push token is sent on clean start.
+    UIApplication *app = [UIApplication sharedApplication];
+    XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
+    NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *formattedToken = [token description];
+    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                       stringByReplacingOccurrencesOfString:@">" withString:@""]
+                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
+        XCTAssertTrue([params[@"iosPushToken"] isEqual:formattedToken]);
+        [expectNewToken fulfill];
+        return YES;
+    }];
+    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    [self waitForExpectationsWithTimeout:2 handler:nil];
+    
+    // Test push token will not be sent with the same token.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        XCTAssertTrue(NO);
+        return YES;
+    }];
+    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    
+    // Test push token is sent if the token changes.
+    token = [@"sample2" dataUsingEncoding:NSUTF8StringEncoding];
+    formattedToken = [token description];
+    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                       stringByReplacingOccurrencesOfString:@">" withString:@""]
+                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    XCTestExpectation *expectUpdatedToken = [self expectationWithDescription:@"expectUpdatedToken"];
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
+        XCTAssertTrue([params[@"iosPushToken"] isEqual:formattedToken]);
+        [expectUpdatedToken fulfill];
+        return YES;
+    }];
+    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    [self waitForExpectationsWithTimeout:2 handler:nil];
+}
+
 @end
