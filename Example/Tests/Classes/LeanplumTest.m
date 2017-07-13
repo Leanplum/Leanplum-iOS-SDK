@@ -34,16 +34,6 @@
 #import "LPActionManager.h"
 #import "Constants.h"
 #import "LPRegisterDevice.h"
-#import "AppDelegate.h"
-
-/**
- * Expose private class methods.
- */
-@interface Leanplum(Test)
-
-+ (NSString *)pushTokenKey;
-
-@end
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
