@@ -145,7 +145,7 @@
 + (void)invokeErrorCallbacksWithError:(NSError *)error
 {
     NSMutableDictionary *callbackMap = [LPEventCallbackManager eventCallbackMap];
-    for (LPEventCallback *callback in callbackMap) {
+    for (LPEventCallback *callback in callbackMap.allValues) {
         [callback invokeError:error];
     }
     [callbackMap removeAllObjects];
