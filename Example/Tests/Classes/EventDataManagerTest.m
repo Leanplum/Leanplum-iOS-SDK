@@ -277,4 +277,55 @@
     XCTAssertTrue(requestCount == 2);
 }
 
+- (void)test_response_index
+{
+    [LeanplumHelper setup_method_swizzling];
+    [LeanplumHelper start_production_test];
+    [LPEventDataManager deleteEventsWithLimit:10000];
+    [LPNetworkEngine setupValidateOperation];
+    [Leanplum_Reachability online:YES];
+    [NSThread sleepForTimeInterval:0.1];
+    
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"batch_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    // Make sure there are 3 events to send.
+    XCTestExpectation *operationExpectation =
+    [self expectationWithDescription:@"operationExpectation"];
+    [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
+        NSArray *events = [LPEventDataManager eventsWithLimit:900000];
+        XCTAssertTrue(events.count == 3);
+        [operationExpectation fulfill];
+        return YES;
+    }];
+    
+    // Freeze the operation queue for a bit to let events queue up.
+    NSOperationQueue *sendNowQueue = [LeanplumRequest sendNowQueue];
+    [sendNowQueue addOperationWithBlock:^{
+        [NSThread sleepForTimeInterval:0.2];
+    }];
+    
+    // Queue up the events and test if the callback is in the correct index.
+    XCTestExpectation *responseExpectation =
+    [self expectationWithDescription:@"responseExpectation"];
+    LeanplumRequest *request = [LeanplumRequest post:@"test2" params:nil];
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        // Make sure the response is the first one.
+        XCTAssertTrue([json[@"index"] intValue] == 1);
+        [responseExpectation fulfill];
+    }];
+    [request sendNow:YES];
+    
+    // Add extra events.
+    [Leanplum track:@"s"];
+    [Leanplum track:@"s2"];
+    
+    [self waitForExpectationsWithTimeout:2 handler:nil];
+}
+
 @end

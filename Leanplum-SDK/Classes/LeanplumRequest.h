@@ -34,7 +34,6 @@
     LPNetworkResponseBlock _response;
     LPNetworkErrorBlock _error;
     BOOL _sent;
-    NSInteger _eventIndex;
 }
 
 + (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
