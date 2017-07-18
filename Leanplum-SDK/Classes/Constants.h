@@ -23,6 +23,7 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define IOS_6_SUPPORTED defined(_ARM_ARCH_7) || defined(__i386__) || defined(__LP64__)
 
@@ -55,7 +56,7 @@
 #define HEARTBEAT_INTERVAL 15 * 60 // 15 minutes
 
 #define MAX_STORED_OCCURRENCES_PER_MESSAGE 100
-#define MAX_STORED_API_CALLS 10000
+#define MAX_EVENTS_PER_API_CALL 10000
 
 #define DEFAULT_PRIORITY 1000
 
@@ -84,9 +85,10 @@
 
 @interface LPConstantsState : NSObject {
     NSString *_apiHostName;
+    NSString *_apiServlet;
+    BOOL _apiSSL;
     NSString *_socketHost;
     int _socketPort;
-    BOOL _apiSSL;
     int _networkTimeoutSeconds;
     int _networkTimeoutSecondsForDownloads;
     int _syncNetworkTimeoutSeconds;
@@ -94,7 +96,6 @@
     BOOL _isDevelopmentModeEnabled;
     BOOL _loggingEnabled;
     BOOL _canDownloadContentMidSessionInProduction;
-    NSString *_apiServlet;
     BOOL _isTestMode;
     BOOL _isInPermanentFailureState;
     BOOL _verboseLoggingInDevelopmentMode;
@@ -157,6 +158,9 @@ OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_SDK_VERSION;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_INBOX_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY;
+OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_UUID_KEY;
+
+OBJC_EXPORT NSString *LEANPLUM_SQLITE_NAME;
 
 OBJC_EXPORT NSString *LP_METHOD_START;
 OBJC_EXPORT NSString *LP_METHOD_GET_VARS;
@@ -234,6 +238,7 @@ OBJC_EXPORT NSString *LP_PARAM_UPDATE_DATE;
 OBJC_EXPORT NSString *LP_PARAM_INBOX_MESSAGES;
 OBJC_EXPORT NSString *LP_PARAM_INBOX_MESSAGE_ID;
 OBJC_EXPORT NSString *LP_PARAM_RICH_PUSH_ENABLED;
+OBJC_EXPORT NSString *LP_PARAM_UUID;
 
 OBJC_EXPORT NSString *LP_KEY_VARS;
 OBJC_EXPORT NSString *LP_KEY_MESSAGES;

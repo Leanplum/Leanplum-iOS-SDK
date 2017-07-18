@@ -33,55 +33,114 @@
 - (id)init
 {
     if (self = [super init]) {
-        _defaults = [NSUserDefaults standardUserDefaults];
-        _requests = [self loadRequests];
+        [self migrateRequests];
     }
     return self;
 }
 
-- (NSMutableArray *)loadRequests
++ (LPRequestStorage *)sharedStorage
 {
-    NSMutableArray *requests = [NSMutableArray array];
+    static LPRequestStorage *_sharedStorage = nil;
+    static dispatch_once_t sharedStorageToken;
+    dispatch_once(&sharedStorageToken, ^{
+        _sharedStorage = [self new];
+    });
+    return _sharedStorage;
+}
+
+/**
+ * Handle migration from old saving methods. 
+ * List of migrations:
+ * 1) Moving away from NSUserDefaults. iOS8 introduced a performance hit that made it
+ * unusable. Introduced saving to file as plist. Safe to remove from April 2015.
+ * 2) Previously it was saving to the cache directory. Moving it to documents. (1.5.0)
+ */
+- (void)migrateRequests
+{
     @synchronized (self) {
-        // For compatibility with older SDKs.
-        // TODO: Remove in April 2015.
-        NSInteger count = [_defaults integerForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
-        for (NSInteger i = 0; i < count; i++) {
-            NSString* itemKey = [LPRequestStorage itemKeyForIndex:i];
-            NSDictionary* requestArgs = [_defaults dictionaryForKey:itemKey];
-            if (requestArgs != nil) {
-                [requests addObject:requestArgs];
+        // Move old cached directory to documents directory.
+        NSError *error;
+        if ([[NSFileManager defaultManager] fileExistsAtPath:self.cacheFilePath]) {
+            [[NSFileManager defaultManager] moveItemAtPath:self.cacheFilePath
+                                                    toPath:self.documentsFilePath
+                                                     error:&error];
+            if (error) {
+                LPLog(LPVerbose, @"Error in moving stored requests: %@", error);
             }
         }
-
-        if (!count) {
-            // Backwards compatible with old cached directory
-            NSError *error;
-            if ([[NSFileManager defaultManager] fileExistsAtPath:self.cacheFilePath]) {
-                [[NSFileManager defaultManager] moveItemAtPath:self.cacheFilePath
-                                                        toPath:self.documentsFilePath
-                                                         error:&error];
-                if (error) {
-                    LPLog(LPVerbose, @"Error in moving stored requests: %@", error);
+        
+        // For compatibility with older SDKs.
+        NSMutableArray *requests = [NSMutableArray array];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSInteger count = [defaults integerForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
+        if (count) {
+            for (NSInteger i = 0; i < count; i++) {
+                NSString *itemKey = [LPRequestStorage itemKeyForIndex:i];
+                NSDictionary *requestArgs = [defaults dictionaryForKey:itemKey];
+                if (requestArgs) {
+                    [requests addObject:requestArgs];
                 }
+                [defaults removeObjectForKey:itemKey];
             }
-            NSData *requestData = [NSData dataWithContentsOfFile:self.documentsFilePath];
-            if (requestData) {
-                error = nil;
-                NSMutableArray *savedRequests = [NSPropertyListSerialization
-                                                 propertyListWithData:requestData
-                                                 options:NSPropertyListMutableContainers
-                                                 format:NULL error:&error];
-                if (savedRequests) {
-                    requests = savedRequests;
-                }
+            [defaults removeObjectForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
+            [defaults synchronize];
+            if (![[NSFileManager defaultManager] fileExistsAtPath:self.documentsFilePath]) {
+                [self saveRequests:requests];
             }
         }
     }
+}
 
-    LPLog(LPDebug, @"Loaded %lu requests", (unsigned long) requests.count);
+/**
+ * Save requests to documents directory as a plist format.
+ * Make sure to wrap this call with synchronize to support multi-threaded cases.
+ */
+- (void)saveRequests:(NSMutableArray *)requests
+{
+    if (requests.count > MAX_EVENTS_PER_API_CALL) {
+        NSRange range = NSMakeRange(0, requests.count - MAX_EVENTS_PER_API_CALL);
+        [requests removeObjectsInRange:range];
+    }
+    
+    NSError *error = nil;
+    NSData *requestData = [NSPropertyListSerialization dataWithPropertyList:requests
+                                                                     format:NSPropertyListBinaryFormat_v1_0
+                                                                    options:0
+                                                                      error:&error];
+    if (requestData) {
+        [requestData writeToFile:[self documentsFilePath] atomically:YES];
+        LPLog(LPDebug, @"Saved %lu requests", (unsigned long) requests.count);
+    } else {
+        [[NSFileManager defaultManager] removeItemAtPath:[self documentsFilePath] error:&error];
+        if (error) {
+            LPLog(LPDebug, @"Error in saving requests: %@", error);
+        }
+    }
+}
 
-    return requests;
+/**
+ * Load requests from the plist in documents directory.
+ * Make sure to wrap this call with synchronize to support multi-threaded cases.
+ */
+- (NSMutableArray *)loadRequests
+{
+    NSData *requestData = [NSData dataWithContentsOfFile:self.documentsFilePath];
+    if (requestData) {
+        NSError *error = nil;
+        NSMutableArray *requests = [NSPropertyListSerialization
+                                         propertyListWithData:requestData
+                                         options:NSPropertyListMutableContainers
+                                         format:NULL error:&error];
+        if (error) {
+            LPLog(LPDebug, @"Error in loading requets: %@", error);
+        } else {
+            LPLog(LPDebug, @"Loaded %lu requests", (unsigned long) requests.count);
+        }
+        
+        return requests;
+    }
+    
+    return [NSMutableArray new];
 }
 
 /**
@@ -104,59 +163,41 @@
             [NSString stringWithFormat:@"_lprequests-%@", LeanplumRequest.appId]];
 }
 
-- (void)saveRequests
-{
-    NSArray *requestsCopy;
-    @synchronized (self) {
-        requestsCopy = [_requests copy];
-    }
-    if (requestsCopy.count > MAX_STORED_API_CALLS) {
-        NSRange range = NSMakeRange(requestsCopy.count - MAX_STORED_API_CALLS,
-          MAX_STORED_API_CALLS);
-        requestsCopy = [[requestsCopy subarrayWithRange:range] mutableCopy];
-    }
-
-    NSError *error = nil;
-    NSData *requestData = [NSPropertyListSerialization dataWithPropertyList:requestsCopy
-      format:NSPropertyListBinaryFormat_v1_0 options:0 error:&error];
-    if (requestData) {
-        [requestData writeToFile:[self documentsFilePath] atomically:YES];
-    } else {
-        [[NSFileManager defaultManager] removeItemAtPath:[self documentsFilePath] error:&error];
-    }
-
-    LPLog(LPDebug, @"Saved %lu requests", (unsigned long) requestsCopy.count);
-}
-
-+ (LPRequestStorage *)sharedStorage
-{
-    static LPRequestStorage *_sharedStorage = nil;
-    static dispatch_once_t sharedStorageToken;
-    dispatch_once(&sharedStorageToken, ^{
-        _sharedStorage = [[self alloc] init];
-    });
-    return _sharedStorage;
-}
-
-// For compatibility with older SDKs.
-// TODO: Remove in April 2015.
+/** 
+ * Returns the item key for requests data that is used in NSUserDefault.
+ * This is here to be compatible with the older SDKS. 
+ * Safe to remove from April 2015.
+ */
 + (NSString *)itemKeyForIndex:(NSUInteger)index
 {
     return [NSString stringWithFormat:LEANPLUM_DEFAULTS_ITEM_KEY, index];
 }
 
+#pragma mark Public Methods
+
 - (void)pushRequest:(NSDictionary *)requestData
 {
     @synchronized (self) {
-        [_requests addObject:requestData];
+        NSMutableArray *requests = [self loadRequests];
+        [requests addObject:requestData];
+        [self saveRequests:requests];
+    }
+}
+
+- (void)pushRequests:(NSArray *)requestDatas
+{
+    @synchronized (self) {
+        NSMutableArray *requests = [self loadRequests];
+        [requests addObjectsFromArray:requestDatas];
+        [self saveRequests:requests];
     }
 }
 
 - (NSArray *)popAllRequests
 {
-    NSArray *result = _requests;
+    NSMutableArray *requests;
     @synchronized (self) {
-        _requests = [NSMutableArray array];
+        requests = [self loadRequests];
         _lastSentTime = [NSDate timeIntervalSinceReferenceDate];
 
         NSError *error;
@@ -168,21 +209,8 @@
                 LPLog(LPDebug, @"Deleted stored requests.");
             }
         }
-
-        // For compatibility with older SDKs.
-        // TODO: Remove in April 2015.
-        NSInteger count = [_defaults integerForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
-        if (count > 0) {
-            [_defaults removeObjectForKey:LEANPLUM_DEFAULTS_COUNT_KEY];
-            for (NSInteger i = 0; i < count; i++) {
-                NSString* itemKey = [LPRequestStorage itemKeyForIndex:i];
-                [_defaults removeObjectForKey:itemKey];
-            }
-            [_defaults synchronize];
-        }
-
     }
-    return result;
+    return requests;
 }
 
 @end

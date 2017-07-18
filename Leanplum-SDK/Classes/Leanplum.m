@@ -424,6 +424,12 @@ BOOL inForeground = NO;
     });
 }
 
++ (NSString *)pushTokenKey
+{
+    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
+            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
+}
+
 + (void)start
 {
     [self startWithUserId:nil userAttributes:nil responseHandler:nil];
@@ -878,14 +884,20 @@ BOOL inForeground = NO;
 
     // Get the current Inbox messages on the device.
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
+    
+    // Push token.
+    NSString *pushTokenKey = [Leanplum pushTokenKey];
+    NSString *pushToken = [[NSUserDefaults standardUserDefaults] stringForKey:pushTokenKey];
+    if (pushToken) {
+        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+    }
 
     // Issue start API call.
     LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
         state.startSuccessful = YES;
-        NSDictionary *response = [LPResponse getLastResponse:json];
         NSDictionary *values = response[LP_KEY_VARS];
         NSString *token = response[LP_KEY_TOKEN];
         NSDictionary *messages = response[LP_KEY_MESSAGES];
@@ -913,9 +925,6 @@ BOOL inForeground = NO;
         // TODO: Need to call this if we fix encryption.
         // [LPVarCache saveUserAttributes];
         [self triggerStartResponse:YES];
-
-        // Upload alternative app icons.
-        [LPAppIconManager uploadAppIconsOnDevMode];
 
         // Allow bidirectional realtime variable updates.
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -966,6 +975,9 @@ BOOL inForeground = NO;
                                         }] send];
             }
         }
+
+        // Upload alternative app icons.
+        [LPAppIconManager uploadAppIconsOnDevMode];
 
         if (!startedInBackground) {
             inForeground = YES;
@@ -1054,8 +1066,6 @@ BOOL inForeground = NO;
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
                     [[LeanplumRequest post:LP_METHOD_STOP params:nil]
                         sendIfConnectedSync:exitOnSuspend];
-                    [LeanplumRequest saveRequests];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                     LP_END_TRY
                 }];
 
@@ -1065,8 +1075,6 @@ BOOL inForeground = NO;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
             [[LeanplumRequest post:LP_METHOD_HEARTBEAT params:nil] sendIfDelayed];
-            [[LeanplumRequest class] performSelector:@selector(saveRequests) withObject:nil
-                                          afterDelay:LP_REQUEST_RESUME_DELAY + 1.0];
         }
         LP_END_TRY
     } repeats:YES];
@@ -2186,15 +2194,14 @@ andParameters:(NSDictionary *)params
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
                             params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
-        NSDictionary *getVariablesResponse = [LPResponse getLastResponse:json];
-        NSDictionary *values = getVariablesResponse[LP_KEY_VARS];
-        NSDictionary *messages = getVariablesResponse[LP_KEY_MESSAGES];
-        NSArray *updateRules = getVariablesResponse[LP_KEY_UPDATE_RULES];
-        NSArray *eventRules = getVariablesResponse[LP_KEY_EVENT_RULES];
-        NSArray *variants = getVariablesResponse[LP_KEY_VARIANTS];
-        NSDictionary *regions = getVariablesResponse[LP_KEY_REGIONS];
+        NSDictionary *values = response[LP_KEY_VARS];
+        NSDictionary *messages = response[LP_KEY_MESSAGES];
+        NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+        NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+        NSArray *variants = response[LP_KEY_VARIANTS];
+        NSDictionary *regions = response[LP_KEY_REGIONS];
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
             ![updateRules isEqualToArray:LPVarCache.updateRulesDiffs] ||
@@ -2208,7 +2215,7 @@ andParameters:(NSDictionary *)params
                                    regions:regions];
 
         }
-        if ([getVariablesResponse[LP_KEY_SYNC_INBOX] boolValue]) {
+        if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
         }
         LP_END_TRY
@@ -3585,9 +3592,17 @@ void LPLog(LPLogType type, NSString *format, ...) {
         if (message) {
             LPActionContext *chainedActionContext =
                     [Leanplum createActionContextForMessageId:messageId];
-            chainedActionContext->_parentContext = self;
+            chainedActionContext.contextualValues = self.contextualValues;
+            chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
+            chainedActionContext->_isRooted = _isRooted;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [Leanplum triggerAction:chainedActionContext];
+                [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
+                    if (success) {
+                        // Track when the chain message is viewed.
+                        [[LPInternalState sharedState].actionManager
+                         recordMessageImpression:[chainedActionContext messageId]];
+                    }
+                }];
             });
             return;
         }

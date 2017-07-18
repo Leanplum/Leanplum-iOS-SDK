@@ -10,6 +10,8 @@
 
 // I’ve been asked about which license this code is under: I put this into Public Domain.
 // No warranty whatsoever. Still I’d be happy about attribution but don’t require such.
+#import <UIKit/UIKit.h>
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < 70000
 
 @interface LPRFC1123 : NSObject
