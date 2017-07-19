@@ -12,6 +12,7 @@ Pod::Spec.new do |s|
   s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
+  s.library = 'sqlite3'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC' }
   s.preserve_paths = 'Leanplum.framework'
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
