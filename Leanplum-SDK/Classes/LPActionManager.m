@@ -830,6 +830,9 @@ static dispatch_once_t leanplum_onceToken;
         } else {
             mutableInfo = [NSMutableDictionary dictionary];
         }
+        
+        // Adding body message manually.
+        mutableInfo[@"aps"] = @{@"alert":@{@"body": message} };
 
         // Specify open action
         if (openAction) {
