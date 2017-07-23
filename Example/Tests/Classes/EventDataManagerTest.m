@@ -200,6 +200,34 @@
     [OHHTTPStubs removeAllStubs];
 }
 
+- (void)test_response_code
+{
+    [LeanplumHelper setup_method_swizzling];
+    [LeanplumHelper start_production_test];
+    [LPEventDataManager deleteEventsWithLimit:10000];
+    [LPNetworkEngine setupValidateOperation];
+    [Leanplum_Reachability online:YES];
+    
+    // Simulate error from http response code.
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+        return [request.URL.host isEqualToString:API_HOST];;
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSData *data = [@"Fail" dataUsingEncoding:NSUTF8StringEncoding];
+        return [OHHTTPStubsResponse responseWithData:data statusCode:500 headers:nil];
+    }];
+    
+    NSArray *events = [LPEventDataManager eventsWithLimit:10000];
+    XCTAssertTrue(events.count == 0);
+    
+    [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
+    [NSThread sleepForTimeInterval:0.2];
+    events = [LPEventDataManager eventsWithLimit:10000];
+    XCTAssertTrue(events.count == 1);
+    
+    [LPEventDataManager deleteEventsWithLimit:10000];
+    [OHHTTPStubs removeAllStubs];
+}
+
 - (void)test_uuid
 {
     [LeanplumHelper setup_method_swizzling];
