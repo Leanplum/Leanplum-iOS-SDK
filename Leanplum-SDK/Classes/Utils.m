@@ -31,7 +31,8 @@
 {
     return obj == nil
         || ([obj respondsToSelector:@selector(length)] && [(NSData *)obj length] == 0)
-        || ([obj respondsToSelector:@selector(count)] && [(NSArray *)obj count] == 0);
+        || ([obj respondsToSelector:@selector(count)]
+            && ![obj isKindOfClass:[NSString class]] && [(NSArray *)obj count] == 0);
 }
 
 + (BOOL)isBlank:(NSString *)str
