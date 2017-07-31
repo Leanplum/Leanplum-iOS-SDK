@@ -1148,42 +1148,29 @@ BOOL inForeground = NO;
 #endif
 }
 
-/**
- * Use this to make sure the task fully runs when the app is in background.
- * Mainly used by {@link pause}.
- */
-+ (void)beginBackgroundTask:(void(^)())task expirationHandler:(void(^)())expirationHandler
++ (void)pause
 {
     UIApplication *application = [UIApplication sharedApplication];
     UIBackgroundTaskIdentifier __block backgroundTask;
-
-    // Start background task.
-    backgroundTask = [application beginBackgroundTaskWithExpirationHandler:^{
-        if (expirationHandler) {
-            expirationHandler();
-        }
-
+    
+    // Block that finish task.
+    void (^finishTaskHandler)() = ^(){
         [application endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
+    };
+    
+    // Start background task to make sure it runs when the app is in background.
+    backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
+    
+    // Send pause event.
+    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        finishTaskHandler();
     }];
-
-    // Start the long-running task and return immediately.
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (task) {
-            task();
-        }
-
-        [application endBackgroundTask:backgroundTask];
-        backgroundTask = UIBackgroundTaskInvalid;
-    });
-}
-
-+ (void)pause
-{
-    [self beginBackgroundTask:^{
-        [[LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil] sendIfConnectedSync:YES];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } expirationHandler:nil];
+    [request onError:^(NSError *error) {
+        finishTaskHandler();
+    }];
+    [request sendIfConnected];
 }
 
 + (void)resume
