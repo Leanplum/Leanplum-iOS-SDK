@@ -90,8 +90,12 @@
 
 + (void)deleteEventsWithLimit:(NSInteger)limit
 {
-    NSString *query = [NSString stringWithFormat:@"DELETE FROM event ORDER BY rowid "
-                                                  "LIMIT %ld", (long)limit];
+    // Used to be 'DELETE FROM event ORDER BY rowid LIMIT x'
+    // but iOS7 sqlite3 did not compile with SQLITE_ENABLE_UPDATE_DELETE_LIMIT.
+    // Consider changing it back when we drop iOS7.
+    NSString *query = [NSString stringWithFormat:@"DELETE FROM event WHERE rowid IN "
+                                                  "(SELECT rowid FROM event ORDER BY rowid "
+                                                  "LIMIT %ld);", (long)limit];
     [[LPDatabase sharedDatabase] runQuery:query];
 }
 
