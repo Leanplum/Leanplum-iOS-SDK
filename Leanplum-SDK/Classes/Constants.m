@@ -127,6 +127,7 @@ NSString *LP_PARAM_ACTION_DEFINITIONS = @"actionDefinitions";
 NSString *LP_PARAM_APP_ID = @"appId";
 NSString *LP_PARAM_CLIENT = @"client";
 NSString *LP_PARAM_CLIENT_KEY = @"clientKey";
+NSString *LP_PARAM_CURRENCY_CODE = @"currencyCode";
 NSString *LP_PARAM_DATA = @"data";
 NSString *LP_PARAM_COUNT = @"count";
 NSString *LP_PARAM_DEV_MODE = @"devMode";
