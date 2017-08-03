@@ -13,9 +13,9 @@ Pod::Spec.new do |s|
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC' }
-  s.preserve_paths = 'LeanplumTV.framework'
+  s.preserve_paths = 'Leanplum.framework'
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
-  s.source_files = 'LeanplumTV.framework/Headers/*.h'
-  s.public_header_files = 'LeanplumTV.framework/Headers/*.h'
-  s.vendored_frameworks = 'LeanplumTV.framework'
+  s.source_files = 'Leanplum.framework/Headers/*.h'
+  s.public_header_files = 'Leanplum.framework/Headers/*.h'
+  s.vendored_frameworks = 'Leanplum.framework'
 end
