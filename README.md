@@ -3,7 +3,6 @@
 <p align="center">
 <a href="https://travis-ci.org/xmartlabs/Eureka"><img src="https://travis-ci.org/xmartlabs/Eureka.svg?branch=master" alt="Build status" /></a>
 <img src="https://img.shields.io/cocoapods/dt/Leanplum-iOS-SDK.svg?maxAge=3600" alt="Downloads" />
-<a href="https://cocoapods.org/pods/Leanplum-iOS-SDK"><img src="https://img.shields.io/cocoapods/v/Leanplum-iOS-SDK.svg" alt="CocoaPods compatible" /></a>
 <img src="https://img.shields.io/badge/platform-iOS-blue.svg?style=flat" alt="Platform iOS" />
 <img src="https://img.shields.io/badge/platform-tvOS-blue.svg?style=flat" alt="Platform tvOS" />
 <a href="https://cocoapods.org/pods/Leanplum-iOS-SDK"><img src="https://img.shields.io/cocoapods/v/Leanplum-iOS-SDK.svg" alt="CocoaPods compatible" /></a>
