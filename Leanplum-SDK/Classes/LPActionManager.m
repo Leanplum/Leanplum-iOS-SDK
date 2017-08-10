@@ -703,7 +703,7 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
 
-#if LP_NOT_TV && __IPHONE_OS_VERSION_MAX_REQUIRED >= 80000
+#if LP_NOT_TV
     // Detect local notifications while app is running.
     swizzledApplicationDidReceiveLocalNotification =
     [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
