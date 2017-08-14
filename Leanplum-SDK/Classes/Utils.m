@@ -30,8 +30,7 @@
 + (BOOL)isNullOrEmpty:(id)obj
 {
     // Need to check for NSString to support RubyMotion.
-    // Ruby String has count: method and respondsToSelector(count) is true for count:
-    // but count: in Ruby requires parameters
+    // Ruby String respondsToSelector(count) is true for count: in RubyMotion
     return obj == nil
     || ([obj respondsToSelector:@selector(length)] && [obj length] == 0)
     || ([obj respondsToSelector:@selector(count)]
