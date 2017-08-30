@@ -551,6 +551,13 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode;
 
 /**
+ * Manually track purchase event with currency code in your application. It is advised to use
+ * trackInAppPurchases to automatically track IAPs.
+ */
++ (void)trackPurchase:(NSString *)event withValue:(double)value
+      andCurrencyCode:(NSString *)currencyCode andParameters:(NSDictionary *)params;
+
+/**
  * Automatically tracks InApp purchase and does server side receipt validation.
  */
 + (void)trackInAppPurchases;
