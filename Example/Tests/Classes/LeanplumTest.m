@@ -826,6 +826,7 @@
         // Check if request has all params.
         XCTAssertTrue([params[@"event"] isEqualToString:trackName]);
         XCTAssertTrue([params[@"value"] doubleValue] == 1.99);
+        XCTAssertTrue([params[@"currencyCode"] isEqualToString:@"USD"]);
         XCTAssertNotNil(params[@"params"]);
         return YES;
     }];
