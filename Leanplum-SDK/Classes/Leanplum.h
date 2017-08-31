@@ -583,6 +583,7 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (void)track:(NSString *)event withParameters:(NSDictionary *)params;
 + (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary *)params;
 + (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info andParameters:(NSDictionary *)params;
++ (void)track:(NSString *)event withValue:(double)value andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
 /**@}*/
 
 /**
