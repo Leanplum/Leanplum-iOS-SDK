@@ -1800,6 +1800,23 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
++ (void)trackPurchase:(NSString *)event withValue:(double)value
+      andCurrencyCode:(NSString *)currencyCode andParameters:(NSDictionary *)params
+{
+    RETURN_IF_NOOP;
+    LP_TRY
+    NSMutableDictionary *arguments = [NSMutableDictionary new];
+    if (currencyCode) {
+        arguments[LP_PARAM_CURRENCY_CODE] = currencyCode;
+    }
+
+    [Leanplum track:event
+          withValue:value
+            andArgs:arguments
+      andParameters:params];
+    LP_END_TRY
+}
+
 + (void)trackInAppPurchases
 {
     RETURN_IF_NOOP;

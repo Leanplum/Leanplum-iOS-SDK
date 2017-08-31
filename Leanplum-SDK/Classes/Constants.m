@@ -174,6 +174,7 @@ NSString *LP_PARAM_INBOX_MESSAGES = @"newsfeedMessages";
 NSString *LP_PARAM_INBOX_MESSAGE_ID = @"newsfeedMessageId";
 NSString *LP_PARAM_RICH_PUSH_ENABLED = @"richPushEnabled";
 NSString *LP_PARAM_UUID = @"uuid";
+NSString *LP_PARAM_CURRENCY_CODE = @"currencyCode";
 
 NSString *LP_KEY_REASON = @"reason";
 NSString *LP_KEY_STACK_TRACE = @"stackTrace";
