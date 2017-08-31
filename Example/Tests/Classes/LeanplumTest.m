@@ -817,6 +817,23 @@
     }];
     [Leanplum track:trackName withValue:trackValue andArgs:trackParams andParameters:trackParams];
     [Leanplum forceContentUpdate];
+    
+    /// Validate track for manual purchase
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"track");
+        // Check if request has all params.
+        XCTAssertTrue([params[@"event"] isEqualToString:trackName]);
+        XCTAssertTrue([params[@"value"] doubleValue] == 1.99);
+        XCTAssertNotNil(params[@"params"]);
+        return YES;
+    }];
+    [Leanplum trackPurchase:trackName
+                  withValue:1.99
+            andCurrencyCode:@"USD"
+              andParameters:trackParams];
+    [Leanplum forceContentUpdate];
 
     XCTAssertTrue([Leanplum hasStarted]);
 }
