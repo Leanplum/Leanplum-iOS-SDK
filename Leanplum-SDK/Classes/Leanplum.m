@@ -839,9 +839,10 @@ BOOL inForeground = NO;
     NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
                                      [[NSLocale preferredLanguages] objectAtIndex:0],
                                      [currentLocale objectForKey:NSLocaleCountryCode]];
-    NSString *deviceName = device.name;
-    if (!deviceName) {
-        deviceName = @"";
+    // Set the device name. But only if running in development mode.
+    NSString *deviceName = @"";
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        deviceName = device.name ?: @"";
     }
     NSTimeZone *localTimeZone = [NSTimeZone localTimeZone];
     NSNumber *timezoneOffsetSeconds =
