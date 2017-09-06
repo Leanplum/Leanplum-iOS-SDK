@@ -77,6 +77,7 @@
 #define LPMT_ARG_LAYOUT_WIDTH @"Layout.Width"
 #define LPMT_ARG_LAYOUT_HEIGHT @"Layout.Height"
 #define LPMT_ARG_HTML_HEIGHT @"HTML Height"
+#define LPMT_ARG_HTML_WIDTH @"HTML Width"
 #define LPMT_ARG_HTML_ALIGN @"HTML Align"
 #define LPMT_ARG_HTML_ALIGN_TOP @"Top"
 #define LPMT_ARG_HTML_ALIGN_BOTTOM @"Bottom"
@@ -454,6 +455,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                withString:LPMT_DEFAULT_TRACK_ACTION_URL],
                     [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
                     [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
+                    [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
                     [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                     [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
              withResponder:messageResponder];
@@ -981,8 +983,25 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
             htmlY += app.statusBarFrame.size.height;
         }
 #endif
+        
+        // Calculate HTML width by percentage or others (px or pt).
+        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH];
+        CGFloat htmlWidth = screenWidth;
+        if ([contextArgWidth hasSuffix:@"%"]) {
+            NSString *percentageValue = [contextArgWidth stringByReplacingOccurrencesOfString:@"%"
+                                                                                   withString:@""];
+            htmlWidth = screenWidth * [percentageValue floatValue];
+        } else {
+            NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
+            NSArray *components = [contextArgWidth componentsSeparatedByCharactersInSet:letterSet];
+            htmlWidth = [[components componentsJoinedByString:@""] floatValue];
+        }
+        if (htmlWidth > screenWidth) {
+            htmlWidth = screenWidth;
+        }
 
-        _popupGroup.frame = CGRectMake(0, htmlY, screenWidth, htmlHeight);
+        CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
+        _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         _popupView.frame = _popupGroup.bounds;
     }
 
