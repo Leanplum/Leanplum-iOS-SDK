@@ -64,6 +64,7 @@
 
 #define LPMT_ARG_TITLE_TEXT @"Title.Text"
 #define LPMT_ARG_TITLE_COLOR @"Title.Color"
+#define LPMT_ARG_TITLE_NUMBEROFLINES @"Title.NumberOfLines"
 #define LPMT_ARG_MESSAGE_TEXT @"Message.Text"
 #define LPMT_ARG_MESSAGE_COLOR @"Message.Color"
 #define LPMT_ARG_ACCEPT_BUTTON_TEXT @"Accept button.Text"
@@ -99,6 +100,7 @@
 #define LPMT_DEFAULT_TRACK_ACTION_URL @"http://leanplum:runTrackedAction"
 #define LPMT_DEFAULT_HAS_DISMISS_BUTTON YES
 #define LPMT_DEFAULT_APP_ICON @"__iOSAppIcon-PrimaryIcon.png"
+#define LPMT_DEFAULT_TITLE_NUMBEROFLINES 1
 
 #define LPMT_ICON_FILE_PREFIX @"__iOSAppIcon-"
 #define LPMT_ICON_PRIMARY_NAME @"PrimaryIcon"
@@ -309,6 +311,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                              [LPActionArg argNamed:LPMT_ARG_TITLE_TEXT withString:APP_NAME],
                              [LPActionArg argNamed:LPMT_ARG_TITLE_COLOR
                                          withColor:[UIColor blackColor]],
+                             [LPActionArg argNamed:LPMT_ARG_TITLE_NUMBEROFLINES
+                                         withNumber: @(LPMT_DEFAULT_TITLE_NUMBEROFLINES)],
                              [LPActionArg argNamed:LPMT_ARG_MESSAGE_TEXT
                                         withString:LPMT_DEFAULT_ASK_TO_ASK_MESSAGE],
                              [LPActionArg argNamed:LPMT_ARG_MESSAGE_COLOR
@@ -1012,6 +1016,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)updateNonWebPopupLayout:(int)statusBarHeight
 {
+    LPActionContext *context = _contexts.lastObject;
+
     _popupBackground.frame = CGRectMake(0, 0, _popupView.frame.size.width, _popupView.frame.size.height);
     CGSize textSize = [self getTextSizeFromButton:_acceptButton];
 
@@ -1034,12 +1040,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                          textSize.width + 2*LPMT_ACCEPT_BUTTON_MARGIN,
                                          textSize.height + 2*LPMT_ACCEPT_BUTTON_MARGIN);
     }
-    _titleLabel.frame = CGRectMake(LPMT_ACCEPT_BUTTON_MARGIN, LPMT_ACCEPT_BUTTON_MARGIN + statusBarHeight,
-                                   _popupView.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN * 2, LPMT_TITLE_LABEL_HEIGHT);
+    _titleLabel.frame = CGRectMake(LPMT_ACCEPT_BUTTON_MARGIN,
+                                   LPMT_ACCEPT_BUTTON_MARGIN + statusBarHeight,
+                                   _popupView.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN * 2,
+                                   [[context numberNamed:LPMT_ARG_TITLE_NUMBEROFLINES] doubleValue] * LPMT_TITLE_LABEL_HEIGHT);
     _messageLabel.frame = CGRectMake(LPMT_ACCEPT_BUTTON_MARGIN,
-                                     LPMT_ACCEPT_BUTTON_MARGIN * 2 + LPMT_TITLE_LABEL_HEIGHT + statusBarHeight,
+                                     LPMT_ACCEPT_BUTTON_MARGIN * 2 + LPMT_TITLE_LABEL_HEIGHT * [[context numberNamed:LPMT_ARG_TITLE_NUMBEROFLINES] doubleValue] + statusBarHeight,
                                      _popupView.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN * 2,
-                                     _popupView.frame.size.height - LPMT_ACCEPT_BUTTON_MARGIN * 4 - LPMT_TITLE_LABEL_HEIGHT - LPMT_ACCEPT_BUTTON_HEIGHT - statusBarHeight);
+                                     _popupView.frame.size.height - statusBarHeight - LPMT_ACCEPT_BUTTON_MARGIN - _titleLabel.frame.size.height - LPMT_ACCEPT_BUTTON_MARGIN - _acceptButton.frame.size.height - LPMT_ACCEPT_BUTTON_MARGIN);
 }
 
 - (void)refreshPopupContent
@@ -1072,6 +1080,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                 }
                 _titleLabel.text = [context stringNamed:LPMT_ARG_TITLE_TEXT];
                 _titleLabel.textColor = [context colorNamed:LPMT_ARG_TITLE_COLOR];
+                _titleLabel.numberOfLines = [[context numberNamed: LPMT_ARG_TITLE_NUMBEROFLINES] intValue];
                 _messageLabel.text = [context stringNamed:LPMT_ARG_MESSAGE_TEXT];
                 _messageLabel.textColor = [context colorNamed:LPMT_ARG_MESSAGE_COLOR];
                 [self updatePopupLayout];
