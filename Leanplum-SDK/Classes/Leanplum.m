@@ -725,6 +725,15 @@ BOOL inForeground = NO;
          @"methods."];
         return;
     }
+    
+    // Leanplum should not be started in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self startWithUserId:userId userAttributes:attributes responseHandler:startResponse];
+        });
+        return;
+    }
+    
     LP_TRY
     NSDate *startTime = [NSDate date];
     if (startResponse) {
@@ -1844,6 +1853,15 @@ BOOL inForeground = NO;
 {
     RETURN_IF_NOOP;
     LP_TRY
+    
+    // Track should not be called in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self track:event withValue:value andInfo:info andArgs:args andParameters:params];
+        });
+        return;
+    }
+    
     NSString *valueStr = [NSString stringWithFormat:@"%f", value];
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                  valueStr, LP_PARAM_VALUE, nil];

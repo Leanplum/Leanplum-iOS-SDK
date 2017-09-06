@@ -568,6 +568,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 // Displays the Center Popup, Interstitial and Web Interstitial.
 - (void)showPopup
 {
+    // UI can't be modified in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self showPopup];
+        });
+        return;
+    }
+    
     LPActionContext *context = _contexts.lastObject;
     BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
@@ -714,6 +722,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                           track:(BOOL)track
 {
     if (!_popupGroup) {
+        return;
+    }
+    
+    // UI can't be modified in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self closePopupWithAnimation:animated actionNamed:actionName track:track];
+        });
         return;
     }
     

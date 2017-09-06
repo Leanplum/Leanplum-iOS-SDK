@@ -84,6 +84,14 @@
                                  requests:(NSArray *)requests
                                 operation:(id<LPNetworkOperationProtocol>)operation
 {
+    // Ensure all callbacks are on main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self invokeSuccessCallbacksOnResponses:responses requests:requests operation:operation];
+        });
+        return;
+    }
+    
     // Invoke and remove the callbacks that have errors.
     [LPEventCallbackManager invokeErrorCallbacksOnResponses:responses];
     
@@ -117,6 +125,14 @@
 
 + (void)invokeErrorCallbacksOnResponses:(id)responses
 {
+    // Ensure all callbacks are on main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self invokeErrorCallbacksOnResponses:responses];
+        });
+        return;
+    }
+    
     // Handle errors that don't return an HTTP error code.
     NSMutableDictionary *callbackMap = [LPEventCallbackManager eventCallbackMap];
     for (NSUInteger i = 0; i < [LPResponse numResponsesInDictionary:responses]; i++) {
