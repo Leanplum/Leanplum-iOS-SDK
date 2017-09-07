@@ -304,7 +304,7 @@ static NSDictionary *_requestHheaders;
     NSBlockOperation *requestOperation = [NSBlockOperation new];
     __weak NSBlockOperation *weakOperation = requestOperation;
     
-    void (^operationBlock)() = ^void() {
+    void (^operationBlock)(void) = ^void() {
         if ([weakOperation isCancelled]) {
             return;
         }

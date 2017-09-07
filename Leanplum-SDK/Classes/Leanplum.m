@@ -1163,7 +1163,7 @@ BOOL inForeground = NO;
     UIBackgroundTaskIdentifier __block backgroundTask;
     
     // Block that finish task.
-    void (^finishTaskHandler)() = ^(){
+    void (^finishTaskHandler)(void) = ^(){
         [application endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
     };
@@ -1606,6 +1606,8 @@ BOOL inForeground = NO;
 }
 
 #if LP_NOT_TV
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)())completionHandler
@@ -1616,8 +1618,11 @@ BOOL inForeground = NO;
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
 }
+#pragma clang diagnostic pop
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
                  completionHandler:(void (^)())completionHandler
@@ -1628,6 +1633,7 @@ BOOL inForeground = NO;
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
 }
+#pragma clang diagnostic pop
 
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block
 {

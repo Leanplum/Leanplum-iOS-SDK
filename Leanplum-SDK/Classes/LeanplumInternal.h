@@ -80,8 +80,8 @@
 
 @interface Leanplum ()
 
-typedef void (^LeanplumStartIssuedBlock)();
-typedef void (^LeanplumEventsChangedBlock)();
+typedef void (^LeanplumStartIssuedBlock)(void);
+typedef void (^LeanplumEventsChangedBlock)(void);
 typedef void (^LeanplumHandledBlock)(BOOL success);
 
 typedef enum {
@@ -152,7 +152,7 @@ void LPLog(LPLogType type, NSString* format, ...);
     BOOL _didLoad;
 }
 
-typedef void (^LeanplumInboxCacheUpdateBlock)();
+typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 
 #pragma mark - LPInbox properties
 

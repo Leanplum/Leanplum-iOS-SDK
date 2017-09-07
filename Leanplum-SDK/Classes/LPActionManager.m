@@ -191,6 +191,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 }
 
 #if LP_NOT_TV
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
       withCompletionHandler:(void (^)())completionHandler
@@ -226,6 +228,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     }
     state.calledHandleNotification = NO;
 }
+#pragma clang diagnostic pop
 #endif
 
 #if LP_NOT_TV
@@ -538,7 +541,7 @@ static dispatch_once_t leanplum_onceToken;
         return;
     }
 
-    void (^onContent)() = ^{
+    void (^onContent)(void) = ^{
 #if LP_NOT_TV
         if (completionHandler && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             completionHandler(UIBackgroundFetchResultNewData);
@@ -824,7 +827,7 @@ static dispatch_once_t leanplum_onceToken;
         }
         
         // Adding body message manually.
-        mutableInfo[@"aps"] = @{@"alert":@{@"body": message} };
+        mutableInfo[@"aps"] = @{@"alert":@{@"body": message ?: @""} };
 
         // Specify open action
         if (openAction) {

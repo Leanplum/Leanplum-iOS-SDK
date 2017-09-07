@@ -158,7 +158,7 @@
     void (^responseBlock)(NSData *, NSURLResponse *, NSError *) =
             ^(NSData *data, NSURLResponse *response, NSError *error) {
 
-        void (^callbackBlock)() = ^(){
+        void (^callbackBlock)(void) = ^(){
             self.response = response;
             self.dataFromResponse = data;
 

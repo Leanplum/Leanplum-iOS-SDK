@@ -59,7 +59,7 @@
               defaultValue:(NSString *__nullable)defaultValue;
 + (BOOL)maybeDownloadFile:(NSString *__nullable)value
              defaultValue:(NSString *__nullable)defaultValue
-               onComplete:(void (^__nullable)())complete;
+               onComplete:(void (^__nullable)(void))complete;
 + (NSString *__nullable)fileValue:(NSString *__nonnull)stringValue
                  withDefaultValue:(NSString *__nullable)defaultValue;
 

@@ -736,7 +736,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     LPActionContext *context = _contexts.lastObject;
     [_contexts removeLastObject];
     
-    void (^finishCallback)() = ^() {
+    void (^finishCallback)(void) = ^() {
         [self->_popupGroup removeFromSuperview];
         if (actionName) {
             if (track) {

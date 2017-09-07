@@ -559,7 +559,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
 // Returns whether the file is going to be downloaded.
 + (BOOL)maybeDownloadFile:(NSString *)value
              defaultValue:(NSString *)defaultValue
-               onComplete:(void (^)())complete
+               onComplete:(void (^)(void))complete
 {
     if (IS_NOOP) {
         return NO;
