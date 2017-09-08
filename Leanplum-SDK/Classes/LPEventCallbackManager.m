@@ -40,16 +40,36 @@
 - (void)invokeResponseWithOperation:(id<LPNetworkOperationProtocol>)operation
                            response:(id)response
 {
-    if (self.responseBlock) {
-        self.responseBlock(operation, response);
+    if (!self.responseBlock) {
+        return;
     }
+    
+    // Ensure all callbacks are on main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.responseBlock(operation, response);
+        });
+        return;
+    }
+
+    self.responseBlock(operation, response);
 }
 
 - (void)invokeError:(NSError *)error
 {
-    if (self.errorBlock) {
-        self.errorBlock(error);
+    if (!self.errorBlock) {
+        return;
     }
+    
+    // Ensure all callbacks are on main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.errorBlock(error);
+        });
+        return;
+    }
+    
+    self.errorBlock(error);
 }
 
 @end
@@ -84,14 +104,6 @@
                                  requests:(NSArray *)requests
                                 operation:(id<LPNetworkOperationProtocol>)operation
 {
-    // Ensure all callbacks are on main thread.
-    if (![NSThread isMainThread]) {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self invokeSuccessCallbacksOnResponses:responses requests:requests operation:operation];
-        });
-        return;
-    }
-    
     // Invoke and remove the callbacks that have errors.
     [LPEventCallbackManager invokeErrorCallbacksOnResponses:responses];
     
@@ -125,14 +137,6 @@
 
 + (void)invokeErrorCallbacksOnResponses:(id)responses
 {
-    // Ensure all callbacks are on main thread.
-    if (![NSThread isMainThread]) {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self invokeErrorCallbacksOnResponses:responses];
-        });
-        return;
-    }
-    
     // Handle errors that don't return an HTTP error code.
     NSMutableDictionary *callbackMap = [LPEventCallbackManager eventCallbackMap];
     for (NSUInteger i = 0; i < [LPResponse numResponsesInDictionary:responses]; i++) {

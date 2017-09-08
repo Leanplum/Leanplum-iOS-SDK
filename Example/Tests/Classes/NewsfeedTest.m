@@ -359,7 +359,9 @@
     [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
-            XCTAssertEqual(apiMethod, @"DidNotDownload");
+            if (![apiMethod isEqual:@"DidNotDownload"]) {
+                return NO;
+            }
             dispatch_semaphore_signal(semaphor);
             return YES;
         }];

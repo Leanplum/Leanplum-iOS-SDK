@@ -86,6 +86,10 @@
 
 - (void)test_migrateRequests
 {
+    // Clean up.
+    [[LeanplumRequest sendNowQueue] cancelAllOperations];
+    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    
     NSFileManager *fileManager = [NSFileManager defaultManager];
     if ([fileManager fileExistsAtPath:[LPDatabase sqliteFilePath]]) {
         [fileManager removeItemAtPath:[LPDatabase sqliteFilePath] error:nil];
