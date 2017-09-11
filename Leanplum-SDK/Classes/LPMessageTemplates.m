@@ -985,16 +985,18 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 #endif
         
         // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
-        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH];
+        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH] ?: @"100%";
         CGFloat htmlWidth = screenWidth;
-        if ([contextArgWidth hasSuffix:@"%"]) {
-            NSString *percentageValue = [contextArgWidth stringByReplacingOccurrencesOfString:@"%"
-                                                                                   withString:@""];
-            htmlWidth = screenWidth * [percentageValue floatValue] / 100.;
-        } else {
-            NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
-            NSArray *components = [contextArgWidth componentsSeparatedByCharactersInSet:letterSet];
-            htmlWidth = [[components componentsJoinedByString:@""] floatValue];
+        if (contextArgWidth && [contextArgWidth length] > 0) {
+            if ([contextArgWidth hasSuffix:@"%"]) {
+                NSString *percentageValue = [contextArgWidth stringByReplacingOccurrencesOfString:@"%"
+                                                                                       withString:@""];
+                htmlWidth = screenWidth * [percentageValue floatValue] / 100.;
+            } else {
+                NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
+                NSArray *components = [contextArgWidth componentsSeparatedByCharactersInSet:letterSet];
+                htmlWidth = [[components componentsJoinedByString:@""] floatValue];
+            }
         }
 
         CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
