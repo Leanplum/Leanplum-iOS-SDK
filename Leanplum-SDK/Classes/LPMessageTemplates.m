@@ -985,7 +985,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 #endif
         
         // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
-        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH] ?: @"100%";
+        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH];
         CGFloat htmlWidth = screenWidth;
         if (contextArgWidth && [contextArgWidth length] > 0) {
             if ([contextArgWidth hasSuffix:@"%"]) {
