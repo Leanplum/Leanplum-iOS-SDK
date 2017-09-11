@@ -986,7 +986,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         
         // Calculate HTML width by percentage or others (px or pt).
         NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH];
-        contextArgWidth = [contextArgWidth stringByReplacingOccurrencesOfString:@" " withString:@""];
         CGFloat htmlWidth = screenWidth;
         if ([contextArgWidth hasSuffix:@"%"]) {
             NSString *percentageValue = [contextArgWidth stringByReplacingOccurrencesOfString:@"%"
