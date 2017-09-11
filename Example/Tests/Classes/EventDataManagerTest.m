@@ -252,7 +252,6 @@
     // UUID should be the same.
     [Leanplum track:@"sample"];
     [Leanplum track:@"sample2"];
-    NSLog(@"%ld", [[LeanplumRequest sendNowQueue] operationCount]);
     [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 3);

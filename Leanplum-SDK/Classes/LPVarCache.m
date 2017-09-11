@@ -233,6 +233,11 @@ static RegionInitBlock regionInitBlock;
 
 + (void)computeMergedDictionary
 {
+    if (!diffs) {
+        merged = [self mergeHelper:valuesFromClient withDiffs:diffs];
+        return;
+    }
+    
     // Merger helper will mutate diffs.
     // We need to lock it in case multiple threads will be accessing this.
     @synchronized (diffs) {

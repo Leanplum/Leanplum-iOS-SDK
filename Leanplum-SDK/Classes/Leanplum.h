@@ -122,16 +122,16 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
  * @{
  */
 typedef void (^LeanplumStartBlock)(BOOL success);
-typedef void (^LeanplumVariablesChangedBlock)();
-typedef void (^LeanplumInterfaceChangedBlock)();
+typedef void (^LeanplumVariablesChangedBlock)(void);
+typedef void (^LeanplumInterfaceChangedBlock)(void);
 typedef void (^LeanplumSetLocationBlock)(BOOL success);
 // Returns whether the action was handled.
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
-typedef void (^LeanplumHandleNotificationBlock)();
+typedef void (^LeanplumHandleNotificationBlock)(void);
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
 typedef NSUInteger LeanplumUIBackgroundFetchResult; // UIBackgroundFetchResult
 typedef void (^LeanplumFetchCompletionBlock)(LeanplumUIBackgroundFetchResult result);
-typedef void (^LeanplumPushSetupBlock)();
+typedef void (^LeanplumPushSetupBlock)(void);
 /**@}*/
 
 /**
@@ -405,6 +405,7 @@ typedef enum {
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)())completionHandler;
@@ -414,9 +415,12 @@ typedef enum {
 /**
  * Call this to handle custom actions for remote notifications.
  */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
                  completionHandler:(void (^)())completionHandler;
+#pragma clang diagnostic pop
 
 /*
  * Block to call that decides whether a notification should be displayed when it is
