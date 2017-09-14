@@ -976,7 +976,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         CGFloat statusBarOffset = 0;
 #if LP_NOT_TV
         UIApplication *app = [UIApplication sharedApplication];
-        if (app.statusBarHidden) {
+        if (!app.statusBarHidden) {
             statusBarOffset = app.statusBarFrame.size.height;
         }
 #endif
@@ -990,7 +990,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         }
         
         // HTML banner logic to support top/bottom alignment with dynamic size.
-        CGFloat htmlY = yOffset;
+        CGFloat htmlY = yOffset + statusBarOffset;
         NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
         if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
             htmlY = screenHeight - htmlHeight - yOffset - statusBarOffset;
