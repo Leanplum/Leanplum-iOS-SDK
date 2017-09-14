@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/leanplum'
   s.tvos.deployment_target = '8.0'
   s.requires_arc = true
-  s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
+  s.source = { :git => 'https://github.com/Leanplum/Leanplum-tvOS-SDK.git', :tag => s.version.to_s }
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.library = 'sqlite3'
