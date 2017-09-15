@@ -79,6 +79,7 @@
 #define LPMT_ARG_HTML_HEIGHT @"HTML Height"
 #define LPMT_ARG_HTML_WIDTH @"HTML Width"
 #define LPMT_ARG_HTML_ALIGN @"HTML Align"
+#define LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE @"Tap Outside to Close"
 #define LPMT_ARG_HTML_ALIGN_TOP @"Top"
 #define LPMT_ARG_HTML_ALIGN_BOTTOM @"Bottom"
 #define LPMT_ARG_APP_ICON @"__iOSAppIcon"
@@ -136,6 +137,33 @@ context.actionName, exception, [exception callStackSymbols])
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
+#pragma mark Helper View Class
+@interface LPHitView : UIView
+@property (strong, nonatomic) void (^callback)(void);
+@end
+
+@implementation LPHitView
+- (id)initWithCallback:(void (^)(void))callback
+{
+    if (self = [super init]) {
+        self.callback = [callback copy];
+    }
+    return self;
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hitView = [super hitTest:point withEvent:event];
+    if (hitView == self) {
+        if (self.callback) {
+            self.callback();
+        }
+        return nil;
+    }
+    return hitView;
+}
+@end
+
 @implementation LPMessageTemplatesClass {
     NSMutableArray *_contexts;
     UIView *_popupView;
@@ -147,6 +175,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     UIButton *_cancelButton;
     UIButton *_dismissButton;
     UIButton *_overlayView;
+    LPHitView *_closePopupView;
     BOOL _webViewNeedsFade;
 }
 
@@ -456,6 +485,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
                     [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
                     [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
+                    [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
                     [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                     [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
              withResponder:messageResponder];
@@ -774,6 +804,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     _popupGroup = nil;
     _dismissButton = nil;
     _overlayView = nil;
+    _closePopupView = nil;
     
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
@@ -997,6 +1028,17 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                 NSArray *components = [contextArgWidth componentsSeparatedByCharactersInSet:letterSet];
                 htmlWidth = [[components componentsJoinedByString:@""] floatValue];
             }
+        }
+        
+        // Tap outside to close Banner
+        if ([context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]) {
+            _closePopupView = [[LPHitView alloc] initWithCallback:^{
+                [self dismiss];
+                [_closePopupView removeFromSuperview];
+            }];
+            _closePopupView.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+            [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
+            [[UIApplication sharedApplication].keyWindow bringSubviewToFront:_popupGroup];
         }
 
         CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
