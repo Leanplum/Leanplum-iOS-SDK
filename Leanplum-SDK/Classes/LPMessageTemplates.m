@@ -738,8 +738,15 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     LPActionContext *context = _contexts.lastObject;
     [_contexts removeLastObject];
     
+    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
+        [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
+        ((UIWebView *)_popupView).delegate = nil;
+        [(UIWebView *)_popupView stopLoading];
+    }
+    
     void (^finishCallback)(void) = ^() {
-        [self->_popupGroup removeFromSuperview];
+        [self removeAllViewsFrom:_popupGroup];
+        
         if (actionName) {
             if (track) {
                 [context runTrackedActionNamed:actionName];
@@ -759,25 +766,18 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         finishCallback();
     }
     
-    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-        [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
-        ((UIWebView *)_popupView).delegate = nil;
-        [(UIWebView *)_popupView stopLoading];
-    }
-
-    _popupView = nil;
-    _popupBackground = nil;
-    _acceptButton = nil;
-    _cancelButton = nil;
-    _titleLabel = nil;
-    _messageLabel = nil;
-    _popupGroup = nil;
-    _dismissButton = nil;
-    _overlayView = nil;
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
                                                   object:nil];
+}
+
+- (void)removeAllViewsFrom:(UIView *)view
+{
+    [view.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
+        [self removeAllViewsFrom:obj];
+    }];
+    [view removeFromSuperview];
+    view = nil;
 }
 
 - (void)accept
