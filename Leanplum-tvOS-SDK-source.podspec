@@ -10,10 +10,7 @@ Pod::Spec.new do |s|
   s.name = 'Leanplum-tvOS-SDK-source'
   s.version = '2.0.3-SNAPSHOT'
   s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
-  s.description = <<-DESC
-Leanplum’s integrated solution delivers meaningful engagement across the mobile experience. 
-We offer Automation, Personalization, A/B Testing, and Analytics.
-    DESC
+  s.description = 'Leanplum delivers meaningful engagement across channels through Automation, Personalization, A/B Testing, and Analytics.'
   s.homepage = 'https://www.leanplum.com'
   s.license = { :type => 'Commercial', :text => 'See https://www.leanplum.com/tos' }
   s.author = { 'Leanplum' => 'support@leanplum.com' }
