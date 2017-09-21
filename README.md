@@ -1,7 +1,14 @@
 ![Leanplum - ](Leanplum.svg)
 
+<table align="center">
+  <tr>
+    <td><img src='https://img.shields.io/badge/branch-master-blue.svg'>
+    <img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk-master' alt="Build status"></td>
+    <td><img src='https://img.shields.io/badge/branch-develop-red.svg'>
+    <img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk-develop' alt="Build status"></td> 
+  </tr>
+</table>
 <p align="center">
-<img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk' alt="Build status">
 <img src="https://img.shields.io/cocoapods/dt/Leanplum-iOS-SDK.svg?maxAge=3600" alt="Downloads" />
 <img src="https://img.shields.io/badge/platform-iOS-blue.svg?style=flat" alt="Platform iOS" />
 <a href="https://cocoapods.org/pods/Leanplum-iOS-SDK"><img src="https://img.shields.io/cocoapods/v/Leanplum-iOS-SDK.svg?style=flat" alt="CocoaPods compatible" /></a>
