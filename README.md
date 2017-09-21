@@ -1,6 +1,7 @@
 ![Leanplum - ](Leanplum.svg)
 
-<table align="center">
+<p align="center">
+<table align="center" cellspacing="0" cellpadding="0" border="0">
   <tr>
     <td><img src='https://img.shields.io/badge/branch-master-blue.svg'>
     <img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk-master' alt="Build status"></td>
@@ -8,6 +9,7 @@
     <img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk-develop' alt="Build status"></td> 
   </tr>
 </table>
+</p>
 <p align="center">
 <img src="https://img.shields.io/cocoapods/dt/Leanplum-iOS-SDK.svg?maxAge=3600" alt="Downloads" />
 <img src="https://img.shields.io/badge/platform-iOS-blue.svg?style=flat" alt="Platform iOS" />
