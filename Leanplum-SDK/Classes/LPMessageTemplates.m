@@ -79,6 +79,7 @@
 #define LPMT_ARG_HTML_HEIGHT @"HTML Height"
 #define LPMT_ARG_HTML_WIDTH @"HTML Width"
 #define LPMT_ARG_HTML_ALIGN @"HTML Align"
+#define LPMT_ARG_HTML_Y_OFFSET @"HTML Y Offset"
 #define LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE @"Tap Outside to Close"
 #define LPMT_ARG_HTML_ALIGN_TOP @"Top"
 #define LPMT_ARG_HTML_ALIGN_BOTTOM @"Bottom"
@@ -485,6 +486,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
                     [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
                     [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
+                    [LPActionArg argNamed:LPMT_ARG_HTML_Y_OFFSET withString:@"0px"],
                     [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
                     [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                     [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
@@ -995,39 +997,42 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     _popupView.center = CGPointMake(screenWidth / 2.0, screenHeight / 2.0);
     
     if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
-        // HTML5 banner logic to support top/bottom alignment with dynamic size.
+        // Calculate the height. Fullscreen by default.
         CGFloat contextArgHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
         CGFloat htmlHeight = contextArgHeight;
         if (htmlHeight < 1) {
             htmlHeight = screenHeight;
         }
-        CGFloat htmlY = 0;
-        NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
-        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
-            htmlY = screenHeight - htmlHeight;
-        }
+        
+        // Status bar offset.
+        CGFloat statusBarOffset = 0;
 #if LP_NOT_TV
-        // Offset Banner if the status bar is present.
         UIApplication *app = [UIApplication sharedApplication];
-        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_TOP] &&
-            contextArgHeight > 1 && !app.statusBarHidden) {
-            htmlY += app.statusBarFrame.size.height;
+        if (!app.statusBarHidden) {
+            statusBarOffset = app.statusBarFrame.size.height;
         }
 #endif
+        
+        // Calculate Y Offset.
+        CGFloat yOffset = 0;
+        NSString *contextArgYOffset = [context stringNamed:LPMT_ARG_HTML_Y_OFFSET];
+        if (contextArgYOffset && [contextArgYOffset length] > 0) {
+            CGFloat percentRange = screenHeight - htmlHeight - statusBarOffset;
+            yOffset = [self valueFromHtmlString:contextArgYOffset percentRange:percentRange];
+        }
+        
+        // HTML banner logic to support top/bottom alignment with dynamic size.
+        CGFloat htmlY = yOffset + statusBarOffset;
+        NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
+        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
+            htmlY = screenHeight - htmlHeight - yOffset - statusBarOffset;
+        }
         
         // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
         NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH] ?: @"100%";
         CGFloat htmlWidth = screenWidth;
         if (contextArgWidth && [contextArgWidth length] > 0) {
-            if ([contextArgWidth hasSuffix:@"%"]) {
-                NSString *percentageValue = [contextArgWidth stringByReplacingOccurrencesOfString:@"%"
-                                                                                       withString:@""];
-                htmlWidth = screenWidth * [percentageValue floatValue] / 100.;
-            } else {
-                NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
-                NSArray *components = [contextArgWidth componentsSeparatedByCharactersInSet:letterSet];
-                htmlWidth = [[components componentsJoinedByString:@""] floatValue];
-            }
+            htmlWidth = [self valueFromHtmlString:contextArgWidth percentRange:screenWidth];
         }
         
         // Tap outside to close Banner
@@ -1065,6 +1070,26 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     if (!isWeb) {
         _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     }
+}
+
+/**
+ * Get float value by parsing the html string that can have either % or px as a suffix.
+ */
+- (CGFloat)valueFromHtmlString:(NSString *)htmlString percentRange:(CGFloat)percentRange
+{
+    if (!htmlString || [htmlString length] == 0) {
+        return 0;
+    }
+
+    if ([htmlString hasSuffix:@"%"]) {
+        NSString *percentageValue = [htmlString stringByReplacingOccurrencesOfString:@"%"
+                                                                          withString:@""];
+        return percentRange * [percentageValue floatValue] / 100.;
+    }
+    
+    NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
+    NSArray *components = [htmlString componentsSeparatedByCharactersInSet:letterSet];
+    return [[components componentsJoinedByString:@""] floatValue];
 }
 
 - (CGSize)getTextSizeFromButton:(UIButton *)button
