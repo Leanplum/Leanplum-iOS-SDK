@@ -1690,6 +1690,7 @@ BOOL inForeground = NO;
 {
     NSDictionary *messages = [LPVarCache messages];
     NSMutableArray *actionContexts = [NSMutableArray array];
+    
     for (NSString *messageId in [messages allKeys]) {
         if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
             continue;
@@ -1750,10 +1751,7 @@ BOOL inForeground = NO;
         if (result.matchedTrigger) {
             [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
             if (result.matchedLimit) {
-                NSNumber *priority = messageConfig[@"priority"];
-                if (!priority) {
-                    priority = [NSNumber numberWithInt:DEFAULT_PRIORITY];
-                }
+                NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
                 LPActionContext *context = [LPActionContext
                                             actionContextWithName:actionType
                                             args:[messageConfig objectForKey:LP_KEY_VARS]
@@ -1766,27 +1764,35 @@ BOOL inForeground = NO;
         }
     }
 
-    if ([actionContexts count] > 0) {
-        [LPActionContext sortByPriority:actionContexts];
-        NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
-        for (LPActionContext *actionContext in actionContexts) {
-            NSNumber *priority = [actionContext priority];
-            if ([priority intValue] <= [priorityThreshold intValue]) {
-              if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
-                  [[LPInternalState sharedState].actionManager
-                      recordHeldBackImpression:[actionContext messageId]
-                             originalMessageId:[actionContext originalMessageId]];
-              } else {
-                  [self triggerAction:actionContext handledBlock:^(BOOL success) {
-                      if (success) {
-                          [[LPInternalState sharedState].actionManager
-                              recordMessageImpression:[actionContext messageId]];
-                      }
-                  }];
-              }
-            } else {
-                break;
-            }
+    // Return if there are no action to trigger.
+    if ([actionContexts count] == 0) {
+        return;
+    }
+
+    // Sort the action by priority and only show one message.
+    // Make sure to capture the held back.
+    [LPActionContext sortByPriority:actionContexts];
+    NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
+    BOOL __block messageActionTriggered = NO;
+    
+    for (LPActionContext *actionContext in actionContexts) {
+        NSNumber *priority = [actionContext priority];
+        if (priority.intValue > priorityThreshold.intValue) {
+            break;
+        }
+        
+        if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
+            [[LPInternalState sharedState].actionManager
+                 recordHeldBackImpression:[actionContext messageId]
+                        originalMessageId:[actionContext originalMessageId]];
+        } else if (!messageActionTriggered){
+            messageActionTriggered = YES;
+            [self triggerAction:actionContext handledBlock:^(BOOL success) {
+                if (success) {
+                    [[LPInternalState sharedState].actionManager
+                         recordMessageImpression:[actionContext messageId]];
+                }
+            }];
         }
     }
 }
