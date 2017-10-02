@@ -82,10 +82,13 @@
  */
 + (BOOL)supportsAlternateIcons
 {
+    // Run on main thread.
     if (![NSThread isMainThread]) {
+        BOOL __block value = NO;
         dispatch_sync(dispatch_get_main_queue(), ^{
-            return [self supportsAlternateIcons];
+            value = [self supportsAlternateIcons];
         });
+        return value;
     }
     
     UIApplication *app = [UIApplication sharedApplication];
