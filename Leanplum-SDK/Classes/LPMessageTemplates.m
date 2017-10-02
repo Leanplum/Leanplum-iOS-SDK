@@ -1218,6 +1218,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)setAlternateIconWithFilename:(NSString *)filename
 {
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self setAlternateIconWithFilename:filename];
+            return;
+        });
+    }
+    
     NSString *iconName = [filename stringByReplacingOccurrencesOfString:LPMT_ICON_FILE_PREFIX
                                                              withString:@""];
     iconName = [iconName stringByReplacingOccurrencesOfString:@".png" withString:@""];

@@ -82,6 +82,12 @@
  */
 + (BOOL)supportsAlternateIcons
 {
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            return [self supportsAlternateIcons];
+        });
+    }
+    
     UIApplication *app = [UIApplication sharedApplication];
     if ([app respondsToSelector:@selector(supportsAlternateIcons)]) {
         return [app supportsAlternateIcons];
