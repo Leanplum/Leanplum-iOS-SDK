@@ -72,11 +72,11 @@
     [OHHTTPStubs removeAllStubs];
 }
 
-- (void)test_supportsAlternateIcons {
-    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3")) {
-        XCTAssertTrue([LPAppIconManager supportsAlternateIcons]);
-    }
-}
+//- (void)test_supportsAlternateIcons {
+//    if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3")) {
+//        XCTAssertTrue([LPAppIconManager supportsAlternateIcons]);
+//    }
+//}
 
 - (void)test_primaryIconBundle {
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3")) {
