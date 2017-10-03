@@ -129,6 +129,7 @@ static BOOL swizzled = NO;
     [LeanplumRequest reset];
     [LeanplumHelper reset_user_defaults];
     [[LeanplumRequest sendNowQueue] cancelAllOperations];
+    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
 }
 
 + (dispatch_time_t)default_dispatch_time {
