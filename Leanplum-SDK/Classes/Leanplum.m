@@ -1773,7 +1773,7 @@ BOOL inForeground = NO;
     // Make sure to capture the held back.
     [LPActionContext sortByPriority:actionContexts];
     NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
-    BOOL __block messageActionTriggered = NO;
+    BOOL messageActionTriggered = NO;
     
     for (LPActionContext *actionContext in actionContexts) {
         NSNumber *priority = [actionContext priority];
@@ -1785,7 +1785,7 @@ BOOL inForeground = NO;
             [[LPInternalState sharedState].actionManager
                  recordHeldBackImpression:[actionContext messageId]
                         originalMessageId:[actionContext originalMessageId]];
-        } else if (!messageActionTriggered){
+        } else if (!messageActionTriggered) {
             messageActionTriggered = YES;
             [self triggerAction:actionContext handledBlock:^(BOOL success) {
                 if (success) {
