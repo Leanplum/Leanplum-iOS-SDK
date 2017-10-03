@@ -3523,7 +3523,17 @@ void LPLog(LPLogType type, NSString *format, ...) {
         [Leanplum throwError:@"[LPActionContext dictionaryNamed:] Empty name parameter provided."];
         return nil;
     }
-    return (NSDictionary *) [self objectNamed:name];
+    LP_TRY
+    id object = [self objectNamed:name];
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        return (NSDictionary *) object;
+    }
+    
+    if ([object isKindOfClass:[NSString class]]) {
+        return [LPJSON JSONFromString:object];
+    }
+    LP_END_TRY
+    return nil;
 }
 
 - (NSArray *)arrayNamed:(NSString *)name
