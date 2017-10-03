@@ -84,14 +84,14 @@
 {
     // Run on main thread.
     if (![NSThread isMainThread]) {
-        BOOL __block value = NO;
+        BOOL __block outputValue = NO;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         dispatch_async(dispatch_get_main_queue(), ^{
-            value = [self supportsAlternateIcons];
+            outputValue = [self supportsAlternateIcons];
             dispatch_semaphore_signal(semaphore);
         });
         dispatch_semaphore_wait(semaphore, 0.01*NSEC_PER_SEC);
-        return value;
+        return outputValue;
     }
     
     UIApplication *app = [UIApplication sharedApplication];
