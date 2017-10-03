@@ -301,8 +301,9 @@ static NSObject *updatingLock;
             
             // Download images.
             BOOL willDownloadImages = NO;
-            for (LPInboxMessage *message in messages) {
-                willDownloadImages |= [message downloadImageIfPrefetchingEnabled];
+            for (NSString *messageId in messages) {
+                LPInboxMessage *inboxMessage = [self messageForId:messageId];
+                willDownloadImages |= [inboxMessage downloadImageIfPrefetchingEnabled];
             }
 
             // Trigger inbox changed when all images are downloaded.
