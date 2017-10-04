@@ -22,6 +22,7 @@ Analytics.
   s.requires_arc = true
   s.source = { :git => 'https://github.com/Leanplum/Leanplum-SDK-Internal.git', :tag => s.version.to_s }
   s.ios.deployment_target = '7.0'
+  s.tvos.deployment_target = '7.0'
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.library = 'sqlite3'

@@ -90,16 +90,10 @@ main() {
   CURRENTCONFIG_X86_DEVICE_DIR=${CURRENTCONFIG_X86_DEVICE_DIR:-$default}
   default="${BUILD_DIR}${X8664_DIR}/${CONFIGURATION}-iphonesimulator"
   CURRENTCONFIG_X8664_SIMULATOR_DIR=${CURRENTCONFIG_X8664_SIMULATOR_DIR:-$default}
-  default="${BUILD_DIR}${ARM64_DIR}/${CONFIGURATION}-appletvos"
-  CURRENTCONFIG_ARM64_TV_DEVICE_DIR=${CURRENTCONFIG_ARM64_TV_DEVICE_DIR:-$default}
-  default="${BUILD_DIR}${X8664_DIR}/${CONFIGURATION}-appletvsimulator"
-  CURRENTCONFIG_X8664_TV_SIMULATOR_DIR=${CURRENTCONFIG_X8664_TV_SIMULATOR_DIR:-$default}
   ACTION="clean build"
 
   DEVICE_SDK="iphoneos"
-  TVOS_SDK="appletvos"
   SIM_SDK="iphonesimulator"
-  TVOS_SIM_SDK="appletvsimulator"
 
   rm -rf "$RELEASE_DIR_BASE"
   mkdir -p "$RELEASE_DIR_BASE"
@@ -111,7 +105,6 @@ main() {
   pod install
   cd "$SDK_DIR/Example/Pods"
   build_ios_dylib
-  build_tvos_dylib
 
   # Build Static Framework
   RELEASE_DIR="$RELEASE_DIR_BASE/static"
@@ -138,27 +131,27 @@ main() {
 build_ios() {
   echo "Starting build for Leanplum-SDK (iOS)"
 
-  run "Building Leanplum-SDK-iOS static (device/armv7) target ..." \
+  run "Building Leanplum-SDK (device/armv7) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS static (device/armv7s) target ..." \
+  run "Building Leanplum-SDK (device/armv7s) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS static (device/arm64) target ..." \
+  run "Building Leanplum-SDK (device/arm64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS static (simulator/i386) target ..." \
+  run "Building Leanplum-SDK (simulator/i386) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='i386' VALID_ARCHS='i386' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X86_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS static (simulator/x86_64) target ..." \
+  run "Building Leanplum-SDK (simulator/x86_64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
@@ -207,27 +200,27 @@ EOF
 build_ios_dylib() {
   echo "Starting build for Leanplum-SDK (iOS)"
 
-  run "Building Leanplum-SDK-iOS dynamic (device/armv7) target ..." \
+  run "Building Leanplum-SDK (device/armv7) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS dynamic (device/armv7s) target ..." \
+  run "Building Leanplum-SDK (device/armv7s) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS dynamic (device/arm64) target ..." \
+  run "Building Leanplum-SDK (device/arm64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS dynamic (simulator/i386) target ..." \
+  run "Building Leanplum-SDK (simulator/i386) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='i386' VALID_ARCHS='i386' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X86_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-iOS dynamic (simulator/x86_64) target ..." \
+  run "Building Leanplum-SDK (simulator/x86_64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK-source" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
@@ -266,64 +259,6 @@ build_ios_dylib() {
     "${RELEASE_DIR}/Leanplum.framework/modules/module.modulemap"
 
   printf "%s\n" "Successfully built Leanplum-SDK (iOS) Framework.\n"
-}
-
-#######################################
-# Builds the dynamic library tvOS target.
-# Globals:
-#   None
-# Arguments:
-#   None
-# Returns:
-#   None
-#######################################
-build_tvos_dylib() {
-  echo "Starting build for Leanplum-SDK (tvOS)"
-
-  mkdir -p "${RELEASE_DIR}/"
-
-  run "Building Leanplum-SDK-tvOS dynamic (device/arm64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-tvOS-SDK-source" -sdk "${TVOS_SDK}" \
-    "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
-    BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
-    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  run "Building Leanplum-SDK-tvOS dynamic (simulator/x86_64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-tvOS-SDK-source" -sdk "${TVOS_SIM_SDK}" \
-    "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
-    BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
-    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-
-  run "Combining builds to universal fat library ..." \
-    lipo -create -output "${RELEASE_DIR}/LeanplumTV" \
-    "${CURRENTCONFIG_ARM64_TV_DEVICE_DIR}/Leanplum-tvOS-SDK-source/LeanplumTV.framework/LeanplumTV" \
-    "${CURRENTCONFIG_X8664_TV_SIMULATOR_DIR}/Leanplum-tvOS-SDK-source/LeanplumTV.framework/LeanplumTV"
-
-  # Copy generated framework
-  cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-appletvos/Leanplum-tvOS-SDK-source/"\
-"LeanplumTV.framework/" "${RELEASE_DIR}/LeanplumTV.framework"
-  rm -f "${RELEASE_DIR}/LeanplumTV.framework/LeanplumTV"
-  mv "${RELEASE_DIR}/LeanplumTV" "${RELEASE_DIR}/LeanplumTV.framework/"
-
-  # Delete unnecessary headers
-  mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/Leanplum.h" \
-    "${RELEASE_DIR}/LeanplumTV.framework/"
-  mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/LPInbox.h" \
-    "${RELEASE_DIR}/LeanplumTV.framework/"
-  rm -rf "${RELEASE_DIR}/LeanplumTV.framework/Headers"
-  mkdir "${RELEASE_DIR}/LeanplumTV.framework/Headers"
-  mv "${RELEASE_DIR}/LeanplumTV.framework/Leanplum.h" \
-    "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
-  mv "${RELEASE_DIR}/LeanplumTV.framework/LPInbox.h" \
-    "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
-
-  rm -rf "${RELEASE_DIR}/LeanplumTV.framework/_CodeSignature"
-
-  # Update modulemap with correct import, since umbrella header is not generated by cocoapods with
-  # a custom module_name set.
-  sed -i "" -e "s/Leanplum-tvOS-SDK-source-umbrella.h/Leanplum.h/g" \
-    "${RELEASE_DIR}/LeanplumTV.framework/modules/module.modulemap"
-
-  printf "%s\n" "Successfully built Leanplum-SDK (tvOS) Framework.\n"
 }
 
 main "$@"
