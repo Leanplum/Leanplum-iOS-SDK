@@ -89,6 +89,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         _deviceId = nil;
         _userAttributeChanges = [NSMutableArray array];
         _stripViewControllerFromState = NO;
+        _isScreenTrackingEnabled = NO;
+        _isInterfaceEditingEnabled = NO;
         _calledHandleNotification = NO;
     }
     return self;
@@ -1810,6 +1812,11 @@ BOOL inForeground = NO;
 {
     RETURN_IF_NOOP;
     LP_TRY
+    if (![LPInternalState sharedState].isInterfaceEditingEnabled) {
+        LPLog(LPWarning, @"LeanplumUIEditor module is required to track all screens. "
+                         @"Call allowInterfaceEditing before this method.")
+    }
+    
     BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
     [[LPInternalState sharedState] setStripViewControllerFromState:stripViewControllerFromState];
     [LPUIEditorWrapper enableAutomaticScreenTracking];

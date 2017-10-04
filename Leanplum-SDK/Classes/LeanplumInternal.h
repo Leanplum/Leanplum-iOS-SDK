@@ -45,6 +45,8 @@
         _issuedStart;
     BOOL _initializedMessageTemplates;
     BOOL _stripViewControllerFromState;
+    BOOL _isScreenTrackingEnabled;
+    BOOL _isInterfaceEditingEnabled;
     LPActionManager *_actionManager;
     NSString *_deviceId;
     NSString *_appVersion;
@@ -68,6 +70,8 @@
 @property(strong, nonatomic) NSString *deviceId;
 @property(strong, nonatomic) NSString *appVersion;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
+@property(assign, nonatomic) BOOL isScreenTrackingEnabled;
+@property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
 
 #pragma mark - LPInternalState method declaration

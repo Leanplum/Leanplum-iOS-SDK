@@ -531,7 +531,7 @@ typedef enum {
 /**
  * Automatically tracks all of the screens in the app as states.
  * You should not use this in conjunction with advanceTo as the user can only be in
- * 1 state at a time.
+ * 1 state at a time. This method requires LeanplumUIEditor module.
  */
 + (void)trackAllAppScreens;
 
@@ -549,7 +549,7 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 /**
  * Automatically tracks all of the screens in the app as states.
  * You should not use this in conjunction with advanceTo as the user can only be in
- * 1 state at a time.
+ * 1 state at a time. This method requires LeanplumUIEditor module.
  * @param trackScreenMode Choose mode for display. Default is the view controller type name.
  */
 + (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode;
