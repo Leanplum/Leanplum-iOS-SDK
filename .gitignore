@@ -95,4 +95,6 @@ Pods/
 
 Release
 Podfile.lock
+coverage-report/
+DerivedData/
 
