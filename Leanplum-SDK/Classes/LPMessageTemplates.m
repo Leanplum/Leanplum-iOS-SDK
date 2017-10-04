@@ -323,7 +323,12 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]];
+                         NSURL *url = [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]];
+                         if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                         } else {
+                             [[UIApplication sharedApplication] openURL:url];
+                         }
                      });
                      return YES;
                  }
