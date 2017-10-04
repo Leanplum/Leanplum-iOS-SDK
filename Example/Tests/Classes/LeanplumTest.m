@@ -136,7 +136,6 @@
         NSString* deviceModel = params[@"deviceModel"];
         XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
-        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
         XCTAssertNotNil(params[@"locale"]);
         XCTAssertNotNil(params[@"timezone"]);
@@ -245,7 +244,6 @@
         NSString* deviceModel = params[@"deviceModel"];
         XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
-        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
         XCTAssertNotNil(params[@"locale"]);
         XCTAssertNotNil(params[@"timezone"]);

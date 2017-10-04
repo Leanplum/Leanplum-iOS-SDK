@@ -90,11 +90,6 @@
     [[LeanplumRequest sendNowQueue] cancelAllOperations];
     [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
     
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:[LPDatabase sqliteFilePath]]) {
-        [fileManager removeItemAtPath:[LPDatabase sqliteFilePath] error:nil];
-    }
-    
     [LPEventDataManager deleteEventsWithLimit:10000];
     
     [[LPRequestStorage sharedStorage] popAllRequests];

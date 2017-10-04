@@ -149,18 +149,6 @@
 
 - (void)test_require_message_content
 {
-    // This stub have to be removed when start command is successfully executed.
-    [OHHTTPStubs stubRequestsPassingTest:
-     ^BOOL(NSURLRequest * _Nonnull request) {
-         return [request.URL.host isEqualToString:API_HOST];
-     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-         return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                    headers:@{@"Content-Type":@"application/json"}];
-     }];
-    
-    XCTAssertTrue([LeanplumHelper start_development_test]);
-    
     // Vaidate request.
     [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
@@ -192,18 +180,6 @@
 
 - (void) test_receive_notification
 {
-    // This stub have to be removed when start command is successfully executed.
-    [OHHTTPStubs stubRequestsPassingTest:
-     ^BOOL(NSURLRequest * _Nonnull request) {
-         return [request.URL.host isEqualToString:API_HOST];
-     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-         return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                    headers:@{@"Content-Type":@"application/json"}];
-     }];
-    
-    XCTAssertTrue([LeanplumHelper start_development_test]);
-    
     NSDictionary* userInfo = @{
                                @"_lpm": @"messageId",
                                @"_lpx": @"test_action",

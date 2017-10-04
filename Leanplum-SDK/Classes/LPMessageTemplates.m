@@ -322,7 +322,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
              withArguments:@[[LPActionArg argNamed:LPMT_ARG_URL withString:LPMT_DEFAULT_URL]]
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
-                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]];
+                     });
                      return YES;
                  }
                  @catch (NSException *exception) {
@@ -835,6 +837,15 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (BOOL)isPushEnabled
 {
+    // Run on main thread.
+    if (![NSThread isMainThread]) {
+        BOOL __block output = NO;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            output = [self isPushEnabled];
+        });
+        return output;
+    }
+    
     UIApplication *application = [UIApplication sharedApplication];
     BOOL enabled;
     
@@ -1204,9 +1215,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)appStorePrompt
 {
-    if (NSClassFromString(@"SKStoreReviewController")) {
-        [SKStoreReviewController requestReview];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (NSClassFromString(@"SKStoreReviewController")) {
+            [SKStoreReviewController requestReview];
+        }
+    });
 }
 
 - (BOOL)hasAlternateIcon
@@ -1218,6 +1231,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)setAlternateIconWithFilename:(NSString *)filename
 {
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self setAlternateIconWithFilename:filename];
+            return;
+        });
+    }
+    
     NSString *iconName = [filename stringByReplacingOccurrencesOfString:LPMT_ICON_FILE_PREFIX
                                                              withString:@""];
     iconName = [iconName stringByReplacingOccurrencesOfString:@".png" withString:@""];
