@@ -1814,7 +1814,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPInternalState sharedState].isInterfaceEditingEnabled) {
         LPLog(LPWarning, @"LeanplumUIEditor module is required to track all screens. "
-                         @"Call allowInterfaceEditing before this method.")
+                         @"Call allowInterfaceEditing before this method.");
     }
     
     BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
