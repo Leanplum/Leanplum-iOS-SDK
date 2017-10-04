@@ -3632,24 +3632,38 @@ void LPLog(LPLogType type, NSString *format, ...) {
     // Chain to existing message.
     NSString *messageId = args[LP_VALUE_CHAIN_MESSAGE_ARG];
     NSString *actionType = args[LP_VALUE_ACTION_ARG];
+
+    void (^executeChainedMessage)(void) = ^void(void) {
+      LPActionContext *chainedActionContext =
+                          [Leanplum createActionContextForMessageId:messageId];
+                  chainedActionContext.contextualValues = self.contextualValues;
+                  chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
+                  chainedActionContext->_isRooted = _isRooted;
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
+                          if (success) {
+                              // Track when the chain message is viewed.
+                              [[LPInternalState sharedState].actionManager
+                               recordMessageImpression:[chainedActionContext messageId]];
+                          }
+                      }];
+                  });
+    };
+
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
         NSDictionary *message = [LPVarCache messages][messageId];
         if (message) {
-            LPActionContext *chainedActionContext =
-                    [Leanplum createActionContextForMessageId:messageId];
-            chainedActionContext.contextualValues = self.contextualValues;
-            chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
-            chainedActionContext->_isRooted = _isRooted;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
-                    if (success) {
-                        // Track when the chain message is viewed.
-                        [[LPInternalState sharedState].actionManager
-                         recordMessageImpression:[chainedActionContext messageId]];
-                    }
-                }];
-            });
+            executeChainedMessage();
             return;
+        } else {
+            // Message doesn't seem to be on the device,
+            // so let's forceContentUpdate and retry showing it.
+            [Leanplum forceContentUpdate: ^(void) {
+                NSDictionary *message = [LPVarCache messages][messageId];
+                if (message) {
+                    executeChainedMessage();
+                }
+            }];
         }
     }
 
