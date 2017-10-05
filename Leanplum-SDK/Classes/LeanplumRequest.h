@@ -66,6 +66,8 @@
 - (void)sendEventually;
 - (void)sendIfConnected;
 - (void)sendIfConnectedSync:(BOOL)sync;
+- (void)sendIfConnectedWithNoNetworkCallback:(void(^)(void))block;
+- (void)sendIfConnectedSync:(BOOL)sync withNoNetworkCallback:(void(^)(void))block;
 // Sends the request if another request hasn't been sent within a particular time delay.
 - (void)sendIfDelayed;
 - (void)sendFilesNow:(NSArray *)filenames;

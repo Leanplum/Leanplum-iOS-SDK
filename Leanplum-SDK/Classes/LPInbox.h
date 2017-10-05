@@ -96,6 +96,7 @@
  * This block is used when you define a callback.
  */
 typedef void (^LeanplumInboxChangedBlock)(void);
+typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 
 @interface LPInbox : NSObject
 
@@ -151,6 +152,13 @@ typedef void (^LeanplumInboxChangedBlock)(void);
 - (void)onChanged:(LeanplumInboxChangedBlock)block;
 
 /**
+ * Block to call when forceContentUpdate was called.
+ * Returns true if syncing was successful.
+ * Note: use onChanged: for UI.
+ */
+- (void)onForceContentUpdate:(LeanplumInboxSyncedBlock)block;
+
+/**
  @{
  * Adds a responder to be executed when an event happens.
  * Uses NSInvocation instead of blocks.
@@ -168,6 +176,7 @@ typedef void (^LeanplumInboxChangedBlock)(void);
 @end
 
 typedef void (^LeanplumNewsfeedChangedBlock)(void);
+typedef void (^LeanplumNewsfeedSyncedBlock)(BOOL success);
 
 @interface LPNewsfeed : NSObject
 
@@ -181,5 +190,6 @@ typedef void (^LeanplumNewsfeedChangedBlock)(void);
 - (LPNewsfeedMessage *)messageForId:(NSString *)messageId;
 - (void)addNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
 - (void)removeNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
+- (void)onForceContentUpdate:(LeanplumNewsfeedSyncedBlock)block;
 
 @end

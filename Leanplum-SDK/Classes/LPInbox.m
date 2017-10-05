@@ -386,6 +386,7 @@ static NSObject *updatingLock;
     _didLoad = NO;
     _inboxChangedBlocks = nil;
     _inboxChangedResponders = nil;
+    _inboxSyncedBlocks = nil;
     updatingLock = [[NSObject alloc] init];
     _downloadedImageUrls = [NSMutableSet new];
 }
@@ -399,6 +400,15 @@ static NSObject *updatingLock;
 
     for (LeanplumInboxChangedBlock block in _inboxChangedBlocks.copy) {
         block();
+    }
+    LP_END_USER_CODE
+}
+
+- (void)triggerInboxSyncedWithStatus:(BOOL)success
+{
+    LP_BEGIN_USER_CODE
+    for (LeanplumInboxSyncedBlock block in _inboxSyncedBlocks.copy) {
+        block(success);
     }
     LP_END_USER_CODE
 }
@@ -455,9 +465,16 @@ static NSObject *updatingLock;
         } else {
             [self updateMessages:messages unreadCount:unreadCount];
         }
+        
+        [self triggerInboxSyncedWithStatus:YES];
         LP_END_TRY
     }];
-    [req sendIfConnected];
+    [req onError:^(NSError *error) {
+        [self triggerInboxSyncedWithStatus:NO];
+    }];
+    [req sendIfConnectedWithNoNetworkCallback:^{
+        [self triggerInboxSyncedWithStatus:NO];
+    }];
     LP_END_TRY
 }
 
@@ -521,6 +538,10 @@ static NSObject *updatingLock;
 
 - (void)onChanged:(LeanplumInboxChangedBlock)block
 {
+    if (!block) {
+        return;
+    }
+    
     LP_TRY
     if (!_inboxChangedBlocks) {
         _inboxChangedBlocks = [NSMutableArray array];
@@ -530,6 +551,20 @@ static NSObject *updatingLock;
     if (_didLoad) {
         block();
     }
+}
+
+- (void)onForceContentUpdate:(LeanplumInboxSyncedBlock)block
+{
+    if (!block) {
+        return;
+    }
+    
+    LP_TRY
+    if (!_inboxSyncedBlocks) {
+        _inboxSyncedBlocks = [NSMutableArray array];
+    }
+    [_inboxSyncedBlocks addObject:[block copy]];
+    LP_END_TRY
 }
 
 - (void)addInboxChangedResponder:(id)responder withSelector:(SEL)selector
@@ -620,6 +655,10 @@ static NSObject *updatingLock;
 
 - (void)removeNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector {
     [[LPInbox sharedState]  removeInboxChangedResponder:responder withSelector:selector];
+}
+
+- (void)onForceContentUpdate:(LeanplumNewsfeedSyncedBlock)block {
+    [[LPInbox sharedState] onForceContentUpdate:block];
 }
 
 @end

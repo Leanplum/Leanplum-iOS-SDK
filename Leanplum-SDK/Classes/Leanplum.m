@@ -2259,6 +2259,8 @@ andParameters:(NSDictionary *)params
         }
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
+        } else {
+            [[self inbox] triggerInboxSyncedWithStatus:YES];
         }
         LP_END_TRY
         if (block) {
@@ -2269,8 +2271,11 @@ andParameters:(NSDictionary *)params
         if (block) {
             block();
         }
+        [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnected];
+    [req sendIfConnectedWithNoNetworkCallback:^{
+        [[self inbox] triggerInboxSyncedWithStatus:NO];
+    }];
     LP_END_TRY
 }
 
