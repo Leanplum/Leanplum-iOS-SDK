@@ -45,7 +45,7 @@
 #define IS_NOOP ((!IS_SUPPORTED_IOS_VERSION) || IS_JAILBROKEN || [LPConstantsState sharedState].isTestMode || [LPConstantsState sharedState].isInPermanentFailureState)
 #define RETURN_IF_NOOP if (IS_NOOP) return
 
-#define LEANPLUM_SDK_VERSION @"2.0.3-SNAPSHOT"
+#define LEANPLUM_SDK_VERSION @"2.0.3"
 #define LEANPLUM_CLIENT @"ios"
 
 // Can upload up to 100 files or 50 MB per request.
