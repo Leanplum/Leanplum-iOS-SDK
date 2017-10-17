@@ -657,8 +657,4 @@ static NSObject *updatingLock;
     [[LPInbox sharedState]  removeInboxChangedResponder:responder withSelector:selector];
 }
 
-- (void)onForceContentUpdate:(LeanplumNewsfeedSyncedBlock)block {
-    [[LPInbox sharedState] onForceContentUpdate:block];
-}
-
 @end

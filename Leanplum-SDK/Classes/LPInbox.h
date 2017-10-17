@@ -176,7 +176,6 @@ typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 @end
 
 typedef void (^LeanplumNewsfeedChangedBlock)(void);
-typedef void (^LeanplumNewsfeedSyncedBlock)(BOOL success);
 
 @interface LPNewsfeed : NSObject
 
@@ -190,6 +189,5 @@ typedef void (^LeanplumNewsfeedSyncedBlock)(BOOL success);
 - (LPNewsfeedMessage *)messageForId:(NSString *)messageId;
 - (void)addNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
 - (void)removeNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
-- (void)onForceContentUpdate:(LeanplumNewsfeedSyncedBlock)block;
 
 @end
