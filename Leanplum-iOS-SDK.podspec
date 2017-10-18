@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Leanplum-iOS-SDK'
-  s.version = '2.0.2'
+  s.version = '2.0.3'
   s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
   s.description = 'Leanplum’s integrated solution delivers meaningful engagement across messaging and the in-app experience. We offer Messaging, Automation, App Editing, Personalization, A/B Testing, and Analytics.'
   s.homepage = 'https://www.leanplum.com'
@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/leanplum'
   s.platform = :ios, '8.0'
   s.requires_arc = true
-  s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
+  s.source = { :http => 'https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download/2.0.3/Leanplum.framework.zip' }
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC' }
