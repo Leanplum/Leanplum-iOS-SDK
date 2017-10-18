@@ -45,6 +45,8 @@
         _issuedStart;
     BOOL _initializedMessageTemplates;
     BOOL _stripViewControllerFromState;
+    BOOL _isScreenTrackingEnabled;
+    BOOL _isInterfaceEditingEnabled;
     LPActionManager *_actionManager;
     NSString *_deviceId;
     NSString *_appVersion;
@@ -68,6 +70,8 @@
 @property(strong, nonatomic) NSString *deviceId;
 @property(strong, nonatomic) NSString *appVersion;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
+@property(assign, nonatomic) BOOL isScreenTrackingEnabled;
+@property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
 
 #pragma mark - LPInternalState method declaration
@@ -80,8 +84,8 @@
 
 @interface Leanplum ()
 
-typedef void (^LeanplumStartIssuedBlock)();
-typedef void (^LeanplumEventsChangedBlock)();
+typedef void (^LeanplumStartIssuedBlock)(void);
+typedef void (^LeanplumEventsChangedBlock)(void);
 typedef void (^LeanplumHandledBlock)(BOOL success);
 
 typedef enum {
@@ -136,6 +140,11 @@ andParameters:(NSDictionary *)params;
 + (void)onEventsChanged:(LeanplumEventsChangedBlock)block;
 + (void)synchronizeDefaults;
 
+/**
+ * Returns a push token using app ID, device ID, and user ID.
+ */
++ (NSString *)pushTokenKey;
+
 void LPLog(LPLogType type, NSString* format, ...);
 
 @end
@@ -147,7 +156,7 @@ void LPLog(LPLogType type, NSString* format, ...);
     BOOL _didLoad;
 }
 
-typedef void (^LeanplumInboxCacheUpdateBlock)();
+typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 
 #pragma mark - LPInbox properties
 

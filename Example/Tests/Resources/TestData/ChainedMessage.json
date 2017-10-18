@@ -37,7 +37,7 @@
     "countdown": 86400,
     "vars": {
       "Dismiss action": {
-        "Chained Message": "__message__1",
+        "Chained message": "1",
         "__name__": "Chain to Existing Message"
       },
       "Message": "NO-priority",

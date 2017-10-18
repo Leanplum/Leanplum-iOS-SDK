@@ -7,7 +7,77 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+<<<<<<< HEAD
 		4D5A32F652662A8CC221AAF8 /* Pods_Leanplum_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D30EC90BF70F6ACCD15929C /* Pods_Leanplum_SDK_Example.framework */; };
+=======
+		07E5C8AB1F052B7800A4B092 /* ActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86B1F052B7800A4B092 /* ActionManagerTest.m */; };
+		07E5C8AC1F052B7800A4B092 /* AppIconManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86C1F052B7800A4B092 /* AppIconManagerTest.m */; };
+		07E5C8AD1F052B7800A4B092 /* EventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86D1F052B7800A4B092 /* EventDataManagerTest.m */; };
+		07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */; };
+		07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */; };
+		07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */; };
+		07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */; };
+		07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8791F052B7800A4B092 /* LPNetworkOperation+Category.m */; };
+		07E5C8B31F052B7800A4B092 /* FileManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87B1F052B7800A4B092 /* FileManagerTest.m */; };
+		07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87E1F052B7800A4B092 /* LeanplumTest.m */; };
+		07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87F1F052B7800A4B092 /* LPJSONTest.m */; };
+		07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8801F052B7800A4B092 /* MessagesTest.m */; };
+		07E5C8B91F052B7800A4B092 /* MessageTemplatesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */; };
+		07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8821F052B7800A4B092 /* NewsfeedTest.m */; };
+		07E5C8BB1F052B7800A4B092 /* RequestStorageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8831F052B7800A4B092 /* RequestStorageTest.m */; };
+		07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8881F052B7800A4B092 /* LeanplumHelper.m */; };
+		07E5C8BE1F052B7800A4B092 /* UtilitiesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8891F052B7800A4B092 /* UtilitiesTest.m */; };
+		07E5C8BF1F052B7800A4B092 /* GoldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88C1F052B7800A4B092 /* GoldIcon.png */; };
+		07E5C8C01F052B7800A4B092 /* MainAppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88D1F052B7800A4B092 /* MainAppIcon.png */; };
+		07E5C8C11F052B7800A4B092 /* test.file in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88E1F052B7800A4B092 /* test.file */; };
+		07E5C8C21F052B7800A4B092 /* test.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88F1F052B7800A4B092 /* test.pdf */; };
+		07E5C8C31F052B7800A4B092 /* action_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8911F052B7800A4B092 /* action_response.json */; };
+		07E5C8C51F052B7800A4B092 /* complex_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8931F052B7800A4B092 /* complex_start_response.json */; };
+		07E5C8C61F052B7800A4B092 /* malformed_simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8951F052B7800A4B092 /* malformed_simple_start_response.json */; };
+		07E5C8C71F052B7800A4B092 /* malformed_track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8961F052B7800A4B092 /* malformed_track_event_response.json */; };
+		07E5C8C81F052B7800A4B092 /* newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8971F052B7800A4B092 /* newsfeed_response.json */; };
+		07E5C8C91F052B7800A4B092 /* registration_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8981F052B7800A4B092 /* registration_response.json */; };
+		07E5C8CB1F052B7800A4B092 /* simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89A1F052B7800A4B092 /* simple_start_response.json */; };
+		07E5C8CC1F052B7800A4B092 /* start_variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89B1F052B7800A4B092 /* start_variables_response.json */; };
+		07E5C8CD1F052B7800A4B092 /* state_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89C1F052B7800A4B092 /* state_response.json */; };
+		07E5C8CF1F052B7800A4B092 /* track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89E1F052B7800A4B092 /* track_event_response.json */; };
+		07E5C8D01F052B7800A4B092 /* variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89F1F052B7800A4B092 /* variables_response.json */; };
+		07E5C8D11F052B7800A4B092 /* ChainedMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A11F052B7800A4B092 /* ChainedMessage.json */; };
+		07E5C8D21F052B7800A4B092 /* DifferentPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A21F052B7800A4B092 /* DifferentPriorities1.json */; };
+		07E5C8D31F052B7800A4B092 /* DifferentPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A31F052B7800A4B092 /* DifferentPriorities2.json */; };
+		07E5C8D41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json */; };
+		07E5C8D51F052B7800A4B092 /* NoPriorities.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A51F052B7800A4B092 /* NoPriorities.json */; };
+		07E5C8D61F052B7800A4B092 /* regionData.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A61F052B7800A4B092 /* regionData.json */; };
+		07E5C8D71F052B7800A4B092 /* sample_action_notification.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A71F052B7800A4B092 /* sample_action_notification.json */; };
+		07E5C8D81F052B7800A4B092 /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A81F052B7800A4B092 /* SingleMessage.json */; };
+		07E5C8D91F052B7800A4B092 /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */; };
+		07E5C8DA1F052B7800A4B092 /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */; };
+		07E5C8DB1F052DC400A4B092 /* action_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8911F052B7800A4B092 /* action_response.json */; };
+		07E5C8DD1F052DC400A4B092 /* complex_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8931F052B7800A4B092 /* complex_start_response.json */; };
+		07E5C8DE1F052DC400A4B092 /* newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8971F052B7800A4B092 /* newsfeed_response.json */; };
+		07E5C8DF1F052DC400A4B092 /* registration_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8981F052B7800A4B092 /* registration_response.json */; };
+		07E5C8E11F052DC400A4B092 /* simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89A1F052B7800A4B092 /* simple_start_response.json */; };
+		07E5C8E21F052DC400A4B092 /* start_variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89B1F052B7800A4B092 /* start_variables_response.json */; };
+		07E5C8E31F052DC400A4B092 /* state_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89C1F052B7800A4B092 /* state_response.json */; };
+		07E5C8E51F052DC400A4B092 /* track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89E1F052B7800A4B092 /* track_event_response.json */; };
+		07E5C8E61F052DC400A4B092 /* variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C89F1F052B7800A4B092 /* variables_response.json */; };
+		07E5C8E71F052DC700A4B092 /* malformed_simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8951F052B7800A4B092 /* malformed_simple_start_response.json */; };
+		07E5C8E81F052DC700A4B092 /* malformed_track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8961F052B7800A4B092 /* malformed_track_event_response.json */; };
+		07E5C8E91F052DCC00A4B092 /* GoldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88C1F052B7800A4B092 /* GoldIcon.png */; };
+		07E5C8EA1F052DCC00A4B092 /* MainAppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88D1F052B7800A4B092 /* MainAppIcon.png */; };
+		07E5C8EB1F052DCC00A4B092 /* test.file in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88E1F052B7800A4B092 /* test.file */; };
+		07E5C8EC1F052DCC00A4B092 /* test.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88F1F052B7800A4B092 /* test.pdf */; };
+		07E5C8ED1F052DD000A4B092 /* ChainedMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A11F052B7800A4B092 /* ChainedMessage.json */; };
+		07E5C8EE1F052DD000A4B092 /* DifferentPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A21F052B7800A4B092 /* DifferentPriorities1.json */; };
+		07E5C8EF1F052DD000A4B092 /* DifferentPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A31F052B7800A4B092 /* DifferentPriorities2.json */; };
+		07E5C8F01F052DD000A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json */; };
+		07E5C8F11F052DD000A4B092 /* NoPriorities.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A51F052B7800A4B092 /* NoPriorities.json */; };
+		07E5C8F21F052DD000A4B092 /* regionData.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A61F052B7800A4B092 /* regionData.json */; };
+		07E5C8F31F052DD000A4B092 /* sample_action_notification.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A71F052B7800A4B092 /* sample_action_notification.json */; };
+		07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A81F052B7800A4B092 /* SingleMessage.json */; };
+		07E5C8F51F052DD000A4B092 /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */; };
+		07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */; };
+>>>>>>> release/2.0.3
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -20,13 +90,18 @@
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
+		7EB62201F9933A5796D4A2FE /* Pods_Leanplum_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66C5FAC1828A41289CE29EF5 /* Pods_Leanplum_SDK_Example.framework */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
+		9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
+		9CB691E11F1601BA002D83D8 /* EventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */; };
+		B08587C9AF0FCE5835E853EA /* Pods_Leanplum_SDK_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7849230A3D5C6DE5929ED1C8 /* Pods_Leanplum_SDK_Tests.framework */; };
 		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
 		B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */; };
 		B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA321D74B64D005ADEE1 /* ViewController.m */; };
 		B5CCCA361D74B64D005ADEE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA341D74B64D005ADEE1 /* Main.storyboard */; };
 		B5CCCA381D74B64D005ADEE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */; };
-		CC927D3CDC15A28D0E164F51 /* Pods_Leanplum_tvOS_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A62910CD90F963A1F413BC96 /* Pods_Leanplum_tvOS_SDK_Example.framework */; };
+		E1B1B1940FC870B25684ED7D /* Pods_Leanplum_tvOS_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE2D840C30124E373ADF721 /* Pods_Leanplum_tvOS_SDK_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +115,58 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK-source.podspec"; path = "../Leanplum-iOS-SDK-source.podspec"; sourceTree = "<group>"; };
+		0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
+		0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-tvOS-SDK.podspec"; path = "../Leanplum-tvOS-SDK.podspec"; sourceTree = "<group>"; };
+		07E5C86B1F052B7800A4B092 /* ActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerTest.m; sourceTree = "<group>"; };
+		07E5C86C1F052B7800A4B092 /* AppIconManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppIconManagerTest.m; sourceTree = "<group>"; };
+		07E5C86D1F052B7800A4B092 /* EventDataManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventDataManagerTest.m; sourceTree = "<group>"; };
+		07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionsTest.m; sourceTree = "<group>"; };
+		07E5C8701F052B7800A4B092 /* Leanplum+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Leanplum+Extensions.h"; sourceTree = "<group>"; };
+		07E5C8711F052B7800A4B092 /* LeanplumReachability+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumReachability+Category.h"; sourceTree = "<group>"; };
+		07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumReachability+Category.m"; sourceTree = "<group>"; };
+		07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumRequest+Categories.h"; sourceTree = "<group>"; };
+		07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumRequest+Categories.m"; sourceTree = "<group>"; };
+		07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkEngine+Category.h"; sourceTree = "<group>"; };
+		07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkEngine+Category.m"; sourceTree = "<group>"; };
+		07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkOperation+Category.h"; sourceTree = "<group>"; };
+		07E5C8791F052B7800A4B092 /* LPNetworkOperation+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkOperation+Category.m"; sourceTree = "<group>"; };
+		07E5C87A1F052B7800A4B092 /* LPVarCache+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPVarCache+Extensions.h"; sourceTree = "<group>"; };
+		07E5C87B1F052B7800A4B092 /* FileManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileManagerTest.m; sourceTree = "<group>"; };
+		07E5C87E1F052B7800A4B092 /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
+		07E5C87F1F052B7800A4B092 /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
+		07E5C8801F052B7800A4B092 /* MessagesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesTest.m; sourceTree = "<group>"; };
+		07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTemplatesTest.m; sourceTree = "<group>"; };
+		07E5C8821F052B7800A4B092 /* NewsfeedTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsfeedTest.m; sourceTree = "<group>"; };
+		07E5C8831F052B7800A4B092 /* RequestStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestStorageTest.m; sourceTree = "<group>"; };
+		07E5C8871F052B7800A4B092 /* LeanplumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumHelper.h; sourceTree = "<group>"; };
+		07E5C8881F052B7800A4B092 /* LeanplumHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumHelper.m; sourceTree = "<group>"; };
+		07E5C8891F052B7800A4B092 /* UtilitiesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UtilitiesTest.m; sourceTree = "<group>"; };
+		07E5C88C1F052B7800A4B092 /* GoldIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoldIcon.png; sourceTree = "<group>"; };
+		07E5C88D1F052B7800A4B092 /* MainAppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MainAppIcon.png; sourceTree = "<group>"; };
+		07E5C88E1F052B7800A4B092 /* test.file */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.file; sourceTree = "<group>"; };
+		07E5C88F1F052B7800A4B092 /* test.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = test.pdf; sourceTree = "<group>"; };
+		07E5C8911F052B7800A4B092 /* action_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = action_response.json; sourceTree = "<group>"; };
+		07E5C8931F052B7800A4B092 /* complex_start_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = complex_start_response.json; sourceTree = "<group>"; };
+		07E5C8951F052B7800A4B092 /* malformed_simple_start_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = malformed_simple_start_response.json; sourceTree = "<group>"; };
+		07E5C8961F052B7800A4B092 /* malformed_track_event_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = malformed_track_event_response.json; sourceTree = "<group>"; };
+		07E5C8971F052B7800A4B092 /* newsfeed_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = newsfeed_response.json; sourceTree = "<group>"; };
+		07E5C8981F052B7800A4B092 /* registration_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = registration_response.json; sourceTree = "<group>"; };
+		07E5C89A1F052B7800A4B092 /* simple_start_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = simple_start_response.json; sourceTree = "<group>"; };
+		07E5C89B1F052B7800A4B092 /* start_variables_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_variables_response.json; sourceTree = "<group>"; };
+		07E5C89C1F052B7800A4B092 /* state_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = state_response.json; sourceTree = "<group>"; };
+		07E5C89E1F052B7800A4B092 /* track_event_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = track_event_response.json; sourceTree = "<group>"; };
+		07E5C89F1F052B7800A4B092 /* variables_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables_response.json; sourceTree = "<group>"; };
+		07E5C8A11F052B7800A4B092 /* ChainedMessage.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChainedMessage.json; sourceTree = "<group>"; };
+		07E5C8A21F052B7800A4B092 /* DifferentPriorities1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPriorities1.json; sourceTree = "<group>"; };
+		07E5C8A31F052B7800A4B092 /* DifferentPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPriorities2.json; sourceTree = "<group>"; };
+		07E5C8A41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPrioritiesWithMissingValues.json; sourceTree = "<group>"; };
+		07E5C8A51F052B7800A4B092 /* NoPriorities.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = NoPriorities.json; sourceTree = "<group>"; };
+		07E5C8A61F052B7800A4B092 /* regionData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = regionData.json; sourceTree = "<group>"; };
+		07E5C8A71F052B7800A4B092 /* sample_action_notification.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_action_notification.json; sourceTree = "<group>"; };
+		07E5C8A81F052B7800A4B092 /* SingleMessage.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SingleMessage.json; sourceTree = "<group>"; };
+		07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities1.json; sourceTree = "<group>"; };
+		07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities2.json; sourceTree = "<group>"; };
 		1982CE36FE54461D3A24D6B5 /* Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		29ABF5FA9E1826C5BBE433C9 /* Pods-Leanplum-SDK_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		4D30EC90BF70F6ACCD15929C /* Pods_Leanplum_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,14 +188,21 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		66C5FAC1828A41289CE29EF5 /* Pods_Leanplum_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73B565AA61D6B6A4E92607C4 /* Pods-Leanplum-SDK_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		742DDA885B7E0DC4FD74AD80 /* Leanplum-SDK.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "Leanplum-SDK.podspec"; path = "../Leanplum-SDK.podspec"; sourceTree = "<group>"; };
 		74C2EA3F2D53CAE77A03BFFA /* Pods-Leanplum-tvOS-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		7849230A3D5C6DE5929ED1C8 /* Pods_Leanplum_SDK_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84A3C33C701600A874B8C63F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A62910CD90F963A1F413BC96 /* Pods_Leanplum_tvOS_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_tvOS_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+=======
+		9CB691DD1F15FFF5002D83D8 /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
+		9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCallbackManagerTest.m; sourceTree = "<group>"; };
+		9EE2D840C30124E373ADF721 /* Pods_Leanplum_tvOS_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_tvOS_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+>>>>>>> release/2.0.3
 		B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-tvOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -91,7 +225,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				4D5A32F652662A8CC221AAF8 /* Pods_Leanplum_SDK_Example.framework in Frameworks */,
+				7EB62201F9933A5796D4A2FE /* Pods_Leanplum_SDK_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,6 +236,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
+				B08587C9AF0FCE5835E853EA /* Pods_Leanplum_SDK_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -109,13 +244,126 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CC927D3CDC15A28D0E164F51 /* Pods_Leanplum_tvOS_SDK_Example.framework in Frameworks */,
+				E1B1B1940FC870B25684ED7D /* Pods_Leanplum_tvOS_SDK_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		07E5C86A1F052B7800A4B092 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C86B1F052B7800A4B092 /* ActionManagerTest.m */,
+				07E5C86C1F052B7800A4B092 /* AppIconManagerTest.m */,
+				07E5C86D1F052B7800A4B092 /* EventDataManagerTest.m */,
+				07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */,
+				9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */,
+				07E5C86F1F052B7800A4B092 /* Extensions */,
+				07E5C87B1F052B7800A4B092 /* FileManagerTest.m */,
+				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
+				07E5C87F1F052B7800A4B092 /* LPJSONTest.m */,
+				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
+				07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */,
+				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
+				07E5C8831F052B7800A4B092 /* RequestStorageTest.m */,
+				07E5C8841F052B7800A4B092 /* Utilities */,
+				07E5C8891F052B7800A4B092 /* UtilitiesTest.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		07E5C86F1F052B7800A4B092 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C8701F052B7800A4B092 /* Leanplum+Extensions.h */,
+				07E5C8711F052B7800A4B092 /* LeanplumReachability+Category.h */,
+				07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */,
+				07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */,
+				07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */,
+				07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */,
+				07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */,
+				07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */,
+				07E5C8791F052B7800A4B092 /* LPNetworkOperation+Category.m */,
+				07E5C87A1F052B7800A4B092 /* LPVarCache+Extensions.h */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		07E5C8841F052B7800A4B092 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C8871F052B7800A4B092 /* LeanplumHelper.h */,
+				07E5C8881F052B7800A4B092 /* LeanplumHelper.m */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		07E5C88A1F052B7800A4B092 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C88B1F052B7800A4B092 /* Files */,
+				07E5C8901F052B7800A4B092 /* Responses */,
+				07E5C8A01F052B7800A4B092 /* TestData */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		07E5C88B1F052B7800A4B092 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C88C1F052B7800A4B092 /* GoldIcon.png */,
+				07E5C88D1F052B7800A4B092 /* MainAppIcon.png */,
+				07E5C88E1F052B7800A4B092 /* test.file */,
+				07E5C88F1F052B7800A4B092 /* test.pdf */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		07E5C8901F052B7800A4B092 /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C8911F052B7800A4B092 /* action_response.json */,
+				9CB691DD1F15FFF5002D83D8 /* batch_response.json */,
+				07E5C8931F052B7800A4B092 /* complex_start_response.json */,
+				07E5C8941F052B7800A4B092 /* Malformed */,
+				07E5C8971F052B7800A4B092 /* newsfeed_response.json */,
+				07E5C8981F052B7800A4B092 /* registration_response.json */,
+				07E5C89A1F052B7800A4B092 /* simple_start_response.json */,
+				07E5C89B1F052B7800A4B092 /* start_variables_response.json */,
+				07E5C89C1F052B7800A4B092 /* state_response.json */,
+				07E5C89E1F052B7800A4B092 /* track_event_response.json */,
+				07E5C89F1F052B7800A4B092 /* variables_response.json */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		07E5C8941F052B7800A4B092 /* Malformed */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C8951F052B7800A4B092 /* malformed_simple_start_response.json */,
+				07E5C8961F052B7800A4B092 /* malformed_track_event_response.json */,
+			);
+			path = Malformed;
+			sourceTree = "<group>";
+		};
+		07E5C8A01F052B7800A4B092 /* TestData */ = {
+			isa = PBXGroup;
+			children = (
+				07E5C8A11F052B7800A4B092 /* ChainedMessage.json */,
+				07E5C8A21F052B7800A4B092 /* DifferentPriorities1.json */,
+				07E5C8A31F052B7800A4B092 /* DifferentPriorities2.json */,
+				07E5C8A41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json */,
+				07E5C8A51F052B7800A4B092 /* NoPriorities.json */,
+				07E5C8A61F052B7800A4B092 /* regionData.json */,
+				07E5C8A71F052B7800A4B092 /* sample_action_notification.json */,
+				07E5C8A81F052B7800A4B092 /* SingleMessage.json */,
+				07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */,
+				07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */,
+			);
+			path = TestData;
+			sourceTree = "<group>";
+		};
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
@@ -148,8 +396,8 @@
 				6003F5AF195388D20070C39A /* XCTest.framework */,
 				7849230A3D5C6DE5929ED1C8 /* Pods_Leanplum_SDK_Tests.framework */,
 				A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */,
-				4D30EC90BF70F6ACCD15929C /* Pods_Leanplum_SDK_Example.framework */,
-				A62910CD90F963A1F413BC96 /* Pods_Leanplum_tvOS_SDK_Example.framework */,
+				66C5FAC1828A41289CE29EF5 /* Pods_Leanplum_SDK_Example.framework */,
+				9EE2D840C30124E373ADF721 /* Pods_Leanplum_tvOS_SDK_Example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -183,6 +431,8 @@
 		6003F5B5195388D20070C39A /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				07E5C86A1F052B7800A4B092 /* Classes */,
+				07E5C88A1F052B7800A4B092 /* Resources */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
 			);
 			path = Tests;
@@ -201,7 +451,9 @@
 		60FF7A9C1954A5C5007DD14C /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				742DDA885B7E0DC4FD74AD80 /* Leanplum-SDK.podspec */,
+				0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */,
+				0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */,
+				0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */,
 				84A3C33C701600A874B8C63F /* README.md */,
 				F5CF859C9DD307380E6F9A30 /* LICENSE */,
 			);
@@ -271,9 +523,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5C2195388D20070C39A /* Build configuration list for PBXNativeTarget "Leanplum-SDK_Tests" */;
 			buildPhases = (
+				6EFEAC23E3B4031A877C4631 /* [CP] Check Pods Manifest.lock */,
 				6003F5AA195388D20070C39A /* Sources */,
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
+				FA2F5E81596313863FEAD800 /* [CP] Embed Pods Frameworks */,
+				9DA72293461F23E03C1E2B37 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -352,9 +607,35 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07E5C8E91F052DCC00A4B092 /* GoldIcon.png in Resources */,
+				07E5C8DB1F052DC400A4B092 /* action_response.json in Resources */,
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
+				07E5C8F11F052DD000A4B092 /* NoPriorities.json in Resources */,
+				07E5C8DE1F052DC400A4B092 /* newsfeed_response.json in Resources */,
+				07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */,
+				07E5C8DF1F052DC400A4B092 /* registration_response.json in Resources */,
+				9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */,
+				07E5C8EA1F052DCC00A4B092 /* MainAppIcon.png in Resources */,
+				07E5C8E21F052DC400A4B092 /* start_variables_response.json in Resources */,
+				07E5C8E71F052DC700A4B092 /* malformed_simple_start_response.json in Resources */,
+				07E5C8F21F052DD000A4B092 /* regionData.json in Resources */,
+				07E5C8F01F052DD000A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				07E5C8EB1F052DCC00A4B092 /* test.file in Resources */,
+				07E5C8E81F052DC700A4B092 /* malformed_track_event_response.json in Resources */,
+				07E5C8F31F052DD000A4B092 /* sample_action_notification.json in Resources */,
+				07E5C8E51F052DC400A4B092 /* track_event_response.json in Resources */,
+				07E5C8F51F052DD000A4B092 /* TiedPriorities1.json in Resources */,
+				07E5C8DD1F052DC400A4B092 /* complex_start_response.json in Resources */,
+				07E5C8EE1F052DD000A4B092 /* DifferentPriorities1.json in Resources */,
+				07E5C8ED1F052DD000A4B092 /* ChainedMessage.json in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
+				07E5C8E31F052DC400A4B092 /* state_response.json in Resources */,
+				07E5C8EF1F052DD000A4B092 /* DifferentPriorities2.json in Resources */,
+				07E5C8E61F052DC400A4B092 /* variables_response.json in Resources */,
+				07E5C8E11F052DC400A4B092 /* simple_start_response.json in Resources */,
+				07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */,
+				07E5C8EC1F052DCC00A4B092 /* test.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +643,33 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07E5C8D51F052B7800A4B092 /* NoPriorities.json in Resources */,
+				07E5C8D11F052B7800A4B092 /* ChainedMessage.json in Resources */,
+				07E5C8C31F052B7800A4B092 /* action_response.json in Resources */,
+				07E5C8D31F052B7800A4B092 /* DifferentPriorities2.json in Resources */,
+				07E5C8D41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */,
+				07E5C8C71F052B7800A4B092 /* malformed_track_event_response.json in Resources */,
+				07E5C8BF1F052B7800A4B092 /* GoldIcon.png in Resources */,
+				07E5C8D21F052B7800A4B092 /* DifferentPriorities1.json in Resources */,
+				07E5C8C91F052B7800A4B092 /* registration_response.json in Resources */,
+				9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */,
+				07E5C8DA1F052B7800A4B092 /* TiedPriorities2.json in Resources */,
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
+				07E5C8D61F052B7800A4B092 /* regionData.json in Resources */,
+				07E5C8D81F052B7800A4B092 /* SingleMessage.json in Resources */,
+				07E5C8CB1F052B7800A4B092 /* simple_start_response.json in Resources */,
+				07E5C8C01F052B7800A4B092 /* MainAppIcon.png in Resources */,
+				07E5C8C11F052B7800A4B092 /* test.file in Resources */,
+				07E5C8CF1F052B7800A4B092 /* track_event_response.json in Resources */,
+				07E5C8D01F052B7800A4B092 /* variables_response.json in Resources */,
+				07E5C8CD1F052B7800A4B092 /* state_response.json in Resources */,
+				07E5C8D91F052B7800A4B092 /* TiedPriorities1.json in Resources */,
+				07E5C8C81F052B7800A4B092 /* newsfeed_response.json in Resources */,
+				07E5C8C61F052B7800A4B092 /* malformed_simple_start_response.json in Resources */,
+				07E5C8CC1F052B7800A4B092 /* start_variables_response.json in Resources */,
+				07E5C8C51F052B7800A4B092 /* complex_start_response.json in Resources */,
+				07E5C8D71F052B7800A4B092 /* sample_action_notification.json in Resources */,
+				07E5C8C21F052B7800A4B092 /* test.pdf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,6 +685,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6EFEAC23E3B4031A877C4631 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
 		6F8E78CD5A8A5D2F0677A4AC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -438,6 +760,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		9DA72293461F23E03C1E2B37 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		AA36E9F20FC263CA34118B64 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -468,6 +805,21 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		FA2F5E81596313863FEAD800 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -485,6 +837,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07E5C8B31F052B7800A4B092 /* FileManagerTest.m in Sources */,
+				07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */,
+				07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */,
+				07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */,
+				07E5C8B91F052B7800A4B092 /* MessageTemplatesTest.m in Sources */,
+				07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */,
+				07E5C8BB1F052B7800A4B092 /* RequestStorageTest.m in Sources */,
+				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
+				07E5C8AD1F052B7800A4B092 /* EventDataManagerTest.m in Sources */,
+				07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */,
+				07E5C8AC1F052B7800A4B092 /* AppIconManagerTest.m in Sources */,
+				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
+				07E5C8AB1F052B7800A4B092 /* ActionManagerTest.m in Sources */,
+				07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */,
+				07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */,
+				9CB691E11F1601BA002D83D8 /* EventCallbackManagerTest.m in Sources */,
+				07E5C8BE1F052B7800A4B092 /* UtilitiesTest.m in Sources */,
+				07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -657,6 +1027,7 @@
 		};
 		6003F5C3195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 29ABF5FA9E1826C5BBE433C9 /* Pods-Leanplum-SDK_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
@@ -680,6 +1051,7 @@
 		};
 		6003F5C4195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 73B565AA61D6B6A4E92607C4 /* Pods-Leanplum-SDK_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;

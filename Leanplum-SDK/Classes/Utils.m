@@ -29,9 +29,12 @@
 
 + (BOOL)isNullOrEmpty:(id)obj
 {
+    // Need to check for NSString to support RubyMotion.
+    // Ruby String respondsToSelector(count) is true for count: in RubyMotion
     return obj == nil
-        || ([obj respondsToSelector:@selector(length)] && [(NSData *)obj length] == 0)
-        || ([obj respondsToSelector:@selector(count)] && [(NSArray *)obj count] == 0);
+    || ([obj respondsToSelector:@selector(length)] && [obj length] == 0)
+    || ([obj respondsToSelector:@selector(count)]
+        && ![obj isKindOfClass:[NSString class]] && [obj count] == 0);
 }
 
 + (BOOL)isBlank:(NSString *)str

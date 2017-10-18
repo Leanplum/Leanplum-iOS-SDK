@@ -3,13 +3,21 @@ if ! ENV['LP_STATIC']
 end
 
 target 'Leanplum-SDK_Example' do
-  platform :ios, '6.0'
+  platform :ios, '7.0'
 
   pod 'Leanplum-iOS-SDK-source', :path => '../'
+  
+  target 'Leanplum-SDK_Tests' do
+      inherit! :search_paths
+
+      pod 'Leanplum-iOS-SDK-source', :path => '../'
+      pod 'OCMock', '~> 3.3.1'
+      pod 'OHHTTPStubs'
+  end
 end
 
 target 'Leanplum-tvOS-SDK_Example' do
-  platform :tvos, '6.0'
+  platform :tvos, '8.0'
 
-  pod 'Leanplum-iOS-SDK-source', :path => '../'
+  pod 'Leanplum-tvOS-SDK', :path => '../'
 end

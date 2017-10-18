@@ -77,7 +77,10 @@
 #define LPMT_ARG_LAYOUT_WIDTH @"Layout.Width"
 #define LPMT_ARG_LAYOUT_HEIGHT @"Layout.Height"
 #define LPMT_ARG_HTML_HEIGHT @"HTML Height"
+#define LPMT_ARG_HTML_WIDTH @"HTML Width"
 #define LPMT_ARG_HTML_ALIGN @"HTML Align"
+#define LPMT_ARG_HTML_Y_OFFSET @"HTML Y Offset"
+#define LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE @"Tap Outside to Close"
 #define LPMT_ARG_HTML_ALIGN_TOP @"Top"
 #define LPMT_ARG_HTML_ALIGN_BOTTOM @"Bottom"
 #define LPMT_ARG_APP_ICON @"__iOSAppIcon"
@@ -135,6 +138,33 @@ context.actionName, exception, [exception callStackSymbols])
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
+#pragma mark Helper View Class
+@interface LPHitView : UIView
+@property (strong, nonatomic) void (^callback)(void);
+@end
+
+@implementation LPHitView
+- (id)initWithCallback:(void (^)(void))callback
+{
+    if (self = [super init]) {
+        self.callback = [callback copy];
+    }
+    return self;
+}
+
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
+{
+    UIView *hitView = [super hitTest:point withEvent:event];
+    if (hitView == self) {
+        if (self.callback) {
+            self.callback();
+        }
+        return nil;
+    }
+    return hitView;
+}
+@end
+
 @implementation LPMessageTemplatesClass {
     NSMutableArray *_contexts;
     UIView *_popupView;
@@ -146,6 +176,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     UIButton *_cancelButton;
     UIButton *_dismissButton;
     UIButton *_overlayView;
+    LPHitView *_closePopupView;
     BOOL _webViewNeedsFade;
 }
 
@@ -291,7 +322,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
              withArguments:@[[LPActionArg argNamed:LPMT_ARG_URL withString:LPMT_DEFAULT_URL]]
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
-                     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]];
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         NSURL *url = [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]];
+                         if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                         } else {
+                             [[UIApplication sharedApplication] openURL:url];
+                         }
+                     });
                      return YES;
                  }
                  @catch (NSException *exception) {
@@ -454,6 +492,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                withString:LPMT_DEFAULT_TRACK_ACTION_URL],
                     [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
                     [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
+                    [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
+                    [LPActionArg argNamed:LPMT_ARG_HTML_Y_OFFSET withString:@"0px"],
+                    [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
                     [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                     [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
              withResponder:messageResponder];
@@ -568,6 +609,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 // Displays the Center Popup, Interstitial and Web Interstitial.
 - (void)showPopup
 {
+    // UI can't be modified in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self showPopup];
+        });
+        return;
+    }
+    
     LPActionContext *context = _contexts.lastObject;
     BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
@@ -717,11 +766,26 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         return;
     }
     
+    // UI can't be modified in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self closePopupWithAnimation:animated actionNamed:actionName track:track];
+        });
+        return;
+    }
+    
     LPActionContext *context = _contexts.lastObject;
     [_contexts removeLastObject];
     
-    void (^finishCallback)() = ^() {
-        [self->_popupGroup removeFromSuperview];
+    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
+        [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
+        ((UIWebView *)_popupView).delegate = nil;
+        [(UIWebView *)_popupView stopLoading];
+    }
+    
+    void (^finishCallback)(void) = ^() {
+        [self removeAllViewsFrom:_popupGroup];
+        
         if (actionName) {
             if (track) {
                 [context runTrackedActionNamed:actionName];
@@ -741,23 +805,18 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         finishCallback();
     }
     
-    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
-        ((UIWebView *)_popupView).delegate = nil;
-    }
-
-    _popupView = nil;
-    _popupBackground = nil;
-    _acceptButton = nil;
-    _cancelButton = nil;
-    _titleLabel = nil;
-    _messageLabel = nil;
-    _popupGroup = nil;
-    _dismissButton = nil;
-    _overlayView = nil;
-    
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
                                                   object:nil];
+}
+
+- (void)removeAllViewsFrom:(UIView *)view
+{
+    [view.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
+        [self removeAllViewsFrom:obj];
+    }];
+    [view removeFromSuperview];
+    view = nil;
 }
 
 - (void)accept
@@ -783,6 +842,15 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (BOOL)isPushEnabled
 {
+    // Run on main thread.
+    if (![NSThread isMainThread]) {
+        BOOL __block output = NO;
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            output = [self isPushEnabled];
+        });
+        return output;
+    }
+    
     UIApplication *application = [UIApplication sharedApplication];
     BOOL enabled;
     
@@ -944,27 +1012,57 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     _popupView.center = CGPointMake(screenWidth / 2.0, screenHeight / 2.0);
     
     if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
-        // HTML5 banner logic to support top/bottom alignment with dynamic size.
+        // Calculate the height. Fullscreen by default.
         CGFloat contextArgHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
         CGFloat htmlHeight = contextArgHeight;
         if (htmlHeight < 1) {
             htmlHeight = screenHeight;
         }
-        CGFloat htmlY = 0;
-        NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
-        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
-            htmlY = screenHeight - htmlHeight;
-        }
+        
+        // Status bar offset.
+        CGFloat statusBarOffset = 0;
 #if LP_NOT_TV
-        // Offset Banner if the status bar is present.
         UIApplication *app = [UIApplication sharedApplication];
-        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_TOP] &&
-            contextArgHeight > 1 && !app.statusBarHidden) {
-            htmlY += app.statusBarFrame.size.height;
+        if (!app.statusBarHidden) {
+            statusBarOffset = app.statusBarFrame.size.height;
         }
 #endif
+        
+        // Calculate Y Offset.
+        CGFloat yOffset = 0;
+        NSString *contextArgYOffset = [context stringNamed:LPMT_ARG_HTML_Y_OFFSET];
+        if (contextArgYOffset && [contextArgYOffset length] > 0) {
+            CGFloat percentRange = screenHeight - htmlHeight - statusBarOffset;
+            yOffset = [self valueFromHtmlString:contextArgYOffset percentRange:percentRange];
+        }
+        
+        // HTML banner logic to support top/bottom alignment with dynamic size.
+        CGFloat htmlY = yOffset + statusBarOffset;
+        NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
+        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
+            htmlY = screenHeight - htmlHeight - yOffset - statusBarOffset;
+        }
+        
+        // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
+        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH] ?: @"100%";
+        CGFloat htmlWidth = screenWidth;
+        if (contextArgWidth && [contextArgWidth length] > 0) {
+            htmlWidth = [self valueFromHtmlString:contextArgWidth percentRange:screenWidth];
+        }
+        
+        // Tap outside to close Banner
+        if ([context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]) {
+            _closePopupView = [[LPHitView alloc] initWithCallback:^{
+                [self dismiss];
+                [_closePopupView removeFromSuperview];
+            }];
+            _closePopupView.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+            [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
+            [[UIApplication sharedApplication].keyWindow bringSubviewToFront:_popupGroup];
+        }
 
-        _popupGroup.frame = CGRectMake(0, htmlY, screenWidth, htmlHeight);
+        CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
+        _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         _popupView.frame = _popupGroup.bounds;
     }
 
@@ -987,6 +1085,26 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     if (!isWeb) {
         _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     }
+}
+
+/**
+ * Get float value by parsing the html string that can have either % or px as a suffix.
+ */
+- (CGFloat)valueFromHtmlString:(NSString *)htmlString percentRange:(CGFloat)percentRange
+{
+    if (!htmlString || [htmlString length] == 0) {
+        return 0;
+    }
+
+    if ([htmlString hasSuffix:@"%"]) {
+        NSString *percentageValue = [htmlString stringByReplacingOccurrencesOfString:@"%"
+                                                                          withString:@""];
+        return percentRange * [percentageValue floatValue] / 100.;
+    }
+    
+    NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
+    NSArray *components = [htmlString componentsSeparatedByCharactersInSet:letterSet];
+    return [[components componentsJoinedByString:@""] floatValue];
 }
 
 - (CGSize)getTextSizeFromButton:(UIButton *)button
@@ -1102,9 +1220,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)appStorePrompt
 {
-    if (NSClassFromString(@"SKStoreReviewController")) {
-        [SKStoreReviewController requestReview];
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (NSClassFromString(@"SKStoreReviewController")) {
+            [SKStoreReviewController requestReview];
+        }
+    });
 }
 
 - (BOOL)hasAlternateIcon
@@ -1116,6 +1236,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)setAlternateIconWithFilename:(NSString *)filename
 {
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self setAlternateIconWithFilename:filename];
+            return;
+        });
+    }
+    
     NSString *iconName = [filename stringByReplacingOccurrencesOfString:LPMT_ICON_FILE_PREFIX
                                                              withString:@""];
     iconName = [iconName stringByReplacingOccurrencesOfString:@".png" withString:@""];

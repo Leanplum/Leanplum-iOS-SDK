@@ -176,7 +176,7 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     [Leanplum track:eventName
           withValue:[product.price doubleValue] * [transaction[@"quantity"] integerValue]
             andArgs:@{
-                      @"currencyCode": currencyCode,
+                      LP_PARAM_CURRENCY_CODE: currencyCode,
                       @"iOSTransactionIdentifier": transaction[@"transactionIdentifier"],
                       @"iOSReceiptData": transaction[@"receiptData"],
                       @"iOSSandbox": [NSNumber numberWithBool:[LPConstantsState sharedState].isDevelopmentModeEnabled]

@@ -202,6 +202,10 @@ static dispatch_once_t leanplum_onceToken;
                cancelButtonTitle:NSLocalizedString(@"OK", nil)
                otherButtonTitles:nil
                            block:nil];
+    } else if ([packet.name isEqualToString:@"applyVars"]) {
+        NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
+        [LPVarCache applyVariableDiffs:packetData messages:nil updateRules:nil eventRules:nil
+                              variants:nil regions:nil];
     }
     LP_END_TRY
 }

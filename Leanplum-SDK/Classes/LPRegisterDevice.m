@@ -46,14 +46,13 @@
 {
     LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_REGISTER_FOR_DEVELOPMENT
                                               params:@{ LP_PARAM_EMAIL: email }];
-    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
-        NSDictionary* registerResponse = [LPResponse getLastResponse:json];
-        BOOL isSuccess = [LPResponse isResponseSuccess:registerResponse];
+        BOOL isSuccess = [LPResponse isResponseSuccess:response];
         if (isSuccess) {
             self->callback(YES);
         } else {
-            [self showError:[LPResponse getResponseError:registerResponse]];
+            [self showError:[LPResponse getResponseError:response]];
         }
         LP_END_TRY
     }];

@@ -139,6 +139,7 @@
     if (self.task) {
         [self.task suspend];
     }
+    [self.session finishTasksAndInvalidate];
 }
 
 - (void)run
@@ -157,17 +158,25 @@
     void (^responseBlock)(NSData *, NSURLResponse *, NSError *) =
             ^(NSData *data, NSURLResponse *response, NSError *error) {
 
-        void (^callbackBlock)() = ^(){
+        void (^callbackBlock)(void) = ^(){
             self.response = response;
             self.dataFromResponse = data;
 
             if (synchronous) {
                 dispatch_semaphore_signal(sem);
             }
+            
+            // Handle unsuccessful http response code.
+            NSError *responseError = error;
+            if (!responseError && [self HTTPStatusCode] != 200) {
+                responseError = [NSError errorWithDomain:NSURLErrorDomain
+                                                    code:[self HTTPStatusCode]
+                                                userInfo:nil];
+            }
 
-            if (error) {
+            if (responseError) {
                 if (self.errorBlock) {
-                    self.errorBlock(self, error);
+                    self.errorBlock(self, responseError);
                 }
             } else {
                 if (self.responseBlock) {

@@ -301,8 +301,9 @@ static NSObject *updatingLock;
             
             // Download images.
             BOOL willDownloadImages = NO;
-            for (LPInboxMessage *message in messages) {
-                willDownloadImages |= [message downloadImageIfPrefetchingEnabled];
+            for (NSString *messageId in messages) {
+                LPInboxMessage *inboxMessage = [self messageForId:messageId];
+                willDownloadImages |= [inboxMessage downloadImageIfPrefetchingEnabled];
             }
 
             // Trigger inbox changed when all images are downloaded.
@@ -409,9 +410,8 @@ static NSObject *updatingLock;
     RETURN_IF_NOOP;
     LP_TRY
     LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
-        NSDictionary *response = [LPResponse getLastResponse:json];
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
         NSUInteger unreadCount = 0;
         NSMutableDictionary *messages = [[NSMutableDictionary alloc] init];

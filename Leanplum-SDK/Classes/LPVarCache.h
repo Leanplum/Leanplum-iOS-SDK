@@ -26,7 +26,7 @@
 
 @class LPVar;
 
-typedef void (^CacheUpdateBlock)();
+typedef void (^CacheUpdateBlock)(void);
 typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 
 @interface LPVarCache : NSObject

@@ -48,13 +48,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 @implementation NSObject (LeanplumExtension)
 
-- (NSString *)leanplum_createTokenKey
-{
-    return [NSString stringWithFormat:
-            LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
-            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
-}
-
 - (void)leanplum_disableAskToAsk
 {
 #if LP_NOT_TV
@@ -77,26 +70,22 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [self leanplum_disableAskToAsk];
     }
     
-    // Send push token on every launch. This is required because push token may not be sent if the
-    // user force quit the app. This is due to how LPRequestStorage keeps the data in memory and
-    // we don't support response block on batch.
+    // Format push token.
     NSString *formattedToken = [deviceToken description];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
-    [Leanplum onStartResponse:^(BOOL success) {
-        LP_END_USER_CODE
+
+    // Send push token if we don't have one and when the token changed.
+    // We no longer send in start's response because saved push token will be send in start too.
+    NSString *tokenKey = [Leanplum pushTokenKey];
+    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
+    if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
+        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
         [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES
                         params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
-        LP_BEGIN_USER_CODE
-    }];
-
-    // Update push token if it's different.
-    NSString *tokenKey = [self leanplum_createTokenKey];
-    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
-    if (![existingToken isEqualToString: formattedToken]) {
-        [[NSUserDefaults standardUserDefaults] setObject: formattedToken forKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
     }
     LP_END_TRY
 
@@ -140,7 +129,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 {
     LP_TRY
     [self leanplum_disableAskToAsk];
-    NSString *tokenKey = [self leanplum_createTokenKey];
+    NSString *tokenKey = [Leanplum pushTokenKey];
     if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -202,6 +191,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 }
 
 #if LP_NOT_TV
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
       withCompletionHandler:(void (^)())completionHandler
@@ -237,6 +228,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     }
     state.calledHandleNotification = NO;
 }
+#pragma clang diagnostic pop
 #endif
 
 #if LP_NOT_TV
@@ -322,7 +314,7 @@ static dispatch_once_t leanplum_onceToken;
     if (![existingSettings isEqualToDictionary:settings]) {
         [[NSUserDefaults standardUserDefaults] setObject:settings forKey:settingsKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *tokenKey = [self leanplum_createTokenKey];
+        NSString *tokenKey = [Leanplum pushTokenKey];
         NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
         NSMutableDictionary *params = [@{
                 LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
@@ -353,7 +345,9 @@ static dispatch_once_t leanplum_onceToken;
     [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
         LP_END_USER_CODE
         if (!messageId || LPVarCache.messages[messageId]) {
-            onCompleted();
+            if (onCompleted) {
+                onCompleted();
+            }
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
@@ -363,15 +357,14 @@ static dispatch_once_t leanplum_onceToken;
                                              LP_PARAM_INCLUDE_DEFAULTS: @(NO),
                                              LP_PARAM_INCLUDE_MESSAGE_ID: messageId
                                              }];
-            [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
-                NSDictionary *getVariablesResponse = [LPResponse getLastResponse:json];
-                NSDictionary *values = getVariablesResponse[LP_KEY_VARS];
-                NSDictionary *messages = getVariablesResponse[LP_KEY_MESSAGES];
-                NSArray *updateRules = getVariablesResponse[LP_KEY_UPDATE_RULES];
-                NSArray *eventRules = getVariablesResponse[LP_KEY_EVENT_RULES];
-                NSArray *variants = getVariablesResponse[LP_KEY_VARIANTS];
-                NSDictionary *regions = getVariablesResponse[LP_KEY_REGIONS];
+                NSDictionary *values = response[LP_KEY_VARS];
+                NSDictionary *messages = response[LP_KEY_MESSAGES];
+                NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+                NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+                NSArray *variants = response[LP_KEY_VARIANTS];
+                NSDictionary *regions = response[LP_KEY_REGIONS];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
                     [values isEqualToDictionary:LPVarCache.diffs]) {
                     values = nil;
@@ -395,7 +388,9 @@ static dispatch_once_t leanplum_onceToken;
                                         eventRules:eventRules
                                           variants:variants
                                            regions:regions];
-                    onCompleted();
+                    if (onCompleted) {
+                        onCompleted();
+                    }
                 }
                 LP_END_TRY
              }];
@@ -546,7 +541,7 @@ static dispatch_once_t leanplum_onceToken;
         return;
     }
 
-    void (^onContent)() = ^{
+    void (^onContent)(void) = ^{
 #if LP_NOT_TV
         if (completionHandler && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             completionHandler(UIBackgroundFetchResultNewData);
@@ -711,7 +706,7 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
 
-#if LP_NOT_TV && __IPHONE_OS_VERSION_MAX_REQUIRED >= 80000
+#if LP_NOT_TV
     // Detect local notifications while app is running.
     swizzledApplicationDidReceiveLocalNotification =
     [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
@@ -832,7 +827,7 @@ static dispatch_once_t leanplum_onceToken;
         }
         
         // Adding body message manually.
-        mutableInfo[@"aps"] = @{@"alert":@{@"body": message} };
+        mutableInfo[@"aps"] = @{@"alert":@{@"body": message ?: @""} };
 
         // Specify open action
         if (openAction) {

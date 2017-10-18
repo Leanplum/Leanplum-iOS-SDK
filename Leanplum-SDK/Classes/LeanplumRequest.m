@@ -28,8 +28,9 @@
 #import "Constants.h"
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
-#import "LPRequestStorage.h"
 #import "LPKeychainWrapper.h"
+#import "LPEventDataManager.h"
+#import "LPEventCallbackManager.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *appId;
@@ -45,7 +46,7 @@ static NSMutableDictionary *fileUploadSize;
 static NSMutableDictionary *fileUploadProgress;
 static NSString *fileUploadProgressString;
 static NSMutableDictionary *pendingUploads;
-
+static NSTimeInterval lastSentTime;
 static NSDictionary *_requestHheaders;
 
 @implementation LeanplumRequest
@@ -132,6 +133,7 @@ static NSDictionary *_requestHheaders;
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
+        
         if (engine == nil) {
             if (!_requestHheaders) {
                 _requestHheaders = [LeanplumRequest createHeaders];
@@ -171,6 +173,15 @@ static NSDictionary *_requestHheaders;
     return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
++ (NSString *)generateUUID
+{
+    NSString *uuid = [[NSUUID UUID] UUIDString];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
+    [userDefaults synchronize];
+    return uuid;
+}
+
 - (void)onResponse:(LPNetworkResponseBlock)response
 {
     _response = [response copy];
@@ -184,15 +195,16 @@ static NSDictionary *_requestHheaders;
 - (NSMutableDictionary *)createArgsDictionary
 {
     LPConstantsState *constants = [LPConstantsState sharedState];
-    NSMutableDictionary *args = [NSMutableDictionary
-                                 dictionaryWithObjectsAndKeys:
-                                 _apiMethod, LP_PARAM_ACTION,
-                                 deviceId ? deviceId : @"", LP_PARAM_DEVICE_ID,
-                                 userId ? userId : @"", LP_PARAM_USER_ID,
-                                 constants.sdkVersion, LP_PARAM_SDK_VERSION,
-                                 constants.client, LP_PARAM_CLIENT,
-                                 @(constants.isDevelopmentModeEnabled), LP_PARAM_DEV_MODE,
-                                 [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]], LP_PARAM_TIME, nil];
+    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    NSMutableDictionary *args = [@{
+                                   LP_PARAM_ACTION: _apiMethod,
+                                   LP_PARAM_DEVICE_ID: deviceId ?: @"",
+                                   LP_PARAM_USER_ID: userId ?: @"",
+                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                   LP_PARAM_CLIENT: constants.client,
+                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
+                                   LP_PARAM_TIME: timestamp,
+                                   } mutableCopy];
     if (token) {
         args[LP_PARAM_TOKEN] = token;
     }
@@ -206,7 +218,6 @@ static NSDictionary *_requestHheaders;
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         NSTimeInterval delay;
-        NSTimeInterval lastSentTime = [LPRequestStorage sharedStorage].lastSentTime;
         if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_DEVELOPMENT_MAX_DELAY) {
             delay = LP_REQUEST_DEVELOPMENT_MIN_DELAY;
         } else {
@@ -234,7 +245,6 @@ static NSDictionary *_requestHheaders;
         [self send];
     } else {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-        NSTimeInterval lastSentTime = [LPRequestStorage sharedStorage].lastSentTime;
         if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {
             [self sendIfConnected];
         }
@@ -284,134 +294,150 @@ static NSDictionary *_requestHheaders;
         NSLog(@"Leanplum: Cannot send request. accessKey is not set");
         return;
     }
-
+        
     [self sendEventually];
+    [self sendRequests:async];
+}
 
-    NSArray *requestsToSend = [[LPRequestStorage sharedStorage] popAllRequests];
+- (void)sendRequests:(BOOL)async
+{
+    NSBlockOperation *requestOperation = [NSBlockOperation new];
+    __weak NSBlockOperation *weakOperation = requestOperation;
     
-    if (requestsToSend.count == 0) {
-        return;
-    }
-
-    NSString *requestData = [LeanplumRequest jsonEncodeUnsentRequests:requestsToSend];
-
-    LPConstantsState *constants = [LPConstantsState sharedState];
-    NSMutableDictionary *multiRequestArgs = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                             requestData, LP_PARAM_DATA,
-                                             constants.sdkVersion, LP_PARAM_SDK_VERSION,
-                                             constants.client, LP_PARAM_CLIENT,
-                                             LP_METHOD_MULTI, LP_PARAM_ACTION,
-                                             [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]], LP_PARAM_TIME, nil];
-    [self attachApiKeys:multiRequestArgs];
-    int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
-    id<LPNetworkOperationProtocol> op = [engine operationWithPath:constants.apiServlet
-                                                         params:multiRequestArgs
-                                                     httpMethod:_httpMethod
-                                                            ssl:constants.apiSSL
-                                                 timeoutSeconds:timeout];
-    __block BOOL finished = NO;
-
-    // Schedule timeout.
-    [LPTimerBlocks scheduledTimerWithTimeInterval:timeout block:^() {
-        if (finished) {
+    void (^operationBlock)(void) = ^void() {
+        if ([weakOperation isCancelled]) {
             return;
         }
-        finished = YES;
-        LP_TRY
-        NSLog(@"Leanplum: Request %@ timed out", _apiMethod);
-        [op cancel];
-        [LeanplumRequest pushUnsentRequests:requestsToSend];
-        if (_error != nil) {
-            _error([NSError errorWithDomain:@"Leanplum" code:1
-                                   userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
-        }
-        LP_END_TRY
-    } repeats:NO];
-
-    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-        if (finished) {
+        
+        [LeanplumRequest generateUUID];
+        lastSentTime = [NSDate timeIntervalSinceReferenceDate];
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        // Simulate pop all requests.
+        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
+        if (requestsToSend.count == 0) {
             return;
         }
-        finished = YES;
-        LP_TRY
-
-        // Handle errors that don't return an HTTP error code.
-        NSUInteger numResponses = [LPResponse numResponsesInDictionary:json];
-        for (NSUInteger i = 0; i < numResponses; i++) {
-            NSDictionary *response = [LPResponse getResponseAt:i fromDictionary:json];
-            if (![LPResponse isResponseSuccess:response]) {
-                NSString *errorMessage = [LPResponse getResponseError:response];
-                if (!errorMessage) {
-                    errorMessage = @"API error";
-                } else {
-                    errorMessage = [NSString stringWithFormat:@"API error: %@", errorMessage];
-                }
-                NSLog(@"Leanplum: %@", errorMessage);
-                if (i == numResponses - 1) {
-                    if (_error != nil) {
-                        _error([NSError errorWithDomain:@"Leanplum" code:2
-                                               userInfo:@{NSLocalizedDescriptionKey: errorMessage}]);
-                    }
-                    return;
-                }
+        
+        // Set up request operation.
+        NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
+        NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+        LPConstantsState *constants = [LPConstantsState sharedState];
+        NSMutableDictionary *multiRequestArgs = [@{
+                                                   LP_PARAM_DATA: requestData,
+                                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                                   LP_PARAM_CLIENT: constants.client,
+                                                   LP_PARAM_ACTION: LP_METHOD_MULTI,
+                                                   LP_PARAM_TIME: timestamp
+                                                   } mutableCopy];
+        [self attachApiKeys:multiRequestArgs];
+        int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
+        id<LPNetworkOperationProtocol> op = [engine operationWithPath:constants.apiServlet
+                                                               params:multiRequestArgs
+                                                           httpMethod:_httpMethod
+                                                                  ssl:constants.apiSSL
+                                                       timeoutSeconds:timeout];
+        
+        // Request callbacks.
+        [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if ([weakOperation isCancelled]) {
+                dispatch_semaphore_signal(semaphore);
+                return;
             }
-        }
-        LP_END_TRY
-        if (_response != nil) {
-            _response(operation, json);
-        }
-    } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
-        if (finished) {
-            return;
-        }
-        finished = YES;
-        LP_TRY
-        if (completedOperation.HTTPStatusCode == 408
-            || completedOperation.HTTPStatusCode == 502
-            || completedOperation.HTTPStatusCode == 503
-            || completedOperation.HTTPStatusCode == 504
-            || err.code == kCFURLErrorCannotConnectToHost
-            || err.code == kCFURLErrorDNSLookupFailed
-            || err.code == kCFURLErrorNotConnectedToInternet
-            || err.code == kCFURLErrorTimedOut) {
-            NSLog(@"Leanplum: %@", err);
-            [LeanplumRequest pushUnsentRequests:requestsToSend];
-        } else {
-            id errorResponse = completedOperation.responseJSON;
-            NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
-            if (errorMessage && [errorMessage hasPrefix:@"App not found"]) {
-                errorMessage = @"No app matching the provided app ID was found.";
-                constants.isInPermanentFailureState = YES;
-            } else if (errorMessage && [errorMessage hasPrefix:@"Invalid access key"]) {
-                errorMessage = @"The access key you provided is not valid for this app.";
-                constants.isInPermanentFailureState = YES;
-            } else if (errorMessage && [errorMessage hasPrefix:@"Development mode requested but not permitted"]) {
-                errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
-                constants.isInPermanentFailureState = YES;
+            
+            // We need to lock sendNowCallbackMap so that new event callback won't be triggered
+            // right after it gets deleted.
+            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
+                LP_TRY
+                // Delete events on success.
+                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+                
+                // Send another request if the last request had maximum events per api call.
+                if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                    [self sendRequests:async];
+                }
+                LP_END_TRY
+
+                
+                [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
+                                                                 requests:requestsToSend
+                                                                operation:operation];
             }
-            if (errorMessage) {
-                NSLog(@"Leanplum: %@", errorMessage);
-            } else {
+            dispatch_semaphore_signal(semaphore);
+            
+        } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
+            if ([weakOperation isCancelled]) {
+                dispatch_semaphore_signal(semaphore);
+                return;
+            }
+            
+            LP_TRY
+            // Retry on 500 and other network failures.
+            NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
+            if (httpStatusCode == 408
+                || (httpStatusCode >= 500 && httpStatusCode < 600)
+                || err.code == NSURLErrorBadServerResponse
+                || err.code == NSURLErrorCannotConnectToHost
+                || err.code == NSURLErrorDNSLookupFailed
+                || err.code == NSURLErrorNotConnectedToInternet
+                || err.code == NSURLErrorTimedOut) {
                 NSLog(@"Leanplum: %@", err);
+            } else {
+                id errorResponse = completedOperation.responseJSON;
+                NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
+                if (errorMessage) {
+                    if ([errorMessage hasPrefix:@"App not found"]) {
+                        errorMessage = @"No app matching the provided app ID was found.";
+                        constants.isInPermanentFailureState = YES;
+                    } else if ([errorMessage hasPrefix:@"Invalid access key"]) {
+                        errorMessage = @"The access key you provided is not valid for this app.";
+                        constants.isInPermanentFailureState = YES;
+                    } else if ([errorMessage hasPrefix:@"Development mode requested but not permitted"]) {
+                        errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
+                        constants.isInPermanentFailureState = YES;
+                    }
+                    NSLog(@"Leanplum: %@", errorMessage);
+                } else {
+                    NSLog(@"Leanplum: %@", err);
+                }
+                
+                // Delete on permanant error state.
+                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
             }
-        }
-        if (_error != nil) {
-            _error(err);
-        }
-        LP_END_TRY
-    }];
-
-    if (async) {
-        [engine enqueueOperation: op];
-    } else {
+            
+            // Invoke errors on all requests.
+            [LPEventCallbackManager invokeErrorCallbacksWithError:err];
+            [[LeanplumRequest sendNowQueue] cancelAllOperations];
+            dispatch_semaphore_signal(semaphore);
+            LP_END_TRY
+        }];
+        
         // Execute synchronously. Don't block for more than 'timeout' seconds.
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [engine runSynchronously:op];
-        });
-        NSTimeInterval startTime = [[NSDate date] timeIntervalSince1970];
-        while (!finished && [[NSDate date] timeIntervalSince1970] - startTime < timeout) {
-            [NSThread sleepForTimeInterval:0.1];
+        [engine enqueueOperation:op];
+        dispatch_time_t dispatchTimeout = dispatch_time(DISPATCH_TIME_NOW, timeout*NSEC_PER_SEC);
+        long status = dispatch_semaphore_wait(semaphore, dispatchTimeout);
+        
+        // Request timed out.
+        if (status != 0) {
+            LP_TRY
+            NSLog(@"Leanplum: Request %@ timed out", _apiMethod);
+            [op cancel];
+            if (_error != nil) {
+                _error([NSError errorWithDomain:@"Leanplum" code:1
+                                       userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
+            }
+            [[LeanplumRequest sendNowQueue] cancelAllOperations];
+            LP_END_TRY
         }
+    };
+    
+    // Send. operationBlock will run synchronously.
+    // Adding to OperationQueue puts it in the background.
+    if (async) {
+        [requestOperation addExecutionBlock:operationBlock];
+        [[LeanplumRequest sendNowQueue] addOperation:requestOperation];
+    } else {
+        operationBlock();
     }
 }
 
@@ -430,29 +456,23 @@ static NSDictionary *_requestHheaders;
     RETURN_IF_TEST_MODE;
     if (!_sent) {
         _sent = YES;
-        NSMutableDictionary *args = [self createArgsDictionary];
-        [[LPRequestStorage sharedStorage] pushRequest:args];
-    }
-}
-
-+ (NSString *)jsonEncodeUnsentRequests:(NSArray *)requestData
-{
-    return [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestData}];
-}
-
-+ (void)pushUnsentRequests:(NSArray *)requestData
-{
-    for (NSMutableDictionary *args in requestData) {
-        NSNumber *retryCount = args[@"retryCount"];
-        if (!retryCount) {
-            retryCount = @1;
-        } else {
-            retryCount = @([retryCount integerValue] + 1);
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+        NSInteger count = [LPEventDataManager count];
+        if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
+            uuid = [LeanplumRequest generateUUID];
         }
-        args[@"retryCount"] = retryCount;
-        [[LPRequestStorage sharedStorage] pushRequest:args];
+        
+        @synchronized ([LPEventCallbackManager eventCallbackMap]) {
+            NSMutableDictionary *args = [self createArgsDictionary];
+            args[LP_PARAM_UUID] = uuid;
+            [LPEventDataManager addEvent:args];
+            
+            [LPEventCallbackManager addEventCallbackAt:count
+                                             onSuccess:_response
+                                               onError:_error];
+        }
     }
-    [LeanplumRequest saveRequests];
 }
 
 + (NSString *)getSizeAsString:(int)size
@@ -706,11 +726,21 @@ static NSDictionary *_requestHheaders;
     noPendingDownloadsBlock = block;
 }
 
-+ (void)saveRequests
+/**
+ * Static sendNowQueue with thread protection.
+ * Returns an operation queue that manages sendNow to run in order.
+ * This is required to prevent from having out of order error in the backend.
+ * Also it is very crucial with the uuid logic.
+ */
++ (NSOperationQueue *)sendNowQueue
 {
-    LP_TRY
-    [[LPRequestStorage sharedStorage] performSelectorInBackground:@selector(saveRequests) withObject:nil];
-    LP_END_TRY
+    static NSOperationQueue *_sendNowQueue;
+    static dispatch_once_t sendNowQueueToken;
+    dispatch_once(&sendNowQueueToken, ^{
+        _sendNowQueue = [NSOperationQueue new];
+        _sendNowQueue.maxConcurrentOperationCount = 1;
+    });
+    return _sendNowQueue;
 }
 
 @end
@@ -724,7 +754,10 @@ static NSDictionary *_requestHheaders;
 
 + (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary
 {
-    return [dictionary[@"response"] objectAtIndex:index];
+    if (index < [LPResponse numResponsesInDictionary:dictionary]) {
+        return [dictionary[@"response"] objectAtIndex:index];
+    }
+    return [dictionary[@"response"] lastObject];
 }
 
 + (NSDictionary *)getLastResponse:(NSDictionary *)dictionary

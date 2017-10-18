@@ -26,6 +26,7 @@
  */
 
 #import <SystemConfiguration/SystemConfiguration.h>
+#import <UIKit/UIKit.h>
 
 #import <sys/socket.h>
 #import <netinet/in.h>

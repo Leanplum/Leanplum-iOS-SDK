@@ -89,6 +89,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         _deviceId = nil;
         _userAttributeChanges = [NSMutableArray array];
         _stripViewControllerFromState = NO;
+        _isScreenTrackingEnabled = NO;
+        _isInterfaceEditingEnabled = NO;
         _calledHandleNotification = NO;
     }
     return self;
@@ -424,6 +426,12 @@ BOOL inForeground = NO;
     });
 }
 
++ (NSString *)pushTokenKey
+{
+    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
+            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
+}
+
 + (void)start
 {
     [self startWithUserId:nil userAttributes:nil responseHandler:nil];
@@ -719,6 +727,15 @@ BOOL inForeground = NO;
          @"methods."];
         return;
     }
+    
+    // Leanplum should not be started in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self startWithUserId:userId userAttributes:attributes responseHandler:startResponse];
+        });
+        return;
+    }
+    
     LP_TRY
     NSDate *startTime = [NSDate date];
     if (startResponse) {
@@ -833,9 +850,10 @@ BOOL inForeground = NO;
     NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
                                      [[NSLocale preferredLanguages] objectAtIndex:0],
                                      [currentLocale objectForKey:NSLocaleCountryCode]];
-    NSString *deviceName = device.name;
-    if (!deviceName) {
-        deviceName = @"";
+    // Set the device name. But only if running in development mode.
+    NSString *deviceName = @"";
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        deviceName = device.name ?: @"";
     }
     NSTimeZone *localTimeZone = [NSTimeZone localTimeZone];
     NSNumber *timezoneOffsetSeconds =
@@ -878,14 +896,20 @@ BOOL inForeground = NO;
 
     // Get the current Inbox messages on the device.
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
+    
+    // Push token.
+    NSString *pushTokenKey = [Leanplum pushTokenKey];
+    NSString *pushToken = [[NSUserDefaults standardUserDefaults] stringForKey:pushTokenKey];
+    if (pushToken) {
+        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+    }
 
     // Issue start API call.
     LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
         state.startSuccessful = YES;
-        NSDictionary *response = [LPResponse getLastResponse:json];
         NSDictionary *values = response[LP_KEY_VARS];
         NSString *token = response[LP_KEY_TOKEN];
         NSDictionary *messages = response[LP_KEY_MESSAGES];
@@ -913,9 +937,6 @@ BOOL inForeground = NO;
         // TODO: Need to call this if we fix encryption.
         // [LPVarCache saveUserAttributes];
         [self triggerStartResponse:YES];
-
-        // Upload alternative app icons.
-        [LPAppIconManager uploadAppIconsOnDevMode];
 
         // Allow bidirectional realtime variable updates.
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -966,6 +987,9 @@ BOOL inForeground = NO;
                                         }] send];
             }
         }
+
+        // Upload alternative app icons.
+        [LPAppIconManager uploadAppIconsOnDevMode];
 
         if (!startedInBackground) {
             inForeground = YES;
@@ -1054,8 +1078,6 @@ BOOL inForeground = NO;
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
                     [[LeanplumRequest post:LP_METHOD_STOP params:nil]
                         sendIfConnectedSync:exitOnSuspend];
-                    [LeanplumRequest saveRequests];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                     LP_END_TRY
                 }];
 
@@ -1065,8 +1087,6 @@ BOOL inForeground = NO;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
             [[LeanplumRequest post:LP_METHOD_HEARTBEAT params:nil] sendIfDelayed];
-            [[LeanplumRequest class] performSelector:@selector(saveRequests) withObject:nil
-                                          afterDelay:LP_REQUEST_RESUME_DELAY + 1.0];
         }
         LP_END_TRY
     } repeats:YES];
@@ -1140,42 +1160,29 @@ BOOL inForeground = NO;
 #endif
 }
 
-/**
- * Use this to make sure the task fully runs when the app is in background.
- * Mainly used by {@link pause}.
- */
-+ (void)beginBackgroundTask:(void(^)())task expirationHandler:(void(^)())expirationHandler
++ (void)pause
 {
     UIApplication *application = [UIApplication sharedApplication];
     UIBackgroundTaskIdentifier __block backgroundTask;
-
-    // Start background task.
-    backgroundTask = [application beginBackgroundTaskWithExpirationHandler:^{
-        if (expirationHandler) {
-            expirationHandler();
-        }
-
+    
+    // Block that finish task.
+    void (^finishTaskHandler)(void) = ^(){
         [application endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
+    };
+    
+    // Start background task to make sure it runs when the app is in background.
+    backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
+    
+    // Send pause event.
+    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        finishTaskHandler();
     }];
-
-    // Start the long-running task and return immediately.
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        if (task) {
-            task();
-        }
-
-        [application endBackgroundTask:backgroundTask];
-        backgroundTask = UIBackgroundTaskInvalid;
-    });
-}
-
-+ (void)pause
-{
-    [self beginBackgroundTask:^{
-        [[LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil] sendIfConnectedSync:YES];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    } expirationHandler:nil];
+    [request onError:^(NSError *error) {
+        finishTaskHandler();
+    }];
+    [request sendIfConnected];
 }
 
 + (void)resume
@@ -1602,6 +1609,8 @@ BOOL inForeground = NO;
 }
 
 #if LP_NOT_TV
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)())completionHandler
@@ -1612,8 +1621,11 @@ BOOL inForeground = NO;
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
 }
+#pragma clang diagnostic pop
 #endif
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
                  completionHandler:(void (^)())completionHandler
@@ -1624,6 +1636,7 @@ BOOL inForeground = NO;
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
 }
+#pragma clang diagnostic pop
 
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block
 {
@@ -1679,6 +1692,7 @@ BOOL inForeground = NO;
 {
     NSDictionary *messages = [LPVarCache messages];
     NSMutableArray *actionContexts = [NSMutableArray array];
+    
     for (NSString *messageId in [messages allKeys]) {
         if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
             continue;
@@ -1739,10 +1753,7 @@ BOOL inForeground = NO;
         if (result.matchedTrigger) {
             [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
             if (result.matchedLimit) {
-                NSNumber *priority = messageConfig[@"priority"];
-                if (!priority) {
-                    priority = [NSNumber numberWithInt:DEFAULT_PRIORITY];
-                }
+                NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
                 LPActionContext *context = [LPActionContext
                                             actionContextWithName:actionType
                                             args:[messageConfig objectForKey:LP_KEY_VARS]
@@ -1755,27 +1766,35 @@ BOOL inForeground = NO;
         }
     }
 
-    if ([actionContexts count] > 0) {
-        [LPActionContext sortByPriority:actionContexts];
-        NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
-        for (LPActionContext *actionContext in actionContexts) {
-            NSNumber *priority = [actionContext priority];
-            if ([priority intValue] <= [priorityThreshold intValue]) {
-              if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
-                  [[LPInternalState sharedState].actionManager
-                      recordHeldBackImpression:[actionContext messageId]
-                             originalMessageId:[actionContext originalMessageId]];
-              } else {
-                  [self triggerAction:actionContext handledBlock:^(BOOL success) {
-                      if (success) {
-                          [[LPInternalState sharedState].actionManager
-                              recordMessageImpression:[actionContext messageId]];
-                      }
-                  }];
-              }
-            } else {
-                break;
-            }
+    // Return if there are no action to trigger.
+    if ([actionContexts count] == 0) {
+        return;
+    }
+
+    // Sort the action by priority and only show one message.
+    // Make sure to capture the held back.
+    [LPActionContext sortByPriority:actionContexts];
+    NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
+    BOOL messageActionTriggered = NO;
+    
+    for (LPActionContext *actionContext in actionContexts) {
+        NSNumber *priority = [actionContext priority];
+        if (priority.intValue > priorityThreshold.intValue) {
+            break;
+        }
+        
+        if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
+            [[LPInternalState sharedState].actionManager
+                 recordHeldBackImpression:[actionContext messageId]
+                        originalMessageId:[actionContext originalMessageId]];
+        } else if (!messageActionTriggered) {
+            messageActionTriggered = YES;
+            [self triggerAction:actionContext handledBlock:^(BOOL success) {
+                if (success) {
+                    [[LPInternalState sharedState].actionManager
+                         recordMessageImpression:[actionContext messageId]];
+                }
+            }];
         }
     }
 }
@@ -1799,9 +1818,31 @@ BOOL inForeground = NO;
 {
     RETURN_IF_NOOP;
     LP_TRY
+    if (![LPInternalState sharedState].isInterfaceEditingEnabled) {
+        LPLog(LPWarning, @"LeanplumUIEditor module is required to track all screens. "
+                         @"Call allowInterfaceEditing before this method.");
+    }
+    
     BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
     [[LPInternalState sharedState] setStripViewControllerFromState:stripViewControllerFromState];
     [LPUIEditorWrapper enableAutomaticScreenTracking];
+    LP_END_TRY
+}
+
++ (void)trackPurchase:(NSString *)event withValue:(double)value
+      andCurrencyCode:(NSString *)currencyCode andParameters:(NSDictionary *)params
+{
+    RETURN_IF_NOOP;
+    LP_TRY
+    NSMutableDictionary *arguments = [NSMutableDictionary new];
+    if (currencyCode) {
+        arguments[LP_PARAM_CURRENCY_CODE] = currencyCode;
+    }
+
+    [Leanplum track:event
+          withValue:value
+            andArgs:arguments
+      andParameters:params];
     LP_END_TRY
 }
 
@@ -1832,6 +1873,15 @@ BOOL inForeground = NO;
 {
     RETURN_IF_NOOP;
     LP_TRY
+    
+    // Track should not be called in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self track:event withValue:value andInfo:info andArgs:args andParameters:params];
+        });
+        return;
+    }
+    
     NSString *valueStr = [NSString stringWithFormat:@"%f", value];
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                  valueStr, LP_PARAM_VALUE, nil];
@@ -2186,15 +2236,14 @@ andParameters:(NSDictionary *)params
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
                             params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
-        NSDictionary *getVariablesResponse = [LPResponse getLastResponse:json];
-        NSDictionary *values = getVariablesResponse[LP_KEY_VARS];
-        NSDictionary *messages = getVariablesResponse[LP_KEY_MESSAGES];
-        NSArray *updateRules = getVariablesResponse[LP_KEY_UPDATE_RULES];
-        NSArray *eventRules = getVariablesResponse[LP_KEY_EVENT_RULES];
-        NSArray *variants = getVariablesResponse[LP_KEY_VARIANTS];
-        NSDictionary *regions = getVariablesResponse[LP_KEY_REGIONS];
+        NSDictionary *values = response[LP_KEY_VARS];
+        NSDictionary *messages = response[LP_KEY_MESSAGES];
+        NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+        NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+        NSArray *variants = response[LP_KEY_VARIANTS];
+        NSDictionary *regions = response[LP_KEY_REGIONS];
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
             ![updateRules isEqualToArray:LPVarCache.updateRulesDiffs] ||
@@ -2208,7 +2257,7 @@ andParameters:(NSDictionary *)params
                                    regions:regions];
 
         }
-        if ([getVariablesResponse[LP_KEY_SYNC_INBOX] boolValue]) {
+        if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
         }
         LP_END_TRY
@@ -3470,7 +3519,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
 {
     if ([Utils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext boolNamed:] Empty name parameter provided."];
-        return nil;
+        return NO;
     }
     LP_TRY
     id object = [self objectNamed:name];
@@ -3487,7 +3536,17 @@ void LPLog(LPLogType type, NSString *format, ...) {
         [Leanplum throwError:@"[LPActionContext dictionaryNamed:] Empty name parameter provided."];
         return nil;
     }
-    return (NSDictionary *) [self objectNamed:name];
+    LP_TRY
+    id object = [self objectNamed:name];
+    if ([object isKindOfClass:[NSDictionary class]]) {
+        return (NSDictionary *) object;
+    }
+    
+    if ([object isKindOfClass:[NSString class]]) {
+        return [LPJSON JSONFromString:object];
+    }
+    LP_END_TRY
+    return nil;
 }
 
 - (NSArray *)arrayNamed:(NSString *)name
@@ -3580,16 +3639,38 @@ void LPLog(LPLogType type, NSString *format, ...) {
     // Chain to existing message.
     NSString *messageId = args[LP_VALUE_CHAIN_MESSAGE_ARG];
     NSString *actionType = args[LP_VALUE_ACTION_ARG];
+
+    void (^executeChainedMessage)(void) = ^void(void) {
+      LPActionContext *chainedActionContext =
+                          [Leanplum createActionContextForMessageId:messageId];
+                  chainedActionContext.contextualValues = self.contextualValues;
+                  chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
+                  chainedActionContext->_isRooted = _isRooted;
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
+                          if (success) {
+                              // Track when the chain message is viewed.
+                              [[LPInternalState sharedState].actionManager
+                               recordMessageImpression:[chainedActionContext messageId]];
+                          }
+                      }];
+                  });
+    };
+
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
         NSDictionary *message = [LPVarCache messages][messageId];
         if (message) {
-            LPActionContext *chainedActionContext =
-                    [Leanplum createActionContextForMessageId:messageId];
-            chainedActionContext->_parentContext = self;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [Leanplum triggerAction:chainedActionContext];
-            });
+            executeChainedMessage();
             return;
+        } else {
+            // Message doesn't seem to be on the device,
+            // so let's forceContentUpdate and retry showing it.
+            [Leanplum forceContentUpdate: ^(void) {
+                NSDictionary *message = [LPVarCache messages][messageId];
+                if (message) {
+                    executeChainedMessage();
+                }
+            }];
         }
     }
 
