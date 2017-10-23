@@ -472,9 +472,7 @@ static NSObject *updatingLock;
     [req onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnectedWithNoNetworkCallback:^{
-        [self triggerInboxSyncedWithStatus:NO];
-    }];
+    [req sendIfConnected];
     LP_END_TRY
 }
 

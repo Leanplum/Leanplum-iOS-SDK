@@ -261,18 +261,6 @@ static NSDictionary *_requestHheaders;
 
 - (void)sendIfConnectedSync:(BOOL)sync
 {
-    [self sendIfConnectedSync:sync withNoNetworkCallback:nil];
-}
-
-- (void)sendIfConnectedWithNoNetworkCallback:(void(^)(void))block
-{
-    LP_TRY
-    [self sendIfConnectedSync:NO withNoNetworkCallback:block];
-    LP_END_TRY
-}
-
-- (void)sendIfConnectedSync:(BOOL)sync withNoNetworkCallback:(void(^)(void))block
-{
     if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
         if (sync) {
             [self sendNowSync];
@@ -284,9 +272,6 @@ static NSDictionary *_requestHheaders;
         if (_error) {
             _error([NSError errorWithDomain:@"Leanplum" code:1
                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
-        }
-        if (block) {
-            block();
         }
     }
 }

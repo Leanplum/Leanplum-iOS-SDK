@@ -2273,9 +2273,7 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnectedWithNoNetworkCallback:^{
-        [[self inbox] triggerInboxSyncedWithStatus:NO];
-    }];
+    [req sendIfConnected];
     LP_END_TRY
 }
 
