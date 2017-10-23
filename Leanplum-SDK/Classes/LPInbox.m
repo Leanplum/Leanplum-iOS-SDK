@@ -460,13 +460,13 @@ static NSObject *updatingLock;
             [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
                 LP_END_USER_CODE
                 [self updateMessages:messages unreadCount:unreadCount];
+                [self triggerInboxSyncedWithStatus:YES];
                 LP_BEGIN_USER_CODE
             }];
         } else {
             [self updateMessages:messages unreadCount:unreadCount];
+            [self triggerInboxSyncedWithStatus:YES];
         }
-        
-        [self triggerInboxSyncedWithStatus:YES];
         LP_END_TRY
     }];
     [req onError:^(NSError *error) {
