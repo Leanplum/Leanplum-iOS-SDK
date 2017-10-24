@@ -91,7 +91,8 @@
 		9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691E11F1601BA002D83D8 /* EventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */; };
-		B08587C9AF0FCE5835E853EA /* Pods_Leanplum_SDK_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7849230A3D5C6DE5929ED1C8 /* Pods_Leanplum_SDK_Tests.framework */; };
+		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
 		B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */; };
 		B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA321D74B64D005ADEE1 /* ViewController.m */; };
@@ -192,7 +193,7 @@
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		9CB691DD1F15FFF5002D83D8 /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
 		9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCallbackManagerTest.m; sourceTree = "<group>"; };
-		9EE2D840C30124E373ADF721 /* Pods_Leanplum_tvOS_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_tvOS_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-tvOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -325,6 +326,7 @@
 				07E5C89C1F052B7800A4B092 /* state_response.json */,
 				07E5C89E1F052B7800A4B092 /* track_event_response.json */,
 				07E5C89F1F052B7800A4B092 /* variables_response.json */,
+				9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -605,6 +607,7 @@
 				07E5C8DE1F052DC400A4B092 /* newsfeed_response.json in Resources */,
 				07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */,
 				07E5C8DF1F052DC400A4B092 /* registration_response.json in Resources */,
+				9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */,
 				9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */,
 				07E5C8EA1F052DCC00A4B092 /* MainAppIcon.png in Resources */,
 				07E5C8E21F052DC400A4B092 /* start_variables_response.json in Resources */,
@@ -649,6 +652,7 @@
 				07E5C8D61F052B7800A4B092 /* regionData.json in Resources */,
 				07E5C8D81F052B7800A4B092 /* SingleMessage.json in Resources */,
 				07E5C8CB1F052B7800A4B092 /* simple_start_response.json in Resources */,
+				9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */,
 				07E5C8C01F052B7800A4B092 /* MainAppIcon.png in Resources */,
 				07E5C8C11F052B7800A4B092 /* test.file in Resources */,
 				07E5C8CF1F052B7800A4B092 /* track_event_response.json in Resources */,

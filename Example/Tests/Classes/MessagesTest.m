@@ -134,8 +134,6 @@
                        withFilter:self.mockFilter
                     fromMessageId:self.mockFromMessageId
              withContextualValues:self.mockContextualValues];
-    
-    NSLog(@"IDS: %@", calledMessageIds);
 
     XCTAssertTrue([calledMessageIds isEqualToSet:expectedMessageIds]);
 }
