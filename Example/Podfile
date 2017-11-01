@@ -19,5 +19,5 @@ end
 target 'Leanplum-tvOS-SDK_Example' do
   platform :tvos, '9.0'
 
-  pod 'Leanplum-tvOS-SDK', :path => '../'
+  pod 'Leanplum-tvOS-SDK-source', :path => '../'
 end
