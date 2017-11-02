@@ -74,6 +74,7 @@
 		07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A81F052B7800A4B092 /* SingleMessage.json */; };
 		07E5C8F51F052DD000A4B092 /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */; };
 		07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */; };
+		31A2B64CA6C62A4A59D1FC14 /* libPods-Leanplum-tvOS-SDK_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B30CAD752CAE14DC2DAD8C2B /* libPods-Leanplum-tvOS-SDK_Example.a */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -86,19 +87,19 @@
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
-		7EB62201F9933A5796D4A2FE /* Pods_Leanplum_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66C5FAC1828A41289CE29EF5 /* Pods_Leanplum_SDK_Example.framework */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		956357650097271FEDD4FCD2 /* libPods-Leanplum-SDK_Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D1597BF680DA0D633F15869D /* libPods-Leanplum-SDK_Tests.a */; };
 		9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691E11F1601BA002D83D8 /* EventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */; };
 		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		9E032A24A42D2042C4B62505 /* libPods-Leanplum-SDK_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 066C8918F2744DE47AAC8F77 /* libPods-Leanplum-SDK_Example.a */; };
 		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
 		B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */; };
 		B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA321D74B64D005ADEE1 /* ViewController.m */; };
 		B5CCCA361D74B64D005ADEE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA341D74B64D005ADEE1 /* Main.storyboard */; };
 		B5CCCA381D74B64D005ADEE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */; };
-		E1B1B1940FC870B25684ED7D /* Pods_Leanplum_tvOS_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9EE2D840C30124E373ADF721 /* Pods_Leanplum_tvOS_SDK_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -112,6 +113,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		066C8918F2744DE47AAC8F77 /* libPods-Leanplum-SDK_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK-source.podspec"; path = "../Leanplum-iOS-SDK-source.podspec"; sourceTree = "<group>"; };
 		0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-tvOS-SDK.podspec"; path = "../Leanplum-tvOS-SDK.podspec"; sourceTree = "<group>"; };
@@ -166,7 +168,6 @@
 		07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities2.json; sourceTree = "<group>"; };
 		1982CE36FE54461D3A24D6B5 /* Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		29ABF5FA9E1826C5BBE433C9 /* Pods-Leanplum-SDK_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		4D30EC90BF70F6ACCD15929C /* Pods_Leanplum_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* Leanplum-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -185,16 +186,15 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		66C5FAC1828A41289CE29EF5 /* Pods_Leanplum_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		73B565AA61D6B6A4E92607C4 /* Pods-Leanplum-SDK_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		74C2EA3F2D53CAE77A03BFFA /* Pods-Leanplum-tvOS-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
-		7849230A3D5C6DE5929ED1C8 /* Pods_Leanplum_SDK_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84A3C33C701600A874B8C63F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		9CB691DD1F15FFF5002D83D8 /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
 		9CB691E01F1601BA002D83D8 /* EventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B30CAD752CAE14DC2DAD8C2B /* libPods-Leanplum-tvOS-SDK_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-tvOS-SDK_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-tvOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -204,6 +204,7 @@
 		B5CCCA351D74B64D005ADEE1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B5CCCA391D74B64D005ADEE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D1597BF680DA0D633F15869D /* libPods-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D2BDBCD86C8BEA8BF5B15B99 /* Pods-Leanplum-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		ED67DCDB70EA6598AF12284A /* Pods-Leanplum-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		F5CF859C9DD307380E6F9A30 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -217,7 +218,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				7EB62201F9933A5796D4A2FE /* Pods_Leanplum_SDK_Example.framework in Frameworks */,
+				9E032A24A42D2042C4B62505 /* libPods-Leanplum-SDK_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,7 +229,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				B08587C9AF0FCE5835E853EA /* Pods_Leanplum_SDK_Tests.framework in Frameworks */,
+				956357650097271FEDD4FCD2 /* libPods-Leanplum-SDK_Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,7 +237,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E1B1B1940FC870B25684ED7D /* Pods_Leanplum_tvOS_SDK_Example.framework in Frameworks */,
+				31A2B64CA6C62A4A59D1FC14 /* libPods-Leanplum-tvOS-SDK_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -387,10 +388,10 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				7849230A3D5C6DE5929ED1C8 /* Pods_Leanplum_SDK_Tests.framework */,
 				A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */,
-				66C5FAC1828A41289CE29EF5 /* Pods_Leanplum_SDK_Example.framework */,
-				9EE2D840C30124E373ADF721 /* Pods_Leanplum_tvOS_SDK_Example.framework */,
+				066C8918F2744DE47AAC8F77 /* libPods-Leanplum-SDK_Example.a */,
+				D1597BF680DA0D633F15869D /* libPods-Leanplum-SDK_Tests.a */,
+				B30CAD752CAE14DC2DAD8C2B /* libPods-Leanplum-tvOS-SDK_Example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -686,13 +687,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Leanplum-SDK_Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6F8E78CD5A8A5D2F0677A4AC /* [CP] Check Pods Manifest.lock */ = {
@@ -701,13 +705,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Leanplum-tvOS-SDK_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		81DD9F917F8C0494E1D79789 /* [CP] Copy Pods Resources */ = {
@@ -731,9 +738,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -776,13 +786,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Leanplum-SDK_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 		CE1D3D9B6CE96DE8989631BA /* [CP] Embed Pods Frameworks */ = {
@@ -791,9 +804,12 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Leanplum-tvOS-SDK-source/LeanplumTV.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LeanplumTV.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -806,9 +822,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
+				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
+				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OHHTTPStubs.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -1081,9 +1104,9 @@
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.leanplum.Leanplum-tvOS-SDK-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos9.2;
+				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Debug;
 		};
@@ -1104,9 +1127,9 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.leanplum.Leanplum-tvOS-SDK-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos9.2;
+				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.2;
+				TVOS_DEPLOYMENT_TARGET = 9.0;
 			};
 			name = Release;
 		};
