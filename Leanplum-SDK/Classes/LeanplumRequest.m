@@ -305,6 +305,7 @@ static NSDictionary *_requestHheaders;
     __weak NSBlockOperation *weakOperation = requestOperation;
     
     void (^operationBlock)(void) = ^void() {
+        LP_TRY
         if ([weakOperation isCancelled]) {
             return;
         }
@@ -340,6 +341,7 @@ static NSDictionary *_requestHheaders;
         
         // Request callbacks.
         [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+            LP_TRY
             if ([weakOperation isCancelled]) {
                 dispatch_semaphore_signal(semaphore);
                 return;
@@ -364,14 +366,15 @@ static NSDictionary *_requestHheaders;
                                                                 operation:operation];
             }
             dispatch_semaphore_signal(semaphore);
+            LP_END_TRY
             
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
+            LP_TRY
             if ([weakOperation isCancelled]) {
                 dispatch_semaphore_signal(semaphore);
                 return;
             }
             
-            LP_TRY
             // Retry on 500 and other network failures.
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
@@ -429,6 +432,7 @@ static NSDictionary *_requestHheaders;
             [[LeanplumRequest sendNowQueue] cancelAllOperations];
             LP_END_TRY
         }
+        LP_END_TRY
     };
     
     // Send. operationBlock will run synchronously.
