@@ -511,60 +511,60 @@ static RegionInitBlock regionInitBlock;
                  maybeDownloadFiles];
             }
         }
-    }
     
-    // If LeanplumLocation is linked in, setup region monitoring.
-    if (messages_ || regions_) {
-        if (!regionInitBlock) {
-                if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-                    if ([regions_ count] > 0) {
-                        NSLog(@"Leanplum: Regions have been defined in dashboard, but the app is not built to handle them.");
-                        NSLog(@"Leanplum: Add LeanplumLocation.framework or LeanplumBeacon.framework to Build Settings -> Link Binary With Libraries.");
-                        NSLog(@"Leanplum: Disregard warning if there are no plans to utilize iBeacon or Geofencing within the app");
+        // If LeanplumLocation is linked in, setup region monitoring.
+        if (messages_ || regions_) {
+            if (!regionInitBlock) {
+                    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+                        if ([regions_ count] > 0) {
+                            NSLog(@"Leanplum: Regions have been defined in dashboard, but the app is not built to handle them.");
+                            NSLog(@"Leanplum: Add LeanplumLocation.framework or LeanplumBeacon.framework to Build Settings -> Link Binary With Libraries.");
+                            NSLog(@"Leanplum: Disregard warning if there are no plans to utilize iBeacon or Geofencing within the app");
+                        }
                     }
-                }
-        } else {
-            NSSet *foregroundRegionNames;
-            NSSet *backgroundRegionNames;
-            [LPActionManager getForegroundRegionNames:&foregroundRegionNames
-                             andBackgroundRegionNames:&backgroundRegionNames];
-            regionInitBlock([LPVarCache regions], foregroundRegionNames, backgroundRegionNames);
+            } else {
+                NSSet *foregroundRegionNames;
+                NSSet *backgroundRegionNames;
+                [LPActionManager getForegroundRegionNames:&foregroundRegionNames
+                                 andBackgroundRegionNames:&backgroundRegionNames];
+                regionInitBlock([LPVarCache regions], foregroundRegionNames, backgroundRegionNames);
+            }
         }
-    }
 
-    BOOL interfaceUpdated = NO;
-    if (updateRules_) {
-        interfaceUpdated = ![updateRules_ isEqual:updateRulesDiffs];
-        updateRulesDiffs = [updateRules_ mutableCopy];
-        [self downloadUpdateRulesImages];
-    }
-    
-    BOOL eventsUpdated = NO;
-    if (eventRules_ && ![eventRules_ isKindOfClass:NSNull.class]) {
-        eventsUpdated = ![eventRules_ isEqual:eventRulesDiffs];
-        eventRulesDiffs = eventRules_;
-    }
-
-    if (variants_) {
-        variants = variants_;
-    }
-    
-    contentVersion++;
-
-    if (!silent) {
-        [self saveDiffs];
-
-        hasReceivedDiffs = YES;
-        if (updateBlock) {
-            updateBlock();
+        BOOL interfaceUpdated = NO;
+        if (updateRules_) {
+            interfaceUpdated = ![updateRules_ isEqual:updateRulesDiffs];
+            updateRulesDiffs = [updateRules_ mutableCopy];
+            [self downloadUpdateRulesImages];
         }
         
-        if (interfaceUpdated) {
-            interfaceUpdateBlock();
+        BOOL eventsUpdated = NO;
+        if (eventRules_ && ![eventRules_ isKindOfClass:NSNull.class]) {
+            eventsUpdated = ![eventRules_ isEqual:eventRulesDiffs];
+            eventRulesDiffs = eventRules_;
+        }
+
+        if (variants_) {
+            variants = variants_;
         }
         
-        if (eventsUpdated) {
-            eventsUpdateBlock();
+        contentVersion++;
+
+        if (!silent) {
+            [self saveDiffs];
+
+            hasReceivedDiffs = YES;
+            if (updateBlock) {
+                updateBlock();
+            }
+            
+            if (interfaceUpdated) {
+                interfaceUpdateBlock();
+            }
+            
+            if (eventsUpdated) {
+                eventsUpdateBlock();
+            }
         }
     }
 }
