@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.license = { :type => 'Commercial', :text => 'See https://www.leanplum.com/tos' }
   s.author = { 'Leanplum' => 'support@leanplum.com' }
   s.social_media_url = 'https://twitter.com/leanplum'
-  s.platform = :tvos, '8.0'
+  s.tvos.deployment_target = '9.0'
   s.requires_arc = true
   s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'

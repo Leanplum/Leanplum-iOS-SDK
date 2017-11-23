@@ -160,7 +160,7 @@
 
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
-                     withExpectedMessageIds:[NSSet setWithObjects:@"1", @"2", @"3", nil]];
+                     withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 }
 
 - (void) test_different_priorities
@@ -189,14 +189,14 @@
 
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
-                     withExpectedMessageIds:[NSSet setWithObjects:@"1", @"3", nil]];
+                     withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 
     // Testing three messages with the same priority.
     jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPriorities2"
                                                     ofType:@"json"];
     messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
-                     withExpectedMessageIds:[NSSet setWithObjects:@"1", @"2" ,@"3", nil]];
+                     withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 }
 
 - (void) test_different_priorities_with_missing_values

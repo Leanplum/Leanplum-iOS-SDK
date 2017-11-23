@@ -955,7 +955,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
                  [context.actionName isEqualToString:LPMT_HTML_NAME];
     
-    int statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? 0
+    CGFloat statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? 0
     : MIN([UIApplication sharedApplication].statusBarFrame.size.height,
           [UIApplication sharedApplication].statusBarFrame.size.width);
     
@@ -990,57 +990,67 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     CGSize screenSize = window.screen.bounds.size;
     _popupGroup.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
     
-    int screenWidth;
-    int screenHeight;
+    CGFloat screenWidth = screenSize.width;
+    CGFloat screenHeight = screenSize.height;
     if (orientation == UIDeviceOrientationLandscapeLeft ||
         orientation == UIDeviceOrientationLandscapeRight) {
         screenWidth = screenSize.height;
         screenHeight = screenSize.width;
-    } else {
-        screenWidth = screenSize.width;
-        screenHeight = screenSize.height;
     }
-    CGRect popupFrame;
-    if (fullscreen) {
-        popupFrame = CGRectMake(0, 0, screenWidth, screenHeight);
-    } else {
-        popupFrame = CGRectMake(0, 0,
-                                [[context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue],
-                                [[context numberNamed:LPMT_ARG_LAYOUT_HEIGHT] doubleValue]);
+    
+    _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+    if (!fullscreen) {
+        _popupView.frame = CGRectMake(0, 0, [[context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue],
+                                      [[context numberNamed:LPMT_ARG_LAYOUT_HEIGHT] doubleValue]);
     }
-    _popupView.frame = popupFrame;
     _popupView.center = CGPointMake(screenWidth / 2.0, screenHeight / 2.0);
     
     if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
-        // Calculate the height. Fullscreen by default.
-        CGFloat contextArgHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
-        CGFloat htmlHeight = contextArgHeight;
-        if (htmlHeight < 1) {
-            htmlHeight = screenHeight;
-        }
-        
-        // Status bar offset.
-        CGFloat statusBarOffset = 0;
-#if LP_NOT_TV
-        UIApplication *app = [UIApplication sharedApplication];
-        if (!app.statusBarHidden) {
-            statusBarOffset = app.statusBarFrame.size.height;
-        }
-#endif
-        
+        [self updateHtmlLayoutWithContext:context
+                          statusBarHeight:statusBarHeight
+                              screenWidth:screenWidth
+                             screenHeight:screenHeight];
+    }
+
+    if (!isWeb) {
+        [self updateNonWebPopupLayout:statusBarHeight];
+        _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+    }
+    
+    CGFloat dismissButtonX = screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
+    CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
+    if (!fullscreen) {
+        dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
+        dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
+    }
+    _dismissButton.frame = CGRectMake(dismissButtonX, dismissButtonY, _dismissButton.frame.size.width,
+                                      _dismissButton.frame.size.height);
+}
+
+- (void)updateHtmlLayoutWithContext:(LPActionContext *)context
+                    statusBarHeight:(CGFloat)statusBarHeight
+                        screenWidth:(CGFloat)screenWidth
+                       screenHeight:(CGFloat)screenHeight
+{
+    // Calculate the height. Fullscreen by default.
+    CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
+    BOOL isFullscreen = htmlHeight < 1;
+    
+    // Banner logic.
+    if (!isFullscreen) {
         // Calculate Y Offset.
         CGFloat yOffset = 0;
         NSString *contextArgYOffset = [context stringNamed:LPMT_ARG_HTML_Y_OFFSET];
         if (contextArgYOffset && [contextArgYOffset length] > 0) {
-            CGFloat percentRange = screenHeight - htmlHeight - statusBarOffset;
+            CGFloat percentRange = screenHeight - htmlHeight - statusBarHeight;
             yOffset = [self valueFromHtmlString:contextArgYOffset percentRange:percentRange];
         }
         
         // HTML banner logic to support top/bottom alignment with dynamic size.
-        CGFloat htmlY = yOffset + statusBarOffset;
+        CGFloat htmlY = yOffset + statusBarHeight;
         NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
         if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
-            htmlY = screenHeight - htmlHeight - yOffset - statusBarOffset;
+            htmlY = screenHeight - htmlHeight - yOffset - statusBarHeight;
         }
         
         // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
@@ -1056,35 +1066,18 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                 [self dismiss];
                 [_closePopupView removeFromSuperview];
             }];
-            _closePopupView.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+            _closePopupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
             [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
             [[UIApplication sharedApplication].keyWindow bringSubviewToFront:_popupGroup];
         }
-
+        
         CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
-        _popupView.frame = _popupGroup.bounds;
-    }
-
-    if (!isWeb) {
-        [self updateNonWebPopupLayout:statusBarHeight];
+    } else if (statusBarHeight > 40) { // iPhone X
+        _popupGroup.frame = CGRectMake(0, -statusBarHeight, screenWidth, screenHeight+2*statusBarHeight);
     }
     
-    if (fullscreen) {
-        _dismissButton.frame = CGRectMake(screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2,
-                                          statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2,
-                                          _dismissButton.frame.size.width,
-                                          _dismissButton.frame.size.height);
-    } else {
-        _dismissButton.frame = CGRectMake(_popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4,
-                                          _popupView.frame.origin.y - _dismissButton.frame.size.height / 4,
-                                          _dismissButton.frame.size.width,
-                                          _dismissButton.frame.size.height);
-    }
-    
-    if (!isWeb) {
-        _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-    }
+    _popupView.frame = _popupGroup.bounds;
 }
 
 /**

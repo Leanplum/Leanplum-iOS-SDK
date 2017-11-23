@@ -164,6 +164,7 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 @property(strong, nonatomic) NSMutableDictionary *messages;
 @property(strong, nonatomic) NSMutableArray *inboxChangedBlocks;
 @property(strong, nonatomic) NSMutableSet *inboxChangedResponders;
+@property(strong, nonatomic) NSMutableArray *inboxSyncedBlocks;
 @property(strong, nonatomic) NSMutableSet *downloadedImageUrls;
 
 #pragma mark - LPInbox method declaration
@@ -178,6 +179,7 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 - (void)removeMessageForId:(NSString *)messageId;
 - (void)reset;
 - (void)triggerInboxChanged;
+- (void)triggerInboxSyncedWithStatus:(BOOL)success;
 
 @end
 
