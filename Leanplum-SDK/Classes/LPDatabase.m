@@ -28,7 +28,7 @@
 #import "Constants.h"
 #import <sqlite3.h>
 
-#define ERROR_COUNT_TO_RECREATE_SQLITE 20
+#define ERROR_COUNT_TO_RECREATE_SQLITE 25
 
 static sqlite3 *sqlite;
 static BOOL retryOnCorrupt;
@@ -66,7 +66,6 @@ static NSInteger errorCount;
     [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
                         "data TEXT NOT NULL"
                     "); PRAGMA user_version = 1;"];
-    
     return sqlite;
 }
 
@@ -107,9 +106,10 @@ static NSInteger errorCount;
     // If SQLite is corrupted or if there are too many errors, create a new one.
     // Using retryOnCorrupt to prevent infinite loop.
     errorCount++;
-    if (result == SQLITE_CORRUPT || !retryOnCorrupt || errorCount >= ERROR_COUNT_TO_RECREATE_SQLITE) {
+    if ((result == SQLITE_CORRUPT || errorCount >= ERROR_COUNT_TO_RECREATE_SQLITE) && !retryOnCorrupt) {
         [[NSFileManager defaultManager] removeItemAtPath:[LPDatabase sqliteFilePath] error:nil];
         retryOnCorrupt = YES;
+        errorCount = 0;
         [self initSQLite];
     }
 }
@@ -129,8 +129,7 @@ static NSInteger errorCount;
     sqlite3_stmt *statement;
     int __block result = sqlite3_prepare_v2(sqlite, [query UTF8String], -1, &statement, NULL);
     if (result != SQLITE_OK) {
-        LPLog(LPError, @"Preparing '%@': %s (%d)", query, sqlite3_errmsg(sqlite),
-              result);
+        [self handleSQLiteError:@"SQLite fail to prepare" errorResult:result query:query];
         return nil;
     }
     errorCount = 0;
@@ -148,8 +147,8 @@ static NSInteger errorCount;
                                    SQLITE_TRANSIENT);
         
         if (result != SQLITE_OK) {
-            LPLog(LPError, @"Binding %@ to %ld: %s (%d)", obj, idx+1, sqlite3_errmsg(sqlite),
-                  result);
+            NSString *message = [NSString stringWithFormat:@"SQLite fail to bind %@ to %ld", obj, idx+1];
+            [self handleSQLiteError:message errorResult:result query:query];
         } else {
             errorCount = 0;
         }
