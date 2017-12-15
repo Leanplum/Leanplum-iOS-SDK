@@ -2017,12 +2017,14 @@ andParameters:(NSDictionary *)params
         [self throwError:@"You cannot call setUserId before calling start"];
         return;
     }
+    LP_END_USER_CODE // Catche when setUser is called in start reponse.
     LP_TRY
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     [self onStartIssued:^{
         [self setUserIdInternal:userId withAttributes:attributes];
     }];
     LP_END_TRY
+    LP_BEGIN_USER_CODE
 }
 
 + (void)setUserIdInternal:(NSString *)userId withAttributes:(NSDictionary *)attributes
@@ -2066,35 +2068,37 @@ andParameters:(NSDictionary *)params
 // Returns if attributes have changed.
 + (void)recordAttributeChanges
 {
-    BOOL madeChanges = NO;
-    // Making a copy. Other threads can add attributes while iterating.
-    NSMutableArray *attributeChanges = [[LPInternalState sharedState].userAttributeChanges copy];
-    // Keep track of processed changes to be removed at the end.
-    NSMutableArray *processedChanges = [NSMutableArray new];
-    for (NSDictionary *attributes in attributeChanges) {
-        NSMutableDictionary *existingAttributes = [LPVarCache userAttributes];
-        [processedChanges addObject:attributes];
-        for (NSString *attributeName in [attributes allKeys]) {
-            id existingValue = existingAttributes[attributeName];
-            id value = attributes[attributeName];
-            if (![value isEqual:existingValue]) {
-                LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
-                contextualValues.previousAttributeValue = existingValue;
-                contextualValues.attributeValue = value;
-                existingAttributes[attributeName] = value;
-                [Leanplum maybePerformActions:@[@"userAttribute"]
-                                withEventName:attributeName
-                                   withFilter:kLeanplumActionFilterAll
-                                fromMessageId:nil
-                         withContextualValues:contextualValues];
-                madeChanges = YES;
+    @synchronized([LPInternalState sharedState].userAttributeChanges){
+        BOOL madeChanges = NO;
+        // Making a copy. Other threads can add attributes while iterating.
+        NSMutableArray *attributeChanges = [[LPInternalState sharedState].userAttributeChanges copy]; // ###
+        // Keep track of processed changes to be removed at the end.
+        NSMutableArray *processedChanges = [NSMutableArray new];
+        for (NSDictionary *attributes in attributeChanges) {
+            NSMutableDictionary *existingAttributes = [LPVarCache userAttributes];
+            [processedChanges addObject:attributes];
+            for (NSString *attributeName in [attributes allKeys]) {
+                id existingValue = existingAttributes[attributeName];
+                id value = attributes[attributeName];
+                if (![value isEqual:existingValue]) {
+                    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+                    contextualValues.previousAttributeValue = existingValue;
+                    contextualValues.attributeValue = value;
+                    existingAttributes[attributeName] = value;
+                    [Leanplum maybePerformActions:@[@"userAttribute"]
+                                    withEventName:attributeName
+                                       withFilter:kLeanplumActionFilterAll
+                                    fromMessageId:nil
+                             withContextualValues:contextualValues];
+                    madeChanges = YES;
+                }
             }
         }
-    }
-    // Remove only processed changes.
-    [[LPInternalState sharedState].userAttributeChanges removeObjectsInArray:processedChanges];
-    if (madeChanges) {
-        [LPVarCache saveUserAttributes];
+        // Remove only processed changes.
+        [[LPInternalState sharedState].userAttributeChanges removeObjectsInArray:processedChanges]; // ###
+        if (madeChanges) {
+            [LPVarCache saveUserAttributes];
+        }
     }
 }
 
