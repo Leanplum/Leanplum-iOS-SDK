@@ -28,12 +28,9 @@
 #import "Constants.h"
 #import <sqlite3.h>
 
-#define ERROR_COUNT_TO_RECREATE_SQLITE 25
-
 static sqlite3 *sqlite;
 static BOOL retryOnCorrupt;
 static BOOL willSendErrorLog;
-static NSInteger errorCount;
 
 @implementation LPDatabase
 
@@ -42,7 +39,6 @@ static NSInteger errorCount;
     if (self = [super init]) {
         retryOnCorrupt = NO;
         willSendErrorLog = NO;
-        errorCount = 0;
         [self initSQLite];
     }
     return self;
@@ -60,7 +56,6 @@ static NSInteger errorCount;
         return nil;
     }
     retryOnCorrupt = NO;
-    errorCount = 0;
     
     // Create tables.
     [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
@@ -103,13 +98,11 @@ static NSInteger errorCount;
     }
     LPLog(LPError, @"%@: %@", errorName, reason);
     
-    // If SQLite is corrupted or if there are too many errors, create a new one.
+    // If SQLite is corrupted, create a new one.
     // Using retryOnCorrupt to prevent infinite loop.
-    errorCount++;
-    if ((result == SQLITE_CORRUPT || errorCount >= ERROR_COUNT_TO_RECREATE_SQLITE) && !retryOnCorrupt) {
+    if (result == SQLITE_CORRUPT && !retryOnCorrupt) {
         [[NSFileManager defaultManager] removeItemAtPath:[LPDatabase sqliteFilePath] error:nil];
         retryOnCorrupt = YES;
-        errorCount = 0;
         [self initSQLite];
     }
 }
@@ -132,7 +125,6 @@ static NSInteger errorCount;
         [self handleSQLiteError:@"SQLite fail to prepare" errorResult:result query:query];
         return nil;
     }
-    errorCount = 0;
     
     // Bind objects.
     // It is recommended to use this instead of making a full query in NSString to
@@ -149,8 +141,6 @@ static NSInteger errorCount;
         if (result != SQLITE_OK) {
             NSString *message = [NSString stringWithFormat:@"SQLite fail to bind %@ to %ld", obj, idx+1];
             [self handleSQLiteError:message errorResult:result query:query];
-        } else {
-            errorCount = 0;
         }
     }];
     
@@ -178,8 +168,6 @@ static NSInteger errorCount;
         int result = sqlite3_step(statement);
         if (result != SQLITE_DONE) {
             [self handleSQLiteError:@"SQLite fail to run query" errorResult:result query:query];
-        } else {
-            errorCount = 0;
         }
         willSendErrorLog = NO;
         sqlite3_finalize(statement);
@@ -232,7 +220,6 @@ static NSInteger errorCount;
             [rows addObject:columnData];
         }
         sqlite3_finalize(statement);
-        errorCount = 0;
         return rows;
     }
     return @[];
