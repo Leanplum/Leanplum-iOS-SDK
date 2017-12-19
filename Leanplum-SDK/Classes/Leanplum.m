@@ -2069,19 +2069,13 @@ andParameters:(NSDictionary *)params
 + (void)recordAttributeChanges
 {
     @synchronized([LPInternalState sharedState].userAttributeChanges){
-        BOOL madeChanges = NO;
-        // Making a copy. Other threads can add attributes while iterating.
-        NSMutableArray *attributeChanges = [[LPInternalState sharedState].userAttributeChanges copy]; // ###
-        // Keep track of processed changes to be removed at the end.
-        NSMutableArray *processedChanges = [NSMutableArray new];
-        for (NSDictionary *attributes in attributeChanges) {
-            NSMutableDictionary *existingAttributes = [LPVarCache userAttributes];
-            [processedChanges addObject:attributes];
-            for (NSString *attributeName in [attributes allKeys]) {
+        BOOL __block madeChanges = NO;
+        NSMutableDictionary *existingAttributes = [LPVarCache userAttributes];
+        for (NSDictionary *attributes in [LPInternalState sharedState].userAttributeChanges) {
+            [attributes enumerateKeysAndObjectsUsingBlock:^(id attributeName, id value, BOOL *stop) {
                 id existingValue = existingAttributes[attributeName];
-                id value = attributes[attributeName];
                 if (![value isEqual:existingValue]) {
-                    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+                    LPContextualValues *contextualValues = [LPContextualValues new];
                     contextualValues.previousAttributeValue = existingValue;
                     contextualValues.attributeValue = value;
                     existingAttributes[attributeName] = value;
@@ -2092,10 +2086,9 @@ andParameters:(NSDictionary *)params
                              withContextualValues:contextualValues];
                     madeChanges = YES;
                 }
-            }
+            }];
         }
-        // Remove only processed changes.
-        [[LPInternalState sharedState].userAttributeChanges removeObjectsInArray:processedChanges]; // ###
+        [[LPInternalState sharedState].userAttributeChanges removeAllObjects];
         if (madeChanges) {
             [LPVarCache saveUserAttributes];
         }
