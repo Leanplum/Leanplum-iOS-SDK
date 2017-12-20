@@ -424,10 +424,9 @@ static NSDictionary *_requestHheaders;
             LP_TRY
             NSLog(@"Leanplum: Request %@ timed out", _apiMethod);
             [op cancel];
-            if (_error != nil) {
-                _error([NSError errorWithDomain:@"Leanplum" code:1
-                                       userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}]);
-            }
+            NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
+                                             userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
+            [LPEventCallbackManager invokeErrorCallbacksWithError:error];
             [[LeanplumRequest sendNowQueue] cancelAllOperations];
             LP_END_TRY
         }
