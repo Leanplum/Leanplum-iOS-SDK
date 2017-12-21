@@ -2017,7 +2017,7 @@ andParameters:(NSDictionary *)params
         [self throwError:@"You cannot call setUserId before calling start"];
         return;
     }
-    LP_END_USER_CODE // Catche when setUser is called in start reponse.
+    LP_END_USER_CODE // Catch when setUser is called in start response.
     LP_TRY
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     [self onStartIssued:^{
