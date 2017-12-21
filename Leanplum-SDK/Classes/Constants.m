@@ -307,7 +307,6 @@ void leanplumInternalError(NSException *e)
             @throw e;
         }
     }
-    
     NSString *versionName = [[[NSBundle mainBundle] infoDictionary]
                              objectForKey:@"CFBundleVersion"];
     if (!versionName) {

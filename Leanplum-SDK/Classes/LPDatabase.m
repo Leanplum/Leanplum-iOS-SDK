@@ -114,7 +114,6 @@ static BOOL willSendErrorLog;
 - (sqlite3_stmt *)sqliteStatementFromQuery:(NSString *)query
                                bindObjects:(NSArray *)objectsToBind
 {
-    
     // Retry creating SQLite.
     if (!query || (!sqlite && [self initSQLite])) {
         return nil;
@@ -180,8 +179,6 @@ static BOOL willSendErrorLog;
 
 - (NSArray *)rowsFromQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
 {
-    
-
     // Retry creating SQLite.
     if (!sqlite && [self initSQLite]) {
         return @[];
