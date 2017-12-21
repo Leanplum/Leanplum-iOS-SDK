@@ -307,6 +307,7 @@ void leanplumInternalError(NSException *e)
             @throw e;
         }
     }
+    
     NSString *versionName = [[[NSBundle mainBundle] infoDictionary]
                              objectForKey:@"CFBundleVersion"];
     if (!versionName) {
@@ -315,13 +316,17 @@ void leanplumInternalError(NSException *e)
     int userCodeBlocks = [[[[NSThread currentThread] threadDictionary]
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
-        [[LeanplumRequest post:LP_METHOD_LOG
-                        params:@{
-                                 LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
-                                 LP_PARAM_MESSAGE: [e description],
-                                 @"stackTrace": [[e callStackSymbols] description] ?: @"",
-                                 LP_PARAM_VERSION_NAME: versionName
-                                 }] send];
+        @try {
+            [[LeanplumRequest post:LP_METHOD_LOG
+                            params:@{
+                                     LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
+                                     LP_PARAM_MESSAGE: [e description],
+                                     @"stackTrace": [[e callStackSymbols] description] ?: @"",
+                                     LP_PARAM_VERSION_NAME: versionName
+                                     }] send];
+        } @catch (NSException *e) {
+            // This empty try/catch is needed to prevent crash <-> loop.
+        }
         NSLog(@"Leanplum: INTERNAL ERROR: %@\n%@", e, [e callStackSymbols]);
     } else {
         NSLog(@"Leanplum: Caught exception in callback code: %@\n%@", e, [e callStackSymbols]);
