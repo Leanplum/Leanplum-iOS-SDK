@@ -464,6 +464,14 @@ BOOL inForeground = NO;
 
 + (void)triggerStartIssued
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerStartIssued];
+        });
+        return;
+    }
+    
     [LPInternalState sharedState].issuedStart = YES;
     for (LeanplumStartIssuedBlock block in [LPInternalState sharedState].startIssuedBlocks.copy) {
         block();
@@ -473,6 +481,14 @@ BOOL inForeground = NO;
 
 + (void)triggerStartResponse:(BOOL)success
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerStartResponse:success];
+        });
+        return;
+    }
+    
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState].startResponders.copy) {
         [invocation setArgument:&success atIndex:2];
@@ -489,6 +505,14 @@ BOOL inForeground = NO;
 
 + (void)triggerVariablesChanged
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerVariablesChanged];
+        });
+        return;
+    }
+    
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState]
             .variablesChangedResponders.copy) {
@@ -504,6 +528,14 @@ BOOL inForeground = NO;
 
 + (void)triggerInterfaceChanged
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerInterfaceChanged];
+        });
+        return;
+    }
+    
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState]
              .interfaceChangedResponders.copy) {
@@ -519,6 +551,14 @@ BOOL inForeground = NO;
 
 + (void)triggerEventsChanged
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerEventsChanged];
+        });
+        return;
+    }
+    
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState].eventsChangedResponders.copy) {
         [invocation invoke];
@@ -533,6 +573,14 @@ BOOL inForeground = NO;
 
 + (void)triggerVariablesChangedAndNoDownloadsPending
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerVariablesChangedAndNoDownloadsPending];
+        });
+        return;
+    }
+    
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState].noDownloadsResponders.copy) {
         [invocation invoke];
@@ -2897,6 +2945,14 @@ void LPLog(LPLogType type, NSString *format, ...) {
 
 - (void)triggerValueChanged
 {
+    // Any response should be in the main thread.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self triggerValueChanged];
+        });
+        return;
+    }
+    
     LP_BEGIN_USER_CODE
     if (self.private_Delegate &&
         [self.private_Delegate respondsToSelector:@selector(valueDidChange:)]) {
