@@ -336,8 +336,7 @@ UIColor *leanplum_intToColor(long long value);
 #define LP_TRY @try {
 #define LP_END_TRY }\
 @catch (NSException *e) {\
-leanplumInternalError(e); }\
-@finally {NSLog(@"Leanplum Error: Caught error without exception.");}
+leanplumInternalError(e); }
 
 #define LP_BEGIN_USER_CODE leanplumIncrementUserCodeBlock(1);
 #define LP_END_USER_CODE leanplumIncrementUserCodeBlock(-1);
