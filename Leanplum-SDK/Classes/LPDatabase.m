@@ -165,6 +165,11 @@ static BOOL willSendErrorLog;
             if (!statement) {
                 return;
             }
+            int result = sqlite3_step(statement);
+            if (result != SQLITE_DONE) {
+                LPLog(LPError, @"SQLite fail to run query.");
+            }
+            sqlite3_finalize(statement);
         } @catch (NSException *e) {
             LPLog(LPError, @"SQLite operation failed.");
             // TODO: Make sure to catch this when new logging is in place,
