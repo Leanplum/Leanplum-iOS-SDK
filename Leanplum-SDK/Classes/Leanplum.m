@@ -692,7 +692,9 @@ BOOL inForeground = NO;
     [state.noDownloadsBlocks removeAllObjects];
     [state.onceNoDownloadsBlocks removeAllObjects];
     [state.noDownloadsResponders removeAllObjects];
-    [state.userAttributeChanges removeAllObjects];
+    @synchronized([LPInternalState sharedState].userAttributeChanges) {
+        [state.userAttributeChanges removeAllObjects];
+    }
     state.calledHandleNotification = NO;
 
     [[LPInbox sharedState] reset];
@@ -775,7 +777,9 @@ BOOL inForeground = NO;
     [LPMessageTemplatesClass sharedTemplates];
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     if (attributes != nil) {
-        [state.userAttributeChanges addObject:attributes];
+        @synchronized([LPInternalState sharedState].userAttributeChanges) {
+            [state.userAttributeChanges addObject:attributes];
+        }
     }
     state.calledStart = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -2054,7 +2058,9 @@ andParameters:(NSDictionary *)params
     }
 
     if (attributes != nil) {
-        [[LPInternalState sharedState].userAttributeChanges addObject:attributes];
+        @synchronized([LPInternalState sharedState].userAttributeChanges) {
+            [[LPInternalState sharedState].userAttributeChanges addObject:attributes];
+        }
     }
 
     [Leanplum onStartResponse:^(BOOL success) {
