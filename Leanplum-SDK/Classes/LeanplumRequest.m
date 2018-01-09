@@ -360,7 +360,6 @@ static NSDictionary *_requestHheaders;
                 }
                 LP_END_TRY
 
-                
                 [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
                                                                  requests:requestsToSend
                                                                 operation:operation];
