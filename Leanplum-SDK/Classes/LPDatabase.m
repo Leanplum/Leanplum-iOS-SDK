@@ -160,17 +160,15 @@ static BOOL willSendErrorLog;
     }
     
     @synchronized (self) {
-        sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
-        if (!statement) {
-            return;
+        @try {
+            sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
+            if (!statement) {
+                return;
+            }
+        } @catch (NSException *e) {
+            LPLog(LPError, @"SQLite operation failed.");
+            // TODO: Make sure to catch this when new logging is in place,
         }
-        
-        int result = sqlite3_step(statement);
-        if (result != SQLITE_DONE) {
-            [self handleSQLiteError:@"SQLite fail to run query" errorResult:result query:query];
-        }
-        willSendErrorLog = NO;
-        sqlite3_finalize(statement);
     }
 }
 
