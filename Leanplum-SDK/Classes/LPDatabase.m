@@ -47,13 +47,13 @@ static BOOL willSendErrorLog;
 /**
  * Create/Open SQLite database.
  */
-- (void)initSQLite
+- (sqlite3 *)initSQLite
 {
     const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
     int result = sqlite3_open(sqliteFilePath, &sqlite);
     if (result != SQLITE_OK) {
         [self handleSQLiteError:@"SQLite fail to open" errorResult:result query:nil];
-        return;
+        return nil;
     }
     retryOnCorrupt = NO;
     
@@ -61,6 +61,7 @@ static BOOL willSendErrorLog;
     [self runQuery:@"CREATE TABLE IF NOT EXISTS event ("
                         "data TEXT NOT NULL"
                     "); PRAGMA user_version = 1;"];
+    return sqlite;
 }
 
 - (void)dealloc
@@ -97,18 +98,9 @@ static BOOL willSendErrorLog;
     }
     LPLog(LPError, @"%@: %@", errorName, reason);
     
-    // Send error log. Using willSendErrorLog to prevent infinte loop.
-    if (!willSendErrorLog) {
-        willSendErrorLog = YES;
-        NSException *exception = [NSException exceptionWithName:errorName
-                                                         reason:reason
-                                                       userInfo:nil];
-        leanplumInternalError(exception);
-    }
-    
-    // If SQLite is corrupted create a new one.
+    // If SQLite is corrupted, create a new one.
     // Using retryOnCorrupt to prevent infinite loop.
-    if (result == SQLITE_CORRUPT || !retryOnCorrupt) {
+    if (result == SQLITE_CORRUPT && !retryOnCorrupt) {
         [[NSFileManager defaultManager] removeItemAtPath:[LPDatabase sqliteFilePath] error:nil];
         retryOnCorrupt = YES;
         [self initSQLite];
@@ -122,15 +114,15 @@ static BOOL willSendErrorLog;
 - (sqlite3_stmt *)sqliteStatementFromQuery:(NSString *)query
                                bindObjects:(NSArray *)objectsToBind
 {
-    if (!query) {
+    // Retry creating SQLite.
+    if (!query || (!sqlite && [self initSQLite])) {
         return nil;
     }
     
     sqlite3_stmt *statement;
     int __block result = sqlite3_prepare_v2(sqlite, [query UTF8String], -1, &statement, NULL);
     if (result != SQLITE_OK) {
-        LPLog(LPError, @"Preparing '%@': %s (%d)", query, sqlite3_errmsg(sqlite),
-              result);
+        [self handleSQLiteError:@"SQLite fail to prepare" errorResult:result query:query];
         return nil;
     }
     
@@ -147,8 +139,8 @@ static BOOL willSendErrorLog;
                                    SQLITE_TRANSIENT);
         
         if (result != SQLITE_OK) {
-            LPLog(LPError, @"Binding %@ to %ld: %s (%d)", obj, idx+1, sqlite3_errmsg(sqlite),
-                  result);
+            NSString *message = [NSString stringWithFormat:@"SQLite fail to bind %@ to %ld", obj, idx+1];
+            [self handleSQLiteError:message errorResult:result query:query];
         }
     }];
     
@@ -162,18 +154,26 @@ static BOOL willSendErrorLog;
 
 - (void)runQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
 {
+    // Retry creating SQLite.
+    if (!sqlite && [self initSQLite]) {
+        return;
+    }
+    
     @synchronized (self) {
-        sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
-        if (!statement) {
-            return;
+        @try {
+            sqlite3_stmt *statement = [self sqliteStatementFromQuery:query bindObjects:objectsToBind];
+            if (!statement) {
+                return;
+            }
+            int result = sqlite3_step(statement);
+            if (result != SQLITE_DONE) {
+                LPLog(LPError, @"SQLite fail to run query.");
+            }
+            sqlite3_finalize(statement);
+        } @catch (NSException *e) {
+            LPLog(LPError, @"SQLite operation failed.");
+            // TODO: Make sure to catch this when new logging is in place,
         }
-        
-        int result = sqlite3_step(statement);
-        if (result != SQLITE_DONE) {
-            [self handleSQLiteError:@"SQLite fail to run query" errorResult:result query:query];
-        }
-        willSendErrorLog = NO;
-        sqlite3_finalize(statement);
     }
 }
 
@@ -184,6 +184,11 @@ static BOOL willSendErrorLog;
 
 - (NSArray *)rowsFromQuery:(NSString *)query bindObjects:(NSArray *)objectsToBind
 {
+    // Retry creating SQLite.
+    if (!sqlite && [self initSQLite]) {
+        return @[];
+    }
+    
     @synchronized (self) {
         NSMutableArray *rows = [NSMutableArray new];
         sqlite3_stmt *statement = [self sqliteStatementFromQuery:query

@@ -95,11 +95,11 @@
 #define LPMT_DEFAULT_NO_BUTTON_TEXT @"No"
 #define LPMT_DEFAULT_LATER_BUTTON_TEXT @"Maybe Later"
 #define LPMT_DEFAULT_URL @"http://www.example.com"
-#define LPMT_DEFAULT_CLOSE_URL @"http://leanplum:close"
-#define LPMT_DEFAULT_OPEN_URL @"http://leanplum:loadFinished"
-#define LPMT_DEFAULT_TRACK_URL @"http://leanplum:track"
-#define LPMT_DEFAULT_ACTION_URL @"http://leanplum:runAction"
-#define LPMT_DEFAULT_TRACK_ACTION_URL @"http://leanplum:runTrackedAction"
+#define LPMT_DEFAULT_CLOSE_URL @"http://leanplum/close"
+#define LPMT_DEFAULT_OPEN_URL @"http://leanplum/loadFinished"
+#define LPMT_DEFAULT_TRACK_URL @"http://leanplum/track"
+#define LPMT_DEFAULT_ACTION_URL @"http://leanplum/runAction"
+#define LPMT_DEFAULT_TRACK_ACTION_URL @"http://leanplum/runTrackedAction"
 #define LPMT_DEFAULT_HAS_DISMISS_BUTTON YES
 #define LPMT_DEFAULT_APP_ICON @"__iOSAppIcon-PrimaryIcon.png"
 

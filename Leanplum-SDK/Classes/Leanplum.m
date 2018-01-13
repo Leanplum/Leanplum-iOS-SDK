@@ -692,7 +692,9 @@ BOOL inForeground = NO;
     [state.noDownloadsBlocks removeAllObjects];
     [state.onceNoDownloadsBlocks removeAllObjects];
     [state.noDownloadsResponders removeAllObjects];
-    [state.userAttributeChanges removeAllObjects];
+    @synchronized([LPInternalState sharedState].userAttributeChanges) {
+        [state.userAttributeChanges removeAllObjects];
+    }
     state.calledHandleNotification = NO;
 
     [[LPInbox sharedState] reset];
@@ -775,7 +777,9 @@ BOOL inForeground = NO;
     [LPMessageTemplatesClass sharedTemplates];
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     if (attributes != nil) {
-        [state.userAttributeChanges addObject:attributes];
+        @synchronized([LPInternalState sharedState].userAttributeChanges) {
+            [state.userAttributeChanges addObject:attributes];
+        }
     }
     state.calledStart = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -2017,12 +2021,14 @@ andParameters:(NSDictionary *)params
         [self throwError:@"You cannot call setUserId before calling start"];
         return;
     }
+    LP_END_USER_CODE // Catch when setUser is called in start response.
     LP_TRY
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     [self onStartIssued:^{
         [self setUserIdInternal:userId withAttributes:attributes];
     }];
     LP_END_TRY
+    LP_BEGIN_USER_CODE
 }
 
 + (void)setUserIdInternal:(NSString *)userId withAttributes:(NSDictionary *)attributes
@@ -2052,7 +2058,9 @@ andParameters:(NSDictionary *)params
     }
 
     if (attributes != nil) {
-        [[LPInternalState sharedState].userAttributeChanges addObject:attributes];
+        @synchronized([LPInternalState sharedState].userAttributeChanges) {
+            [[LPInternalState sharedState].userAttributeChanges addObject:attributes];
+        }
     }
 
     [Leanplum onStartResponse:^(BOOL success) {
@@ -2066,35 +2074,30 @@ andParameters:(NSDictionary *)params
 // Returns if attributes have changed.
 + (void)recordAttributeChanges
 {
-    BOOL madeChanges = NO;
-    // Making a copy. Other threads can add attributes while iterating.
-    NSMutableArray *attributeChanges = [[LPInternalState sharedState].userAttributeChanges copy];
-    // Keep track of processed changes to be removed at the end.
-    NSMutableArray *processedChanges = [NSMutableArray new];
-    for (NSDictionary *attributes in attributeChanges) {
+    @synchronized([LPInternalState sharedState].userAttributeChanges){
+        BOOL __block madeChanges = NO;
         NSMutableDictionary *existingAttributes = [LPVarCache userAttributes];
-        [processedChanges addObject:attributes];
-        for (NSString *attributeName in [attributes allKeys]) {
-            id existingValue = existingAttributes[attributeName];
-            id value = attributes[attributeName];
-            if (![value isEqual:existingValue]) {
-                LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
-                contextualValues.previousAttributeValue = existingValue;
-                contextualValues.attributeValue = value;
-                existingAttributes[attributeName] = value;
-                [Leanplum maybePerformActions:@[@"userAttribute"]
-                                withEventName:attributeName
-                                   withFilter:kLeanplumActionFilterAll
-                                fromMessageId:nil
-                         withContextualValues:contextualValues];
-                madeChanges = YES;
-            }
+        for (NSDictionary *attributes in [LPInternalState sharedState].userAttributeChanges) {
+            [attributes enumerateKeysAndObjectsUsingBlock:^(id attributeName, id value, BOOL *stop) {
+                id existingValue = existingAttributes[attributeName];
+                if (![value isEqual:existingValue]) {
+                    LPContextualValues *contextualValues = [LPContextualValues new];
+                    contextualValues.previousAttributeValue = existingValue;
+                    contextualValues.attributeValue = value;
+                    existingAttributes[attributeName] = value;
+                    [Leanplum maybePerformActions:@[@"userAttribute"]
+                                    withEventName:attributeName
+                                       withFilter:kLeanplumActionFilterAll
+                                    fromMessageId:nil
+                             withContextualValues:contextualValues];
+                    madeChanges = YES;
+                }
+            }];
         }
-    }
-    // Remove only processed changes.
-    [[LPInternalState sharedState].userAttributeChanges removeObjectsInArray:processedChanges];
-    if (madeChanges) {
-        [LPVarCache saveUserAttributes];
+        [[LPInternalState sharedState].userAttributeChanges removeAllObjects];
+        if (madeChanges) {
+            [LPVarCache saveUserAttributes];
+        }
     }
 }
 
