@@ -96,7 +96,7 @@
     
     UIApplication *app = [UIApplication sharedApplication];
     if ([app respondsToSelector:@selector(supportsAlternateIcons)]) {
-        return [app supportsAlternateIcons];
+//        return [app supportsAlternateIcons];
     }
     return NO;
 }
