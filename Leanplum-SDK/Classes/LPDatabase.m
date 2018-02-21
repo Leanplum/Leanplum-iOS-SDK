@@ -50,7 +50,7 @@ static BOOL willSendErrorLog;
 - (sqlite3 *)initSQLite
 {
     const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
-    int result = sqlite3_open(sqliteFilePath, &sqlite);
+    int result = sqlite3_open_v2(sqliteFilePath, &sqlite, SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX, NULL);
     if (result != SQLITE_OK) {
         [self handleSQLiteError:@"SQLite fail to open" errorResult:result query:nil];
         return nil;
@@ -190,40 +190,45 @@ static BOOL willSendErrorLog;
     }
     
     @synchronized (self) {
-        NSMutableArray *rows = [NSMutableArray new];
-        sqlite3_stmt *statement = [self sqliteStatementFromQuery:query
-                                                     bindObjects:objectsToBind];
-        if (!statement) {
-            return @[];
-        }
-        
-        // Iterate through rows.
-        while (sqlite3_step(statement) == SQLITE_ROW) {
-            // Get column data as dictionary where column name is the key
-            // and value will be a blob or a string. This is a safe conversion.
-            // Details: http://www.sqlite.org/c3ref/column_blob.html
-            NSMutableDictionary *columnData = [NSMutableDictionary new];
-            int columnsCount = sqlite3_column_count(statement);
-            for (int i=0; i<columnsCount; i++){
-                char *columnKeyUTF8 = (char *)sqlite3_column_name(statement, i);
-                NSString *columnKey = [NSString stringWithUTF8String:columnKeyUTF8];
-                
-                if (sqlite3_column_type(statement, i) == SQLITE_BLOB) {
-                    NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
-                                                                 length:sqlite3_column_bytes(statement, i)];
-                    columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
-                } else {
-                    char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
-                    if (columnValueUTF8) {
-                        NSString *columnValue = [NSString stringWithUTF8String:columnValueUTF8];
-                        columnData[columnKey] = columnValue;
+        @try {
+            NSMutableArray *rows = [NSMutableArray new];
+            sqlite3_stmt *statement = [self sqliteStatementFromQuery:query
+                                                         bindObjects:objectsToBind];
+            if (!statement) {
+                return @[];
+            }
+            
+            // Iterate through rows.
+            while (sqlite3_step(statement) == SQLITE_ROW) {
+                // Get column data as dictionary where column name is the key
+                // and value will be a blob or a string. This is a safe conversion.
+                // Details: http://www.sqlite.org/c3ref/column_blob.html
+                NSMutableDictionary *columnData = [NSMutableDictionary new];
+                int columnsCount = sqlite3_column_count(statement);
+                for (int i=0; i<columnsCount; i++){
+                    char *columnKeyUTF8 = (char *)sqlite3_column_name(statement, i);
+                    NSString *columnKey = [NSString stringWithUTF8String:columnKeyUTF8];
+                    
+                    if (sqlite3_column_type(statement, i) == SQLITE_BLOB) {
+                        NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
+                                                                     length:sqlite3_column_bytes(statement, i)];
+                        columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
+                    } else {
+                        char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
+                        if (columnValueUTF8) {
+                            NSString *columnValue = [NSString stringWithUTF8String:columnValueUTF8];
+                            columnData[columnKey] = columnValue;
+                        }
                     }
                 }
+                [rows addObject:columnData];
             }
-            [rows addObject:columnData];
+            sqlite3_finalize(statement);
+            return rows;
+        } @catch (NSException *e) {
+            LPLog(LPError, @"SQLite operation failed.");
+            // TODO: Make sure to catch this when new logging is in place,
         }
-        sqlite3_finalize(statement);
-        return rows;
     }
     return @[];
 }
