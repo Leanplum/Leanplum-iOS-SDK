@@ -28,7 +28,11 @@
 #define IOS_6_SUPPORTED defined(_ARM_ARCH_7) || defined(__i386__) || defined(__LP64__)
 
 #ifndef LP_NOT_TV
-#define LP_NOT_TV (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
+#if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
+#define LP_NOT_TV 1
+#else
+#define LP_NOT_TV 0
+#endif
 #endif
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
