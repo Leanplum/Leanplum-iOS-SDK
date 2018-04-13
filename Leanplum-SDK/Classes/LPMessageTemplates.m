@@ -1035,6 +1035,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     // Calculate the height. Fullscreen by default.
     CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
     BOOL isFullscreen = htmlHeight < 1;
+    BOOL isIPhoneX = statusBarHeight > 40;
+    CGFloat bottomSafeAreaHeight = 0;
+    if (@available(iOS 11.0, *)) {
+        bottomSafeAreaHeight = [UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
+    }
     
     // Banner logic.
     if (!isFullscreen) {
@@ -1050,7 +1055,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         CGFloat htmlY = yOffset + statusBarHeight;
         NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
         if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
-            htmlY = screenHeight - htmlHeight - yOffset - statusBarHeight;
+            htmlY = screenHeight - htmlHeight - yOffset;
         }
         
         // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
@@ -1072,9 +1077,17 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         }
         
         CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
+        // Offset iPhoneX's safe area.
+        if (isIPhoneX) {
+            CGFloat bottomDistance = screenHeight - (htmlY + htmlHeight);
+            if (bottomDistance < bottomSafeAreaHeight) {
+                htmlHeight += bottomSafeAreaHeight;
+            }
+        }
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
-    } else if (statusBarHeight > 40) { // iPhone X
-        _popupGroup.frame = CGRectMake(0, -statusBarHeight, screenWidth, screenHeight+2*statusBarHeight);
+        
+    } else if (isIPhoneX) {
+        _popupGroup.frame = CGRectMake(0, -statusBarHeight, screenWidth, screenHeight+statusBarHeight+bottomSafeAreaHeight);
     }
     
     _popupView.frame = _popupGroup.bounds;
