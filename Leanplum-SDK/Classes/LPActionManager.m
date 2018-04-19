@@ -37,12 +37,13 @@
 #import <objc/runtime.h>
 #import <objc/message.h>
 
-LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, BOOL matchedUnlessTrigger, BOOL matchedLimit)
+LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, BOOL matchedUnlessTrigger, BOOL matchedLimit, BOOL matchedActivePeriod)
 {
     LeanplumMessageMatchResult result;
     result.matchedTrigger = matchedTrigger;
     result.matchedUnlessTrigger = matchedUnlessTrigger;
     result.matchedLimit = matchedLimit;
+    result.matchedActivePeriod = matchedActivePeriod;
     return result;
 }
 
@@ -1064,7 +1065,7 @@ static dispatch_once_t leanplum_onceToken;
                                   withEventName:(NSString *)eventName
                                contextualValues:(LPContextualValues *)contextualValues
 {
-    LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO);
+    LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
 
     // 1. Must not be muted.
     if ([[NSUserDefaults standardUserDefaults] boolForKey:
@@ -1088,6 +1089,13 @@ static dispatch_once_t leanplum_onceToken;
     // 3. Must match all limit conditions.
     NSDictionary *limitConfig = messageConfig[@"whenLimits"];
     result.matchedLimit = [self matchesLimits:limitConfig messageId:messageId];
+
+    // 4. Must be within active period
+    NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
+    NSTimeInterval startTime = [messageConfig[@"startTime"] doubleValue] / 1000.0;
+    NSTimeInterval endTime = [messageConfig[@"endTime"] doubleValue] / 1000.0;
+    result.matchedActivePeriod = now > startTime && now < endTime;
+    
     return result;
 }
 
