@@ -1090,7 +1090,7 @@ static dispatch_once_t leanplum_onceToken;
     NSDictionary *limitConfig = messageConfig[@"whenLimits"];
     result.matchedLimit = [self matchesLimits:limitConfig messageId:messageId];
 
-    // 4. Must be within active period
+    // 4. Must be within active period.
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval startTime = [messageConfig[@"startTime"] doubleValue] / 1000.0;
     NSTimeInterval endTime = [messageConfig[@"endTime"] doubleValue] / 1000.0;
