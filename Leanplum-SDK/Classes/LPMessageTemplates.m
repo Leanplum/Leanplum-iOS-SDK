@@ -1036,10 +1036,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
     BOOL isFullscreen = htmlHeight < 1;
     BOOL isIPhoneX = statusBarHeight > 40;
-    CGFloat bottomSafeAreaHeight = 0;
-    if (@available(iOS 11.0, *)) {
-        bottomSafeAreaHeight = [UIApplication sharedApplication].keyWindow.safeAreaInsets.bottom;
-    }
+    CGFloat bottomSafeAreaHeight = [self safeAreaInsets].bottom;
     
     // Banner logic.
     if (!isFullscreen) {
@@ -1228,7 +1225,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 {
     UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
     if (@available(iOS 11.0, *)) {
-        return [[[[UIApplication sharedApplication] windows] firstObject] safeAreaInsets];
+        insets =  [UIApplication sharedApplication].keyWindow.safeAreaInsets;
     }
     return insets;
 }
