@@ -1094,7 +1094,11 @@ static dispatch_once_t leanplum_onceToken;
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval startTime = [messageConfig[@"startTime"] doubleValue] / 1000.0;
     NSTimeInterval endTime = [messageConfig[@"endTime"] doubleValue] / 1000.0;
-    result.matchedActivePeriod = now > startTime && now < endTime;
+    if (startTime && endTime) {
+        result.matchedActivePeriod = now > startTime && now < endTime;
+    } else {
+        result.matchedActivePeriod = YES;
+    }
     
     return result;
 }
