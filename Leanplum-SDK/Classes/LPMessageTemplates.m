@@ -1154,7 +1154,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     } else {
         _acceptButton.frame = CGRectMake(
                                          (_popupView.frame.size.width - textSize.width - 2*LPMT_ACCEPT_BUTTON_MARGIN) / 2,
-                                         _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN,
+                                         _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN - [self safeAreaInsets].bottom,
                                          textSize.width + 2*LPMT_ACCEPT_BUTTON_MARGIN,
                                          textSize.height + 2*LPMT_ACCEPT_BUTTON_MARGIN);
     }
@@ -1223,6 +1223,16 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         LOG_LP_MESSAGE_EXCEPTION;
     }
 }
+
+-(UIEdgeInsets)safeAreaInsets
+{
+    UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
+    if (@available(iOS 11.0, *)) {
+        return [[[[UIApplication sharedApplication] windows] firstObject] safeAreaInsets];
+    }
+    return insets;
+}
+
 
 - (void)appStorePrompt
 {
