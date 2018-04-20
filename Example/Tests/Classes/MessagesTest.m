@@ -69,10 +69,20 @@
 
 - (void)setMockResult
 {
-    self.mockResult = LeanplumMessageMatchResultMake(YES, NO, YES);
+    self.mockResult = LeanplumMessageMatchResultMake(YES, NO, YES, YES);
     XCTAssertFalse(self.mockResult.matchedUnlessTrigger);
     XCTAssertTrue(self.mockResult.matchedTrigger);
     XCTAssertTrue(self.mockResult.matchedLimit);
+    XCTAssertTrue(self.mockResult.matchedActivePeriod);
+}
+
+- (void)setMockResultActivePeriodFalse
+{
+    self.mockResult = LeanplumMessageMatchResultMake(YES, NO, YES, NO);
+    XCTAssertFalse(self.mockResult.matchedUnlessTrigger);
+    XCTAssertTrue(self.mockResult.matchedTrigger);
+    XCTAssertTrue(self.mockResult.matchedLimit);
+    XCTAssertFalse(self.mockResult.matchedActivePeriod);
 }
 
 - (void)setMockActionManager
@@ -241,6 +251,35 @@
     // Run Dismiss Action on 2 that will chain to 1.
     [context2 runActionNamed:@"Dismiss action"];
     XCTAssertTrue([chainedMessageId isEqual:@"1"]);
+}
+
+- (void) test_active_period_true
+{
+    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"SingleMessage"
+                                                              ofType:@"json"];
+    
+    NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
+    [self runInAppMessagePrioritizationTest:messageConfigs
+                     withExpectedMessageIds:[NSSet setWithObjects: @"1", nil]];
+    
+    // Test creating action context for message id.
+    LPActionContext *context = [Leanplum createActionContextForMessageId:@"1"];
+    XCTAssertEqualObjects(@"Alert", context.actionName);
+}
+
+- (void) test_active_period_false
+{
+    [self setMockResultActivePeriodFalse];
+    [self setMockActionManager];
+    [self setMockLPInternalState];
+    
+    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"SingleMessage"
+                                                              ofType:@"json"];
+    
+    NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
+    [self runInAppMessagePrioritizationTest:messageConfigs
+                     withExpectedMessageIds:[NSSet set]];
+    
 }
 
 @end
