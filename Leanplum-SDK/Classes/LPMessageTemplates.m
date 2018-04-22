@@ -670,10 +670,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [self->_popupGroup setAlpha:1.0];
     }];
     
+#if LP_NOT_TV
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationDidChange:)
-                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                 name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
+#endif
+
 }
 
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk
@@ -998,7 +1001,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         screenHeight = screenSize.width;
     }
     
-    _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+    _popupView.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
     if (!fullscreen) {
         _popupView.frame = CGRectMake(0, 0, [[context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue],
                                       [[context numberNamed:LPMT_ARG_LAYOUT_HEIGHT] doubleValue]);
@@ -1035,8 +1038,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     // Calculate the height. Fullscreen by default.
     CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
     BOOL isFullscreen = htmlHeight < 1;
-    BOOL isIPhoneX = statusBarHeight > 40;
+//    BOOL isIPhoneX = statusBarHeight > 40;
     CGFloat bottomSafeAreaHeight = [self safeAreaInsets].bottom;
+    BOOL isIPhoneX = statusBarHeight > 40 || [self safeAreaInsets].left > 0;
     
     // Banner logic.
     if (!isFullscreen) {
@@ -1084,7 +1088,10 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         
     } else if (isIPhoneX) {
-        _popupGroup.frame = CGRectMake(0, -statusBarHeight, screenWidth, screenHeight+statusBarHeight+bottomSafeAreaHeight);
+        UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
+        _popupGroup.frame = CGRectMake(-safeAreaInsets.left*2, -safeAreaInsets.top,
+                                       screenWidth+safeAreaInsets.left+safeAreaInsets.right,
+                                       screenHeight+safeAreaInsets.top+safeAreaInsets.bottom);
     }
     
     _popupView.frame = _popupGroup.bounds;
