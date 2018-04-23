@@ -278,4 +278,53 @@
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 
+- (void)test_active_period_false
+{
+    LPActionManager *manager = [LPActionManager sharedManager];
+    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+    
+    // Message Object
+    NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
+                             @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
+                                                               @"subject":@"event",
+                                                               }],
+                                               @"verb":@"OR"
+                                               },
+                             @"startTime": @956557100000,
+                             @"endTime": @956557200000,
+
+                             };
+
+    LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"ActivePeriodTest"
+                                                  contextualValues:contextualValues];
+    XCTAssertFalse(result.matchedActivePeriod);
+}
+
+- (void)test_active_period_true
+{
+    LPActionManager *manager = [LPActionManager sharedManager];
+    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+
+    // Message Object
+    NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
+                             @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
+                                                               @"subject":@"event",
+                                                               }],
+                                               @"verb":@"OR"
+                                               },
+                             @"startTime": @1524507600000,
+                             @"endTime": @7836202020000
+                             };
+    
+    LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"ActivePeriodTest"
+                                                  contextualValues:contextualValues];
+    XCTAssertTrue(result.matchedActivePeriod);
+
+}
 @end
