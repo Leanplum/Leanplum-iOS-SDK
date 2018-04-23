@@ -668,6 +668,44 @@
 }
 
 /**
+ *  Tests whether the localeString from the internal state is correctly being set in the during start.
+ */
+
+- (void) test_start_with_locale_string
+{
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    [LeanplumHelper setup_development_test];
+    
+    //  Should be nil by default.
+    XCTAssertNil([[LPInternalState sharedState] localeString]);
+    
+    NSString *customLocaleString = @"en_GB";
+    
+    //  Set custom locale
+    [Leanplum setLocaleString:customLocaleString];
+    
+    //  Verify setting of new locale.
+    XCTAssertEqual([[LPInternalState sharedState] localeString], customLocaleString);
+    
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        dispatch_semaphore_signal(semaphor);
+    }];
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+    XCTAssertTrue([Leanplum hasStarted]);
+}
+
+/**
  * Tests all track methods.
  */
 - (void) test_track

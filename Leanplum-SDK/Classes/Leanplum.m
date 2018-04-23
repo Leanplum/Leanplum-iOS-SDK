@@ -87,6 +87,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         _initializedMessageTemplates = NO;
         _actionManager = nil;
         _deviceId = nil;
+        _appVersion = nil;
+        _localeString = nil;
         _userAttributeChanges = [NSMutableArray array];
         _stripViewControllerFromState = NO;
         _isScreenTrackingEnabled = NO;
@@ -320,6 +322,15 @@ BOOL inForeground = NO;
     [LPInternalState sharedState].appVersion = appVersion;
     LP_END_TRY
 }
+
+
++ (void)setLocaleString:(NSString *)localeString;
+{
+    LP_TRY
+    [LPInternalState sharedState].localeString = localeString;
+    LP_END_TRY
+}
+
 
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey
 {
@@ -849,11 +860,15 @@ BOOL inForeground = NO;
         versionName = [[[NSBundle mainBundle] infoDictionary]
                        objectForKey:@"CFBundleVersion"];
     }
+    NSString *localeString = [LPInternalState sharedState].localeString;
+    if (!localeString) {
+        NSLocale *currentLocale = [NSLocale currentLocale];
+        localeString = [NSString stringWithFormat:@"%@_%@",
+                        [[NSLocale preferredLanguages] objectAtIndex:0],
+                        [currentLocale objectForKey:NSLocaleCountryCode]];
+    }
+    
     UIDevice *device = [UIDevice currentDevice];
-    NSLocale *currentLocale = [NSLocale currentLocale];
-    NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
-                                     [[NSLocale preferredLanguages] objectAtIndex:0],
-                                     [currentLocale objectForKey:NSLocaleCountryCode]];
     // Set the device name. But only if running in development mode.
     NSString *deviceName = @"";
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -869,7 +884,7 @@ BOOL inForeground = NO;
         LP_PARAM_DEVICE_MODEL: [self platform],
         LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
         LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
-        LP_KEY_LOCALE: currentLocaleString,
+        LP_KEY_LOCALE: localeString,
         LP_KEY_TIMEZONE: [localTimeZone name],
         LP_KEY_TIMEZONE_OFFSET_SECONDS: timezoneOffsetSeconds,
         LP_KEY_COUNTRY: LP_VALUE_DETECT,

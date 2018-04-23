@@ -257,6 +257,15 @@ typedef enum {
 + (void)setAppVersion:(NSString *)appVersion;
 
 /**
+ * By default, Leanplum reports the language of your app using the [NSLocale preferredLanguages]
+ * in combination with NSLocaleCountryCode value of the [NSLocale currentLocale].
+ * The following format is uphold '%prefferedLanguage%_%countryCode%'.
+ * If you wish to use any other string as the locale
+ * you can call this before you call to {@link start}.
+ */
++ (void)setLocaleString:(nullable NSString *)localeString;
+
+/**
  * @{
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.

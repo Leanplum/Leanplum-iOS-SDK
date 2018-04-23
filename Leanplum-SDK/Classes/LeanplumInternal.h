@@ -50,6 +50,7 @@
     LPActionManager *_actionManager;
     NSString *_deviceId;
     NSString *_appVersion;
+    NSString * _Nullable _localeString;
     NSMutableArray *_userAttributeChanges;
     BOOL _calledHandleNotification;
 }
@@ -69,6 +70,7 @@
 @property(strong, nonatomic) LPActionManager *actionManager;
 @property(strong, nonatomic) NSString *deviceId;
 @property(strong, nonatomic) NSString *appVersion;
+@property(strong, nonatomic, nullable) NSString *localeString;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
 @property(assign, nonatomic) BOOL isScreenTrackingEnabled;
 @property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
