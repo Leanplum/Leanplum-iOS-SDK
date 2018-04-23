@@ -324,7 +324,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                  @try {
                      dispatch_async(dispatch_get_main_queue(), ^{
                          NSString *encodedURLString = [[context stringNamed:LPMT_ARG_URL] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-                         NSURL *urlTest = [NSURL URLWithString: [context stringNamed:LPMT_ARG_URL]];
                          NSURL *url = [NSURL URLWithString: encodedURLString];
                          if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
                              [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
