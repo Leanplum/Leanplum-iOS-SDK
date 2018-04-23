@@ -707,7 +707,9 @@ BOOL inForeground = NO;
         [state.userAttributeChanges removeAllObjects];
     }
     state.calledHandleNotification = NO;
-
+    state.appVersion = nil;
+    state.localeString = nil;
+    
     [[LPInbox sharedState] reset];
 }
 

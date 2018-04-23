@@ -668,10 +668,10 @@
 }
 
 /**
- *  Tests whether the localeString from the internal state is correctly being set in the during start.
+ *  Tests whether the localeString from the internal state is correctly being ignored and a default locale string is set in the during start.
  */
 
-- (void) test_start_with_locale_string
+- (void) test_start_with_default_locale_string
 {
     [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
@@ -686,7 +686,49 @@
     //  Should be nil by default.
     XCTAssertNil([[LPInternalState sharedState] localeString]);
     
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    
+    
+    //  Validate request
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod, NSDictionary *params) {
+        //  Expected value of the locale.
+        NSString *localeString = [NSString stringWithFormat:@"%@_%@",
+                                  [[NSLocale preferredLanguages] objectAtIndex:0],
+                                  [[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]];
+        
+        XCTAssertEqual(params[@"locale"], localeString);
+    }];
+
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        dispatch_semaphore_signal(semaphor);
+    }];
+
+    
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+    XCTAssertTrue([Leanplum hasStarted]);
+}
+
+/**
+ *  Tests whether the localeString from the internal state is correctly being set in the during start.
+ */
+
+- (void) test_start_with_custom_locale_string
+{
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    [LeanplumHelper setup_development_test];
     NSString *customLocaleString = @"en_GB";
+    
+    //  Should be nil by default.
+    XCTAssertNil([[LPInternalState sharedState] localeString]);
     
     //  Set custom locale
     [Leanplum setLocaleString:customLocaleString];
@@ -696,10 +738,16 @@
     
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
     
+    //  Validate request
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod, NSDictionary *params) {
+        XCTAssertEqual(params[@"locale"], customLocaleString);
+    }];
+    
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
         dispatch_semaphore_signal(semaphor);
     }];
+    
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue([Leanplum hasStarted]);
