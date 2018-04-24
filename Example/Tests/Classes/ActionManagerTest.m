@@ -283,7 +283,7 @@
     LPActionManager *manager = [LPActionManager sharedManager];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     
-    NSDictionary *config = [self _configForActivePeriodMatch:NO];
+    NSDictionary *config = [self messageConfigInActivePeriod:NO];
 
     LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
                                                         withConfig:config
@@ -298,7 +298,7 @@
     LPActionManager *manager = [LPActionManager sharedManager];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
 
-    NSDictionary *config = [self _configForActivePeriodMatch:YES];
+    NSDictionary *config = [self messageConfigInActivePeriod:YES];
     
     LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
                                                         withConfig:config
@@ -311,7 +311,7 @@
 
 #pragma mark Helpers
 
--(NSDictionary *)_configForActivePeriodMatch:(BOOL)activePeriod
+-(NSDictionary *)messageConfigInActivePeriod:(BOOL)inActivePeriod
 {
     NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
                              @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
@@ -319,8 +319,8 @@
                                                                }],
                                                @"verb":@"OR"
                                                },
-                             @"startTime": activePeriod ? @1524507600000 : @956557100000,
-                             @"endTime": activePeriod ? @7836202020000 : @956557200000
+                             @"startTime": inActivePeriod ? @1524507600000 : @956557100000,
+                             @"endTime": inActivePeriod ? @7836202020000 : @956557200000
                              };
     return config;
 }
