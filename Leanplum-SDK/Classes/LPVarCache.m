@@ -24,6 +24,7 @@
 
 #import "Constants.h"
 #import "LPFileManager.h"
+#import "LPActionContextInternal.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
