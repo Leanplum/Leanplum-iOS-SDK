@@ -283,17 +283,7 @@
     LPActionManager *manager = [LPActionManager sharedManager];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     
-    // Message Object
-    NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
-                             @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
-                                                               @"subject":@"event",
-                                                               }],
-                                               @"verb":@"OR"
-                                               },
-                             @"startTime": @956557100000,
-                             @"endTime": @956557200000,
-
-                             };
+    NSDictionary *config = [self _configForActivePeriodMatch:NO];
 
     LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
                                                         withConfig:config
@@ -308,16 +298,7 @@
     LPActionManager *manager = [LPActionManager sharedManager];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
 
-    // Message Object
-    NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
-                             @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
-                                                               @"subject":@"event",
-                                                               }],
-                                               @"verb":@"OR"
-                                               },
-                             @"startTime": @1524507600000,
-                             @"endTime": @7836202020000
-                             };
+    NSDictionary *config = [self _configForActivePeriodMatch:YES];
     
     LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
                                                         withConfig:config
@@ -326,5 +307,21 @@
                                                   contextualValues:contextualValues];
     XCTAssertTrue(result.matchedActivePeriod);
 
+}
+
+#pragma mark Helpers
+
+-(NSDictionary *)_configForActivePeriodMatch:(BOOL)activePeriod
+{
+    NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
+                             @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
+                                                               @"subject":@"event",
+                                                               }],
+                                               @"verb":@"OR"
+                                               },
+                             @"startTime": activePeriod ? @1524507600000 : @956557100000,
+                             @"endTime": activePeriod ? @7836202020000 : @956557200000
+                             };
+    return config;
 }
 @end
