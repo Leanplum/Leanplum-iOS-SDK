@@ -24,7 +24,7 @@
 
 #import "LPRevenueManager.h"
 #import "JRSwizzle.h"
-#import "LeanplumInternal.h"
+#import "Leanplum-Internal.h"
 #import "Constants.h"
 #import "Utils.h"
 

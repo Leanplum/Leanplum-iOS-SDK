@@ -5,8 +5,7 @@
 //  Created by Mayank Sanganeria on 4/24/18.
 //
 
-#import "LeanplumInternal.h"
-#import "LPActionContextInternal.h"
+#import "Leanplum-Internal.h"
 #import "LPVarCache.h"
 #import "LPFileManager.h"
 #import "Utils.h"

@@ -5,7 +5,7 @@
 //  Created by Mayank Sanganeria on 4/24/18.
 //
 
-#import "LeanplumInternal.h"
+#import "Leanplum-Internal.h"
 
 @class LPContextualValues;
 

@@ -26,7 +26,7 @@
 
 #import "Constants.h"
 #import "JRSwizzle.h"
-#import "LeanplumInternal.h"
+#import "Leanplum-Internal.h"
 #import "LeanplumRequest.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"

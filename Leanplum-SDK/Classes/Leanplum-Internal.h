@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "Leanplum.h"
-#import "LPActionContextInternal.h"
+#import "LPActionContext-Internal.h"
 #import "Constants.h"
 #import "LPActionManager.h"
 #import "LPJSON.h"

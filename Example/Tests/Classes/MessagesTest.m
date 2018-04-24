@@ -32,7 +32,7 @@
 #import "LPActionManager.h"
 #import "LPVarCache.h"
 #import "Leanplum.h"
-#import "LeanplumInternal.h"
+#import "Leanplum-Internal.h"
 #import "LeanplumRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 
