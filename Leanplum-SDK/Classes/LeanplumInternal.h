@@ -29,61 +29,11 @@
 #import "Constants.h"
 #import "LPActionManager.h"
 #import "LPJSON.h"
+#import "LPInternalState.h"
+#import "LPInboxMessage.h"
 
 @class LeanplumSocket;
 @class LPRegisterDevice;
-
-#pragma mark - LPInternalState interface
-
-@interface LPInternalState : NSObject
-{
-    NSMutableArray *_startBlocks, *_variablesChangedBlocks, *_interfaceChangedBlocks,
-        *_eventsChangedBlocks, *_noDownloadsBlocks, *_onceNoDownloadsBlocks;
-    NSMutableDictionary *_actionBlocks, *_actionResponders;
-    NSMutableSet *_startResponders, *_variablesChangedResponders, *_interfaceChangedResponders,
-        *_eventsChangedResponders, *_noDownloadsResponders;
-    NSUncaughtExceptionHandler *_customExceptionHandler;
-    LPRegisterDevice *_registration;
-    BOOL _calledStart, _hasStarted, _hasStartedAndRegisteredAsDeveloper, _startSuccessful,
-        _issuedStart;
-    BOOL _initializedMessageTemplates;
-    BOOL _stripViewControllerFromState;
-    BOOL _isScreenTrackingEnabled;
-    BOOL _isInterfaceEditingEnabled;
-    LPActionManager *_actionManager;
-    NSString *_deviceId;
-    NSString *_appVersion;
-    NSMutableArray *_userAttributeChanges;
-    BOOL _calledHandleNotification;
-}
-
-#pragma mark - LPInternalState properties
-
-@property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks,
-    *interfaceChangedBlocks, *eventsChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks,
-    *startIssuedBlocks;
-@property(strong, nonatomic) NSMutableDictionary *actionBlocks, *actionResponders;
-@property(strong, nonatomic) NSMutableSet *startResponders, *variablesChangedResponders,
-    *interfaceChangedResponders, *eventsChangedResponders, *noDownloadsResponders;
-@property(assign, nonatomic) NSUncaughtExceptionHandler *customExceptionHandler;
-@property(strong, nonatomic) LPRegisterDevice *registration;
-@property(assign, nonatomic) BOOL calledStart, hasStarted, hasStartedAndRegisteredAsDeveloper,
-    startSuccessful, issuedStart, initializedMessageTemplates, stripViewControllerFromState;
-@property(strong, nonatomic) LPActionManager *actionManager;
-@property(strong, nonatomic) NSString *deviceId;
-@property(strong, nonatomic) NSString *appVersion;
-@property(strong, nonatomic) NSMutableArray *userAttributeChanges;
-@property(assign, nonatomic) BOOL isScreenTrackingEnabled;
-@property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
-@property(assign, nonatomic) BOOL calledHandleNotification;
-
-#pragma mark - LPInternalState method declaration
-
-+ (LPInternalState *)sharedState;
-
-@end
-
-#pragma mark - Leanplum class
 
 @interface Leanplum ()
 
@@ -149,54 +99,6 @@ andParameters:(NSDictionary *)params;
 + (NSString *)pushTokenKey;
 
 void LPLog(LPLogType type, NSString* format, ...);
-
-@end
-
-#pragma mark - LPInbox class
-
-@interface LPInbox () {
-@private
-    BOOL _didLoad;
-}
-
-typedef void (^LeanplumInboxCacheUpdateBlock)(void);
-
-#pragma mark - LPInbox properties
-
-@property(assign, nonatomic) NSUInteger unreadCount;
-@property(strong, nonatomic) NSMutableDictionary *messages;
-@property(strong, nonatomic) NSMutableArray *inboxChangedBlocks;
-@property(strong, nonatomic) NSMutableSet *inboxChangedResponders;
-@property(strong, nonatomic) NSMutableArray *inboxSyncedBlocks;
-@property(strong, nonatomic) NSMutableSet *downloadedImageUrls;
-
-#pragma mark - LPInbox method declaration
-
-+ (LPInbox *)sharedState;
-
-- (void)downloadMessages;
-- (void)load;
-- (void)save;
-- (void)updateUnreadCount:(NSUInteger)unreadCount;
-- (void)updateMessages:(NSMutableDictionary *)messages unreadCount:(NSUInteger)unreadCount;
-- (void)removeMessageForId:(NSString *)messageId;
-- (void)reset;
-- (void)triggerInboxChanged;
-- (void)triggerInboxSyncedWithStatus:(BOOL)success;
-
-@end
-
-#pragma mark - LPInboxMessage class
-
-@interface LPInboxMessage ()
-
-#pragma mark - LPInboxMessage properties
-
-@property(strong, nonatomic) NSString *messageId;
-@property(strong, nonatomic) NSDate *deliveryTimestamp;
-@property(strong, nonatomic) NSDate *expirationTimestamp;
-@property(assign, nonatomic) BOOL isRead;
-@property(strong, nonatomic) LPActionContext *context;
 
 @end
 
