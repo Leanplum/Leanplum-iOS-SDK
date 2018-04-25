@@ -24,7 +24,7 @@
 
 
 #import "Leanplum.h"
-#import "Leanplum-Internal.h"
+#import "LeanplumInternal.h"
 
 @interface Leanplum(UnitTest)
 
