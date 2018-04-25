@@ -94,10 +94,13 @@
         return;
     }
     
+    NSNumber *position = @(index);
     NSMutableDictionary *callbackMap = [LPEventCallbackManager eventCallbackMap];
     LPEventCallback *callback = [[LPEventCallback alloc] initWithResponseBlock:responseBlock
                                                                     errorBlock:errorBlock];
-    callbackMap[@(index)] = callback;
+    if (callbackMap && position && callback) {
+        callbackMap[position] = callback;
+    }
 }
 
 + (void)invokeSuccessCallbacksOnResponses:(id)responses
