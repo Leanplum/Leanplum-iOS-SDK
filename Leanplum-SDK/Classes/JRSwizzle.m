@@ -5,7 +5,7 @@
 
 #import "JRSwizzle.h"
 #import "Constants.h"
-#import "LeanplumInternal.h"
+#import "Leanplum-Internal.h"
 
 #if TARGET_OS_IPHONE
 #import <objc/runtime.h>

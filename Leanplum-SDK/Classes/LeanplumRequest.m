@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "Leanplum.h"
-#import "LeanplumInternal.h"
+#import "Leanplum-Internal.h"
 #import "LeanplumRequest.h"
 #import "Constants.h"
 #import "LPFileManager.h"
