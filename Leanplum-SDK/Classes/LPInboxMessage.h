@@ -95,8 +95,6 @@ typedef void (^LeanplumNewsfeedChangedBlock)(void);
 
 @interface LPInboxMessage ()
 
-#pragma mark - LPInboxMessage properties
-
 @property(strong, nonatomic) NSString *messageId;
 @property(strong, nonatomic) NSDate *deliveryTimestamp;
 @property(strong, nonatomic) NSDate *expirationTimestamp;

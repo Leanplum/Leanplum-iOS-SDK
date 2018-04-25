@@ -11,8 +11,6 @@
 #import "LPFileManager.h"
 #import "LeanplumRequest.h"
 
-#pragma mark - LPInboxMessage implementation
-
 @implementation LPInboxMessage
 
 #pragma mark - LPInboxMessage private methods
@@ -191,8 +189,6 @@
     [[LPInbox sharedState] removeMessageForId:[self messageId]];
     LP_END_TRY
 }
-
-#pragma mark - LPInboxMessage private implementation
 
 /**
  * Download image if prefetching is enabled.

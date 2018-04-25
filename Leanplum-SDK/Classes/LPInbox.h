@@ -27,8 +27,6 @@
 @class LPInboxMessage;
 @class LPNewsfeed;
 
-#pragma mark - LPInbox interface
-
 /**
  * This block is used when you define a callback.
  */
@@ -36,8 +34,6 @@ typedef void (^LeanplumInboxChangedBlock)(void);
 typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 
 @interface LPInbox : NSObject
-
-#pragma mark - LPInbox methods
 
 /**
  * Returns the number of all inbox messages on the device.
@@ -114,16 +110,12 @@ typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 
 typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 
-#pragma mark - LPInbox properties
-
 @property(assign, nonatomic) NSUInteger unreadCount;
 @property(strong, nonatomic) NSMutableDictionary *messages;
 @property(strong, nonatomic) NSMutableArray *inboxChangedBlocks;
 @property(strong, nonatomic) NSMutableSet *inboxChangedResponders;
 @property(strong, nonatomic) NSMutableArray *inboxSyncedBlocks;
 @property(strong, nonatomic) NSMutableSet *downloadedImageUrls;
-
-#pragma mark - LPInbox method declaration
 
 + (LPInbox *)sharedState;
 
