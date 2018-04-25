@@ -24,6 +24,7 @@
 
 #import "Leanplum.h"
 #import "LPActionContext-Internal.h"
+#import "LPActionArg-Internal.h"
 #import "Constants.h"
 #import "LPActionManager.h"
 #import "LPJSON.h"
@@ -229,10 +230,3 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 
 #pragma mark - LPActionArg class
 
-@interface LPActionArg ()
-
-@property (readonly, strong) NSString *private_Name;
-@property (readonly, strong) id private_DefaultValue;
-@property (readonly, strong) NSString *private_Kind;
-
-@end
