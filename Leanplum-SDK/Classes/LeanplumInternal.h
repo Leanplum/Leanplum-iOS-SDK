@@ -102,36 +102,3 @@ void LPLog(LPLogType type, NSString* format, ...);
 
 @end
 
-#pragma mark - LPInbox class
-
-@interface LPInbox () {
-@private
-    BOOL _didLoad;
-}
-
-typedef void (^LeanplumInboxCacheUpdateBlock)(void);
-
-#pragma mark - LPInbox properties
-
-@property(assign, nonatomic) NSUInteger unreadCount;
-@property(strong, nonatomic) NSMutableDictionary *messages;
-@property(strong, nonatomic) NSMutableArray *inboxChangedBlocks;
-@property(strong, nonatomic) NSMutableSet *inboxChangedResponders;
-@property(strong, nonatomic) NSMutableArray *inboxSyncedBlocks;
-@property(strong, nonatomic) NSMutableSet *downloadedImageUrls;
-
-#pragma mark - LPInbox method declaration
-
-+ (LPInbox *)sharedState;
-
-- (void)downloadMessages;
-- (void)load;
-- (void)save;
-- (void)updateUnreadCount:(NSUInteger)unreadCount;
-- (void)updateMessages:(NSMutableDictionary *)messages unreadCount:(NSUInteger)unreadCount;
-- (void)removeMessageForId:(NSString *)messageId;
-- (void)reset;
-- (void)triggerInboxChanged;
-- (void)triggerInboxSyncedWithStatus:(BOOL)success;
-
-@end
