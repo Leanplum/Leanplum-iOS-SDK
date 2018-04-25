@@ -30,6 +30,7 @@
 #import "LPActionManager.h"
 #import "LPJSON.h"
 #import "LPInternalState.h"
+#import "LPInboxMessage.h"
 
 @class LeanplumSocket;
 @class LPRegisterDevice;
@@ -134,18 +135,3 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 - (void)triggerInboxSyncedWithStatus:(BOOL)success;
 
 @end
-
-#pragma mark - LPInboxMessage class
-
-@interface LPInboxMessage ()
-
-#pragma mark - LPInboxMessage properties
-
-@property(strong, nonatomic) NSString *messageId;
-@property(strong, nonatomic) NSDate *deliveryTimestamp;
-@property(strong, nonatomic) NSDate *expirationTimestamp;
-@property(assign, nonatomic) BOOL isRead;
-@property(strong, nonatomic) LPActionContext *context;
-
-@end
-
