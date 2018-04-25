@@ -25,6 +25,7 @@
 #import "Leanplum.h"
 #import "LPActionContext-Internal.h"
 #import "LPActionArg-Internal.h"
+#import "LPVar-Internal.h"
 #import "Constants.h"
 #import "LPActionManager.h"
 #import "LPJSON.h"
@@ -198,35 +199,4 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 @property(strong, nonatomic) LPActionContext *context;
 
 @end
-
-#pragma mark - LPVar class
-
-@interface LPVar ()
-
-- (instancetype)initWithName:(NSString *)name withComponents:(NSArray *)components
-            withDefaultValue:(NSObject *)defaultValue withKind:(NSString *)kind;
-
-@property (readonly) BOOL private_IsInternal;
-@property (readonly, strong) NSString *private_Name;
-@property (readonly, strong) NSArray *private_NameComponents;
-@property (readonly, strong) NSString *private_StringValue;
-@property (readonly, strong) NSNumber *private_NumberValue;
-@property (readonly) BOOL private_HadStarted;
-@property (readonly, strong) id private_Value;
-@property (readonly, strong) id private_DefaultValue;
-@property (readonly, strong) NSString *private_Kind;
-@property (readonly, strong) NSMutableArray *private_FileReadyBlocks;
-@property (readonly, strong) NSMutableArray *private_valueChangedBlocks;
-@property (readonly) BOOL private_FileIsPending;
-@property (nonatomic, unsafe_unretained) id <LPVarDelegate> private_Delegate;
-@property (readonly) BOOL private_HasChanged;
-
-- (void) update;
-- (void) cacheComputedValues;
-- (void) triggerFileIsReady;
-- (void) triggerValueChanged;
-
-@end
-
-#pragma mark - LPActionArg class
 
