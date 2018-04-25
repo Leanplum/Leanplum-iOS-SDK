@@ -1091,13 +1091,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         // Do not offset the bottom safe area (control panel) on landscape.
         // Counter the status bar's height twice to center it.
         CGFloat leftSafeAreaHeight = safeAreaInsets.left;
+#if LP_NOT_TV
         UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
         if (orientation == UIInterfaceOrientationLandscapeRight ||
             orientation == UIInterfaceOrientationLandscapeLeft) {
             bottomSafeAreaHeight = 0;
             leftSafeAreaHeight = 2*safeAreaInsets.left;
         }
-        
+#endif
         _popupGroup.frame = CGRectMake(-leftSafeAreaHeight, -safeAreaInsets.top,
                                        screenWidth+safeAreaInsets.left+safeAreaInsets.right,
                                        screenHeight+safeAreaInsets.top+bottomSafeAreaHeight);
