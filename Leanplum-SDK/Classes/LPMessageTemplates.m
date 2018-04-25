@@ -1089,9 +1089,21 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         
     } else if (isIPhoneX) {
         UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
-        _popupGroup.frame = CGRectMake(-safeAreaInsets.left*2, -safeAreaInsets.top,
+        
+        // Do not offset the bottom safe area (control panel) on landscape.
+        // Counter the status bar's height twice to center it.
+        CGFloat bottomSafeArea = safeAreaInsets.bottom;
+        CGFloat leftSafeArea = safeAreaInsets.left;
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (orientation == UIInterfaceOrientationLandscapeRight ||
+            orientation == UIInterfaceOrientationLandscapeLeft) {
+            bottomSafeArea = 0;
+            leftSafeArea = 2*safeAreaInsets.left;
+        }
+        
+        _popupGroup.frame = CGRectMake(-leftSafeArea, -safeAreaInsets.top,
                                        screenWidth+safeAreaInsets.left+safeAreaInsets.right,
-                                       screenHeight+safeAreaInsets.top+safeAreaInsets.bottom);
+                                       screenHeight+safeAreaInsets.top+bottomSafeArea);
     }
     
     _popupView.frame = _popupGroup.bounds;
