@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPJSON.h"
-#import "Leanplum-Internal.h"
+#import "LeanplumInternal.h"
 
 @implementation LPJSON
 

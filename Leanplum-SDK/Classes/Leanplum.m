@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Leanplum-Internal.h"
+#import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
 #import "Constants.h"
 #import "UIDevice+IdentifierAddition.h"

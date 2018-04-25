@@ -24,7 +24,7 @@
 
 #import "LPRequestStorage.h"
 #import "Constants.h"
-#import "Leanplum-Internal.h"
+#import "LeanplumInternal.h"
 #import "LPFileManager.h"
 #import "LeanplumRequest.h"
 

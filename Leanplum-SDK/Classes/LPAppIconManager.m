@@ -24,7 +24,7 @@
 
 #import "LPAppIconManager.h"
 #import "LeanplumRequest.h"
-#import "Leanplum-Internal.h"
+#import "LeanplumInternal.h"
 #import "Utils.h"
 
 @implementation LPAppIconManager

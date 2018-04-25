@@ -24,7 +24,7 @@
 
 #import "LPNetworkOperation.h"
 #import "LPNetworkEngine.h"
-#import "Leanplum-Internal.h"
+#import "LeanplumInternal.h"
 
 @interface LPNetworkOperation()
 
