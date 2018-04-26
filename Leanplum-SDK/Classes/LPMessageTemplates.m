@@ -671,10 +671,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [self->_popupGroup setAlpha:1.0];
     }];
     
+#if LP_NOT_TV
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationDidChange:)
-                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                 name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
+#endif
+
 }
 
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk
@@ -1036,8 +1039,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     // Calculate the height. Fullscreen by default.
     CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
     BOOL isFullscreen = htmlHeight < 1;
-    BOOL isIPhoneX = statusBarHeight > 40;
-    CGFloat bottomSafeAreaHeight = [self safeAreaInsets].bottom;
+    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
+    CGFloat bottomSafeAreaHeight = safeAreaInsets.bottom;
+    BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
     
     // Banner logic.
     if (!isFullscreen) {
@@ -1085,7 +1089,23 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         
     } else if (isIPhoneX) {
-        _popupGroup.frame = CGRectMake(0, -statusBarHeight, screenWidth, screenHeight+statusBarHeight+bottomSafeAreaHeight);
+        // Do not offset the bottom safe area (control panel) on landscape.
+        // Safe area is present on left and right on landscape.
+        CGFloat leftSafeAreaHeight = safeAreaInsets.left;
+#if LP_NOT_TV
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (orientation == UIInterfaceOrientationLandscapeRight ||
+            orientation == UIInterfaceOrientationLandscapeLeft) {
+            bottomSafeAreaHeight = 0;
+            leftSafeAreaHeight += safeAreaInsets.right;
+        }
+#endif
+        _popupGroup.frame = CGRectMake(-leftSafeAreaHeight, -safeAreaInsets.top,
+                                       screenWidth+safeAreaInsets.left+safeAreaInsets.right,
+                                       screenHeight+safeAreaInsets.top+bottomSafeAreaHeight);
+        NSLog( @"%@", NSStringFromCGRect(_popupGroup.frame) );
+        NSLog(@"%f, %f", screenWidth, screenHeight);
+        NSLog(@"%@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     
     _popupView.frame = _popupGroup.bounds;
