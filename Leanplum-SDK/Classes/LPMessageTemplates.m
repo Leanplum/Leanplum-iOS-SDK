@@ -1089,19 +1089,22 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         
     } else if (isIPhoneX) {
         // Do not offset the bottom safe area (control panel) on landscape.
-        // Counter the status bar's height twice to center it.
+        // Safe area is present on left and right on landscape.
         CGFloat leftSafeAreaHeight = safeAreaInsets.left;
 #if LP_NOT_TV
         UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
         if (orientation == UIInterfaceOrientationLandscapeRight ||
             orientation == UIInterfaceOrientationLandscapeLeft) {
             bottomSafeAreaHeight = 0;
-            leftSafeAreaHeight = 2*safeAreaInsets.left;
+            leftSafeAreaHeight += safeAreaInsets.right;
         }
 #endif
         _popupGroup.frame = CGRectMake(-leftSafeAreaHeight, -safeAreaInsets.top,
                                        screenWidth+safeAreaInsets.left+safeAreaInsets.right,
                                        screenHeight+safeAreaInsets.top+bottomSafeAreaHeight);
+        NSLog( @"%@", NSStringFromCGRect(_popupGroup.frame) );
+        NSLog(@"%f, %f", screenWidth, screenHeight);
+        NSLog(@"%@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     
     _popupView.frame = _popupGroup.bounds;
