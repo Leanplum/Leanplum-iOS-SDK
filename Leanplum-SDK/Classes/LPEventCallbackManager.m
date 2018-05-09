@@ -24,6 +24,7 @@
 
 #import "LPEventCallbackManager.h"
 #import "LeanplumRequest.h"
+#import "LPResponse.h"
 
 @implementation LPEventCallback
 

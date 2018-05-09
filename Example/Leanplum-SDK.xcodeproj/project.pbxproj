@@ -20,7 +20,7 @@
 		07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87E1F052B7800A4B092 /* LeanplumTest.m */; };
 		07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87F1F052B7800A4B092 /* LPJSONTest.m */; };
 		07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8801F052B7800A4B092 /* MessagesTest.m */; };
-		07E5C8B91F052B7800A4B092 /* MessageTemplatesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */; };
+		07E5C8B91F052B7800A4B092 /* LPMessageTemplatesClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8811F052B7800A4B092 /* LPMessageTemplatesClassTest.m */; };
 		07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8821F052B7800A4B092 /* NewsfeedTest.m */; };
 		07E5C8BB1F052B7800A4B092 /* LPRequestStorageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8831F052B7800A4B092 /* LPRequestStorageTest.m */; };
 		07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8881F052B7800A4B092 /* LeanplumHelper.m */; };
@@ -134,7 +134,7 @@
 		07E5C87E1F052B7800A4B092 /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
 		07E5C87F1F052B7800A4B092 /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
 		07E5C8801F052B7800A4B092 /* MessagesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesTest.m; sourceTree = "<group>"; };
-		07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessageTemplatesTest.m; sourceTree = "<group>"; };
+		07E5C8811F052B7800A4B092 /* LPMessageTemplatesClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPMessageTemplatesClassTest.m; sourceTree = "<group>"; };
 		07E5C8821F052B7800A4B092 /* NewsfeedTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsfeedTest.m; sourceTree = "<group>"; };
 		07E5C8831F052B7800A4B092 /* LPRequestStorageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestStorageTest.m; sourceTree = "<group>"; };
 		07E5C8871F052B7800A4B092 /* LeanplumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumHelper.h; sourceTree = "<group>"; };
@@ -257,7 +257,7 @@
 				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
 				07E5C87F1F052B7800A4B092 /* LPJSONTest.m */,
 				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
-				07E5C8811F052B7800A4B092 /* MessageTemplatesTest.m */,
+				07E5C8811F052B7800A4B092 /* LPMessageTemplatesClassTest.m */,
 				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
 				07E5C8831F052B7800A4B092 /* LPRequestStorageTest.m */,
 				07E5C8841F052B7800A4B092 /* Utilities */,
@@ -811,7 +811,7 @@
 				07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */,
 				07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */,
 				07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */,
-				07E5C8B91F052B7800A4B092 /* MessageTemplatesTest.m in Sources */,
+				07E5C8B91F052B7800A4B092 /* LPMessageTemplatesClassTest.m in Sources */,
 				07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */,
 				07E5C8BB1F052B7800A4B092 /* LPRequestStorageTest.m in Sources */,
 				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
