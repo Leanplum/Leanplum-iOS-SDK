@@ -9,11 +9,11 @@
 #import <XCTest/XCTest.h>
 #import "LPEventCallbackManager.h"
 
-@interface EventCallbackManagerTest : XCTestCase
+@interface LPEventCallbackManagerTest : XCTestCase
 
 @end
 
-@implementation EventCallbackManagerTest
+@implementation LPEventCallbackManagerTest
 
 - (void)setUp {
     [super setUp];

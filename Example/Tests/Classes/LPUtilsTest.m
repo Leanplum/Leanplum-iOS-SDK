@@ -27,11 +27,11 @@
 #import "NSString+MD5Addition.h"
 #import "Utils.h"
 
-@interface UtilitiesTest : XCTestCase
+@interface LPUtilsTest : XCTestCase
 
 @end
 
-@implementation UtilitiesTest
+@implementation LPUtilsTest
 
 - (void)setUp {
     [super setUp];
