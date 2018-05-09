@@ -25,6 +25,7 @@
 #import "Leanplum.h"
 
 #import <Foundation/Foundation.h>
+#import "LPContextualValues.h"
 #if LP_NOT_TV
 #import <UserNotifications/UserNotifications.h>
 #endif
@@ -44,15 +45,6 @@ typedef enum {
     kLeanplumActionFilterBackground = 0b10,
     kLeanplumActionFilterAll = 0b11
 } LeanplumActionFilter;
-
-@interface LPContextualValues : NSObject
-
-@property (nonatomic) NSDictionary *parameters;
-@property (nonatomic) NSDictionary *arguments;
-@property (nonatomic) id previousAttributeValue;
-@property (nonatomic) id attributeValue;
-
-@end
 
 #define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"
 #define  LP_HELD_BACK_ACTION @"__held_back"
