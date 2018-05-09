@@ -9,31 +9,7 @@
 #import "LPRegisterDevice.h"
 #import "LPActionManager.h"
 
-#pragma mark - LPInternalState interface
-
 @interface LPInternalState : NSObject
-{
-    NSMutableArray *_startBlocks, *_variablesChangedBlocks, *_interfaceChangedBlocks,
-    *_eventsChangedBlocks, *_noDownloadsBlocks, *_onceNoDownloadsBlocks;
-    NSMutableDictionary *_actionBlocks, *_actionResponders;
-    NSMutableSet *_startResponders, *_variablesChangedResponders, *_interfaceChangedResponders,
-    *_eventsChangedResponders, *_noDownloadsResponders;
-    NSUncaughtExceptionHandler *_customExceptionHandler;
-    LPRegisterDevice *_registration;
-    BOOL _calledStart, _hasStarted, _hasStartedAndRegisteredAsDeveloper, _startSuccessful,
-    _issuedStart;
-    BOOL _initializedMessageTemplates;
-    BOOL _stripViewControllerFromState;
-    BOOL _isScreenTrackingEnabled;
-    BOOL _isInterfaceEditingEnabled;
-    LPActionManager *_actionManager;
-    NSString *_deviceId;
-    NSString *_appVersion;
-    NSMutableArray *_userAttributeChanges;
-    BOOL _calledHandleNotification;
-}
-
-#pragma mark - LPInternalState properties
 
 @property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks,
 *interfaceChangedBlocks, *eventsChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks,
@@ -52,8 +28,6 @@ startSuccessful, issuedStart, initializedMessageTemplates, stripViewControllerFr
 @property(assign, nonatomic) BOOL isScreenTrackingEnabled;
 @property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
-
-#pragma mark - LPInternalState method declaration
 
 + (LPInternalState *)sharedState;
 
