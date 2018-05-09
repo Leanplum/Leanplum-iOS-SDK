@@ -25,9 +25,6 @@
 #import <Foundation/Foundation.h>
 #import <StoreKit/StoreKit.h>
 
-
-#pragma mark - LPRevenueManager interface
-
 @interface LPRevenueManager : NSObject <SKProductsRequestDelegate>
 {
     NSMutableDictionary *_transactions;

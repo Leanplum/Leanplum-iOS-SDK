@@ -25,11 +25,7 @@
 #import "Constants.h"
 #import "LeanplumRequest.h"
 
-#pragma mark - LPConstantsState implementation
-
 @implementation LPConstantsState
-
-#pragma mark - LPConstantsState singleton methods
 
 + (LPConstantsState *)sharedState {
     static LPConstantsState *sharedLPConstantsState = nil;
