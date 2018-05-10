@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "LPEventCallback.h"
 #import "LPEventCallbackManager.h"
 
 @interface LPEventCallbackManagerTest : XCTestCase
