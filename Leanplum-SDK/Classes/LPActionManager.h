@@ -33,10 +33,11 @@ struct LeanplumMessageMatchResult {
     BOOL matchedTrigger;
     BOOL matchedUnlessTrigger;
     BOOL matchedLimit;
+    BOOL matchedActivePeriod;
 };
 typedef struct LeanplumMessageMatchResult LeanplumMessageMatchResult;
 
-LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, BOOL matchedUnlessTrigger, BOOL matchedLimit);
+LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, BOOL matchedUnlessTrigger, BOOL matchedLimit, BOOL matchedActivePeriod);
 
 typedef enum {
     kLeanplumActionFilterForeground = 0b1,

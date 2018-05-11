@@ -29,6 +29,7 @@
 #import "LPMessageTemplates.h"
 #import <QuartzCore/QuartzCore.h>
 #import <StoreKit/StoreKit.h>
+#import "Utils.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -323,7 +324,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         NSURL *url = [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]];
+                         NSString *encodedURLString = [Utils urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
+                         NSURL *url = [NSURL URLWithString: encodedURLString];
                          if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
                              [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
                          } else {
@@ -670,10 +672,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [self->_popupGroup setAlpha:1.0];
     }];
     
+#if LP_NOT_TV
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationDidChange:)
-                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                 name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
+#endif
+
 }
 
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk
@@ -1035,6 +1040,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     // Calculate the height. Fullscreen by default.
     CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
     BOOL isFullscreen = htmlHeight < 1;
+    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
+    CGFloat bottomSafeAreaHeight = safeAreaInsets.bottom;
+    BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
     
     // Banner logic.
     if (!isFullscreen) {
@@ -1050,7 +1058,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         CGFloat htmlY = yOffset + statusBarHeight;
         NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
         if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
-            htmlY = screenHeight - htmlHeight - yOffset - statusBarHeight;
+            htmlY = screenHeight - htmlHeight - yOffset;
         }
         
         // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
@@ -1072,9 +1080,33 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         }
         
         CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
+        // Offset iPhoneX's safe area.
+        if (isIPhoneX) {
+            CGFloat bottomDistance = screenHeight - (htmlY + htmlHeight);
+            if (bottomDistance < bottomSafeAreaHeight) {
+                htmlHeight += bottomSafeAreaHeight;
+            }
+        }
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
-    } else if (statusBarHeight > 40) { // iPhone X
-        _popupGroup.frame = CGRectMake(0, -statusBarHeight, screenWidth, screenHeight+2*statusBarHeight);
+        
+    } else if (isIPhoneX) {
+        // Do not offset the bottom safe area (control panel) on landscape.
+        // Safe area is present on left and right on landscape.
+        CGFloat leftSafeAreaHeight = safeAreaInsets.left;
+#if LP_NOT_TV
+        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
+        if (orientation == UIInterfaceOrientationLandscapeRight ||
+            orientation == UIInterfaceOrientationLandscapeLeft) {
+            bottomSafeAreaHeight = 0;
+            leftSafeAreaHeight += safeAreaInsets.right;
+        }
+#endif
+        _popupGroup.frame = CGRectMake(-leftSafeAreaHeight, -safeAreaInsets.top,
+                                       screenWidth+safeAreaInsets.left+safeAreaInsets.right,
+                                       screenHeight+safeAreaInsets.top+bottomSafeAreaHeight);
+        NSLog( @"%@", NSStringFromCGRect(_popupGroup.frame) );
+        NSLog(@"%f, %f", screenWidth, screenHeight);
+        NSLog(@"%@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     
     _popupView.frame = _popupGroup.bounds;
@@ -1141,7 +1173,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     } else {
         _acceptButton.frame = CGRectMake(
                                          (_popupView.frame.size.width - textSize.width - 2*LPMT_ACCEPT_BUTTON_MARGIN) / 2,
-                                         _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN,
+                                         _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN - [self safeAreaInsets].bottom,
                                          textSize.width + 2*LPMT_ACCEPT_BUTTON_MARGIN,
                                          textSize.height + 2*LPMT_ACCEPT_BUTTON_MARGIN);
     }
@@ -1210,6 +1242,16 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         LOG_LP_MESSAGE_EXCEPTION;
     }
 }
+
+-(UIEdgeInsets)safeAreaInsets
+{
+    UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
+    if (@available(iOS 11.0, *)) {
+        insets =  [UIApplication sharedApplication].keyWindow.safeAreaInsets;
+    }
+    return insets;
+}
+
 
 - (void)appStorePrompt
 {

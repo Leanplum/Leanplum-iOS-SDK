@@ -1,6 +1,6 @@
 //
 //  Leanplum.h
-//  Leanplum iOS SDK Version 2.0.5
+//  Leanplum iOS SDK Version 2.0.6
 //
 //  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
 //
@@ -26,7 +26,11 @@
 #import "LPInbox.h"
 
 #ifndef LP_NOT_TV
-#define LP_NOT_TV (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
+#if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
+#define LP_NOT_TV 1
+#else
+#define LP_NOT_TV 0
+#endif
 #endif
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \

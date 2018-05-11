@@ -278,4 +278,50 @@
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 
+- (void)test_active_period_false
+{
+    LPActionManager *manager = [LPActionManager sharedManager];
+    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+    
+    NSDictionary *config = [self messageConfigInActivePeriod:NO];
+
+    LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"ActivePeriodTest"
+                                                  contextualValues:contextualValues];
+    XCTAssertFalse(result.matchedActivePeriod);
+}
+
+- (void)test_active_period_true
+{
+    LPActionManager *manager = [LPActionManager sharedManager];
+    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+
+    NSDictionary *config = [self messageConfigInActivePeriod:YES];
+    
+    LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"ActivePeriodTest"
+                                                  contextualValues:contextualValues];
+    XCTAssertTrue(result.matchedActivePeriod);
+
+}
+
+#pragma mark Helpers
+
+-(NSDictionary *)messageConfigInActivePeriod:(BOOL)inActivePeriod
+{
+    NSDictionary *config = @{@"whenLimits":@{@"children":@[]},
+                             @"whenTriggers":@{@"children":@[@{@"noun":@"ActivePeriodTest",
+                                                               @"subject":@"event",
+                                                               }],
+                                               @"verb":@"OR"
+                                               },
+                             @"startTime": inActivePeriod ? @1524507600000 : @956557100000,
+                             @"endTime": inActivePeriod ? @7836202020000 : @956557200000
+                             };
+    return config;
+}
 @end

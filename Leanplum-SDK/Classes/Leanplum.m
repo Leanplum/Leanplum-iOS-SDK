@@ -1727,7 +1727,7 @@ BOOL inForeground = NO;
             }
         }
 
-        LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO);
+        LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
         for (NSString *when in whenConditions) {
             LeanplumMessageMatchResult conditionResult =
             [[LPInternalState sharedState].actionManager shouldShowMessage:internalMessageId
@@ -1738,8 +1738,14 @@ BOOL inForeground = NO;
             result.matchedTrigger |= conditionResult.matchedTrigger;
             result.matchedUnlessTrigger |= conditionResult.matchedUnlessTrigger;
             result.matchedLimit |= conditionResult.matchedLimit;
+            result.matchedActivePeriod |= conditionResult.matchedActivePeriod;
         }
 
+        // Make sure it's within the active period.
+        if (!result.matchedActivePeriod) {
+            continue;
+        }
+        
         // Make sure we cancel before matching in case the criteria overlap.
         if (result.matchedUnlessTrigger) {
             NSString *cancelActionName = [@"__Cancel" stringByAppendingString:actionType];
