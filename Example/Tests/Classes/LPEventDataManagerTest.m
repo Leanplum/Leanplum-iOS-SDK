@@ -63,11 +63,11 @@
 
 @end
 
-@interface EventDataManagerTest : XCTestCase
+@interface LPEventDataManagerTest : XCTestCase
 
 @end
 
-@implementation EventDataManagerTest
+@implementation LPEventDataManagerTest
 
 - (void)setUp {
     [super setUp];

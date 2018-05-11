@@ -85,8 +85,6 @@
 #define MACRO_NAME(x) #x
 #define MACRO_VALUE(x) MACRO_NAME(x)
 
-#pragma mark - LPConstantsState interface
-
 @interface LPConstantsState : NSObject {
     NSString *_apiHostName;
     NSString *_apiServlet;
@@ -111,8 +109,6 @@
     int _userCodeBlocks;
 }
 
-#pragma mark - LPConstantsState properties
-
 @property(strong, nonatomic) NSString *apiHostName;
 @property(strong, nonatomic) NSString *socketHost;
 @property(assign, nonatomic) int socketPort;
@@ -133,8 +129,6 @@
 @property(assign, nonatomic) BOOL networkActivityIndicatorEnabled;
 @property(assign, nonatomic) BOOL isLocationCollectionEnabled;
 @property(assign, nonatomic) BOOL isInboxImagePrefetchingEnabled;
-
-#pragma mark - LPConstantsState methods
 
 + (LPConstantsState *)sharedState;
 

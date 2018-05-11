@@ -46,9 +46,6 @@
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
 
-
-#pragma mark - The rest of the Leanplum SDK
-
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000

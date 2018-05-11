@@ -36,8 +36,6 @@
 
 static NSObject *updatingLock;
 
-#pragma mark - LPInboxMessage implementation
-
 @implementation LPInboxMessage
 
 #pragma mark - LPInboxMessage private methods
@@ -246,11 +244,7 @@ static NSObject *updatingLock;
 
 @end
 
-#pragma mark - LPInbox implementation
-
 @implementation LPInbox
-
-#pragma mark - LPInbox singleton methods
 
 + (LPInbox *)sharedState {
     static LPInbox *sharedInbox = nil;
