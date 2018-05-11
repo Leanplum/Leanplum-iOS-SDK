@@ -2,7 +2,7 @@
 //  LPActionArg.m
 //  Leanplum-iOS-SDK-source
 //
-//  Created by Mayank Sanganeria on 4/24/18.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 
 #import "LeanplumInternal.h"
