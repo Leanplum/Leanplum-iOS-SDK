@@ -4,7 +4,6 @@ end
 
 target 'Leanplum-SDK_Example' do
   platform :ios, '7.0'
-  pod 'NewRelicAgent'
   pod 'Leanplum-iOS-SDK-source', :path => '../'
   
   target 'Leanplum-SDK_Tests' do
