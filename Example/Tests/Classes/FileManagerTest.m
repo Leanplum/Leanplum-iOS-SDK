@@ -28,7 +28,7 @@
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LPFileManager.h"
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "Constants.h"
@@ -168,7 +168,7 @@
     }];
 
     // Validate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params){
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"downloadFile");
@@ -214,7 +214,7 @@
                 atomically:YES];
     
     // Validate request.
-    [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^(NSString *method, NSString *apiMethod,
                                         NSDictionary *params){
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"uploadFile");
@@ -222,7 +222,7 @@
         return YES;
     }];
     
-    [[LeanplumRequest post:LP_METHOD_UPLOAD_FILE
+    [[LPRequest post:LP_METHOD_UPLOAD_FILE
                     params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:[NSMutableArray array]]}]
      sendFilesNow:@[filePath]];
 }

@@ -28,7 +28,7 @@
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "LeanplumReachability+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LPActionManager.h"
@@ -79,7 +79,7 @@
     }];
 
     // Validate requst.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"start");
@@ -121,7 +121,7 @@
     }];
 
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -171,7 +171,7 @@
                                      @"address": @"New York"
                                      };
 
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"start");
@@ -228,7 +228,7 @@
 
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -282,7 +282,7 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"start");
@@ -336,7 +336,7 @@
 
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -388,7 +388,7 @@
 
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -448,7 +448,7 @@
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
     
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -505,7 +505,7 @@
 
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -556,7 +556,7 @@
 
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         if (![apiMethod isEqual:@"start"]) {
@@ -705,7 +705,7 @@
     double trackValue = 25.0f;
 
     // Validate track request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -718,7 +718,7 @@
     [Leanplum forceContentUpdate];
 
     // Validate track with value request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -732,7 +732,7 @@
 
 
     // Validate track with value and info request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -746,7 +746,7 @@
     [Leanplum forceContentUpdate];
 
     /// Validate track with name, value and params request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -760,7 +760,7 @@
     [Leanplum forceContentUpdate];
 
     /// Validate track with name, value, info and params request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -775,7 +775,7 @@
     [Leanplum forceContentUpdate];
 
     /// Validate track with name and info.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -788,7 +788,7 @@
     [Leanplum forceContentUpdate];
 
     /// Validate track with name and params.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -801,7 +801,7 @@
     [Leanplum forceContentUpdate];
 
     /// Validate track with name, value, args and params.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -817,7 +817,7 @@
     [Leanplum forceContentUpdate];
     
     /// Validate track for manual purchase
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"track");
@@ -861,7 +861,7 @@
     XCTAssertFalse([LPConstantsState sharedState].isLocationCollectionEnabled);
 
     // Validate set location request shorthand.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"setUserAttributes");
         XCTAssertTrue([params[@"location"] isEqualToString:@"37.324708,-122.020799"]);
@@ -871,7 +871,7 @@
     [Leanplum setDeviceLocationWithLatitude:37.324708 longitude:-122.020799];
 
     // Validate gps.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"setUserAttributes");
         XCTAssertTrue([params[@"location"] isEqualToString:@"37.324708,-122.020799"]);
@@ -882,7 +882,7 @@
                                        type:LPLocationAccuracyGPS];
 
     // Validate city and region info.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"setUserAttributes");
         XCTAssertTrue([params[@"location"] isEqualToString:@"37.324708,-122.020799"]);
@@ -1009,7 +1009,7 @@
     
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         if (![apiMethod isEqual:@"setVars"]) {
             return NO;
@@ -1149,7 +1149,7 @@
                                     };
 
     // Validate advance with value and info request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"advance");
@@ -1159,7 +1159,7 @@
     }];
     [Leanplum advanceTo:advanceName];
 
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"advance");
@@ -1169,7 +1169,7 @@
         return YES;
     }];
     [Leanplum advanceTo:advanceName withInfo:advanceInfo];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"advance");
@@ -1179,7 +1179,7 @@
         return YES;
     }];
     [Leanplum advanceTo:advanceName withParameters:advanceParams];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"advance");
@@ -1220,7 +1220,7 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"pauseState");
@@ -1228,7 +1228,7 @@
     }];
     [Leanplum pauseState];
 
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"resumeState");
@@ -1302,7 +1302,7 @@
 
     // Vaidate request.
     [Leanplum syncResourcePaths:@[@"\\.file$"] excluding:@[] async:NO];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"setVars");
 
@@ -1381,7 +1381,7 @@
                            ];
 
     // Validate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"setVars");
 
@@ -1497,7 +1497,7 @@
     NSString *test_email = @"example@example.com";
 
     // Vaidate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"registerDevice");
         XCTAssertEqual(params[@"email"], test_email);

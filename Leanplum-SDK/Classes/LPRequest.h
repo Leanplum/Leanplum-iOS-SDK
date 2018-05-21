@@ -1,5 +1,5 @@
 //
-//  LeanplumRequest.h
+//  LPRequest.h
 //  Leanplum
 //
 //  Created by Andrew First on 4/30/12.
@@ -26,7 +26,7 @@
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
 
-@interface LeanplumRequest : NSObject {
+@interface LPRequest : NSObject {
 @private
     NSString *_httpMethod;
     NSString *_apiMethod;
@@ -55,8 +55,8 @@
 - (id)initWithHttpMethod:(NSString *)httpMethod apiMethod:(NSString *)apiMethod
     params:(NSDictionary *)params;
 
-+ (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
-+ (LeanplumRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
++ (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
++ (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
 
 - (void)onResponse:(LPNetworkResponseBlock)response;
 - (void)onError:(LPNetworkErrorBlock)error;

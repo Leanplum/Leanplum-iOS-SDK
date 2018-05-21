@@ -27,7 +27,7 @@
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LPFileManager.h"
@@ -91,7 +91,7 @@
     }];
 
     // Vaidate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                         NSDictionary  *params) {
         XCTAssertEqualObjects(apiMethod, @"getNewsfeedMessages");
         return YES;
@@ -199,7 +199,7 @@
     }];
 
     // Vaidate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                         NSDictionary  *params) {
         XCTAssertEqualObjects(apiMethod, @"getNewsfeedMessages");
         return YES;
@@ -306,8 +306,8 @@
 
     // Check image has been downloaded after getNewsfeedMessages.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [LPRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"downloadFile"]) {
                 return NO;
@@ -356,8 +356,8 @@
     // Check disableImagePrefetching by utilizing the fact that
     // downloadFile will be called before onChanged.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [LPRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"DidNotDownload"]) {
                 return NO;
@@ -368,7 +368,7 @@
     }];
     [[Leanplum inbox] downloadMessages];
     [[Leanplum inbox] onChanged:^{
-        [LeanplumRequest get:@"DidNotDownload" params:nil];
+        [LPRequest get:@"DidNotDownload" params:nil];
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);

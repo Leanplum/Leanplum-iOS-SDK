@@ -27,7 +27,7 @@
 #import "LPActionManager.h"
 #import "LPJSON.h"
 
-@class LeanplumSocket;
+@class LPSocket;
 @class LPRegisterDevice;
 
 #pragma mark - LPInternalState interface

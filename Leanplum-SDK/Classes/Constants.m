@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "Constants.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 
 #pragma mark - LPConstantsState implementation
 
@@ -316,7 +316,7 @@ void leanplumInternalError(NSException *e)
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            [[LeanplumRequest post:LP_METHOD_LOG
+            [[LPRequest post:LP_METHOD_LOG
                             params:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],

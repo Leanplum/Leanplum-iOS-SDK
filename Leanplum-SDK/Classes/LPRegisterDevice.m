@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPRegisterDevice.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 #import "Constants.h"
 
 @implementation LPRegisterDevice
@@ -44,7 +44,7 @@
 
 - (void)registerDevice:(NSString *)email
 {
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_REGISTER_FOR_DEVELOPMENT
+    LPRequest *request = [LPRequest post:LP_METHOD_REGISTER_FOR_DEVELOPMENT
                                               params:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
