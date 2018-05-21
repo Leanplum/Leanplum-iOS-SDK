@@ -28,7 +28,7 @@
 #import "UIDevice+IdentifierAddition.h"
 #import "LPVarCache.h"
 #import "Leanplum_SocketIO.h"
-#import "LeanplumSocket.h"
+#import "LPSocket.h"
 #import "LPJSON.h"
 #import "LPRegisterDevice.h"
 #import "LPFileManager.h"
@@ -975,7 +975,7 @@ BOOL inForeground = NO;
             [LPVarCache setDevModeValuesFromServer:valuesFromCode
                                     fileAttributes:fileAttributes
                                  actionDefinitions:actionDefinitions];
-            [[LeanplumSocket sharedSocket] connectToAppId:LPRequest.appId
+            [[LPSocket sharedSocket] connectToAppId:LPRequest.appId
                                                  deviceId:LPRequest.deviceId];
             if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
                 [Leanplum onHasStartedAndRegisteredAsDeveloper];

@@ -1,5 +1,5 @@
 //
-//  LeanplumSocket.m
+//  LPSocket.m
 //  Leanplum
 //
 //  Created by Andrew First on 5/5/12.
@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "LeanplumSocket.h"
+#import "LPSocket.h"
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
 #import "Constants.h"
@@ -33,12 +33,12 @@
 
 id<LPNetworkEngineProtocol> engine_;
 
-@implementation LeanplumSocket
+@implementation LPSocket
 
-static LeanplumSocket *leanplum_sharedSocket = nil;
+static LPSocket *leanplum_sharedSocket = nil;
 static dispatch_once_t leanplum_onceToken;
 
-+ (LeanplumSocket *)sharedSocket
++ (LPSocket *)sharedSocket
 {
     dispatch_once(&leanplum_onceToken, ^{
         leanplum_sharedSocket = [[self alloc] init];
@@ -94,7 +94,7 @@ static dispatch_once_t leanplum_onceToken;
 - (void)connect
 {
     int port = [LPConstantsState sharedState].socketPort;
-    [_socketIO connectWithEngine:[LeanplumSocket engine]
+    [_socketIO connectWithEngine:[LPSocket engine]
                         withHost:[LPConstantsState sharedState].socketHost
                           onPort:port
                 secureConnection:port == 443];

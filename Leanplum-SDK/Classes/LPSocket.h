@@ -1,5 +1,5 @@
 //
-//  LeanplumSocket.h
+//  LPSocket.h
 //  Leanplum
 //
 //  Created by Andrew First on 5/5/12.
@@ -25,7 +25,7 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum_SocketIO.h"
 
-@interface LeanplumSocket : NSObject <Leanplum_SocketIODelegate> {
+@interface LPSocket : NSObject <Leanplum_SocketIODelegate> {
 @private
     Leanplum_SocketIO *_socketIO;
     NSString *_appId;
@@ -35,7 +35,7 @@
 }
 @property (readonly) BOOL connected;
 
-+ (LeanplumSocket *)sharedSocket;
++ (LPSocket *)sharedSocket;
 
 - (void)connectToAppId:(NSString *)appId deviceId:(NSString *)deviceId;
 - (void)sendEvent:(NSString *)eventName withData:(NSDictionary *)data;
