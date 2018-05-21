@@ -9,8 +9,6 @@
 #import "LPRegisterDevice.h"
 #import "LPActionManager.h"
 
-#pragma mark - LPInternalState interface
-
 @interface LPInternalState : NSObject
 {
     NSMutableArray *_startBlocks, *_variablesChangedBlocks, *_interfaceChangedBlocks,
@@ -33,8 +31,6 @@
     BOOL _calledHandleNotification;
 }
 
-#pragma mark - LPInternalState properties
-
 @property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks,
 *interfaceChangedBlocks, *eventsChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks,
 *startIssuedBlocks;
@@ -52,8 +48,6 @@ startSuccessful, issuedStart, initializedMessageTemplates, stripViewControllerFr
 @property(assign, nonatomic) BOOL isScreenTrackingEnabled;
 @property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
-
-#pragma mark - LPInternalState method declaration
 
 + (LPInternalState *)sharedState;
 

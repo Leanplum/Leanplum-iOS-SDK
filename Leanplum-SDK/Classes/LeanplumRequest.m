@@ -25,6 +25,7 @@
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
+#import "LPResponse.h"
 #import "Constants.h"
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
@@ -743,39 +744,6 @@ static NSDictionary *_requestHheaders;
         _sendNowQueue.maxConcurrentOperationCount = 1;
     });
     return _sendNowQueue;
-}
-
-@end
-
-@implementation LPResponse
-
-+ (NSUInteger)numResponsesInDictionary:(NSDictionary *)dictionary
-{
-    return [dictionary[@"response"] count];
-}
-
-+ (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary
-{
-    if (index < [LPResponse numResponsesInDictionary:dictionary]) {
-        return [dictionary[@"response"] objectAtIndex:index];
-    }
-    return [dictionary[@"response"] lastObject];
-}
-
-+ (NSDictionary *)getLastResponse:(NSDictionary *)dictionary
-{
-    return [LPResponse getResponseAt:[LPResponse numResponsesInDictionary:dictionary] - 1
-                      fromDictionary:dictionary];
-}
-
-+ (BOOL)isResponseSuccess:(NSDictionary *)dictionary
-{
-    return [dictionary[@"success"] boolValue];
-}
-
-+ (NSString *)getResponseError:(NSDictionary *)dictionary
-{
-    return dictionary[@"error"][@"message"];
 }
 
 @end

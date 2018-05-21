@@ -1,9 +1,9 @@
 //
-//  LPRevenueManager.h
-//  Leanplum iOS SDK
+//  LPActionManager.h
+//  Leanplum
 //
-//  Created by Atanas Dobrev on 9/9/14
-//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
+//  Created by Andrew First on 9/12/13.
+//  Copyright (c) 2013 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,19 +22,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import "Leanplum.h"
+
 #import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
+#if LP_NOT_TV
+#import <UserNotifications/UserNotifications.h>
+#endif
 
-@interface LPRevenueManager : NSObject <SKProductsRequestDelegate>
-{
-    NSMutableDictionary *_transactions;
-    NSMutableDictionary *_requests;
-}
+@interface LPContextualValues : NSObject
 
-+ (LPRevenueManager *)sharedManager;
-- (void)trackRevenue;
-- (void)addTransaction:(SKPaymentTransaction *)transaction;
-
-@property (nonatomic, copy) NSString *eventName;
+@property (nonatomic) NSDictionary *parameters;
+@property (nonatomic) NSDictionary *arguments;
+@property (nonatomic) id previousAttributeValue;
+@property (nonatomic) id attributeValue;
 
 @end

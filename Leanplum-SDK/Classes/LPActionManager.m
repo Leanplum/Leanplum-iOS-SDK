@@ -255,10 +255,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
 @end
 
-@implementation LPContextualValues
-
-@end
-
 @implementation LPActionManager
 
 static LPActionManager *leanplum_sharedActionManager = nil;

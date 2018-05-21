@@ -48,11 +48,11 @@
 
 @end
 
-@interface AppIconManagerTest : XCTestCase
+@interface LPAppIconManagerTest : XCTestCase
 
 @end
 
-@implementation AppIconManagerTest
+@implementation LPAppIconManagerTest
 
 + (void)setUp
 {

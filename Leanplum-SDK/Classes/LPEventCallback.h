@@ -1,9 +1,9 @@
 //
-//  LPRevenueManager.h
-//  Leanplum iOS SDK
+//  LPEventCallbackManager.h
+//  Leanplum
 //
-//  Created by Atanas Dobrev on 9/9/14
-//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
+//  Created by Alexis Oyama on 7/11/17.
+//  Copyright (c) 2017 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -23,18 +23,25 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
+#import "LPNetworkProtocol.h"
 
-@interface LPRevenueManager : NSObject <SKProductsRequestDelegate>
-{
-    NSMutableDictionary *_transactions;
-    NSMutableDictionary *_requests;
-}
+@interface LPEventCallback : NSObject
 
-+ (LPRevenueManager *)sharedManager;
-- (void)trackRevenue;
-- (void)addTransaction:(SKPaymentTransaction *)transaction;
+@property (nonatomic, strong) LPNetworkResponseBlock responseBlock;
+@property (nonatomic, strong) LPNetworkErrorBlock errorBlock;
 
-@property (nonatomic, copy) NSString *eventName;
+- (id)initWithResponseBlock:(LPNetworkResponseBlock)responseBlock
+                 errorBlock:(LPNetworkErrorBlock)errorBlock;
+
+/*
+ * Invoke response callback.
+ */
+- (void)invokeResponseWithOperation:(id<LPNetworkOperationProtocol>)operation
+                           response:(id)response;
+
+/*
+ * Invoke error callback.
+ */
+- (void)invokeError:(NSError *)error;
 
 @end

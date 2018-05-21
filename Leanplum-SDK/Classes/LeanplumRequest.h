@@ -87,13 +87,3 @@
 + (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block;
 
 @end
-
-@interface LPResponse : NSObject
-
-+ (NSUInteger)numResponsesInDictionary:(NSDictionary *)dictionary;
-+ (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary;
-+ (NSDictionary *)getLastResponse:(NSDictionary *)dictionary;
-+ (BOOL)isResponseSuccess:(NSDictionary *)dictionary;
-+ (NSString *)getResponseError:(NSDictionary *)dictionary;
-
-@end

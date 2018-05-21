@@ -48,7 +48,7 @@
 
 @end
 
-@interface RequestStorageTest : XCTestCase
+@interface LPRequestStorageTest : XCTestCase
 
 @property (strong, nonatomic) NSFileManager *fileManager;
 @property (strong, nonatomic) LPRequestStorage *requestStorage;
@@ -56,7 +56,7 @@
 
 @end
 
-@implementation RequestStorageTest
+@implementation LPRequestStorageTest
 
 - (void)setUp {
     [super setUp];

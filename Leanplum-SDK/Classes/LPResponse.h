@@ -1,9 +1,9 @@
 //
-//  LPRevenueManager.h
-//  Leanplum iOS SDK
+//  LeanplumRequest.h
+//  Leanplum
 //
-//  Created by Atanas Dobrev on 9/9/14
-//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
+//  Created by Andrew First on 4/30/12.
+//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -23,18 +23,15 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
+#import "Leanplum.h"
+#import "LPNetworkFactory.h"
 
-@interface LPRevenueManager : NSObject <SKProductsRequestDelegate>
-{
-    NSMutableDictionary *_transactions;
-    NSMutableDictionary *_requests;
-}
+@interface LPResponse : NSObject
 
-+ (LPRevenueManager *)sharedManager;
-- (void)trackRevenue;
-- (void)addTransaction:(SKPaymentTransaction *)transaction;
-
-@property (nonatomic, copy) NSString *eventName;
++ (NSUInteger)numResponsesInDictionary:(NSDictionary *)dictionary;
++ (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary;
++ (NSDictionary *)getLastResponse:(NSDictionary *)dictionary;
++ (BOOL)isResponseSuccess:(NSDictionary *)dictionary;
++ (NSString *)getResponseError:(NSDictionary *)dictionary;
 
 @end

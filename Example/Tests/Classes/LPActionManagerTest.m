@@ -45,11 +45,11 @@
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
 @end
 
-@interface ActionManagerTest : XCTestCase
+@interface LPActionManagerTest : XCTestCase
 
 @end
 
-@implementation ActionManagerTest
+@implementation LPActionManagerTest
 
 + (void)setUp
 {
