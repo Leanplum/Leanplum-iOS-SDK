@@ -42,6 +42,7 @@ static NSMutableDictionary *valuesFromClient;
 static NSMutableDictionary *defaultKinds;
 static NSMutableDictionary *actionDefinitions;
 static NSDictionary *diffs;
+static NSDictionary *contentAssignments;
 static NSDictionary *messageDiffs;
 static NSMutableArray *updateRulesDiffs;
 static NSArray *eventRulesDiffs;
@@ -844,10 +845,21 @@ static RegionInitBlock regionInitBlock;
     actionDefinitions[name] = definition;
 }
 
++ (NSDictionary *)contentAssignments
+{
+    return contentAssignments;
+}
+
++ (void)setContentAssignments:(NSDictionary *)_contentAssignments
+{
+    contentAssignments = _contentAssignments;
+}
+
 // Resets the VarCache to stock state. Used for testing purposes.
 + (void)reset
 {
     vars = nil;
+    contentAssignments = nil;
     filesToInspect = nil;
     fileAttributes = nil;
     valuesFromClient = nil;

@@ -73,6 +73,7 @@
 @property(assign, nonatomic) BOOL isScreenTrackingEnabled;
 @property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
+@property(assign, nonatomic) BOOL contentAssignments;
 
 #pragma mark - LPInternalState method declaration
 

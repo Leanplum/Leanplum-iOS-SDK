@@ -92,6 +92,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         _isScreenTrackingEnabled = NO;
         _isInterfaceEditingEnabled = NO;
         _calledHandleNotification = NO;
+        _contentAssignments = NO;
     }
     return self;
 }
@@ -878,6 +879,9 @@ BOOL inForeground = NO;
         LP_KEY_LOCATION: LP_VALUE_DETECT,
         LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
     } mutableCopy];
+    if ([LPInternalState sharedState].contentAssignments) {
+        params[LP_KEY_CONTENT_ASSIGNMENTS] = @(YES);
+    }
     BOOL startedInBackground = NO;
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
         !_extensionContext) {
@@ -921,6 +925,10 @@ BOOL inForeground = NO;
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        if ([response objectForKey:LP_KEY_CONTENT_ASSIGNMENTS]) {
+            NSDictionary *contentAssignments = response[LP_KEY_CONTENT_ASSIGNMENTS];
+            [LPVarCache setContentAssignments:contentAssignments];
+        }
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
         [LPVarCache applyVariableDiffs:values
@@ -2224,6 +2232,11 @@ andParameters:(NSDictionary *)params
     [[LeanplumRequest post:LP_METHOD_RESUME_STATE params:@{}] send];
 }
 
++ (void)setContentAssignmentsOption:(BOOL)contentAssignments
+{
+    [LPInternalState sharedState].contentAssignments = contentAssignments;
+}
+
 + (void)forceContentUpdate
 {
     [self forceContentUpdate:nil];
@@ -2238,10 +2251,13 @@ andParameters:(NSDictionary *)params
         return;
     }
     LP_TRY
-    NSDictionary *params = @{
+    NSMutableDictionary *params = @{
         LP_PARAM_INCLUDE_DEFAULTS: @(NO),
         LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
     };
+    if ([LPInternalState sharedState].contentAssignments) {
+        params[LP_KEY_CONTENT_ASSIGNMENTS] = @(YES);
+    }
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
                             params:params];
@@ -2253,6 +2269,10 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        if ([response objectForKey:LP_KEY_CONTENT_ASSIGNMENTS]) {
+            NSDictionary *contentAssignments = response[LP_KEY_CONTENT_ASSIGNMENTS];
+            [LPVarCache setContentAssignments:contentAssignments];
+        }
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
             ![updateRules isEqualToArray:LPVarCache.updateRulesDiffs] ||
@@ -2266,6 +2286,7 @@ andParameters:(NSDictionary *)params
                                    regions:regions];
 
         }
+
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
         } else {

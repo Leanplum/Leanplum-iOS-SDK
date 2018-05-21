@@ -113,7 +113,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK-source.podspec"; path = "../Leanplum-iOS-SDK-source.podspec"; sourceTree = "<group>"; };
+		0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK-source.podspec"; path = "../Leanplum-iOS-SDK-source.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-tvOS-SDK.podspec"; path = "../Leanplum-tvOS-SDK.podspec"; sourceTree = "<group>"; };
 		07E5C86B1F052B7800A4B092 /* ActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ActionManagerTest.m; sourceTree = "<group>"; };

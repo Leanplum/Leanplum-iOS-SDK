@@ -615,6 +615,13 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (NSDictionary *)messageMetadata;
 
 /**
+ * Set this to true if you want details about the variable assignments
+ * on the server.
+ * Default is NO.
+ */
++ (void)setContentAssignmentsOption:(BOOL)contentAssignments;
+
+/**
  * Forces content to update from the server. If variables have changed, the
  * appropriate callbacks will fire. Use sparingly as if the app is updated,
  * you'll have to deal with potentially inconsistent state or user experience.
