@@ -24,7 +24,7 @@
 
 #import "LeanplumSocket.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 #import "Constants.h"
 #import "LPVarCache.h"
 #import "LPActionManager.h"
@@ -54,7 +54,7 @@ static dispatch_once_t leanplum_onceToken;
                                                                         kCFBundleNameKey],
                                      NSBundle.mainBundle.infoDictionary[(NSString *)
                                                                         kCFBundleVersionKey],
-                                     [LeanplumRequest appId],
+                                     [LPRequest appId],
                                      LEANPLUM_CLIENT,
                                      LEANPLUM_SDK_VERSION];
         engine_ = [LPNetworkFactory

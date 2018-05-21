@@ -28,7 +28,7 @@
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "Leanplum+Extensions.h"
 #import "LPActionManager.h"
 #import "Constants.h"

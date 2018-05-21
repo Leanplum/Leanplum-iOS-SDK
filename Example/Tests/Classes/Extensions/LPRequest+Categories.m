@@ -1,5 +1,5 @@
 //
-//  LeanplumRequest+Extensions.m
+//  LPRequest+Extensions.m
 //  Leanplum-SDK
 //
 //  Created by Milos Jakovljevic on 10/17/16.
@@ -23,10 +23,10 @@
 //  under the License.
 
 
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "JRSwizzle.h"
 
-@implementation LeanplumRequest(MethodSwizzling)
+@implementation LPRequest(MethodSwizzling)
 
 static BOOL (^requestCallback)(NSString *method, NSString *apiMethod, NSDictionary *params);
 static LPNetworkResponseBlock responseCallback;
@@ -37,21 +37,21 @@ static LPNetworkResponseBlock responseCallback;
     bool success = [LPSwizzle swizzleMethod:@selector(sendNow)
                                  withMethod:@selector(swizzle_sendNow)
                                       error:&error
-                                      class:[LeanplumRequest class]];
+                                      class:[LPRequest class]];
     success &= [LPSwizzle swizzleClassMethod:@selector(get:params:)
                              withClassMethod:@selector(swizzle_get:params:)
                                        error:&error
-                                       class:[LeanplumRequest class]];
+                                       class:[LPRequest class]];
     success &= [LPSwizzle swizzleClassMethod:@selector(post:params:)
                              withClassMethod:@selector(swizzle_post:params:)
                                        error:&error
-                                       class:[LeanplumRequest class]];
+                                       class:[LPRequest class]];
     success &= [LPSwizzle swizzleMethod:@selector(onResponse:)
                              withMethod:@selector(swizzle_onResponse:)
                                   error:&error
-                                  class:[LeanplumRequest class]];
+                                  class:[LPRequest class]];
     if (!success || error) {
-        NSLog(@"Failed swizzling methods for LeanplumRequest: %@", error);
+        NSLog(@"Failed swizzling methods for LPRequest: %@", error);
     }
 }
 
@@ -79,7 +79,7 @@ static LPNetworkResponseBlock responseCallback;
     }];
 }
 
-+ (LeanplumRequest *)swizzle_get:(NSString *) apiMethod_ params:(NSDictionary *) params_
++ (LPRequest *)swizzle_get:(NSString *) apiMethod_ params:(NSDictionary *) params_
 {
     if (requestCallback != nil)
     {
@@ -91,7 +91,7 @@ static LPNetworkResponseBlock responseCallback;
     return [self swizzle_get:apiMethod_ params:params_];
 }
 
-+ (LeanplumRequest *)swizzle_post:(NSString *) apiMethod_ params:(NSDictionary *) params_
++ (LPRequest *)swizzle_post:(NSString *) apiMethod_ params:(NSDictionary *) params_
 {
     if (requestCallback != nil)
     {

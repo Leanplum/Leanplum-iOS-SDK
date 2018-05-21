@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPAppIconManager.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 #import "LeanplumInternal.h"
 #import "Utils.h"
 
@@ -63,7 +63,7 @@
                                            iconName:key];
     }];
 
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_UPLOAD_FILE
+    LPRequest *request = [LPRequest post:LP_METHOD_UPLOAD_FILE
                                               params:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {

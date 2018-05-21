@@ -24,7 +24,7 @@
 
 #import "LPAES.h"
 #import "Constants.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 #import <CommonCrypto/CommonCryptor.h>
 
 @implementation LPAES
@@ -32,7 +32,7 @@
 + (NSData *)encryptedDataFromData:(NSData *)data;
 {
     return [LPAES AES128WithOperation:kCCEncrypt
-                                  key:[LeanplumRequest token]
+                                  key:[LPRequest token]
                            identifier:LP_IV
                                  data:data];
 }
@@ -40,7 +40,7 @@
 + (NSData *)decryptedDataFromData:(NSData *)data
 {
     return [LPAES AES128WithOperation:kCCDecrypt
-                                  key:[LeanplumRequest token]
+                                  key:[LPRequest token]
                            identifier:LP_IV
                                  data:data];
 }

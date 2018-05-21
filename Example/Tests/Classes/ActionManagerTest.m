@@ -29,7 +29,7 @@
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LPActionManager.h"
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LPUIAlert.h"
@@ -150,7 +150,7 @@
 - (void)test_require_message_content
 {
     // Vaidate request.
-    [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"getVars");
         XCTAssertEqual(params[@"includeMessageId"], @"messageId");
@@ -242,7 +242,7 @@
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertTrue([params[@"iosPushToken"] isEqual:formattedToken]);
@@ -253,7 +253,7 @@
     [self waitForExpectationsWithTimeout:2 handler:nil];
     
     // Test push token will not be sent with the same token.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue(NO);
         return YES;
@@ -267,7 +267,7 @@
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
     XCTestExpectation *expectUpdatedToken = [self expectationWithDescription:@"expectUpdatedToken"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertTrue([params[@"iosPushToken"] isEqual:formattedToken]);

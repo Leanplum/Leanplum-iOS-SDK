@@ -26,7 +26,7 @@
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 #import "LPActionManager.h"
 #import "FileMD5Hash.h"
 #import "LPKeychainWrapper.h"
@@ -408,10 +408,10 @@ static RegionInitBlock regionInitBlock;
             BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
 
             if (deviceId) {
-                [LeanplumRequest setDeviceId:deviceId];
+                [LPRequest setDeviceId:deviceId];
             }
             if (userId) {
-                [LeanplumRequest setUserId:userId];
+                [LPRequest setUserId:userId];
             }
             if (loggingEnabled) {
                 [LPConstantsState sharedState].loggingEnabled = YES;
@@ -447,8 +447,8 @@ static RegionInitBlock regionInitBlock;
         [archiver encodeObject:variants forKey:LP_KEY_VARIANTS];
         [archiver encodeObject:regions forKey:LP_KEY_REGIONS];
         [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
-        [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
-        [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
+        [archiver encodeObject:LPRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
+        [archiver encodeObject:LPRequest.userId forKey:LP_PARAM_USER_ID];
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
         [archiver finishEncoding];
 
@@ -672,7 +672,7 @@ static RegionInitBlock regionInitBlock;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             [[LeanplumRequest post:LP_METHOD_SET_VARS
+             [[LPRequest post:LP_METHOD_SET_VARS
                              params:args] send];
              return YES;
          } @catch (NSException *e) {
@@ -707,7 +707,7 @@ static RegionInitBlock regionInitBlock;
             NSString *variationPath = [LPFileManager fileRelativeToAppBundle:name];
             if ((totalSize > MAX_UPLOAD_BATCH_SIZES &&
                  filenames.count > 0) || filenames.count >= MAX_UPLOAD_BATCH_FILES) {
-                [[LeanplumRequest post:LP_METHOD_UPLOAD_FILE
+                [[LPRequest post:LP_METHOD_UPLOAD_FILE
                                 params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}]
                  sendFilesNow:filenames];
                 filenames = [NSMutableArray array];
@@ -725,7 +725,7 @@ static RegionInitBlock regionInitBlock;
         }
     }
     if (filenames.count > 0) {
-        [[LeanplumRequest post:LP_METHOD_UPLOAD_FILE
+        [[LPRequest post:LP_METHOD_UPLOAD_FILE
                         params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}]
          sendFilesNow:filenames];
     }
@@ -779,7 +779,7 @@ static RegionInitBlock regionInitBlock;
 {
     if (!userAttributes) {
         @try {
-            NSString *token = [LeanplumRequest token];
+            NSString *token = [LPRequest token];
             if (token) {
                 NSData *encryptedValue = [[NSUserDefaults standardUserDefaults] dataForKey:LEANPLUM_DEFAULTS_ATTRIBUTES_KEY];
                 if (encryptedValue) {

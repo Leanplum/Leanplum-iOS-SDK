@@ -31,7 +31,7 @@
 #import "LPEventDataManager.h"
 #import "LPDatabase.h"
 #import "Constants.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
@@ -56,7 +56,7 @@
 
 @end
 
-@interface LeanplumRequest(UnitTest)
+@interface LPRequest(UnitTest)
 
 - (void)sendNow:(BOOL)async;
 + (NSOperationQueue *)sendNowQueue;
@@ -87,8 +87,8 @@
 - (void)test_migrateRequests
 {
     // Clean up.
-    [[LeanplumRequest sendNowQueue] cancelAllOperations];
-    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    [[LPRequest sendNowQueue] cancelAllOperations];
+    [[LPRequest sendNowQueue] waitUntilAllOperationsAreFinished];
     
     [LPEventDataManager deleteEventsWithLimit:10000];
     
@@ -175,7 +175,7 @@
     // Determine whether the requests are sent in order using the timestamp.
     NSDate *date = [NSDate date];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [[LeanplumRequest post:@"test1" params:nil] sendNow:YES];
+    [[LPRequest post:@"test1" params:nil] sendNow:YES];
     [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
         // Make sure the call is for test2.
         NSDictionary *data = [LPJSON JSONFromString:operation.requestParam[@"data"]];
@@ -189,13 +189,13 @@
         return YES;
     }];
     [NSThread sleepForTimeInterval:0.1];
-    [[LeanplumRequest post:@"test2" params:nil] sendNow:YES];
+    [[LPRequest post:@"test2" params:nil] sendNow:YES];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     
     // Clean up.
-    [[LeanplumRequest sendNowQueue] cancelAllOperations];
-    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    [[LPRequest sendNowQueue] cancelAllOperations];
+    [[LPRequest sendNowQueue] waitUntilAllOperationsAreFinished];
     [OHHTTPStubs removeAllStubs];
 }
 
@@ -218,7 +218,7 @@
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 0);
     
-    [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
+    [[LPRequest post:@"sample3" params:nil] sendNow:YES];
     [NSThread sleepForTimeInterval:0.2];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 1);
@@ -247,7 +247,7 @@
     // UUID should be the same.
     [Leanplum track:@"sample"];
     [Leanplum track:@"sample2"];
-    [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
+    [[LPRequest post:@"sample3" params:nil] sendNow:YES];
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 3);
     XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
@@ -273,7 +273,7 @@
                                              headers:@{@"Content-Type":@"application/json"}];
     }];
     
-    [[LeanplumRequest post:@"sample4" params:nil] sendNow:NO];
+    [[LPRequest post:@"sample4" params:nil] sendNow:NO];
     [NSThread sleepForTimeInterval:0.1];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 0);
@@ -297,7 +297,7 @@
         dispatch_semaphore_signal(semaphore);
         return YES;
     }];
-    [[LeanplumRequest post:@"test2" params:nil] sendNow:YES];
+    [[LPRequest post:@"test2" params:nil] sendNow:YES];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue(requestCount == 2);
@@ -331,7 +331,7 @@
     }];
     
     // Freeze the operation queue for a bit to let events queue up.
-    NSOperationQueue *sendNowQueue = [LeanplumRequest sendNowQueue];
+    NSOperationQueue *sendNowQueue = [LPRequest sendNowQueue];
     [sendNowQueue addOperationWithBlock:^{
         [NSThread sleepForTimeInterval:0.2];
     }];
@@ -339,7 +339,7 @@
     // Queue up the events and test if the callback is in the correct index.
     XCTestExpectation *responseExpectation =
     [self expectationWithDescription:@"responseExpectation"];
-    LeanplumRequest *request = [LeanplumRequest post:@"test2" params:nil];
+    LPRequest *request = [LPRequest post:@"test2" params:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         // Make sure the response is the first one.
         XCTAssertTrue([json[@"index"] intValue] == 1);

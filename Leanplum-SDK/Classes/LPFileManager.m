@@ -27,7 +27,7 @@
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "Leanplum.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 #include <dirent.h>
 #import <objc/message.h>
 #import <objc/runtime.h>
@@ -565,7 +565,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         return NO;
     }
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        LeanplumRequest *downloadRequest = [LeanplumRequest get:LP_METHOD_DOWNLOAD_FILE params:nil];
+        LPRequest *downloadRequest = [LPRequest get:LP_METHOD_DOWNLOAD_FILE params:nil];
         [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (complete) {
                 complete();

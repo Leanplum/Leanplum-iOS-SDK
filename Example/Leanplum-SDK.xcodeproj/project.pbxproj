@@ -13,7 +13,7 @@
 		07E5C8AD1F052B7800A4B092 /* EventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86D1F052B7800A4B092 /* EventDataManagerTest.m */; };
 		07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */; };
 		07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */; };
-		07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */; };
+		07E5C8B01F052B7800A4B092 /* LPRequest+Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8741F052B7800A4B092 /* LPRequest+Categories.m */; };
 		07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */; };
 		07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8791F052B7800A4B092 /* LPNetworkOperation+Category.m */; };
 		07E5C8B31F052B7800A4B092 /* FileManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87B1F052B7800A4B092 /* FileManagerTest.m */; };
@@ -123,8 +123,8 @@
 		07E5C8701F052B7800A4B092 /* Leanplum+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Leanplum+Extensions.h"; sourceTree = "<group>"; };
 		07E5C8711F052B7800A4B092 /* LeanplumReachability+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumReachability+Category.h"; sourceTree = "<group>"; };
 		07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumReachability+Category.m"; sourceTree = "<group>"; };
-		07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumRequest+Categories.h"; sourceTree = "<group>"; };
-		07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumRequest+Categories.m"; sourceTree = "<group>"; };
+		07E5C8731F052B7800A4B092 /* LPRequest+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPRequest+Categories.h"; sourceTree = "<group>"; };
+		07E5C8741F052B7800A4B092 /* LPRequest+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPRequest+Categories.m"; sourceTree = "<group>"; };
 		07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkEngine+Category.h"; sourceTree = "<group>"; };
 		07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkEngine+Category.m"; sourceTree = "<group>"; };
 		07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkOperation+Category.h"; sourceTree = "<group>"; };
@@ -272,8 +272,8 @@
 				07E5C8701F052B7800A4B092 /* Leanplum+Extensions.h */,
 				07E5C8711F052B7800A4B092 /* LeanplumReachability+Category.h */,
 				07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */,
-				07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */,
-				07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */,
+				07E5C8731F052B7800A4B092 /* LPRequest+Categories.h */,
+				07E5C8741F052B7800A4B092 /* LPRequest+Categories.m */,
 				07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */,
 				07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */,
 				07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */,
@@ -824,7 +824,7 @@
 				07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */,
 				9CB691E11F1601BA002D83D8 /* EventCallbackManagerTest.m in Sources */,
 				07E5C8BE1F052B7800A4B092 /* UtilitiesTest.m in Sources */,
-				07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */,
+				07E5C8B01F052B7800A4B092 /* LPRequest+Categories.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

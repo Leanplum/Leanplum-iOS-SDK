@@ -28,7 +28,7 @@
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequest+Categories.h"
 #import "LPVarCache+Extensions.h"
 #import "Leanplum+Extensions.h"
 #import "LPActionManager.h"
@@ -44,7 +44,7 @@ NSString *API_HOST = @"api.leanplum.com";
 
 NSInteger DISPATCH_WAIT_TIME = 4;
 
-@interface LeanplumRequest(LeanplumHelper)
+@interface LPRequest(LeanplumHelper)
 
 + (NSOperationQueue *)sendNowQueue;
 
@@ -56,7 +56,7 @@ static BOOL swizzled = NO;
 
 + (void)setup_method_swizzling {
     if (!swizzled) {
-        [LeanplumRequest swizzle_methods];
+        [LPRequest swizzle_methods];
         [Leanplum_Reachability swizzle_methods];
         [LPNetworkOperation swizzle_methods];
         swizzled = YES;
@@ -123,13 +123,13 @@ static BOOL swizzled = NO;
     [LPVarCache reset];
     [LPVarCache initialize];
     [LPActionManager reset];
-    [LeanplumRequest setDeviceId:nil];
-    [LeanplumRequest setUserId:nil];
-    [LeanplumRequest setToken:nil];
-    [LeanplumRequest reset];
+    [LPRequest setDeviceId:nil];
+    [LPRequest setUserId:nil];
+    [LPRequest setToken:nil];
+    [LPRequest reset];
     [LeanplumHelper reset_user_defaults];
-    [[LeanplumRequest sendNowQueue] cancelAllOperations];
-    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    [[LPRequest sendNowQueue] cancelAllOperations];
+    [[LPRequest sendNowQueue] waitUntilAllOperationsAreFinished];
 }
 
 + (dispatch_time_t)default_dispatch_time {

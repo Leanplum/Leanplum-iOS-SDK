@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPEventCallbackManager.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
 
 @implementation LPEventCallback
 
