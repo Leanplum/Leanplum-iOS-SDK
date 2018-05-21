@@ -822,7 +822,7 @@ BOOL inForeground = NO;
         LP_KEY_LOCATION: LP_VALUE_DETECT,
         LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
     } mutableCopy];
-    if ([LPInternalState sharedState].contentAssignments) {
+    if ([LPInternalState sharedState].isContentAssignmentsEnabled) {
         params[LP_KEY_CONTENT_ASSIGNMENTS] = @(YES);
     }
     BOOL startedInBackground = NO;
@@ -2175,9 +2175,9 @@ andParameters:(NSDictionary *)params
     [[LeanplumRequest post:LP_METHOD_RESUME_STATE params:@{}] send];
 }
 
-+ (void)setContentAssignmentsOption:(BOOL)contentAssignments
++ (void)setContentAssignmentsOption:(BOOL)contentAssignmentsEnabled
 {
-    [LPInternalState sharedState].contentAssignments = contentAssignments;
+    [LPInternalState sharedState].isContentAssignmentsEnabled = contentAssignmentsEnabled;
 }
 
 + (void)forceContentUpdate
@@ -2194,11 +2194,11 @@ andParameters:(NSDictionary *)params
         return;
     }
     LP_TRY
-    NSMutableDictionary *params = @{
+    NSMutableDictionary *params = [@{
         LP_PARAM_INCLUDE_DEFAULTS: @(NO),
         LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
-    };
-    if ([LPInternalState sharedState].contentAssignments) {
+    } mutableCopy];
+    if ([LPInternalState sharedState].isContentAssignmentsEnabled) {
         params[LP_KEY_CONTENT_ASSIGNMENTS] = @(YES);
     }
     LeanplumRequest* req = [LeanplumRequest
