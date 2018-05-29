@@ -391,6 +391,7 @@ static RegionInitBlock regionInitBlock;
         NSArray *eventRules;
         NSArray *variants;
         NSDictionary *regions;
+        NSDictionary *contentAssignments;
         if (encryptedDiffs) {
             NSData *diffsData = [LPAES decryptedDataFromData:encryptedDiffs];
             if (!diffsData) {
@@ -404,6 +405,7 @@ static RegionInitBlock regionInitBlock;
             eventRules = (NSArray *)[archiver decodeObjectForKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
             regions = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_REGIONS];
             variants = (NSArray *)[archiver decodeObjectForKey:LP_KEY_VARIANTS];
+            contentAssignments = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_CONTENT_ASSIGNMENTS];
             NSString *deviceId = [archiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
             NSString *userId = [archiver decodeObjectForKey:LP_PARAM_USER_ID];
             BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
@@ -424,7 +426,9 @@ static RegionInitBlock regionInitBlock;
                      updateRules:updateRules
                       eventRules:eventRules
                         variants:variants
-                         regions:regions];
+                         regions:regions
+              contentAssignments:contentAssignments];
+        
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Could not load variable diffs: %@", exception);
     }
@@ -451,6 +455,7 @@ static RegionInitBlock regionInitBlock;
         [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
         [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
+        [archiver encodeObject:contentAssignments forKey:LP_KEY_CONTENT_ASSIGNMENTS];
         [archiver finishEncoding];
 
         NSData *encryptedDiffs = [LPAES encryptedDataFromData:diffsData];
@@ -471,6 +476,7 @@ static RegionInitBlock regionInitBlock;
                 eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
                    regions:(NSDictionary *)regions_
+        contentAssignments:(NSDictionary *)contentAssignments_
 {
     @synchronized (vars) {
         if (diffs_ || (!silent && !hasReceivedDiffs)) {
@@ -547,6 +553,10 @@ static RegionInitBlock regionInitBlock;
 
         if (variants_) {
             variants = variants_;
+        }
+        
+        if (contentAssignments_) {
+            contentAssignments = contentAssignments_;
         }
         
         contentVersion++;

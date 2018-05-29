@@ -667,6 +667,16 @@ BOOL inForeground = NO;
 + (void)startWithUserId:(NSString *)userId
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
+{   [self startWithUserId:userId
+           userAttributes:attributes
+          responseHandler:startResponse
+includeContentAssignments:NO];
+}
+
++ (void)startWithUserId:(NSString *)userId
+         userAttributes:(NSDictionary *)attributes
+        responseHandler:(LeanplumStartBlock)startResponse
+includeContentAssignments:(BOOL)includeContentAssignments
 {
     if ([LeanplumRequest appId] == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
@@ -822,8 +832,8 @@ BOOL inForeground = NO;
         LP_KEY_LOCATION: LP_VALUE_DETECT,
         LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
     } mutableCopy];
-    if ([LPInternalState sharedState].isContentAssignmentsEnabled) {
-        params[LP_KEY_CONTENT_ASSIGNMENTS] = @(YES);
+    if (includeContentAssignments) {
+        params[LP_PARAM_INCLUDE_CONTENT_ASSIGNMENTS] = @(YES);
     }
     BOOL startedInBackground = NO;
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
@@ -2175,17 +2185,17 @@ andParameters:(NSDictionary *)params
     [[LeanplumRequest post:LP_METHOD_RESUME_STATE params:@{}] send];
 }
 
-+ (void)setContentAssignmentsOption:(BOOL)contentAssignmentsEnabled
-{
-    [LPInternalState sharedState].isContentAssignmentsEnabled = contentAssignmentsEnabled;
-}
-
 + (void)forceContentUpdate
 {
     [self forceContentUpdate:nil];
 }
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
+{
+    [self forceContentUpdate:block includeContentAssignments:NO];
+}
+
++ (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block includeContentAssignments:(BOOL)includeContentAssignments
 {
     if (IS_NOOP) {
         if (block) {
@@ -2198,8 +2208,8 @@ andParameters:(NSDictionary *)params
         LP_PARAM_INCLUDE_DEFAULTS: @(NO),
         LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
     } mutableCopy];
-    if ([LPInternalState sharedState].isContentAssignmentsEnabled) {
-        params[LP_KEY_CONTENT_ASSIGNMENTS] = @(YES);
+    if (includeContentAssignments) {
+        params[LP_PARAM_INCLUDE_CONTENT_ASSIGNMENTS] = @(YES);
     }
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
