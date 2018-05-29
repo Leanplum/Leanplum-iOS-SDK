@@ -2348,6 +2348,17 @@ void leanplumExceptionHandler(NSException *exception)
     return [NSArray array];
 }
 
++ (NSArray *)contentAssignments
+{
+    LP_TRY
+    NSArray *contentAssignments = [LPVarCache contentAssignments];
+    if (contentAssignments) {
+        return contentAssignments;
+    }
+    LP_END_TRY
+    return [NSDictionary dictionary];
+}
+
 + (NSDictionary *)messageMetadata
 {
     LP_TRY

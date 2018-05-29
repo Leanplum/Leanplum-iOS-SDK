@@ -609,6 +609,12 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (NSArray *)variants;
 
 /**
+ * Gets a list of A/B tests and the content assignments currently active for this user.
+ * Each A/B tests consists of and id, variant id and the variables assigned.
+ */
++ (NSArray *)contentAssignments;
+
+/**
  * Returns metadata for all active in-app messages.
  * Recommended only for debugging purposes and advanced use cases.
  */
