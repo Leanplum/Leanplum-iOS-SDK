@@ -667,16 +667,6 @@ BOOL inForeground = NO;
 + (void)startWithUserId:(NSString *)userId
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
-{   [self startWithUserId:userId
-           userAttributes:attributes
-          responseHandler:startResponse
-includeContentAssignments:NO];
-}
-
-+ (void)startWithUserId:(NSString *)userId
-         userAttributes:(NSDictionary *)attributes
-        responseHandler:(LeanplumStartBlock)startResponse
-includeContentAssignments:(BOOL)includeContentAssignments
 {
     if ([LeanplumRequest appId] == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
@@ -832,8 +822,8 @@ includeContentAssignments:(BOOL)includeContentAssignments
         LP_KEY_LOCATION: LP_VALUE_DETECT,
         LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
     } mutableCopy];
-    if (includeContentAssignments) {
-        params[LP_PARAM_INCLUDE_CONTENT_ASSIGNMENTS] = @(YES);
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
     BOOL startedInBackground = NO;
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
@@ -878,9 +868,9 @@ includeContentAssignments:(BOOL)includeContentAssignments
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
-        if ([response objectForKey:LP_KEY_CONTENT_ASSIGNMENTS]) {
-            NSDictionary *contentAssignments = response[LP_KEY_CONTENT_ASSIGNMENTS];
-            [LPVarCache setContentAssignments:contentAssignments];
+        if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
+            NSDictionary *variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
+            [LPVarCache setVariantDebugInfo:variantDebugInfo];
         }
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
@@ -2192,11 +2182,6 @@ andParameters:(NSDictionary *)params
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
 {
-    [self forceContentUpdate:block includeContentAssignments:NO];
-}
-
-+ (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block includeContentAssignments:(BOOL)includeContentAssignments
-{
     if (IS_NOOP) {
         if (block) {
             block();
@@ -2208,8 +2193,8 @@ andParameters:(NSDictionary *)params
         LP_PARAM_INCLUDE_DEFAULTS: @(NO),
         LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
     } mutableCopy];
-    if (includeContentAssignments) {
-        params[LP_PARAM_INCLUDE_CONTENT_ASSIGNMENTS] = @(YES);
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_DEFAULTS] = @(YES);
     }
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
@@ -2222,9 +2207,9 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
-        if ([response objectForKey:LP_KEY_CONTENT_ASSIGNMENTS]) {
-            NSDictionary *contentAssignments = response[LP_KEY_CONTENT_ASSIGNMENTS];
-            [LPVarCache setContentAssignments:contentAssignments];
+        if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
+            NSDictionary *variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
+            [LPVarCache setVariantDebugInfo:variantDebugInfo];
         }
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
@@ -2348,12 +2333,12 @@ void leanplumExceptionHandler(NSException *exception)
     return [NSArray array];
 }
 
-+ (NSArray *)contentAssignments
++ (NSDictionary *)variantDebugInfo
 {
     LP_TRY
-    NSArray *contentAssignments = [LPVarCache contentAssignments];
-    if (contentAssignments) {
-        return contentAssignments;
+    NSDictionary *variantDebugInfo = [LPVarCache variantDebugInfo];
+    if (variantDebugInfo) {
+        return variantDebugInfo;
     }
     LP_END_TRY
     return [NSDictionary dictionary];

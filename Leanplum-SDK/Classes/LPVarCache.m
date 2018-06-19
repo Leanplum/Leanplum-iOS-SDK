@@ -42,7 +42,7 @@ static NSMutableDictionary *valuesFromClient;
 static NSMutableDictionary *defaultKinds;
 static NSMutableDictionary *actionDefinitions;
 static NSDictionary *diffs;
-static NSDictionary *contentAssignments;
+static NSDictionary *variantDebugInfo;
 static NSDictionary *messageDiffs;
 static NSMutableArray *updateRulesDiffs;
 static NSArray *eventRulesDiffs;
@@ -391,7 +391,7 @@ static RegionInitBlock regionInitBlock;
         NSArray *eventRules;
         NSArray *variants;
         NSDictionary *regions;
-        NSDictionary *contentAssignments;
+        NSDictionary *variantDebugInfo;
         if (encryptedDiffs) {
             NSData *diffsData = [LPAES decryptedDataFromData:encryptedDiffs];
             if (!diffsData) {
@@ -405,7 +405,7 @@ static RegionInitBlock regionInitBlock;
             eventRules = (NSArray *)[archiver decodeObjectForKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
             regions = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_REGIONS];
             variants = (NSArray *)[archiver decodeObjectForKey:LP_KEY_VARIANTS];
-            contentAssignments = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_CONTENT_ASSIGNMENTS];
+            variantDebugInfo = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
             NSString *deviceId = [archiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
             NSString *userId = [archiver decodeObjectForKey:LP_PARAM_USER_ID];
             BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
@@ -427,7 +427,7 @@ static RegionInitBlock regionInitBlock;
                       eventRules:eventRules
                         variants:variants
                          regions:regions
-              contentAssignments:contentAssignments];
+                variantDebugInfo:variantDebugInfo];
         
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Could not load variable diffs: %@", exception);
@@ -455,7 +455,7 @@ static RegionInitBlock regionInitBlock;
         [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
         [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
-        [archiver encodeObject:contentAssignments forKey:LP_KEY_CONTENT_ASSIGNMENTS];
+        [archiver encodeObject:variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
         [archiver finishEncoding];
 
         NSData *encryptedDiffs = [LPAES encryptedDataFromData:diffsData];
@@ -476,7 +476,7 @@ static RegionInitBlock regionInitBlock;
                 eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
                    regions:(NSDictionary *)regions_
-        contentAssignments:(NSDictionary *)contentAssignments_
+        variantDebugInfo:(NSDictionary *)variantDebugInfo_
 {
     @synchronized (vars) {
         if (diffs_ || (!silent && !hasReceivedDiffs)) {
@@ -555,8 +555,8 @@ static RegionInitBlock regionInitBlock;
             variants = variants_;
         }
         
-        if (contentAssignments_) {
-            contentAssignments = contentAssignments_;
+        if (variantDebugInfo_) {
+            variantDebugInfo = variantDebugInfo_;
         }
         
         contentVersion++;
@@ -855,21 +855,21 @@ static RegionInitBlock regionInitBlock;
     actionDefinitions[name] = definition;
 }
 
-+ (NSDictionary *)contentAssignments
++ (NSDictionary *)variantDebugInfo
 {
-    return contentAssignments;
+    return variantDebugInfo;
 }
 
-+ (void)setContentAssignments:(NSDictionary *)_contentAssignments
++ (void)setVariantDebugInfo:(NSDictionary *)_variantDebugInfo
 {
-    contentAssignments = _contentAssignments;
+    variantDebugInfo = _variantDebugInfo;
 }
 
 // Resets the VarCache to stock state. Used for testing purposes.
 + (void)reset
 {
     vars = nil;
-    contentAssignments = nil;
+    variantDebugInfo = nil;
     filesToInspect = nil;
     fileAttributes = nil;
     valuesFromClient = nil;

@@ -69,8 +69,8 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 + (NSDictionary *)regions;
 + (NSDictionary *)defaultKinds;
 
-+ (NSDictionary *)contentAssignments;
-+ (void)setContentAssignments:(NSDictionary *)contentAssignments;
++ (NSDictionary *)variantDebugInfo;
++ (void)setVariantDebugInfo:(NSDictionary *)variantDebugInfo;
 
 // Handling actions.
 + (NSDictionary *)actionDefinitions;
