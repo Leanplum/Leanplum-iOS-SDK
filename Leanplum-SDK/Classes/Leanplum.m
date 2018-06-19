@@ -2258,7 +2258,7 @@ andParameters:(NSDictionary *)params
     } mutableCopy];
     
     if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
-        params[LP_PARAM_INCLUDE_DEFAULTS] = @(YES);
+        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
     
