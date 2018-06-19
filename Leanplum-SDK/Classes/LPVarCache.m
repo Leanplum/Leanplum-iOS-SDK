@@ -49,6 +49,7 @@ static NSDictionary *devModeValuesFromServer;
 static NSDictionary *devModeFileAttributesFromServer;
 static NSDictionary *devModeActionDefinitionsFromServer;
 static NSArray *variants;
+static NSDictionary *variantDebugInfo;
 static NSMutableDictionary *userAttributes;
 static NSDictionary *regions;
 static CacheUpdateBlock updateBlock;
@@ -364,6 +365,11 @@ static RegionInitBlock regionInitBlock;
     return variants;
 }
 
++ (NSDictionary *)variantDebugInfo
+{
+    return variantDebugInfo;
+}
+
 + (NSDictionary *)regions
 {
     return regions;
@@ -389,6 +395,7 @@ static RegionInitBlock regionInitBlock;
         NSArray *updateRules;
         NSArray *eventRules;
         NSArray *variants;
+        NSDictionary *variantDebugInfo;
         NSDictionary *regions;
         if (encryptedDiffs) {
             NSData *diffsData = [LPAES decryptedDataFromData:encryptedDiffs];
@@ -403,6 +410,7 @@ static RegionInitBlock regionInitBlock;
             eventRules = (NSArray *)[archiver decodeObjectForKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
             regions = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_REGIONS];
             variants = (NSArray *)[archiver decodeObjectForKey:LP_KEY_VARIANTS];
+            variantDebugInfo = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
             NSString *deviceId = [archiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
             NSString *userId = [archiver decodeObjectForKey:LP_PARAM_USER_ID];
             BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
@@ -423,7 +431,8 @@ static RegionInitBlock regionInitBlock;
                      updateRules:updateRules
                       eventRules:eventRules
                         variants:variants
-                         regions:regions];
+                         regions:regions
+                variantDebugInfo:variantDebugInfo];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Could not load variable diffs: %@", exception);
     }
@@ -445,6 +454,7 @@ static RegionInitBlock regionInitBlock;
         [archiver encodeObject:updateRulesDiffs forKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
         [archiver encodeObject:eventRulesDiffs forKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
         [archiver encodeObject:variants forKey:LP_KEY_VARIANTS];
+        [archiver encodeObject:variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
         [archiver encodeObject:regions forKey:LP_KEY_REGIONS];
         [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
         [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
@@ -470,6 +480,7 @@ static RegionInitBlock regionInitBlock;
                 eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
                    regions:(NSDictionary *)regions_
+          variantDebugInfo:(NSDictionary *)variantDebugInfo_
 {
     @synchronized (vars) {
         if (diffs_ || (!silent && !hasReceivedDiffs)) {
@@ -547,7 +558,11 @@ static RegionInitBlock regionInitBlock;
         if (variants_) {
             variants = variants_;
         }
-        
+
+        if (variantDebugInfo_) {
+            variantDebugInfo = variantDebugInfo_;
+        }
+
         contentVersion++;
 
         if (!silent) {
@@ -861,6 +876,7 @@ static RegionInitBlock regionInitBlock;
     devModeFileAttributesFromServer = nil;
     devModeActionDefinitionsFromServer = nil;
     variants = nil;
+    variantDebugInfo = nil;
     userAttributes = nil;
     updateBlock = nil;
     interfaceUpdateBlock = nil;

@@ -71,6 +71,7 @@
 @property(strong, nonatomic) NSString *appVersion;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
 @property(assign, nonatomic) BOOL isScreenTrackingEnabled;
+@property(assign, nonatomic) BOOL isVariantDebugInfoEnabled;
 @property(assign, nonatomic) BOOL isInterfaceEditingEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
 

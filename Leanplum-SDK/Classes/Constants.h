@@ -40,7 +40,7 @@
 #define RETURN_IF_NOT_SUPPORTED_IOS_VERSION if (!(IS_SUPPORTED_IOS_VERSION)) return;
 #define IS_IOS_8_OR_HIGHER (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0"))
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
-    ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
+([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
 
 #define RETURN_IF_TEST_MODE if ([LPConstantsState sharedState].isTestMode) return
 
@@ -85,8 +85,6 @@
 #define MACRO_NAME(x) #x
 #define MACRO_VALUE(x) MACRO_NAME(x)
 
-#pragma mark - LPConstantsState interface
-
 @interface LPConstantsState : NSObject {
     NSString *_apiHostName;
     NSString *_apiServlet;
@@ -111,8 +109,6 @@
     int _userCodeBlocks;
 }
 
-#pragma mark - LPConstantsState properties
-
 @property(strong, nonatomic) NSString *apiHostName;
 @property(strong, nonatomic) NSString *socketHost;
 @property(assign, nonatomic) int socketPort;
@@ -133,8 +129,6 @@
 @property(assign, nonatomic) BOOL networkActivityIndicatorEnabled;
 @property(assign, nonatomic) BOOL isLocationCollectionEnabled;
 @property(assign, nonatomic) BOOL isInboxImagePrefetchingEnabled;
-
-#pragma mark - LPConstantsState methods
 
 + (LPConstantsState *)sharedState;
 
@@ -232,6 +226,7 @@ OBJC_EXPORT NSString *LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES;
 OBJC_EXPORT NSString *LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES;
 OBJC_EXPORT NSString *LP_PARAM_INCLUDE_DEFAULTS;
 OBJC_EXPORT NSString *LP_PARAM_INCLUDE_MESSAGE_ID;
+OBJC_EXPORT NSString *LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO;
 OBJC_EXPORT NSString *LP_PARAM_PARAMS;
 OBJC_EXPORT NSString *LP_PARAM_LIMIT_TRACKING;
 OBJC_EXPORT NSString *LP_PARAM_MESSAGE;
@@ -279,6 +274,7 @@ OBJC_EXPORT NSString *LP_KEY_VARIANTS;
 OBJC_EXPORT NSString *LP_KEY_REGIONS;
 OBJC_EXPORT NSString *LP_KEY_INBOX_MESSAGES;
 OBJC_EXPORT NSString *LP_KEY_UNREAD_COUNT;
+OBJC_EXPORT NSString *LP_KEY_VARIANT_DEBUG_INFO;
 OBJC_EXPORT NSString *LP_KEY_SYNC_INBOX;
 OBJC_EXPORT NSString *LP_KEY_LOGGING_ENABLED;
 OBJC_EXPORT NSString *LP_KEY_MESSAGE_DATA;
