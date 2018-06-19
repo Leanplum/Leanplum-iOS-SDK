@@ -24,6 +24,7 @@
 
 #import "LPRegisterDevice.h"
 #import "LeanplumRequest.h"
+#import "LPResponse.h"
 #import "Constants.h"
 
 @implementation LPRegisterDevice

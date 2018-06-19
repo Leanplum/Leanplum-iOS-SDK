@@ -45,11 +45,11 @@
 
 @end
 
-@interface MessageTemplatesTest : XCTestCase
+@interface LPMessageTemplatesClassTest : XCTestCase
 
 @end
 
-@implementation MessageTemplatesTest
+@implementation LPMessageTemplatesClassTest
 
 + (void)setUp
 {

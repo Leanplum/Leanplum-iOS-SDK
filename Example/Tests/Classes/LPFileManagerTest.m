@@ -36,11 +36,11 @@
 /**
  * Tests file manager public methods.
  */
-@interface FileManagerTest : XCTestCase
+@interface LPFileManagerTest : XCTestCase
 
 @end
 
-@implementation FileManagerTest
+@implementation LPFileManagerTest
 
 + (void)setUp
 {
