@@ -1004,7 +1004,7 @@
        @"myArray": @{
                @"[2]": @33
                }
-       } messages:nil updateRules:nil eventRules:nil variants:nil regions:nil];
+       } messages:nil updateRules:nil eventRules:nil variants:nil regions:nil variantDebugInfo:nil];
 
     
     XCTestExpectation *request_expectation =
@@ -1265,7 +1265,7 @@
                                         }};
     NSArray *variants = @[@{@"id":@"1"}, @{@"id":@"2"}];
     [LPVarCache applyVariableDiffs:nil messages:messages updateRules:nil
-                        eventRules:nil variants:variants regions:nil];
+                        eventRules:nil variants:variants regions:nil variantDebugInfo:nil];
 
     XCTAssertEqualObjects(variants, [Leanplum variants]);
     XCTAssertEqualObjects(messages, [Leanplum messageMetadata]);

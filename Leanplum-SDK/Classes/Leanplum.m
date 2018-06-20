@@ -692,7 +692,7 @@ BOOL inForeground = NO;
         state.hasStarted = YES;
         state.startSuccessful = YES;
         [LPVarCache applyVariableDiffs:@{} messages:@{} updateRules:@[] eventRules:@[]
-                              variants:@[] regions:@{}];
+                              variants:@[] regions:@{} variantDebugInfo:@{}];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self triggerStartResponse:YES];
             [self triggerVariablesChanged];
@@ -869,8 +869,9 @@ BOOL inForeground = NO;
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        NSDictionary *variantDebugInfo;
         if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
-            NSDictionary *variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
+            variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
             [LPVarCache setVariantDebugInfo:variantDebugInfo];
         }
 
@@ -881,7 +882,8 @@ BOOL inForeground = NO;
                            updateRules:updateRules
                             eventRules:eventRules
                               variants:variants
-                               regions:regions];
+                               regions:regions
+                      variantDebugInfo:variantDebugInfo];
 
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
@@ -2217,8 +2219,9 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        NSDictionary *variantDebugInfo;
         if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
-            NSDictionary *variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
+            variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
             [LPVarCache setVariantDebugInfo:variantDebugInfo];
         }
 
@@ -2232,7 +2235,8 @@ andParameters:(NSDictionary *)params
                                updateRules:updateRules
                                 eventRules:eventRules
                                   variants:variants
-                                   regions:regions];
+                                   regions:regions
+                          variantDebugInfo:variantDebugInfo];
 
         }
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
