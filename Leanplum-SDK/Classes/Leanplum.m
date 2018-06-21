@@ -822,6 +822,9 @@ BOOL inForeground = NO;
         LP_KEY_LOCATION: LP_VALUE_DETECT,
         LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
     } mutableCopy];
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
+    }
     BOOL startedInBackground = NO;
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
         !_extensionContext) {
@@ -865,6 +868,10 @@ BOOL inForeground = NO;
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
+            NSDictionary *variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
+            [LPVarCache setVariantDebugInfo:variantDebugInfo];
+        }
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
         [LPVarCache applyVariableDiffs:values
@@ -2182,10 +2189,13 @@ andParameters:(NSDictionary *)params
         return;
     }
     LP_TRY
-    NSDictionary *params = @{
+    NSMutableDictionary *params = [@{
         LP_PARAM_INCLUDE_DEFAULTS: @(NO),
         LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
-    };
+    } mutableCopy];
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_DEFAULTS] = @(YES);
+    }
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
                             params:params];
@@ -2197,6 +2207,10 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
+            NSDictionary *variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
+            [LPVarCache setVariantDebugInfo:variantDebugInfo];
+        }
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
             ![updateRules isEqualToArray:LPVarCache.updateRulesDiffs] ||
@@ -2210,6 +2224,7 @@ andParameters:(NSDictionary *)params
                                    regions:regions];
 
         }
+
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
         } else {
@@ -2316,6 +2331,17 @@ void leanplumExceptionHandler(NSException *exception)
     }
     LP_END_TRY
     return [NSArray array];
+}
+
++ (NSDictionary *)variantDebugInfo
+{
+    LP_TRY
+    NSDictionary *variantDebugInfo = [LPVarCache variantDebugInfo];
+    if (variantDebugInfo) {
+        return variantDebugInfo;
+    }
+    LP_END_TRY
+    return [NSDictionary dictionary];
 }
 
 + (NSDictionary *)messageMetadata
