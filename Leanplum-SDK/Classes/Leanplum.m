@@ -45,6 +45,10 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPVariantDebugInfo.h"
+
+#import "LPABTest.h"
+#import <Mantle/MTLJSONAdapter.h>
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -692,7 +696,7 @@ BOOL inForeground = NO;
         state.hasStarted = YES;
         state.startSuccessful = YES;
         [LPVarCache applyVariableDiffs:@{} messages:@{} updateRules:@[] eventRules:@[]
-                              variants:@[] regions:@{} variantDebugInfo:@{}];
+                              variants:@[] regions:@{} variantDebugInfo:nil];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self triggerStartResponse:YES];
             [self triggerVariablesChanged];
@@ -869,10 +873,13 @@ BOOL inForeground = NO;
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
-        NSDictionary *variantDebugInfo;
+        LPVariantDebugInfo *variantDebugInfo;
         if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
-            variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
-            [LPVarCache setVariantDebugInfo:variantDebugInfo];
+            NSError *error;
+            variantDebugInfo = [MTLJSONAdapter modelOfClass:[LPVariantDebugInfo class] fromJSONDictionary:response[LP_KEY_VARIANT_DEBUG_INFO] error:&error];
+            if (!error) {
+                [LPVarCache setVariantDebugInfo:variantDebugInfo];
+            }
         }
 
         [LeanplumRequest setToken:token];
@@ -2219,10 +2226,13 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
-        NSDictionary *variantDebugInfo;
+        LPVariantDebugInfo *variantDebugInfo;
         if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
-            variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
-            [LPVarCache setVariantDebugInfo:variantDebugInfo];
+            NSError *error;
+            variantDebugInfo = [MTLJSONAdapter modelOfClass:[LPVariantDebugInfo class] fromJSONDictionary:response[LP_KEY_VARIANT_DEBUG_INFO] error:&error];
+            if (!error) {
+                [LPVarCache setVariantDebugInfo:variantDebugInfo];
+            }
         }
 
         if (![values isEqualToDictionary:LPVarCache.diffs] ||

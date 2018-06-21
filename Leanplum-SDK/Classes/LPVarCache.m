@@ -49,7 +49,7 @@ static NSDictionary *devModeValuesFromServer;
 static NSDictionary *devModeFileAttributesFromServer;
 static NSDictionary *devModeActionDefinitionsFromServer;
 static NSArray *variants;
-static NSDictionary *variantDebugInfo;
+static LPVariantDebugInfo *variantDebugInfo;
 static NSMutableDictionary *userAttributes;
 static NSDictionary *regions;
 static CacheUpdateBlock updateBlock;
@@ -365,9 +365,14 @@ static RegionInitBlock regionInitBlock;
     return variants;
 }
 
-+ (NSDictionary *)variantDebugInfo
++ (LPVariantDebugInfo *)variantDebugInfo
 {
     return variantDebugInfo;
+}
+
++ (void)setVariantDebugInfo:(LPVariantDebugInfo *)_variantDebugInfo
+{
+    variantDebugInfo = _variantDebugInfo;
 }
 
 + (NSDictionary *)regions
@@ -395,7 +400,7 @@ static RegionInitBlock regionInitBlock;
         NSArray *updateRules;
         NSArray *eventRules;
         NSArray *variants;
-        NSDictionary *variantDebugInfo;
+        LPVariantDebugInfo *variantDebugInfo;
         NSDictionary *regions;
         if (encryptedDiffs) {
             NSData *diffsData = [LPAES decryptedDataFromData:encryptedDiffs];
@@ -410,7 +415,7 @@ static RegionInitBlock regionInitBlock;
             eventRules = (NSArray *)[archiver decodeObjectForKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
             regions = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_REGIONS];
             variants = (NSArray *)[archiver decodeObjectForKey:LP_KEY_VARIANTS];
-            variantDebugInfo = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
+            variantDebugInfo = (LPVariantDebugInfo *)[archiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
             NSString *deviceId = [archiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
             NSString *userId = [archiver decodeObjectForKey:LP_PARAM_USER_ID];
             BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
@@ -480,7 +485,7 @@ static RegionInitBlock regionInitBlock;
                 eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
                    regions:(NSDictionary *)regions_
-          variantDebugInfo:(NSDictionary *)variantDebugInfo_
+          variantDebugInfo:(LPVariantDebugInfo *)variantDebugInfo_
 {
     @synchronized (vars) {
         if (diffs_ || (!silent && !hasReceivedDiffs)) {

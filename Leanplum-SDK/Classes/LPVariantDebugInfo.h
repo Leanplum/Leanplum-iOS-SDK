@@ -1,5 +1,5 @@
 //
-//  LPDebugVariantInfo.h
+//  LPVariantDebugInfo.h
 //  Leanplum-iOS-Location-source
 //
 //  Created by Mayank Sanganeria on 6/20/18.
@@ -10,7 +10,7 @@
 
 @class LPABTest;
 
-@interface LPDebugVariantInfo : MTLModel <MTLJSONSerializing>
+@interface LPVariantDebugInfo : MTLModel <MTLJSONSerializing>
 
 @property (nonatomic, copy, readonly) NSArray<LPABTest *> *abTests;
 

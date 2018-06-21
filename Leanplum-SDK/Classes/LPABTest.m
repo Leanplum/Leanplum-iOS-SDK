@@ -9,4 +9,12 @@
 
 @implementation LPABTest
 
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"id": @"id",
+             @"variantId": @"variantId",
+             @"vars": @"vars"
+             };
+}
+
 @end
