@@ -94,6 +94,8 @@
 		9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */; };
 		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		A8126EDC20DB955F00CA540E /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8126EDB20DB955E00CA540E /* start_with_variant_debug_info_response.json */; };
+		A86829E720DD99A8004E5677 /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8126EDB20DB955E00CA540E /* start_with_variant_debug_info_response.json */; };
 		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
 		B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */; };
 		B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA321D74B64D005ADEE1 /* ViewController.m */; };
@@ -196,6 +198,7 @@
 		9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8126EDB20DB955E00CA540E /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
 		B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-tvOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -323,6 +326,7 @@
 				07E5C8971F052B7800A4B092 /* newsfeed_response.json */,
 				07E5C8981F052B7800A4B092 /* registration_response.json */,
 				07E5C89A1F052B7800A4B092 /* simple_start_response.json */,
+				A8126EDB20DB955E00CA540E /* start_with_variant_debug_info_response.json */,
 				07E5C89B1F052B7800A4B092 /* start_variables_response.json */,
 				07E5C89C1F052B7800A4B092 /* state_response.json */,
 				07E5C89E1F052B7800A4B092 /* track_event_response.json */,
@@ -628,6 +632,7 @@
 				07E5C8E11F052DC400A4B092 /* simple_start_response.json in Resources */,
 				07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */,
 				07E5C8EC1F052DCC00A4B092 /* test.pdf in Resources */,
+				A8126EDC20DB955F00CA540E /* start_with_variant_debug_info_response.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -638,6 +643,7 @@
 				07E5C8D51F052B7800A4B092 /* NoPriorities.json in Resources */,
 				07E5C8D11F052B7800A4B092 /* ChainedMessage.json in Resources */,
 				07E5C8C31F052B7800A4B092 /* action_response.json in Resources */,
+				A86829E720DD99A8004E5677 /* start_with_variant_debug_info_response.json in Resources */,
 				07E5C8D31F052B7800A4B092 /* DifferentPriorities2.json in Resources */,
 				07E5C8D41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */,
 				07E5C8C71F052B7800A4B092 /* malformed_track_event_response.json in Resources */,
@@ -722,10 +728,12 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
+				"${BUILT_PRODUCTS_DIR}/Mantle/Mantle.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mantle.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -776,12 +784,14 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
+				"${BUILT_PRODUCTS_DIR}/Mantle/Mantle.framework",
 				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Mantle.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OHHTTPStubs.framework",
 			);

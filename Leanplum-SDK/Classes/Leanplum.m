@@ -881,7 +881,7 @@ BOOL inForeground = NO;
                 [LPVarCache setVariantDebugInfo:variantDebugInfo];
             }
         }
-
+        
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
         [LPVarCache applyVariableDiffs:values
@@ -2357,15 +2357,9 @@ void leanplumExceptionHandler(NSException *exception)
     return [NSArray array];
 }
 
-+ (NSDictionary *)variantDebugInfo
++ (LPVariantDebugInfo *)variantDebugInfo
 {
-    LP_TRY
-    NSDictionary *variantDebugInfo = [LPVarCache variantDebugInfo];
-    if (variantDebugInfo) {
-        return variantDebugInfo;
-    }
-    LP_END_TRY
-    return [NSDictionary dictionary];
+    return [LPVarCache variantDebugInfo];
 }
 
 + (NSDictionary *)messageMetadata
