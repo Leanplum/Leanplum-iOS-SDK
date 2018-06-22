@@ -150,6 +150,8 @@ typedef enum {
 
 #define LP_PURCHASE_EVENT @"Purchase"
 
+@class LPVariantDebugInfo;
+
 @interface Leanplum : NSObject
 
 /**
@@ -601,6 +603,19 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (id)objectForKeyPath:(id)firstComponent, ... NS_REQUIRES_NIL_TERMINATION;
 + (id)objectForKeyPathComponents:(NSArray *)pathComponents;
 /**@}*/
+
+
+/**
+ * Set variant debug info to be obtained from the server.
+ */
++ (void)setVariantDebugInfoEnabled:(BOOL)variantDebugInfoEnabled;
+
+
+/**
+ * Gets a list of content assignments made on the server for
+ * the current user.
+ */
++ (LPVariantDebugInfo *)variantDebugInfo;
 
 /**
  * Gets a list of variants that are currently active for this user.

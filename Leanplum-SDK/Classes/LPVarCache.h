@@ -25,6 +25,7 @@
 #import <Foundation/Foundation.h>
 
 @class LPVar;
+@class LPVariantDebugInfo;
 
 typedef void (^CacheUpdateBlock)(void);
 typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
@@ -56,7 +57,8 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
                updateRules:(NSArray *)updateRules_
                 eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
-                   regions:(NSDictionary *)regions_;
+                   regions:(NSDictionary *)regions_
+          variantDebugInfo:(LPVariantDebugInfo *)variantDebugInfo_;
 + (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs;
 + (void)onUpdate:(CacheUpdateBlock)block;
 + (void)onInterfaceUpdate:(CacheUpdateBlock)block;
@@ -68,6 +70,9 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 + (NSArray *)variants;
 + (NSDictionary *)regions;
 + (NSDictionary *)defaultKinds;
+
++ (LPVariantDebugInfo *)variantDebugInfo;
++ (void)setVariantDebugInfo:(LPVariantDebugInfo *)variantDebugInfo;
 
 // Handling actions.
 + (NSDictionary *)actionDefinitions;
