@@ -210,49 +210,6 @@
 }
 
 /**
- * Tests a simple development start with variant debug info.
- */
-- (void) test_simple_request_with_variant_debug_info
-{
-    [Leanplum setVariantDebugInfoEnabled:YES];
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
-    }];
-    
-    // Validate requst.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
-                                            NSDictionary *params) {
-        // Check api method first.
-        XCTAssertEqualObjects(apiMethod, @"start");
-        
-        // Check if request has all params.
-        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
-        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
-        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
-        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
-        NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
-                      [deviceModel isEqualToString:@"iPhone Simulator"]);
-        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
-        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
-        XCTAssertNotNil(params[@"locale"]);
-        XCTAssertNotNil(params[@"timezone"]);
-        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
-        XCTAssertTrue(params[@"includeVariantDebugInfo"]);
-        return YES;
-    }];
-    
-    XCTAssertTrue([LeanplumHelper start_development_test]);
-    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
-    XCTAssertTrue([Leanplum hasStarted]);
-    XCTAssertNotNil([Leanplum deviceId]);
-}
-
-/**
  * Test complex production start.
  */
 - (void) test_complex_production_start
@@ -675,6 +632,55 @@
     // Remove responder and verify.
     [Leanplum removeStartResponseResponder:self withSelector:@selector(on_start_response:)];
     XCTAssertTrue([LPInternalState sharedState].startResponders.count == 0);
+}
+
+/**
+ * Tests a simple development start with variant debug info.
+ */
+- (void) test_start_with_variant_debug_info
+{
+    [Leanplum setVariantDebugInfoEnabled:YES];
+    
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"start");
+        
+        // Check if request has all params.
+        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+        NSString* deviceModel = params[@"deviceModel"];
+        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                      [deviceModel isEqualToString:@"iPhone Simulator"]);
+        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+        XCTAssertNotNil(params[@"locale"]);
+        XCTAssertNotNil(params[@"timezone"]);
+        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+        XCTAssertTrue(params[@"includeVariantDebugInfo"]);
+        return YES;
+    }];
+    
+    [LeanplumHelper setup_development_test];
+    
+    XCTestExpectation *start_expectation =
+    [self expectationWithDescription:@"start_expectation"];
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        [start_expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    XCTAssertTrue([Leanplum hasStarted]);
+
 }
 
 /**
@@ -1187,8 +1193,8 @@
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
         [OHHTTPStubs removeStub:startStub];
-        XCTAssertTrue([LPVarCache variantDebugInfo]);
-        XCTAssertEqual([LPVarCache variantDebugInfo].abTests.count, 2);
+        XCTAssertTrue([Leanplum variantDebugInfo]);
+        XCTAssertEqual([Leanplum variantDebugInfo].abTests.count, 2);
         dispatch_semaphore_signal(semaphore);
     }];
     dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
