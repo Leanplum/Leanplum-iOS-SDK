@@ -209,6 +209,50 @@
 }
 
 /**
+ * Tests a simple development start with variant debug info.
+ */
+- (void) testStartWithParamShouldIncludeVariantDebugInfo
+{
+    [Leanplum setVariantDebugInfoEnabled:YES];
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    // Validate requst.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"start");
+        
+        // Check if request has all params.
+        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+        NSString* deviceModel = params[@"deviceModel"];
+        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                      [deviceModel isEqualToString:@"iPhone Simulator"]);
+        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+        XCTAssertNotNil(params[@"locale"]);
+        XCTAssertNotNil(params[@"timezone"]);
+        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+        XCTAssertTrue(params[@"includeVariantDebugInfo"]);
+        return YES;
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    XCTAssertTrue([Leanplum hasStarted]);
+    XCTAssertNotNil([Leanplum deviceId]);
+}
+
+
+/**
  * Test complex production start.
  */
 - (void) test_complex_production_start
@@ -1120,6 +1164,44 @@
     XCTAssertEqualObjects(@5.0, [cgfloat_variable defaultValue]);
     XCTAssertEqualObjects(@'c', [char_variable defaultValue]);
     XCTAssertEqualObjects(@100LL, [long_long_variable defaultValue]);
+}
+
+/**
+ * Tests variant debug info.
+ */
+- (void)testStartResponseShouldParseVariantDebugInfo
+{
+    [Leanplum setVariantDebugInfoEnabled:YES];
+    // This stub have to be removed when start command is successfully executed.
+    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+                                           ^BOOL(NSURLRequest * _Nonnull request) {
+                                               return [request.URL.host isEqualToString:API_HOST];
+                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                               NSString* response_file = OHPathForFile(@"start_with_variant_debug_info_response.json", self.class);
+                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                                                          headers:@{@"Content-Type":@"application/json"}];
+                                           }];
+    
+    [LeanplumHelper setup_development_test];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        [OHHTTPStubs removeStub:startStub];
+        XCTAssertTrue([LPVarCache variantDebugInfo]);
+        NSDictionary *abTests = [LPVarCache variantDebugInfo][@"abTests"];
+        XCTAssertEqual(abTests.count, 2);
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+    
+    // Remove stub after start is successful, so we don't capture requests from other methods
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString* response_file = OHPathForFile(@"variables_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
 }
 
 /**

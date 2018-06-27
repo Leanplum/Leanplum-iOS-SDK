@@ -869,11 +869,8 @@ BOOL inForeground = NO;
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
-        NSDictionary *variantDebugInfo;
-        if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
-            variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
-            [LPVarCache setVariantDebugInfo:variantDebugInfo];
-        }
+        NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
+        [LPVarCache setVariantDebugInfo:variantDebugInfo];
 
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
@@ -2219,11 +2216,8 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
-        NSDictionary *variantDebugInfo;
-        if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
-            variantDebugInfo = response[LP_KEY_VARIANT_DEBUG_INFO];
-            [LPVarCache setVariantDebugInfo:variantDebugInfo];
-        }
+        NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
+        [LPVarCache setVariantDebugInfo:variantDebugInfo];
 
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
@@ -2610,6 +2604,14 @@ void LPLog(LPLogType type, NSString *format, ...) {
     LP_TRY
     [LPConstantsState sharedState].isLocationCollectionEnabled = NO;
     LP_END_TRY
+}
+
++(NSDictionary *)parseVariantDebugInfoFromResponse:(NSDictionary *)response
+{
+    if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
+        return response[LP_KEY_VARIANT_DEBUG_INFO];
+    }
+    return nil;
 }
 
 @end

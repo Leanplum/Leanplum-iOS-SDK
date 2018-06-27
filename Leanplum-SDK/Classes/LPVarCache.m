@@ -370,6 +370,11 @@ static RegionInitBlock regionInitBlock;
     return variantDebugInfo;
 }
 
++ (void)setVariantDebugInfo:(NSDictionary *)_variantDebugInfo
+{
+    variantDebugInfo = _variantDebugInfo;
+}
+
 + (NSDictionary *)regions
 {
     return regions;
