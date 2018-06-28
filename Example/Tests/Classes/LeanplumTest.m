@@ -1187,9 +1187,14 @@
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
         [OHHTTPStubs removeStub:startStub];
-        XCTAssertTrue([LPVarCache variantDebugInfo]);
+        XCTAssertNotNil([LPVarCache variantDebugInfo]);
         NSDictionary *abTests = [LPVarCache variantDebugInfo][@"abTests"];
         XCTAssertEqual(abTests.count, 2);
+        [LPVarCache saveDiffs];
+        [LPVarCache setVariantDebugInfo:nil];
+        XCTAssertNil([LPVarCache variantDebugInfo]);
+        [LPVarCache loadDiffs];
+        XCTAssertNotNil([LPVarCache variantDebugInfo]);
         dispatch_semaphore_signal(semaphore);
     }];
     dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
@@ -1202,6 +1207,27 @@
         return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
+}
+
+/**
+ * Tests variant debug info persistence.
+ */
+- (void)testShouldPersistVariantDebugInfo
+{
+    NSDictionary *mockVariantDebugInfo = @{@"abTests":@[]};
+    XCTAssertNil([LPVarCache variantDebugInfo]);
+    
+    [LPVarCache setVariantDebugInfo:mockVariantDebugInfo];
+    XCTAssertNotNil([LPVarCache variantDebugInfo]);
+    
+    [LPVarCache saveDiffs];
+    XCTAssertNotNil([LPVarCache variantDebugInfo]);
+    
+    [LPVarCache setVariantDebugInfo:nil];
+    XCTAssertNil([LPVarCache variantDebugInfo]);
+    
+    [LPVarCache loadDiffs];
+    XCTAssertNotNil([LPVarCache variantDebugInfo]);
 }
 
 /**
