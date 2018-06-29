@@ -29,12 +29,12 @@
 {
     self = [super init];
     if (self) {
-        [self initializeRaygun];
+        [self initializeRaygunReporter];
     }
     return self;
 }
 
--(void)initializeRaygun
+-(void)initializeRaygunReporter
 {
     _crashReporter = [[NSClassFromString(@"LPRaygunCrashReporter") alloc] init];
     
