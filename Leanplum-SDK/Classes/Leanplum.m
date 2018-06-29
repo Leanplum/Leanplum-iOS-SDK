@@ -1055,6 +1055,10 @@ BOOL inForeground = NO;
 #endif
     [self maybeRegisterForNotifications];
     LP_END_TRY
+    
+    LP_TRY
+    [Utils initExceptionHandling];
+    LP_END_TRY
 }
 
 // On first run with Leanplum, determine if this app was previously installed without Leanplum.
