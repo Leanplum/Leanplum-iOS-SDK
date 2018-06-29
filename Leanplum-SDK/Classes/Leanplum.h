@@ -608,6 +608,11 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  */
 + (void)setVariantDebugInfoEnabled:(BOOL)variantDebugInfoEnabled;
 
+/**
+ * Gets a list of content assignments for the current user.
+ */
++ (NSDictionary *)variantDebugInfo;
+
 
 /**
  * Gets a list of variants that are currently active for this user.
