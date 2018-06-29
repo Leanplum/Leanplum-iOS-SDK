@@ -59,7 +59,7 @@
 + (void)initExceptionHandling;
 
 /**
- * Initialize exception handling
+ * Report an exception
  */
 + (void)handleException:(NSException *)exception;
 
