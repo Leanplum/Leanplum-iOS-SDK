@@ -78,7 +78,7 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
-    // Validate requst.
+    // Validate request.
     [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
@@ -222,7 +222,7 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
-    // Validate requst.
+    // Validate request.
     [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         // Check api method first.
@@ -1171,6 +1171,9 @@
  */
 - (void)testStartResponseShouldParseVariantDebugInfo
 {
+    //Given: start request
+    
+    //When: VariantDebugInfoEnabled is YES
     [Leanplum setVariantDebugInfoEnabled:YES];
     // This stub have to be removed when start command is successfully executed.
     id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
@@ -1187,9 +1190,12 @@
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
         [OHHTTPStubs removeStub:startStub];
+        // Then: variantDebugInfo should be parsed
         XCTAssertNotNil([LPVarCache variantDebugInfo]);
         NSDictionary *abTests = [LPVarCache variantDebugInfo][@"abTests"];
         XCTAssertEqual(abTests.count, 2);
+        
+        // Then: variantDebugInfo should be persisted
         [LPVarCache saveDiffs];
         [LPVarCache setVariantDebugInfo:nil];
         XCTAssertNil([LPVarCache variantDebugInfo]);
@@ -1198,15 +1204,6 @@
         dispatch_semaphore_signal(semaphore);
     }];
     dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
-    
-    // Remove stub after start is successful, so we don't capture requests from other methods
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString* response_file = OHPathForFile(@"variables_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
-    }];
 }
 
 /**
@@ -1214,18 +1211,20 @@
  */
 - (void)testShouldPersistVariantDebugInfo
 {
+    //Given: a variantDebugInfo set in VarCache
     NSDictionary *mockVariantDebugInfo = @{@"abTests":@[]};
-    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 0);
-    
     [LPVarCache setVariantDebugInfo:mockVariantDebugInfo];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
     
+    //When: the varcache is persisted
     [LPVarCache saveDiffs];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
+    
     
     [LPVarCache setVariantDebugInfo:nil];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 0);
     
+    //Then: the variantDebugInfo can be loaded from disk
     [LPVarCache loadDiffs];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
 }
