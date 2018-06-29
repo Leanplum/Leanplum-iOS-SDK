@@ -1215,19 +1215,19 @@
 - (void)testShouldPersistVariantDebugInfo
 {
     NSDictionary *mockVariantDebugInfo = @{@"abTests":@[]};
-    XCTAssertNil([LPVarCache variantDebugInfo]);
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 0);
     
     [LPVarCache setVariantDebugInfo:mockVariantDebugInfo];
-    XCTAssertNotNil([LPVarCache variantDebugInfo]);
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
     
     [LPVarCache saveDiffs];
-    XCTAssertNotNil([LPVarCache variantDebugInfo]);
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
     
     [LPVarCache setVariantDebugInfo:nil];
-    XCTAssertNil([LPVarCache variantDebugInfo]);
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 0);
     
     [LPVarCache loadDiffs];
-    XCTAssertNotNil([LPVarCache variantDebugInfo]);
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
 }
 
 /**
