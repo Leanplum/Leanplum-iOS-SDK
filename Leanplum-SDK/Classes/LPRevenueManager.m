@@ -42,6 +42,15 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     LP_END_TRY
 }
 
+
+@interface LPRevenueManager()
+
+@property (nonatomic, strong) NSMutableDictionary *transactions;
+@property (nonatomic, strong) NSMutableDictionary *requests;
+
+
+@end
+
 #pragma mark - LPRevenueManager implementation
 
 @implementation LPRevenueManager
@@ -89,7 +98,7 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
 - (void)saveTransactions
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:_transactions forKey:@"LPARTTransactions"];
+    [defaults setObject:self.transactions forKey:@"LPARTTransactions"];
     [defaults synchronize];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -113,8 +122,8 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     SKProductsRequest *request = [[SKProductsRequest alloc] initWithProductIdentifiers:
                                   [NSSet setWithObjects:transaction[@"productIdentifier"], nil]];
     request.delegate = self;
-    _transactions[transaction[@"transactionIdentifier"]] = transaction;
-    _requests[[NSValue valueWithNonretainedObject:request]] = transaction[@"transactionIdentifier"];
+    self.transactions[transaction[@"transactionIdentifier"]] = transaction;
+    self.requests[[NSValue valueWithNonretainedObject:request]] = transaction[@"transactionIdentifier"];
     [request start];
 }
 
@@ -151,11 +160,11 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     if ([response.products count] < 1) {
         return;
     }
-    NSString *transactionIdentifier = _requests[[NSValue valueWithNonretainedObject:request]];
+    NSString *transactionIdentifier = self.requests[[NSValue valueWithNonretainedObject:request]];
     if (!transactionIdentifier) {
         return;
     }
-    NSDictionary *transaction = _transactions[transactionIdentifier];
+    NSDictionary *transaction = self.transactions[transactionIdentifier];
     if (!transaction) {
         return;
     }
@@ -186,9 +195,9 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
                       @"quantity": transaction[@"quantity"]
                       }];
 
-    [_transactions removeObjectForKey:transactionIdentifier];
+    [self.transactions removeObjectForKey:transactionIdentifier];
     [self saveTransactions];
-    [_requests removeObjectForKey:[NSValue valueWithNonretainedObject:request]];
+    [self.requests removeObjectForKey:[NSValue valueWithNonretainedObject:request]];
     LP_END_TRY
 }
 

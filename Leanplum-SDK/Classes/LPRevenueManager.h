@@ -26,10 +26,6 @@
 #import <StoreKit/StoreKit.h>
 
 @interface LPRevenueManager : NSObject <SKProductsRequestDelegate>
-{
-    NSMutableDictionary *_transactions;
-    NSMutableDictionary *_requests;
-}
 
 + (LPRevenueManager *)sharedManager;
 - (void)trackRevenue;
