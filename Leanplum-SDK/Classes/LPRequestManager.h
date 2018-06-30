@@ -50,30 +50,23 @@
 // Files transfer
 @property (nonatomic, strong) NSString *uploadUrl;
 
-- (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData;
+- (void)sendRequest:(LPRequest *)request;
+- (void)sendNowRequest:(LPRequest *)request;
+- (void)sendEventuallyRequest:(LPRequest *)request;
+- (void)sendIfConnectedRequest:(LPRequest *)request;;
+- (void)sendIfConnectedSync:(BOOL)sync request:(LPRequest *)request;
+// Sends the request if another request hasn't been sent within a particular time delay.
+- (void)sendIfDelayedRequest:(LPRequest *)request;
 
-//- (void)send;
-//- (void)sendNow;
-//- (void)sendEventually;
-//- (void)sendIfConnected;
-//- (void)sendIfConnectedSync:(BOOL)sync;
-//// Sends the request if another request hasn't been sent within a particular time delay.
-//- (void)sendIfDelayed;
-//- (void)sendFilesNow:(NSArray *)filenames;
-//
-///**
-// * Sends one data. Uses sendDatasNow: internally. See this method for more information.
-// */
-//- (void)sendDataNow:(NSData *)data forKey:(NSString *)key;
-//
-///**
-// * Send datas where key is the name and object is the data.
-// * For example, key can be "file0" and object is NSData of png.
-// */
-//- (void)sendDatasNow:(NSDictionary *)datas;
-//
-//- (void)downloadFile:(NSString *)path;
+/**
+ * Sends one data. Uses sendDatasNow: internally. See this method for more information.
+ */
+- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(LPRequest *)request;
 
-- (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block;
+/**
+ * Send datas where key is the name and object is the data.
+ * For example, key can be "file0" and object is NSData of png.
+ */
+- (void)sendDatasNow:(NSDictionary *)datas request:(LPRequest *)request;
 
 @end

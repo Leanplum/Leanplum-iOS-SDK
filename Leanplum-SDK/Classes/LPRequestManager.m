@@ -22,17 +22,14 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Leanplum.h"
+#import "LPRequestManager.h"
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
-#import "LPRequestManager.h"
 #import "LPResponse.h"
-#import "Constants.h"
-#import "LPFileManager.h"
-#import "NSTimer+Blocks.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
+
 
 @interface LPRequestManager()
 
@@ -267,7 +264,7 @@
         int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
         id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:constants.apiServlet
                                                                params:multiRequestArgs
-                                                                httpMethod:@"post" //TODO: Figure out httpMethod for multi request
+                                                                httpMethod:@"POST"
                                                                   ssl:constants.apiSSL
                                                        timeoutSeconds:timeout];
 
@@ -354,7 +351,7 @@
         // Request timed out.
         if (status != 0) {
             LP_TRY
-//            NSLog(@"Leanplum: Request %@ timed out", _apiMethod); //TODO: APImethod?
+            NSLog(@"Leanplum: Multi Request timed out");
             [op cancel];
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
@@ -409,38 +406,38 @@
     }
 }
 
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key
+- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(LPRequest *)request
 {
-    [self sendDatasNow:@{key: data}];
+    [self sendDatasNow:@{key: data} request:request];
 }
 
-- (void)sendDatasNow:(NSDictionary *)datas
+- (void)sendDatasNow:(NSDictionary *)datas request:(LPRequest *)request;
 {
-//    NSMutableDictionary *dict = [self createArgsDictionary];
-//    [self attachApiKeys:dict];
-//    id<LPNetworkOperationProtocol> op =
-//    [engine operationWithPath:[LPConstantsState sharedState].apiServlet
-//                       params:dict
-//                   httpMethod:_httpMethod
-//                          ssl:[LPConstantsState sharedState].apiSSL
-//               timeoutSeconds:60];
-//
-//    [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-//        [op addData:obj forKey:key];
-//    }];
-//
-//    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-//        if (_response != nil) {
-//            _response(operation, json);
-//        }
-//    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-//        LP_TRY
-//        if (_error != nil) {
-//            _error(err);
-//        }
-//        LP_END_TRY
-//    }];
-//    [engine enqueueOperation: op];
+    NSMutableDictionary *dict = [self createArgsDictionaryForRequest:request];
+    [self attachApiKeys:dict];
+    id<LPNetworkOperationProtocol> op =
+    [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+                       params:dict
+                   httpMethod:@"POST"
+                          ssl:[LPConstantsState sharedState].apiSSL
+               timeoutSeconds:60];
+
+    [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [op addData:obj forKey:key];
+    }];
+
+    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+        if (request.responseBlock != nil) {
+            request.responseBlock(operation, json);
+        }
+    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
+        LP_TRY
+        if (request.errorBlock != nil) {
+            request.errorBlock(err);
+        }
+        LP_END_TRY
+    }];
+    [self.engine enqueueOperation: op];
 }
 
 /**
