@@ -26,13 +26,15 @@
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
 
+@class LPRequest;
+
 @interface LPRequestManager : NSObject
 
 @property (nonatomic, readonly) NSString *appId;
 @property (nonatomic, strong) NSString *deviceId;
 @property (nonatomic, strong) NSString *userId;
-@property (nonatomic, strong) NSString *uploadUrl;
 @property (nonatomic, strong) NSString *token;
+@property (nonatomic, strong) NSDictionary *requestHeaders;
 
 + (instancetype)sharedManager;
 
@@ -40,6 +42,15 @@
 
 - (void)loadToken;
 - (void)saveToken;
+
+- (NSDictionary *)createHeaders;
+- (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request;
+- (void)attachApiKeys:(NSMutableDictionary *)dict;
+
+// Files transfer
+@property (nonatomic, strong) NSString *uploadUrl;
+
+- (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData;
 
 //- (void)send;
 //- (void)sendNow;
