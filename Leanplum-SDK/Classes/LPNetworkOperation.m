@@ -22,6 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
 #import "LPNetworkOperation.h"
 #import "LPNetworkEngine.h"
 #import "LeanplumInternal.h"
@@ -37,6 +38,8 @@
 
 @property (nonatomic, strong) NSMutableArray *requestDatas;
 @property (nonatomic, strong) NSMutableArray *requestFiles;
+
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -154,11 +157,20 @@
         sem = dispatch_semaphore_create(0);
     }
 
+    NSTimeInterval uiTimeout = self.request.timeoutInterval;
+    self.request.timeoutInterval = uiTimeout * 5.0;
+
+    if (!self.timer) {
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:uiTimeout target:self selector:@selector(uiDidTimeout) userInfo:nil repeats:YES];
+    }
     // Response Block
     void (^responseBlock)(NSData *, NSURLResponse *, NSError *) =
             ^(NSData *data, NSURLResponse *response, NSError *error) {
 
         void (^callbackBlock)(void) = ^(){
+            [self.timer invalidate];
+            self.timer = nil;
+            
             self.response = response;
             self.dataFromResponse = data;
 
@@ -195,7 +207,7 @@
             });
         }
     };
-
+    
     // Use Upload Task for file & data upload, Data Task for others
     self.request.HTTPBody = [self bodyData];
     if (self.requestFiles.count || self.requestDatas.count) {
@@ -216,6 +228,22 @@
 
     if (synchronous) {
         dispatch_semaphore_wait(sem, DISPATCH_TIME_FOREVER);
+    }
+}
+
+-(void)uiDidTimeout
+{
+    if (self.errorBlock) {
+        NSDictionary *userInfo = @{
+                                   NSLocalizedDescriptionKey: NSLocalizedString(@"Operation was unsuccessful.", nil),
+                                   NSLocalizedFailureReasonErrorKey: NSLocalizedString(@"The operation timed out.", nil),
+                                   NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString(@"Please try the operation again.", nil)
+                                   };
+        NSError *error = [NSError errorWithDomain:@"Leanplum"
+                                             code:-1001
+                                         userInfo:userInfo];
+        self.responseBlock = nil;
+        self.errorBlock(self, error);
     }
 }
 
