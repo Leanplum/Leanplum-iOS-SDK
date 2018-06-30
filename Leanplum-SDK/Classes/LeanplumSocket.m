@@ -148,9 +148,9 @@ static dispatch_once_t leanplum_onceToken;
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
                                                                          args:action
                                                                     messageId:messageId];
-            [context setIsPreview:YES];
+            context.isPreview = YES;
             [context preventRealtimeUpdating];
-            [context setIsRooted:isRooted];
+            context.isRooted = isRooted;
             [context maybeDownloadFiles];
             [Leanplum triggerAction:context];
             [[LPActionManager sharedManager] recordMessageImpression:messageId];
