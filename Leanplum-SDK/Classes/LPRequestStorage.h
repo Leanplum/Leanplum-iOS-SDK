@@ -29,10 +29,7 @@
  * Use LPEventDataManager instead. 
  * Do not use this class other than migrating.
  */
-@interface LPRequestStorage : NSObject {
-    @private
-    NSTimeInterval _lastSentTime;
-}
+@interface LPRequestStorage : NSObject
 
 @property (nonatomic, readonly) NSTimeInterval lastSentTime;
 
