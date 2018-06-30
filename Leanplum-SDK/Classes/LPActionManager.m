@@ -750,12 +750,12 @@ static dispatch_once_t leanplum_onceToken;
         }
 #endif
 
-        NSString *messageId = [context private_MessageId];
+        NSString *messageId = context.messageId;
 
         NSDictionary *messageConfig = LPVarCache.messageDiffs[messageId];
         
         NSNumber *countdown = messageConfig[@"countdown"];
-        if ([context private_IsPreview]) {
+        if (context.isPreview) {
             countdown = @(5.0);
         }
         if (![countdown.class isSubclassOfClass:NSNumber.class]) {
@@ -770,7 +770,7 @@ static dispatch_once_t leanplum_onceToken;
         NSArray *notifications = [app scheduledLocalNotifications];
         for (UILocalNotification *notification in notifications) {
             NSString *messageId = [LPActionManager messageIdFromUserInfo:[notification userInfo]];
-            if ([messageId isEqualToString:[context private_MessageId]]) {
+            if ([messageId isEqualToString:context.messageId]) {
                 NSComparisonResult comparison = [notification.fireDate compare:eta];
                 if (comparison == NSOrderedAscending) {
                     return NO;
@@ -860,7 +860,7 @@ static dispatch_once_t leanplum_onceToken;
         BOOL didCancel = NO;
         for (UILocalNotification *notification in notifications) {
             NSString *messageId = [LPActionManager messageIdFromUserInfo:[notification userInfo]];
-            if ([messageId isEqualToString:[context private_MessageId]]) {
+            if ([messageId isEqualToString:context.messageId]) {
                 [app cancelLocalNotification:notification];
                 if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
                     LPLog(LPInfo, @"Cancelled notification");
