@@ -34,37 +34,10 @@
 @property (nonatomic, copy) LPNetworkResponseBlock responseBlock;
 @property (nonatomic, copy) LPNetworkErrorBlock errorBlock;
 
-- (void)attachApiKeys:(NSMutableDictionary *)dict;
-
-- (id)initWithHttpMethod:(NSString *)httpMethod apiMethod:(NSString *)apiMethod
-    params:(NSDictionary *)params;
-
 + (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
 + (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
 
 - (void)onResponse:(LPNetworkResponseBlock)response;
 - (void)onError:(LPNetworkErrorBlock)error;
-
-//- (void)send;
-//- (void)sendNow;
-//- (void)sendEventually;
-//- (void)sendIfConnected;
-//- (void)sendIfConnectedSync:(BOOL)sync;
-//// Sends the request if another request hasn't been sent within a particular time delay.
-//- (void)sendIfDelayed;
-//- (void)sendFilesNow:(NSArray *)filenames;
-//
-///**
-// * Sends one data. Uses sendDatasNow: internally. See this method for more information.
-// */
-//- (void)sendDataNow:(NSData *)data forKey:(NSString *)key;
-//
-///**
-// * Send datas where key is the name and object is the data.
-// * For example, key can be "file0" and object is NSData of png.
-// */
-//- (void)sendDatasNow:(NSDictionary *)datas;
-//
-//- (void)downloadFile:(NSString *)path;
 
 @end
