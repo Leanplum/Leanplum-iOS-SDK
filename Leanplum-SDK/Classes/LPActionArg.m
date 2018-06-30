@@ -11,10 +11,6 @@
 
 @implementation LPActionArg : NSObject
 
-@synthesize private_Name=_name;
-@synthesize private_Kind=_kind;
-@synthesize private_DefaultValue=_defaultValue;
-
 + (LPActionArg *)argNamed:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
     if ([Utils isNullOrEmpty:name]) {
@@ -23,9 +19,9 @@
     }
     LPActionArg *arg = [LPActionArg new];
     LP_TRY
-    arg->_name = name;
-    arg->_kind = kind;
-    arg->_defaultValue = defaultValue;
+    arg.name = name;
+    arg.kind = kind;
+    arg.defaultValue = defaultValue;
     if ([kind isEqualToString:LP_KIND_FILE]) {
         [LPVarCache registerFile:(NSString *) defaultValue
                 withDefaultValue:(NSString *) defaultValue];
