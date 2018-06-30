@@ -14,19 +14,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 @implementation LPActionContext
 
-@synthesize private_Name=_name;
-@synthesize private_MessageId=_messageId;
-@synthesize private_OriginalMessageId=_originalMessageId;
-@synthesize private_Priority=_priority;
-@synthesize private_Args=_args;
-@synthesize private_ParentContext=_parentContext;
-@synthesize private_ContentVersion=_contentVersion;
-@synthesize private_Key=_key;
-@synthesize private_PreventRealtimeUpdating=_preventRealtimeUpdating;
-@synthesize private_IsRooted=_isRooted;
-@synthesize private_IsPreview=_isPreview;
-@synthesize contextualValues=_contextualValues;
-
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(NSDictionary *)args
                                  messageId:(NSString *)messageId
@@ -46,46 +33,21 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 {
     LPActionContext *context = [[LPActionContext alloc] init];
-    context->_name = name;
-    context->_args = args;
-    context->_messageId = messageId;
-    context->_originalMessageId = originalMessageId;
-    context->_contentVersion = [LPVarCache contentVersion];
-    context->_preventRealtimeUpdating = NO;
-    context->_isRooted = YES;
-    context->_isPreview = NO;
-    context->_priority = priority;
+    context.name = name;
+    context.args = args;
+    context.messageId = messageId;
+    context.originalMessageId = originalMessageId;
+    context.contentVersion = [LPVarCache contentVersion];
+    context.shouldPreventRealtimeUpdating = NO;
+    context.isRooted = YES;
+    context.isPreview = NO;
+    context.priority = priority;
     return context;
-}
-
-- (NSString *)messageId
-{
-    return _messageId;
-}
-
-- (NSString *)originalMessageId
-{
-    return _originalMessageId;
-}
-
-- (NSNumber *)priority
-{
-    return _priority;
 }
 
 - (void)preventRealtimeUpdating
 {
-    _preventRealtimeUpdating = YES;
-}
-
-- (void)setIsRooted:(BOOL)value
-{
-    _isRooted = value;
-}
-
-- (void)setIsPreview:(BOOL)value
-{
-    _isPreview = value;
+    self.shouldPreventRealtimeUpdating = YES;
 }
 
 - (NSDictionary *)defaultValues
@@ -160,7 +122,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                         actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
                                         args:actionArgs
                                         messageId:_messageId];
-            [context forEachFile:context->_args
+            [context forEachFile:context.args
                       withPrefix:@""
                withDefaultValues:[context defaultValues]
                         callback:callback];
@@ -196,7 +158,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (void)setProperArgs
 {
-    if (!_preventRealtimeUpdating && [LPVarCache contentVersion] > _contentVersion) {
+    if (!_shouldPreventRealtimeUpdating && [LPVarCache contentVersion] > _contentVersion) {
         LPActionContext *parent = _parentContext;
         if (parent) {
             _args = [parent getChildArgs:_key];
@@ -435,14 +397,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     NSMutableString *fullEventName = [NSMutableString string];
     LPActionContext *context = self;
     NSMutableArray *parents = [NSMutableArray array];
-    while (context->_parentContext != nil) {
+    while (context.parentContext != nil) {
         [parents addObject:context];
-        context = context->_parentContext;
+        context = context.parentContext;
     }
     NSString *actionName;
     for (NSInteger i = parents.count - 1; i >= -1; i--) {
         if (i > -1) {
-            actionName = ((LPActionContext *) parents[i])->_key;
+            actionName = ((LPActionContext *) parents[i]).key;
         } else {
             actionName = event;
         }
@@ -487,8 +449,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         LPActionContext *chainedActionContext =
         [Leanplum createActionContextForMessageId:messageId];
         chainedActionContext.contextualValues = self.contextualValues;
-        chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
-        chainedActionContext->_isRooted = _isRooted;
+        chainedActionContext.shouldPreventRealtimeUpdating = self.shouldPreventRealtimeUpdating;
+        chainedActionContext.isRooted = self.isRooted;
         dispatch_async(dispatch_get_main_queue(), ^{
             [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
                 if (success) {
@@ -521,10 +483,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                      actionContextWithName:args[LP_VALUE_ACTION_ARG]
                                      args:args messageId:_messageId];
     childContext.contextualValues = self.contextualValues;
-    childContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
-    childContext->_isRooted = _isRooted;
-    childContext->_parentContext = self;
-    childContext->_key = name;
+    childContext.shouldPreventRealtimeUpdating = _shouldPreventRealtimeUpdating;
+    childContext.isRooted = _isRooted;
+    childContext.parentContext = self;
+    childContext.key = name;
     dispatch_async(dispatch_get_main_queue(), ^{
         [Leanplum triggerAction:childContext];
     });

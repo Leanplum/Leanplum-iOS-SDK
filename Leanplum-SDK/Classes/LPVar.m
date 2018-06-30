@@ -13,21 +13,6 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
 @implementation LPVar
 
-@synthesize private_IsInternal=_isInternal;
-@synthesize private_Name=_name;
-@synthesize private_NameComponents=_nameComponents;
-@synthesize private_StringValue=_stringValue;
-@synthesize private_NumberValue=_numberValue;
-@synthesize private_HadStarted=_hadStarted;
-@synthesize private_Value=_value;
-@synthesize private_DefaultValue=_defaultValue;
-@synthesize private_Kind=_kind;
-@synthesize private_FileReadyBlocks=_fileReadyBlocks;
-@synthesize private_valueChangedBlocks=_valueChangedBlocks;
-@synthesize private_FileIsPending=_fileIsPending;
-@synthesize private_Delegate=_delegate;
-@synthesize private_HasChanged=_hasChanged;
-
 +(BOOL)printedCallbackWarning
 {
     return LPVAR_PRINTED_CALLBACK_WARNING;
@@ -295,9 +280,9 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (void)triggerValueChanged
 {
     LP_BEGIN_USER_CODE
-    if (self.private_Delegate &&
-        [self.private_Delegate respondsToSelector:@selector(valueDidChange:)]) {
-        [self.private_Delegate valueDidChange:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(valueDidChange:)]) {
+        [self.delegate valueDidChange:self];
     }
     
     for (LeanplumVariablesChangedBlock block in _valueChangedBlocks.copy) {
@@ -329,9 +314,9 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 {
     _fileIsPending = NO;
     LP_BEGIN_USER_CODE
-    if (self.private_Delegate &&
-        [self.private_Delegate respondsToSelector:@selector(fileIsReady:)]) {
-        [self.private_Delegate fileIsReady:self];
+    if (self.delegate &&
+        [self.delegate respondsToSelector:@selector(fileIsReady:)]) {
+        [self.delegate fileIsReady:self];
     }
     
     for (LeanplumVariablesChangedBlock block in _fileReadyBlocks.copy) {
@@ -360,7 +345,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (void)setDelegate:(id<LPVarDelegate>)delegate
 {
     LP_TRY
-    self.private_Delegate = delegate;
+    self.delegate = delegate;
     if ([LPInternalState sharedState].hasStarted && !_fileIsPending) {
         [self triggerFileIsReady];
     }

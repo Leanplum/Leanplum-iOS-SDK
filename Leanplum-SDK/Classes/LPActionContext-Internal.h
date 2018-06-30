@@ -21,28 +21,22 @@
                          originalMessageId:(NSString *)originalMessageId
                                   priority:(NSNumber *)priority;
 
-@property (readonly, strong) NSString *private_Name;
-@property (readonly, strong) NSString *private_MessageId;
-@property (readonly, strong) NSString *private_OriginalMessageId;
-@property (readonly, strong) NSNumber *private_Priority;
-@property (readonly, strong) NSDictionary *private_Args;
-@property (readonly, strong) LPActionContext *private_ParentContext;
-@property (readonly) int private_ContentVersion;
-@property (readonly, strong) NSString *private_Key;
-@property (readonly) BOOL private_PreventRealtimeUpdating;
-@property (readonly) BOOL private_IsRooted;
-@property (readonly) BOOL private_IsPreview;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *messageId;
+@property (nonatomic, strong) NSString *originalMessageId;
+@property (nonatomic, strong) NSNumber *priority;
+@property (nonatomic, strong) NSDictionary *args;
+@property (nonatomic, strong) LPActionContext *parentContext;
+@property (nonatomic, assign) int contentVersion;
+@property (nonatomic, strong) NSString *key;
+@property (nonatomic, assign) BOOL shouldPreventRealtimeUpdating;
+@property (nonatomic, assign) BOOL isRooted;
+@property (nonatomic, assign) BOOL isPreview;
 @property (nonatomic, strong) LPContextualValues *contextualValues;
 
-- (NSString *)messageId;
-- (NSString *)originalMessageId;
-- (NSNumber *)priority;
 - (void)maybeDownloadFiles;
 - (id)objectNamed:(NSString *)name;
 - (void)preventRealtimeUpdating;
-- (void)setIsRooted:(BOOL)value;
-- (void)setIsPreview:(BOOL)preview;
-- (NSDictionary *)args;
 + (void)sortByPriority:(NSMutableArray *)actionContexts;
 
 @end
