@@ -122,7 +122,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                         actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
                                         args:actionArgs
                                         messageId:_messageId];
-            [context forEachFile:context->_args
+            [context forEachFile:context.args
                       withPrefix:@""
                withDefaultValues:[context defaultValues]
                         callback:callback];
@@ -397,14 +397,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     NSMutableString *fullEventName = [NSMutableString string];
     LPActionContext *context = self;
     NSMutableArray *parents = [NSMutableArray array];
-    while (context->_parentContext != nil) {
+    while (context.parentContext != nil) {
         [parents addObject:context];
-        context = context->_parentContext;
+        context = context.parentContext;
     }
     NSString *actionName;
     for (NSInteger i = parents.count - 1; i >= -1; i--) {
         if (i > -1) {
-            actionName = ((LPActionContext *) parents[i])->_key;
+            actionName = ((LPActionContext *) parents[i]).key;
         } else {
             actionName = event;
         }
@@ -449,8 +449,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         LPActionContext *chainedActionContext =
         [Leanplum createActionContextForMessageId:messageId];
         chainedActionContext.contextualValues = self.contextualValues;
-        chainedActionContext->_shouldPreventRealtimeUpdating = _shouldPreventRealtimeUpdating;
-        chainedActionContext->_isRooted = _isRooted;
+        chainedActionContext.shouldPreventRealtimeUpdating = self.shouldPreventRealtimeUpdating;
+        chainedActionContext.isRooted = self.isRooted;
         dispatch_async(dispatch_get_main_queue(), ^{
             [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
                 if (success) {
