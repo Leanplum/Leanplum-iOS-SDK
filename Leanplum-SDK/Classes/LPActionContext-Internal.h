@@ -37,8 +37,6 @@
 - (void)maybeDownloadFiles;
 - (id)objectNamed:(NSString *)name;
 - (void)preventRealtimeUpdating;
-- (void)setIsRooted:(BOOL)value;
-- (void)setIsPreview:(BOOL)preview;
 + (void)sortByPriority:(NSMutableArray *)actionContexts;
 
 @end
