@@ -38,6 +38,9 @@
 @property (nonatomic, strong) NSString *accessKey;
 @property (nonatomic, assign) NSTimeInterval lastSentTime;
 
+@property (nonatomic, strong) NSTimer *uiTimeoutTimer;
+@property (nonatomic, assign) BOOL didUiTimeout;
+
 
 @end
 
@@ -262,6 +265,15 @@
                                                    } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
         int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
+        
+        NSTimeInterval uiTimeoutInterval = timeout;
+        timeout = 5 * timeout; // let slow operations complete
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.uiTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:uiTimeoutInterval target:self selector:@selector(uiDidTimeout) userInfo:nil repeats:NO];
+        });
+        self.didUiTimeout = NO;
+
         id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:constants.apiServlet
                                                                params:multiRequestArgs
                                                                 httpMethod:@"POST"
@@ -276,6 +288,9 @@
                 return;
             }
 
+            [self.uiTimeoutTimer invalidate];
+            self.uiTimeoutTimer = nil;
+
             // We need to lock sendNowCallbackMap so that new event callback won't be triggered
             // right after it gets deleted.
             @synchronized ([LPEventCallbackManager eventCallbackMap]) {
@@ -289,9 +304,11 @@
                 }
                 LP_END_TRY
 
-                [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
+                if (!self.didUiTimeout) {
+                    [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
                                                                  requests:requestsToSend
                                                                 operation:operation];
+                }
             }
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
@@ -370,6 +387,15 @@
     } else {
         operationBlock();
     }
+}
+
+-(void)uiDidTimeout {
+    self.didUiTimeout = YES;
+    [self.uiTimeoutTimer invalidate];
+    self.uiTimeoutTimer = nil;
+    // Invoke errors on all requests.
+    NSError *error = [NSError errorWithDomain:@"leanplum" code:-1001 userInfo:[NSDictionary dictionaryWithObject:@"Request timed out" forKey:NSLocalizedDescriptionKey]];
+    [LPEventCallbackManager invokeErrorCallbacksWithError:error];
 }
 
 - (void)sendNowRequest:(LPRequest *)request
