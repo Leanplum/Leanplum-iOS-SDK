@@ -344,7 +344,9 @@ static NSDictionary *_requestHheaders;
         NSTimeInterval uiTimeoutInterval = timeout;
         timeout = 5 * timeout; // let slow operations complete
         
-        uiTimeoutTimer = [NSTimer timerWithTimeInterval:uiTimeoutInterval target:self selector:@selector(uiDidTimeout) userInfo:nil repeats:NO];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.uiTimeoutTimer = [NSTimer scheduledTimerWithTimeInterval:uiTimeoutInterval target:self selector:@selector(uiDidTimeout) userInfo:nil repeats:NO];
+        });
         self.didUiTimeout = NO;
         
         id<LPNetworkOperationProtocol> op = [engine operationWithPath:constants.apiServlet
