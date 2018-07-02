@@ -140,6 +140,7 @@ NSString *LP_PARAM_FILES_PATTERN = @"file%d";
 NSString *LP_PARAM_FILE_ATTRIBUTES = @"fileAttributes";
 NSString *LP_PARAM_INCLUDE_DEFAULTS = @"includeDefaults";
 NSString *LP_PARAM_INCLUDE_MESSAGE_ID = @"includeMessageId";
+NSString *LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO = @"includeVariantDebugInfo";
 NSString *LP_PARAM_INFO = @"info";
 NSString *LP_PARAM_INSTALL_DATE = @"installDate";
 NSString *LP_PARAM_KINDS = @"kinds";
@@ -204,6 +205,7 @@ NSString *LP_KEY_PUSH_CUSTOM_ACTIONS = @"_lpc";
 NSString *LP_KEY_REGIONS = @"regions";
 NSString *LP_KEY_UPLOAD_URL = @"uploadUrl";
 NSString *LP_KEY_VARIANTS = @"variants";
+NSString *LP_KEY_VARIANT_DEBUG_INFO = @"variantDebugInfo";
 NSString *LP_KEY_INBOX_MESSAGES = @"newsfeedMessages";
 NSString *LP_KEY_UNREAD_COUNT = @"unreadCount";
 NSString *LP_KEY_SYNC_INBOX = @"syncNewsfeed";
@@ -293,7 +295,7 @@ void leanplumInternalError(NSException *e)
     if ([e.name isEqualToString:@"Leanplum Error"]) {
         @throw e;
     }
-
+    
     for (id symbol in [e callStackSymbols]) {
         NSString *description = [symbol description];
         if ([description rangeOfString:@"+[Leanplum trigger"].location != NSNotFound

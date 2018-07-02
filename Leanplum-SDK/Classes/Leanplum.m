@@ -692,7 +692,7 @@ BOOL inForeground = NO;
         state.hasStarted = YES;
         state.startSuccessful = YES;
         [LPVarCache applyVariableDiffs:@{} messages:@{} updateRules:@[] eventRules:@[]
-                              variants:@[] regions:@{}];
+                              variants:@[] regions:@{} variantDebugInfo:@{}];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self triggerStartResponse:YES];
             [self triggerVariablesChanged];
@@ -822,6 +822,10 @@ BOOL inForeground = NO;
         LP_KEY_LOCATION: LP_VALUE_DETECT,
         LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
     } mutableCopy];
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
+    }
+
     BOOL startedInBackground = NO;
     if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
         !_extensionContext) {
@@ -865,6 +869,9 @@ BOOL inForeground = NO;
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
+        [LPVarCache setVariantDebugInfo:variantDebugInfo];
+
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
         [LPVarCache applyVariableDiffs:values
@@ -872,7 +879,8 @@ BOOL inForeground = NO;
                            updateRules:updateRules
                             eventRules:eventRules
                               variants:variants
-                               regions:regions];
+                               regions:regions
+                      variantDebugInfo:variantDebugInfo];
 
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
@@ -1763,6 +1771,11 @@ BOOL inForeground = NO;
     return context;
 }
 
++  (void)setVariantDebugInfoEnabled:(BOOL)variantDebugInfoEnabled
+{
+    [LPInternalState sharedState].isVariantDebugInfoEnabled = variantDebugInfoEnabled;
+}
+
 + (void)trackAllAppScreens
 {
     [Leanplum trackAllAppScreensWithMode:LPTrackScreenModeDefault];
@@ -2182,10 +2195,16 @@ andParameters:(NSDictionary *)params
         return;
     }
     LP_TRY
-    NSDictionary *params = @{
+    NSMutableDictionary *params = [@{
         LP_PARAM_INCLUDE_DEFAULTS: @(NO),
         LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
-    };
+    } mutableCopy];
+    
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
+    }
+
+    
     LeanplumRequest* req = [LeanplumRequest
                             post:LP_METHOD_GET_VARS
                             params:params];
@@ -2197,6 +2216,9 @@ andParameters:(NSDictionary *)params
         NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
+        NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
+        [LPVarCache setVariantDebugInfo:variantDebugInfo];
+
         if (![values isEqualToDictionary:LPVarCache.diffs] ||
             ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
             ![updateRules isEqualToArray:LPVarCache.updateRulesDiffs] ||
@@ -2207,7 +2229,8 @@ andParameters:(NSDictionary *)params
                                updateRules:updateRules
                                 eventRules:eventRules
                                   variants:variants
-                                   regions:regions];
+                                   regions:regions
+                          variantDebugInfo:variantDebugInfo];
 
         }
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
@@ -2316,6 +2339,17 @@ void leanplumExceptionHandler(NSException *exception)
     }
     LP_END_TRY
     return [NSArray array];
+}
+
++ (NSDictionary *)variantDebugInfo
+{
+    LP_TRY
+    NSDictionary *variantDebugInfo = [LPVarCache variantDebugInfo];
+    if (variantDebugInfo) {
+        return variantDebugInfo;
+    }
+    LP_END_TRY
+    return [NSDictionary dictionary];
 }
 
 + (NSDictionary *)messageMetadata
@@ -2570,6 +2604,14 @@ void LPLog(LPLogType type, NSString *format, ...) {
     LP_TRY
     [LPConstantsState sharedState].isLocationCollectionEnabled = NO;
     LP_END_TRY
+}
+
++(NSDictionary *)parseVariantDebugInfoFromResponse:(NSDictionary *)response
+{
+    if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
+        return response[LP_KEY_VARIANT_DEBUG_INFO];
+    }
+    return nil;
 }
 
 @end

@@ -78,7 +78,7 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
-    // Validate requst.
+    // Validate request.
     [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
@@ -207,6 +207,50 @@
 
     XCTAssertTrue([Leanplum hasStarted]);
 }
+
+/**
+ * Tests a simple development start with variant debug info.
+ */
+- (void) testStartWithParamShouldIncludeVariantDebugInfo
+{
+    [Leanplum setVariantDebugInfoEnabled:YES];
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    // Validate request.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"start");
+        
+        // Check if request has all params.
+        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+        NSString* deviceModel = params[@"deviceModel"];
+        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                      [deviceModel isEqualToString:@"iPhone Simulator"]);
+        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+        XCTAssertNotNil(params[@"locale"]);
+        XCTAssertNotNil(params[@"timezone"]);
+        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+        XCTAssertTrue(params[@"includeVariantDebugInfo"]);
+        return YES;
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    XCTAssertTrue([Leanplum hasStarted]);
+    XCTAssertNotNil([Leanplum deviceId]);
+}
+
 
 /**
  * Test complex production start.
@@ -1004,7 +1048,7 @@
        @"myArray": @{
                @"[2]": @33
                }
-       } messages:nil updateRules:nil eventRules:nil variants:nil regions:nil];
+       } messages:nil updateRules:nil eventRules:nil variants:nil regions:nil variantDebugInfo:nil];
 
     
     XCTestExpectation *request_expectation =
@@ -1120,6 +1164,69 @@
     XCTAssertEqualObjects(@5.0, [cgfloat_variable defaultValue]);
     XCTAssertEqualObjects(@'c', [char_variable defaultValue]);
     XCTAssertEqualObjects(@100LL, [long_long_variable defaultValue]);
+}
+
+/**
+ * Tests variant debug info.
+ */
+- (void)testStartResponseShouldParseVariantDebugInfo
+{
+    //Given: start request
+    
+    //When: VariantDebugInfoEnabled is YES
+    [Leanplum setVariantDebugInfoEnabled:YES];
+    // This stub have to be removed when start command is successfully executed.
+    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+                                           ^BOOL(NSURLRequest * _Nonnull request) {
+                                               return [request.URL.host isEqualToString:API_HOST];
+                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                               NSString* response_file = OHPathForFile(@"start_with_variant_debug_info_response.json", self.class);
+                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                                                          headers:@{@"Content-Type":@"application/json"}];
+                                           }];
+    
+    [LeanplumHelper setup_development_test];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        [OHHTTPStubs removeStub:startStub];
+        // Then: variantDebugInfo should be parsed
+        XCTAssertNotNil([LPVarCache variantDebugInfo]);
+        NSDictionary *abTests = [LPVarCache variantDebugInfo][@"abTests"];
+        XCTAssertEqual(abTests.count, 2);
+        
+        // Then: variantDebugInfo should be persisted
+        [LPVarCache saveDiffs];
+        [LPVarCache setVariantDebugInfo:nil];
+        XCTAssertNil([LPVarCache variantDebugInfo]);
+        [LPVarCache loadDiffs];
+        XCTAssertNotNil([LPVarCache variantDebugInfo]);
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+}
+
+/**
+ * Tests variant debug info persistence.
+ */
+- (void)testShouldPersistVariantDebugInfo
+{
+    //Given: a variantDebugInfo set in VarCache
+    NSDictionary *mockVariantDebugInfo = @{@"abTests":@[]};
+    [LPVarCache setVariantDebugInfo:mockVariantDebugInfo];
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
+    
+    //When: the varcache is persisted
+    [LPVarCache saveDiffs];
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
+    
+    
+    [LPVarCache setVariantDebugInfo:nil];
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 0);
+    
+    //Then: the variantDebugInfo can be loaded from disk
+    [LPVarCache loadDiffs];
+    XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
 }
 
 /**
@@ -1265,7 +1372,7 @@
                                         }};
     NSArray *variants = @[@{@"id":@"1"}, @{@"id":@"2"}];
     [LPVarCache applyVariableDiffs:nil messages:messages updateRules:nil
-                        eventRules:nil variants:variants regions:nil];
+                        eventRules:nil variants:variants regions:nil variantDebugInfo:nil];
 
     XCTAssertEqualObjects(variants, [Leanplum variants]);
     XCTAssertEqualObjects(messages, [Leanplum messageMetadata]);

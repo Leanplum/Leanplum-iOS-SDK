@@ -56,7 +56,8 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
                updateRules:(NSArray *)updateRules_
                 eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
-                   regions:(NSDictionary *)regions_;
+                   regions:(NSDictionary *)regions_
+          variantDebugInfo:(NSDictionary *)variantDebugInfo_;
 + (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs;
 + (void)onUpdate:(CacheUpdateBlock)block;
 + (void)onInterfaceUpdate:(CacheUpdateBlock)block;
@@ -68,6 +69,9 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 + (NSArray *)variants;
 + (NSDictionary *)regions;
 + (NSDictionary *)defaultKinds;
+
++ (NSDictionary *)variantDebugInfo;
++ (void)setVariantDebugInfo:(NSDictionary *)variantDebugInfo;
 
 // Handling actions.
 + (NSDictionary *)actionDefinitions;

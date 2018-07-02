@@ -602,6 +602,18 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (id)objectForKeyPathComponents:(NSArray *)pathComponents;
 /**@}*/
 
+
+/**
+ * Set variant debug info to be obtained from the server.
+ */
++ (void)setVariantDebugInfoEnabled:(BOOL)variantDebugInfoEnabled;
+
+/**
+ * Gets a list of content assignments for the current user.
+ */
++ (NSDictionary *)variantDebugInfo;
+
+
 /**
  * Gets a list of variants that are currently active for this user.
  * Each variant is a dictionary containing an id.

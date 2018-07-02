@@ -384,7 +384,8 @@ static dispatch_once_t leanplum_onceToken;
                                        updateRules:updateRules
                                         eventRules:eventRules
                                           variants:variants
-                                           regions:regions];
+                                           regions:regions
+                                  variantDebugInfo:nil];
                     if (onCompleted) {
                         onCompleted();
                     }
