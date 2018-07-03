@@ -53,7 +53,10 @@
 
 -(void)initializeLeanplumReporter
 {
-    _crashReporter = [[NSClassFromString(@"LPCrashReporter") alloc] init];
+    Class LPCrashReporterClass = NSClassFromString(@"LPCrashReporter");
+    if (LPCrashReporterClass) {
+        _crashReporter = [[LPCrashReporterClass alloc] init];
+    }
 }
 
 -(void)reportException:(NSException *)exception
