@@ -24,6 +24,7 @@
 
 #import "Utils.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "LPCrashHandler.h"
 
 @implementation Utils
 
@@ -79,6 +80,16 @@
     return [urlString
             stringByAddingPercentEncodingWithAllowedCharacters:
             allowed];
+}
+
++ (void)initExceptionHandling
+{
+    [LPCrashHandler sharedCrashHandler];
+}
+
++ (void)handleException:(NSException *)exception
+{
+    [[LPCrashHandler sharedCrashHandler] reportException:exception];
 }
 
 @end

@@ -53,4 +53,14 @@
  */
 + (NSString *)urlEncodedStringFromString:(NSString *)urlString;
 
+/**
+ * Initialize exception handling
+ */
++ (void)initExceptionHandling;
+
+/**
+ * Report an exception
+ */
++ (void)handleException:(NSException *)exception;
+
 @end

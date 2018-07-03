@@ -24,6 +24,7 @@
 
 #import "Constants.h"
 #import "LeanplumRequest.h"
+#import "Utils.h"
 
 @implementation LPConstantsState
 
@@ -292,6 +293,7 @@ void leanplumIncrementUserCodeBlock(int delta)
 
 void leanplumInternalError(NSException *e)
 {
+    [Utils handleException:e];
     if ([e.name isEqualToString:@"Leanplum Error"]) {
         @throw e;
     }
