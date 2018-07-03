@@ -46,15 +46,14 @@
 {
     self = [super init];
     if (self) {
-        [self initializeRaygunReporter];
+        [self initializeLeanplumReporter];
     }
     return self;
 }
 
--(void)initializeRaygunReporter
+-(void)initializeLeanplumReporter
 {
-    _crashReporter = [[NSClassFromString(@"LPRaygunCrashReporter") alloc] init];
-    
+    _crashReporter = [[NSClassFromString(@"LPCrashReporter") alloc] init];
 }
 
 -(void)reportException:(NSException *)exception
