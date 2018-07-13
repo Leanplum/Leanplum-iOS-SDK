@@ -1,5 +1,5 @@
 //
-//  LPCrashHandler.h
+//  LPExceptionHandler.h
 //  Leanplum iOS SDK Version 2.0.6
 //
 //  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
@@ -23,13 +23,13 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol LPCrashReporting
+@protocol LPExceptionReporting
 -(void)reportException:(NSException *)exception;
 @end
 
-@interface LPCrashHandler : NSObject
+@interface LPExceptionHandler : NSObject
 
-+(instancetype)sharedCrashHandler;
++(instancetype)sharedExceptionHandler;
 -(void)reportException:(NSException *)exception;
 
 @end

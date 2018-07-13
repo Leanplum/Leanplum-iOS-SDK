@@ -1,5 +1,5 @@
 //
-//  LPCrashHandler.h
+//  LPExceptionHandler.h
 //  Leanplum iOS SDK Version 2.0.6
 //
 //  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
@@ -21,25 +21,25 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "LPCrashHandler.h"
+#import "LPExceptionHandler.h"
 
-@interface LPCrashHandler()
+@interface LPExceptionHandler()
 
-@property (nonatomic, strong) id<LPCrashReporting> crashReporter;
+@property (nonatomic, strong) id<LPExceptionReporting> exceptionReporter;
 
 @end
 
-@implementation LPCrashHandler
+@implementation LPExceptionHandler
 
-+(instancetype)sharedCrashHandler
++(instancetype)sharedExceptionHandler
 {
-    static LPCrashHandler *sharedCrashHandler = nil;
+    static LPExceptionHandler *sharedExceptionHandler = nil;
     @synchronized(self) {
-        if (!sharedCrashHandler) {
-            sharedCrashHandler = [[self alloc] init];
+        if (!sharedExceptionHandler) {
+            sharedExceptionHandler = [[self alloc] init];
         }
     }
-    return sharedCrashHandler;
+    return sharedExceptionHandler;
 }
 
 -(instancetype)init
@@ -53,16 +53,16 @@
 
 -(void)initializeLeanplumReporter
 {
-    Class LPCrashReporterClass = NSClassFromString(@"LPCrashReporter");
-    if (LPCrashReporterClass) {
-        _crashReporter = [[LPCrashReporterClass alloc] init];
+    Class LPExceptionReporterClass = NSClassFromString(@"LPExceptionReporter");
+    if (LPExceptionReporterClass) {
+        _exceptionReporter = [[LPExceptionReporterClass alloc] init];
     }
 }
 
 -(void)reportException:(NSException *)exception
 {
-    if (self.crashReporter) {
-        [self.crashReporter reportException:exception];
+    if (self.exceptionReporter) {
+        [self.exceptionReporter reportException:exception];
     }
 }
 
