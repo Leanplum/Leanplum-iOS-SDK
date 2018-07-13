@@ -24,7 +24,7 @@
 
 #import "Utils.h"
 #import <CommonCrypto/CommonDigest.h>
-#import "LPCrashHandler.h"
+#import "LPExceptionHandler.h"
 
 @implementation Utils
 
@@ -84,12 +84,12 @@
 
 + (void)initExceptionHandling
 {
-    [LPCrashHandler sharedCrashHandler];
+    [LPExceptionHandler sharedExceptionHandler];
 }
 
 + (void)handleException:(NSException *)exception
 {
-    [[LPCrashHandler sharedCrashHandler] reportException:exception];
+    [[LPExceptionHandler sharedExceptionHandler] reportException:exception];
 }
 
 @end
