@@ -20,6 +20,9 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 -(BOOL)isFeatureFlagEnabled:(NSString *)featureFlagName {
+#if DEBUG
+    return YES;
+#endif
     return NO;
 }
 

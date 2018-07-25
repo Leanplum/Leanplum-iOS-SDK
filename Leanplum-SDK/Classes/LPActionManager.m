@@ -28,6 +28,8 @@
 #import "JRSwizzle.h"
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
+#import "LPRequest.h"
+#import "LPRequestManager.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LPUIAlert.h"
@@ -76,7 +78,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
-
+    
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.
     NSString *tokenKey = [Leanplum pushTokenKey];
@@ -89,7 +91,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
                         params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
     }
     LP_END_TRY
-
+    
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterRemoteNotifications &&
         [self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
@@ -111,11 +113,11 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 {
     LP_TRY
     [self leanplum_disableAskToAsk];
-
+    
     [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:notificationSettings];
-
+    
     LP_END_TRY
-
+    
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterUserNotificationSettings &&
         [self respondsToSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)]) {
@@ -136,7 +138,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     LP_END_TRY
-
+    
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError &&
         [self respondsToSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)]) {
@@ -153,7 +155,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:nil];
     LP_END_TRY
-
+    
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveRemoteNotification &&
         [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:)]) {
@@ -169,7 +171,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
     LeanplumFetchCompletionBlock leanplumCompletionHandler;
-
+    
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler &&
         [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
@@ -178,7 +180,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     } else {
         leanplumCompletionHandler = completionHandler;
     }
-
+    
     // Prevents handling the notification twice if the original method calls handleNotification
     // explicitly.
     if (!state.calledHandleNotification) {
@@ -195,29 +197,29 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
-didReceiveNotificationResponse:(UNNotificationResponse *)response
-      withCompletionHandler:(void (^)())completionHandler
+         didReceiveNotificationResponse:(UNNotificationResponse *)response
+                  withCompletionHandler:(void (^)())completionHandler
 {
     NSDictionary *userInfo = response.notification.request.content.userInfo;
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
     LeanplumFetchCompletionBlock leanplumCompletionHandler =
-        ^(LeanplumUIBackgroundFetchResult result) {
-            completionHandler();
-        };
-
+    ^(LeanplumUIBackgroundFetchResult result) {
+        completionHandler();
+    };
+    
     // Call overridden method.
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
                              withCompletionHandler:);
     LPActionManager *manager = [LPActionManager sharedManager];
     if (manager->swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler
-            && [self respondsToSelector:selector]) {
+        && [self respondsToSelector:selector]) {
         leanplumCompletionHandler = nil;
         [self leanplum_userNotificationCenter:center
-                didReceiveNotificationResponse:response
-                       withCompletionHandler:completionHandler];
+               didReceiveNotificationResponse:response
+                        withCompletionHandler:completionHandler];
     }
-
+    
     // Prevents handling the notification twice if the original method calls handleNotification
     // explicitly.
     if (!state.calledHandleNotification) {
@@ -237,13 +239,13 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
  didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
     NSDictionary *userInfo = [localNotification userInfo];
-
+    
     LP_TRY
     [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:nil];
     LP_END_TRY
-
+    
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveLocalNotification &&
         [self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
@@ -314,9 +316,9 @@ static dispatch_once_t leanplum_onceToken;
         NSString *tokenKey = [Leanplum pushTokenKey];
         NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
         NSMutableDictionary *params = [@{
-                LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
-                      [LPJSON stringFromJSON:sortedCategories] ?: @""} mutableCopy];
+                                         LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+                                         LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
+                                             [LPJSON stringFromJSON:sortedCategories] ?: @""} mutableCopy];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
         }
@@ -336,6 +338,43 @@ static dispatch_once_t leanplum_onceToken;
     shouldHandleNotification = block;
 }
 
+-(void)successResponse:(NSDictionary *)response withCompletionBlock:(LeanplumVariablesChangedBlock)onCompleted {
+    NSDictionary *values = response[LP_KEY_VARS];
+    NSDictionary *messages = response[LP_KEY_MESSAGES];
+    NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+    NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+    NSArray *variants = response[LP_KEY_VARIANTS];
+    NSDictionary *regions = response[LP_KEY_REGIONS];
+    if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
+        [values isEqualToDictionary:LPVarCache.diffs]) {
+        values = nil;
+    }
+    if ([messages isEqualToDictionary:LPVarCache.messageDiffs]) {
+        messages = nil;
+    }
+    if ([updateRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
+        updateRules = nil;
+    }
+    if ([eventRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
+        eventRules = nil;
+    }
+    if ([regions isEqualToDictionary:LPVarCache.regions]) {
+        regions = nil;
+    }
+    if (values || messages || updateRules || eventRules || regions) {
+        [LPVarCache applyVariableDiffs:values
+                              messages:messages
+                           updateRules:updateRules
+                            eventRules:eventRules
+                              variants:variants
+                               regions:regions
+                      variantDebugInfo:nil];
+        if (onCompleted) {
+            onCompleted();
+        }
+    }
+}
+
 - (void)requireMessageContent:(NSString *)messageId
           withCompletionBlock:(LeanplumVariablesChangedBlock)onCompleted
 {
@@ -348,51 +387,33 @@ static dispatch_once_t leanplum_onceToken;
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            LeanplumRequest *req = [LeanplumRequest
-                                    post:LP_METHOD_GET_VARS
-                                    params:@{
-                                             LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-                                             LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                             }];
-            [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
-                LP_TRY
-                NSDictionary *values = response[LP_KEY_VARS];
-                NSDictionary *messages = response[LP_KEY_MESSAGES];
-                NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
-                NSArray *eventRules = response[LP_KEY_EVENT_RULES];
-                NSArray *variants = response[LP_KEY_VARIANTS];
-                NSDictionary *regions = response[LP_KEY_REGIONS];
-                if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
-                    [values isEqualToDictionary:LPVarCache.diffs]) {
-                    values = nil;
-                }
-                if ([messages isEqualToDictionary:LPVarCache.messageDiffs]) {
-                    messages = nil;
-                }
-                if ([updateRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
-                    updateRules = nil;
-                }
-                if ([eventRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
-                    eventRules = nil;
-                }
-                if ([regions isEqualToDictionary:LPVarCache.regions]) {
-                    regions = nil;
-                }
-                if (values || messages || updateRules || eventRules || regions) {
-                    [LPVarCache applyVariableDiffs:values
-                                          messages:messages
-                                       updateRules:updateRules
-                                        eventRules:eventRules
-                                          variants:variants
-                                           regions:regions
-                                  variantDebugInfo:nil];
-                    if (onCompleted) {
-                        onCompleted();
-                    }
-                }
-                LP_END_TRY
-             }];
-            [req sendIfConnected];
+            if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+                LPRequest *req = [LPRequest
+                                        post:LP_METHOD_GET_VARS
+                                        params:@{
+                                                 LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                                 LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                                                 }];
+                [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+                    LP_TRY
+                    [self successResponse:response withCompletionBlock:onCompleted];
+                    LP_END_TRY
+                }];
+                [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
+            } else {
+                LeanplumRequest *req = [LeanplumRequest
+                                        post:LP_METHOD_GET_VARS
+                                        params:@{
+                                                 LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                                 LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                                                 }];
+                [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+                    LP_TRY
+                    [self successResponse:response withCompletionBlock:onCompleted];
+                    LP_END_TRY
+                }];
+                [req sendIfConnected];
+            }
         }
         LP_BEGIN_USER_CODE
     }];
@@ -419,7 +440,7 @@ static dispatch_once_t leanplum_onceToken;
         [[NSDate date] timeIntervalSinceDate:notificationHandledTime] < 10.0) {
         return YES;
     }
-
+    
     notificationHandled = [LPJSON stringFromJSON:userInfo];
     notificationHandledTime = [NSDate date];
     return NO;
@@ -436,7 +457,7 @@ static dispatch_once_t leanplum_onceToken;
     if ([self isDuplicateNotification:userInfo]) {
         return;
     }
-
+    
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     NSString *actionName;
@@ -461,11 +482,11 @@ static dispatch_once_t leanplum_onceToken;
         context = [Leanplum createActionContextForMessageId:messageId];
     }
     [context maybeDownloadFiles];
-
+    
     LeanplumVariablesChangedBlock handleNotificationBlock = ^{
         [context runTrackedActionNamed:actionName];
     };
-
+    
     if (!active) {
         handleNotificationBlock();
     } else {
@@ -502,7 +523,7 @@ static dispatch_once_t leanplum_onceToken;
         [[NSDate date] timeIntervalSinceDate:displayedTrackedTime] < 10.0) {
         return YES;
     }
-
+    
     displayedTracked = [LPJSON stringFromJSON:userInfo];
     displayedTrackedTime = [NSDate date];
     return NO;
@@ -514,7 +535,7 @@ static dispatch_once_t leanplum_onceToken;
     if ([self hasTrackedDisplayed:userInfo]) {
         return;
     }
-
+    
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     [Leanplum track:@"Displayed" withValue:0.0 andInfo:nil
             andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
@@ -523,7 +544,7 @@ static dispatch_once_t leanplum_onceToken;
 + (BOOL)areActionsEmbedded:(NSDictionary *)userInfo
 {
     return userInfo[LP_KEY_PUSH_ACTION] != nil ||
-        userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil;
+    userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil;
 }
 
 // Handles the notification.
@@ -538,7 +559,7 @@ static dispatch_once_t leanplum_onceToken;
     if (messageId == nil) {
         return;
     }
-
+    
     void (^onContent)(void) = ^{
 #if LP_NOT_TV
         if (completionHandler && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
@@ -555,7 +576,7 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
     };
-
+    
     [Leanplum onStartIssued:^() {
         if ([LPActionManager areActionsEmbedded:userInfo]) {
             onContent();
@@ -619,13 +640,13 @@ static dispatch_once_t leanplum_onceToken;
             // it doesn't work for this particular selector.
         }
     }
-
+    
     // Detect when registered for push notifications.
     swizzledApplicationDidRegisterRemoteNotifications =
     [LPSwizzle hookInto:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
            withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
               forObject:[appDelegate class]];
-
+    
 #if LP_NOT_TV
     // Detect when registered for user notification types.
     swizzledApplicationDidRegisterUserNotificationSettings =
@@ -642,10 +663,10 @@ static dispatch_once_t leanplum_onceToken;
     
     // Detect push while app is running.
     SEL applicationDidReceiveRemoteNotificationSelector =
-        @selector(application:didReceiveRemoteNotification:);
+    @selector(application:didReceiveRemoteNotification:);
     Method applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(
-        [appDelegate class],
-        applicationDidReceiveRemoteNotificationSelector);
+                                                                                   [appDelegate class],
+                                                                                   applicationDidReceiveRemoteNotificationSelector);
     void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
         swizzledApplicationDidReceiveRemoteNotification =
         [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
@@ -653,12 +674,12 @@ static dispatch_once_t leanplum_onceToken;
                                       didReceiveRemoteNotification:)
                   forObject:[appDelegate class]];
     };
-
+    
     SEL applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector =
-        @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:);
+    @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:);
     Method applicationDidReceiveRemoteNotificationCompletionHandlerMethod = class_getInstanceMethod(
-        [appDelegate class],
-        applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
+                                                                                                    [appDelegate class],
+                                                                                                    applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
     void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
         swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
         [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
@@ -667,12 +688,12 @@ static dispatch_once_t leanplum_onceToken;
                                       fetchCompletionHandler:)
                   forObject:[appDelegate class]];
     };
-
+    
     SEL userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector =
     @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:);
     Method userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod =
     class_getInstanceMethod([appDelegate class],
-            userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
+                            userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
     void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
         swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
         [LPSwizzle hookInto:
@@ -682,7 +703,7 @@ static dispatch_once_t leanplum_onceToken;
                                       withCompletionHandler:)
                   forObject:[appDelegate class]];
     };
-
+    
     if (!applicationDidReceiveRemoteNotificationMethod
         && !applicationDidReceiveRemoteNotificationCompletionHandlerMethod) {
         swizzleApplicationDidReceiveRemoteNotification();
@@ -703,7 +724,7 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
     }
-
+    
 #if LP_NOT_TV
     // Detect local notifications while app is running.
     swizzledApplicationDidReceiveLocalNotification =
@@ -717,7 +738,7 @@ static dispatch_once_t leanplum_onceToken;
      usingBlock:^(NSNotification *notification) {
          if (notification.userInfo) {
              NSDictionary *userInfo = notification.userInfo
-                                       [UIApplicationLaunchOptionsRemoteNotificationKey];
+             [UIApplicationLaunchOptionsRemoteNotificationKey];
              [self handleNotification:userInfo
                            withAction:nil
                             appActive:NO
@@ -734,10 +755,10 @@ static dispatch_once_t leanplum_onceToken;
     [Leanplum onAction:LP_PUSH_NOTIFICATION_ACTION invoke:^BOOL(LPActionContext *context) {
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
-
+        
         BOOL contentAvailable = [context boolNamed:@"iOS options.Preload content"];
         NSString *message = [context stringNamed:@"Message"];
-
+        
         // Don't send notification if the user doesn't have the permission enabled.
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([app respondsToSelector:@selector(currentUserNotificationSettings)]) {
@@ -750,9 +771,9 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
 #endif
-
+        
         NSString *messageId = [context private_MessageId];
-
+        
         NSDictionary *messageConfig = LPVarCache.messageDiffs[messageId];
         
         NSNumber *countdown = messageConfig[@"countdown"];
@@ -765,7 +786,7 @@ static dispatch_once_t leanplum_onceToken;
         }
         int countdownSeconds = [countdown intValue];
         NSDate *eta = [[NSDate date] dateByAddingTimeInterval:countdownSeconds];
-
+        
         // If there's already one scheduled before the eta, discard this.
         // Otherwise, discard the scheduled one.
         NSArray *notifications = [app scheduledLocalNotifications];
@@ -780,7 +801,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
             }
         }
-
+        
         UILocalNotification *localNotif = [[UILocalNotification alloc] init];
         localNotif.fireDate = eta;
         localNotif.timeZone = [NSTimeZone defaultTimeZone];
@@ -790,7 +811,7 @@ static dispatch_once_t leanplum_onceToken;
             localNotif.alertBody = LP_VALUE_DEFAULT_PUSH_MESSAGE;
         }
         localNotif.alertAction = @"View";
-
+        
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([localNotif respondsToSelector:@selector(setCategory:)]) {
             NSString *category = [context stringNamed:@"iOS options.Category"];
@@ -799,23 +820,23 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
 #endif
-
+        
         NSString *sound = [context stringNamed:@"iOS options.Sound"];
         if (sound) {
             localNotif.soundName = sound;
         } else {
             localNotif.soundName = UILocalNotificationDefaultSoundName;
         }
-
+        
         NSString *badge = [context stringNamed:@"iOS options.Badge"];
         if (badge) {
             localNotif.applicationIconBadgeNumber = [badge intValue];
         }
-
+        
         NSDictionary *userInfo = [context dictionaryNamed:@"Advanced options.Data"];
         NSString *openAction = [context stringNamed:LP_VALUE_DEFAULT_PUSH_ACTION];
         BOOL muteInsideApp = [context boolNamed:@"Advanced options.Mute inside app"];
-
+        
         // Specify custom data for the notification
         NSMutableDictionary *mutableInfo;
         if (userInfo) {
@@ -826,7 +847,7 @@ static dispatch_once_t leanplum_onceToken;
         
         // Adding body message manually.
         mutableInfo[@"aps"] = @{@"alert":@{@"body": message ?: @""} };
-
+        
         // Specify open action
         if (openAction) {
             if (muteInsideApp) {
@@ -841,9 +862,9 @@ static dispatch_once_t leanplum_onceToken;
                 mutableInfo[LP_KEY_PUSH_NO_ACTION] = messageId;
             }
         }
-
+        
         localNotif.userInfo = mutableInfo;
-
+        
         // Schedule the notification
         [app scheduleLocalNotification:localNotif];
         
@@ -853,7 +874,7 @@ static dispatch_once_t leanplum_onceToken;
         LP_BEGIN_USER_CODE
         return YES;
     }];
-
+    
     [Leanplum onAction:@"__Cancel__Push Notification" invoke:^BOOL(LPActionContext *context) {
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
@@ -910,7 +931,7 @@ static dispatch_once_t leanplum_onceToken;
             int max = [occurrences[@"max"] intValue];
             max++;
             occurrences[[NSString stringWithFormat:@"%d", max]] =
-                    @([[NSDate date] timeIntervalSince1970]);
+            @([[NSDate date] timeIntervalSince1970]);
             if (max - min + 1 > MAX_STORED_OCCURRENCES_PER_MESSAGE) {
                 [occurrences removeObjectForKey:[NSString stringWithFormat:@"%d", min]];
                 min++;
@@ -948,7 +969,7 @@ static dispatch_once_t leanplum_onceToken;
         [defaults setInteger:occurrences
                       forKey:[NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_TRIGGER_OCCURRENCES_KEY, messageId]];
         _messageTriggerOccurrences[messageId] = @(occurrences);
-    }   
+    }
 }
 
 + (BOOL)matchedTriggers:(NSDictionary *)triggerConfig
@@ -981,7 +1002,7 @@ static dispatch_once_t leanplum_onceToken;
         if ((noun == nil && eventName == nil) || [noun isEqualToString:eventName]) {
             NSString *verb = trigger [@"verb"];
             NSArray *objects = trigger[@"objects"];
-
+            
             // Evaluate user attribute changed to value.
             if ([verb isEqual:@"changesTo"]) {
                 NSString *value = [contextualValues.attributeValue description];
@@ -993,27 +1014,27 @@ static dispatch_once_t leanplum_onceToken;
                 }
                 return NO;
             }
-
+            
             // Evaluate user attribute changed from value to value.
             if ([verb isEqual:@"changesFromTo"]) {
                 NSString *previousValue = [[contextualValues previousAttributeValue] description];
                 NSString *value = [contextualValues.attributeValue description];
                 return objects.count >= 2 &&
-                    [[objects[0] description]
-                        caseInsensitiveCompare:previousValue] == NSOrderedSame &&
-                    [[objects[1] description] caseInsensitiveCompare:value] == NSOrderedSame;
+                [[objects[0] description]
+                 caseInsensitiveCompare:previousValue] == NSOrderedSame &&
+                [[objects[1] description] caseInsensitiveCompare:value] == NSOrderedSame;
             }
-
+            
             // Evaluate event parameter is value.
             if ([verb isEqual:@"triggersWithParameter"]) {
                 // We need to check whether the key is in the parameter
                 // or else it will create a null object that will always return YES.
                 return objects.count >= 2 &&
-                    contextualValues.parameters[objects[0]] &&
-                    [[contextualValues.parameters[objects[0]] description]
-                        caseInsensitiveCompare:[objects[1] description]] == NSOrderedSame;
+                contextualValues.parameters[objects[0]] &&
+                [[contextualValues.parameters[objects[0]] description]
+                 caseInsensitiveCompare:[objects[1] description]] == NSOrderedSame;
             }
-
+            
             return YES;
         }
     }
@@ -1063,13 +1084,13 @@ static dispatch_once_t leanplum_onceToken;
                                contextualValues:(LPContextualValues *)contextualValues
 {
     LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
-
+    
     // 1. Must not be muted.
     if ([[NSUserDefaults standardUserDefaults] boolForKey:
          [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]]) {
         return result;
     }
-
+    
     // 2. Must match at least one trigger.
     result.matchedTrigger = [LPActionManager matchedTriggers:messageConfig[@"whenTriggers"]
                                                         when:when
@@ -1082,11 +1103,11 @@ static dispatch_once_t leanplum_onceToken;
     if (!result.matchedTrigger && !result.matchedUnlessTrigger) {
         return result;
     }
-
+    
     // 3. Must match all limit conditions.
     NSDictionary *limitConfig = messageConfig[@"whenLimits"];
     result.matchedLimit = [self matchesLimits:limitConfig messageId:messageId];
-
+    
     // 4. Must be within active period.
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval startTime = [messageConfig[@"startTime"] doubleValue] / 1000.0;
@@ -1116,7 +1137,7 @@ static dispatch_once_t leanplum_onceToken;
         NSString *subject = limit[@"subject"];
         NSString *noun = limit[@"noun"];
         NSString *verb = limit[@"verb"];
-
+        
         // E.g. 5 times per session; 2 times per 7 minutes.
         if ([subject isEqualToString:@"times"]) {
             if (![self matchesLimitTimes:[noun intValue]
@@ -1126,15 +1147,15 @@ static dispatch_once_t leanplum_onceToken;
                                messageId:messageId]) {
                 return NO;
             }
-        
-        // E.g. On the 5th occurrence.
+            
+            // E.g. On the 5th occurrence.
         } else if ([subject isEqualToString:@"onNthOccurrence"]) {
             int amount = [noun intValue];
             if (triggerOccurrences != amount) {
                 return NO;
             }
-
-        // E.g. Every 5th occurrence.
+            
+            // E.g. Every 5th occurrence.
         } else if ([subject isEqualToString:@"everyNthOccurrence"]) {
             int multiple = [noun intValue];
             if (multiple == 0 || triggerOccurrences % multiple != 0) {
@@ -1179,7 +1200,7 @@ static dispatch_once_t leanplum_onceToken;
             int matchedOccurrences = 0;
             for (int i = max; i >= min; i--) {
                 NSTimeInterval timeAgo = now -
-                        [occurrences[[NSString stringWithFormat:@"%d", i]] doubleValue];
+                [occurrences[[NSString stringWithFormat:@"%d", i]] doubleValue];
                 if (timeAgo > perSeconds) {
                     break;
                 }
@@ -1235,7 +1256,7 @@ static dispatch_once_t leanplum_onceToken;
         [Leanplum track:nil withValue:0.0 andInfo:nil
                 andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
     }
-
+    
     // Record session occurrences.
     @synchronized (_sessionOccurrences) {
         int existing = [_sessionOccurrences[messageId] intValue];

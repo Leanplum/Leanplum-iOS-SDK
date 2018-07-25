@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define LP_FEATURE_FLAG_REQUEST_REFACTOR @"LP_FEATURE_FLAG_REQUEST_REFACTOR"
+
 @interface LPFeatureFlagManager : NSObject
 
 + (instancetype)sharedManager;
