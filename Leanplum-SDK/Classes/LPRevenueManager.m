@@ -48,7 +48,6 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
 @property (nonatomic, strong) NSMutableDictionary *transactions;
 @property (nonatomic, strong) NSMutableDictionary *requests;
 
-
 @end
 
 #pragma mark - LPRevenueManager implementation
