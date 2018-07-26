@@ -80,19 +80,4 @@
     return [self argNamed:name with:@(leanplum_colorToInt(defaultValue)) kind:LP_KIND_COLOR];
 }
 
-- (NSString *)name
-{
-    return _name;
-}
-
-- (id)defaultValue
-{
-    return _defaultValue;
-}
-
-- (NSString *)kind
-{
-    return _kind;
-}
-
 @end

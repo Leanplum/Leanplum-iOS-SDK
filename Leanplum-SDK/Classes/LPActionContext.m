@@ -56,21 +56,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return context;
 }
 
-- (NSString *)messageId
-{
-    return _messageId;
-}
-
-- (NSString *)originalMessageId
-{
-    return _originalMessageId;
-}
-
-- (NSNumber *)priority
-{
-    return _priority;
-}
-
 - (void)preventRealtimeUpdating
 {
     _preventRealtimeUpdating = YES;
@@ -175,11 +160,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (NSString *)actionName
 {
     return _name;
-}
-
-- (NSDictionary *)args
-{
-    return _args;
 }
 
 - (void)setProperArgs

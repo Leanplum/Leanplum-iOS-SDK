@@ -272,26 +272,6 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
 #pragma mark Basic accessors
 
-- (NSString *)name
-{
-    return _name;
-}
-
-- (NSArray *)nameComponents
-{
-    return _nameComponents;
-}
-
-- (id)defaultValue
-{
-    return _defaultValue;
-}
-
-- (NSString *)kind
-{
-    return _kind;
-}
-
 - (void)triggerValueChanged
 {
     LP_BEGIN_USER_CODE
