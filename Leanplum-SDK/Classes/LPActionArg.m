@@ -11,9 +11,9 @@
 
 @implementation LPActionArg : NSObject
 
-@synthesize private_Name=_name;
-@synthesize private_Kind=_kind;
-@synthesize private_DefaultValue=_defaultValue;
+@synthesize name=_name;
+@synthesize kind=_kind;
+@synthesize defaultValue=_defaultValue;
 
 + (LPActionArg *)argNamed:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
