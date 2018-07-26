@@ -26,10 +26,7 @@
 
 #import "Leanplum.h"
 
-@interface LPRegisterDevice : NSObject {
-@private
-    LeanplumStartBlock callback;
-}
+@interface LPRegisterDevice : NSObject
 
 - (id)initWithCallback:(LeanplumStartBlock)callback;
 - (void)registerDevice:(NSString *)email;
