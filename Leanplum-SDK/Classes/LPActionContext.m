@@ -12,6 +12,20 @@
 
 typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
+@interface LPActionContext (PrivateProperties)
+
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *messageId;
+@property (nonatomic, strong) NSString *originalMessageId;
+@property (nonatomic, strong) NSNumber *priority;
+@property (nonatomic, strong) NSDictionary *args;
+@property (nonatomic, strong) LPActionContext *parentContext;
+@property (nonatomic) int contentVersion;
+@property (nonatomic, strong) NSString *key;
+@property (nonatomic) BOOL preventRealtimeUpdating;
+
+@end
+
 @implementation LPActionContext
 
 @synthesize name=_name;

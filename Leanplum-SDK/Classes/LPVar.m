@@ -11,22 +11,25 @@
 
 static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
-@implementation LPVar
+@interface LPVar (PrivateProperties)
 
-@synthesize isInternal=_isInternal;
-@synthesize name=_name;
-@synthesize nameComponents=_nameComponents;
-@synthesize stringValue=_stringValue;
-@synthesize numberValue=_numberValue;
-@synthesize hadStarted=_hadStarted;
-@synthesize value=_value;
-@synthesize defaultValue=_defaultValue;
-@synthesize kind=_kind;
-@synthesize fileReadyBlocks=_fileReadyBlocks;
-@synthesize valueChangedBlocks=_valueChangedBlocks;
-@synthesize fileIsPending=_fileIsPending;
-@synthesize delegate=_delegate;
-@synthesize hasChanged=_hasChanged;
+@property (nonatomic) BOOL isInternal;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSArray *nameComponents;
+@property (nonatomic, strong) NSString *stringValue;
+@property (nonatomic, strong) NSNumber *numberValue;
+@property (nonatomic) BOOL hadStarted;
+@property (nonatomic, strong) id value;
+@property (nonatomic, strong) id defaultValue;
+@property (nonatomic, strong) NSString *kind;
+@property (nonatomic, strong) NSMutableArray *fileReadyBlocks;
+@property (nonatomic, strong) NSMutableArray *valueChangedBlocks;
+@property (nonatomic) BOOL fileIsPending;
+@property (nonatomic) BOOL hasChanged;
+
+@end
+
+@implementation LPVar
 
 +(BOOL)printedCallbackWarning
 {
@@ -53,7 +56,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
         
         [LPVarCache registerVariable:self];
         if ([kind isEqualToString:LP_KIND_FILE]) { // TODO: && var.stringValue)
-            [LPVarCache registerFile:_stringValue withDefaultValue:_defaultValue];
+            [LPVarCache registerFile:self.stringValue withDefaultValue:self.defaultValue];
         }
         if ([name hasPrefix:LP_VALUE_RESOURCES_VARIABLE]) {
             _isInternal = YES;
@@ -215,14 +218,14 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 {
     // Cache computed values.
     if ([_value isKindOfClass:NSString.class]) {
-        _stringValue = (NSString *) _value;
-        _numberValue = [NSNumber numberWithDouble:[_stringValue doubleValue]];
+        self.stringValue = (NSString *) self.value;
+        self.numberValue = [NSNumber numberWithDouble:[self.stringValue doubleValue]];
     } else if ([_value isKindOfClass:NSNumber.class]) {
-        _stringValue = [NSString stringWithFormat:@"%@", _value];
-        _numberValue = (NSNumber *) _value;
+        self.stringValue = [NSString stringWithFormat:@"%@", self.value];
+        self.numberValue = (NSNumber *) self.value;
     } else {
-        _stringValue = nil;
-        _numberValue = nil;
+        self.stringValue = nil;
+        self.numberValue = nil;
     }
 }
 
@@ -236,7 +239,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     [self cacheComputedValues];
     
     if (![_value isEqual:oldValue]) {
-        _hasChanged = YES;
+        self.hasChanged = YES;
     }
     
     if (LPVarCache.silent && [[self name] hasPrefix:LP_VALUE_RESOURCES_VARIABLE]
@@ -255,8 +258,8 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     // Check if file exists, otherwise we need to download it.
     // Ignore app icon. This is a special variable that only needs the filename.
     if ([_kind isEqualToString:LP_KIND_FILE]) {
-        if ([LPFileManager maybeDownloadFile:_stringValue
-                                defaultValue:_defaultValue
+        if ([LPFileManager maybeDownloadFile:self.stringValue
+                                defaultValue:self.defaultValue
                                   onComplete:^{[self triggerFileIsReady];}]) {
             _fileIsPending = YES;
         }
@@ -362,7 +365,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     LP_TRY
     [self warnIfNotStarted];
     if ([_kind isEqualToString:LP_KIND_FILE]) {
-        return [LPFileManager fileValue:_stringValue withDefaultValue:_defaultValue];
+        return [LPFileManager fileValue:self.stringValue withDefaultValue:self.defaultValue];
     }
     LP_END_TRY
     return nil;
@@ -428,18 +431,16 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
 #pragma mark Value accessors
 
-- (BOOL)hasChanged { return _hasChanged; }
-
 - (NSNumber *)numberValue
 {
     [self warnIfNotStarted];
-    return _numberValue;
+    return self.numberValue;
 }
 
 - (NSString *)stringValue
 {
     [self warnIfNotStarted];
-    return _stringValue;
+    return self.stringValue;
 }
 
 - (int)intValue { return [[self numberValue] intValue]; }
