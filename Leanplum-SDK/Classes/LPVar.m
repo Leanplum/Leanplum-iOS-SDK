@@ -11,7 +11,30 @@
 
 static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
+@interface LPVar (PrivateProperties)
+
+@property (nonatomic) BOOL isInternal;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSArray *nameComponents;
+@property (nonatomic, strong) NSString *stringValue;
+@property (nonatomic, strong) NSNumber *numberValue;
+@property (nonatomic) BOOL hadStarted;
+@property (nonatomic, strong) id value;
+@property (nonatomic, strong) id defaultValue;
+@property (nonatomic, strong) NSString *kind;
+@property (nonatomic, strong) NSMutableArray *fileReadyBlocks;
+@property (nonatomic, strong) NSMutableArray *valueChangedBlocks;
+@property (nonatomic) BOOL fileIsPending;
+@property (nonatomic) BOOL hasChanged;
+
+@end
+
 @implementation LPVar
+
+@synthesize stringValue=_stringValue;
+@synthesize numberValue=_numberValue;
+@synthesize hadStarted=_hadStarted;
+@synthesize hasChanged=_hasChanged;
 
 +(BOOL)printedCallbackWarning
 {
@@ -257,26 +280,6 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
 #pragma mark Basic accessors
 
-- (NSString *)name
-{
-    return _name;
-}
-
-- (NSArray *)nameComponents
-{
-    return _nameComponents;
-}
-
-- (id)defaultValue
-{
-    return _defaultValue;
-}
-
-- (NSString *)kind
-{
-    return _kind;
-}
-
 - (void)triggerValueChanged
 {
     LP_BEGIN_USER_CODE
@@ -432,8 +435,6 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 }
 
 #pragma mark Value accessors
-
-- (BOOL)hasChanged { return _hasChanged; }
 
 - (NSNumber *)numberValue
 {

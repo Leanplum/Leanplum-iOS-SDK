@@ -12,20 +12,20 @@
 - (instancetype)initWithName:(NSString *)name withComponents:(NSArray *)components
             withDefaultValue:(NSObject *)defaultValue withKind:(NSString *)kind;
 
-@property (nonatomic, assign) BOOL isInternal;
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSArray *nameComponents;
-@property (nonatomic, strong) NSString *stringValue;
-@property (nonatomic, strong) NSNumber *numberValue;
-@property (nonatomic, assign) BOOL hadStarted;
-@property (nonatomic, strong) id value;
-@property (nonatomic, strong) id defaultValue;
-@property (nonatomic, strong) NSString *kind;
-@property (nonatomic, strong) NSMutableArray *fileReadyBlocks;
-@property (nonatomic, strong) NSMutableArray *valueChangedBlocks;
-@property (nonatomic, assign) BOOL fileIsPending;
-@property (nonatomic, weak) id <LPVarDelegate> delegate;
-@property (nonatomic, assign) BOOL hasChanged;
+@property (readonly) BOOL isInternal;
+@property (readonly, strong) NSString *name;
+@property (readonly, strong) NSArray *nameComponents;
+@property (readonly, strong) NSString *stringValue;
+@property (readonly, strong) NSNumber *numberValue;
+@property (readonly) BOOL hadStarted;
+@property (readonly, strong) id value;
+@property (readonly, strong) id defaultValue;
+@property (readonly, strong) NSString *kind;
+@property (readonly, strong) NSMutableArray *fileReadyBlocks;
+@property (readonly, strong) NSMutableArray *valueChangedBlocks;
+@property (readonly) BOOL fileIsPending;
+@property (nonatomic, unsafe_unretained) id <LPVarDelegate> delegate;
+@property (readonly) BOOL hasChanged;
 
 - (void) update;
 - (void) cacheComputedValues;

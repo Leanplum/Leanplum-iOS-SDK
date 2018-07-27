@@ -12,7 +12,32 @@
 
 typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
+@interface LPActionContext (PrivateProperties)
+
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSString *messageId;
+@property (nonatomic, strong) NSString *originalMessageId;
+@property (nonatomic, strong) NSNumber *priority;
+@property (nonatomic, strong) NSDictionary *args;
+@property (nonatomic, strong) LPActionContext *parentContext;
+@property (nonatomic) int contentVersion;
+@property (nonatomic, strong) NSString *key;
+@property (nonatomic) BOOL preventRealtimeUpdating;
+
+@end
+
 @implementation LPActionContext
+
+@synthesize name=_name;
+@synthesize messageId=_messageId;
+@synthesize originalMessageId=_originalMessageId;
+@synthesize priority=_priority;
+@synthesize args=_args;
+@synthesize parentContext=_parentContext;
+@synthesize contentVersion=_contentVersion;
+@synthesize key=_key;
+@synthesize preventRealtimeUpdating=_preventRealtimeUpdating;
+@synthesize contextualValues=_contextualValues;
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(NSDictionary *)args
@@ -47,7 +72,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (void)preventRealtimeUpdating
 {
-    self.shouldPreventRealtimeUpdating = YES;
+    _preventRealtimeUpdating = YES;
 }
 
 - (NSDictionary *)defaultValues
@@ -149,11 +174,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (NSString *)actionName
 {
     return _name;
-}
-
-- (NSDictionary *)args
-{
-    return _args;
 }
 
 - (void)setProperArgs

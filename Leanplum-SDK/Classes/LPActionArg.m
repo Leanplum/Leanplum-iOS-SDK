@@ -9,6 +9,14 @@
 #import "Utils.h"
 #import "LPVarCache.h"
 
+@interface LPActionArg (PrivateProperties)
+
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) id defaultValue;
+@property (nonatomic, strong) NSString *kind;
+
+@end
+
 @implementation LPActionArg : NSObject
 
 + (LPActionArg *)argNamed:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
@@ -74,21 +82,6 @@
 + (LPActionArg *)argNamed:(NSString *)name withColor:(UIColor *)defaultValue
 {
     return [self argNamed:name with:@(leanplum_colorToInt(defaultValue)) kind:LP_KIND_COLOR];
-}
-
-- (NSString *)name
-{
-    return _name;
-}
-
-- (id)defaultValue
-{
-    return _defaultValue;
-}
-
-- (NSString *)kind
-{
-    return _kind;
 }
 
 @end

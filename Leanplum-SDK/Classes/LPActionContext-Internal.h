@@ -21,15 +21,15 @@
                          originalMessageId:(NSString *)originalMessageId
                                   priority:(NSNumber *)priority;
 
-@property (nonatomic, strong) NSString *name;
-@property (nonatomic, strong) NSString *messageId;
-@property (nonatomic, strong) NSString *originalMessageId;
-@property (nonatomic, strong) NSNumber *priority;
-@property (nonatomic, strong) NSDictionary *args;
-@property (nonatomic, strong) LPActionContext *parentContext;
-@property (nonatomic, assign) int contentVersion;
-@property (nonatomic, strong) NSString *key;
-@property (nonatomic, assign) BOOL shouldPreventRealtimeUpdating;
+@property (readonly, strong) NSString *name;
+@property (readonly, strong) NSString *messageId;
+@property (readonly, strong) NSString *originalMessageId;
+@property (readonly, strong) NSNumber *priority;
+@property (readonly, strong) NSDictionary *args;
+@property (readonly, strong) LPActionContext *parentContext;
+@property (readonly) int contentVersion;
+@property (readonly, strong) NSString *key;
+@property (readonly) BOOL preventRealtimeUpdating;
 @property (nonatomic, assign) BOOL isRooted;
 @property (nonatomic, assign) BOOL isPreview;
 @property (nonatomic, strong) LPContextualValues *contextualValues;
