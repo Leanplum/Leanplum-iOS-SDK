@@ -30,12 +30,18 @@
 #import "LPRequestManager.h"
 #import "LPFeatureFlagManager.h"
 
+@interface LPRegisterDevice()
+
+@property (nonatomic, copy) LeanplumStartBlock callback;
+
+@end
+
 @implementation LPRegisterDevice
 
-- (id)initWithCallback:(LeanplumStartBlock)callback_
+- (id)initWithCallback:(LeanplumStartBlock)callback
 {
     if (self = [super init]) {
-        self->callback = callback_;
+        _callback = callback;
     }
     return self;
 }
@@ -43,7 +49,7 @@
 - (void)showError:(NSString *)message
 {
     NSLog(@"Leanplum: Device registration error: %@", message);
-    self->callback(NO);
+    self.callback(NO);
 }
 
 - (void)registerDevice:(NSString *)email
@@ -72,7 +78,7 @@
         LP_TRY
         BOOL isSuccess = [LPResponse isResponseSuccess:response];
         if (isSuccess) {
-            self->callback(YES);
+            self.callback(YES);
         } else {
             [self showError:[LPResponse getResponseError:response]];
         }

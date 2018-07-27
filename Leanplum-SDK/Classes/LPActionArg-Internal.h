@@ -9,8 +9,8 @@
 
 @interface LPActionArg ()
 
-@property (readonly, strong) NSString *private_Name;
-@property (readonly, strong) id private_DefaultValue;
-@property (readonly, strong) NSString *private_Kind;
+@property (readonly, strong) NSString *name;
+@property (readonly, strong) id defaultValue;
+@property (readonly, strong) NSString *kind;
 
 @end

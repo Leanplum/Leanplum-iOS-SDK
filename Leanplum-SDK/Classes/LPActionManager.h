@@ -50,16 +50,6 @@ typedef enum {
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
 @interface LPActionManager : NSObject {
-  @private
-    NSMutableDictionary *_messageImpressionOccurrences;
-    NSMutableDictionary *_messageTriggerOccurrences;
-    NSMutableDictionary *_sessionOccurrences;
-    NSString *notificationHandled;
-    NSDate *notificationHandledTime;
-    LeanplumShouldHandleNotificationBlock shouldHandleNotification;
-    NSString *displayedTracked;
-    NSDate *displayedTrackedTime;
-
   @package
     BOOL swizzledApplicationDidRegisterRemoteNotifications;
     BOOL swizzledApplicationDidRegisterUserNotificationSettings;

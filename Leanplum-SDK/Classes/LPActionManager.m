@@ -257,6 +257,19 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 
 @end
 
+@interface LPActionManager()
+
+@property (nonatomic, strong) NSMutableDictionary *messageImpressionOccurrences;
+@property (nonatomic, strong) NSMutableDictionary *messageTriggerOccurrences;
+@property (nonatomic, strong) NSMutableDictionary *sessionOccurrences;
+@property (nonatomic, strong) NSString *notificationHandled;
+@property (nonatomic, strong) NSDate *notificationHandledTime;
+@property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
+@property (nonatomic, strong) NSString *displayedTracked;
+@property (nonatomic, strong) NSDate *displayedTrackedTime;
+
+@end
+
 @implementation LPActionManager
 
 static LPActionManager *leanplum_sharedActionManager = nil;
@@ -335,7 +348,7 @@ static dispatch_once_t leanplum_onceToken;
 // when it is received while the app is running.
 - (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block
 {
-    shouldHandleNotification = block;
+    _shouldHandleNotification = block;
 }
 
 -(void)successResponse:(NSDictionary *)response withCompletionBlock:(LeanplumVariablesChangedBlock)onCompleted {
@@ -436,13 +449,12 @@ static dispatch_once_t leanplum_onceToken;
 
 - (BOOL)isDuplicateNotification:(NSDictionary *)userInfo
 {
-    if ([notificationHandled isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
-        [[NSDate date] timeIntervalSinceDate:notificationHandledTime] < 10.0) {
+    if ([self.notificationHandled isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
+        [[NSDate date] timeIntervalSinceDate:self.notificationHandledTime] < 10.0) {
         return YES;
     }
-    
-    notificationHandled = [LPJSON stringFromJSON:userInfo];
-    notificationHandledTime = [NSDate date];
+    self.notificationHandled = [LPJSON stringFromJSON:userInfo];
+    self.notificationHandledTime = [NSDate date];
     return NO;
 }
 
@@ -490,8 +502,8 @@ static dispatch_once_t leanplum_onceToken;
     if (!active) {
         handleNotificationBlock();
     } else {
-        if (shouldHandleNotification) {
-            shouldHandleNotification(userInfo, handleNotificationBlock);
+        if (self.shouldHandleNotification) {
+            self.shouldHandleNotification(userInfo, handleNotificationBlock);
         } else {
             if (userInfo[LP_KEY_PUSH_NO_ACTION] ||
                 userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
@@ -519,13 +531,12 @@ static dispatch_once_t leanplum_onceToken;
 
 - (BOOL)hasTrackedDisplayed:(NSDictionary *)userInfo
 {
-    if ([displayedTracked isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
-        [[NSDate date] timeIntervalSinceDate:displayedTrackedTime] < 10.0) {
+    if ([self.displayedTracked isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
+        [[NSDate date] timeIntervalSinceDate:self.displayedTrackedTime] < 10.0) {
         return YES;
     }
-    
-    displayedTracked = [LPJSON stringFromJSON:userInfo];
-    displayedTrackedTime = [NSDate date];
+    self.displayedTracked = [LPJSON stringFromJSON:userInfo];
+    self.displayedTrackedTime = [NSDate date];
     return NO;
 }
 
@@ -771,13 +782,11 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
 #endif
-        
-        NSString *messageId = [context private_MessageId];
-        
+        NSString *messageId = context.messageId;
         NSDictionary *messageConfig = LPVarCache.messageDiffs[messageId];
         
         NSNumber *countdown = messageConfig[@"countdown"];
-        if ([context private_IsPreview]) {
+        if (context.isPreview) {
             countdown = @(5.0);
         }
         if (![countdown.class isSubclassOfClass:NSNumber.class]) {
@@ -792,7 +801,7 @@ static dispatch_once_t leanplum_onceToken;
         NSArray *notifications = [app scheduledLocalNotifications];
         for (UILocalNotification *notification in notifications) {
             NSString *messageId = [LPActionManager messageIdFromUserInfo:[notification userInfo]];
-            if ([messageId isEqualToString:[context private_MessageId]]) {
+            if ([messageId isEqualToString:context.messageId]) {
                 NSComparisonResult comparison = [notification.fireDate compare:eta];
                 if (comparison == NSOrderedAscending) {
                     return NO;
@@ -882,7 +891,7 @@ static dispatch_once_t leanplum_onceToken;
         BOOL didCancel = NO;
         for (UILocalNotification *notification in notifications) {
             NSString *messageId = [LPActionManager messageIdFromUserInfo:[notification userInfo]];
-            if ([messageId isEqualToString:[context private_MessageId]]) {
+            if ([messageId isEqualToString:context.messageId]) {
                 [app cancelLocalNotification:notification];
                 if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
                     LPLog(LPInfo, @"Cancelled notification");
