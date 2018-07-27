@@ -26,6 +26,9 @@
 #import "LeanplumRequest.h"
 #import "LPResponse.h"
 #import "Constants.h"
+#import "LPRequest.h"
+#import "LPRequestManager.h"
+#import "LPFeatureFlagManager.h"
 
 @interface LPRegisterDevice()
 
@@ -51,6 +54,24 @@
 
 - (void)registerDevice:(NSString *)email
 {
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *request = [LPRequest post:LP_METHOD_REGISTER_FOR_DEVELOPMENT
+                                                  params:@{ LP_PARAM_EMAIL: email }];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            LP_TRY
+            BOOL isSuccess = [LPResponse isResponseSuccess:response];
+            if (isSuccess) {
+                self->callback(YES);
+            } else {
+                [self showError:[LPResponse getResponseError:response]];
+            }
+            LP_END_TRY
+        }];
+        [request onError:^(NSError *error) {
+            [self showError:[error localizedDescription]];
+        }];
+        [[LPRequestManager sharedManager] sendNowRequest:request];
+    } else {
     LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_REGISTER_FOR_DEVELOPMENT
                                               params:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
@@ -67,6 +88,7 @@
         [self showError:[error localizedDescription]];
     }];
     [request sendNow];
+    }
 }
 
 @end

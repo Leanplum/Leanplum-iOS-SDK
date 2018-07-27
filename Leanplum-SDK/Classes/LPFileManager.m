@@ -32,6 +32,10 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 #include <unistd.h>
+#import "LPRequest.h"
+#import "LPRequestManager.h"
+#import "LPFeatureFlagManager.h"
+#import "LPFileUploadDownloadManager.h"
 
 typedef enum {
     kLeanplumFileOperationGet = 0,
@@ -565,6 +569,17 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         return NO;
     }
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
+        if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_FILE_ULDL_MANAGER_REFACTOR]) {
+            [[LPFileUploadDownloadManager sharedManager] downloadFile:value onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+                if (complete) {
+                    complete();
+                }
+            } onError:^(NSError *error) {
+                if (complete) {
+                    complete();
+                }
+            }];
+        } else {
         LeanplumRequest *downloadRequest = [LeanplumRequest get:LP_METHOD_DOWNLOAD_FILE params:nil];
         [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (complete) {
@@ -577,6 +592,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
             }
         }];
         [downloadRequest downloadFile:value];
+        }
         return YES;
     }
     return NO;

@@ -30,6 +30,7 @@
 #import "LPActionManager.h"
 #import "LPJSON.h"
 #import "LPInternalState.h"
+#import "LPFeatureFlagManager.h"
 
 @class LeanplumSocket;
 @class LPRegisterDevice;

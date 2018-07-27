@@ -45,6 +45,8 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPRequest.h"
+#import "LPRequestManager.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -88,10 +90,10 @@ BOOL inForeground = NO;
 {
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         @throw([NSException
-            exceptionWithName:@"Leanplum Error"
-                       reason:[NSString stringWithFormat:@"Leanplum: %@ This error is only thrown "
-                                                         @"in development mode.", reason]
-                     userInfo:nil]);
+                exceptionWithName:@"Leanplum Error"
+                reason:[NSString stringWithFormat:@"Leanplum: %@ This error is only thrown "
+                        @"in development mode.", reason]
+                userInfo:nil]);
     } else {
         NSLog(@"Leanplum: Error: %@", reason);
     }
@@ -216,8 +218,7 @@ BOOL inForeground = NO;
             NSString *newPath = [[plugInsPath stringByAppendingPathComponent:filePath]
                                  stringByDeletingLastPathComponent];
             NSBundle *currentBundle = [NSBundle bundleWithPath:newPath];
-            NSDictionary *extensionKey =
-                [currentBundle objectForInfoDictionaryKey:@"NSExtension"];
+            NSDictionary *extensionKey = [currentBundle objectForInfoDictionaryKey:@"NSExtension"];
             if ([[extensionKey objectForKey:@"NSExtensionPrincipalClass"]
                  isEqualToString:@"NotificationService"]) {
                 return YES;
@@ -255,6 +256,7 @@ BOOL inForeground = NO;
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = YES;
     [LeanplumRequest setAppId:appId withAccessKey:accessKey];
+    [[LPRequestManager sharedManager] setAppId:appId withAccessKey:accessKey];
     LP_END_TRY
 }
 
@@ -440,7 +442,7 @@ BOOL inForeground = NO;
     }
 
     for (LeanplumVariablesChangedBlock block in [LPInternalState sharedState]
-             .variablesChangedBlocks.copy) {
+            .variablesChangedBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -450,12 +452,12 @@ BOOL inForeground = NO;
 {
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState]
-             .interfaceChangedResponders.copy) {
+            .interfaceChangedResponders.copy) {
         [invocation invoke];
     }
 
     for (LeanplumInterfaceChangedBlock block in [LPInternalState sharedState]
-             .interfaceChangedBlocks.copy) {
+            .interfaceChangedBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -468,8 +470,7 @@ BOOL inForeground = NO;
         [invocation invoke];
     }
 
-    for (LeanplumEventsChangedBlock block in [LPInternalState sharedState]
-             .eventsChangedBlocks.copy) {
+    for (LeanplumEventsChangedBlock block in [LPInternalState sharedState].eventsChangedBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -482,8 +483,7 @@ BOOL inForeground = NO;
         [invocation invoke];
     }
 
-    for (LeanplumVariablesChangedBlock block in [LPInternalState sharedState]
-             .noDownloadsBlocks.copy) {
+    for (LeanplumVariablesChangedBlock block in [LPInternalState sharedState].noDownloadsBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -518,8 +518,7 @@ BOOL inForeground = NO;
             handled |= invocationHandled;
         }
 
-        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
-                                           [context.actionName]) {
+        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks [context.actionName]) {
             handled |= block(context);
         }
         LP_END_USER_CODE
@@ -573,25 +572,25 @@ BOOL inForeground = NO;
         if (allowLists &&
             ([value isKindOfClass:NSArray.class] ||
              [value isKindOfClass:NSSet.class])) {
-            BOOL valid = YES;
-            for (id item in value) {
-                if (![self validateScalarValue:item argName:argName]) {
-                    valid = NO;
-                    break;
+                BOOL valid = YES;
+                for (id item in value) {
+                    if (![self validateScalarValue:item argName:argName]) {
+                        valid = NO;
+                        break;
+                    }
+                }
+                if (!valid) {
+                    continue;
+                }
+            } else {
+                if ([value isKindOfClass:NSDate.class]) {
+                    value = [NSNumber numberWithUnsignedLongLong:
+                             [(NSDate *) value timeIntervalSince1970] * 1000];
+                }
+                if (![self validateScalarValue:value argName:argName]) {
+                    continue;
                 }
             }
-            if (!valid) {
-                continue;
-            }
-        } else {
-            if ([value isKindOfClass:NSDate.class]) {
-                value = [NSNumber numberWithUnsignedLongLong:
-                         [(NSDate *) value timeIntervalSince1970] * 1000];
-            }
-            if (![self validateScalarValue:value argName:argName]) {
-                continue;
-            }
-        }
         validAttributes[key] = value;
     }
     return validAttributes;
@@ -648,7 +647,7 @@ BOOL inForeground = NO;
 {
     size_t size;
     sysctlbyname("hw.machine", NULL, &size, NULL, 0);
-
+    
     char *answer = malloc(size);
     sysctlbyname("hw.machine", answer, &size, NULL, 0);
 
@@ -662,6 +661,109 @@ BOOL inForeground = NO;
     }
 
     return results;
+}
+
++ (void)startSuccessCompletionResponse:(NSDictionary *)response {
+    LPInternalState *state = [LPInternalState sharedState];
+    LP_TRY
+    state.hasStarted = YES;
+    state.startSuccessful = YES;
+    NSDictionary *values = response[LP_KEY_VARS];
+    NSString *token = response[LP_KEY_TOKEN];
+    NSDictionary *messages = response[LP_KEY_MESSAGES];
+    NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+    NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+    NSArray *variants = response[LP_KEY_VARIANTS];
+    NSDictionary *regions = response[LP_KEY_REGIONS];
+    NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
+    [LPVarCache setVariantDebugInfo:variantDebugInfo];
+    
+    [LeanplumRequest setToken:token];
+    [LeanplumRequest saveToken];
+    [LPVarCache applyVariableDiffs:values
+                          messages:messages
+                       updateRules:updateRules
+                        eventRules:eventRules
+                          variants:variants
+                           regions:regions
+                  variantDebugInfo:variantDebugInfo];
+    
+    if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
+        [[self inbox] downloadMessages];
+    }
+    
+    if ([response[LP_KEY_LOGGING_ENABLED] boolValue]) {
+        [LPConstantsState sharedState].loggingEnabled = YES;
+    }
+    
+    // TODO: Need to call this if we fix encryption.
+    // [LPVarCache saveUserAttributes];
+    [self triggerStartResponse:YES];
+    
+    // Allow bidirectional realtime variable updates.
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        // Register device.
+        if (registrationEmail && ![response[LP_KEY_IS_REGISTERED] boolValue]) {
+            state.registration = [[LPRegisterDevice alloc] initWithCallback:^(BOOL success) {
+                if (success) {
+                    [Leanplum onHasStartedAndRegisteredAsDeveloper];
+                }}];
+            [state.registration registerDevice:registrationEmail];
+        } else if ([response[LP_KEY_IS_REGISTERED_FROM_OTHER_APP] boolValue]) {
+            // Show if registered from another app ID.
+            [LPUIAlert showWithTitle:@"Leanplum"
+                             message:@"Your device is registered."
+                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                   otherButtonTitles:nil
+                               block:nil];
+        } else {
+            // Check for updates.
+            NSString *latestVersion = response[LP_KEY_LATEST_VERSION];
+            if (latestVersion) {
+                NSLog(@"Leanplum: A newer version of the SDK, %@, is available. Please go to "
+                      @"leanplum.com to download it.", latestVersion);
+            }
+        }
+        
+        NSDictionary *valuesFromCode = response[LP_KEY_VARS_FROM_CODE];
+        NSDictionary *actionDefinitions = response[LP_PARAM_ACTION_DEFINITIONS];
+        NSDictionary *fileAttributes = response[LP_PARAM_FILE_ATTRIBUTES];
+        
+        [LeanplumRequest setUploadUrl:response[LP_KEY_UPLOAD_URL]];
+        [LPVarCache setDevModeValuesFromServer:valuesFromCode
+                                fileAttributes:fileAttributes
+                             actionDefinitions:actionDefinitions];
+        [[LeanplumSocket sharedSocket] connectToAppId:LeanplumRequest.appId
+                                             deviceId:LeanplumRequest.deviceId];
+        if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
+            [Leanplum onHasStartedAndRegisteredAsDeveloper];
+        }
+    } else {
+        // TODO: Report latency for 0.1% of users.
+        //        // Report latency for 0.1% of users.
+        //        NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
+        //        if (arc4random() % 1000 == 0) {
+        //            [[LeanplumRequest post:LP_METHOD_LOG
+        //                            params:@{
+        //                                     LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
+        //                                     @"startLatency": [@(latency) description]
+        //                                     }] send];
+        //        }
+    }
+    
+    // Upload alternative app icons.
+    [LPAppIconManager uploadAppIconsOnDevMode];
+    
+    //    if (!startedInBackground) {
+    //        inForeground = YES;
+    //        [self maybePerformActions:@[@"start", @"resume"]
+    //                    withEventName:nil
+    //                       withFilter:kLeanplumActionFilterAll
+    //                    fromMessageId:nil
+    //             withContextualValues:nil];
+    //        [self recordAttributeChanges];
+    //    }
+    LP_END_TRY
 }
 
 + (void)startWithUserId:(NSString *)userId
@@ -776,6 +878,7 @@ BOOL inForeground = NO;
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
         [LeanplumRequest setDeviceId:deviceId];
+        [[LPRequestManager sharedManager] setDeviceId:deviceId];
     }
 
     // Set user ID.
@@ -786,7 +889,8 @@ BOOL inForeground = NO;
         }
     }
     [LeanplumRequest setUserId:userId];
-
+    [[LPRequestManager sharedManager] setUserId:userId];
+    
     // Setup parameters.
     NSString *versionName = [LPInternalState sharedState].appVersion;
     if (!versionName) {
@@ -805,23 +909,23 @@ BOOL inForeground = NO;
     }
     NSTimeZone *localTimeZone = [NSTimeZone localTimeZone];
     NSNumber *timezoneOffsetSeconds =
-        [NSNumber numberWithInteger:[localTimeZone secondsFromGMTForDate:[NSDate date]]];
+    [NSNumber numberWithInteger:[localTimeZone secondsFromGMTForDate:[NSDate date]]];
     NSMutableDictionary *params = [@{
-        LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-        LP_PARAM_VERSION_NAME: versionName,
-        LP_PARAM_DEVICE_NAME: deviceName,
-        LP_PARAM_DEVICE_MODEL: [self platform],
-        LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
-        LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
-        LP_KEY_LOCALE: currentLocaleString,
-        LP_KEY_TIMEZONE: [localTimeZone name],
-        LP_KEY_TIMEZONE_OFFSET_SECONDS: timezoneOffsetSeconds,
-        LP_KEY_COUNTRY: LP_VALUE_DETECT,
-        LP_KEY_REGION: LP_VALUE_DETECT,
-        LP_KEY_CITY: LP_VALUE_DETECT,
-        LP_KEY_LOCATION: LP_VALUE_DETECT,
-        LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
-    } mutableCopy];
+                                     LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                     LP_PARAM_VERSION_NAME: versionName,
+                                     LP_PARAM_DEVICE_NAME: deviceName,
+                                     LP_PARAM_DEVICE_MODEL: [self platform],
+                                     LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
+                                     LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
+                                     LP_KEY_LOCALE: currentLocaleString,
+                                     LP_KEY_TIMEZONE: [localTimeZone name],
+                                     LP_KEY_TIMEZONE_OFFSET_SECONDS: timezoneOffsetSeconds,
+                                     LP_KEY_COUNTRY: LP_VALUE_DETECT,
+                                     LP_KEY_REGION: LP_VALUE_DETECT,
+                                     LP_KEY_CITY: LP_VALUE_DETECT,
+                                     LP_KEY_LOCATION: LP_VALUE_DETECT,
+                                     LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
+                                     } mutableCopy];
     if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
@@ -835,7 +939,7 @@ BOOL inForeground = NO;
 
     if (attributes != nil) {
         params[LP_PARAM_USER_ATTRIBUTES] = attributes ?
-                [LPJSON stringFromJSON:attributes] : @"";
+        [LPJSON stringFromJSON:attributes] : @"";
     }
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         params[LP_PARAM_DEV_MODE] = @(YES);
@@ -857,185 +961,107 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
-        LP_TRY
-        state.hasStarted = YES;
-        state.startSuccessful = YES;
-        NSDictionary *values = response[LP_KEY_VARS];
-        NSString *token = response[LP_KEY_TOKEN];
-        NSDictionary *messages = response[LP_KEY_MESSAGES];
-        NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
-        NSArray *eventRules = response[LP_KEY_EVENT_RULES];
-        NSArray *variants = response[LP_KEY_VARIANTS];
-        NSDictionary *regions = response[LP_KEY_REGIONS];
-        NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
-        [LPVarCache setVariantDebugInfo:variantDebugInfo];
-
-        [LeanplumRequest setToken:token];
-        [LeanplumRequest saveToken];
-        [LPVarCache applyVariableDiffs:values
-                              messages:messages
-                           updateRules:updateRules
-                            eventRules:eventRules
-                              variants:variants
-                               regions:regions
-                      variantDebugInfo:variantDebugInfo];
-
-        if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
-            [[self inbox] downloadMessages];
-        }
-
-        if ([response[LP_KEY_LOGGING_ENABLED] boolValue]) {
-            [LPConstantsState sharedState].loggingEnabled = YES;
-        }
-
-        // TODO: Need to call this if we fix encryption.
-        // [LPVarCache saveUserAttributes];
-        [self triggerStartResponse:YES];
-
-        // Allow bidirectional realtime variable updates.
-        if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-            // Register device.
-            if (registrationEmail && ![response[LP_KEY_IS_REGISTERED] boolValue]) {
-                state.registration = [[LPRegisterDevice alloc] initWithCallback:^(BOOL success) {
-                                    if (success) {
-                                        [Leanplum onHasStartedAndRegisteredAsDeveloper];
-                                    }}];
-                [state.registration registerDevice:registrationEmail];
-            } else if ([response[LP_KEY_IS_REGISTERED_FROM_OTHER_APP] boolValue]) {
-                // Show if registered from another app ID.
-                [LPUIAlert showWithTitle:@"Leanplum"
-                                 message:@"Your device is registered."
-                       cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                       otherButtonTitles:nil
-                                   block:nil];
-            } else {
-                // Check for updates.
-                NSString *latestVersion = response[LP_KEY_LATEST_VERSION];
-                if (latestVersion) {
-                    NSLog(@"Leanplum: A newer version of the SDK, %@, is available. Please go to "
-                          @"leanplum.com to download it.", latestVersion);
-                }
-            }
-
-            NSDictionary *valuesFromCode = response[LP_KEY_VARS_FROM_CODE];
-            NSDictionary *actionDefinitions = response[LP_PARAM_ACTION_DEFINITIONS];
-            NSDictionary *fileAttributes = response[LP_PARAM_FILE_ATTRIBUTES];
-
-            [LeanplumRequest setUploadUrl:response[LP_KEY_UPLOAD_URL]];
-            [LPVarCache setDevModeValuesFromServer:valuesFromCode
-                                    fileAttributes:fileAttributes
-                                 actionDefinitions:actionDefinitions];
-            [[LeanplumSocket sharedSocket] connectToAppId:LeanplumRequest.appId
-                                                 deviceId:LeanplumRequest.deviceId];
-            if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
-                [Leanplum onHasStartedAndRegisteredAsDeveloper];
-            }
-        } else {
-            // Report latency for 0.1% of users.
-            NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
-            if (arc4random() % 1000 == 0) {
-                [[LeanplumRequest post:LP_METHOD_LOG
-                               params:@{
-                                        LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
-                                        @"startLatency": [@(latency) description]
-                                        }] send];
-            }
-        }
-
-        // Upload alternative app icons.
-        [LPAppIconManager uploadAppIconsOnDevMode];
-
-        if (!startedInBackground) {
-            inForeground = YES;
-            [self maybePerformActions:@[@"start", @"resume"]
-                        withEventName:nil
-                           withFilter:kLeanplumActionFilterAll
-                        fromMessageId:nil
-                 withContextualValues:nil];
-            [self recordAttributeChanges];
-        }
-        LP_END_TRY
-    }];
-    [req onError:^(NSError *err) {
-        LP_TRY
-        state.hasStarted = YES;
-        state.startSuccessful = NO;
-
-        // Load the variables that were stored on the device from the last session.
-        [LPVarCache loadDiffs];
-        LP_END_TRY
-
-        [self triggerStartResponse:NO];
-    }];
-    [req sendIfConnected];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *request = [LPRequest post:LP_METHOD_START params:params];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            [self startSuccessCompletionResponse:response];
+        }];
+        [request onError:^(NSError *err) {
+            LP_TRY
+            state.hasStarted = YES;
+            state.startSuccessful = NO;
+            
+            // Load the variables that were stored on the device from the last session.
+            [LPVarCache loadDiffs];
+            LP_END_TRY
+            
+            [self triggerStartResponse:NO];
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:request];
+    } else {
+        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            [self startSuccessCompletionResponse:response];
+        }];
+        [req onError:^(NSError *err) {
+            LP_TRY
+            state.hasStarted = YES;
+            state.startSuccessful = NO;
+            
+            // Load the variables that were stored on the device from the last session.
+            [LPVarCache loadDiffs];
+            LP_END_TRY
+            
+            [self triggerStartResponse:NO];
+        }];
+        [req sendIfConnected];
+    }
     [self triggerStartIssued];
 
     // Pause.
     [[NSNotificationCenter defaultCenter]
-        addObserverForName:UIApplicationDidEnterBackgroundNotification
-                    object:nil
-                     queue:nil
-                usingBlock:^(NSNotification *notification) {
-                    RETURN_IF_NOOP;
-                    LP_TRY
-                    if (![[[[NSBundle mainBundle] infoDictionary]
-                            objectForKey:@"UIApplicationExitsOnSuspend"] boolValue]) {
-                        [Leanplum pause];
-                    }
-                    LP_END_TRY
-                }];
+     addObserverForName:UIApplicationDidEnterBackgroundNotification
+     object:nil
+     queue:nil
+     usingBlock:^(NSNotification *notification) {
+         RETURN_IF_NOOP;
+         LP_TRY
+         if (![[[[NSBundle mainBundle] infoDictionary]
+                objectForKey:@"UIApplicationExitsOnSuspend"] boolValue]) {
+             [Leanplum pause];
+         }
+         LP_END_TRY
+     }];
 
     // Resume.
     [[NSNotificationCenter defaultCenter]
-        addObserverForName:UIApplicationWillEnterForegroundNotification
-                    object:nil
-                     queue:nil
-                usingBlock:^(NSNotification *notification) {
-                    RETURN_IF_NOOP;
-                    LP_TRY
+     addObserverForName:UIApplicationWillEnterForegroundNotification
+     object:nil
+     queue:nil
+     usingBlock:^(NSNotification *notification) {
+         RETURN_IF_NOOP;
+         LP_TRY
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
-                    if ([[UIApplication sharedApplication]
-                            respondsToSelector:@selector(currentUserNotificationSettings)]) {
-                        [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:
-                                                             [[UIApplication sharedApplication]
-                                                                 currentUserNotificationSettings]];
-                    }
+         if ([[UIApplication sharedApplication]
+              respondsToSelector:@selector(currentUserNotificationSettings)]) {
+             [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:
+              [[UIApplication sharedApplication]
+               currentUserNotificationSettings]];
+         }
 #endif
-                    [Leanplum resume];
-                    if (startedInBackground && !inForeground) {
-                        inForeground = YES;
-                        [self maybePerformActions:@[@"start", @"resume"]
-                                    withEventName:nil
-                                       withFilter:kLeanplumActionFilterAll
-                                    fromMessageId:nil
-                             withContextualValues:nil];
-                        [self recordAttributeChanges];
-                    } else {
-                        [self maybePerformActions:@[@"resume"]
-                                    withEventName:nil
-                                       withFilter:kLeanplumActionFilterAll
-                                    fromMessageId:nil
-                             withContextualValues:nil];
-                    }
-                    LP_END_TRY
-                }];
+         [Leanplum resume];
+         if (startedInBackground && !inForeground) {
+             inForeground = YES;
+             [self maybePerformActions:@[@"start", @"resume"]
+                         withEventName:nil
+                            withFilter:kLeanplumActionFilterAll
+                         fromMessageId:nil
+                  withContextualValues:nil];
+             [self recordAttributeChanges];
+         } else {
+             [self maybePerformActions:@[@"resume"]
+                         withEventName:nil
+                            withFilter:kLeanplumActionFilterAll
+                         fromMessageId:nil
+                  withContextualValues:nil];
+         }
+         LP_END_TRY
+     }];
 
     // Stop.
     [[NSNotificationCenter defaultCenter]
-        addObserverForName:UIApplicationWillTerminateNotification
-                    object:nil
-                     queue:nil
-                usingBlock:^(NSNotification *notification) {
-                    RETURN_IF_NOOP;
-                    LP_TRY
-                    BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
-                        objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    [[LeanplumRequest post:LP_METHOD_STOP params:nil]
-                        sendIfConnectedSync:exitOnSuspend];
-                    LP_END_TRY
-                }];
+     addObserverForName:UIApplicationWillTerminateNotification
+     object:nil
+     queue:nil
+     usingBlock:^(NSNotification *notification) {
+         RETURN_IF_NOOP;
+         LP_TRY
+         BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
+                                objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
+         [[LeanplumRequest post:LP_METHOD_STOP params:nil]
+          sendIfConnectedSync:exitOnSuspend];
+         LP_END_TRY
+     }];
 
     // Heartbeat.
     [LPTimerBlocks scheduledTimerWithTimeInterval:HEARTBEAT_INTERVAL block:^() {
@@ -1051,10 +1077,10 @@ BOOL inForeground = NO;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if (_extensionContext) {
         [LPSwizzle
-            swizzleMethod:@selector(completeRequestReturningItems:completionHandler:)
-               withMethod:@selector(leanplum_completeRequestReturningItems:completionHandler:)
-                    error:nil
-                    class:[NSExtensionContext class]];
+         swizzleMethod:@selector(completeRequestReturningItems:completionHandler:)
+         withMethod:@selector(leanplum_completeRequestReturningItems:completionHandler:)
+         error:nil
+         class:[NSExtensionContext class]];
         [LPSwizzle swizzleMethod:@selector(cancelRequestWithError:)
                       withMethod:@selector(leanplum_cancelRequestWithError:)
                            error:nil
@@ -1075,7 +1101,7 @@ BOOL inForeground = NO;
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if ([[[defaults dictionaryRepresentation] allKeys]
-            containsObject:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY]) {
+         containsObject:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY]) {
         return nil;
     } else {
         NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -1083,24 +1109,24 @@ BOOL inForeground = NO;
                                                            inDomains:NSUserDomainMask] lastObject];
         __autoreleasing NSError *error;
         NSDate *installDate =
-            [[fileManager attributesOfItemAtPath:urlToDocumentsFolder.path error:&error]
-                objectForKey:NSFileCreationDate];
+        [[fileManager attributesOfItemAtPath:urlToDocumentsFolder.path error:&error]
+         objectForKey:NSFileCreationDate];
         NSString *pathToInfoPlist = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
         NSString *pathToAppBundle = [pathToInfoPlist stringByDeletingLastPathComponent];
         NSDate *updateDate = [[fileManager attributesOfItemAtPath:pathToAppBundle error:&error]
-            objectForKey:NSFileModificationDate];
-
+                              objectForKey:NSFileModificationDate];
+        
         // Considered pre-Leanplum install if its been more than a day (86400 seconds) since
         // install.
         NSTimeInterval secondsBetween = [updateDate timeIntervalSinceDate:installDate];
         [[NSUserDefaults standardUserDefaults] setBool:(secondsBetween > 86400)
                                                 forKey:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY];
         return @{
-            LP_PARAM_INSTALL_DATE:
-                [NSString stringWithFormat:@"%f", [installDate timeIntervalSince1970]],
-            LP_PARAM_UPDATE_DATE:
-                [NSString stringWithFormat:@"%f", [updateDate timeIntervalSince1970]]
-        };
+                 LP_PARAM_INSTALL_DATE:
+                     [NSString stringWithFormat:@"%f", [installDate timeIntervalSince1970]],
+                 LP_PARAM_UPDATE_DATE:
+                     [NSString stringWithFormat:@"%f", [updateDate timeIntervalSince1970]]
+                 };
     }
 }
 
@@ -1113,10 +1139,10 @@ BOOL inForeground = NO;
     if (userMessageTemplatesClass
         && [[userMessageTemplatesClass sharedTemplates]
             respondsToSelector:@selector(refreshPushPermissions)]) {
-        [[userMessageTemplatesClass sharedTemplates] refreshPushPermissions];
-    } else {
-        [[LPMessageTemplatesClass sharedTemplates] refreshPushPermissions];
-    }
+            [[userMessageTemplatesClass sharedTemplates] refreshPushPermissions];
+        } else {
+            [[LPMessageTemplatesClass sharedTemplates] refreshPushPermissions];
+        }
 #endif
 }
 
@@ -1135,14 +1161,25 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
-    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        finishTaskHandler();
-    }];
-    [request onError:^(NSError *error) {
-        finishTaskHandler();
-    }];
-    [request sendIfConnected];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *request = [LPRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            finishTaskHandler();
+        }];
+        [request onError:^(NSError *error) {
+            finishTaskHandler();
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:request];
+    } else {
+        LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            finishTaskHandler();
+        }];
+        [request onError:^(NSError *error) {
+            finishTaskHandler();
+        }];
+        [request sendIfConnected];
+    }
 }
 
 + (void)resume
@@ -1195,7 +1232,7 @@ BOOL inForeground = NO;
 {
     for (NSInvocation *savedResponder in responders) {
         if (savedResponder.target == invocation.target &&
-           savedResponder.selector == invocation.selector) {
+            savedResponder.selector == invocation.selector) {
             return;
         }
     }
@@ -1626,7 +1663,7 @@ BOOL inForeground = NO;
         [LPInternalState sharedState].actionResponders = [NSMutableDictionary dictionary];
     }
     NSMutableSet *responders =
-        [LPInternalState sharedState].actionResponders[actionName];
+    [LPInternalState sharedState].actionResponders[actionName];
     if (!responders) {
         responders = [NSMutableSet set];
         [LPInternalState sharedState].actionResponders[actionName] = responders;
@@ -1751,14 +1788,14 @@ BOOL inForeground = NO;
         
         if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
             [[LPInternalState sharedState].actionManager
-                 recordHeldBackImpression:[actionContext messageId]
-                        originalMessageId:[actionContext originalMessageId]];
+             recordHeldBackImpression:[actionContext messageId]
+             originalMessageId:[actionContext originalMessageId]];
         } else if (!messageActionTriggered) {
             messageActionTriggered = YES;
             [self triggerAction:actionContext handledBlock:^(BOOL success) {
                 if (success) {
                     [[LPInternalState sharedState].actionManager
-                         recordMessageImpression:[actionContext messageId]];
+                     recordMessageImpression:[actionContext messageId]];
                 }
             }];
         }
@@ -1769,9 +1806,9 @@ BOOL inForeground = NO;
 {
     NSDictionary *messageConfig = [LPVarCache messages][messageId];
     LPActionContext *context =
-        [LPActionContext actionContextWithName:messageConfig[@"action"]
-                                          args:messageConfig[LP_KEY_VARS]
-                                     messageId:messageId];
+    [LPActionContext actionContextWithName:messageConfig[@"action"]
+                                      args:messageConfig[LP_KEY_VARS]
+                                 messageId:messageId];
     return context;
 }
 
@@ -1791,7 +1828,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPInternalState sharedState].isInterfaceEditingEnabled) {
         LPLog(LPWarning, @"LeanplumUIEditor module is required to track all screens. "
-                         @"Call allowInterfaceEditing before this method.");
+              @"Call allowInterfaceEditing before this method.");
     }
     
     BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
@@ -1855,7 +1892,7 @@ BOOL inForeground = NO;
     
     NSString *valueStr = [NSString stringWithFormat:@"%f", value];
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                 valueStr, LP_PARAM_VALUE, nil];
+                                      valueStr, LP_PARAM_VALUE, nil];
     if (args) {
         [arguments addEntriesFromDictionary:args];
     }
@@ -1893,7 +1930,7 @@ BOOL inForeground = NO;
             event = [NSString stringWithFormat:@".m%@", messageId];
         }
     }
-
+    
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     contextualValues.parameters = params;
     NSMutableDictionary *contextualArguments = [args mutableCopy];
@@ -1901,7 +1938,7 @@ BOOL inForeground = NO;
         contextualArguments[LP_PARAM_PARAMS] = [LPJSON JSONFromString:args[LP_PARAM_PARAMS]];
     }
     contextualValues.arguments = contextualArguments;
-
+    
     [self maybePerformActions:@[@"event"]
                 withEventName:event
                    withFilter:kLeanplumActionFilterAll
@@ -1960,10 +1997,10 @@ andParameters:(NSDictionary *)params
     RETURN_IF_NOOP;
     LP_TRY
     NSDictionary *exceptionDict = @{
-        LP_KEY_REASON: exception.reason,
-        LP_KEY_USER_INFO: exception.userInfo,
-        LP_KEY_STACK_TRACE: exception.callStackSymbols
-    };
+                                    LP_KEY_REASON: exception.reason,
+                                    LP_KEY_USER_INFO: exception.userInfo,
+                                    LP_KEY_STACK_TRACE: exception.callStackSymbols
+                                    };
     NSString *info = [LPJSON stringFromJSON:exceptionDict];
     [self track:LP_EVENT_EXCEPTION withInfo:info];
     LP_END_TRY
@@ -2013,9 +2050,9 @@ andParameters:(NSDictionary *)params
     }
 
     [[LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:@{
-        LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
-        LP_PARAM_NEW_USER_ID: userId ? userId : @""
-    }] send];
+                                                                  LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
+                                                                  LP_PARAM_NEW_USER_ID: userId ? userId : @""
+                                                                  }] send];
 
     if (userId.length) {
         [LeanplumRequest setUserId:userId];
@@ -2086,8 +2123,8 @@ andParameters:(NSDictionary *)params
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
     [[LeanplumRequest post:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
-        LP_PARAM_TRAFFIC_SOURCE: info
-    }] send];
+                                                                      LP_PARAM_TRAFFIC_SOURCE: info
+                                                                      }] send];
 }
 
 + (void)advanceTo:(NSString *)state
@@ -2163,7 +2200,7 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-     [[LeanplumRequest post:LP_METHOD_PAUSE_STATE params:@{}] send];
+    [[LeanplumRequest post:LP_METHOD_PAUSE_STATE params:@{}] send];
 }
 
 + (void)resumeState
@@ -2200,9 +2237,9 @@ andParameters:(NSDictionary *)params
     }
     LP_TRY
     NSMutableDictionary *params = [@{
-        LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-        LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
-    } mutableCopy];
+                                     LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                     LP_PARAM_INBOX_MESSAGES: [[self inbox] messagesIds]
+                                     } mutableCopy];
     
     if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
@@ -2574,9 +2611,9 @@ void LPLog(LPLogType type, NSString *format, ...) {
 {
     LP_TRY
     NSMutableDictionary *params = [@{
-        LP_KEY_LOCATION: [NSString stringWithFormat:@"%.6f,%.6f", latitude, longitude],
-        LP_KEY_LOCATION_ACCURACY_TYPE: [self getLocationAccuracyTypeName:type]
-    } mutableCopy];
+                                     LP_KEY_LOCATION: [NSString stringWithFormat:@"%.6f,%.6f", latitude, longitude],
+                                     LP_KEY_LOCATION_ACCURACY_TYPE: [self getLocationAccuracyTypeName:type]
+                                     } mutableCopy];
     if (city) {
         params[LP_KEY_CITY] = city;
     }
@@ -2586,20 +2623,36 @@ void LPLog(LPLogType type, NSString *format, ...) {
     if (country) {
         params[LP_KEY_COUNTRY] = country;
     }
-
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        if (response) {
-            response(YES);
-        }
-    }];
-    [req onError:^(NSError *error) {
-        LPLog(LPError, @"setUserAttributes failed with error: %@", error);
-        if (response) {
-            response(NO);
-        }
-    }];
-    [req send];
+    
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *req = [LPRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if (response) {
+                response(YES);
+            }
+        }];
+        [req onError:^(NSError *error) {
+            LPLog(LPError, @"setUserAttributes failed with error: %@", error);
+            if (response) {
+                response(NO);
+            }
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
+    } else {
+        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if (response) {
+                response(YES);
+            }
+        }];
+        [req onError:^(NSError *error) {
+            LPLog(LPError, @"setUserAttributes failed with error: %@", error);
+            if (response) {
+                response(NO);
+            }
+        }];
+        [req send];
+    }
     LP_END_TRY
 }
 
