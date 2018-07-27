@@ -81,7 +81,7 @@ static NSObject *updatingLock;
         _deliveryTimestamp = deliveryTimestamp;
         _expirationTimestamp = expirationTimestamp;
         _isRead = isRead;
-        
+
         NSArray *messageIdParts = [messageId componentsSeparatedByString:@"##"];
         if ([messageIdParts count] != 2) {
             NSLog(@"Leanplum: Malformed inbox messageId: %@", messageId);
@@ -144,14 +144,14 @@ static NSObject *updatingLock;
     if (filePath) {
         return filePath;
     }
-    
+
     if (![LPConstantsState sharedState].isInboxImagePrefetchingEnabled) {
         LPLog(LPWarning, @"Inbox Message image path is null "
               "because you're calling [Leanplum disableImagePrefetching]. "
               "Consider using imageURL method or remove disableImagePrefetching.");
     }
     LP_END_TRY
-    
+
     return nil;
 }
 
@@ -164,11 +164,11 @@ static NSObject *updatingLock;
     if (filePath) {
         return [NSURL fileURLWithPath:filePath];
     }
-    
+
     NSString *imageURLString = [_context stringNamed:LP_KEY_IMAGE];
     return [NSURL URLWithString:imageURLString];
     LP_END_TRY
-    
+
     return nil;
 }
 
@@ -237,13 +237,13 @@ static NSObject *updatingLock;
     if (![LPConstantsState sharedState].isInboxImagePrefetchingEnabled) {
         return NO;
     }
-    
+
     NSString *imageURLString = [_context stringNamed:LP_KEY_IMAGE];
     if ([Utils isNullOrEmpty:imageURLString] ||
         [[Leanplum inbox].downloadedImageUrls containsObject:imageURLString]) {
         return NO;
     }
-    
+
     [[Leanplum inbox].downloadedImageUrls addObject:imageURLString];
     BOOL willDownloadFile = [LPFileManager maybeDownloadFile:imageURLString
                                                 defaultValue:nil
@@ -308,7 +308,7 @@ static NSObject *updatingLock;
                 LPInboxMessage *inboxMessage = [self messageForId:messageId];
                 willDownloadImages |= [inboxMessage downloadImageIfPrefetchingEnabled];
             }
-            
+
             // Trigger inbox changed when all images are downloaded.
             if (willDownloadImages) {
                 [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
@@ -406,7 +406,7 @@ static NSObject *updatingLock;
     for (NSInvocation *invocation in _inboxChangedResponders.copy) {
         [invocation invoke];
     }
-    
+
     for (LeanplumInboxChangedBlock block in _inboxChangedBlocks.copy) {
         block();
     }
@@ -507,7 +507,7 @@ static NSObject *updatingLock;
     LP_TRY
     return [[self messages] count];
     LP_END_TRY
-    
+
     return 0;
 }
 
@@ -522,7 +522,7 @@ static NSObject *updatingLock;
     }];
     return messagesIds;
     LP_END_TRY
-    
+
     return @[];
 }
 
@@ -556,7 +556,7 @@ static NSObject *updatingLock;
     LP_TRY
     return self.messages[messageId];
     LP_END_TRY
-    
+
     return nil;
 }
 

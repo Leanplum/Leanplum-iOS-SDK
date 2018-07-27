@@ -38,7 +38,7 @@
         ![LPAppIconManager supportsAlternateIcons]) {
         return;
     }
-    
+
     NSDictionary *alternativeIcons = [LPAppIconManager alternativeIconsBundle];
     if ([Utils isNullOrEmpty:alternativeIcons]) {
         LPLog(LPWarning, @"Your project does not contain any alternate app icons. "
@@ -46,7 +46,7 @@
               "https://support.leanplum.com/hc/en-us/articles/115001519046");
         return;
     }
-    
+
     // Prepare to upload primary and alternative icons.
     NSMutableArray *requestParam = [NSMutableArray new];
     NSMutableDictionary *requestDatas = [NSMutableDictionary new];
@@ -148,20 +148,20 @@
         if ([Utils isNullOrEmpty:iconName]) {
             continue;
         }
-        
+
         UIImage *iconImage = [UIImage imageNamed:iconImageName];
         if (!iconImage) {
             continue;
         }
-        
+
         NSData *iconData = UIImagePNGRepresentation(iconImage);
         if (!iconData) {
             continue;
         }
-        
+
         NSString *filekey = [NSString stringWithFormat:LP_PARAM_FILES_PATTERN, requestParam.count];
         requestDatas[filekey] = iconData;
-        
+
         NSString *filename = [NSString stringWithFormat:@"%@%@.png", LP_APP_ICON_FILE_PREFIX,
                               iconName];
         NSDictionary *param = @{LP_KEY_FILENAME: filename,
