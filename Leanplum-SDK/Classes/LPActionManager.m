@@ -78,7 +78,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
-    
+
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.
     NSString *tokenKey = [Leanplum pushTokenKey];
@@ -91,7 +91,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
                         params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
     }
     LP_END_TRY
-    
+
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterRemoteNotifications &&
         [self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
@@ -113,11 +113,11 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 {
     LP_TRY
     [self leanplum_disableAskToAsk];
-    
+
     [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:notificationSettings];
-    
+
     LP_END_TRY
-    
+
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterUserNotificationSettings &&
         [self respondsToSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)]) {
@@ -138,7 +138,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     LP_END_TRY
-    
+
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError &&
         [self respondsToSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)]) {
@@ -155,7 +155,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:nil];
     LP_END_TRY
-    
+
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveRemoteNotification &&
         [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:)]) {
@@ -171,7 +171,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
     LeanplumFetchCompletionBlock leanplumCompletionHandler;
-    
+
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler &&
         [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
@@ -180,7 +180,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     } else {
         leanplumCompletionHandler = completionHandler;
     }
-    
+
     // Prevents handling the notification twice if the original method calls handleNotification
     // explicitly.
     if (!state.calledHandleNotification) {
@@ -207,7 +207,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     ^(LeanplumUIBackgroundFetchResult result) {
         completionHandler();
     };
-    
+
     // Call overridden method.
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
                              withCompletionHandler:);
@@ -219,7 +219,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                didReceiveNotificationResponse:response
                         withCompletionHandler:completionHandler];
     }
-    
+
     // Prevents handling the notification twice if the original method calls handleNotification
     // explicitly.
     if (!state.calledHandleNotification) {
@@ -239,13 +239,13 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
  didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
     NSDictionary *userInfo = [localNotification userInfo];
-    
+
     LP_TRY
     [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:nil];
     LP_END_TRY
-    
+
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveLocalNotification &&
         [self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {

@@ -218,8 +218,7 @@ BOOL inForeground = NO;
             NSString *newPath = [[plugInsPath stringByAppendingPathComponent:filePath]
                                  stringByDeletingLastPathComponent];
             NSBundle *currentBundle = [NSBundle bundleWithPath:newPath];
-            NSDictionary *extensionKey =
-            [currentBundle objectForInfoDictionaryKey:@"NSExtension"];
+            NSDictionary *extensionKey = [currentBundle objectForInfoDictionaryKey:@"NSExtension"];
             if ([[extensionKey objectForKey:@"NSExtensionPrincipalClass"]
                  isEqualToString:@"NotificationService"]) {
                 return YES;
@@ -438,12 +437,12 @@ BOOL inForeground = NO;
 {
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState]
-         .variablesChangedResponders.copy) {
+            .variablesChangedResponders.copy) {
         [invocation invoke];
     }
 
     for (LeanplumVariablesChangedBlock block in [LPInternalState sharedState]
-         .variablesChangedBlocks.copy) {
+            .variablesChangedBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -453,12 +452,12 @@ BOOL inForeground = NO;
 {
     LP_BEGIN_USER_CODE
     for (NSInvocation *invocation in [LPInternalState sharedState]
-         .interfaceChangedResponders.copy) {
+            .interfaceChangedResponders.copy) {
         [invocation invoke];
     }
 
     for (LeanplumInterfaceChangedBlock block in [LPInternalState sharedState]
-         .interfaceChangedBlocks.copy) {
+            .interfaceChangedBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -470,9 +469,8 @@ BOOL inForeground = NO;
     for (NSInvocation *invocation in [LPInternalState sharedState].eventsChangedResponders.copy) {
         [invocation invoke];
     }
-    
-    for (LeanplumEventsChangedBlock block in [LPInternalState sharedState]
-         .eventsChangedBlocks.copy) {
+
+    for (LeanplumEventsChangedBlock block in [LPInternalState sharedState].eventsChangedBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -485,8 +483,7 @@ BOOL inForeground = NO;
         [invocation invoke];
     }
 
-    for (LeanplumVariablesChangedBlock block in [LPInternalState sharedState]
-         .noDownloadsBlocks.copy) {
+    for (LeanplumVariablesChangedBlock block in [LPInternalState sharedState].noDownloadsBlocks.copy) {
         block();
     }
     LP_END_USER_CODE
@@ -521,8 +518,7 @@ BOOL inForeground = NO;
             handled |= invocationHandled;
         }
 
-        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
-             [context.actionName]) {
+        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks [context.actionName]) {
             handled |= block(context);
         }
         LP_END_USER_CODE
