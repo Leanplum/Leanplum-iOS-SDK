@@ -27,9 +27,9 @@
     }
     LPActionArg *arg = [LPActionArg new];
     LP_TRY
-    arg->_name = name;
-    arg->_kind = kind;
-    arg->_defaultValue = defaultValue;
+    arg.name = name;
+    arg.kind = kind;
+    arg.defaultValue = defaultValue;
     if ([kind isEqualToString:LP_KIND_FILE]) {
         [LPVarCache registerFile:(NSString *) defaultValue
                 withDefaultValue:(NSString *) defaultValue];
