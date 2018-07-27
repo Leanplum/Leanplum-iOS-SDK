@@ -31,6 +31,11 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
 @implementation LPVar
 
+@synthesize stringValue=_stringValue;
+@synthesize numberValue=_numberValue;
+@synthesize hadStarted=_hadStarted;
+@synthesize hasChanged=_hasChanged;
+
 +(BOOL)printedCallbackWarning
 {
     return LPVAR_PRINTED_CALLBACK_WARNING;
@@ -56,7 +61,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
         
         [LPVarCache registerVariable:self];
         if ([kind isEqualToString:LP_KIND_FILE]) { // TODO: && var.stringValue)
-            [LPVarCache registerFile:self.stringValue withDefaultValue:self.defaultValue];
+            [LPVarCache registerFile:_stringValue withDefaultValue:_defaultValue];
         }
         if ([name hasPrefix:LP_VALUE_RESOURCES_VARIABLE]) {
             _isInternal = YES;
@@ -218,14 +223,14 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 {
     // Cache computed values.
     if ([_value isKindOfClass:NSString.class]) {
-        self.stringValue = (NSString *) self.value;
-        self.numberValue = [NSNumber numberWithDouble:[self.stringValue doubleValue]];
+        _stringValue = (NSString *) _value;
+        _numberValue = [NSNumber numberWithDouble:[_stringValue doubleValue]];
     } else if ([_value isKindOfClass:NSNumber.class]) {
-        self.stringValue = [NSString stringWithFormat:@"%@", self.value];
-        self.numberValue = (NSNumber *) self.value;
+        _stringValue = [NSString stringWithFormat:@"%@", _value];
+        _numberValue = (NSNumber *) _value;
     } else {
-        self.stringValue = nil;
-        self.numberValue = nil;
+        _stringValue = nil;
+        _numberValue = nil;
     }
 }
 
@@ -239,7 +244,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     [self cacheComputedValues];
     
     if (![_value isEqual:oldValue]) {
-        self.hasChanged = YES;
+        _hasChanged = YES;
     }
     
     if (LPVarCache.silent && [[self name] hasPrefix:LP_VALUE_RESOURCES_VARIABLE]
@@ -258,8 +263,8 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     // Check if file exists, otherwise we need to download it.
     // Ignore app icon. This is a special variable that only needs the filename.
     if ([_kind isEqualToString:LP_KIND_FILE]) {
-        if ([LPFileManager maybeDownloadFile:self.stringValue
-                                defaultValue:self.defaultValue
+        if ([LPFileManager maybeDownloadFile:_stringValue
+                                defaultValue:_defaultValue
                                   onComplete:^{[self triggerFileIsReady];}]) {
             _fileIsPending = YES;
         }
@@ -365,7 +370,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     LP_TRY
     [self warnIfNotStarted];
     if ([_kind isEqualToString:LP_KIND_FILE]) {
-        return [LPFileManager fileValue:self.stringValue withDefaultValue:self.defaultValue];
+        return [LPFileManager fileValue:_stringValue withDefaultValue:_defaultValue];
     }
     LP_END_TRY
     return nil;
@@ -434,13 +439,13 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (NSNumber *)numberValue
 {
     [self warnIfNotStarted];
-    return self.numberValue;
+    return _numberValue;
 }
 
 - (NSString *)stringValue
 {
     [self warnIfNotStarted];
-    return self.stringValue;
+    return _stringValue;
 }
 
 - (int)intValue { return [[self numberValue] intValue]; }
