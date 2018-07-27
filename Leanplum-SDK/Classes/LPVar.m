@@ -11,21 +11,29 @@
 
 static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
+@interface LPVar (PrivateProperties)
+
+@property (nonatomic) BOOL isInternal;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) NSArray *nameComponents;
+@property (nonatomic, strong) NSString *stringValue;
+@property (nonatomic, strong) NSNumber *numberValue;
+@property (nonatomic) BOOL hadStarted;
+@property (nonatomic, strong) id value;
+@property (nonatomic, strong) id defaultValue;
+@property (nonatomic, strong) NSString *kind;
+@property (nonatomic, strong) NSMutableArray *fileReadyBlocks;
+@property (nonatomic, strong) NSMutableArray *valueChangedBlocks;
+@property (nonatomic) BOOL fileIsPending;
+@property (nonatomic) BOOL hasChanged;
+
+@end
+
 @implementation LPVar
 
-@synthesize isInternal=_isInternal;
-@synthesize name=_name;
-@synthesize nameComponents=_nameComponents;
 @synthesize stringValue=_stringValue;
 @synthesize numberValue=_numberValue;
 @synthesize hadStarted=_hadStarted;
-@synthesize value=_value;
-@synthesize defaultValue=_defaultValue;
-@synthesize kind=_kind;
-@synthesize fileReadyBlocks=_fileReadyBlocks;
-@synthesize valueChangedBlocks=_valueChangedBlocks;
-@synthesize fileIsPending=_fileIsPending;
-@synthesize delegate=_delegate;
 @synthesize hasChanged=_hasChanged;
 
 +(BOOL)printedCallbackWarning
@@ -427,8 +435,6 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 }
 
 #pragma mark Value accessors
-
-- (BOOL)hasChanged { return _hasChanged; }
 
 - (NSNumber *)numberValue
 {

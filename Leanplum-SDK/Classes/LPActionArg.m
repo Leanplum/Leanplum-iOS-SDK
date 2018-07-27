@@ -9,11 +9,15 @@
 #import "Utils.h"
 #import "LPVarCache.h"
 
-@implementation LPActionArg : NSObject
+@interface LPActionArg (PrivateProperties)
 
-@synthesize name=_name;
-@synthesize kind=_kind;
-@synthesize defaultValue=_defaultValue;
+@property (nonatomic, strong) NSString *name;
+@property (nonatomic, strong) id defaultValue;
+@property (nonatomic, strong) NSString *kind;
+
+@end
+
+@implementation LPActionArg : NSObject
 
 + (LPActionArg *)argNamed:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
