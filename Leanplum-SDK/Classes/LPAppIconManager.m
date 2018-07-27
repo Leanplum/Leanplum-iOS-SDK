@@ -26,6 +26,9 @@
 #import "LeanplumRequest.h"
 #import "LeanplumInternal.h"
 #import "Utils.h"
+#import "LPRequest.h"
+#import "LPRequestManager.h"
+#import "LPFeatureFlagManager.h"
 
 @implementation LPAppIconManager
 
@@ -63,16 +66,29 @@
                                            iconName:key];
     }];
 
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_UPLOAD_FILE
-                                              params:@{@"data":
-                                                    [LPJSON stringFromJSON:requestParam]}];
-    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        LPLog(LPVerbose, @"App icons uploaded.");
-    }];
-    [request onError:^(NSError *error) {
-        LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
-    }];
-    [request sendDatasNow:requestDatas];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *request = [LPRequest post:LP_METHOD_UPLOAD_FILE
+                                      params:@{@"data":
+                                                   [LPJSON stringFromJSON:requestParam]}];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            LPLog(LPVerbose, @"App icons uploaded.");
+        }];
+        [request onError:^(NSError *error) {
+            LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
+        }];
+        [[LPRequestManager sharedManager] sendDatasNow:requestDatas request:request];
+    } else {
+        LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_UPLOAD_FILE
+                                                  params:@{@"data":
+                                                               [LPJSON stringFromJSON:requestParam]}];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            LPLog(LPVerbose, @"App icons uploaded.");
+        }];
+        [request onError:^(NSError *error) {
+            LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
+        }];
+        [request sendDatasNow:requestDatas];
+    }
 }
 
 #pragma mark - Private methods
