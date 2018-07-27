@@ -27,6 +27,7 @@
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
+#import "LPRequestManager.h"
 #import "LPActionManager.h"
 #import "FileMD5Hash.h"
 #import "LPKeychainWrapper.h"
@@ -422,9 +423,11 @@ static RegionInitBlock regionInitBlock;
 
             if (deviceId) {
                 [LeanplumRequest setDeviceId:deviceId];
+                [[LPRequestManager sharedManager] setDeviceId:deviceId];
             }
             if (userId) {
                 [LeanplumRequest setUserId:userId];
+                [[LPRequestManager sharedManager] setUserId:userId];
             }
             if (loggingEnabled) {
                 [LPConstantsState sharedState].loggingEnabled = YES;

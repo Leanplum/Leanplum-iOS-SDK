@@ -45,6 +45,9 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPRequest.h"
+#import "LPRequestManager.h"
+#import "LPFeatureFlagManager.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -958,18 +961,41 @@ BOOL inForeground = NO;
         }
         LP_END_TRY
     }];
-    [req onError:^(NSError *err) {
-        LP_TRY
-        state.hasStarted = YES;
-        state.startSuccessful = NO;
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *request = [LPRequest post:LP_METHOD_START params:params];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            [self startSuccessCompletionResponse:response];
+        }];
+        [request onError:^(NSError *err) {
+            LP_TRY
+            state.hasStarted = YES;
+            state.startSuccessful = NO;
 
-        // Load the variables that were stored on the device from the last session.
-        [LPVarCache loadDiffs];
-        LP_END_TRY
+            // Load the variables that were stored on the device from the last session.
+            [LPVarCache loadDiffs];
+            LP_END_TRY
 
-        [self triggerStartResponse:NO];
-    }];
-    [req sendIfConnected];
+            [self triggerStartResponse:NO];
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:request];
+    } else {
+        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            [self startSuccessCompletionResponse:response];
+        }];
+        [req onError:^(NSError *err) {
+            LP_TRY
+            state.hasStarted = YES;
+            state.startSuccessful = NO;
+
+            // Load the variables that were stored on the device from the last session.
+            [LPVarCache loadDiffs];
+            LP_END_TRY
+
+            [self triggerStartResponse:NO];
+        }];
+        [req sendIfConnected];
+    }
     [self triggerStartIssued];
 
     // Pause.
@@ -1069,6 +1095,109 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
++ (void)startSuccessCompletionResponse:(NSDictionary *)response {
+    LPInternalState *state = [LPInternalState sharedState];
+    LP_TRY
+    state.hasStarted = YES;
+    state.startSuccessful = YES;
+    NSDictionary *values = response[LP_KEY_VARS];
+    NSString *token = response[LP_KEY_TOKEN];
+    NSDictionary *messages = response[LP_KEY_MESSAGES];
+    NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
+    NSArray *eventRules = response[LP_KEY_EVENT_RULES];
+    NSArray *variants = response[LP_KEY_VARIANTS];
+    NSDictionary *regions = response[LP_KEY_REGIONS];
+    NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
+    [LPVarCache setVariantDebugInfo:variantDebugInfo];
+
+    [LeanplumRequest setToken:token];
+    [LeanplumRequest saveToken];
+    [LPVarCache applyVariableDiffs:values
+                          messages:messages
+                       updateRules:updateRules
+                        eventRules:eventRules
+                          variants:variants
+                           regions:regions
+                  variantDebugInfo:variantDebugInfo];
+
+    if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
+        [[self inbox] downloadMessages];
+    }
+
+    if ([response[LP_KEY_LOGGING_ENABLED] boolValue]) {
+        [LPConstantsState sharedState].loggingEnabled = YES;
+    }
+
+    // TODO: Need to call this if we fix encryption.
+    // [LPVarCache saveUserAttributes];
+    [self triggerStartResponse:YES];
+
+    // Allow bidirectional realtime variable updates.
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        // Register device.
+        if (registrationEmail && ![response[LP_KEY_IS_REGISTERED] boolValue]) {
+            state.registration = [[LPRegisterDevice alloc] initWithCallback:^(BOOL success) {
+                if (success) {
+                    [Leanplum onHasStartedAndRegisteredAsDeveloper];
+                }}];
+            [state.registration registerDevice:registrationEmail];
+        } else if ([response[LP_KEY_IS_REGISTERED_FROM_OTHER_APP] boolValue]) {
+            // Show if registered from another app ID.
+            [LPUIAlert showWithTitle:@"Leanplum"
+                             message:@"Your device is registered."
+                   cancelButtonTitle:NSLocalizedString(@"OK", nil)
+                   otherButtonTitles:nil
+                               block:nil];
+        } else {
+            // Check for updates.
+            NSString *latestVersion = response[LP_KEY_LATEST_VERSION];
+            if (latestVersion) {
+                NSLog(@"Leanplum: A newer version of the SDK, %@, is available. Please go to "
+                      @"leanplum.com to download it.", latestVersion);
+            }
+        }
+
+        NSDictionary *valuesFromCode = response[LP_KEY_VARS_FROM_CODE];
+        NSDictionary *actionDefinitions = response[LP_PARAM_ACTION_DEFINITIONS];
+        NSDictionary *fileAttributes = response[LP_PARAM_FILE_ATTRIBUTES];
+
+        [LeanplumRequest setUploadUrl:response[LP_KEY_UPLOAD_URL]];
+        [LPVarCache setDevModeValuesFromServer:valuesFromCode
+                                fileAttributes:fileAttributes
+                             actionDefinitions:actionDefinitions];
+        [[LeanplumSocket sharedSocket] connectToAppId:LeanplumRequest.appId
+                                             deviceId:LeanplumRequest.deviceId];
+        if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
+            [Leanplum onHasStartedAndRegisteredAsDeveloper];
+        }
+    } else {
+        // TODO: Report latency for 0.1% of users.
+        //        // Report latency for 0.1% of users.
+        //        NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
+        //        if (arc4random() % 1000 == 0) {
+        //            [[LeanplumRequest post:LP_METHOD_LOG
+        //                            params:@{
+        //                                     LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
+        //                                     @"startLatency": [@(latency) description]
+        //                                     }] send];
+        //        }
+    }
+
+    // Upload alternative app icons.
+    [LPAppIconManager uploadAppIconsOnDevMode];
+
+    //    if (!startedInBackground) {
+    //        inForeground = YES;
+    //        [self maybePerformActions:@[@"start", @"resume"]
+    //                    withEventName:nil
+    //                       withFilter:kLeanplumActionFilterAll
+    //                    fromMessageId:nil
+    //             withContextualValues:nil];
+    //        [self recordAttributeChanges];
+    //    }
+    LP_END_TRY
+}
+
 // On first run with Leanplum, determine if this app was previously installed without Leanplum.
 // This is useful for detecting if the user may have already rejected notifications.
 + (NSDictionary *)initializePreLeanplumInstall
@@ -1135,14 +1264,25 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
-    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        finishTaskHandler();
-    }];
-    [request onError:^(NSError *error) {
-        finishTaskHandler();
-    }];
-    [request sendIfConnected];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *request = [LPRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            finishTaskHandler();
+        }];
+        [request onError:^(NSError *error) {
+            finishTaskHandler();
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:request];
+    } else {
+        LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+        [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            finishTaskHandler();
+        }];
+        [request onError:^(NSError *error) {
+            finishTaskHandler();
+        }];
+        [request sendIfConnected];
+    }
 }
 
 + (void)resume
@@ -2587,19 +2727,35 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        if (response) {
-            response(YES);
-        }
-    }];
-    [req onError:^(NSError *error) {
-        LPLog(LPError, @"setUserAttributes failed with error: %@", error);
-        if (response) {
-            response(NO);
-        }
-    }];
-    [req send];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *req = [LPRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if (response) {
+                response(YES);
+            }
+        }];
+        [req onError:^(NSError *error) {
+            LPLog(LPError, @"setUserAttributes failed with error: %@", error);
+            if (response) {
+                response(NO);
+            }
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
+    } else {
+        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if (response) {
+                response(YES);
+            }
+        }];
+        [req onError:^(NSError *error) {
+            LPLog(LPError, @"setUserAttributes failed with error: %@", error);
+            if (response) {
+                response(NO);
+            }
+        }];
+        [req send];
+    }
     LP_END_TRY
 }
 

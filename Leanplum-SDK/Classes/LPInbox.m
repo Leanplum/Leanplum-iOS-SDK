@@ -33,6 +33,9 @@
 #import "LPKeychainWrapper.h"
 #import "LPFileManager.h"
 #import "Utils.h"
+#import "LPRequest.h"
+#import "LPRequestManager.h"
+#import "LPFeatureFlagManager.h"
 
 static NSObject *updatingLock;
 
@@ -188,12 +191,16 @@ static NSObject *updatingLock;
         RETURN_IF_NOOP;
         LP_TRY
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
-        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
-                                              params:params];
-        [req send];
+        if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+            LPRequest *req = [LPRequest post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ params:params];
+            [[LPRequestManager sharedManager] sendRequest:req];
+        } else {
+            LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
+                                                  params:params];
+            [req send];
+        }
         LP_END_TRY
     }
-    
     LP_TRY
     [[self context] runTrackedActionNamed:LP_VALUE_DEFAULT_PUSH_ACTION];
     LP_END_TRY
@@ -367,9 +374,14 @@ static NSObject *updatingLock;
     [[LPInbox sharedState] updateMessages:_messages unreadCount:unreadCount];
     
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_DELETE_INBOX_MESSAGE
-                                          params:params];
-    [req send];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *req = [LPRequest post:LP_METHOD_DELETE_INBOX_MESSAGE params:params];
+        [[LPRequestManager sharedManager] sendRequest:req];
+    } else {
+        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_DELETE_INBOX_MESSAGE
+                                              params:params];
+        [req send];
+    }
     LP_END_TRY
 }
 
@@ -409,64 +421,81 @@ static NSObject *updatingLock;
 
 #pragma mark - LPInbox methods
 
+-(void)downloadMessagesSuccessResponse:(NSDictionary *)response {
+    NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
+    NSUInteger unreadCount = 0;
+    NSMutableDictionary *messages = [[NSMutableDictionary alloc] init];
+    BOOL willDownloadImage = NO;
+
+    for (NSString *messageId in messagesDict) {
+        NSDictionary *messageDict = messagesDict[messageId];
+        NSDictionary *actionArgs = messageDict[LP_KEY_MESSAGE_DATA][LP_KEY_VARS];
+        NSDate *deliveryTimestamp = [NSDate dateWithTimeIntervalSince1970:
+                                     [messageDict[LP_KEY_DELIVERY_TIMESTAMP] doubleValue] / 1000.0];
+        NSDate *expirationTimestamp = nil;
+        if (messageDict[LP_KEY_EXPIRATION_TIMESTAMP]) {
+            expirationTimestamp = [NSDate dateWithTimeIntervalSince1970:
+                                   [messageDict[LP_KEY_EXPIRATION_TIMESTAMP] doubleValue] / 1000.0];
+        }
+        BOOL isRead = [messageDict[LP_KEY_IS_READ] boolValue];
+
+        LPInboxMessage *message = [[LPInboxMessage alloc] initWithMessageId:messageId
+                                                          deliveryTimestamp:deliveryTimestamp
+                                                        expirationTimestamp:expirationTimestamp
+                                                                     isRead:isRead
+                                                                 actionArgs:actionArgs];
+        if (!message) {
+            continue;
+        }
+
+        if (!isRead) {
+            unreadCount++;
+        }
+        willDownloadImage |= [message downloadImageIfPrefetchingEnabled];
+        messages[messageId] = message;
+    }
+
+    // Trigger inbox changed when all images are downloaded.
+    if (willDownloadImage) {
+        [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
+            LP_END_USER_CODE
+            [self updateMessages:messages unreadCount:unreadCount];
+            [self triggerInboxSyncedWithStatus:YES];
+            LP_BEGIN_USER_CODE
+        }];
+    } else {
+        [self updateMessages:messages unreadCount:unreadCount];
+        [self triggerInboxSyncedWithStatus:YES];
+    }
+}
+
 - (void)downloadMessages
 {
     RETURN_IF_NOOP;
     LP_TRY
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
-        LP_TRY
-        NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
-        NSUInteger unreadCount = 0;
-        NSMutableDictionary *messages = [[NSMutableDictionary alloc] init];
-        BOOL willDownloadImage = NO;
-        
-        for (NSString *messageId in messagesDict) {
-            NSDictionary *messageDict = messagesDict[messageId];
-            NSDictionary *actionArgs = messageDict[LP_KEY_MESSAGE_DATA][LP_KEY_VARS];
-            NSDate *deliveryTimestamp = [NSDate dateWithTimeIntervalSince1970:
-                                [messageDict[LP_KEY_DELIVERY_TIMESTAMP] doubleValue] / 1000.0];
-            NSDate *expirationTimestamp = nil;
-            if (messageDict[LP_KEY_EXPIRATION_TIMESTAMP]) {
-                expirationTimestamp = [NSDate dateWithTimeIntervalSince1970:
-                                [messageDict[LP_KEY_EXPIRATION_TIMESTAMP] doubleValue] / 1000.0];
-            }
-            BOOL isRead = [messageDict[LP_KEY_IS_READ] boolValue];
-            
-            LPInboxMessage *message = [[LPInboxMessage alloc] initWithMessageId:messageId
-                                                              deliveryTimestamp:deliveryTimestamp
-                                                            expirationTimestamp:expirationTimestamp
-                                                                         isRead:isRead
-                                                                     actionArgs:actionArgs];
-            if (!message) {
-                continue;
-            }
-
-            if (!isRead) {
-                unreadCount++;
-            }
-            willDownloadImage |= [message downloadImageIfPrefetchingEnabled];
-            messages[messageId] = message;
-        }
-
-        // Trigger inbox changed when all images are downloaded.
-        if (willDownloadImage) {
-            [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
-                LP_END_USER_CODE
-                [self updateMessages:messages unreadCount:unreadCount];
-                [self triggerInboxSyncedWithStatus:YES];
-                LP_BEGIN_USER_CODE
-            }];
-        } else {
-            [self updateMessages:messages unreadCount:unreadCount];
-            [self triggerInboxSyncedWithStatus:YES];
-        }
-        LP_END_TRY
-    }];
-    [req onError:^(NSError *error) {
-        [self triggerInboxSyncedWithStatus:NO];
-    }];
-    [req sendIfConnected];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+        LPRequest *req = [LPRequest post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            LP_TRY
+            [self downloadMessagesSuccessResponse:response];
+            LP_END_TRY
+        }];
+        [req onError:^(NSError *error) {
+            [self triggerInboxSyncedWithStatus:NO];
+        }];
+        [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
+    } else {
+        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
+        [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            LP_TRY
+            [self downloadMessagesSuccessResponse:response];
+            LP_END_TRY
+        }];
+        [req onError:^(NSError *error) {
+            [self triggerInboxSyncedWithStatus:NO];
+        }];
+        [req sendIfConnected];
+    }
     LP_END_TRY
 }
 
