@@ -14,17 +14,15 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 @implementation LPActionContext
 
-@synthesize private_Name=_name;
-@synthesize private_MessageId=_messageId;
-@synthesize private_OriginalMessageId=_originalMessageId;
-@synthesize private_Priority=_priority;
-@synthesize private_Args=_args;
-@synthesize private_ParentContext=_parentContext;
-@synthesize private_ContentVersion=_contentVersion;
-@synthesize private_Key=_key;
-@synthesize private_PreventRealtimeUpdating=_preventRealtimeUpdating;
-@synthesize private_IsRooted=_isRooted;
-@synthesize private_IsPreview=_isPreview;
+@synthesize name=_name;
+@synthesize messageId=_messageId;
+@synthesize originalMessageId=_originalMessageId;
+@synthesize priority=_priority;
+@synthesize args=_args;
+@synthesize parentContext=_parentContext;
+@synthesize contentVersion=_contentVersion;
+@synthesize key=_key;
+@synthesize preventRealtimeUpdating=_preventRealtimeUpdating;
 @synthesize contextualValues=_contextualValues;
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
@@ -58,34 +56,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return context;
 }
 
-- (NSString *)messageId
-{
-    return _messageId;
-}
-
-- (NSString *)originalMessageId
-{
-    return _originalMessageId;
-}
-
-- (NSNumber *)priority
-{
-    return _priority;
-}
-
 - (void)preventRealtimeUpdating
 {
     _preventRealtimeUpdating = YES;
-}
-
-- (void)setIsRooted:(BOOL)value
-{
-    _isRooted = value;
-}
-
-- (void)setIsPreview:(BOOL)value
-{
-    _isPreview = value;
 }
 
 - (NSDictionary *)defaultValues
@@ -187,11 +160,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (NSString *)actionName
 {
     return _name;
-}
-
-- (NSDictionary *)args
-{
-    return _args;
 }
 
 - (void)setProperArgs

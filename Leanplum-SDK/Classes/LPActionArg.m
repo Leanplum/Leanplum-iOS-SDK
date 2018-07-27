@@ -11,9 +11,9 @@
 
 @implementation LPActionArg : NSObject
 
-@synthesize private_Name=_name;
-@synthesize private_Kind=_kind;
-@synthesize private_DefaultValue=_defaultValue;
+@synthesize name=_name;
+@synthesize kind=_kind;
+@synthesize defaultValue=_defaultValue;
 
 + (LPActionArg *)argNamed:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
@@ -78,21 +78,6 @@
 + (LPActionArg *)argNamed:(NSString *)name withColor:(UIColor *)defaultValue
 {
     return [self argNamed:name with:@(leanplum_colorToInt(defaultValue)) kind:LP_KIND_COLOR];
-}
-
-- (NSString *)name
-{
-    return _name;
-}
-
-- (id)defaultValue
-{
-    return _defaultValue;
-}
-
-- (NSString *)kind
-{
-    return _kind;
 }
 
 @end
