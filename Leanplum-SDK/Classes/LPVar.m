@@ -348,7 +348,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (void)setDelegate:(id<LPVarDelegate>)delegate
 {
     LP_TRY
-    self.delegate = delegate;
+    _delegate = delegate;
     if ([LPInternalState sharedState].hasStarted && !_fileIsPending) {
         [self triggerFileIsReady];
     }
