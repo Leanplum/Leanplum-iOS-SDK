@@ -15,12 +15,12 @@ jobs:
 
       # Install CocoaPods
       - run:
-          name: Install CocoaPods
-          command: pod install
+          name: Build Project
+          command: ./build.sh
 
       # Build the app and run tests
       - run:
-          name: Build and run tests
+          name: Run tests
           command: fastlane scan
           environment:
             SCAN_DEVICE: iPhone 6
