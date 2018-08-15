@@ -190,7 +190,7 @@ EOF
 
   # Copy headers.
   cp "$SDK_DIR/Leanplum-SDK/Classes/Leanplum.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
-  cp "$SDK_DIR/Leanplum-SDK/Classes/LPInbox.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
+  cp "$SDK_DIR/Leanplum-SDK/Classes/Features/Inbox/LPInbox.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
 
   printf "%s\n" "Successfully built Leanplum-SDK (iOS) Framework."
 }
