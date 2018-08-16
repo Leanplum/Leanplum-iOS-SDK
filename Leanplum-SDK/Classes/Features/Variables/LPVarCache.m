@@ -864,6 +864,16 @@ static RegionInitBlock regionInitBlock;
     actionDefinitions[name] = definition;
 }
 
++ (void)clearUserContent
+{
+    diffs = nil;
+    messageDiffs = nil;
+    messages = nil;
+    variants = nil;
+    variantDebugInfo = nil;
+    vars = nil;
+}
+
 // Resets the VarCache to stock state. Used for testing purposes.
 + (void)reset
 {

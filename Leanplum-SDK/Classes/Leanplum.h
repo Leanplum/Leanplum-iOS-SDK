@@ -370,6 +370,13 @@ typedef enum {
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
 /**
+ * Clear all local variables and messages.
+ * This should be typically called when a user logs out of your app. Variables will
+ * start sending default values until the server sends updated content.
+ */
++ (void)clearUserContent;
+
+/**
  * @{
  * Defines new action and message types to be performed at points set up on the Leanplum dashboard.
  */

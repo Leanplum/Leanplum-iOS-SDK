@@ -1448,6 +1448,10 @@ BOOL inForeground = NO;
     }
 }
 
++ (void)clearUserContent {
+    [LPVarCache clearUserContent];
+}
+
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector
 {
     if (!responder) {
