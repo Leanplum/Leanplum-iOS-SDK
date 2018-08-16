@@ -48,12 +48,6 @@
 + (NSString *)base64EncodedStringFromData:(NSData *)data;
 
 /**
- * Returns unicode encoded string for supporting international
- * characters in URL
- */
-+ (NSString *)urlEncodedStringFromString:(NSString *)urlString;
-
-/**
  * Initialize exception handling
  */
 + (void)initExceptionHandling;

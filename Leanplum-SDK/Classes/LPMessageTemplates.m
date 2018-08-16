@@ -29,7 +29,6 @@
 #import "LPMessageTemplates.h"
 #import <QuartzCore/QuartzCore.h>
 #import <StoreKit/StoreKit.h>
-#import "Utils.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -324,7 +323,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
                      dispatch_async(dispatch_get_main_queue(), ^{
-                         NSString *encodedURLString = [Utils urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
+                         NSString *encodedURLString = [[self class] urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
                          NSURL *url = [NSURL URLWithString: encodedURLString];
                          if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
                              [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
@@ -1439,5 +1438,19 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 }
 
 #endif
+
+/**
+ * Helper method
+ */
+
++ (NSString *)urlEncodedStringFromString:(NSString *)urlString {
+    NSString *unreserved = @":-._~/?&=";
+    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
+                                      alphanumericCharacterSet];
+    [allowed addCharactersInString:unreserved];
+    return [urlString
+            stringByAddingPercentEncodingWithAllowedCharacters:
+            allowed];
+}
 
 @end

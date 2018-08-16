@@ -79,11 +79,4 @@
     XCTAssertEqualObjects(base64String, expectedSring);
 }
 
-- (void)test_urlEncodedStringFromString {
-    XCTAssertEqualObjects([Utils urlEncodedStringFromString:@"http://www.leanplum.com"], @"http://www.leanplum.com");
-    XCTAssertEqualObjects([Utils urlEncodedStringFromString:@"http://www.leanplum.com?q=simple_english1&test=2"], @"http://www.leanplum.com?q=simple_english1&test=2");
-    XCTAssertEqualObjects([Utils urlEncodedStringFromString:@"https://ramsey.tfaforms.net/356302?id={}"], @"https://ramsey.tfaforms.net/356302?id=%7B%7D");
-    XCTAssertEqualObjects([Utils urlEncodedStringFromString:@"lomotif://music/月亮"], @"lomotif://music/%E6%9C%88%E4%BA%AE");
-}
-
 @end
