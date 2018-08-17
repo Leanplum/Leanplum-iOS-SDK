@@ -872,6 +872,12 @@ static RegionInitBlock regionInitBlock;
     variants = nil;
     variantDebugInfo = nil;
     vars = nil;
+    userAttributes = nil;
+
+    devModeValuesFromServer = nil;
+    devModeFileAttributesFromServer = nil;
+    devModeActionDefinitionsFromServer = nil;
+
 }
 
 // Resets the VarCache to stock state. Used for testing purposes.
