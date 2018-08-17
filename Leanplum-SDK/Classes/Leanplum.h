@@ -370,6 +370,13 @@ typedef enum {
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
 /**
+ * Clears cached values for messages, variables and test assignments.
+ * Use sparingly as if the app is updated, you'll have to deal with potentially
+ * inconsistent state or user experience.
+ */
++ (void)clearUserContent;
+
+/**
  * @{
  * Defines new action and message types to be performed at points set up on the Leanplum dashboard.
  */

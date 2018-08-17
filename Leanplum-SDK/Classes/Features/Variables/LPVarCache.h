@@ -73,6 +73,8 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 + (NSDictionary *)variantDebugInfo;
 + (void)setVariantDebugInfo:(NSDictionary *)variantDebugInfo;
 
++ (void)clearUserContent;
+
 // Handling actions.
 + (NSDictionary *)actionDefinitions;
 + (NSDictionary *)messages;
