@@ -72,16 +72,6 @@
 
 }
 
-+(NSString *)urlEncodedStringFromString:(NSString *)urlString {
-    NSString *unreserved = @":-._~/?&=";
-    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
-                                      alphanumericCharacterSet];
-    [allowed addCharactersInString:unreserved];
-    return [urlString
-            stringByAddingPercentEncodingWithAllowedCharacters:
-            allowed];
-}
-
 + (void)initExceptionHandling
 {
     [LPExceptionHandler sharedExceptionHandler];

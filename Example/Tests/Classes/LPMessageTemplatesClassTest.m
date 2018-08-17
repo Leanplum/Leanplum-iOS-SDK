@@ -38,6 +38,7 @@
 @interface LPMessageTemplatesClass (Test)
 + (UIImage *)imageFromColor:(UIColor *)color;
 + (UIImage *)dismissImage:(UIColor *)color withSize:(int)size;
++ (NSString *)urlEncodedStringFromString:(NSString *)urlString;
 
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk;
 - (void)updatePopupLayout;
@@ -123,6 +124,13 @@
     XCTAssertNotNil(acceptButton);
     id cancelButton = [[LPMessageTemplatesClass sharedTemplates] valueForKey:@"_cancelButton"];
     XCTAssertNotNil(cancelButton);
+}
+
+- (void)test_urlEncodedStringFromString {
+    XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"http://www.leanplum.com"], @"http://www.leanplum.com");
+    XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"http://www.leanplum.com?q=simple_english1&test=2"], @"http://www.leanplum.com?q=simple_english1&test=2");
+    XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"https://ramsey.tfaforms.net/356302?id={}"], @"https://ramsey.tfaforms.net/356302?id=%7B%7D");
+    XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"lomotif://music/月亮"], @"lomotif://music/%E6%9C%88%E4%BA%AE");
 }
 
 @end
