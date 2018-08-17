@@ -1,9 +1,9 @@
 //
-//  LeanplumRequest.h
+//  LPRequestManager.h
 //  Leanplum
 //
-//  Created by Andrew First on 4/30/12.
-//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
+//  Created by Mayank Sanganeria on 6/30/18.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -26,6 +26,7 @@
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
 
+<<<<<<< HEAD
 @interface LPRequestManager : NSObject {
 @private
     NSString *_httpMethod;
@@ -35,55 +36,49 @@
     LPNetworkErrorBlock _error;
     BOOL _sent;
 }
+=======
+@class LPRequest;
+>>>>>>> refactor request class
 
-+ (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
-+ (void)setDeviceId:(NSString *)deviceId;
-+ (void)setUserId:(NSString *)userId;
-+ (void)setUploadUrl:(NSString *)url;
+@interface LPRequestManager : NSObject
 
-+ (NSString *)deviceId;
-+ (NSString *)userId;
-+ (void)setToken:(NSString *)token;
-+ (void)loadToken;
-+ (void)saveToken;
+@property (nonatomic, readonly) NSString *appId;
+@property (nonatomic, strong) NSString *deviceId;
+@property (nonatomic, strong) NSString *userId;
+@property (nonatomic, strong) NSString *token;
+@property (nonatomic, strong) NSDictionary *requestHeaders;
 
-+ (NSString *)appId;
-+ (NSString *)token;
++ (instancetype)sharedManager;
 
+- (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
+
+- (void)loadToken;
+- (void)saveToken;
+
+- (NSDictionary *)createHeaders;
+- (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request;
 - (void)attachApiKeys:(NSMutableDictionary *)dict;
 
-- (id)initWithHttpMethod:(NSString *)httpMethod apiMethod:(NSString *)apiMethod
-    params:(NSDictionary *)params;
+// Files transfer
+@property (nonatomic, strong) NSString *uploadUrl;
 
-+ (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
-+ (LeanplumRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
-
-- (void)onResponse:(LPNetworkResponseBlock)response;
-- (void)onError:(LPNetworkErrorBlock)error;
-
-- (void)send;
-- (void)sendNow;
-- (void)sendEventually;
-- (void)sendIfConnected;
-- (void)sendIfConnectedSync:(BOOL)sync;
+- (void)sendRequest:(LPRequest *)request;
+- (void)sendNowRequest:(LPRequest *)request;
+- (void)sendEventuallyRequest:(LPRequest *)request;
+- (void)sendIfConnectedRequest:(LPRequest *)request;;
+- (void)sendIfConnectedSync:(BOOL)sync request:(LPRequest *)request;
 // Sends the request if another request hasn't been sent within a particular time delay.
-- (void)sendIfDelayed;
-- (void)sendFilesNow:(NSArray *)filenames;
+- (void)sendIfDelayedRequest:(LPRequest *)request;
 
 /**
  * Sends one data. Uses sendDatasNow: internally. See this method for more information.
  */
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key;
+- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(LPRequest *)request;
 
 /**
  * Send datas where key is the name and object is the data.
  * For example, key can be "file0" and object is NSData of png.
  */
-- (void)sendDatasNow:(NSDictionary *)datas;
-
-- (void)downloadFile:(NSString *)path;
-
-+ (int)numPendingDownloads;
-+ (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block;
+- (void)sendDatasNow:(NSDictionary *)datas request:(LPRequest *)request;
 
 @end

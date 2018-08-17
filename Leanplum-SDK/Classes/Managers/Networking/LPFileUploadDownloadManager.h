@@ -1,9 +1,9 @@
 //
-//  LeanplumRequest.h
+//  LPFileUploadManager.h
 //  Leanplum
 //
-//  Created by Andrew First on 4/30/12.
-//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
+//  Created by Mayank Sanganeria on 6/30/18.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -26,6 +26,7 @@
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
 
+<<<<<<< HEAD
 @interface LPFileUploadDownloadManager : NSObject {
 @private
     NSString *_httpMethod;
@@ -35,55 +36,17 @@
     LPNetworkErrorBlock _error;
     BOOL _sent;
 }
+=======
+@interface LPFileUploadDownloadManager : NSObject
+>>>>>>> refactor request class
 
-+ (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
-+ (void)setDeviceId:(NSString *)deviceId;
-+ (void)setUserId:(NSString *)userId;
-+ (void)setUploadUrl:(NSString *)url;
+@property (nonatomic, strong) NSString *uploadUrl;
+@property (nonatomic, readonly) int numPendingDownloads;
 
-+ (NSString *)deviceId;
-+ (NSString *)userId;
-+ (void)setToken:(NSString *)token;
-+ (void)loadToken;
-+ (void)saveToken;
++ (instancetype)sharedManager;
+- (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData;
 
-+ (NSString *)appId;
-+ (NSString *)token;
-
-- (void)attachApiKeys:(NSMutableDictionary *)dict;
-
-- (id)initWithHttpMethod:(NSString *)httpMethod apiMethod:(NSString *)apiMethod
-    params:(NSDictionary *)params;
-
-+ (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
-+ (LeanplumRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
-
-- (void)onResponse:(LPNetworkResponseBlock)response;
-- (void)onError:(LPNetworkErrorBlock)error;
-
-- (void)send;
-- (void)sendNow;
-- (void)sendEventually;
-- (void)sendIfConnected;
-- (void)sendIfConnectedSync:(BOOL)sync;
-// Sends the request if another request hasn't been sent within a particular time delay.
-- (void)sendIfDelayed;
-- (void)sendFilesNow:(NSArray *)filenames;
-
-/**
- * Sends one data. Uses sendDatasNow: internally. See this method for more information.
- */
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key;
-
-/**
- * Send datas where key is the name and object is the data.
- * For example, key can be "file0" and object is NSData of png.
- */
-- (void)sendDatasNow:(NSDictionary *)datas;
-
-- (void)downloadFile:(NSString *)path;
-
-+ (int)numPendingDownloads;
-+ (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block;
+- (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock;
+- (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)noPendingDownloadsBlock;
 
 @end

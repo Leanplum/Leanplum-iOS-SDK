@@ -1,9 +1,9 @@
 //
-//  LeanplumRequest.m
+//  LPFileUploadManager.m
 //  Leanplum
 //
-//  Created by Andrew First on 4/30/12.
-//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
+//  Created by Mayank Sanganeria on 6/30/18.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,280 +22,98 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Leanplum.h"
+#import "LPFileUploadDownloadManager.h"
 #import "LeanplumInternal.h"
+<<<<<<< HEAD
 #import "LeanplumRequest.h"
 #import "LPFileUploadDownloadManager.h"
+=======
+#import "LPRequest.h"
+#import "LPRequestManager.h"
+>>>>>>> refactor request class
 #import "LPResponse.h"
-#import "Constants.h"
 #import "LPFileManager.h"
-#import "NSTimer+Blocks.h"
-#import "LPKeychainWrapper.h"
-#import "LPEventDataManager.h"
-#import "LPEventCallbackManager.h"
 
-static id<LPNetworkEngineProtocol> engine;
-static NSString *appId;
-static NSString *accessKey;
-static NSString *deviceId;
-static NSString *userId;
-static NSString *uploadUrl;
-static NSMutableDictionary *fileTransferStatus;
-static int pendingDownloads;
-static LeanplumVariablesChangedBlock noPendingDownloadsBlock;
-static NSString *token = nil;
-static NSMutableDictionary *fileUploadSize;
-static NSMutableDictionary *fileUploadProgress;
-static NSString *fileUploadProgressString;
-static NSMutableDictionary *pendingUploads;
-static NSTimeInterval lastSentTime;
-static NSDictionary *_requestHheaders;
+@interface LPFileUploadDownloadManager()
+
+<<<<<<< HEAD
+@implementation LPFileUploadDownloadManager
+=======
+@property (nonatomic, strong) NSMutableDictionary *fileTransferStatus;
+>>>>>>> refactor request class
+
+@property (nonatomic, strong) NSMutableDictionary *fileUploadSize;
+@property (nonatomic, strong) NSMutableDictionary *fileUploadProgress;
+@property (nonatomic, strong) NSString *fileUploadProgressString;
+@property (nonatomic, strong) NSMutableDictionary *pendingUploads;
+@property (nonatomic, strong) NSDictionary *requestHeaders;
+
+@property (nonatomic, assign) int pendingDownloads;
+@property (nonatomic, strong) LeanplumVariablesChangedBlock noPendingDownloadsBlock;
+
+@property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
+
+@end
+
 
 @implementation LPFileUploadDownloadManager
 
-+ (void)setAppId:(NSString *)appId_ withAccessKey:(NSString *)accessKey_
-{
-    appId = appId_;
-    accessKey = accessKey_;
-    fileTransferStatus = [[NSMutableDictionary alloc] init];
-    fileUploadSize = [NSMutableDictionary dictionary];
-    fileUploadProgress = [NSMutableDictionary dictionary];
-    pendingUploads = [NSMutableDictionary dictionary];
++ (instancetype)sharedManager {
+    static LPFileUploadDownloadManager *sharedManager = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedManager = [[self alloc] init];
+    });
+    return sharedManager;
 }
 
-+ (void)setUserId:(NSString *)userId_
-{
-    userId = userId_;
-}
-
-+ (void)setDeviceId:(NSString *)deviceId_
-{
-    deviceId = deviceId_;
-}
-
-+ (void)setUploadUrl:(NSString *)url_
-{
-    uploadUrl = url_;
-}
-
-+ (NSString *)deviceId
-{
-    return deviceId;
-}
-
-+ (NSString *)userId
-{
-    return userId;
-}
-
-+ (void)setToken:(NSString *)token_
-{
-    token = token_;
-}
-
-+ (NSString *)token
-{
-    return token;
-}
-
-+ (void)loadToken
-{
-    NSError *err;
-    NSString *token_ = [LPKeychainWrapper getPasswordForUsername:LP_KEYCHAIN_USERNAME
-                                                  andServiceName:LP_KEYCHAIN_SERVICE_NAME
-                                                           error:&err];
-    if (!token_) {
-        return;
-    }
-    
-    [self setToken:token_];
-}
-
-+ (void)saveToken
-{
-    NSError *err;
-    [LPKeychainWrapper storeUsername:LP_KEYCHAIN_USERNAME
-                         andPassword:[self token]
-                      forServiceName:LP_KEYCHAIN_SERVICE_NAME
-                      updateExisting:YES
-                               error:&err];
-}
-
-+ (NSString *)appId
-{
-    return appId;
-}
-
-- (id)initWithHttpMethod:(NSString *)httpMethod
-               apiMethod:(NSString *)apiMethod
-                  params:(NSDictionary *)params
+- (id)init
 {
     self = [super init];
     if (self) {
-        _httpMethod = httpMethod;
-        _apiMethod = apiMethod;
-        _params = params;
+        _fileTransferStatus = [[NSMutableDictionary alloc] init];
+        _fileUploadSize = [NSMutableDictionary dictionary];
+        _fileUploadProgress = [NSMutableDictionary dictionary];
+        _pendingUploads = [NSMutableDictionary dictionary];
         
+<<<<<<< HEAD
         if (engine == nil) {
             if (!_requestHheaders) {
                 _requestHheaders = [LPFileUploadDownloadManager createHeaders];
+=======
+        if (_engine == nil) {
+            if (!_requestHeaders) {
+                _requestHeaders = [[LPRequestManager sharedManager] createHeaders];
+>>>>>>> refactor request class
             }
-            engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
-                                       customHeaderFields:_requestHheaders];
+            _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
+                                        customHeaderFields:_requestHeaders];
         }
+
     }
     return self;
 }
 
-+ (NSDictionary *)createHeaders {
-    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
-                                 infoDict[(NSString *)kCFBundleNameKey],
-                                 infoDict[(NSString *)kCFBundleVersionKey],
-                                 appId,
-                                 LEANPLUM_CLIENT,
-                                 LEANPLUM_SDK_VERSION,
-                                 [[UIDevice currentDevice] systemName],
-                                 [[UIDevice currentDevice] systemVersion],
-                                 LEANPLUM_PACKAGE_IDENTIFIER];
-    return @{@"User-Agent": userAgentString};
-}
-
-+ (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params
-{
-    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
-    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
-    return [[LeanplumRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
-}
-
-+ (LeanplumRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params
-{
-    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
-    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
-    return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
-}
-
-+ (NSString *)generateUUID
-{
-    NSString *uuid = [[NSUUID UUID] UUIDString];
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
-    [userDefaults synchronize];
-    return uuid;
-}
-
-- (void)onResponse:(LPNetworkResponseBlock)response
-{
-    _response = [response copy];
-}
-
-- (void)onError:(LPNetworkErrorBlock)error
-{
-    _error = [error copy];
-}
-
-- (NSMutableDictionary *)createArgsDictionary
-{
-    LPConstantsState *constants = [LPConstantsState sharedState];
-    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-    NSMutableDictionary *args = [@{
-                                   LP_PARAM_ACTION: _apiMethod,
-                                   LP_PARAM_DEVICE_ID: deviceId ?: @"",
-                                   LP_PARAM_USER_ID: userId ?: @"",
-                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
-                                   LP_PARAM_CLIENT: constants.client,
-                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
-                                   LP_PARAM_TIME: timestamp,
-                                   } mutableCopy];
-    if (token) {
-        args[LP_PARAM_TOKEN] = token;
-    }
-    [args addEntriesFromDictionary:_params];
-    return args;
-}
-
-- (void)send
-{
-    [self sendEventually];
-    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-        NSTimeInterval delay;
-        if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_DEVELOPMENT_MAX_DELAY) {
-            delay = LP_REQUEST_DEVELOPMENT_MIN_DELAY;
-        } else {
-            delay = (lastSentTime + LP_REQUEST_DEVELOPMENT_MAX_DELAY) - currentTime;
-        }
-        [self performSelector:@selector(sendIfConnected) withObject:nil afterDelay:delay];
-    }
-}
-
-// Wait 1 second for potential other API calls, and then sends the call synchronously
-// if no other call has been sent within 1 minute.
-- (void)sendIfDelayed
-{
-    [self sendEventually];
-    [self performSelector:@selector(sendIfDelayedHelper)
-               withObject:nil
-               afterDelay:LP_REQUEST_RESUME_DELAY];
-}
-
-// Sends the call synchronously if no other call has been sent within 1 minute.
-- (void)sendIfDelayedHelper
-{
-    LP_TRY
-    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        [self send];
-    } else {
-        NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-        if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {
-            [self sendIfConnected];
-        }
-    }
-    LP_END_TRY
-}
-
-- (void)sendIfConnected
-{
-    LP_TRY
-    [self sendIfConnectedSync:NO];
-    LP_END_TRY
-}
-
-- (void)sendIfConnectedSync:(BOOL)sync
-{
-    if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
-        if (sync) {
-            [self sendNowSync];
-        } else {
-            [self sendNow];
-        }
-    } else {
-        [self sendEventually];
-        if (_error) {
-            _error([NSError errorWithDomain:@"Leanplum" code:1
-                                   userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
-        }
-    }
-}
-
-- (void)attachApiKeys:(NSMutableDictionary *)dict
-{
-    dict[LP_PARAM_APP_ID] = appId;
-    dict[LP_PARAM_CLIENT_KEY] = accessKey;
-}
-
-- (void)sendNow:(BOOL)async
+- (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData
 {
     RETURN_IF_TEST_MODE;
-
-    if (!appId) {
-        NSLog(@"Leanplum: Cannot send request. appId is not set");
+    NSMutableArray *filesToUpload = [NSMutableArray array];
+    for (NSString *filename in filenames) {
+        // Set state.
+        if ([self.fileTransferStatus[filename] boolValue]) {
+            [filesToUpload addObject:@""];
+        } else {
+            [filesToUpload addObject:filename];
+            self.fileTransferStatus[filename] = @(YES);
+            NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil] objectForKey:NSFileSize];
+            self.fileUploadSize[filename] = size;
+            self.fileUploadProgress[filename] = @0.0;
+        }
+    }
+    if (filesToUpload.count == 0) {
         return;
     }
-    if (!accessKey) {
-        NSLog(@"Leanplum: Cannot send request. accessKey is not set");
-        return;
-    }
+<<<<<<< HEAD
         
     [self sendEventually];
     [self sendRequests:async];
@@ -476,10 +294,139 @@ static NSDictionary *_requestHheaders;
                                              onSuccess:_response
                                                onError:_error];
         }
+=======
+
+    LPRequest *request = [LPRequest post:LP_METHOD_UPLOAD_FILE
+                                  params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+    NSMutableDictionary *dict = [[LPRequestManager sharedManager] createArgsDictionaryForRequest:request];
+    dict[LP_PARAM_COUNT] = @(filesToUpload.count);
+    [[LPRequestManager sharedManager] attachApiKeys:dict];
+    @synchronized (self.pendingUploads) {
+        self.pendingUploads[filesToUpload] = dict;
+>>>>>>> refactor request class
+    }
+    [self maybeSendNextUpload];
+
+    NSLog(@"Leanplum: Uploading files...");
+}
+
+- (void)printUploadProgress
+{
+    NSInteger totalFiles = [self.fileUploadSize count];
+    int sentFiles = 0;
+    int totalBytes = 0;
+    int sentBytes = 0;
+    for (NSString *filename in [self.fileUploadSize allKeys]) {
+        int fileSize = [self.fileUploadSize[filename] intValue];
+        double fileProgress = [self.fileUploadProgress[filename] doubleValue];
+        if (fileProgress == 1) {
+            sentFiles++;
+        }
+        sentBytes += (int)(fileSize * fileProgress);
+        totalBytes += fileSize;
+    }
+    NSString *progressString = [NSString stringWithFormat:@"Uploading resources. %d/%ld files completed; %@/%@ transferred.",
+                                sentFiles, (long) totalFiles,
+                                [self getSizeAsString:sentBytes], [self getSizeAsString:totalBytes]];
+    if (![self.fileUploadProgressString isEqualToString:progressString]) {
+        self.fileUploadProgressString = progressString;
+        NSLog(@"Leanplum: %@", progressString);
     }
 }
 
-+ (NSString *)getSizeAsString:(int)size
+- (void)maybeSendNextUpload
+{
+    NSMutableArray *filesToUpload;
+    NSMutableDictionary *dict;
+    NSString *url;
+    @synchronized (self.pendingUploads) {
+        for (NSMutableArray *item in self.pendingUploads) {
+            filesToUpload = item;
+            dict = self.pendingUploads[item];
+            break;
+        }
+        if (dict) {
+            if (!self.uploadUrl) {
+                return;
+            }
+            url = self.uploadUrl;
+            self.uploadUrl = nil;
+            [self.pendingUploads removeObjectForKey:filesToUpload];
+        }
+    }
+    if (dict == nil) {
+        return;
+    }
+    id<LPNetworkOperationProtocol> op = [self.engine operationWithURLString:url
+                                                                params:dict
+                                                                 httpMethod:@"POST"
+                                                        timeoutSeconds:60];
+
+    int fileIndex = 0;
+    for (NSString *filename in filesToUpload) {
+        if (filename.length) {
+            [op addFile:filename forKey:[NSString stringWithFormat:LP_PARAM_FILES_PATTERN, fileIndex]];
+        }
+        fileIndex++;
+    }
+
+    // Callbacks.
+    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+        LP_TRY
+        for (NSString *filename in filesToUpload) {
+            if (filename.length) {
+                self.fileUploadProgress[filename] = @(1.0);
+            }
+        }
+<<<<<<< HEAD
+        [LPFileUploadDownloadManager printUploadProgress];
+=======
+        [self printUploadProgress];
+>>>>>>> refactor request class
+        LP_END_TRY
+        LP_TRY
+        @synchronized (self.pendingUploads) {
+            self.uploadUrl = [[LPResponse getLastResponse:json]
+                         objectForKey:LP_KEY_UPLOAD_URL];
+        }
+        [self maybeSendNextUpload];
+        LP_END_TRY
+     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
+         LP_TRY
+         for (NSString *filename in filesToUpload) {
+             if (filename.length) {
+                 [self.fileUploadProgress setObject:@(1.0) forKey:filename];
+             }
+         }
+<<<<<<< HEAD
+         [LPFileUploadDownloadManager printUploadProgress];
+=======
+         [self printUploadProgress];
+>>>>>>> refactor request class
+         NSLog(@"Leanplum: %@", err);
+         [self maybeSendNextUpload];
+         LP_END_TRY
+     }];
+    [op onUploadProgressChanged:^(double progress) {
+         LP_TRY
+         for (NSString *filename in filesToUpload) {
+             if (filename.length) {
+                 [self.fileUploadProgress setObject:@(MIN(progress, 1.0)) forKey:filename];
+             }
+         }
+<<<<<<< HEAD
+         [LPFileUploadDownloadManager printUploadProgress];
+=======
+        [self printUploadProgress];
+>>>>>>> refactor request class
+         LP_END_TRY
+     }];
+
+    // Send.
+    [self.engine enqueueOperation: op];
+}
+
+- (NSString *)getSizeAsString:(int)size
 {
     if (size < (1 << 10)) {
         return [NSString stringWithFormat:@"%d B", size];
@@ -490,202 +437,27 @@ static NSDictionary *_requestHheaders;
     }
 }
 
-+ (void)printUploadProgress
-{
-    NSInteger totalFiles = [fileUploadSize count];
-    int sentFiles = 0;
-    int totalBytes = 0;
-    int sentBytes = 0;
-    for (NSString *filename in [fileUploadSize allKeys]) {
-        int fileSize = [fileUploadSize[filename] intValue];
-        double fileProgress = [fileUploadProgress[filename] doubleValue];
-        if (fileProgress == 1) {
-            sentFiles++;
-        }
-        sentBytes += (int)(fileSize * fileProgress);
-        totalBytes += fileSize;
-    }
-    NSString *progressString = [NSString stringWithFormat:@"Uploading resources. %d/%ld files completed; %@/%@ transferred.",
-                                sentFiles, (long) totalFiles,
-                                [self getSizeAsString:sentBytes], [self getSizeAsString:totalBytes]];
-    if (![fileUploadProgressString isEqualToString:progressString]) {
-        fileUploadProgressString = progressString;
-        NSLog(@"Leanplum: %@", progressString);
-    }
-}
-
-- (void)maybeSendNextUpload
-{
-    NSMutableArray *filesToUpload;
-    NSMutableDictionary *dict;
-    NSString *url;
-    @synchronized (pendingUploads) {
-        for (NSMutableArray *item in pendingUploads) {
-            filesToUpload = item;
-            dict = pendingUploads[item];
-            break;
-        }
-        if (dict) {
-            if (!uploadUrl) {
-                return;
-            }
-            url = uploadUrl;
-            uploadUrl = nil;
-            [pendingUploads removeObjectForKey:filesToUpload];
-        }
-    }
-    if (dict == nil) {
-        return;
-    }
-    id<LPNetworkOperationProtocol> op = [engine operationWithURLString:url
-                                                                params:dict
-                                                            httpMethod:_httpMethod
-                                                        timeoutSeconds:60];
-    
-    int fileIndex = 0;
-    for (NSString *filename in filesToUpload) {
-        if (filename.length) {
-            [op addFile:filename forKey:[NSString stringWithFormat:LP_PARAM_FILES_PATTERN, fileIndex]];
-        }
-        fileIndex++;
-    }
-    
-    // Callbacks.
-    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-        LP_TRY
-        for (NSString *filename in filesToUpload) {
-            if (filename.length) {
-                fileUploadProgress[filename] = @(1.0);
-            }
-        }
-        [LPFileUploadDownloadManager printUploadProgress];
-        LP_END_TRY
-        if (_response != nil) {
-            _response(operation, json);
-        }
-        LP_TRY
-        @synchronized (pendingUploads) {
-            uploadUrl = [[LPResponse getLastResponse:json]
-                         objectForKey:LP_KEY_UPLOAD_URL];
-        }
-        [self maybeSendNextUpload];
-        LP_END_TRY
-     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-         LP_TRY
-         for (NSString *filename in filesToUpload) {
-             if (filename.length) {
-                 [fileUploadProgress setObject:@(1.0) forKey:filename];
-             }
-         }
-         [LPFileUploadDownloadManager printUploadProgress];
-         NSLog(@"Leanplum: %@", err);
-         if (_error != nil) {
-             _error(err);
-         }
-         [self maybeSendNextUpload];
-         LP_END_TRY
-     }];
-    [op onUploadProgressChanged:^(double progress) {
-         LP_TRY
-         for (NSString *filename in filesToUpload) {
-             if (filename.length) {
-                 [fileUploadProgress setObject:@(MIN(progress, 1.0)) forKey:filename];
-             }
-         }
-         [LPFileUploadDownloadManager printUploadProgress];
-         LP_END_TRY
-     }];
-    
-    // Send.
-    [engine enqueueOperation: op];
-}
-
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key
-{
-    [self sendDatasNow:@{key: data}];
-}
-
-- (void)sendDatasNow:(NSDictionary *)datas
-{
-    NSMutableDictionary *dict = [self createArgsDictionary];
-    [self attachApiKeys:dict];
-    id<LPNetworkOperationProtocol> op =
-    [engine operationWithPath:[LPConstantsState sharedState].apiServlet
-                       params:dict
-                   httpMethod:_httpMethod
-                          ssl:[LPConstantsState sharedState].apiSSL
-               timeoutSeconds:60];
-
-    [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        [op addData:obj forKey:key];
-    }];
-    
-    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-        if (_response != nil) {
-            _response(operation, json);
-        }
-    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-        LP_TRY
-        if (_error != nil) {
-            _error(err);
-        }
-        LP_END_TRY
-    }];
-    [engine enqueueOperation: op];
-}
-
-- (void)sendFilesNow:(NSArray *)filenames
+- (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
     RETURN_IF_TEST_MODE;
-    NSMutableArray *filesToUpload = [NSMutableArray array];
-    for (NSString *filename in filenames) {
-        // Set state.
-        if ([fileTransferStatus[filename] boolValue]) {
-            [filesToUpload addObject:@""];
-        } else {
-            [filesToUpload addObject:filename];
-            fileTransferStatus[filename] = @(YES);
-            NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil] objectForKey:NSFileSize];
-            fileUploadSize[filename] = size;
-            fileUploadProgress[filename] = @0.0;
-        }
-    }
-    if (filesToUpload.count == 0) {
+    if ([self.fileTransferStatus[path] boolValue]) {
         return;
     }
-
-    // Create request.
-    NSMutableDictionary *dict = [self createArgsDictionary];
-    dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-    [self attachApiKeys:dict];
-    @synchronized (pendingUploads) {
-        pendingUploads[filesToUpload] = dict;
-    }
-    [self maybeSendNextUpload];
- 
-    NSLog(@"Leanplum: Uploading files...");
-}
-
-- (void)downloadFile:(NSString *)path
-{
-    RETURN_IF_TEST_MODE;
-    if ([fileTransferStatus[path] boolValue]) {
-        return;
-    }
-    pendingDownloads++;
+    self.pendingDownloads++;
     NSLog(@"Leanplum: Downloading resource %@", path);
-    fileTransferStatus[path] = @(YES);
-    NSMutableDictionary *dict = [self createArgsDictionary];
+    self.fileTransferStatus[path] = @(YES);
+    LPRequest *request = [LPRequest get:LP_METHOD_DOWNLOAD_FILE params:nil];
+    NSMutableDictionary *dict = [[LPRequestManager sharedManager] createArgsDictionaryForRequest:request];
     dict[LP_KEY_FILENAME] = path;
-    [self attachApiKeys:dict];
+    [[LPRequestManager sharedManager] attachApiKeys:dict];
 
     // Download it directly if the argument is URL.
     // Otherwise continue with the api request.
     id<LPNetworkOperationProtocol> op;
     if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
-        op = [engine operationWithURLString:path];
+        op = [self.engine operationWithURLString:path];
     } else {
-        op = [engine operationWithPath:[LPConstantsState sharedState].apiServlet
+        op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
                                 params:dict
                             httpMethod:[LPNetworkFactory fileRequestMethod]
                                    ssl:[LPConstantsState sharedState].apiSSL
@@ -697,54 +469,38 @@ static NSDictionary *_requestHheaders;
         LP_TRY
         [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
                                               createMissingDirectories:YES] atomically:YES];
-        pendingDownloads--;
-        if (_response != nil) {
-            _response(operation, json);
+        self.pendingDownloads--;
+        if (responseBlock != nil) {
+            responseBlock(operation, json);
         }
-        if (pendingDownloads == 0 && noPendingDownloadsBlock) {
-            noPendingDownloadsBlock();
+        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
+            self.noPendingDownloadsBlock();
         }
         LP_END_TRY
     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
         LP_TRY
         NSLog(@"Leanplum: %@", err);
-        pendingDownloads--;
-        if (_error != nil) {
-            _error(err);
+        self.pendingDownloads--;
+        if (errorBlock != nil) {
+            errorBlock(err);
         }
-        if (pendingDownloads == 0 && noPendingDownloadsBlock) {
-            noPendingDownloadsBlock();
+        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
+            self.noPendingDownloadsBlock();
         }
         LP_END_TRY
     }];
-    [engine enqueueOperation: op];
+    [self.engine enqueueOperation: op];
 }
 
-+ (int)numPendingDownloads
+- (int)numPendingDownloads
 {
-    return pendingDownloads;
+    return _pendingDownloads;
 }
 
-+ (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block
+- (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)noPendingDownloadsBlock
 {
-    noPendingDownloadsBlock = block;
+    self.noPendingDownloadsBlock = noPendingDownloadsBlock;
 }
 
-/**
- * Static sendNowQueue with thread protection.
- * Returns an operation queue that manages sendNow to run in order.
- * This is required to prevent from having out of order error in the backend.
- * Also it is very crucial with the uuid logic.
- */
-+ (NSOperationQueue *)sendNowQueue
-{
-    static NSOperationQueue *_sendNowQueue;
-    static dispatch_once_t sendNowQueueToken;
-    dispatch_once(&sendNowQueueToken, ^{
-        _sendNowQueue = [NSOperationQueue new];
-        _sendNowQueue.maxConcurrentOperationCount = 1;
-    });
-    return _sendNowQueue;
-}
 
 @end

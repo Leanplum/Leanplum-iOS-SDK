@@ -1,9 +1,9 @@
 //
-//  LeanplumRequest.m
+//  LPRequest.h
 //  Leanplum
 //
-//  Created by Andrew First on 4/30/12.
-//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
+//  Created by Mayank Sanganeria on 6/30/18.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,8 +22,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Leanplum.h"
 #import "LeanplumInternal.h"
+<<<<<<< HEAD
 #import "LeanplumRequest.h"
 #import "LPRequest.h"
 #import "LPResponse.h"
@@ -33,108 +33,32 @@
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
+=======
+#import "LPRequest.h"
+>>>>>>> refactor request class
 
-static id<LPNetworkEngineProtocol> engine;
-static NSString *appId;
-static NSString *accessKey;
-static NSString *deviceId;
-static NSString *userId;
-static NSString *uploadUrl;
-static NSMutableDictionary *fileTransferStatus;
-static int pendingDownloads;
-static LeanplumVariablesChangedBlock noPendingDownloadsBlock;
-static NSString *token = nil;
-static NSMutableDictionary *fileUploadSize;
-static NSMutableDictionary *fileUploadProgress;
-static NSString *fileUploadProgressString;
-static NSMutableDictionary *pendingUploads;
-static NSTimeInterval lastSentTime;
-static NSDictionary *_requestHheaders;
+@interface LPRequest()
+
+<<<<<<< HEAD
+@implementation LPRequest
+=======
+@property (nonatomic, strong) NSString *httpMethod;
+>>>>>>> refactor request class
+
+@end
+
 
 @implementation LPRequest
 
-+ (void)setAppId:(NSString *)appId_ withAccessKey:(NSString *)accessKey_
-{
-    appId = appId_;
-    accessKey = accessKey_;
-    fileTransferStatus = [[NSMutableDictionary alloc] init];
-    fileUploadSize = [NSMutableDictionary dictionary];
-    fileUploadProgress = [NSMutableDictionary dictionary];
-    pendingUploads = [NSMutableDictionary dictionary];
-}
-
-+ (void)setUserId:(NSString *)userId_
-{
-    userId = userId_;
-}
-
-+ (void)setDeviceId:(NSString *)deviceId_
-{
-    deviceId = deviceId_;
-}
-
-+ (void)setUploadUrl:(NSString *)url_
-{
-    uploadUrl = url_;
-}
-
-+ (NSString *)deviceId
-{
-    return deviceId;
-}
-
-+ (NSString *)userId
-{
-    return userId;
-}
-
-+ (void)setToken:(NSString *)token_
-{
-    token = token_;
-}
-
-+ (NSString *)token
-{
-    return token;
-}
-
-+ (void)loadToken
-{
-    NSError *err;
-    NSString *token_ = [LPKeychainWrapper getPasswordForUsername:LP_KEYCHAIN_USERNAME
-                                                  andServiceName:LP_KEYCHAIN_SERVICE_NAME
-                                                           error:&err];
-    if (!token_) {
-        return;
-    }
-    
-    [self setToken:token_];
-}
-
-+ (void)saveToken
-{
-    NSError *err;
-    [LPKeychainWrapper storeUsername:LP_KEYCHAIN_USERNAME
-                         andPassword:[self token]
-                      forServiceName:LP_KEYCHAIN_SERVICE_NAME
-                      updateExisting:YES
-                               error:&err];
-}
-
-+ (NSString *)appId
-{
-    return appId;
-}
-
 - (id)initWithHttpMethod:(NSString *)httpMethod
                apiMethod:(NSString *)apiMethod
-                  params:(NSDictionary *)params
-{
+                  params:(NSDictionary *)params {
     self = [super init];
     if (self) {
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
+<<<<<<< HEAD
         
         if (engine == nil) {
             if (!_requestHheaders) {
@@ -143,149 +67,34 @@ static NSDictionary *_requestHheaders;
             engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                        customHeaderFields:_requestHheaders];
         }
+=======
+>>>>>>> refactor request class
     }
     return self;
 }
 
-+ (NSDictionary *)createHeaders {
-    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
-                                 infoDict[(NSString *)kCFBundleNameKey],
-                                 infoDict[(NSString *)kCFBundleVersionKey],
-                                 appId,
-                                 LEANPLUM_CLIENT,
-                                 LEANPLUM_SDK_VERSION,
-                                 [[UIDevice currentDevice] systemName],
-                                 [[UIDevice currentDevice] systemVersion],
-                                 LEANPLUM_PACKAGE_IDENTIFIER];
-    return @{@"User-Agent": userAgentString};
-}
-
-+ (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params
++ (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params
 {
     LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
     LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
-    return [[LeanplumRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
+    return [[LPRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
 }
 
-+ (LeanplumRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params
++ (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params
 {
     LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
     LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
-    return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
+    return [[LPRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
-+ (NSString *)generateUUID
+- (void)onResponse:(LPNetworkResponseBlock)responseBlock
 {
-    NSString *uuid = [[NSUUID UUID] UUIDString];
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
-    [userDefaults synchronize];
-    return uuid;
+    self.responseBlock = responseBlock;
 }
 
-- (void)onResponse:(LPNetworkResponseBlock)response
+- (void)onError:(LPNetworkErrorBlock)errorBlock
 {
-    _response = [response copy];
-}
-
-- (void)onError:(LPNetworkErrorBlock)error
-{
-    _error = [error copy];
-}
-
-- (NSMutableDictionary *)createArgsDictionary
-{
-    LPConstantsState *constants = [LPConstantsState sharedState];
-    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-    NSMutableDictionary *args = [@{
-                                   LP_PARAM_ACTION: _apiMethod,
-                                   LP_PARAM_DEVICE_ID: deviceId ?: @"",
-                                   LP_PARAM_USER_ID: userId ?: @"",
-                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
-                                   LP_PARAM_CLIENT: constants.client,
-                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
-                                   LP_PARAM_TIME: timestamp,
-                                   } mutableCopy];
-    if (token) {
-        args[LP_PARAM_TOKEN] = token;
-    }
-    [args addEntriesFromDictionary:_params];
-    return args;
-}
-
-- (void)send
-{
-    [self sendEventually];
-    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-        NSTimeInterval delay;
-        if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_DEVELOPMENT_MAX_DELAY) {
-            delay = LP_REQUEST_DEVELOPMENT_MIN_DELAY;
-        } else {
-            delay = (lastSentTime + LP_REQUEST_DEVELOPMENT_MAX_DELAY) - currentTime;
-        }
-        [self performSelector:@selector(sendIfConnected) withObject:nil afterDelay:delay];
-    }
-}
-
-// Wait 1 second for potential other API calls, and then sends the call synchronously
-// if no other call has been sent within 1 minute.
-- (void)sendIfDelayed
-{
-    [self sendEventually];
-    [self performSelector:@selector(sendIfDelayedHelper)
-               withObject:nil
-               afterDelay:LP_REQUEST_RESUME_DELAY];
-}
-
-// Sends the call synchronously if no other call has been sent within 1 minute.
-- (void)sendIfDelayedHelper
-{
-    LP_TRY
-    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        [self send];
-    } else {
-        NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-        if (!lastSentTime || currentTime - lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {
-            [self sendIfConnected];
-        }
-    }
-    LP_END_TRY
-}
-
-- (void)sendIfConnected
-{
-    LP_TRY
-    [self sendIfConnectedSync:NO];
-    LP_END_TRY
-}
-
-- (void)sendIfConnectedSync:(BOOL)sync
-{
-    if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
-        if (sync) {
-            [self sendNowSync];
-        } else {
-            [self sendNow];
-        }
-    } else {
-        [self sendEventually];
-        if (_error) {
-            _error([NSError errorWithDomain:@"Leanplum" code:1
-                                   userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
-        }
-    }
-}
-
-- (void)attachApiKeys:(NSMutableDictionary *)dict
-{
-    dict[LP_PARAM_APP_ID] = appId;
-    dict[LP_PARAM_CLIENT_KEY] = accessKey;
-}
-
-- (void)sendNow:(BOOL)async
-{
+<<<<<<< HEAD
     RETURN_IF_TEST_MODE;
 
     if (!appId) {
@@ -748,3 +557,9 @@ static NSDictionary *_requestHheaders;
 }
 
 @end
+=======
+    self.errorBlock = errorBlock;
+}
+
+@end
+>>>>>>> refactor request class
