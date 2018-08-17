@@ -50,7 +50,7 @@ static NSMutableDictionary *pendingUploads;
 static NSTimeInterval lastSentTime;
 static NSDictionary *_requestHheaders;
 
-@implementation LeanplumRequest
+@implementation LPRequest
 
 + (void)setAppId:(NSString *)appId_ withAccessKey:(NSString *)accessKey_
 {
