@@ -873,6 +873,7 @@ static RegionInitBlock regionInitBlock;
     variantDebugInfo = nil;
     vars = nil;
     userAttributes = nil;
+    merged = nil;
 
     devModeValuesFromServer = nil;
     devModeFileAttributesFromServer = nil;
