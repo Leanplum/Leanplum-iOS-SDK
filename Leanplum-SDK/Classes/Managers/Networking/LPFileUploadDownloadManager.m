@@ -25,6 +25,7 @@
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
+#import "LPFileUploadDownloadManager.h"
 #import "LPResponse.h"
 #import "Constants.h"
 #import "LPFileManager.h"
@@ -137,7 +138,7 @@ static NSDictionary *_requestHheaders;
         
         if (engine == nil) {
             if (!_requestHheaders) {
-                _requestHheaders = [LeanplumRequest createHeaders];
+                _requestHheaders = [LPFileUploadDownloadManager createHeaders];
             }
             engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                        customHeaderFields:_requestHheaders];
@@ -311,7 +312,7 @@ static NSDictionary *_requestHheaders;
             return;
         }
         
-        [LeanplumRequest generateUUID];
+        [LPFileUploadDownloadManager generateUUID];
         lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
         
@@ -410,7 +411,7 @@ static NSDictionary *_requestHheaders;
             
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-            [[LeanplumRequest sendNowQueue] cancelAllOperations];
+            [[LPFileUploadDownloadManager sendNowQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -428,7 +429,7 @@ static NSDictionary *_requestHheaders;
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[LeanplumRequest sendNowQueue] cancelAllOperations];
+            [[LPFileUploadDownloadManager sendNowQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
@@ -438,7 +439,7 @@ static NSDictionary *_requestHheaders;
     // Adding to OperationQueue puts it in the background.
     if (async) {
         [requestOperation addExecutionBlock:operationBlock];
-        [[LeanplumRequest sendNowQueue] addOperation:requestOperation];
+        [[LPFileUploadDownloadManager sendNowQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }
@@ -463,7 +464,7 @@ static NSDictionary *_requestHheaders;
         NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
         NSInteger count = [LPEventDataManager count];
         if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
-            uuid = [LeanplumRequest generateUUID];
+            uuid = [LPFileUploadDownloadManager generateUUID];
         }
         
         @synchronized ([LPEventCallbackManager eventCallbackMap]) {
@@ -557,7 +558,7 @@ static NSDictionary *_requestHheaders;
                 fileUploadProgress[filename] = @(1.0);
             }
         }
-        [LeanplumRequest printUploadProgress];
+        [LPFileUploadDownloadManager printUploadProgress];
         LP_END_TRY
         if (_response != nil) {
             _response(operation, json);
@@ -576,7 +577,7 @@ static NSDictionary *_requestHheaders;
                  [fileUploadProgress setObject:@(1.0) forKey:filename];
              }
          }
-         [LeanplumRequest printUploadProgress];
+         [LPFileUploadDownloadManager printUploadProgress];
          NSLog(@"Leanplum: %@", err);
          if (_error != nil) {
              _error(err);
@@ -591,7 +592,7 @@ static NSDictionary *_requestHheaders;
                  [fileUploadProgress setObject:@(MIN(progress, 1.0)) forKey:filename];
              }
          }
-         [LeanplumRequest printUploadProgress];
+         [LPFileUploadDownloadManager printUploadProgress];
          LP_END_TRY
      }];
     
