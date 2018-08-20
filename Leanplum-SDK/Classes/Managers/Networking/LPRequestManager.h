@@ -26,19 +26,7 @@
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
 
-<<<<<<< HEAD
-@interface LPRequestManager : NSObject {
-@private
-    NSString *_httpMethod;
-    NSString *_apiMethod;
-    NSDictionary *_params;
-    LPNetworkResponseBlock _response;
-    LPNetworkErrorBlock _error;
-    BOOL _sent;
-}
-=======
 @class LPRequest;
->>>>>>> refactor request class
 
 @interface LPRequestManager : NSObject
 

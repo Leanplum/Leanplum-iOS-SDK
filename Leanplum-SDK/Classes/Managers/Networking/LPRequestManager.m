@@ -24,48 +24,12 @@
 
 #import "LPRequestManager.h"
 #import "LeanplumInternal.h"
-<<<<<<< HEAD
-#import "LeanplumRequest.h"
-#import "LPRequestManager.h"
-=======
 #import "LPRequest.h"
->>>>>>> refactor request class
 #import "LPResponse.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 
-<<<<<<< HEAD
-static id<LPNetworkEngineProtocol> engine;
-static NSString *appId;
-static NSString *accessKey;
-static NSString *deviceId;
-static NSString *userId;
-static NSString *uploadUrl;
-static NSMutableDictionary *fileTransferStatus;
-static int pendingDownloads;
-static LeanplumVariablesChangedBlock noPendingDownloadsBlock;
-static NSString *token = nil;
-static NSMutableDictionary *fileUploadSize;
-static NSMutableDictionary *fileUploadProgress;
-static NSString *fileUploadProgressString;
-static NSMutableDictionary *pendingUploads;
-static NSTimeInterval lastSentTime;
-static NSDictionary *_requestHheaders;
-
-@implementation LPRequestManager
-
-+ (void)setAppId:(NSString *)appId_ withAccessKey:(NSString *)accessKey_
-{
-    appId = appId_;
-    accessKey = accessKey_;
-    fileTransferStatus = [[NSMutableDictionary alloc] init];
-    fileUploadSize = [NSMutableDictionary dictionary];
-    fileUploadProgress = [NSMutableDictionary dictionary];
-    pendingUploads = [NSMutableDictionary dictionary];
-}
-=======
->>>>>>> refactor request class
 
 @interface LPRequestManager()
 
@@ -102,7 +66,7 @@ static NSDictionary *_requestHheaders;
                 _requestHeaders = [self createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
-                                       customHeaderFields:_requestHeaders];
+                                        customHeaderFields:_requestHeaders];
         }
     }
     return self;
@@ -137,37 +101,7 @@ static NSDictionary *_requestHheaders;
                                error:&err];
 }
 
-<<<<<<< HEAD
-+ (NSString *)appId
-{
-    return appId;
-}
-
-- (id)initWithHttpMethod:(NSString *)httpMethod
-               apiMethod:(NSString *)apiMethod
-                  params:(NSDictionary *)params
-{
-    self = [super init];
-    if (self) {
-        _httpMethod = httpMethod;
-        _apiMethod = apiMethod;
-        _params = params;
-        
-        if (engine == nil) {
-            if (!_requestHheaders) {
-                _requestHheaders = [LPRequestManager createHeaders];
-            }
-            engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
-                                       customHeaderFields:_requestHheaders];
-        }
-    }
-    return self;
-}
-
-+ (NSDictionary *)createHeaders {
-=======
 - (NSDictionary *)createHeaders {
->>>>>>> refactor request class
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
                                  infoDict[(NSString *)kCFBundleNameKey],
@@ -269,7 +203,7 @@ static NSDictionary *_requestHheaders;
         [self sendEventuallyRequest:request];
         if (request.errorBlock) {
             request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
-                                   userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
+                                               userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
         }
     }
 }
@@ -307,15 +241,9 @@ static NSDictionary *_requestHheaders;
         if ([weakOperation isCancelled]) {
             return;
         }
-<<<<<<< HEAD
-        
-        [LPRequestManager generateUUID];
-        lastSentTime = [NSDate timeIntervalSinceReferenceDate];
-=======
 
         [LPRequestManager generateUUID];
         self.lastSentTime = [NSDate timeIntervalSinceReferenceDate];
->>>>>>> refactor request class
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
         // Simulate pop all requests.
@@ -337,7 +265,7 @@ static NSDictionary *_requestHheaders;
                                                    } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
         int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
-        
+
         NSTimeInterval uiTimeoutInterval = timeout;
         timeout = 5 * timeout; // let slow operations complete
 
@@ -347,10 +275,10 @@ static NSDictionary *_requestHheaders;
         self.didUiTimeout = NO;
 
         id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:constants.apiServlet
-                                                               params:multiRequestArgs
+                                                                    params:multiRequestArgs
                                                                 httpMethod:@"POST"
-                                                                  ssl:constants.apiSSL
-                                                       timeoutSeconds:timeout];
+                                                                       ssl:constants.apiSSL
+                                                            timeoutSeconds:timeout];
 
         // Request callbacks.
         [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
@@ -378,8 +306,8 @@ static NSDictionary *_requestHheaders;
 
                 if (!self.didUiTimeout) {
                     [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
-                                                                 requests:requestsToSend
-                                                                operation:operation];
+                                                                     requests:requestsToSend
+                                                                    operation:operation];
                 }
             }
             dispatch_semaphore_signal(semaphore);
@@ -427,11 +355,7 @@ static NSDictionary *_requestHheaders;
 
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-<<<<<<< HEAD
-            [[LPRequestManager sendNowQueue] cancelAllOperations];
-=======
             [[self sendNowQueue] cancelAllOperations];
->>>>>>> refactor request class
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -449,11 +373,7 @@ static NSDictionary *_requestHheaders;
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-<<<<<<< HEAD
-            [[LPRequestManager sendNowQueue] cancelAllOperations];
-=======
             [[self sendNowQueue] cancelAllOperations];
->>>>>>> refactor request class
             LP_END_TRY
         }
         LP_END_TRY
@@ -463,11 +383,7 @@ static NSDictionary *_requestHheaders;
     // Adding to OperationQueue puts it in the background.
     if (async) {
         [requestOperation addExecutionBlock:operationBlock];
-<<<<<<< HEAD
-        [[LPRequestManager sendNowQueue] addOperation:requestOperation];
-=======
         [[self sendNowQueue] addOperation:requestOperation];
->>>>>>> refactor request class
     } else {
         operationBlock();
     }
@@ -514,58 +430,6 @@ static NSDictionary *_requestHheaders;
                                                onError:request.errorBlock];
         }
     }
-<<<<<<< HEAD
-    
-    // Callbacks.
-    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-        LP_TRY
-        for (NSString *filename in filesToUpload) {
-            if (filename.length) {
-                fileUploadProgress[filename] = @(1.0);
-            }
-        }
-        [LPRequestManager printUploadProgress];
-        LP_END_TRY
-        if (_response != nil) {
-            _response(operation, json);
-        }
-        LP_TRY
-        @synchronized (pendingUploads) {
-            uploadUrl = [[LPResponse getLastResponse:json]
-                         objectForKey:LP_KEY_UPLOAD_URL];
-        }
-        [self maybeSendNextUpload];
-        LP_END_TRY
-     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-         LP_TRY
-         for (NSString *filename in filesToUpload) {
-             if (filename.length) {
-                 [fileUploadProgress setObject:@(1.0) forKey:filename];
-             }
-         }
-         [LPRequestManager printUploadProgress];
-         NSLog(@"Leanplum: %@", err);
-         if (_error != nil) {
-             _error(err);
-         }
-         [self maybeSendNextUpload];
-         LP_END_TRY
-     }];
-    [op onUploadProgressChanged:^(double progress) {
-         LP_TRY
-         for (NSString *filename in filesToUpload) {
-             if (filename.length) {
-                 [fileUploadProgress setObject:@(MIN(progress, 1.0)) forKey:filename];
-             }
-         }
-         [LPRequestManager printUploadProgress];
-         LP_END_TRY
-     }];
-    
-    // Send.
-    [engine enqueueOperation: op];
-=======
->>>>>>> refactor request class
 }
 
 - (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(LPRequest *)request
@@ -579,10 +443,10 @@ static NSDictionary *_requestHheaders;
     [self attachApiKeys:dict];
     id<LPNetworkOperationProtocol> op =
     [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
-                       params:dict
-                   httpMethod:@"POST"
-                          ssl:[LPConstantsState sharedState].apiSSL
-               timeoutSeconds:60];
+                            params:dict
+                        httpMethod:@"POST"
+                               ssl:[LPConstantsState sharedState].apiSSL
+                    timeoutSeconds:60];
 
     [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [op addData:obj forKey:key];

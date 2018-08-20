@@ -26,19 +26,7 @@
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
 
-<<<<<<< HEAD
-@interface LPFileUploadDownloadManager : NSObject {
-@private
-    NSString *_httpMethod;
-    NSString *_apiMethod;
-    NSDictionary *_params;
-    LPNetworkResponseBlock _response;
-    LPNetworkErrorBlock _error;
-    BOOL _sent;
-}
-=======
 @interface LPFileUploadDownloadManager : NSObject
->>>>>>> refactor request class
 
 @property (nonatomic, strong) NSString *uploadUrl;
 @property (nonatomic, readonly) int numPendingDownloads;
