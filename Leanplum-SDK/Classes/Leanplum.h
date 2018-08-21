@@ -745,15 +745,6 @@ typedef enum {
 
 @end
 
-@interface LeanplumCompatibility : NSObject
-
-/**
- * Used only for compatibility with Google Analytics.
- */
-+ (void)gaTrack:(NSObject *)trackingObject;
-
-@end
-
 @class LPVar;
 
 /**

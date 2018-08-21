@@ -5,7 +5,8 @@
 //  Created by Mayank Sanganeria on 4/24/18.
 //
 
-#import "LeanplumCompatibility-Internal.h"
+#import "LeanplumInternal.h"
+#import "LeanplumCompatibility.h"
 #import "Constants.h"
 
 @implementation LeanplumCompatibility
