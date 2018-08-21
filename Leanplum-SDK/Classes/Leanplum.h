@@ -24,6 +24,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import "LPInbox.h"
+#import "LPActionArg.h"
 
 #ifndef LP_NOT_TV
 #if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
@@ -870,26 +871,6 @@ typedef enum {
 - (unsigned long long)unsignedLongLongValue;
 - (UIColor *)colorValue;
 /**@}*/
-@end
-
-@interface LPActionArg : NSObject
-/**
- * @{
- * Defines a Leanplum Action Argument
- */
-+ (LPActionArg *)argNamed:(NSString *)name withNumber:(NSNumber *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withString:(NSString *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withBool:(BOOL)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withFile:(NSString *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withDict:(NSDictionary *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withArray:(NSArray *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withAction:(NSString *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withColor:(UIColor *)defaultValue;
-/**@}*/
-- (NSString *)name;
-- (NSString *)kind;
-- (id)defaultValue;
-
 @end
 
 @interface LPActionContext : NSObject
