@@ -6,8 +6,6 @@
 //
 
 #import "LPRequestFactory.h"
-#import "LeanplumRequest.h"
-#import "LeanplumInternal.h"
 
 @implementation LPRequestFactory
 
