@@ -25,8 +25,9 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
+#import "LPRequesting.h"
 
-@interface LeanplumRequest : NSObject {
+@interface LeanplumRequest : NSObject<LPRequesting> {
 @private
     NSString *_httpMethod;
     NSString *_apiMethod;

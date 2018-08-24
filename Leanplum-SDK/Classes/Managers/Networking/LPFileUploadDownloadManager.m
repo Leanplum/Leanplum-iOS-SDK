@@ -25,6 +25,7 @@
 #import "LPFileUploadDownloadManager.h"
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
+#import "LPRequestFactory.h"
 #import "LPRequestManager.h"
 #import "LPResponse.h"
 #import "LPFileManager.h"
@@ -99,7 +100,7 @@
         return;
     }
 
-    LPRequest *request = [LPRequest post:LP_METHOD_UPLOAD_FILE
+    LPRequest *request = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
                                   params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
     NSMutableDictionary *dict = [[LPRequestManager sharedManager] createArgsDictionaryForRequest:request];
     dict[LP_PARAM_COUNT] = @(filesToUpload.count);
@@ -236,7 +237,7 @@
     self.pendingDownloads++;
     NSLog(@"Leanplum: Downloading resource %@", path);
     self.fileTransferStatus[path] = @(YES);
-    LPRequest *request = [LPRequest get:LP_METHOD_DOWNLOAD_FILE params:nil];
+    id<LPRequesting> request = [LPRequestFactory get:LP_METHOD_DOWNLOAD_FILE params:nil];
     NSMutableDictionary *dict = [[LPRequestManager sharedManager] createArgsDictionaryForRequest:request];
     dict[LP_KEY_FILENAME] = path;
     [[LPRequestManager sharedManager] attachApiKeys:dict];

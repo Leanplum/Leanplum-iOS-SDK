@@ -24,7 +24,6 @@
 
 #import "LPRequestManager.h"
 #import "LeanplumInternal.h"
-#import "LPRequest.h"
 #import "LPResponse.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
@@ -124,7 +123,7 @@
     return uuid;
 }
 
-- (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request
+- (NSMutableDictionary *)createArgsDictionaryForRequest:(id<LPRequesting>)request
 {
     LPConstantsState *constants = [LPConstantsState sharedState];
     NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
@@ -144,7 +143,7 @@
     return args;
 }
 
-- (void)sendRequest:(LPRequest *)request
+- (void)sendRequest:(id<LPRequesting>)request
 {
     [self sendEventuallyRequest:request];
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -161,7 +160,7 @@
 
 // Wait 1 second for potential other API calls, and then sends the call synchronously
 // if no other call has been sent within 1 minute.
-- (void)sendIfDelayedRequest:(LPRequest *)request
+- (void)sendIfDelayedRequest:(id<LPRequesting>)request
 {
     [self sendEventuallyRequest:request];
     [self performSelector:@selector(sendIfDelayedHelperRequest:)
@@ -170,7 +169,7 @@
 }
 
 // Sends the call synchronously if no other call has been sent within 1 minute.
-- (void)sendIfDelayedHelperRequest:(LPRequest *)request
+- (void)sendIfDelayedHelperRequest:(id<LPRequesting>)request
 {
     LP_TRY
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -184,14 +183,14 @@
     LP_END_TRY
 }
 
-- (void)sendIfConnectedRequest:(LPRequest *)request
+- (void)sendIfConnectedRequest:(id<LPRequesting>)request
 {
     LP_TRY
     [self sendIfConnectedSync:NO request:request];
     LP_END_TRY
 }
 
-- (void)sendIfConnectedSync:(BOOL)sync request:(LPRequest *)request
+- (void)sendIfConnectedSync:(BOOL)sync request:(id<LPRequesting>)request
 {
     if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
         if (sync) {
@@ -214,7 +213,7 @@
     dict[LP_PARAM_CLIENT_KEY] = self.accessKey;
 }
 
-- (void)sendNow:(BOOL)async request:(LPRequest *)request
+- (void)sendNow:(BOOL)async request:(id<LPRequesting>)request
 {
     RETURN_IF_TEST_MODE;
 
@@ -398,17 +397,17 @@
     [LPEventCallbackManager invokeErrorCallbacksWithError:error];
 }
 
-- (void)sendNowRequest:(LPRequest *)request
+- (void)sendNowRequest:(id<LPRequesting>)request
 {
     [self sendNow:YES request:request];
 }
 
-- (void)sendNowSyncRequest:(LPRequest *)request
+- (void)sendNowSyncRequest:(id<LPRequesting>)request
 {
     [self sendNow:NO request:request];
 }
 
-- (void)sendEventuallyRequest:(LPRequest *)request
+- (void)sendEventuallyRequest:(id<LPRequesting>)request
 {
     RETURN_IF_TEST_MODE;
     if (!request.sent) {
@@ -432,12 +431,12 @@
     }
 }
 
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(LPRequest *)request
+- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(id<LPRequesting>)request
 {
     [self sendDatasNow:@{key: data} request:request];
 }
 
-- (void)sendDatasNow:(NSDictionary *)datas request:(LPRequest *)request;
+- (void)sendDatasNow:(NSDictionary *)datas request:(id<LPRequesting>)request
 {
     NSMutableDictionary *dict = [self createArgsDictionaryForRequest:request];
     [self attachApiKeys:dict];
