@@ -25,6 +25,7 @@
 #import "LPRequestManager.h"
 #import "LeanplumInternal.h"
 #import "LPResponse.h"
+#import "Constants.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
