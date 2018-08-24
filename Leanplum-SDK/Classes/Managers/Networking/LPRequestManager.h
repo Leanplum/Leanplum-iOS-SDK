@@ -25,10 +25,12 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
+#import "LPRequesting.h"
+#import "LPRequestManaging.h"
 
-@class LPRequest;
+@interface LPRequestManager : NSObject<LPRequestManaging>
 
-@interface LPRequestManager : NSObject
++ (instancetype)sharedManager;
 
 @property (nonatomic, readonly) NSString *appId;
 @property (nonatomic, strong) NSString *deviceId;
@@ -36,37 +38,7 @@
 @property (nonatomic, strong) NSString *token;
 @property (nonatomic, strong) NSDictionary *requestHeaders;
 
-+ (instancetype)sharedManager;
-
-- (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
-
-- (void)loadToken;
-- (void)saveToken;
-
-- (NSDictionary *)createHeaders;
-- (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request;
-- (void)attachApiKeys:(NSMutableDictionary *)dict;
-
 // Files transfer
 @property (nonatomic, strong) NSString *uploadUrl;
-
-- (void)sendRequest:(LPRequest *)request;
-- (void)sendNowRequest:(LPRequest *)request;
-- (void)sendEventuallyRequest:(LPRequest *)request;
-- (void)sendIfConnectedRequest:(LPRequest *)request;;
-- (void)sendIfConnectedSync:(BOOL)sync request:(LPRequest *)request;
-// Sends the request if another request hasn't been sent within a particular time delay.
-- (void)sendIfDelayedRequest:(LPRequest *)request;
-
-/**
- * Sends one data. Uses sendDatasNow: internally. See this method for more information.
- */
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(LPRequest *)request;
-
-/**
- * Send datas where key is the name and object is the data.
- * For example, key can be "file0" and object is NSData of png.
- */
-- (void)sendDatasNow:(NSDictionary *)datas request:(LPRequest *)request;
 
 @end

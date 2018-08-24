@@ -24,9 +24,9 @@
 
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
-#import "LPNetworkFactory.h"
+#import "LPRequesting.h"
 
-@interface LPRequest : NSObject
+@interface LPRequest : NSObject<LPRequesting>
 
 @property (nonatomic, strong) NSString *apiMethod;
 @property (nonatomic, strong) NSDictionary *params;
@@ -34,10 +34,8 @@
 @property (nonatomic, copy) LPNetworkResponseBlock responseBlock;
 @property (nonatomic, copy) LPNetworkErrorBlock errorBlock;
 
-+ (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
-+ (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
-
-- (void)onResponse:(LPNetworkResponseBlock)response;
-- (void)onError:(LPNetworkErrorBlock)error;
+- (id)initWithHttpMethod:(NSString *)httpMethod
+               apiMethod:(NSString *)apiMethod
+                  params:(NSDictionary *)params;
 
 @end

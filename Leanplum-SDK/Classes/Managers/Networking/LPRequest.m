@@ -31,7 +31,6 @@
 
 @end
 
-
 @implementation LPRequest
 
 - (id)initWithHttpMethod:(NSString *)httpMethod
@@ -44,20 +43,6 @@
         _params = params;
     }
     return self;
-}
-
-+ (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params
-{
-    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
-    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
-    return [[LPRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
-}
-
-+ (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params
-{
-    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
-    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
-    return [[LPRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
 - (void)onResponse:(LPNetworkResponseBlock)responseBlock
