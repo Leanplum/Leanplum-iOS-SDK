@@ -1,16 +1,16 @@
+////
+////  LPRequestFactory.h
+////  Leanplum-iOS-SDK-source
+////
+////  Created by Mayank Sanganeria on 8/23/18.
+////
 //
-//  LPRequestFactory.h
-//  Leanplum-iOS-SDK-source
+//#import <Foundation/Foundation.h>
+////#import "LPRequesting.h"
 //
-//  Created by Mayank Sanganeria on 8/23/18.
+//@interface LPRequestFactory : NSObject
 //
-
-#import <Foundation/Foundation.h>
-//#import "LPRequesting.h"
-
-@interface LPRequestFactory : NSObject
-
-//+ (id<LPRequesting>)get:(NSString *)apiMethod params:(NSDictionary *)params;
-//+ (id<LPRequesting>)post:(NSString *)apiMethod params:(NSDictionary *)params;
-
-@end
+////+ (id<LPRequesting>)get:(NSString *)apiMethod params:(NSDictionary *)params;
+////+ (id<LPRequesting>)post:(NSString *)apiMethod params:(NSDictionary *)params;
+//
+//@end
