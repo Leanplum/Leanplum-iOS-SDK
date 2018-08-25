@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		03BE59A999B3CB164FC03A8A /* libPods-Leanplum-tvOS-SDK_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 45B9F8AAF0BD7CACA0B7B8D4 /* libPods-Leanplum-tvOS-SDK_Example.a */; };
 		07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */; };
 		07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86C1F052B7800A4B092 /* LPAppIconManagerTest.m */; };
 		07E5C8AD1F052B7800A4B092 /* LPEventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86D1F052B7800A4B092 /* LPEventDataManagerTest.m */; };
@@ -75,7 +74,7 @@
 		07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A81F052B7800A4B092 /* SingleMessage.json */; };
 		07E5C8F51F052DD000A4B092 /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */; };
 		07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */; };
-		545F819682695665B7440E50 /* libPods-Leanplum-SDK_Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F40DE82EE311CB6406B4862B /* libPods-Leanplum-SDK_Tests.a */; };
+		28F54C884C41962CFF478429 /* libPods-Leanplum-SDK_Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 513FB44155EF611D37290954 /* libPods-Leanplum-SDK_Tests.a */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -89,6 +88,7 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
+		99835AB861DD91B3C6D35F73 /* libPods-Leanplum-tvOS-SDK_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FCD2399AF306A718E3F13DA2 /* libPods-Leanplum-tvOS-SDK_Example.a */; };
 		9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */; };
@@ -96,12 +96,12 @@
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		A8EEA1AB20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
-		B178B770E97E4A4D69CF9C6A /* libPods-Leanplum-SDK_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 32A39B38DD2D6EBB0BC3E4E4 /* libPods-Leanplum-SDK_Example.a */; };
 		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
 		B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */; };
 		B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA321D74B64D005ADEE1 /* ViewController.m */; };
 		B5CCCA361D74B64D005ADEE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA341D74B64D005ADEE1 /* Main.storyboard */; };
 		B5CCCA381D74B64D005ADEE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */; };
+		CE709B2F98B8F027C9F38DCD /* libPods-Leanplum-SDK_Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 68591B9C3E44CAB5D7405E4D /* libPods-Leanplum-SDK_Example.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -169,8 +169,7 @@
 		07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities2.json; sourceTree = "<group>"; };
 		1982CE36FE54461D3A24D6B5 /* Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		29ABF5FA9E1826C5BBE433C9 /* Pods-Leanplum-SDK_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		32A39B38DD2D6EBB0BC3E4E4 /* libPods-Leanplum-SDK_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		45B9F8AAF0BD7CACA0B7B8D4 /* libPods-Leanplum-tvOS-SDK_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-tvOS-SDK_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		513FB44155EF611D37290954 /* libPods-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* Leanplum-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -189,6 +188,7 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		68591B9C3E44CAB5D7405E4D /* libPods-Leanplum-SDK_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		73B565AA61D6B6A4E92607C4 /* Pods-Leanplum-SDK_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		74C2EA3F2D53CAE77A03BFFA /* Pods-Leanplum-tvOS-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		84A3C33C701600A874B8C63F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -209,8 +209,8 @@
 		B5CCCA391D74B64D005ADEE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2BDBCD86C8BEA8BF5B15B99 /* Pods-Leanplum-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		ED67DCDB70EA6598AF12284A /* Pods-Leanplum-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
-		F40DE82EE311CB6406B4862B /* libPods-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5CF859C9DD307380E6F9A30 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		FCD2399AF306A718E3F13DA2 /* libPods-Leanplum-tvOS-SDK_Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-tvOS-SDK_Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,7 +221,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				B178B770E97E4A4D69CF9C6A /* libPods-Leanplum-SDK_Example.a in Frameworks */,
+				CE709B2F98B8F027C9F38DCD /* libPods-Leanplum-SDK_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,7 +232,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				545F819682695665B7440E50 /* libPods-Leanplum-SDK_Tests.a in Frameworks */,
+				28F54C884C41962CFF478429 /* libPods-Leanplum-SDK_Tests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +240,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				03BE59A999B3CB164FC03A8A /* libPods-Leanplum-tvOS-SDK_Example.a in Frameworks */,
+				99835AB861DD91B3C6D35F73 /* libPods-Leanplum-tvOS-SDK_Example.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,9 +393,9 @@
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
 				A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */,
-				32A39B38DD2D6EBB0BC3E4E4 /* libPods-Leanplum-SDK_Example.a */,
-				F40DE82EE311CB6406B4862B /* libPods-Leanplum-SDK_Tests.a */,
-				45B9F8AAF0BD7CACA0B7B8D4 /* libPods-Leanplum-tvOS-SDK_Example.a */,
+				68591B9C3E44CAB5D7405E4D /* libPods-Leanplum-SDK_Example.a */,
+				513FB44155EF611D37290954 /* libPods-Leanplum-SDK_Tests.a */,
+				FCD2399AF306A718E3F13DA2 /* libPods-Leanplum-tvOS-SDK_Example.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
