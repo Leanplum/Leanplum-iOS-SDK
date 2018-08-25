@@ -1,5 +1,5 @@
 
-#import "LPRequestFac.h"
+#import "LPRequestFactory.h"
 #import "LeanplumRequest.h"
 
 @implementation LPRequestFactory
