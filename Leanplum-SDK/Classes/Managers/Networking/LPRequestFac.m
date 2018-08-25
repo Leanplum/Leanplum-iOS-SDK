@@ -2,7 +2,7 @@
 #import "LPRequestFac.h"
 #import "LeanplumRequest.h"
 
-@implementation LPRequestFac
+@implementation LPRequestFactory
 
 + (id<LPRequesting>)get:(NSString *)apiMethod params:(NSDictionary *)params {
 //    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
