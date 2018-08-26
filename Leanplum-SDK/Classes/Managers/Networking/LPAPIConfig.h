@@ -11,6 +11,8 @@
 @interface LPAPIConfig : NSObject
 
 @property (nonatomic, readonly) NSString *appId;
+@property (nonatomic, readonly) NSString *accessKey;
+
 @property (nonatomic, strong) NSString *deviceId;
 @property (nonatomic, strong) NSString *userId;
 @property (nonatomic, strong) NSString *token;
