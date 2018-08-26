@@ -50,9 +50,8 @@ static NSDictionary *_requestHheaders;
 
 @implementation LeanplumRequest
 
-+ (void)setAppId:(NSString *)appId_ withAccessKey:(NSString *)accessKey_
++ (void)initializeStaticVars
 {
-    [[LPAPIConfig sharedConfig] setAppId:appId_ withAccessKey:accessKey_];
     fileTransferStatus = [[NSMutableDictionary alloc] init];
     fileUploadSize = [NSMutableDictionary dictionary];
     fileUploadProgress = [NSMutableDictionary dictionary];

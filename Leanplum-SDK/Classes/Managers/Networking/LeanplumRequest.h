@@ -37,7 +37,7 @@
     BOOL _sent;
 }
 
-+ (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
++ (void)initializeStaticVars;
 + (void)setUploadUrl:(NSString *)url;
 
 - (void)attachApiKeys:(NSMutableDictionary *)dict;
