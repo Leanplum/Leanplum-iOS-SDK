@@ -499,7 +499,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         if ([[value class] isSubclassOfClass:NSDictionary.class]) {
             [self ensureVariablesExist:childKey withTree:value];
         } else {
-            if (![LPVarCache getVariable:childKey]) {
+            if (![[LPVarCache sharedCache] getVariable:childKey]) {
                 [self defineFileVariable:childKey withFile:nil];
             }
         }

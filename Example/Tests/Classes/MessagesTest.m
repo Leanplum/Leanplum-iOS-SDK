@@ -127,7 +127,7 @@
 {
     id mockLPVarCache = OCMClassMock([LPVarCache class]);
     OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
-    XCTAssertEqual([LPVarCache messages], messageConfigs);
+    XCTAssertEqual([[LPVarCache sharedCache] messages], messageConfigs);
 
     __block NSMutableSet *calledMessageIds = [NSMutableSet set];
     id mockLeanplum = OCMClassMock([Leanplum class]);
@@ -231,7 +231,7 @@
     // Mock LPVarCache messages.
     id mockLPVarCache = OCMClassMock([LPVarCache class]);
     OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
-    XCTAssertEqual([LPVarCache messages], messageConfigs);
+    XCTAssertEqual([[LPVarCache sharedCache] messages], messageConfigs);
 
     LPActionContext *context1 = [Leanplum createActionContextForMessageId:@"1"];
     LPActionContext *context2 = [Leanplum createActionContextForMessageId:@"2"];
