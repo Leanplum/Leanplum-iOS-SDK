@@ -26,7 +26,6 @@
 #import "Constants.h"
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
 #import "LPAES.h"
@@ -190,7 +189,7 @@ static NSObject *updatingLock;
         RETURN_IF_NOOP;
         LP_TRY
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
-        LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
+        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
                                               params:params];
         [[LPRequestManager sharedManager] sendRequest:req];
         LP_END_TRY
@@ -369,7 +368,7 @@ static NSObject *updatingLock;
     [[LPInbox sharedState] updateMessages:_messages unreadCount:unreadCount];
     
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
-    LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_DELETE_INBOX_MESSAGE
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_DELETE_INBOX_MESSAGE
                                           params:params];
     [[LPRequestManager sharedManager] sendRequest:req];
     LP_END_TRY
@@ -415,7 +414,7 @@ static NSObject *updatingLock;
 {
     RETURN_IF_NOOP;
     LP_TRY
-    LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];

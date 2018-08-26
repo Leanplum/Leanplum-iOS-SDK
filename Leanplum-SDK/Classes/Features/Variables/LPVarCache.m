@@ -694,7 +694,7 @@ static RegionInitBlock regionInitBlock;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_SET_VARS
+             id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_VARS
                                                     params:args];
              [[LPRequestManager sharedManager] sendRequest:req];
              return YES;

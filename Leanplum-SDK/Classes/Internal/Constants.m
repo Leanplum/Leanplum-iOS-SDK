@@ -23,7 +23,6 @@
 //  under the License.
 
 #import "Constants.h"
-#import "LeanplumRequest.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestManager.h"
@@ -318,7 +317,7 @@ void leanplumInternalError(NSException *e)
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_LOG
+            id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG
                             params:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],

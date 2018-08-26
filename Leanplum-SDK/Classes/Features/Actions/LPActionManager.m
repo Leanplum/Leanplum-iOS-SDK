@@ -27,7 +27,6 @@
 #import "Constants.h"
 #import "JRSwizzle.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LPUIAlert.h"
@@ -87,9 +86,9 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_SET_DEVICE_ATTRIBUTES
+        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_DEVICE_ATTRIBUTES
                                                params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [req send];
+        [[LPRequestManager sharedManager] sendRequest:req];
     }
     LP_END_TRY
 
