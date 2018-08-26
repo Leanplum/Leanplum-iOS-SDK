@@ -25,6 +25,7 @@
 #import "Constants.h"
 #import "LeanplumRequest.h"
 #import "Utils.h"
+#import "LPRequestFactory.h"
 
 @implementation LPConstantsState
 
@@ -316,13 +317,14 @@ void leanplumInternalError(NSException *e)
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            [[LeanplumRequest post:LP_METHOD_LOG
+            LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_LOG
                             params:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
                                      LP_PARAM_VERSION_NAME: versionName
-                                     }] send];
+                                     }];
+            [req send];
         } @catch (NSException *e) {
             // This empty try/catch is needed to prevent crash <-> loop.
         }
