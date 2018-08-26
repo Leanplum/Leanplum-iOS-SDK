@@ -26,6 +26,7 @@
 #import "LeanplumRequest.h"
 #import "LeanplumInternal.h"
 #import "Utils.h"
+#import "LPRequestFactory.h"
 
 @implementation LPAppIconManager
 
@@ -63,7 +64,7 @@
                                            iconName:key];
     }];
 
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_UPLOAD_FILE
+    LeanplumRequest *request = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
                                               params:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
