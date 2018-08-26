@@ -35,7 +35,6 @@
 #import "LPAPIConfig.h"
 
 static id<LPNetworkEngineProtocol> engine;
-static NSString *accessKey;
 static NSString *uploadUrl;
 static NSMutableDictionary *fileTransferStatus;
 static int pendingDownloads;
@@ -218,7 +217,7 @@ static NSDictionary *_requestHheaders;
 - (void)attachApiKeys:(NSMutableDictionary *)dict
 {
     dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
-    dict[LP_PARAM_CLIENT_KEY] = accessKey;
+    dict[LP_PARAM_CLIENT_KEY] = [LPAPIConfig sharedConfig].accessKey;
 }
 
 - (void)sendNow:(BOOL)async
@@ -229,7 +228,7 @@ static NSDictionary *_requestHheaders;
         NSLog(@"Leanplum: Cannot send request. appId is not set");
         return;
     }
-    if (!accessKey) {
+    if (![LPAPIConfig sharedConfig].accessKey) {
         NSLog(@"Leanplum: Cannot send request. accessKey is not set");
         return;
     }

@@ -35,6 +35,7 @@
 #import "LeanplumReachability+Category.h"
 #import "LPNetworkEngine+Category.h"
 #import "LPNetworkOperation+Category.h"
+#import "LPAPIConfig.h"
 
 NSString *APPLICATION_ID = @"app_nLiaLr3lXvCjXhsztS1Gw8j281cPLO6sZetTDxYnaSk";
 NSString *DEVELOPMENT_KEY = @"dev_2bbeWLmVJyNrqI8F21Kn9nqyUPRkVCUoLddBkHEyzmk";
@@ -123,9 +124,9 @@ static BOOL swizzled = NO;
     [LPVarCache reset];
     [LPVarCache initialize];
     [LPActionManager reset];
-    [LeanplumRequest setDeviceId:nil];
-    [LeanplumRequest setUserId:nil];
-    [LeanplumRequest setToken:nil];
+    [[LPAPIConfig sharedConfig] setDeviceId:nil];
+    [[LPAPIConfig sharedConfig] setUserId:nil];
+    [[LPAPIConfig sharedConfig] setToken:nil];
     [LeanplumRequest reset];
     [LeanplumHelper reset_user_defaults];
     [[LeanplumRequest sendNowQueue] cancelAllOperations];
