@@ -10,8 +10,7 @@
 
 @implementation LPRequestFactory
 
--(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager
-{
+-(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager {
     self = [super init];
     if (self) {
         _featureFlagManager = featureFlagManager;
