@@ -79,9 +79,19 @@ static dispatch_once_t leanplum_onceToken;
     return sharedInstance;
 }
 
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self initialize];
+    }
+    return self;
+}
+
 - (void)initialize
 {
     self.vars = [NSMutableDictionary dictionary];
+    self.messages = [NSMutableDictionary dictionary];
     self.filesToInspect = [NSMutableDictionary dictionary];
     self.fileAttributes = [NSMutableDictionary dictionary];
     self.valuesFromClient = [NSMutableDictionary dictionary];

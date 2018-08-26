@@ -125,7 +125,7 @@
 - (void)runInAppMessagePrioritizationTest:(NSDictionary *)messageConfigs
                    withExpectedMessageIds:(NSSet *)expectedMessageIds
 {
-    id mockLPVarCache = OCMClassMock([LPVarCache class]);
+    id mockLPVarCache = OCMPartialMock([LPVarCache sharedCache]);
     OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
     XCTAssertEqual([[LPVarCache sharedCache] messages], messageConfigs);
 
@@ -173,7 +173,7 @@
                      withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 }
 
-- (void) test_different_priorities
+- (void) test_different_priorities_small
 {
     // Testing three messages with priorities of 1, 2, and 3.
     NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"DifferentPriorities1"
@@ -182,16 +182,19 @@
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
                      withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
+}
 
+- (void) test_different_priorities_large
+{
     // Testing three messages with priorities of 10, 1000, and 5.
-    jsonString = [LeanplumHelper retrieve_string_from_file:@"DifferentPriorities2"
+    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"DifferentPriorities2"
                                                     ofType:@"json"];
-    messageConfigs = [LPJSON JSONFromString:jsonString];
+    NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
                      withExpectedMessageIds:[NSSet setWithObjects:@"3", nil]];
 }
 
-- (void) test_tied_priorities
+- (void) test_tied_priorities_no_value
 {
     // Testing three messages with priorities of 5, no value, and 5.
     NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPriorities1"
@@ -200,11 +203,14 @@
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
                      withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
+}
 
+- (void) test_tied_priorities_identical
+{
     // Testing three messages with the same priority.
-    jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPriorities2"
+    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPriorities2"
                                                     ofType:@"json"];
-    messageConfigs = [LPJSON JSONFromString:jsonString];
+    NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     [self runInAppMessagePrioritizationTest:messageConfigs
                      withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 }
@@ -229,7 +235,7 @@
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
 
     // Mock LPVarCache messages.
-    id mockLPVarCache = OCMClassMock([LPVarCache class]);
+    id mockLPVarCache = OCMPartialMock([LPVarCache sharedCache]);
     OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
     XCTAssertEqual([[LPVarCache sharedCache] messages], messageConfigs);
 
