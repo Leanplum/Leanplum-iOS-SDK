@@ -32,12 +32,10 @@
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
+#import "LPAPIConfig.h"
 
 static id<LPNetworkEngineProtocol> engine;
-static NSString *appId;
 static NSString *accessKey;
-static NSString *deviceId;
-static NSString *userId;
 static NSString *uploadUrl;
 static NSMutableDictionary *fileTransferStatus;
 static int pendingDownloads;
@@ -54,75 +52,16 @@ static NSDictionary *_requestHheaders;
 
 + (void)setAppId:(NSString *)appId_ withAccessKey:(NSString *)accessKey_
 {
-    appId = appId_;
-    accessKey = accessKey_;
+    [[LPAPIConfig sharedConfig] setAppId:appId_ withAccessKey:accessKey_];
     fileTransferStatus = [[NSMutableDictionary alloc] init];
     fileUploadSize = [NSMutableDictionary dictionary];
     fileUploadProgress = [NSMutableDictionary dictionary];
     pendingUploads = [NSMutableDictionary dictionary];
 }
 
-+ (void)setUserId:(NSString *)userId_
-{
-    userId = userId_;
-}
-
-+ (void)setDeviceId:(NSString *)deviceId_
-{
-    deviceId = deviceId_;
-}
-
 + (void)setUploadUrl:(NSString *)url_
 {
     uploadUrl = url_;
-}
-
-+ (NSString *)deviceId
-{
-    return deviceId;
-}
-
-+ (NSString *)userId
-{
-    return userId;
-}
-
-+ (void)setToken:(NSString *)token_
-{
-    token = token_;
-}
-
-+ (NSString *)token
-{
-    return token;
-}
-
-+ (void)loadToken
-{
-    NSError *err;
-    NSString *token_ = [LPKeychainWrapper getPasswordForUsername:LP_KEYCHAIN_USERNAME
-                                                  andServiceName:LP_KEYCHAIN_SERVICE_NAME
-                                                           error:&err];
-    if (!token_) {
-        return;
-    }
-    
-    [self setToken:token_];
-}
-
-+ (void)saveToken
-{
-    NSError *err;
-    [LPKeychainWrapper storeUsername:LP_KEYCHAIN_USERNAME
-                         andPassword:[self token]
-                      forServiceName:LP_KEYCHAIN_SERVICE_NAME
-                      updateExisting:YES
-                               error:&err];
-}
-
-+ (NSString *)appId
-{
-    return appId;
 }
 
 - (id)initWithHttpMethod:(NSString *)httpMethod
@@ -151,7 +90,7 @@ static NSDictionary *_requestHheaders;
     NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
                                  infoDict[(NSString *)kCFBundleNameKey],
                                  infoDict[(NSString *)kCFBundleVersionKey],
-                                 appId,
+                                 [LPAPIConfig sharedConfig].appId,
                                  LEANPLUM_CLIENT,
                                  LEANPLUM_SDK_VERSION,
                                  [[UIDevice currentDevice] systemName],
@@ -199,8 +138,8 @@ static NSDictionary *_requestHheaders;
     NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
     NSMutableDictionary *args = [@{
                                    LP_PARAM_ACTION: _apiMethod,
-                                   LP_PARAM_DEVICE_ID: deviceId ?: @"",
-                                   LP_PARAM_USER_ID: userId ?: @"",
+                                   LP_PARAM_DEVICE_ID: [LPAPIConfig sharedConfig].deviceId ?: @"",
+                                   LP_PARAM_USER_ID: [LPAPIConfig sharedConfig].userId ?: @"",
                                    LP_PARAM_SDK_VERSION: constants.sdkVersion,
                                    LP_PARAM_CLIENT: constants.client,
                                    LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
@@ -279,7 +218,7 @@ static NSDictionary *_requestHheaders;
 
 - (void)attachApiKeys:(NSMutableDictionary *)dict
 {
-    dict[LP_PARAM_APP_ID] = appId;
+    dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
     dict[LP_PARAM_CLIENT_KEY] = accessKey;
 }
 
@@ -287,7 +226,7 @@ static NSDictionary *_requestHheaders;
 {
     RETURN_IF_TEST_MODE;
 
-    if (!appId) {
+    if (![LPAPIConfig sharedConfig].appId) {
         NSLog(@"Leanplum: Cannot send request. appId is not set");
         return;
     }
