@@ -52,8 +52,7 @@
 
 - (void)registerDevice:(NSString *)email
 {
-    id<LPRequesting> request = [LPRequestFactory post:LP_METHOD_REGISTER_FOR_DEVELOPMENT
-                                              params:@{ LP_PARAM_EMAIL: email }];
+    id<LPRequesting> request = [LPRequestFactory apiMethodRegisterDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         BOOL isSuccess = [LPResponse isResponseSuccess:response];

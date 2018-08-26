@@ -658,8 +658,7 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_VARS
-                                                    params:args];
+             id<LPRequesting> req = [LPRequestFactory apiMethodSetVarsWithParams:args];
              [[LPRequestManager sharedManager] sendRequest:req];
              return YES;
          } @catch (NSException *e) {
@@ -712,8 +711,7 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
     if (filenames.count > 0) {
-        LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
-                                               params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+        LeanplumRequest *req = [LPRequestFactory apiMethodUploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [req sendFilesNow:filenames];
     }
 }
