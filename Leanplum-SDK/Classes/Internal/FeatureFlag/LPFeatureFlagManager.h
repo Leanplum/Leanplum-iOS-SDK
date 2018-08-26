@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "LPFeatureFlags.h"
 
 @interface LPFeatureFlagManager : NSObject
 
