@@ -34,6 +34,7 @@
 #import "LPFileManager.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
+#import "LPRequestManager.h"
 
 static NSObject *updatingLock;
 
@@ -191,7 +192,7 @@ static NSObject *updatingLock;
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
         LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
                                               params:params];
-        [req send];
+        [[LPRequestManager sharedManager] sendRequest:req];
         LP_END_TRY
     }
     
@@ -370,7 +371,7 @@ static NSObject *updatingLock;
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
     LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_DELETE_INBOX_MESSAGE
                                           params:params];
-    [req send];
+    [[LPRequestManager sharedManager] sendRequest:req];
     LP_END_TRY
 }
 
@@ -467,7 +468,7 @@ static NSObject *updatingLock;
     [req onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnected];
+    [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
     LP_END_TRY
 }
 

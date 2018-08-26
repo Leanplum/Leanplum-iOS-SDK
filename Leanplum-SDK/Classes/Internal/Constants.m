@@ -26,6 +26,7 @@
 #import "LeanplumRequest.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
+#import "LPRequestManager.h"
 
 @implementation LPConstantsState
 
@@ -324,7 +325,7 @@ void leanplumInternalError(NSException *e)
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
                                      LP_PARAM_VERSION_NAME: versionName
                                      }];
-            [req send];
+            [[LPRequestManager sharedManager] sendRequest:req];
         } @catch (NSException *e) {
             // This empty try/catch is needed to prevent crash <-> loop.
         }

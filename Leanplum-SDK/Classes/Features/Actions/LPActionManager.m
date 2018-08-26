@@ -34,6 +34,7 @@
 #import "LeanplumRequest.h"
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
+#import "LPRequestManager.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>

@@ -34,6 +34,7 @@
 #import "Leanplum_SocketIO.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
+#import "LPRequestManager.h"
 
 static NSRegularExpression *varNameRegex;
 static NSMutableDictionary *vars;
@@ -695,7 +696,7 @@ static RegionInitBlock regionInitBlock;
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
              LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_SET_VARS
                                                     params:args];
-             [req send];
+             [[LPRequestManager sharedManager] sendRequest:req];
              return YES;
          } @catch (NSException *e) {
              [Leanplum throwError:@"Cannot serialize variable values. "
