@@ -257,7 +257,8 @@ BOOL inForeground = NO;
 
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = YES;
-    [LeanplumRequest setAppId:appId withAccessKey:accessKey];
+    [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
+    [LeanplumRequest initializeStaticVars];
     LP_END_TRY
 }
 
@@ -282,7 +283,8 @@ BOOL inForeground = NO;
 
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = NO;
-    [LeanplumRequest setAppId:appId withAccessKey:accessKey];
+    [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
+    [LeanplumRequest initializeStaticVars];
     LP_END_TRY
 }
 
