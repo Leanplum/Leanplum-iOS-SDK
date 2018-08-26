@@ -34,6 +34,7 @@
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
 #import "LPRequestManager.h"
+#import "LPAPIConfig.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -104,7 +105,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 {
     return [NSString stringWithFormat:
             LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY,
-            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
+            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV

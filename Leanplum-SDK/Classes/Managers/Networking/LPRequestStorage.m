@@ -27,6 +27,7 @@
 #import "LeanplumInternal.h"
 #import "LPFileManager.h"
 #import "LeanplumRequest.h"
+#import "LPAPIConfig.h"
 
 @implementation LPRequestStorage
 
@@ -150,7 +151,7 @@
 - (NSString *)cacheFilePath
 {
     return [[LPFileManager cachesDirectory] stringByAppendingPathComponent:
-            [NSString stringWithFormat:@"_lprequests-%@", LeanplumRequest.appId]];
+            [NSString stringWithFormat:@"_lprequests-%@", [LPAPIConfig sharedConfig].appId]];
 }
 
 /**
@@ -160,7 +161,7 @@
 - (NSString *)documentsFilePath
 {
     return [[LPFileManager documentsDirectory] stringByAppendingPathComponent:
-            [NSString stringWithFormat:@"_lprequests-%@", LeanplumRequest.appId]];
+            [NSString stringWithFormat:@"_lprequests-%@", [LPAPIConfig sharedConfig].appId]];
 }
 
 /** 
