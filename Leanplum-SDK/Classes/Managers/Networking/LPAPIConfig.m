@@ -12,6 +12,9 @@
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 
+NSString *LP_KEYCHAIN_SERVICE_NAME = @"com.leanplum.storage";
+NSString *LP_KEYCHAIN_USERNAME = @"defaultUser";
+
 @interface LPAPIConfig()
 
 @property (nonatomic, strong) NSString *appId;

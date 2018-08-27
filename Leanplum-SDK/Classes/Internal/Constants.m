@@ -248,9 +248,6 @@ NSString *LP_VALUE_SDK_LOG = @"sdkLog";
 NSString *LP_VALUE_SDK_ERROR = @"sdkError";
 NSString *LP_VALUE_SDK_START_LATENCY = @"sdkStartLatency";
 
-NSString *LP_KEYCHAIN_SERVICE_NAME = @"com.leanplum.storage";
-NSString *LP_KEYCHAIN_USERNAME = @"defaultUser";
-
 NSString *LP_PATH_DOCUMENTS = @"Leanplum_Resources";
 NSString *LP_PATH_BUNDLE = @"Leanplum_Bundle";
 
