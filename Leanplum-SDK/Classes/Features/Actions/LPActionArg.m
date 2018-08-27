@@ -31,7 +31,7 @@
     arg->_kind = kind;
     arg->_defaultValue = defaultValue;
     if ([kind isEqualToString:LP_KIND_FILE]) {
-        [LPVarCache registerFile:(NSString *) defaultValue
+        [[LPVarCache sharedCache] registerFile:(NSString *) defaultValue
                 withDefaultValue:(NSString *) defaultValue];
     }
     LP_END_TRY
