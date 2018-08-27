@@ -121,8 +121,8 @@ static BOOL swizzled = NO;
 
 + (void)clean_up {
     [Leanplum reset];
-    [LPVarCache reset];
-    [LPVarCache initialize];
+    [[LPVarCache sharedCache] reset];
+    [[LPVarCache sharedCache] initialize];
     [LPActionManager reset];
     [[LPAPIConfig sharedConfig] setDeviceId:nil];
     [[LPAPIConfig sharedConfig] setUserId:nil];

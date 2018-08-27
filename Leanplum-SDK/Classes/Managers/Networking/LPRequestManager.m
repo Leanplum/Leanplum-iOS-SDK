@@ -90,7 +90,7 @@
     }
 }
 
-- (void)sendNow:(BOOL)async request:(id<LPRequesting>)request
+- (void)sendNowSync:(BOOL)sync request:(id<LPRequesting>)request
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
@@ -108,7 +108,7 @@
         }
 
         [self sendEventuallyRequest:request];
-        [self sendRequests:async];
+        [self sendRequestsSync:sync];
     }
 }
 
@@ -177,12 +177,12 @@
 
 - (void)sendNowRequest:(id<LPRequesting>)request
 {
-    [self sendNow:YES request:request];
+    [self sendNowSync:NO request:request];
 }
 
 - (void)sendNowSyncRequest:(id<LPRequesting>)request
 {
-    [self sendNow:NO request:request];
+    [self sendNowSync:YES request:request];
 }
 
 // Wait 1 second for potential other API calls, and then sends the call synchronously
@@ -309,7 +309,7 @@
     return args;
 }
 
-- (void)sendRequests:(BOOL)async
+- (void)sendRequestsSync:(BOOL)sync
 {
     NSBlockOperation *requestOperation = [NSBlockOperation new];
     __weak NSBlockOperation *weakOperation = requestOperation;
@@ -342,7 +342,7 @@
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
-        int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
+        int timeout = sync ? constants.syncNetworkTimeoutSeconds : constants.networkTimeoutSeconds;
 
         NSTimeInterval uiTimeoutInterval = timeout;
         timeout = 5 * timeout; // let slow operations complete
@@ -378,7 +378,7 @@
 
                 // Send another request if the last request had maximum events per api call.
                 if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                    [self sendRequests:async];
+                    [self sendRequestsSync:sync];
                 }
                 LP_END_TRY
 
@@ -459,11 +459,12 @@
 
     // Send. operationBlock will run synchronously.
     // Adding to OperationQueue puts it in the background.
-    if (async) {
+    if (sync) {
+        operationBlock();
+    } else {
         [requestOperation addExecutionBlock:operationBlock];
         [[self sendNowQueue] addOperation:requestOperation];
-    } else {
-        operationBlock();
+
     }
 }
 
