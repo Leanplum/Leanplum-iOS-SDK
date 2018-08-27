@@ -22,7 +22,6 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Constants.h"
 #import "JRSwizzle.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
@@ -34,6 +33,9 @@
 #include <unistd.h>
 #import "LPRequestFactory.h"
 #import "LPRequestManager.h"
+
+NSString *LP_PATH_DOCUMENTS = @"Leanplum_Resources";
+NSString *LP_PATH_BUNDLE = @"Leanplum_Bundle";
 
 typedef enum {
     kLeanplumFileOperationGet = 0,
