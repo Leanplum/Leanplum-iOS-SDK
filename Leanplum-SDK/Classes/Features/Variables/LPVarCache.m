@@ -656,7 +656,7 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_SET_VARS
+             LeanplumRequest *req = [LPRequestFactory createPostForApiMethod:LP_METHOD_SET_VARS
                                                     params:args];
              [req send];
              return YES;
@@ -710,7 +710,7 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
     if (filenames.count > 0) {
-        LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
+        LeanplumRequest *req = [LPRequestFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
                                                params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [req sendFilesNow:filenames];
     }

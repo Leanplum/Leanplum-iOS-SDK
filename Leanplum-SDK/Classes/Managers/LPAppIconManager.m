@@ -64,7 +64,7 @@
                                            iconName:key];
     }];
 
-    LeanplumRequest *request = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
+    LeanplumRequest *request = [LPRequestFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
                                               params:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
