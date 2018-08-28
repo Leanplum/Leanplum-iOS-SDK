@@ -39,8 +39,9 @@
 + (LPActionArg *)argNamed:(NSString *)name withAction:(NSString *)defaultValue;
 + (LPActionArg *)argNamed:(NSString *)name withColor:(UIColor *)defaultValue;
 /**@}*/
-- (NSString *)name;
-- (NSString *)kind;
-- (id)defaultValue;
+
+@property (readonly, strong) NSString *name;
+@property (readonly, strong) id defaultValue;
+@property (readonly, strong) NSString *kind;
 
 @end
