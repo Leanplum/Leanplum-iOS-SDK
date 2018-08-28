@@ -53,15 +53,15 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     if (self) {
         LP_TRY
         _name = name;
-        _nameComponents = [LPVarCache getNameComponents:name];
+        _nameComponents = [[LPVarCache sharedCache] getNameComponents:name];
         _defaultValue = defaultValue;
         _value = defaultValue;
         _kind = kind;
         [self cacheComputedValues];
         
-        [LPVarCache registerVariable:self];
+        [[LPVarCache sharedCache] registerVariable:self];
         if ([kind isEqualToString:LP_KIND_FILE]) { // TODO: && var.stringValue)
-            [LPVarCache registerFile:_stringValue withDefaultValue:_defaultValue];
+            [[LPVarCache sharedCache] registerFile:_stringValue withDefaultValue:_defaultValue];
         }
         if ([name hasPrefix:LP_VALUE_RESOURCES_VARIABLE]) {
             _isInternal = YES;
@@ -76,145 +76,145 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 
 + (LPVar *)define:(NSString *)name
 {
-    return [LPVarCache define:name with:nil kind:nil];
+    return [[LPVarCache sharedCache] define:name with:nil kind:nil];
 }
 
 + (LPVar *)define:(NSString *)name withInt:(int)defaultValue
 {
-    return [LPVarCache define:name with:[NSNumber numberWithInt:defaultValue] kind:LP_KIND_INT];
+    return [[LPVarCache sharedCache] define:name with:[NSNumber numberWithInt:defaultValue] kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withFloat:(float)defaultValue
 {
-    return [LPVarCache define:name with:[NSNumber numberWithFloat:defaultValue] kind:LP_KIND_FLOAT];
+    return [[LPVarCache sharedCache] define:name with:[NSNumber numberWithFloat:defaultValue] kind:LP_KIND_FLOAT];
 }
 
 + (LPVar *)define:(NSString *)name withDouble:(double)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithDouble:defaultValue]
                          kind:LP_KIND_FLOAT];
 }
 
 + (LPVar *)define:(NSString *)name withCGFloat:(CGFloat)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithDouble:defaultValue]
                          kind:LP_KIND_FLOAT];
 }
 
 + (LPVar *)define:(NSString *)name withShort:(short)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithShort:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withChar:(char)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithChar:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withBool:(BOOL)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithBool:defaultValue]
                          kind:LP_KIND_BOOLEAN];
 }
 
 + (LPVar *)define:(NSString *)name withInteger:(NSInteger)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithInteger:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withLong:(long)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithLong:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withLongLong:(long long)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithLongLong:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withUnsignedChar:(unsigned char)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithUnsignedChar:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withUnsignedInt:(unsigned int)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithUnsignedInt:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withUnsignedInteger:(NSUInteger)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithUnsignedInteger:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withUnsignedLong:(unsigned long)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithUnsignedLong:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withUnsignedLongLong:(unsigned long long)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithUnsignedLongLong:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withUnsignedShort:(unsigned short)defaultValue
 {
-    return [LPVarCache define:name
+    return [[LPVarCache sharedCache] define:name
                          with:[NSNumber numberWithUnsignedShort:defaultValue]
                          kind:LP_KIND_INT];
 }
 
 + (LPVar *)define:(NSString *)name withString:(NSString *)defaultValue
 {
-    return [LPVarCache define:name with:defaultValue kind:LP_KIND_STRING];
+    return [[LPVarCache sharedCache] define:name with:defaultValue kind:LP_KIND_STRING];
 }
 
 + (LPVar *)define:(NSString *)name withNumber:(NSNumber *)defaultValue
 {
-    return [LPVarCache define:name with:defaultValue kind:LP_KIND_FLOAT];
+    return [[LPVarCache sharedCache] define:name with:defaultValue kind:LP_KIND_FLOAT];
 }
 
 + (LPVar *)define:(NSString *)name withFile:(NSString *)defaultFilename
 {
-    return [LPVarCache define:name with:defaultFilename kind:LP_KIND_FILE];
+    return [[LPVarCache sharedCache] define:name with:defaultFilename kind:LP_KIND_FILE];
 }
 
 + (LPVar *)define:(NSString *)name withDictionary:(NSDictionary *)defaultValue
 {
-    return [LPVarCache define:name with:defaultValue kind:LP_KIND_DICTIONARY];
+    return [[LPVarCache sharedCache] define:name with:defaultValue kind:LP_KIND_DICTIONARY];
 }
 
 + (LPVar *)define:(NSString *)name withArray:(NSArray *)defaultValue
 {
-    return [LPVarCache define:name with:defaultValue kind:LP_KIND_ARRAY];
+    return [[LPVarCache sharedCache] define:name with:defaultValue kind:LP_KIND_ARRAY];
 }
 
 + (LPVar *)define:(NSString *)name withColor:(UIColor *)defaultValue
 {
-    return [LPVarCache define:name with:@(leanplum_colorToInt(defaultValue)) kind:LP_KIND_COLOR];
+    return [[LPVarCache sharedCache] define:name with:@(leanplum_colorToInt(defaultValue)) kind:LP_KIND_COLOR];
 }
 
 #pragma mark Updating
@@ -237,7 +237,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (void)update
 {
     NSObject *oldValue = _value;
-    _value = [LPVarCache getMergedValueFromComponentArray:_nameComponents];
+    _value = [[LPVarCache sharedCache] getMergedValueFromComponentArray:_nameComponents];
     if ([_value isEqual:oldValue] && _hadStarted) {
         return;
     }
@@ -247,12 +247,12 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
         _hasChanged = YES;
     }
     
-    if (LPVarCache.silent && [[self name] hasPrefix:LP_VALUE_RESOURCES_VARIABLE]
+    if ([LPVarCache sharedCache].silent && [[self name] hasPrefix:LP_VALUE_RESOURCES_VARIABLE]
         && [_kind isEqualToString:LP_KIND_FILE] && !_fileIsPending) {
         [self triggerFileIsReady];
     }
     
-    if (LPVarCache.silent) {
+    if ([LPVarCache sharedCache].silent) {
         return;
     }
     
@@ -411,7 +411,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
         [components addObject:component];
     }
     va_end(args);
-    return [LPVarCache getMergedValueFromComponentArray:components];
+    return [[LPVarCache sharedCache] getMergedValueFromComponentArray:components];
     LP_END_TRY
     return nil;
 }
@@ -422,7 +422,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     [self warnIfNotStarted];
     NSMutableArray *components = [_nameComponents mutableCopy];
     [components addObjectsFromArray:pathComponents];
-    return [LPVarCache getMergedValueFromComponentArray:components];
+    return [[LPVarCache sharedCache] getMergedValueFromComponentArray:components];
     LP_END_TRY
     return nil;
 }
@@ -430,7 +430,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (NSUInteger)count
 {
     LP_TRY
-    return [[LPVarCache getMergedValueFromComponentArray:_nameComponents] count];
+    return [[[LPVarCache sharedCache] getMergedValueFromComponentArray:_nameComponents] count];
     LP_END_TRY
 }
 
