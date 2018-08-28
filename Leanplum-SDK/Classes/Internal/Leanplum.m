@@ -862,7 +862,7 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_START params:params];
+    id<LPRequesting> req = [LPRequestFactory apiMethodStartWithParams:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -941,8 +941,7 @@ BOOL inForeground = NO;
             // Report latency for 0.1% of users.
             NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
             if (arc4random() % 1000 == 0) {
-                id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG
-                               params:@{
+                id<LPRequesting> req = [LPRequestFactory apiMethodLogWithParams:@{
                                         LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
                                         @"startLatency": [@(latency) description]
                                         }];
@@ -1038,7 +1037,7 @@ BOOL inForeground = NO;
                     LP_TRY
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_STOP params:nil];
+                    id<LPRequesting> req = [LPRequestFactory apiMethodStopWithParams:nil];
                     [[LPRequestManager sharedManager] sendIfConnectedSync:exitOnSuspend request:req];
                     LP_END_TRY
                 }];
@@ -1048,7 +1047,7 @@ BOOL inForeground = NO;
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_HEARTBEAT params:nil];
+            id<LPRequesting> req = [LPRequestFactory apiMethodHeartbeatWithParams:nil];
             [[LPRequestManager sharedManager] sendIfDelayedRequest:req];
         }
         LP_END_TRY
@@ -1142,7 +1141,7 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    id<LPRequesting> request = [LPRequestFactory post:LP_METHOD_PAUSE_SESSION params:nil];
+    id<LPRequesting> request = [LPRequestFactory apiMethodPauseSessionWithParams:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
@@ -1154,7 +1153,7 @@ BOOL inForeground = NO;
 
 + (void)resume
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_RESUME_SESSION params:nil];
+    id<LPRequesting> req = [LPRequestFactory apiMethodResumeSessionWithParams:nil];
     [[LPRequestManager sharedManager] sendIfDelayedRequest:req];
 }
 
@@ -1894,7 +1893,7 @@ BOOL inForeground = NO;
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
         andParameters:(NSDictionary *)params
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_TRACK params:args];
+    id<LPRequesting> req = [LPRequestFactory apiMethodTrackWithParams:args];
     [[LPRequestManager sharedManager] sendRequest:req];
 
     // Perform event actions.
@@ -2025,7 +2024,7 @@ andParameters:(NSDictionary *)params
         attributes = @{};
     }
 
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_USER_ATTRIBUTES params:@{
+    id<LPRequesting> req = [LPRequestFactory apiMethodSetUserAttributesWithParams:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
         LP_PARAM_NEW_USER_ID: userId ? userId : @""
         }];
@@ -2099,7 +2098,7 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
+    id<LPRequesting> req = [LPRequestFactory apiMethodSetTrafficSourceInfoWithParams:@{
         LP_PARAM_TRAFFIC_SOURCE: info
         }];
     [[LPRequestManager sharedManager] sendRequest:req];
@@ -2152,7 +2151,7 @@ andParameters:(NSDictionary *)params
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
             andParameters:(NSDictionary *)params
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_ADVANCE params:args];
+    id<LPRequesting> req = [LPRequestFactory apiMethodAdvanceWithParams:args];
     [[LPRequestManager sharedManager] sendRequest:req];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     contextualValues.parameters = params;
@@ -2179,7 +2178,7 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_PAUSE_STATE params:@{}];
+    id<LPRequesting> req = [LPRequestFactory apiMethodPauseStateWithParams:@{}];
     [[LPRequestManager sharedManager] sendRequest:req];
 }
 
@@ -2199,7 +2198,7 @@ andParameters:(NSDictionary *)params
 
 + (void)resumeStateInternal
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_RESUME_STATE params:@{}];
+    id<LPRequesting> req = [LPRequestFactory apiMethodResumeStateWithParams:@{}];
     [[LPRequestManager sharedManager] sendRequest:req];
 }
 
@@ -2228,8 +2227,7 @@ andParameters:(NSDictionary *)params
 
     
     LeanplumRequest* req = [LPRequestFactory
-                            post:LP_METHOD_GET_VARS
-                            params:params];
+                            apiMethodGetVarsWithParams:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *values = response[LP_KEY_VARS];
@@ -2515,7 +2513,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG params:@{
+        id<LPRequesting> req = [LPRequestFactory apiMethodLogWithParams:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
@@ -2606,7 +2604,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+    id<LPRequesting> req = [LPRequestFactory apiMethodSetUserAttributesWithParams:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         if (response) {
             response(YES);

@@ -64,8 +64,7 @@
                                            iconName:key];
     }];
 
-    id<LPRequesting> request = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
-                                              params:@{@"data":
+    id<LPRequesting> request = [LPRequestFactory apiMethodUploadFileWithParams:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         LPLog(LPVerbose, @"App icons uploaded.");

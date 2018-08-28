@@ -28,6 +28,8 @@
 #import "Constants.h"
 #import <sqlite3.h>
 
+NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
+
 static sqlite3 *sqlite;
 static BOOL retryOnCorrupt;
 static BOOL willSendErrorLog;

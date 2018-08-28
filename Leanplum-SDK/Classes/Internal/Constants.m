@@ -94,8 +94,6 @@ NSString *LEANPLUM_DEFAULTS_INBOX_KEY = @"__leanplum_newsfeed";
 NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
 NSString *LEANPLUM_DEFAULTS_UUID_KEY = @"__leanplum_uuid";
 
-NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
-
 NSString *LP_METHOD_START = @"start";
 NSString *LP_METHOD_GET_VARS = @"getVars";
 NSString *LP_METHOD_SET_VARS = @"setVars";
@@ -248,12 +246,6 @@ NSString *LP_VALUE_SDK_LOG = @"sdkLog";
 NSString *LP_VALUE_SDK_ERROR = @"sdkError";
 NSString *LP_VALUE_SDK_START_LATENCY = @"sdkStartLatency";
 
-NSString *LP_KEYCHAIN_SERVICE_NAME = @"com.leanplum.storage";
-NSString *LP_KEYCHAIN_USERNAME = @"defaultUser";
-
-NSString *LP_PATH_DOCUMENTS = @"Leanplum_Resources";
-NSString *LP_PATH_BUNDLE = @"Leanplum_Bundle";
-
 NSString *LP_APP_ICON_NAME = @"__iOSAppIcon";
 NSString *LP_APP_ICON_FILE_PREFIX = @"__iOSAppIcon-";
 NSString *LP_APP_ICON_PRIMARY_NAME = @"PrimaryIcon";
@@ -317,8 +309,7 @@ void leanplumInternalError(NSException *e)
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG
-                            params:@{
+            id<LPRequesting> req = [LPRequestFactory apiMethodLogWithParams:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
