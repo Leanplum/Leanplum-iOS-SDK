@@ -85,9 +85,11 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
         [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_DEVICE_ATTRIBUTES
-                                               params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
+                                         params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
         [[LPRequestManager sharedManager] sendRequest:req];
     }
     LP_END_TRY
@@ -337,8 +339,10 @@ static dispatch_once_t leanplum_onceToken;
         }
         [Leanplum onStartResponse:^(BOOL success) {
             LP_END_USER_CODE
-            LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
-            [req send];
+            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+            id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+            [[LPRequestManager sharedManager] sendRequest:req];
             LP_BEGIN_USER_CODE
         }];
     }
@@ -357,14 +361,14 @@ static dispatch_once_t leanplum_onceToken;
 {
     [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
         LP_END_USER_CODE
-        if (!messageId || LPVarCache.messages[messageId]) {
+        if (!messageId || [LPVarCache sharedCache].messages[messageId]) {
             if (onCompleted) {
                 onCompleted();
             }
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            LeanplumRequest *req = [LeanplumRequest
+            id<LPRequesting> req = [LeanplumRequest
                                     post:LP_METHOD_GET_VARS
                                     params:@{
                                              LP_PARAM_INCLUDE_DEFAULTS: @(NO),
@@ -379,23 +383,23 @@ static dispatch_once_t leanplum_onceToken;
                 NSArray *variants = response[LP_KEY_VARIANTS];
                 NSDictionary *regions = response[LP_KEY_REGIONS];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
-                    [values isEqualToDictionary:LPVarCache.diffs]) {
+                    [values isEqualToDictionary:[LPVarCache sharedCache].diffs]) {
                     values = nil;
                 }
-                if ([messages isEqualToDictionary:LPVarCache.messageDiffs]) {
+                if ([messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs]) {
                     messages = nil;
                 }
-                if ([updateRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
+                if ([updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
                     updateRules = nil;
                 }
-                if ([eventRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
+                if ([eventRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
                     eventRules = nil;
                 }
-                if ([regions isEqualToDictionary:LPVarCache.regions]) {
+                if ([regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
                     regions = nil;
                 }
                 if (values || messages || updateRules || eventRules || regions) {
-                    [LPVarCache applyVariableDiffs:values
+                    [[LPVarCache sharedCache] applyVariableDiffs:values
                                           messages:messages
                                        updateRules:updateRules
                                         eventRules:eventRules
@@ -408,7 +412,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
                 LP_END_TRY
              }];
-            [req sendIfConnected];
+            [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
         }
         LP_BEGIN_USER_CODE
     }];
@@ -769,7 +773,7 @@ static dispatch_once_t leanplum_onceToken;
 
         NSString *messageId = context.messageId;
 
-        NSDictionary *messageConfig = LPVarCache.messageDiffs[messageId];
+        NSDictionary *messageConfig = [LPVarCache sharedCache].messageDiffs[messageId];
         
         NSNumber *countdown = messageConfig[@"countdown"];
         if (context.isPreview) {
@@ -1041,7 +1045,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     *foregroundRegionNames = [NSMutableSet set];
     *backgroundRegionNames = [NSMutableSet set];
-    NSDictionary *messages = [LPVarCache messages];
+    NSDictionary *messages = [[LPVarCache sharedCache] messages];
     for (NSString *messageId in messages) {
         NSDictionary *messageConfig = messages[messageId];
         NSMutableSet *regionNames;

@@ -120,8 +120,8 @@ static BOOL swizzled = NO;
 
 + (void)clean_up {
     [Leanplum reset];
-    [LPVarCache reset];
-    [LPVarCache initialize];
+    [[LPVarCache sharedCache] reset];
+    [[LPVarCache sharedCache] initialize];
     [LPActionManager reset];
     [LeanplumRequest setDeviceId:nil];
     [LeanplumRequest setUserId:nil];

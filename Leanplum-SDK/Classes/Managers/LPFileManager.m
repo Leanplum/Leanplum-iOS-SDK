@@ -501,7 +501,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         if ([[value class] isSubclassOfClass:NSDictionary.class]) {
             [self ensureVariablesExist:childKey withTree:value];
         } else {
-            if (![LPVarCache getVariable:childKey]) {
+            if (![[LPVarCache sharedCache] getVariable:childKey]) {
                 [self defineFileVariable:childKey withFile:nil];
             }
         }
@@ -567,7 +567,9 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         return NO;
     }
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        LeanplumRequest *downloadRequest = [LPRequestFactory get:LP_METHOD_DOWNLOAD_FILE params:nil];
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *downloadRequest = [reqFactory createGetForApiMethod:LP_METHOD_DOWNLOAD_FILE params:nil];
         [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (complete) {
                 complete();

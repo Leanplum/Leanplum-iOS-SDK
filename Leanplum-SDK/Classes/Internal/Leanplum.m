@@ -693,7 +693,7 @@ BOOL inForeground = NO;
     if (IS_NOOP) {
         state.hasStarted = YES;
         state.startSuccessful = YES;
-        [LPVarCache applyVariableDiffs:@{} messages:@{} updateRules:@[] eventRules:@[]
+        [[LPVarCache sharedCache] applyVariableDiffs:@{} messages:@{} updateRules:@[] eventRules:@[]
                               variants:@[] regions:@{} variantDebugInfo:@{}];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self triggerStartResponse:YES];
@@ -734,23 +734,23 @@ BOOL inForeground = NO;
     state.actionManager = [LPActionManager sharedManager];
 
     [LeanplumRequest loadToken];
-    [LPVarCache setSilent:YES];
-    [LPVarCache loadDiffs];
-    [LPVarCache setSilent:NO];
+    [[LPVarCache sharedCache] setSilent:YES];
+    [[LPVarCache sharedCache] loadDiffs];
+    [[LPVarCache sharedCache] setSilent:NO];
     [[self inbox] load];
 
     // Setup class members.
-    [LPVarCache onUpdate:^{
+    [[LPVarCache sharedCache] onUpdate:^{
         [self triggerVariablesChanged];
 
         if (LeanplumRequest.numPendingDownloads == 0) {
             [self triggerVariablesChangedAndNoDownloadsPending];
         }
     }];
-    [LPVarCache onInterfaceUpdate:^{
+    [[LPVarCache sharedCache] onInterfaceUpdate:^{
         [self triggerInterfaceChanged];
     }];
-    [LPVarCache onEventsUpdate:^{
+    [[LPVarCache sharedCache] onEventsUpdate:^{
         [self triggerEventsChanged];
     }];
     [LeanplumRequest onNoPendingDownloads:^{
@@ -859,7 +859,9 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_START params:params];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_START params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -872,11 +874,11 @@ BOOL inForeground = NO;
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
-        [LPVarCache setVariantDebugInfo:variantDebugInfo];
+        [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
 
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
-        [LPVarCache applyVariableDiffs:values
+        [[LPVarCache sharedCache] applyVariableDiffs:values
                               messages:messages
                            updateRules:updateRules
                             eventRules:eventRules
@@ -926,7 +928,7 @@ BOOL inForeground = NO;
             NSDictionary *fileAttributes = response[LP_PARAM_FILE_ATTRIBUTES];
 
             [LeanplumRequest setUploadUrl:response[LP_KEY_UPLOAD_URL]];
-            [LPVarCache setDevModeValuesFromServer:valuesFromCode
+            [[LPVarCache sharedCache] setDevModeValuesFromServer:valuesFromCode
                                     fileAttributes:fileAttributes
                                  actionDefinitions:actionDefinitions];
             [[LeanplumSocket sharedSocket] connectToAppId:LeanplumRequest.appId
@@ -938,7 +940,9 @@ BOOL inForeground = NO;
             // Report latency for 0.1% of users.
             NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
             if (arc4random() % 1000 == 0) {
-                id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG
+                LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                                initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_LOG
                                params:@{
                                         LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
                                         @"startLatency": [@(latency) description]
@@ -967,7 +971,7 @@ BOOL inForeground = NO;
         state.startSuccessful = NO;
 
         // Load the variables that were stored on the device from the last session.
-        [LPVarCache loadDiffs];
+        [[LPVarCache sharedCache] loadDiffs];
         LP_END_TRY
 
         [self triggerStartResponse:NO];
@@ -1035,7 +1039,9 @@ BOOL inForeground = NO;
                     LP_TRY
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_STOP params:nil];
+                    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_STOP params:nil];
                     [[LPRequestManager sharedManager] sendIfConnectedSync:exitOnSuspend request:req];
                     LP_END_TRY
                 }];
@@ -1045,8 +1051,11 @@ BOOL inForeground = NO;
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_HEARTBEAT params:nil];
+            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+            id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_HEARTBEAT params:nil];
             [[LPRequestManager sharedManager] sendIfDelayedRequest:req];
+
         }
         LP_END_TRY
     } repeats:YES];
@@ -1139,7 +1148,9 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    id<LPRequesting> request = [LPRequestFactory post:LP_METHOD_PAUSE_SESSION params:nil];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_PAUSE_SESSION params:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
@@ -1151,8 +1162,10 @@ BOOL inForeground = NO;
 
 + (void)resume
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_RESUME_SESSION params:nil];
-    [[LPRequestManager sharedManager] sendIfDelayedRequest:req];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_RESUME_SESSION params:nil];
+    [[LPRequestManager sharedManager] sendIfDelayedRequest:request];
 }
 
 + (void)trackCrashes
@@ -1297,7 +1310,7 @@ BOOL inForeground = NO;
     }
     [[LPInternalState sharedState].variablesChangedBlocks addObject:[block copy]];
     LP_END_TRY
-    if ([LPVarCache hasReceivedDiffs]) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs]) {
         block();
     }
 }
@@ -1315,7 +1328,7 @@ BOOL inForeground = NO;
     }
     [[LPInternalState sharedState].interfaceChangedBlocks addObject:[block copy]];
     LP_END_TRY
-    if ([LPVarCache hasReceivedDiffs]) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs]) {
         block();
     }
 }
@@ -1326,7 +1339,7 @@ BOOL inForeground = NO;
         [LPInternalState sharedState].eventsChangedBlocks = [NSMutableArray array];
     }
     [[LPInternalState sharedState].eventsChangedBlocks addObject:[block copy]];
-    if ([LPVarCache hasReceivedDiffs]) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs]) {
         block();
     }
 }
@@ -1349,7 +1362,7 @@ BOOL inForeground = NO;
     }
     NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
     [self addInvocation:invocation toSet:[LPInternalState sharedState].variablesChangedResponders];
-    if ([LPVarCache hasReceivedDiffs]) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs]) {
         [invocation invoke];
     }
 }
@@ -1372,7 +1385,7 @@ BOOL inForeground = NO;
     }
     NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
     [self addInvocation:invocation toSet:[LPInternalState sharedState].interfaceChangedResponders];
-    if ([LPVarCache hasReceivedDiffs] && invocation) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && invocation) {
         [invocation invoke];
     }
 }
@@ -1385,7 +1398,7 @@ BOOL inForeground = NO;
 
     NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
     [self addInvocation:invocation toSet:[LPInternalState sharedState].eventsChangedResponders];
-    if ([LPVarCache hasReceivedDiffs] && invocation) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && invocation) {
         [invocation invoke];
     }
 }
@@ -1425,7 +1438,7 @@ BOOL inForeground = NO;
     }
     [[LPInternalState sharedState].noDownloadsBlocks addObject:[block copy]];
     LP_END_TRY
-    if ([LPVarCache hasReceivedDiffs] && LeanplumRequest.numPendingDownloads == 0) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && LeanplumRequest.numPendingDownloads == 0) {
         block();
     }
 }
@@ -1438,7 +1451,7 @@ BOOL inForeground = NO;
         return;
     }
 
-    if ([LPVarCache hasReceivedDiffs] && LeanplumRequest.numPendingDownloads == 0) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && LeanplumRequest.numPendingDownloads == 0) {
         block();
     } else {
         LP_TRY
@@ -1454,7 +1467,7 @@ BOOL inForeground = NO;
 }
 
 + (void)clearUserContent {
-    [LPVarCache clearUserContent];
+    [[LPVarCache sharedCache] clearUserContent];
 }
 
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector
@@ -1474,7 +1487,7 @@ BOOL inForeground = NO;
     }
     NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
     [self addInvocation:invocation toSet:[LPInternalState sharedState].noDownloadsResponders];
-    if ([LPVarCache hasReceivedDiffs]
+    if ([[LPVarCache sharedCache] hasReceivedDiffs]
         && LeanplumRequest.numPendingDownloads == 0) {
         [invocation invoke];
     }
@@ -1535,7 +1548,7 @@ BOOL inForeground = NO;
         [LPMessageTemplatesClass sharedTemplates];
     }
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
-    [LPVarCache registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
+    [[LPVarCache sharedCache] registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
     if (responder) {
         [Leanplum onAction:name invoke:responder];
     }
@@ -1659,7 +1672,7 @@ BOOL inForeground = NO;
               fromMessageId:(NSString *)sourceMessage
        withContextualValues:(LPContextualValues *)contextualValues
 {
-    NSDictionary *messages = [LPVarCache messages];
+    NSDictionary *messages = [[LPVarCache sharedCache] messages];
     NSMutableArray *actionContexts = [NSMutableArray array];
     
     for (NSString *messageId in [messages allKeys]) {
@@ -1776,7 +1789,7 @@ BOOL inForeground = NO;
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId
 {
-    NSDictionary *messageConfig = [LPVarCache messages][messageId];
+    NSDictionary *messageConfig = [[LPVarCache sharedCache] messages][messageId];
     LPActionContext *context =
         [LPActionContext actionContextWithName:messageConfig[@"action"]
                                           args:messageConfig[LP_KEY_VARS]
@@ -1891,7 +1904,9 @@ BOOL inForeground = NO;
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
         andParameters:(NSDictionary *)params
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_TRACK params:args];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_TRACK params:args];
     [[LPRequestManager sharedManager] sendRequest:req];
 
     // Perform event actions.
@@ -2022,7 +2037,9 @@ andParameters:(NSDictionary *)params
         attributes = @{};
     }
 
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_USER_ATTRIBUTES params:@{
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_USER_ATTRIBUTES params:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
         LP_PARAM_NEW_USER_ID: userId ? userId : @""
         }];
@@ -2031,7 +2048,7 @@ andParameters:(NSDictionary *)params
     if (userId.length) {
         [LeanplumRequest setUserId:userId];
         if ([LPInternalState sharedState].hasStarted) {
-            [LPVarCache saveDiffs];
+            [[LPVarCache sharedCache] saveDiffs];
         }
     }
 
@@ -2054,7 +2071,7 @@ andParameters:(NSDictionary *)params
 {
     @synchronized([LPInternalState sharedState].userAttributeChanges){
         BOOL __block madeChanges = NO;
-        NSMutableDictionary *existingAttributes = [LPVarCache userAttributes];
+        NSMutableDictionary *existingAttributes = [[LPVarCache sharedCache] userAttributes];
         for (NSDictionary *attributes in [LPInternalState sharedState].userAttributeChanges) {
             [attributes enumerateKeysAndObjectsUsingBlock:^(id attributeName, id value, BOOL *stop) {
                 id existingValue = existingAttributes[attributeName];
@@ -2074,7 +2091,7 @@ andParameters:(NSDictionary *)params
         }
         [[LPInternalState sharedState].userAttributeChanges removeAllObjects];
         if (madeChanges) {
-            [LPVarCache saveUserAttributes];
+            [[LPVarCache sharedCache] saveUserAttributes];
         }
     }
 }
@@ -2096,7 +2113,9 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
         LP_PARAM_TRAFFIC_SOURCE: info
         }];
     [[LPRequestManager sharedManager] sendRequest:req];
@@ -2149,7 +2168,9 @@ andParameters:(NSDictionary *)params
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
             andParameters:(NSDictionary *)params
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_ADVANCE params:args];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_ADVANCE params:args];
     [[LPRequestManager sharedManager] sendRequest:req];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     contextualValues.parameters = params;
@@ -2176,7 +2197,9 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_PAUSE_STATE params:@{}];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_PAUSE_STATE params:@{}];
     [[LPRequestManager sharedManager] sendRequest:req];
 }
 
@@ -2196,7 +2219,9 @@ andParameters:(NSDictionary *)params
 
 + (void)resumeStateInternal
 {
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_RESUME_STATE params:@{}];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_RESUME_STATE params:@{}];
     [[LPRequestManager sharedManager] sendRequest:req];
 }
 
@@ -2223,9 +2248,10 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    
-    LeanplumRequest* req = [LPRequestFactory
-                            post:LP_METHOD_GET_VARS
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest* req = [reqFactory
+                            createPostForApiMethod:LP_METHOD_GET_VARS
                             params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
@@ -2236,14 +2262,14 @@ andParameters:(NSDictionary *)params
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
-        [LPVarCache setVariantDebugInfo:variantDebugInfo];
+        [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
 
-        if (![values isEqualToDictionary:LPVarCache.diffs] ||
-            ![messages isEqualToDictionary:LPVarCache.messageDiffs] ||
-            ![updateRules isEqualToArray:LPVarCache.updateRulesDiffs] ||
-            ![eventRules isEqualToArray:LPVarCache.eventRulesDiffs] ||
-            ![regions isEqualToDictionary:LPVarCache.regions]) {
-            [LPVarCache applyVariableDiffs:values
+        if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
+            ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
+            ![updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs] ||
+            ![eventRules isEqualToArray:[LPVarCache sharedCache].eventRulesDiffs] ||
+            ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
+            [[LPVarCache sharedCache] applyVariableDiffs:values
                                   messages:messages
                                updateRules:updateRules
                                 eventRules:eventRules
@@ -2336,7 +2362,7 @@ void leanplumExceptionHandler(NSException *exception)
         [components addObject:component];
     }
     va_end(args);
-    return [LPVarCache getMergedValueFromComponentArray:components];
+    return [[LPVarCache sharedCache] getMergedValueFromComponentArray:components];
     LP_END_TRY
     return nil;
 }
@@ -2344,7 +2370,7 @@ void leanplumExceptionHandler(NSException *exception)
 + (id)objectForKeyPathComponents:(NSArray *) pathComponents
 {
     LP_TRY
-    return [LPVarCache getMergedValueFromComponentArray:pathComponents];
+    return [[LPVarCache sharedCache] getMergedValueFromComponentArray:pathComponents];
     LP_END_TRY
     return nil;
 }
@@ -2352,7 +2378,7 @@ void leanplumExceptionHandler(NSException *exception)
 + (NSArray *)variants
 {
     LP_TRY
-    NSArray *variants = [LPVarCache variants];
+    NSArray *variants = [[LPVarCache sharedCache] variants];
     if (variants) {
         return variants;
     }
@@ -2363,7 +2389,7 @@ void leanplumExceptionHandler(NSException *exception)
 + (NSDictionary *)variantDebugInfo
 {
     LP_TRY
-    NSDictionary *variantDebugInfo = [LPVarCache variantDebugInfo];
+    NSDictionary *variantDebugInfo = [[LPVarCache sharedCache] variantDebugInfo];
     if (variantDebugInfo) {
         return variantDebugInfo;
     }
@@ -2374,7 +2400,7 @@ void leanplumExceptionHandler(NSException *exception)
 + (NSDictionary *)messageMetadata
 {
     LP_TRY
-    NSDictionary *messages = [LPVarCache messages];
+    NSDictionary *messages = [[LPVarCache sharedCache] messages];
     if (messages) {
         return messages;
     }
@@ -2512,11 +2538,13 @@ void LPLog(LPLogType type, NSString *format, ...) {
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG params:@{
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_LOG params:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
-        [[LPRequestManager sharedManager] sendEventuallyRequest:req];
+                [[LPRequestManager sharedManager] sendEventuallyRequest:req];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Unable to send log: %@", exception);
     } @finally {
@@ -2603,7 +2631,9 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_USER_ATTRIBUTES params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         if (response) {
             response(YES);

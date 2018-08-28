@@ -1,9 +1,12 @@
 #import <Foundation/Foundation.h>
 #import "LPRequesting.h"
+#import "LPFeatureFlagManager.h"
 
 @interface LPRequestFactory : NSObject
 
-+ (id<LPRequesting>)get:(NSString *)apiMethod params:(NSDictionary *)params;
-+ (id<LPRequesting>)post:(NSString *)apiMethod params:(NSDictionary *)params;
+-(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager;
+
+- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
+- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
 
 @end

@@ -36,85 +36,109 @@
 #import "LPRequestFactory.h"
 #import "LPRequestManager.h"
 
-static NSRegularExpression *varNameRegex;
-static NSMutableDictionary *vars;
-static NSMutableDictionary *filesToInspect;
-static NSMutableDictionary *fileAttributes;
-static NSMutableDictionary *valuesFromClient;
-static NSMutableDictionary *defaultKinds;
-static NSMutableDictionary *actionDefinitions;
-static NSDictionary *diffs;
-static NSDictionary *messageDiffs;
-static NSMutableArray *updateRulesDiffs;
-static NSArray *eventRulesDiffs;
-static NSDictionary *devModeValuesFromServer;
-static NSDictionary *devModeFileAttributesFromServer;
-static NSDictionary *devModeActionDefinitionsFromServer;
-static NSArray *variants;
-static NSDictionary *variantDebugInfo;
-static NSMutableDictionary *userAttributes;
-static NSDictionary *regions;
-static CacheUpdateBlock updateBlock;
-static CacheUpdateBlock interfaceUpdateBlock;
-static CacheUpdateBlock eventsUpdateBlock;
-static BOOL hasReceivedDiffs;
-static NSMutableDictionary *messages;
-static id merged;
-static BOOL silent;
-static int contentVersion;
-static BOOL hasTooManyFiles;
-static RegionInitBlock regionInitBlock;
+@interface LPVarCache()
+@property (strong, nonatomic) NSRegularExpression *varNameRegex;
+@property (strong, nonatomic) NSMutableDictionary *vars;
+@property (strong, nonatomic) NSMutableDictionary *filesToInspect;
+@property (strong, nonatomic) NSMutableDictionary *fileAttributes;
+@property (strong, nonatomic) NSMutableDictionary *valuesFromClient;
+@property (strong, nonatomic) NSMutableDictionary *defaultKinds;
+@property (strong, nonatomic) NSMutableDictionary *actionDefinitions;
+@property (strong, nonatomic) NSDictionary *diffs;
+@property (strong, nonatomic) NSDictionary *messageDiffs;
+@property (strong, nonatomic) NSMutableArray *updateRulesDiffs;
+@property (strong, nonatomic) NSArray *eventRulesDiffs;
+@property (strong, nonatomic) NSDictionary *devModeValuesFromServer;
+@property (strong, nonatomic) NSDictionary *devModeFileAttributesFromServer;
+@property (strong, nonatomic) NSDictionary *devModeActionDefinitionsFromServer;
+@property (strong, nonatomic) NSArray *variants;
+@property (strong, nonatomic) NSDictionary *variantDebugInfo;
+@property (strong, nonatomic) NSMutableDictionary *userAttributes;
+@property (strong, nonatomic) NSDictionary *regions;
+@property (strong, nonatomic) CacheUpdateBlock updateBlock;
+@property (strong, nonatomic) CacheUpdateBlock interfaceUpdateBlock;
+@property (strong, nonatomic) CacheUpdateBlock eventsUpdateBlock;
+@property (assign, nonatomic) BOOL hasReceivedDiffs;
+@property (strong, nonatomic) NSMutableDictionary *messages;
+@property (strong, nonatomic) id merged;
+@property (assign, nonatomic) BOOL silent;
+@property (assign, nonatomic) int contentVersion;
+@property (assign, nonatomic) BOOL hasTooManyFiles;
+@property (strong, nonatomic) RegionInitBlock regionInitBlock;
+
+@end
+
+static LPVarCache *sharedInstance = nil;
+static dispatch_once_t leanplum_onceToken;
 
 @implementation LPVarCache
 
-+ (void)initialize
++(instancetype)sharedCache
 {
-    vars = [NSMutableDictionary dictionary];
-    filesToInspect = [NSMutableDictionary dictionary];
-    fileAttributes = [NSMutableDictionary dictionary];
-    valuesFromClient = [NSMutableDictionary dictionary];
-    diffs = [NSMutableDictionary dictionary];
-    updateRulesDiffs = [NSMutableArray array];
-    eventRulesDiffs = [NSArray array];
-    defaultKinds = [NSMutableDictionary dictionary];
-    actionDefinitions = [NSMutableDictionary dictionary];
-    hasReceivedDiffs = NO;
-    silent = NO;
+    dispatch_once(&leanplum_onceToken, ^{
+        sharedInstance = [[self alloc] init];
+    });
+    return sharedInstance;
+}
+
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        [self initialize];
+    }
+    return self;
+}
+
+- (void)initialize
+{
+    self.vars = [NSMutableDictionary dictionary];
+    self.messages = [NSMutableDictionary dictionary];
+    self.filesToInspect = [NSMutableDictionary dictionary];
+    self.fileAttributes = [NSMutableDictionary dictionary];
+    self.valuesFromClient = [NSMutableDictionary dictionary];
+    self.diffs = [NSMutableDictionary dictionary];
+    self.updateRulesDiffs = [NSMutableArray array];
+    self.eventRulesDiffs = [NSArray array];
+    self.defaultKinds = [NSMutableDictionary dictionary];
+    self.actionDefinitions = [NSMutableDictionary dictionary];
+    self.hasReceivedDiffs = NO;
+    self.silent = NO;
     NSError *error = NULL;
-    varNameRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:[^\\.\\[.(\\\\]+|\\\\.)+"
+    self.varNameRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:[^\\.\\[.(\\\\]+|\\\\.)+"
                                                              options:NSRegularExpressionCaseInsensitive error:&error];
 }
 
-+ (void)registerRegionInitBlock:(void (^)(NSDictionary *, NSSet *, NSSet *))block
+- (void)registerRegionInitBlock:(void (^)(NSDictionary *, NSSet *, NSSet *))block
 {
-    regionInitBlock = block;
+    self.regionInitBlock = block;
 }
 
-+ (LPVar *)define:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
+- (LPVar *)define:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
     if ([Utils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPVarCache define:with:kind:] Empty name parameter provided."];
         return nil;
     }
 
-    @synchronized (vars) {
+    @synchronized (self.vars) {
         LP_TRY
-        LPVar *existing = [LPVarCache getVariable:name];
+        LPVar *existing = [self getVariable:name];
         if (existing) {
             return existing;
         }
         LP_END_TRY
         LPVar *var = [[LPVar alloc] initWithName:name
-                                  withComponents:[LPVarCache getNameComponents:name]
+                                  withComponents:[self getNameComponents:name]
                                 withDefaultValue:defaultValue
                                         withKind:kind];
         return var;
     }
 }
 
-+ (NSArray *)getNameComponents:(NSString *)name
+- (NSArray *)getNameComponents:(NSString *)name
 {
-    NSArray *matches = [Leanplum_SocketIO arrayOfCaptureComponentsOfString:name matchedBy:varNameRegex];
+    NSArray *matches = [Leanplum_SocketIO arrayOfCaptureComponentsOfString:name matchedBy:self.varNameRegex];
     NSMutableArray *nameComponents = [NSMutableArray array];
     for (NSArray *matchArray in matches) {
         [nameComponents addObject:matchArray[0]];
@@ -129,7 +153,7 @@ static RegionInitBlock regionInitBlock;
     return result;
 }
 
-+ (id)traverse:(id)collection withKey:(id)key autoInsert:(BOOL)autoInsert
+- (id)traverse:(id)collection withKey:(id)key autoInsert:(BOOL)autoInsert
 {
     id result = nil;
     if ([collection respondsToSelector:@selector(objectForKey:)]) {
@@ -157,7 +181,7 @@ static RegionInitBlock regionInitBlock;
     return result;
 }
 
-+ (void)registerFile:(NSString *)stringValue withDefaultValue:(NSString *)defaultValue
+- (void)registerFile:(NSString *)stringValue withDefaultValue:(NSString *)defaultValue
 {
     if (stringValue.length == 0) {
         return;
@@ -166,13 +190,13 @@ static RegionInitBlock regionInitBlock;
     if (!path) {
         return;
     }
-    filesToInspect[stringValue] = path;
+    self.filesToInspect[stringValue] = path;
 }
 
-+ (void)computeFileInfo
+- (void)computeFileInfo
 {
-    for (NSString *fileName in filesToInspect) {
-        NSString *path = filesToInspect[fileName];
+    for (NSString *fileName in self.filesToInspect) {
+        NSString *path = self.filesToInspect[fileName];
         NSMutableDictionary *attributes = [NSMutableDictionary dictionary];
         NSString *hash = (__bridge_transfer NSString *) Leanplum_FileMD5HashCreateWithPath(
             (__bridge CFStringRef) path, FileHashDefaultChunkSizeForReadingData);
@@ -182,13 +206,13 @@ static RegionInitBlock regionInitBlock;
         NSNumber *size = [[[NSFileManager defaultManager]
                            attributesOfItemAtPath:path error:nil] objectForKey:NSFileSize];
         attributes[LP_KEY_SIZE] = size;
-        fileAttributes[fileName] = @{@"": attributes};
+        _fileAttributes[fileName] = @{@"": attributes};
     }
-    [filesToInspect removeAllObjects];
+    [self.filesToInspect removeAllObjects];
 }
 
 // Updates a JSON structure of variable values, and a dictionary of variable kinds.
-+ (void)updateValues:(NSString *)name
+- (void)updateValues:(NSString *)name
       nameComponents:(NSArray *)nameComponents
                value:(id)value
                 kind:(NSString *)kind
@@ -218,37 +242,37 @@ static RegionInitBlock regionInitBlock;
     }
 }
 
-+ (void)registerVariable:(LPVar *)var
+- (void)registerVariable:(LPVar *)var
 {
-    [vars setObject:var forKey:var.name];
+    [self.vars setObject:var forKey:var.name];
     [self updateValues:var.name
         nameComponents:var.nameComponents
                  value:var.defaultValue
                   kind:var.kind
-                values:valuesFromClient
-                 kinds:defaultKinds];
+                values:self.valuesFromClient
+                 kinds:self.defaultKinds];
 }
 
-+ (LPVar *)getVariable:(NSString *)name
+- (LPVar *)getVariable:(NSString *)name
 {
-    return [vars objectForKey:name];
+    return [self.vars objectForKey:name];
 }
 
-+ (void)computeMergedDictionary
+- (void)computeMergedDictionary
 {
-    if (!diffs) {
-        merged = [self mergeHelper:valuesFromClient withDiffs:diffs];
+    if (!self.diffs) {
+        self.merged = [self mergeHelper:self.valuesFromClient withDiffs:self.diffs];
         return;
     }
     
     // Merger helper will mutate diffs.
     // We need to lock it in case multiple threads will be accessing this.
-    @synchronized (diffs) {
-        merged = [self mergeHelper:valuesFromClient withDiffs:diffs];
+    @synchronized (self.diffs) {
+        self.merged = [self mergeHelper:self.valuesFromClient withDiffs:self.diffs];
     }
 }
 
-+ (id)mergeHelper:(id)vars withDiffs:(id)diff
+- (id)mergeHelper:(id)vars withDiffs:(id)diff
 {
     if ([vars isKindOfClass:NSNull.class]) {
         vars = nil;
@@ -323,7 +347,7 @@ static RegionInitBlock regionInitBlock;
     return nil;
 }
 
-+ (id)getValueFromComponentArray:(NSArray *) components fromDict:(NSDictionary *)values
+- (id)getValueFromComponentArray:(NSArray *) components fromDict:(NSDictionary *)values
 {
     id mergedPtr = values;
     for (id component in components) {
@@ -332,67 +356,12 @@ static RegionInitBlock regionInitBlock;
     return mergedPtr;
 }
 
-+ (id)getMergedValueFromComponentArray:(NSArray *)components
+- (id)getMergedValueFromComponentArray:(NSArray *)components
 {
-    return [self getValueFromComponentArray:components fromDict:merged ? merged : valuesFromClient];
+    return [self getValueFromComponentArray:components fromDict:self.merged ? self.merged : self.valuesFromClient];
 }
 
-+ (NSDictionary *)diffs
-{
-    return diffs;
-}
-
-+ (NSDictionary *)messageDiffs
-{
-    return messageDiffs;
-}
-
-+ (NSArray *)updateRulesDiffs
-{
-    return updateRulesDiffs;
-}
-
-+ (NSArray *)eventRulesDiffs
-{
-    return eventRulesDiffs;
-}
-
-+ (BOOL)hasReceivedDiffs
-{
-    return hasReceivedDiffs;
-}
-
-+ (NSArray *)variants
-{
-    return variants;
-}
-
-+ (NSDictionary *)variantDebugInfo
-{
-    return variantDebugInfo;
-}
-
-+ (void)setVariantDebugInfo:(NSDictionary *)_variantDebugInfo
-{
-    variantDebugInfo = _variantDebugInfo;
-}
-
-+ (NSDictionary *)regions
-{
-    return regions;
-}
-
-+ (NSDictionary *)fileAttributes
-{
-    return fileAttributes;
-}
-
-+ (NSDictionary *)defaultKinds
-{
-    return defaultKinds;
-}
-
-+ (void)loadDiffs
+- (void)loadDiffs
 {
     RETURN_IF_NOOP;
     @try {
@@ -446,23 +415,23 @@ static RegionInitBlock regionInitBlock;
     [self userAttributes];
 }
 
-+ (void)saveDiffs
+- (void)saveDiffs
 {
     RETURN_IF_NOOP;
     // Stores the variables on the device in case we don't have a connection.
     // Restores next time when the app is opened.
     // Diffs need to be locked incase other thread changes the diffs using
     // mergeHelper:.
-    @synchronized (diffs) {
+    @synchronized (self.diffs) {
         NSMutableData *diffsData = [[NSMutableData alloc] init];
         NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
-        [archiver encodeObject:diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
-        [archiver encodeObject:messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
-        [archiver encodeObject:updateRulesDiffs forKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
-        [archiver encodeObject:eventRulesDiffs forKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
-        [archiver encodeObject:variants forKey:LP_KEY_VARIANTS];
-        [archiver encodeObject:variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
-        [archiver encodeObject:regions forKey:LP_KEY_REGIONS];
+        [archiver encodeObject:self.diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
+        [archiver encodeObject:self.messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
+        [archiver encodeObject:self.updateRulesDiffs forKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
+        [archiver encodeObject:self.eventRulesDiffs forKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
+        [archiver encodeObject:self.variants forKey:LP_KEY_VARIANTS];
+        [archiver encodeObject:self.variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
+        [archiver encodeObject:self.regions forKey:LP_KEY_REGIONS];
         [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
         [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
         [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
@@ -481,7 +450,7 @@ static RegionInitBlock regionInitBlock;
     }
 }
 
-+ (void)applyVariableDiffs:(NSDictionary *)diffs_
+- (void)applyVariableDiffs:(NSDictionary *)diffs_
                   messages:(NSDictionary *)messages_
                updateRules:(NSArray *)updateRules_
                 eventRules:(NSArray *)eventRules_
@@ -489,37 +458,36 @@ static RegionInitBlock regionInitBlock;
                    regions:(NSDictionary *)regions_
           variantDebugInfo:(NSDictionary *)variantDebugInfo_
 {
-    @synchronized (vars) {
-        if (diffs_ || (!silent && !hasReceivedDiffs)) {
-            diffs = diffs_;
+    @synchronized (self.vars) {
+        if (diffs_ || (!self.silent && !self.hasReceivedDiffs)) {
+            self.diffs = diffs_;
             [self computeMergedDictionary];
             
             // Update variables with new values.
             // Have to extract the keys because a dictionary variable may add a new sub-variable,
             // modifying the variable dictionary.
-            for (NSString *name in [vars allKeys]) {
-                [vars[name] update];
+            for (NSString *name in [self.vars allKeys]) {
+                [self.vars[name] update];
             }
         }
         
         if (regions_) {
             // Store regions.
-            regions = regions_;
+            self.regions = regions_;
         }
         
         if (messages_) {
             // Store messages.
-            messageDiffs = messages_;
-            messages = [NSMutableDictionary dictionary];
+            self.messageDiffs = messages_;
             for (NSString *name in messages_) {
                 NSDictionary *messageConfig = messages_[name];
                 NSMutableDictionary *newConfig = [messageConfig mutableCopy];
                 NSDictionary *actionArgs = messageConfig[LP_KEY_VARS];
-                NSDictionary *defaultArgs = actionDefinitions
+                NSDictionary *defaultArgs = self.actionDefinitions
                                               [newConfig[LP_PARAM_ACTION]][@"values"];
                 NSDictionary *messageVars = [self mergeHelper:defaultArgs
                                                     withDiffs:actionArgs];
-                messages[name] = newConfig;
+                _messages[name] = newConfig;
                 newConfig[LP_KEY_VARS] = messageVars;
                 
                 // Download files.
@@ -532,7 +500,7 @@ static RegionInitBlock regionInitBlock;
     
         // If LeanplumLocation is linked in, setup region monitoring.
         if (messages_ || regions_) {
-            if (!regionInitBlock) {
+            if (!self.regionInitBlock) {
                     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
                         if ([regions_ count] > 0) {
                             NSLog(@"Leanplum: Regions have been defined in dashboard, but the app is not built to handle them.");
@@ -545,65 +513,65 @@ static RegionInitBlock regionInitBlock;
                 NSSet *backgroundRegionNames;
                 [LPActionManager getForegroundRegionNames:&foregroundRegionNames
                                  andBackgroundRegionNames:&backgroundRegionNames];
-                regionInitBlock([LPVarCache regions], foregroundRegionNames, backgroundRegionNames);
+                self.regionInitBlock(self.regions, foregroundRegionNames, backgroundRegionNames);
             }
         }
 
         BOOL interfaceUpdated = NO;
         if (updateRules_) {
-            interfaceUpdated = ![updateRules_ isEqual:updateRulesDiffs];
-            updateRulesDiffs = [updateRules_ mutableCopy];
+            interfaceUpdated = ![updateRules_ isEqual:self.updateRulesDiffs];
+            self.updateRulesDiffs = [updateRules_ mutableCopy];
             [self downloadUpdateRulesImages];
         }
         
         BOOL eventsUpdated = NO;
         if (eventRules_ && ![eventRules_ isKindOfClass:NSNull.class]) {
-            eventsUpdated = ![eventRules_ isEqual:eventRulesDiffs];
-            eventRulesDiffs = eventRules_;
+            eventsUpdated = ![eventRules_ isEqual:self.eventRulesDiffs];
+            self.eventRulesDiffs = eventRules_;
         }
 
         if (variants_) {
-            variants = variants_;
+            self.variants = variants_;
         }
 
         if (variantDebugInfo_) {
-            variantDebugInfo = variantDebugInfo_;
+            self.variantDebugInfo = variantDebugInfo_;
         }
 
-        contentVersion++;
+        self.contentVersion++;
 
-        if (!silent) {
+        if (!self.silent) {
             [self saveDiffs];
 
-            hasReceivedDiffs = YES;
-            if (updateBlock) {
-                updateBlock();
+            self.hasReceivedDiffs = YES;
+            if (self.updateBlock) {
+                self.updateBlock();
             }
             
             if (interfaceUpdated) {
-                interfaceUpdateBlock();
+                self.interfaceUpdateBlock();
             }
             
             if (eventsUpdated) {
-                eventsUpdateBlock();
+                self.eventsUpdateBlock();
             }
         }
     }
 }
 
-+ (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs
+- (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs
 {
-    updateRulesDiffs = [updateRuleDiffs mutableCopy];
-    [LPVarCache downloadUpdateRulesImages];
-    if (interfaceUpdateBlock) {
-        interfaceUpdateBlock();
+    self.updateRulesDiffs = [updateRuleDiffs mutableCopy];
+    [self downloadUpdateRulesImages];
+    if (self.interfaceUpdateBlock) {
+        self.interfaceUpdateBlock();
     }
     [self saveDiffs];
 }
 
-+ (void)downloadUpdateRulesImages
+- (void)downloadUpdateRulesImages
 {
-    for (NSDictionary *updateRule in updateRulesDiffs) {
+    for (NSDictionary *updateRule in self.updateRulesDiffs) {
         NSArray *changes = updateRule[@"changes"];
         if (changes != nil) {
             for (NSDictionary *change in changes) {
@@ -622,12 +590,7 @@ static RegionInitBlock regionInitBlock;
     }
 }
 
-+ (int)contentVersion
-{
-    return contentVersion;
-}
-
-+ (BOOL)areActionDefinitionsEqual:(NSDictionary *)a other:(NSDictionary *)b
+- (BOOL)areActionDefinitionsEqual:(NSDictionary *)a other:(NSDictionary *)b
 {
     if (a.count != b.count) {
         return NO;
@@ -648,53 +611,55 @@ static RegionInitBlock regionInitBlock;
     return YES;
 }
 
-+ (BOOL)sendVariablesIfChanged
+- (BOOL)sendVariablesIfChanged
 {
     return [self sendContentIfChanged:YES actions:NO];
 }
 
-+ (BOOL)sendActionsIfChanged
+- (BOOL)sendActionsIfChanged
 {
     return [self sendContentIfChanged:NO actions:YES];
 }
 
-+ (BOOL)sendContentIfChanged:(BOOL)variables actions:(BOOL)actions
+- (BOOL)sendContentIfChanged:(BOOL)variables actions:(BOOL)actions
 {
     [self computeFileInfo];
 
     BOOL changed = NO;
-    if (variables && devModeValuesFromServer &&
-        (![valuesFromClient isEqualToDictionary:devModeValuesFromServer])) {
+    if (variables && self.devModeValuesFromServer &&
+        (![self.valuesFromClient isEqualToDictionary:self.devModeValuesFromServer])) {
         changed = YES;
     }
-    if (actions && ![self areActionDefinitionsEqual:actionDefinitions
-                                              other:devModeActionDefinitionsFromServer]) {
+    if (actions && ![self areActionDefinitionsEqual:self.actionDefinitions
+                                              other:self.devModeActionDefinitionsFromServer]) {
         changed = YES;
     }
     if (changed) {
-         NSDictionary *limitedFileAttributes = fileAttributes;
-         NSDictionary *limitedValues = valuesFromClient;
-         if ([fileAttributes count] > MAX_FILES_SUPPORTED) {
-             limitedValues = [valuesFromClient mutableCopy];
+         NSDictionary *limitedFileAttributes = self.fileAttributes;
+         NSDictionary *limitedValues = self.valuesFromClient;
+         if ([self.fileAttributes count] > MAX_FILES_SUPPORTED) {
+             limitedValues = [self.valuesFromClient mutableCopy];
              [(NSMutableDictionary *)limitedValues removeObjectForKey:LP_VALUE_RESOURCES_VARIABLE];
              NSLog(@"Leanplum: ERROR: You are trying to sync %lu files, which is more than "
                    @"we support (%d). If you are calling [Leanplum syncResources], try adding "
                    @"regex filters to limit the number of files you are syncing.",
-                   (unsigned long) fileAttributes.count, MAX_FILES_SUPPORTED);
+                   (unsigned long) self.fileAttributes.count, MAX_FILES_SUPPORTED);
              limitedFileAttributes = [NSDictionary dictionary];
-             hasTooManyFiles = YES;
+             self.hasTooManyFiles = YES;
          }
          @try {
              NSMutableDictionary *args = [NSMutableDictionary dictionary];
              if (variables) {
                  args[LP_PARAM_VARS] = [LPJSON stringFromJSON:limitedValues];
-                 args[LP_PARAM_KINDS] = [LPJSON stringFromJSON:defaultKinds];
+                 args[LP_PARAM_KINDS] = [LPJSON stringFromJSON:self.defaultKinds];
              }
              if (actions) {
-                 args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:actionDefinitions];
+                 args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_VARS
+             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+             id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
                                                     params:args];
              [[LPRequestManager sharedManager] sendRequest:req];
              return YES;
@@ -706,11 +671,11 @@ static RegionInitBlock regionInitBlock;
     return NO;
 }
 
-+ (void)maybeUploadNewFiles
+- (void)maybeUploadNewFiles
 {
     RETURN_IF_NOOP;
-    if (hasTooManyFiles ||
-        !devModeFileAttributesFromServer ||
+    if (self.hasTooManyFiles ||
+        !self.devModeFileAttributesFromServer ||
         ![Leanplum hasStartedAndRegisteredAsDeveloper]) {
         return;
     }
@@ -718,10 +683,10 @@ static RegionInitBlock regionInitBlock;
     NSMutableArray *filenames = [NSMutableArray array];
     NSMutableArray *fileData = [NSMutableArray array];
     int totalSize = 0;
-    for (NSString *name in fileAttributes) {
-        NSDictionary *variationAttributes = fileAttributes[name];
+    for (NSString *name in self.fileAttributes) {
+        NSDictionary *variationAttributes = self.fileAttributes[name];
         NSDictionary *localAttributes = variationAttributes[@""];
-        NSDictionary *serverAttributes = devModeFileAttributesFromServer[name][@""];
+        NSDictionary *serverAttributes = self.devModeFileAttributesFromServer[name][@""];
         if ([LPFileManager isNewerLocally:localAttributes orRemotely:serverAttributes]) {
             NSString *hash = [localAttributes valueForKey:LP_KEY_HASH];
             if (!hash) {
@@ -748,59 +713,41 @@ static RegionInitBlock regionInitBlock;
         }
     }
     if (filenames.count > 0) {
-        LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_UPLOAD_FILE
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
                                                params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [req sendFilesNow:filenames];
     }
 }
 
-+ (void)setSilent:(BOOL)silent_
-{
-    silent = silent_;
-}
-
-+ (BOOL)silent
-{
-    return silent;
-}
-
-+ (void)setDevModeValuesFromServer:(NSDictionary *)values
+- (void)setDevModeValuesFromServer:(NSDictionary *)values
                     fileAttributes:(NSDictionary *)fileAttributes
                  actionDefinitions:(NSDictionary *)actionDefinitions
 {
-    devModeValuesFromServer = values;
-    devModeActionDefinitionsFromServer = actionDefinitions;
-    devModeFileAttributesFromServer = fileAttributes;
+    self.devModeValuesFromServer = values;
+    self.devModeActionDefinitionsFromServer = actionDefinitions;
+    self.devModeFileAttributesFromServer = fileAttributes;
 }
 
-+ (void)onUpdate:(CacheUpdateBlock) block
+- (void)onUpdate:(CacheUpdateBlock) block
 {
-    updateBlock = block;
+    self.updateBlock = block;
 }
 
-+ (void)onInterfaceUpdate:(CacheUpdateBlock)block
+- (void)onInterfaceUpdate:(CacheUpdateBlock)block
 {
-    interfaceUpdateBlock = block;
+    self.interfaceUpdateBlock = block;
 }
 
-+ (void)onEventsUpdate:(CacheUpdateBlock)block
+- (void)onEventsUpdate:(CacheUpdateBlock)block
 {
-    eventsUpdateBlock = block;
+    self.eventsUpdateBlock = block;
 }
 
-+ (NSDictionary *)actionDefinitions
+- (NSMutableDictionary *)userAttributes
 {
-    return actionDefinitions;
-}
-
-+ (NSDictionary *)messages
-{
-    return messages;
-}
-
-+ (NSMutableDictionary *)userAttributes
-{
-    if (!userAttributes) {
+    if (!_userAttributes) {
         @try {
             NSString *token = [LeanplumRequest token];
             if (token) {
@@ -810,7 +757,7 @@ static RegionInitBlock regionInitBlock;
                     if (decryptedData) {
                         NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData
                                                        :decryptedData];
-                        userAttributes = [(NSDictionary *)[archiver decodeObjectForKey:LP_PARAM_USER_ATTRIBUTES] mutableCopy];
+                        self.userAttributes = [(NSDictionary *)[archiver decodeObjectForKey:LP_PARAM_USER_ATTRIBUTES] mutableCopy];
                     }
                 }
             }
@@ -818,18 +765,18 @@ static RegionInitBlock regionInitBlock;
             NSLog(@"Leanplum: Could not load user attributes: %@", exception);
         }
     }
-    if (!userAttributes) {
-        userAttributes = [NSMutableDictionary dictionary];
+    if (!_userAttributes) {
+        _userAttributes = [NSMutableDictionary dictionary];
     }
-    return userAttributes;
+    return _userAttributes;
 }
 
-+ (void)saveUserAttributes
+- (void)saveUserAttributes
 {
     RETURN_IF_NOOP;
     NSMutableData *data = [[NSMutableData alloc] init];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
-    [archiver encodeObject:userAttributes forKey:LP_PARAM_USER_ATTRIBUTES];
+    [archiver encodeObject:self.userAttributes forKey:LP_PARAM_USER_ATTRIBUTES];
     [archiver finishEncoding];
     
     NSData *encryptedData = [LPAES encryptedDataFromData:data];
@@ -840,7 +787,7 @@ static RegionInitBlock regionInitBlock;
     [Leanplum synchronizeDefaults];
 }
 
-+ (void)registerActionDefinition:(NSString *)name
+- (void)registerActionDefinition:(NSString *)name
                           ofKind:(int)kind
                    withArguments:(NSArray *)args
                       andOptions:(NSDictionary *)options
@@ -850,7 +797,7 @@ static RegionInitBlock regionInitBlock;
     NSMutableArray *order = [NSMutableArray array];
     for (LPActionArg *arg in args) {
         [self updateValues:arg.name
-            nameComponents:[LPVarCache getNameComponents:arg.name]
+            nameComponents:[self getNameComponents:arg.name]
                      value:arg.defaultValue
                       kind:arg.kind
                     values:values
@@ -864,54 +811,54 @@ static RegionInitBlock regionInitBlock;
                                  @"order": order,
                                  @"options": options
                                  };
-    actionDefinitions[name] = definition;
+    _actionDefinitions[name] = definition;
 }
 
-+ (void)clearUserContent
+- (void)clearUserContent
 {
-    diffs = nil;
-    messageDiffs = nil;
-    messages = nil;
-    variants = nil;
-    variantDebugInfo = nil;
-    vars = nil;
-    userAttributes = nil;
-    merged = nil;
+    self.diffs = nil;
+    self.messageDiffs = nil;
+    self.messages = nil;
+    self.variants = nil;
+    self.variantDebugInfo = nil;
+    self.vars = nil;
+    self.userAttributes = nil;
+    self.merged = nil;
 
-    devModeValuesFromServer = nil;
-    devModeFileAttributesFromServer = nil;
-    devModeActionDefinitionsFromServer = nil;
+    self.devModeValuesFromServer = nil;
+    self.devModeFileAttributesFromServer = nil;
+    self.devModeActionDefinitionsFromServer = nil;
 
 }
 
 // Resets the VarCache to stock state. Used for testing purposes.
-+ (void)reset
+- (void)reset
 {
-    vars = nil;
-    filesToInspect = nil;
-    fileAttributes = nil;
-    valuesFromClient = nil;
-    defaultKinds = nil;
-    actionDefinitions = nil;
-    diffs = nil;
-    messageDiffs = nil;
-    updateRulesDiffs = nil;
-    eventRulesDiffs = nil;
-    devModeValuesFromServer = nil;
-    devModeFileAttributesFromServer = nil;
-    devModeActionDefinitionsFromServer = nil;
-    variants = nil;
-    variantDebugInfo = nil;
-    userAttributes = nil;
-    updateBlock = nil;
-    interfaceUpdateBlock = nil;
-    eventsUpdateBlock = nil;
-    hasReceivedDiffs = NO;
-    messages = nil;
-    merged = nil;
-    silent = NO;
-    contentVersion = 0;
-    hasTooManyFiles = NO;
+    self.vars = nil;
+    self.filesToInspect = nil;
+    self.fileAttributes = nil;
+    self.valuesFromClient = nil;
+    self.defaultKinds = nil;
+    self.actionDefinitions = nil;
+    self.diffs = nil;
+    self.messageDiffs = nil;
+    self.updateRulesDiffs = nil;
+    self.eventRulesDiffs = nil;
+    self.devModeValuesFromServer = nil;
+    self.devModeFileAttributesFromServer = nil;
+    self.devModeActionDefinitionsFromServer = nil;
+    self.variants = nil;
+    self.variantDebugInfo = nil;
+    self.userAttributes = nil;
+    self.updateBlock = nil;
+    self.interfaceUpdateBlock = nil;
+    self.eventsUpdateBlock = nil;
+    self.hasReceivedDiffs = NO;
+    self.messages = nil;
+    self.merged = nil;
+    self.silent = NO;
+    self.contentVersion = 0;
+    self.hasTooManyFiles = NO;
 }
 
 @end
