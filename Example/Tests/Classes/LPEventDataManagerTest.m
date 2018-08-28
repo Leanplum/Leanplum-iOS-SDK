@@ -35,6 +35,7 @@
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
+#import "LPRequestManager.h"
 
 /**
  * Expose private class methods
@@ -345,7 +346,7 @@
         XCTAssertTrue([json[@"index"] intValue] == 1);
         [responseExpectation fulfill];
     }];
-    [request sendNow:YES];
+    [[LPRequestManager sharedManager] sendNowRequest:request];
     
     // Add extra events.
     [Leanplum track:@"s"];
