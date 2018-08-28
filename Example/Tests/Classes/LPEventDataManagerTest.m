@@ -340,13 +340,13 @@
     // Queue up the events and test if the callback is in the correct index.
     XCTestExpectation *responseExpectation =
     [self expectationWithDescription:@"responseExpectation"];
-    id<LPRequesting> request = [LeanplumRequest post:@"test2" params:nil];
+    LeanplumRequest *request = [LeanplumRequest post:@"test2" params:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         // Make sure the response is the first one.
         XCTAssertTrue([json[@"index"] intValue] == 1);
         [responseExpectation fulfill];
     }];
-    [[LPRequestManager sharedManager] sendNowRequest:request];
+    [request sendNow:YES];
     
     // Add extra events.
     [Leanplum track:@"s"];

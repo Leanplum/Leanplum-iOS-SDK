@@ -31,6 +31,12 @@
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 
+@interface LeanplumRequest(LPRequestManager)
+
+- (void)sendNow:(BOOL)async;
+
+@end
+
 
 @interface LPRequestManager()
 
@@ -109,6 +115,14 @@
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest sendDatasNow:datas];
+    }
+}
+
+- (void)sendNow:(BOOL)async request:(id<LPRequesting>)request
+{
+    if ([request isKindOfClass:[LeanplumRequest class]]) {
+        LeanplumRequest *oldLeanplumRequest = request;
+        [oldLeanplumRequest sendNow:YES];
     }
 }
 
