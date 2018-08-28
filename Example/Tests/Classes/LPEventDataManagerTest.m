@@ -35,7 +35,6 @@
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
-#import "LPRequestManager.h"
 
 /**
  * Expose private class methods
