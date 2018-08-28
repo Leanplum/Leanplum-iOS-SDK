@@ -62,7 +62,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     context->_args = args;
     context->_messageId = messageId;
     context->_originalMessageId = originalMessageId;
-    context->_contentVersion = [LPVarCache contentVersion];
+    context->_contentVersion = [[LPVarCache sharedCache] contentVersion];
     context->_preventRealtimeUpdating = NO;
     context->_isRooted = YES;
     context->_isPreview = NO;
@@ -77,7 +77,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSDictionary *)defaultValues
 {
-    return LPVarCache.actionDefinitions[_name][@"values"];
+    return [LPVarCache sharedCache].actionDefinitions[_name][@"values"];
 }
 
 /**
@@ -110,7 +110,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
   withDefaultValues:(NSDictionary *)defaultValues
            callback:(LPFileCallback)callback
 {
-    NSDictionary *kinds = LPVarCache.actionDefinitions[_name][@"kinds"];
+    NSDictionary *kinds = [LPVarCache sharedCache].actionDefinitions[_name][@"kinds"];
     for (NSString *arg in args) {
         id value = args[arg];
         id defaultValue = nil;
@@ -178,12 +178,12 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (void)setProperArgs
 {
-    if (!_preventRealtimeUpdating && [LPVarCache contentVersion] > _contentVersion) {
+    if (!_preventRealtimeUpdating && [[LPVarCache sharedCache] contentVersion] > _contentVersion) {
         LPActionContext *parent = _parentContext;
         if (parent) {
             _args = [parent getChildArgs:_key];
         } else if (_messageId) {
-            _args = LPVarCache.messages[_messageId][LP_KEY_VARS];
+            _args = [LPVarCache sharedCache].messages[_messageId][LP_KEY_VARS];
         }
     }
 }
@@ -192,7 +192,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 {
     LP_TRY
     [self setProperArgs];
-    return [LPVarCache getValueFromComponentArray:[LPVarCache getNameComponents:name]
+    return [[LPVarCache sharedCache] getValueFromComponentArray:[[LPVarCache sharedCache] getNameComponents:name]
                                          fromDict:_args];
     LP_END_TRY
     return nil;
@@ -399,10 +399,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if (![actionArgs isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-    NSDictionary *defaultArgs = LPVarCache.actionDefinitions
+    NSDictionary *defaultArgs = [LPVarCache sharedCache].actionDefinitions
     [actionArgs[LP_VALUE_ACTION_ARG]]
     [@"values"];
-    actionArgs = [LPVarCache mergeHelper:defaultArgs withDiffs:actionArgs];
+    actionArgs = [[LPVarCache sharedCache] mergeHelper:defaultArgs withDiffs:actionArgs];
     return actionArgs;
     LP_END_TRY
 }
@@ -483,7 +483,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     };
 
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
-        NSDictionary *message = [LPVarCache messages][messageId];
+        NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
         if (message) {
             executeChainedMessage();
             return;
@@ -491,7 +491,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
-                NSDictionary *message = [LPVarCache messages][messageId];
+                NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
                 if (message) {
                     executeChainedMessage();
                 }

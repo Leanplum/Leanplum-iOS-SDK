@@ -357,7 +357,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
         LP_END_USER_CODE
-        if (!messageId || LPVarCache.messages[messageId]) {
+        if (!messageId || [LPVarCache sharedCache].messages[messageId]) {
             if (onCompleted) {
                 onCompleted();
             }
@@ -379,23 +379,23 @@ static dispatch_once_t leanplum_onceToken;
                 NSArray *variants = response[LP_KEY_VARIANTS];
                 NSDictionary *regions = response[LP_KEY_REGIONS];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
-                    [values isEqualToDictionary:LPVarCache.diffs]) {
+                    [values isEqualToDictionary:[LPVarCache sharedCache].diffs]) {
                     values = nil;
                 }
-                if ([messages isEqualToDictionary:LPVarCache.messageDiffs]) {
+                if ([messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs]) {
                     messages = nil;
                 }
-                if ([updateRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
+                if ([updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
                     updateRules = nil;
                 }
-                if ([eventRules isEqualToArray:LPVarCache.updateRulesDiffs]) {
+                if ([eventRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
                     eventRules = nil;
                 }
-                if ([regions isEqualToDictionary:LPVarCache.regions]) {
+                if ([regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
                     regions = nil;
                 }
                 if (values || messages || updateRules || eventRules || regions) {
-                    [LPVarCache applyVariableDiffs:values
+                    [[LPVarCache sharedCache] applyVariableDiffs:values
                                           messages:messages
                                        updateRules:updateRules
                                         eventRules:eventRules
@@ -769,7 +769,7 @@ static dispatch_once_t leanplum_onceToken;
 
         NSString *messageId = context.messageId;
 
-        NSDictionary *messageConfig = LPVarCache.messageDiffs[messageId];
+        NSDictionary *messageConfig = [LPVarCache sharedCache].messageDiffs[messageId];
         
         NSNumber *countdown = messageConfig[@"countdown"];
         if (context.isPreview) {
@@ -1041,7 +1041,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     *foregroundRegionNames = [NSMutableSet set];
     *backgroundRegionNames = [NSMutableSet set];
-    NSDictionary *messages = [LPVarCache messages];
+    NSDictionary *messages = [[LPVarCache sharedCache] messages];
     for (NSString *messageId in messages) {
         NSDictionary *messageConfig = messages[messageId];
         NSMutableSet *regionNames;
