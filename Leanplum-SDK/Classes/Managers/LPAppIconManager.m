@@ -63,8 +63,9 @@
                                      withIconBundle:obj
                                            iconName:key];
     }];
-
-    LeanplumRequest *request = [LPRequestFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *request = [reqFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
                                               params:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {

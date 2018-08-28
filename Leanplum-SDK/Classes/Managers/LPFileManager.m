@@ -566,7 +566,9 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         return NO;
     }
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        LeanplumRequest *downloadRequest = [LPRequestFactory createGetForApiMethod:LP_METHOD_DOWNLOAD_FILE params:nil];
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *downloadRequest = [reqFactory createGetForApiMethod:LP_METHOD_DOWNLOAD_FILE params:nil];
         [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (complete) {
                 complete();

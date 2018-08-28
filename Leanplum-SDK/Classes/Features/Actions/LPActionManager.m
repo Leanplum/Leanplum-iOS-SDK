@@ -85,8 +85,10 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
         [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        LeanplumRequest *req = [LPRequestFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
+
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
                                                params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
         [req send];
     }
@@ -337,7 +339,9 @@ static dispatch_once_t leanplum_onceToken;
         }
         [Leanplum onStartResponse:^(BOOL success) {
             LP_END_USER_CODE
-            LeanplumRequest *req = [LPRequestFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+            LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
             [req send];
             LP_BEGIN_USER_CODE
         }];

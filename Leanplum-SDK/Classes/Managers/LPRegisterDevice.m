@@ -52,7 +52,9 @@
 
 - (void)registerDevice:(NSString *)email
 {
-    LeanplumRequest *request = [LPRequestFactory createPostForApiMethod:LP_METHOD_REGISTER_FOR_DEVELOPMENT
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *request = [reqFactory createPostForApiMethod:LP_METHOD_REGISTER_FOR_DEVELOPMENT
                                               params:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
