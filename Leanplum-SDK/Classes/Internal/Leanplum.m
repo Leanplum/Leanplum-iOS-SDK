@@ -45,6 +45,9 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPRequestFactory.h"
+#import "LPRequestManager.h"
+#import "LPAPIConfig.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -254,7 +257,8 @@ BOOL inForeground = NO;
 
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = YES;
-    [LeanplumRequest setAppId:appId withAccessKey:accessKey];
+    [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
+    [LeanplumRequest initializeStaticVars];
     LP_END_TRY
 }
 
@@ -279,7 +283,8 @@ BOOL inForeground = NO;
 
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = NO;
-    [LeanplumRequest setAppId:appId withAccessKey:accessKey];
+    [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
+    [LeanplumRequest initializeStaticVars];
     LP_END_TRY
 }
 
@@ -373,7 +378,7 @@ BOOL inForeground = NO;
 + (NSString *)pushTokenKey
 {
     return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
-            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
+            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
 }
 
 + (void)start
@@ -668,7 +673,7 @@ BOOL inForeground = NO;
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
-    if ([LeanplumRequest appId] == nil) {
+    if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
          @"methods."];
         return;
@@ -731,7 +736,7 @@ BOOL inForeground = NO;
     });
     state.actionManager = [LPActionManager sharedManager];
 
-    [LeanplumRequest loadToken];
+    [[LPAPIConfig sharedConfig] loadToken];
     [[LPVarCache sharedCache] setSilent:YES];
     [[LPVarCache sharedCache] loadDiffs];
     [[LPVarCache sharedCache] setSilent:NO];
@@ -756,7 +761,7 @@ BOOL inForeground = NO;
     }];
 
     // Set device ID.
-    NSString *deviceId = [LeanplumRequest deviceId];
+    NSString *deviceId = [LPAPIConfig sharedConfig].deviceId;
     // This is the device ID set when the MAC address is used on iOS 7.
     // This is to allow apps who upgrade to the new ID to forget the old one.
     if ([deviceId isEqualToString:@"0f607264fc6318a92b9e13c65db7cd3c"]) {
@@ -775,17 +780,17 @@ BOOL inForeground = NO;
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
-        [LeanplumRequest setDeviceId:deviceId];
+        [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
     }
 
     // Set user ID.
     if (!userId) {
-        userId = [LeanplumRequest userId];
+        userId = [LPAPIConfig sharedConfig].userId;
         if (!userId) {
-            userId = [LeanplumRequest deviceId];
+            userId = [LPAPIConfig sharedConfig].deviceId;
         }
     }
-    [LeanplumRequest setUserId:userId];
+    [[LPAPIConfig sharedConfig] setUserId:userId];
 
     // Setup parameters.
     NSString *versionName = [LPInternalState sharedState].appVersion;
@@ -857,7 +862,7 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_START params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -872,8 +877,8 @@ BOOL inForeground = NO;
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
 
-        [LeanplumRequest setToken:token];
-        [LeanplumRequest saveToken];
+        [[LPAPIConfig sharedConfig] setToken:token];
+        [[LPAPIConfig sharedConfig] saveToken];
         [[LPVarCache sharedCache] applyVariableDiffs:values
                               messages:messages
                            updateRules:updateRules
@@ -927,8 +932,8 @@ BOOL inForeground = NO;
             [[LPVarCache sharedCache] setDevModeValuesFromServer:valuesFromCode
                                     fileAttributes:fileAttributes
                                  actionDefinitions:actionDefinitions];
-            [[LeanplumSocket sharedSocket] connectToAppId:LeanplumRequest.appId
-                                                 deviceId:LeanplumRequest.deviceId];
+            [[LeanplumSocket sharedSocket] connectToAppId:[LPAPIConfig sharedConfig].appId
+                                                 deviceId:[LPAPIConfig sharedConfig].deviceId];
             if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
                 [Leanplum onHasStartedAndRegisteredAsDeveloper];
             }
@@ -936,11 +941,12 @@ BOOL inForeground = NO;
             // Report latency for 0.1% of users.
             NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
             if (arc4random() % 1000 == 0) {
-                [[LeanplumRequest post:LP_METHOD_LOG
+                id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG
                                params:@{
                                         LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
                                         @"startLatency": [@(latency) description]
-                                        }] send];
+                                        }];
+                [[LPRequestManager sharedManager] sendRequest:req];
             }
         }
 
@@ -969,7 +975,7 @@ BOOL inForeground = NO;
 
         [self triggerStartResponse:NO];
     }];
-    [req sendIfConnected];
+    [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
     [self triggerStartIssued];
 
     // Pause.
@@ -1032,8 +1038,8 @@ BOOL inForeground = NO;
                     LP_TRY
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    [[LeanplumRequest post:LP_METHOD_STOP params:nil]
-                        sendIfConnectedSync:exitOnSuspend];
+                    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_STOP params:nil];
+                    [[LPRequestManager sharedManager] sendIfConnectedSync:exitOnSuspend request:req];
                     LP_END_TRY
                 }];
 
@@ -1042,7 +1048,8 @@ BOOL inForeground = NO;
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            [[LeanplumRequest post:LP_METHOD_HEARTBEAT params:nil] sendIfDelayed];
+            id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_HEARTBEAT params:nil];
+            [[LPRequestManager sharedManager] sendIfDelayedRequest:req];
         }
         LP_END_TRY
     } repeats:YES];
@@ -1135,19 +1142,20 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+    id<LPRequesting> request = [LPRequestFactory post:LP_METHOD_PAUSE_SESSION params:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
     [request onError:^(NSError *error) {
         finishTaskHandler();
     }];
-    [request sendIfConnected];
+    [[LPRequestManager sharedManager] sendIfConnectedRequest:request];
 }
 
 + (void)resume
 {
-    [[LeanplumRequest post:LP_METHOD_RESUME_SESSION params:nil] sendIfDelayed];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_RESUME_SESSION params:nil];
+    [[LPRequestManager sharedManager] sendIfDelayedRequest:req];
 }
 
 + (void)trackCrashes
@@ -1886,7 +1894,8 @@ BOOL inForeground = NO;
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
         andParameters:(NSDictionary *)params
 {
-    [[LeanplumRequest post:LP_METHOD_TRACK params:args] send];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_TRACK params:args];
+    [[LPRequestManager sharedManager] sendRequest:req];
 
     // Perform event actions.
     NSString *messageId = args[LP_PARAM_MESSAGE_ID];
@@ -2016,13 +2025,14 @@ andParameters:(NSDictionary *)params
         attributes = @{};
     }
 
-    [[LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:@{
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_USER_ATTRIBUTES params:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
         LP_PARAM_NEW_USER_ID: userId ? userId : @""
-    }] send];
+        }];
+    [[LPRequestManager sharedManager] sendRequest:req];
 
     if (userId.length) {
-        [LeanplumRequest setUserId:userId];
+        [[LPAPIConfig sharedConfig] setUserId:userId];
         if ([LPInternalState sharedState].hasStarted) {
             [[LPVarCache sharedCache] saveDiffs];
         }
@@ -2089,9 +2099,10 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
-    [[LeanplumRequest post:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
         LP_PARAM_TRAFFIC_SOURCE: info
-    }] send];
+        }];
+    [[LPRequestManager sharedManager] sendRequest:req];
 }
 
 + (void)advanceTo:(NSString *)state
@@ -2141,7 +2152,8 @@ andParameters:(NSDictionary *)params
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
             andParameters:(NSDictionary *)params
 {
-    [[LeanplumRequest post:LP_METHOD_ADVANCE params:args] send];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_ADVANCE params:args];
+    [[LPRequestManager sharedManager] sendRequest:req];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     contextualValues.parameters = params;
     [self maybePerformActions:@[@"state"]
@@ -2167,7 +2179,8 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-     [[LeanplumRequest post:LP_METHOD_PAUSE_STATE params:@{}] send];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_PAUSE_STATE params:@{}];
+    [[LPRequestManager sharedManager] sendRequest:req];
 }
 
 + (void)resumeState
@@ -2186,7 +2199,8 @@ andParameters:(NSDictionary *)params
 
 + (void)resumeStateInternal
 {
-    [[LeanplumRequest post:LP_METHOD_RESUME_STATE params:@{}] send];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_RESUME_STATE params:@{}];
+    [[LPRequestManager sharedManager] sendRequest:req];
 }
 
 + (void)forceContentUpdate
@@ -2213,7 +2227,7 @@ andParameters:(NSDictionary *)params
     }
 
     
-    LeanplumRequest* req = [LeanplumRequest
+    LeanplumRequest* req = [LPRequestFactory
                             post:LP_METHOD_GET_VARS
                             params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
@@ -2257,7 +2271,7 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnected];
+    [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
     LP_END_TRY
 }
 
@@ -2406,7 +2420,7 @@ void leanplumExceptionHandler(NSException *exception)
         [self throwError:@"[Leanplum start] must be called before calling deviceId"];
         return nil;
     }
-    return [LeanplumRequest deviceId];
+    return [LPAPIConfig sharedConfig].deviceId;
     LP_END_TRY
     return nil;
 }
@@ -2418,7 +2432,7 @@ void leanplumExceptionHandler(NSException *exception)
         [self throwError:@"[Leanplum start] must be called before calling userId"];
         return nil;
     }
-    return [LeanplumRequest userId];
+    return [LPAPIConfig sharedConfig].userId;
     LP_END_TRY
     return nil;
 }
@@ -2501,10 +2515,11 @@ void LPLog(LPLogType type, NSString *format, ...) {
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        [[LeanplumRequest post:LP_METHOD_LOG params:@{
+        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_LOG params:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
-                                                      }] sendEventually];
+                                                      }];
+        [[LPRequestManager sharedManager] sendEventuallyRequest:req];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Unable to send log: %@", exception);
     } @finally {
@@ -2591,7 +2606,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         if (response) {
             response(YES);
@@ -2603,7 +2618,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
             response(NO);
         }
     }];
-    [req send];
+    [[LPRequestManager sharedManager] sendRequest:req];
     LP_END_TRY
 }
 

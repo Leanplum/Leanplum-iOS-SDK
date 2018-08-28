@@ -26,13 +26,14 @@
 #import "Constants.h"
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
 #import "LPAES.h"
 #import "LPKeychainWrapper.h"
 #import "LPFileManager.h"
 #import "Utils.h"
+#import "LPRequestFactory.h"
+#import "LPRequestManager.h"
 
 static NSObject *updatingLock;
 
@@ -188,9 +189,9 @@ static NSObject *updatingLock;
         RETURN_IF_NOOP;
         LP_TRY
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
-        LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
+        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
                                               params:params];
-        [req send];
+        [[LPRequestManager sharedManager] sendRequest:req];
         LP_END_TRY
     }
     
@@ -367,9 +368,9 @@ static NSObject *updatingLock;
     [[LPInbox sharedState] updateMessages:_messages unreadCount:unreadCount];
     
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_DELETE_INBOX_MESSAGE
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_DELETE_INBOX_MESSAGE
                                           params:params];
-    [req send];
+    [[LPRequestManager sharedManager] sendRequest:req];
     LP_END_TRY
 }
 
@@ -413,7 +414,7 @@ static NSObject *updatingLock;
 {
     RETURN_IF_NOOP;
     LP_TRY
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
+    id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_GET_INBOX_MESSAGES params:nil];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
@@ -466,7 +467,7 @@ static NSObject *updatingLock;
     [req onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnected];
+    [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
     LP_END_TRY
 }
 

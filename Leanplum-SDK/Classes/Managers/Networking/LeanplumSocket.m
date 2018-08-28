@@ -30,6 +30,7 @@
 #import "LPActionManager.h"
 #import "LPUIAlert.h"
 #import "LPUIEditorWrapper.h"
+#import "LPAPIConfig.h"
 
 id<LPNetworkEngineProtocol> engine_;
 
@@ -54,7 +55,7 @@ static dispatch_once_t leanplum_onceToken;
                                                                         kCFBundleNameKey],
                                      NSBundle.mainBundle.infoDictionary[(NSString *)
                                                                         kCFBundleVersionKey],
-                                     [LeanplumRequest appId],
+                                     [LPAPIConfig sharedConfig].appId,
                                      LEANPLUM_CLIENT,
                                      LEANPLUM_SDK_VERSION];
         engine_ = [LPNetworkFactory

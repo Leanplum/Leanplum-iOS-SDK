@@ -27,12 +27,14 @@
 #import "Constants.h"
 #import "JRSwizzle.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LPUIAlert.h"
 #import "LeanplumRequest.h"
 #import "LPMessageTemplates.h"
+#import "LPRequestFactory.h"
+#import "LPRequestManager.h"
+#import "LPAPIConfig.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -85,8 +87,9 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
-        [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES
-                        params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}] send];
+        id<LPRequesting> req = [LPRequestFactory post:LP_METHOD_SET_DEVICE_ATTRIBUTES
+                                               params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+        [[LPRequestManager sharedManager] sendRequest:req];
     }
     LP_END_TRY
 
@@ -102,7 +105,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 {
     return [NSString stringWithFormat:
             LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY,
-            LeanplumRequest.appId, LeanplumRequest.userId, LeanplumRequest.deviceId];
+            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
@@ -335,7 +338,8 @@ static dispatch_once_t leanplum_onceToken;
         }
         [Leanplum onStartResponse:^(BOOL success) {
             LP_END_USER_CODE
-            [[LeanplumRequest post:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params] send];
+            LeanplumRequest *req = [LPRequestFactory post:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+            [req send];
             LP_BEGIN_USER_CODE
         }];
     }

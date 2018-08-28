@@ -32,6 +32,8 @@
 #import <objc/message.h>
 #import <objc/runtime.h>
 #include <unistd.h>
+#import "LPRequestFactory.h"
+#import "LPRequestManager.h"
 
 typedef enum {
     kLeanplumFileOperationGet = 0,
@@ -565,7 +567,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         return NO;
     }
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        LeanplumRequest *downloadRequest = [LeanplumRequest get:LP_METHOD_DOWNLOAD_FILE params:nil];
+        LeanplumRequest *downloadRequest = [LPRequestFactory get:LP_METHOD_DOWNLOAD_FILE params:nil];
         [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (complete) {
                 complete();
