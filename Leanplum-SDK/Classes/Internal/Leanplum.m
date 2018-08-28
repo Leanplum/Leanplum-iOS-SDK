@@ -45,6 +45,7 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPRequestFactory.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -857,7 +858,9 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_START params:params];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_START params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -936,11 +939,14 @@ BOOL inForeground = NO;
             // Report latency for 0.1% of users.
             NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
             if (arc4random() % 1000 == 0) {
-                [[LeanplumRequest post:LP_METHOD_LOG
+                LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                                initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_LOG
                                params:@{
                                         LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
                                         @"startLatency": [@(latency) description]
-                                        }] send];
+                                        }];
+                [req send];
             }
         }
 
@@ -1032,8 +1038,10 @@ BOOL inForeground = NO;
                     LP_TRY
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    [[LeanplumRequest post:LP_METHOD_STOP params:nil]
-                        sendIfConnectedSync:exitOnSuspend];
+                    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_STOP params:nil];
+                    [req sendIfConnectedSync:exitOnSuspend];
                     LP_END_TRY
                 }];
 
@@ -1042,7 +1050,10 @@ BOOL inForeground = NO;
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            [[LeanplumRequest post:LP_METHOD_HEARTBEAT params:nil] sendIfDelayed];
+            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+            LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_HEARTBEAT params:nil];
+            [req sendIfDelayed];
         }
         LP_END_TRY
     } repeats:YES];
@@ -1135,7 +1146,9 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    LeanplumRequest *request = [LeanplumRequest post:LP_METHOD_PAUSE_SESSION params:nil];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *request = [reqFactory createPostForApiMethod:LP_METHOD_PAUSE_SESSION params:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
@@ -1147,7 +1160,10 @@ BOOL inForeground = NO;
 
 + (void)resume
 {
-    [[LeanplumRequest post:LP_METHOD_RESUME_SESSION params:nil] sendIfDelayed];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_RESUME_SESSION params:nil];
+    [req sendIfDelayed];
 }
 
 + (void)trackCrashes
@@ -1886,7 +1902,10 @@ BOOL inForeground = NO;
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
         andParameters:(NSDictionary *)params
 {
-    [[LeanplumRequest post:LP_METHOD_TRACK params:args] send];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_TRACK params:args];
+    [req send];
 
     // Perform event actions.
     NSString *messageId = args[LP_PARAM_MESSAGE_ID];
@@ -2016,10 +2035,13 @@ andParameters:(NSDictionary *)params
         attributes = @{};
     }
 
-    [[LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:@{
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_USER_ATTRIBUTES params:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
         LP_PARAM_NEW_USER_ID: userId ? userId : @""
-    }] send];
+        }];
+    [req send];
 
     if (userId.length) {
         [LeanplumRequest setUserId:userId];
@@ -2089,9 +2111,12 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
-    [[LeanplumRequest post:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_TRAFFIC_SOURCE_INFO params:@{
         LP_PARAM_TRAFFIC_SOURCE: info
-    }] send];
+        }];
+    [req send];
 }
 
 + (void)advanceTo:(NSString *)state
@@ -2141,7 +2166,10 @@ andParameters:(NSDictionary *)params
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
             andParameters:(NSDictionary *)params
 {
-    [[LeanplumRequest post:LP_METHOD_ADVANCE params:args] send];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_ADVANCE params:args];
+    [req send];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     contextualValues.parameters = params;
     [self maybePerformActions:@[@"state"]
@@ -2167,7 +2195,10 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-     [[LeanplumRequest post:LP_METHOD_PAUSE_STATE params:@{}] send];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_PAUSE_STATE params:@{}];
+    [req send];
 }
 
 + (void)resumeState
@@ -2186,7 +2217,10 @@ andParameters:(NSDictionary *)params
 
 + (void)resumeStateInternal
 {
-    [[LeanplumRequest post:LP_METHOD_RESUME_STATE params:@{}] send];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_RESUME_STATE params:@{}];
+    [req send];
 }
 
 + (void)forceContentUpdate
@@ -2212,9 +2246,10 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    
-    LeanplumRequest* req = [LeanplumRequest
-                            post:LP_METHOD_GET_VARS
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest* req = [reqFactory
+                            createPostForApiMethod:LP_METHOD_GET_VARS
                             params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
@@ -2501,10 +2536,13 @@ void LPLog(LPLogType type, NSString *format, ...) {
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        [[LeanplumRequest post:LP_METHOD_LOG params:@{
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_LOG params:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
-                                                      }] sendEventually];
+                                                      }];
+        [req sendEventually];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Unable to send log: %@", exception);
     } @finally {
@@ -2591,7 +2629,9 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    LeanplumRequest *req = [LeanplumRequest post:LP_METHOD_SET_USER_ATTRIBUTES params:params];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_USER_ATTRIBUTES params:params];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         if (response) {
             response(YES);

@@ -10,8 +10,7 @@
 
 @implementation LPRequestFactory
 
--(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager
-{
+-(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager {
     self = [super init];
     if (self) {
         _featureFlagManager = featureFlagManager;
@@ -20,11 +19,11 @@
 }
 
 - (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
-    return [[LeanplumRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
+    return [LeanplumRequest get:apiMethod params:params];
 }
 
 - (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
-    return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
+    return [LeanplumRequest post:apiMethod params:params];
 }
 
 @end

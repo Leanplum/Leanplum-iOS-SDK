@@ -33,6 +33,7 @@
 #import "LPAES.h"
 #import "Leanplum_SocketIO.h"
 #import "Utils.h"
+#import "LPRequestFactory.h"
 
 @interface LPVarCache()
 @property (strong, nonatomic) NSRegularExpression *varNameRegex;
@@ -655,8 +656,11 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             [[LeanplumRequest post:LP_METHOD_SET_VARS
-                             params:args] send];
+             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+             LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
+                                                    params:args];
+             [req send];
              return YES;
          } @catch (NSException *e) {
              [Leanplum throwError:@"Cannot serialize variable values. "
@@ -708,9 +712,11 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
     if (filenames.count > 0) {
-        [[LeanplumRequest post:LP_METHOD_UPLOAD_FILE
-                        params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}]
-         sendFilesNow:filenames];
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
+                                               params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+        [req sendFilesNow:filenames];
     }
 }
 
