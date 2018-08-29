@@ -26,7 +26,7 @@
 #import "LeanplumInternal.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 
 @implementation LPAppIconManager
 
@@ -74,7 +74,7 @@
     [request onError:^(NSError *error) {
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
     }];
-    [[LPRequestManager sharedManager] sendDatasNow:requestDatas request:request];
+    [[LPRequestSender sharedInstance] sendDatasNow:requestDatas request:request];
 }
 
 #pragma mark - Private methods

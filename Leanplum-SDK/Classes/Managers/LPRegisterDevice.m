@@ -26,7 +26,7 @@
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
 #import "Constants.h"
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 
 @interface LPRegisterDevice()
 
@@ -69,7 +69,7 @@
     [request onError:^(NSError *error) {
         [self showError:[error localizedDescription]];
     }];
-    [[LPRequestManager sharedManager] sendNowRequest:request];
+    [[LPRequestSender sharedInstance] sendNowRequest:request];
 }
 
 @end

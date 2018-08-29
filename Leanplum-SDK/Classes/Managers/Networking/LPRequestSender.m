@@ -1,5 +1,5 @@
 //
-//  LPRequestManager.m
+//  LPRequestSender.m
 //  Leanplum
 //
 //  Created by Mayank Sanganeria on 6/30/18.
@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
 #import "LeanplumRequest.h"
@@ -31,22 +31,22 @@
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 
-@interface LeanplumRequest(LPRequestManager)
+@interface LeanplumRequest(LPRequestSender)
 
 - (void)sendNow:(BOOL)async;
 
 @end
 
 
-@interface LPRequestManager()
+@interface LPRequestSender()
 
 @end
 
 
-@implementation LPRequestManager
+@implementation LPRequestSender
 
-+ (instancetype)sharedManager {
-    static LPRequestManager *sharedManager = nil;
++ (instancetype)sharedInstance {
+    static LPRequestSender *sharedManager = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         sharedManager = [[self alloc] init];

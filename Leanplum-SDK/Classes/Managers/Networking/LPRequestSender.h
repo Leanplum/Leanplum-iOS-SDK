@@ -1,5 +1,5 @@
 //
-//  LPRequestManager.h
+//  LPRequestSender.h
 //  Leanplum
 //
 //  Created by Mayank Sanganeria on 6/30/18.
@@ -27,9 +27,9 @@
 #import "LPNetworkFactory.h"
 #import "LPRequesting.h"
 
-@interface LPRequestManager : NSObject
+@interface LPRequestSender : NSObject
 
-+ (instancetype)sharedManager;
++ (instancetype)sharedInstance;
 
 - (void)sendRequest:(id<LPRequesting>)request;
 - (void)sendNowRequest:(id<LPRequesting>)request;

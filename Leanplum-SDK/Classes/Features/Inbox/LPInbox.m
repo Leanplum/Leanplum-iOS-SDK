@@ -33,7 +33,7 @@
 #import "LPFileManager.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 
 static NSObject *updatingLock;
 
@@ -193,7 +193,7 @@ static NSObject *updatingLock;
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
         id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
                                               params:params];
-        [[LPRequestManager sharedManager] sendRequest:req];
+        [[LPRequestSender sharedInstance] sendRequest:req];
         LP_END_TRY
     }
     
@@ -374,7 +374,7 @@ static NSObject *updatingLock;
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_DELETE_INBOX_MESSAGE
                                           params:params];
-    [[LPRequestManager sharedManager] sendRequest:req];
+    [[LPRequestSender sharedInstance] sendRequest:req];
     LP_END_TRY
 }
 
@@ -473,7 +473,7 @@ static NSObject *updatingLock;
     [req onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
+    [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
     LP_END_TRY
 }
 

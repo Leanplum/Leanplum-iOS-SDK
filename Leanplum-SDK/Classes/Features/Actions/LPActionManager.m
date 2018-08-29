@@ -33,7 +33,7 @@
 #import "LeanplumRequest.h"
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -90,7 +90,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
         id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
                                          params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [[LPRequestManager sharedManager] sendRequest:req];
+        [[LPRequestSender sharedInstance] sendRequest:req];
     }
     LP_END_TRY
 
@@ -342,7 +342,7 @@ static dispatch_once_t leanplum_onceToken;
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
             id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
-            [[LPRequestManager sharedManager] sendRequest:req];
+            [[LPRequestSender sharedInstance] sendRequest:req];
             LP_BEGIN_USER_CODE
         }];
     }
@@ -412,7 +412,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
                 LP_END_TRY
              }];
-            [[LPRequestManager sharedManager] sendIfConnectedRequest:req];
+            [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
         }
         LP_BEGIN_USER_CODE
     }];
