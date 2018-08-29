@@ -1028,7 +1028,7 @@
     [LPVar define:@"myArray" withArray:@[@1, @2, @3, @4, @5]];
     [LPVar define:@"welcomeMessage" withString:@"Welcome to Leanplum!"];
 
-    [LPVarCache applyVariableDiffs:
+    [[LPVarCache sharedCache] applyVariableDiffs:
      @{
        @"B": @{
                @"a": @{
@@ -1111,7 +1111,7 @@
         return YES;
     }];
 
-    XCTAssertTrue([LPVarCache sendVariablesIfChanged]);
+    XCTAssertTrue([[LPVarCache sharedCache] sendVariablesIfChanged]);
     [self waitForExpectationsWithTimeout:2.0 handler:nil];
 
     // Test object for key path.
@@ -1137,28 +1137,28 @@
     XCTAssertEqualObjects(@2, ([Leanplum objectForKeyPathComponents:@[@"D", @"b"]]));
 
     // Test LPVarCache get variable.
-    XCTAssertEqualObjects(@"Welcome to Leanplum!", [[LPVarCache getVariable:@"welcomeMessage"]
+    XCTAssertEqualObjects(@"Welcome to Leanplum!", [[[LPVarCache sharedCache] getVariable:@"welcomeMessage"]
                                                     defaultValue]);
-    XCTAssertNotNil([LPVarCache getVariable:@"named"]);
-    XCTAssertEqual(10, [[LPVarCache getVariable:@"int"] intValue]);
-    XCTAssertEqual(10.0f, [[LPVarCache getVariable:@"float"] floatValue]);
-    XCTAssertEqual(10.0, [[LPVarCache getVariable:@"double"] doubleValue]);
-    XCTAssertEqual(YES, [[LPVarCache getVariable:@"bool"] boolValue]);
-    XCTAssertEqual(10L, [[LPVarCache getVariable:@"long"] longValue]);
-    XCTAssertEqual(@10, [[LPVarCache getVariable:@"number"] numberValue]);
-    XCTAssertEqual(5.0f, [[LPVarCache getVariable:@"cgfloat"] cgFloatValue]);
-    XCTAssertEqual('c', [[LPVarCache getVariable:@"char"] charValue]);
-    XCTAssertEqual(100LL, [[LPVarCache getVariable:@"long_long"] longLongValue]);
-    XCTAssertEqual(0x1, [[LPVarCache getVariable:@"short"] shortValue]);
-    XCTAssertEqual(5, [[LPVarCache getVariable:@"unsigned_int"] unsignedIntValue]);
-    XCTAssertEqual(NSUIntegerMax, [[LPVarCache getVariable:@"unsigned_integer"]
+    XCTAssertNotNil([[LPVarCache sharedCache] getVariable:@"named"]);
+    XCTAssertEqual(10, [[[LPVarCache sharedCache] getVariable:@"int"] intValue]);
+    XCTAssertEqual(10.0f, [[[LPVarCache sharedCache] getVariable:@"float"] floatValue]);
+    XCTAssertEqual(10.0, [[[LPVarCache sharedCache] getVariable:@"double"] doubleValue]);
+    XCTAssertEqual(YES, [[[LPVarCache sharedCache] getVariable:@"bool"] boolValue]);
+    XCTAssertEqual(10L, [[[LPVarCache sharedCache] getVariable:@"long"] longValue]);
+    XCTAssertEqual(@10, [[[LPVarCache sharedCache] getVariable:@"number"] numberValue]);
+    XCTAssertEqual(5.0f, [[[LPVarCache sharedCache] getVariable:@"cgfloat"] cgFloatValue]);
+    XCTAssertEqual('c', [[[LPVarCache sharedCache] getVariable:@"char"] charValue]);
+    XCTAssertEqual(100LL, [[[LPVarCache sharedCache] getVariable:@"long_long"] longLongValue]);
+    XCTAssertEqual(0x1, [[[LPVarCache sharedCache] getVariable:@"short"] shortValue]);
+    XCTAssertEqual(5, [[[LPVarCache sharedCache] getVariable:@"unsigned_int"] unsignedIntValue]);
+    XCTAssertEqual(NSUIntegerMax, [[[LPVarCache sharedCache] getVariable:@"unsigned_integer"]
                                    unsignedIntegerValue]);
-    XCTAssertEqual(200, [[LPVarCache getVariable:@"unsigned_char"] unsignedCharValue]);
-    XCTAssertEqual(50L, [[LPVarCache getVariable:@"unsigned_long"] unsignedLongValue]);
-    XCTAssertEqual(25LL, [[LPVarCache getVariable:@"unsigned_long_long"] unsignedLongLongValue]);
-    XCTAssertEqual(0x1, [[LPVarCache getVariable:@"unsigned_short"] unsignedShortValue]);
-    XCTAssertEqual(1, [[LPVarCache getVariable:@"A"] integerValue]);
-    XCTAssertEqual(2, [[[LPVarCache getVariable:@"C"] objectForKey:@"a"] integerValue]);
+    XCTAssertEqual(200, [[[LPVarCache sharedCache] getVariable:@"unsigned_char"] unsignedCharValue]);
+    XCTAssertEqual(50L, [[[LPVarCache sharedCache] getVariable:@"unsigned_long"] unsignedLongValue]);
+    XCTAssertEqual(25LL, [[[LPVarCache sharedCache] getVariable:@"unsigned_long_long"] unsignedLongLongValue]);
+    XCTAssertEqual(0x1, [[[LPVarCache sharedCache] getVariable:@"unsigned_short"] unsignedShortValue]);
+    XCTAssertEqual(1, [[[LPVarCache sharedCache] getVariable:@"A"] integerValue]);
+    XCTAssertEqual(2, [[[[LPVarCache sharedCache] getVariable:@"C"] objectForKey:@"a"] integerValue]);
 
     // default variables.
     XCTAssertEqualObjects(@5.0, [cgfloat_variable defaultValue]);
@@ -1191,16 +1191,16 @@
         XCTAssertTrue(success);
         [OHHTTPStubs removeStub:startStub];
         // Then: variantDebugInfo should be parsed
-        XCTAssertNotNil([LPVarCache variantDebugInfo]);
-        NSDictionary *abTests = [LPVarCache variantDebugInfo][@"abTests"];
+        XCTAssertNotNil([[LPVarCache sharedCache] variantDebugInfo]);
+        NSDictionary *abTests = [[LPVarCache sharedCache] variantDebugInfo][@"abTests"];
         XCTAssertEqual(abTests.count, 2);
         
         // Then: variantDebugInfo should be persisted
-        [LPVarCache saveDiffs];
-        [LPVarCache setVariantDebugInfo:nil];
-        XCTAssertNil([LPVarCache variantDebugInfo]);
-        [LPVarCache loadDiffs];
-        XCTAssertNotNil([LPVarCache variantDebugInfo]);
+        [[LPVarCache sharedCache] saveDiffs];
+        [[LPVarCache sharedCache] setVariantDebugInfo:nil];
+        XCTAssertNil([[LPVarCache sharedCache] variantDebugInfo]);
+        [[LPVarCache sharedCache] loadDiffs];
+        XCTAssertNotNil([[LPVarCache sharedCache] variantDebugInfo]);
         dispatch_semaphore_signal(semaphore);
     }];
     dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
@@ -1213,19 +1213,19 @@
 {
     //Given: a variantDebugInfo set in VarCache
     NSDictionary *mockVariantDebugInfo = @{@"abTests":@[]};
-    [LPVarCache setVariantDebugInfo:mockVariantDebugInfo];
+    [[LPVarCache sharedCache] setVariantDebugInfo:mockVariantDebugInfo];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
     
     //When: the varcache is persisted
-    [LPVarCache saveDiffs];
+    [[LPVarCache sharedCache] saveDiffs];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
     
     
-    [LPVarCache setVariantDebugInfo:nil];
+    [[LPVarCache sharedCache] setVariantDebugInfo:nil];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 0);
     
     //Then: the variantDebugInfo can be loaded from disk
-    [LPVarCache loadDiffs];
+    [[LPVarCache sharedCache] loadDiffs];
     XCTAssertEqual([Leanplum variantDebugInfo].allKeys.count, 1);
 }
 
@@ -1371,7 +1371,7 @@
                                         @"whenTriggers":@{},
                                         }};
     NSArray *variants = @[@{@"id":@"1"}, @{@"id":@"2"}];
-    [LPVarCache applyVariableDiffs:nil messages:messages updateRules:nil
+    [[LPVarCache sharedCache] applyVariableDiffs:nil messages:messages updateRules:nil
                         eventRules:nil variants:variants regions:nil variantDebugInfo:nil];
 
     XCTAssertEqualObjects(variants, [Leanplum variants]);
@@ -1420,15 +1420,15 @@
         XCTAssertTrue([plist[@"hash"] length] > 0);
         XCTAssertTrue([plist[@"size"] intValue] > 0);
 
-        XCTAssertTrue([[LPVarCache defaultKinds][@"__Resources"] isEqual:@"group"]);
-        XCTAssertTrue([[LPVarCache defaultKinds]
+        XCTAssertTrue([[[LPVarCache sharedCache] defaultKinds][@"__Resources"] isEqual:@"group"]);
+        XCTAssertTrue([[[LPVarCache sharedCache] defaultKinds]
                        [@"__Resources.PlugIns.Leanplum-SDK_Tests\\.xctest.test\\.file"]
                        isEqual:@"file"]);
         return YES;
     }];
-    [LPVarCache sendVariablesIfChanged];
+    [[LPVarCache sharedCache] sendVariablesIfChanged];
 
-    NSDictionary *fileAttributes = [LPVarCache fileAttributes];
+    NSDictionary *fileAttributes = [[LPVarCache sharedCache] fileAttributes];
     XCTAssertEqual(2, fileAttributes.count);
 }
 
@@ -1533,7 +1533,7 @@
 
     // Define action and send it.
     [Leanplum defineAction:action_name ofKind:kLeanplumActionKindAction withArguments:arguments];
-    [LPVarCache sendActionsIfChanged];
+    [[LPVarCache sharedCache] sendActionsIfChanged];
 
     // Test whether notification parsing is working correctly.
     NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"sample_action_notification"

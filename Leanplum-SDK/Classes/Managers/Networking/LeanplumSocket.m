@@ -30,6 +30,7 @@
 #import "LPActionManager.h"
 #import "LPUIAlert.h"
 #import "LPUIEditorWrapper.h"
+#import "LPAPIConfig.h"
 
 id<LPNetworkEngineProtocol> engine_;
 
@@ -54,7 +55,7 @@ static dispatch_once_t leanplum_onceToken;
                                                                         kCFBundleNameKey],
                                      NSBundle.mainBundle.infoDictionary[(NSString *)
                                                                         kCFBundleVersionKey],
-                                     [LeanplumRequest appId],
+                                     [LPAPIConfig sharedConfig].appId,
                                      LEANPLUM_CLIENT,
                                      LEANPLUM_SDK_VERSION];
         engine_ = [LPNetworkFactory
@@ -142,9 +143,9 @@ static dispatch_once_t leanplum_onceToken;
             NSString *messageId = [payload[LP_PARAM_MESSAGE_ID] description];
             BOOL isRooted = [payload[@"isRooted"] boolValue];
             NSString *actionType = action[LP_VALUE_ACTION_ARG];
-            NSDictionary *defaultArgs = LPVarCache.actionDefinitions
+            NSDictionary *defaultArgs = [LPVarCache sharedCache].actionDefinitions
                                           [action[LP_VALUE_ACTION_ARG]] [@"values"];
-            action = [LPVarCache mergeHelper:defaultArgs withDiffs:action];
+            action = [[LPVarCache sharedCache] mergeHelper:defaultArgs withDiffs:action];
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
                                                                          args:action
                                                                     messageId:messageId];
@@ -157,13 +158,13 @@ static dispatch_once_t leanplum_onceToken;
         }
 
     } else if ([packet.name isEqualToString:@"getVariables"]) {
-        BOOL sentValues = [LPVarCache sendVariablesIfChanged];
-        [LPVarCache maybeUploadNewFiles];
+        BOOL sentValues = [[LPVarCache sharedCache] sendVariablesIfChanged];
+        [[LPVarCache sharedCache] maybeUploadNewFiles];
         [self sendEvent:@"getContentResponse" withData:@{@"updated": @(sentValues)}];
 
     } else if ([packet.name isEqualToString:@"getActions"]) {
-        BOOL sentValues = [LPVarCache sendActionsIfChanged];
-        [LPVarCache maybeUploadNewFiles];
+        BOOL sentValues = [[LPVarCache sharedCache] sendActionsIfChanged];
+        [[LPVarCache sharedCache] maybeUploadNewFiles];
         [self sendEvent:@"getContentResponse" withData:@{@"updated": @(sentValues)}];
 
     } else if ([packet.name isEqualToString:@"getViewHierarchy"]) {
@@ -185,7 +186,7 @@ static dispatch_once_t leanplum_onceToken;
         }
         BOOL wasEnabled = [UIView areAnimationsEnabled];
         [UIView setAnimationsEnabled:NO];
-        [LPVarCache applyUpdateRuleDiffs:packetData[@"rules"]];
+        [[LPVarCache sharedCache] applyUpdateRuleDiffs:packetData[@"rules"]];
         
         dispatch_time_t changeTime = dispatch_time(DISPATCH_TIME_NOW, LP_EDITOR_REDRAW_DELAY
                                                    * NSEC_PER_SEC);
@@ -204,7 +205,7 @@ static dispatch_once_t leanplum_onceToken;
                            block:nil];
     } else if ([packet.name isEqualToString:@"applyVars"]) {
         NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
-        [LPVarCache applyVariableDiffs:packetData messages:nil updateRules:nil eventRules:nil
+        [[LPVarCache sharedCache] applyVariableDiffs:packetData messages:nil updateRules:nil eventRules:nil
                               variants:nil regions:nil variantDebugInfo:nil];
     }
     LP_END_TRY

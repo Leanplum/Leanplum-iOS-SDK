@@ -25,8 +25,9 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
+#import "LPRequesting.h"
 
-@interface LeanplumRequest : NSObject {
+@interface LeanplumRequest : NSObject <LPRequesting> {
 @private
     NSString *_httpMethod;
     NSString *_apiMethod;
@@ -36,19 +37,8 @@
     BOOL _sent;
 }
 
-+ (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
-+ (void)setDeviceId:(NSString *)deviceId;
-+ (void)setUserId:(NSString *)userId;
++ (void)initializeStaticVars;
 + (void)setUploadUrl:(NSString *)url;
-
-+ (NSString *)deviceId;
-+ (NSString *)userId;
-+ (void)setToken:(NSString *)token;
-+ (void)loadToken;
-+ (void)saveToken;
-
-+ (NSString *)appId;
-+ (NSString *)token;
 
 - (void)attachApiKeys:(NSMutableDictionary *)dict;
 
