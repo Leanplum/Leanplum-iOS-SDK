@@ -35,6 +35,7 @@
 #import "Utils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
+#import "LPAPIConfig.h"
 
 @interface LPVarCache()
 @property (strong, nonatomic) NSRegularExpression *varNameRegex;
@@ -392,10 +393,10 @@ static dispatch_once_t leanplum_onceToken;
             BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
 
             if (deviceId) {
-                [LeanplumRequest setDeviceId:deviceId];
+                [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
             }
             if (userId) {
-                [LeanplumRequest setUserId:userId];
+                [[LPAPIConfig sharedConfig] setUserId:userId];
             }
             if (loggingEnabled) {
                 [LPConstantsState sharedState].loggingEnabled = YES;
@@ -433,8 +434,8 @@ static dispatch_once_t leanplum_onceToken;
         [archiver encodeObject:self.variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
         [archiver encodeObject:self.regions forKey:LP_KEY_REGIONS];
         [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
-        [archiver encodeObject:LeanplumRequest.deviceId forKey:LP_PARAM_DEVICE_ID];
-        [archiver encodeObject:LeanplumRequest.userId forKey:LP_PARAM_USER_ID];
+        [archiver encodeObject:[LPAPIConfig sharedConfig].deviceId forKey:LP_PARAM_DEVICE_ID];
+        [archiver encodeObject:[LPAPIConfig sharedConfig].userId forKey:LP_PARAM_USER_ID];
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
         [archiver finishEncoding];
 
@@ -749,7 +750,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     if (!_userAttributes) {
         @try {
-            NSString *token = [LeanplumRequest token];
+            NSString *token = [[LPAPIConfig sharedConfig] token];
             if (token) {
                 NSData *encryptedValue = [[NSUserDefaults standardUserDefaults] dataForKey:LEANPLUM_DEFAULTS_ATTRIBUTES_KEY];
                 if (encryptedValue) {

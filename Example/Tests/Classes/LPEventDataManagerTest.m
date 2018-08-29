@@ -27,7 +27,6 @@
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LPRequestStorage.h"
 #import "LPEventDataManager.h"
 #import "LPDatabase.h"
 #import "Constants.h"
@@ -35,20 +34,6 @@
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
-
-/**
- * Expose private class methods
- */
-@interface LPRequestStorage(UnitTest)
-
-- (void)migrateRequests;
-- (void)saveRequests:(NSMutableArray *)requests;
-- (NSMutableArray *)loadRequests;
-- (NSString *)cacheFilePath;
-- (NSString *)documentsFilePath;
-+ (NSString *)itemKeyForIndex:(NSUInteger)index;
-
-@end
 
 @interface LPEventDataManager(UnitTest)
 
@@ -82,22 +67,6 @@
 {
     return @{@"action":@"track", @"deviceId":@"123", @"userId":@"QA_TEST", @"client":@"ios",
              @"sdkVersion":@"3", @"devMode":@NO, @"time":@"1489007921.162919"};
-}
-
-- (void)test_migrateRequests
-{
-    // Clean up.
-    [[LeanplumRequest sendNowQueue] cancelAllOperations];
-    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
-    
-    [LPEventDataManager deleteEventsWithLimit:10000];
-    
-    [[LPRequestStorage sharedStorage] popAllRequests];
-    [[LPRequestStorage sharedStorage] pushRequest:[self sampleData]];
-    
-    [LPEventDataManager migrateRequests];
-    NSArray *events = [LPEventDataManager eventsWithLimit:10000];
-    XCTAssertTrue(events.count == 1);
 }
 
 - (void)test_publicEventMethods
