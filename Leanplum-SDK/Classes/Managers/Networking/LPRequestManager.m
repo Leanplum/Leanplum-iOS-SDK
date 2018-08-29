@@ -395,11 +395,11 @@
 
 - (void)sendAllCounts {
     NSDictionary *counts = [[LPCountManager sharedManager] getAndClearCounts];
-    for (id key in counts) { // iterate over counts, creating one request per counter
+    for (NSString *key in counts) { // iterate over counts, creating one request per counter
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        params[@"TYPE"] = @"SDK_COUNT";
-        params[@"MESSAGE"] = key;
-        params[@"COUNT"] = counts[@"key"];
+        params[LP_PARAM_TYPE] = @"SDK_COUNT";
+        params[LP_PARAM_MESSAGE] = key;
+        params[LP_PARAM_COUNT] = counts[key];
         [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
     }
 }

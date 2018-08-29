@@ -23,14 +23,11 @@
 //  under the License.
 
 #import "LPCountManager.h"
-#import "LPVarCache.h"
 
 @interface LPCountManager()
 
 @property (nonatomic, strong) NSMutableDictionary *counts;
 @property (nonatomic, strong) NSSet *enabledCounters;
-
-//static NSMutableDictionary *counts;
 
 @end
 
