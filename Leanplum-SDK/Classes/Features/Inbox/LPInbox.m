@@ -26,7 +26,6 @@
 #import "Constants.h"
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
 #import "LPAES.h"
@@ -34,6 +33,7 @@
 #import "LPFileManager.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
+#import "LPRequestSender.h"
 
 static NSObject *updatingLock;
 
@@ -191,9 +191,9 @@ static NSObject *updatingLock;
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
+        id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
                                               params:params];
-        [req send];
+        [[LPRequestSender sharedInstance] sendRequest:req];
         LP_END_TRY
     }
     
@@ -372,9 +372,9 @@ static NSObject *updatingLock;
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_DELETE_INBOX_MESSAGE
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_DELETE_INBOX_MESSAGE
                                           params:params];
-    [req send];
+    [[LPRequestSender sharedInstance] sendRequest:req];
     LP_END_TRY
 }
 
@@ -420,7 +420,7 @@ static NSObject *updatingLock;
     LP_TRY
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_GET_INBOX_MESSAGES params:nil];
+    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_GET_INBOX_MESSAGES params:nil];
     [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
@@ -473,7 +473,7 @@ static NSObject *updatingLock;
     [req onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [req sendIfConnected];
+    [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
     LP_END_TRY
 }
 

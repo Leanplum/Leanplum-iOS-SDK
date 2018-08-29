@@ -33,6 +33,7 @@
 #import <objc/runtime.h>
 #include <unistd.h>
 #import "LPRequestFactory.h"
+#import "LPRequestSender.h"
 
 typedef enum {
     kLeanplumFileOperationGet = 0,

@@ -11,7 +11,7 @@
 #import "LPNetworkProtocol.h"
 #import "LeanplumInternal.h"
 
-@protocol LPRequesting
+@protocol LPRequesting<NSObject>
 
 @property (nonatomic, strong) NSString *apiMethod;
 @property (nonatomic, strong) NSDictionary *params;

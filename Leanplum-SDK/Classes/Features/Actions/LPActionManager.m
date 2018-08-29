@@ -27,14 +27,13 @@
 #import "Constants.h"
 #import "JRSwizzle.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LPUIAlert.h"
 #import "LeanplumRequest.h"
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 
 #import <objc/runtime.h>
@@ -90,9 +89,9 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
-                                               params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [req send];
+        id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
+                                         params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+        [[LPRequestSender sharedInstance] sendRequest:req];
     }
     LP_END_TRY
 
@@ -343,8 +342,8 @@ static dispatch_once_t leanplum_onceToken;
             LP_END_USER_CODE
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
-            [req send];
+            id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+            [[LPRequestSender sharedInstance] sendRequest:req];
             LP_BEGIN_USER_CODE
         }];
     }
@@ -370,7 +369,7 @@ static dispatch_once_t leanplum_onceToken;
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            LeanplumRequest *req = [LeanplumRequest
+            id<LPRequesting> req = [LeanplumRequest
                                     post:LP_METHOD_GET_VARS
                                     params:@{
                                              LP_PARAM_INCLUDE_DEFAULTS: @(NO),
@@ -414,7 +413,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
                 LP_END_TRY
              }];
-            [req sendIfConnected];
+            [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
         }
         LP_BEGIN_USER_CODE
     }];

@@ -23,9 +23,9 @@
 //  under the License.
 
 #import "Constants.h"
-#import "LeanplumRequest.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
+#import "LPRequestSender.h"
 
 @implementation LPConstantsState
 
@@ -319,14 +319,14 @@ void leanplumInternalError(NSException *e)
         @try {
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_LOG
+            id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_LOG
                             params:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
                                      LP_PARAM_VERSION_NAME: versionName
                                      }];
-            [req send];
+            [[LPRequestSender sharedInstance] sendRequest:req];
         } @catch (NSException *e) {
             // This empty try/catch is needed to prevent crash <-> loop.
         }
