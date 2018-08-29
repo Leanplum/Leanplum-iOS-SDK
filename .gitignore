@@ -84,6 +84,7 @@ profile
 DerivedData
 *.hmap
 *.ipa
+*.plist
 
 # Bundler
 .bundle
@@ -97,4 +98,6 @@ Release
 Podfile.lock
 coverage-report/
 DerivedData/
+
+
 

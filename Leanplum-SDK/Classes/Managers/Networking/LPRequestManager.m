@@ -24,11 +24,13 @@
 
 #import "LPRequestManager.h"
 #import "LeanplumInternal.h"
+#import "LeanplumRequest.h"
 #import "LPRequest.h"
 #import "LPResponse.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
+#import "LPCountManager.h"
 
 
 @interface LPRequestManager()
@@ -37,7 +39,6 @@
 @property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
 @property (nonatomic, strong) NSString *accessKey;
 @property (nonatomic, assign) NSTimeInterval lastSentTime;
-
 @property (nonatomic, strong) NSTimer *uiTimeoutTimer;
 @property (nonatomic, assign) BOOL didUiTimeout;
 
@@ -245,6 +246,9 @@
         [LPRequestManager generateUUID];
         self.lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        
+        // Put all requests for logging counts into event data manager.
+        [self sendAllCounts];
 
         // Simulate pop all requests.
         NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
@@ -389,7 +393,18 @@
     }
 }
 
--(void)uiDidTimeout {
+- (void)sendAllCounts {
+    NSDictionary *counts = [[LPCountManager sharedManager] getAndClearCounts];
+    for (id key in counts) { // iterate over counts, creating one request per counter
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+        params[@"TYPE"] = @"SDK_COUNT";
+        params[@"MESSAGE"] = key;
+        params[@"COUNT"] = counts[@"key"];
+        [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
+    }
+}
+
+- (void)uiDidTimeout {
     self.didUiTimeout = YES;
     [self.uiTimeoutTimer invalidate];
     self.uiTimeoutTimer = nil;

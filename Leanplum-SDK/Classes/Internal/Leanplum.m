@@ -45,6 +45,7 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPCountManager.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -871,6 +872,8 @@ BOOL inForeground = NO;
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [LPVarCache setVariantDebugInfo:variantDebugInfo];
+        NSSet *enabledCounters = [self parseEnabledCountersFromResponse:response];
+        [[LPCountManager sharedManager] setEnabledCounters:enabledCounters];
 
         [LeanplumRequest setToken:token];
         [LeanplumRequest saveToken];
@@ -2614,10 +2617,18 @@ void LPLog(LPLogType type, NSString *format, ...) {
     LP_END_TRY
 }
 
-+(NSDictionary *)parseVariantDebugInfoFromResponse:(NSDictionary *)response
++ (NSDictionary *)parseVariantDebugInfoFromResponse:(NSDictionary *)response
 {
     if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
         return response[LP_KEY_VARIANT_DEBUG_INFO];
+    }
+    return nil;
+}
+
++ (NSSet *)parseEnabledCountersFromResponse:(NSDictionary *)response
+{
+    if ([response objectForKey:LP_KEY_ENABLED_COUNTERS]) {
+        return [NSSet setWithArray:response[LP_KEY_ENABLED_COUNTERS]];
     }
     return nil;
 }
