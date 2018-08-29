@@ -25,23 +25,8 @@
 #import "LPEventDataManager.h"
 #import "LPDatabase.h"
 #import "LPJSON.h"
-#import "LPRequestStorage.h"
 
 @implementation LPEventDataManager
-
-+ (void)load
-{
-    [LPEventDataManager migrateRequests];
-}
-
-+ (void)migrateRequests
-{
-    LPRequestStorage *requestStorage = [LPRequestStorage sharedStorage];
-    if ([[NSFileManager defaultManager] fileExistsAtPath:requestStorage.documentsFilePath]) {
-        NSArray *requests = [requestStorage popAllRequests];
-        [LPEventDataManager addEvents:requests];
-    }
-}
 
 + (void)addEvent:(NSDictionary *)event
 {
