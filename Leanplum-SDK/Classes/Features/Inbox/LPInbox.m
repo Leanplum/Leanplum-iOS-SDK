@@ -191,9 +191,9 @@ static NSObject *updatingLock;
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
+        id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_MARK_INBOX_MESSAGE_AS_READ
                                               params:params];
-        [[LPRequestSender sharedInstance] sendRequest:req];
+        [[LPRequestSender sharedInstance] send:request];
         LP_END_TRY
     }
     
@@ -372,9 +372,9 @@ static NSObject *updatingLock;
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_DELETE_INBOX_MESSAGE
+    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_DELETE_INBOX_MESSAGE
                                           params:params];
-    [[LPRequestSender sharedInstance] sendRequest:req];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 
@@ -420,8 +420,8 @@ static NSObject *updatingLock;
     LP_TRY
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_GET_INBOX_MESSAGES params:nil];
-    [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_GET_INBOX_MESSAGES params:nil];
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
         NSUInteger unreadCount = 0;
@@ -470,10 +470,10 @@ static NSObject *updatingLock;
         }
         LP_END_TRY
     }];
-    [req onError:^(NSError *error) {
+    [request onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
+    [[LPRequestSender sharedInstance] sendIfConnected:request];
     LP_END_TRY
 }
 

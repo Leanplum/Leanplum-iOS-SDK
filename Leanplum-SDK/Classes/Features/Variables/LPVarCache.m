@@ -660,9 +660,9 @@ static dispatch_once_t leanplum_onceToken;
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
              LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                              initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-             id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
+             id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
                                                     params:args];
-             [[LPRequestSender sharedInstance] sendRequest:req];
+             [[LPRequestSender sharedInstance] send:request];
              return YES;
          } @catch (NSException *e) {
              [Leanplum throwError:@"Cannot serialize variable values. "
