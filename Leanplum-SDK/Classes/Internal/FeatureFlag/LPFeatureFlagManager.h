@@ -10,6 +10,8 @@
 @interface LPFeatureFlagManager : NSObject
 
 + (instancetype)sharedManager;
--(BOOL)isFeatureFlagEnabled:(NSString *)featureFlagName;
+
+-(void)refreshEnabledFeatureFlags:(nullable NSArray<NSString *> *)featureFlags;
+-(BOOL)isFeatureFlagEnabled:(nonnull NSString *)featureFlagName;
 
 @end

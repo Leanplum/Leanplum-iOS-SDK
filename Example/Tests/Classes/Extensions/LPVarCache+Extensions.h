@@ -27,8 +27,8 @@
 
 @interface LPVarCache(UnitTest)
 
-+ (void)reset;
+- (void)reset;
 
-+ (void)initialize;
+- (void)initialize;
 
 @end
