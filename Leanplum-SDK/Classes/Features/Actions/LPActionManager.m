@@ -89,9 +89,9 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
+        id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
                                          params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [[LPRequestSender sharedInstance] sendRequest:req];
+        [[LPRequestSender sharedInstance] send:request];
     }
     LP_END_TRY
 
@@ -342,8 +342,8 @@ static dispatch_once_t leanplum_onceToken;
             LP_END_USER_CODE
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
-            [[LPRequestSender sharedInstance] sendRequest:req];
+            id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+            [[LPRequestSender sharedInstance] send:request];
             LP_BEGIN_USER_CODE
         }];
     }
@@ -369,13 +369,13 @@ static dispatch_once_t leanplum_onceToken;
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            id<LPRequesting> req = [LeanplumRequest
+            id<LPRequesting> request = [LeanplumRequest
                                     post:LP_METHOD_GET_VARS
                                     params:@{
                                              LP_PARAM_INCLUDE_DEFAULTS: @(NO),
                                              LP_PARAM_INCLUDE_MESSAGE_ID: messageId
                                              }];
-            [req onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
+            [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
                 NSDictionary *messages = response[LP_KEY_MESSAGES];
@@ -413,7 +413,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
                 LP_END_TRY
              }];
-            [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
+            [[LPRequestSender sharedInstance] sendIfConnected:request];
         }
         LP_BEGIN_USER_CODE
     }];

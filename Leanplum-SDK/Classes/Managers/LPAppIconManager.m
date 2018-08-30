@@ -74,7 +74,7 @@
     [request onError:^(NSError *error) {
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
     }];
-    [[LPRequestSender sharedInstance] sendDatasNow:requestDatas request:request];
+    [[LPRequestSender sharedInstance] sendNow:request withDatas:requestDatas];
 }
 
 #pragma mark - Private methods
