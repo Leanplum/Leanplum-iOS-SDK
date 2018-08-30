@@ -1,9 +1,8 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LPExceptionHandler.h
+//  Leanplum iOS SDK Version 2.0.6
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +21,15 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
 
-#import "LPVarCache.h"
+@protocol LPExceptionReporting
+-(void)reportException:(NSException *)exception;
+@end
 
-@interface LPVarCache(UnitTest)
+@interface LPExceptionHandler : NSObject
 
-- (void)reset;
-
-- (void)initialize;
++(instancetype)sharedExceptionHandler;
+-(void)reportException:(NSException *)exception;
 
 @end

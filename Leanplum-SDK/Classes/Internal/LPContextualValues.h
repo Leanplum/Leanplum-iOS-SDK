@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LPActionManager.h
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Andrew First on 9/12/13.
+//  Copyright (c) 2013 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import "Leanplum.h"
 
-#import "LPVarCache.h"
+#import <Foundation/Foundation.h>
+#if LP_NOT_TV
+#import <UserNotifications/UserNotifications.h>
+#endif
 
-@interface LPVarCache(UnitTest)
+@interface LPContextualValues : NSObject
 
-- (void)reset;
-
-- (void)initialize;
+@property (nonatomic) NSDictionary *parameters;
+@property (nonatomic) NSDictionary *arguments;
+@property (nonatomic) id previousAttributeValue;
+@property (nonatomic) id attributeValue;
 
 @end

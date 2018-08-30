@@ -1,9 +1,8 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  Leanplum.h
+//  Leanplum iOS SDK Version 2.0.6
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +21,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
 
-#import "LPVarCache.h"
+@interface LeanplumCompatibility : NSObject
 
-@interface LPVarCache(UnitTest)
-
-- (void)reset;
-
-- (void)initialize;
+/**
+ * Used only for compatibility with Google Analytics.
+ */
++ (void)gaTrack:(NSObject *)trackingObject;
 
 @end

@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  RegisterDevice.h
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Andrew First on 5/13/12.
+//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,13 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
 
-#import "LPVarCache.h"
+#import "Leanplum.h"
 
-@interface LPVarCache(UnitTest)
+@interface LPRegisterDevice : NSObject
 
-- (void)reset;
-
-- (void)initialize;
+- (id)initWithCallback:(LeanplumStartBlock)callback;
+- (void)registerDevice:(NSString *)email;
 
 @end

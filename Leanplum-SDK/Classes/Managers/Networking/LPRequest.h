@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LPRequest.h
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Mayank Sanganeria on 6/30/18.
+//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,22 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
+#import "Leanplum.h"
+#import "LPNetworkFactory.h"
 
-#import "LPVarCache.h"
+@interface LPRequest : NSObject
 
-@interface LPVarCache(UnitTest)
+@property (nonatomic, strong) NSString *apiMethod;
+@property (nonatomic, strong) NSDictionary *params;
+@property (atomic) BOOL sent;
+@property (nonatomic, copy) LPNetworkResponseBlock responseBlock;
+@property (nonatomic, copy) LPNetworkErrorBlock errorBlock;
 
-- (void)reset;
++ (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
++ (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
 
-- (void)initialize;
+- (void)onResponse:(LPNetworkResponseBlock)response;
+- (void)onError:(LPNetworkErrorBlock)error;
 
 @end

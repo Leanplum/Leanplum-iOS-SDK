@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LPActionManager.m
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Andrew First on 9/12/13.
+//  Copyright (c) 2013 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import "LPContextualValues.h"
 
-#import "LPVarCache.h"
-
-@interface LPVarCache(UnitTest)
-
-- (void)reset;
-
-- (void)initialize;
+@implementation LPContextualValues
 
 @end

@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LeanplumRequest.h
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Andrew First on 4/30/12.
+//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,16 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
+#import "Leanplum.h"
+#import "LPNetworkFactory.h"
 
-#import "LPVarCache.h"
+@interface LPResponse : NSObject
 
-@interface LPVarCache(UnitTest)
-
-- (void)reset;
-
-- (void)initialize;
++ (NSUInteger)numResponsesInDictionary:(NSDictionary *)dictionary;
++ (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary;
++ (NSDictionary *)getLastResponse:(NSDictionary *)dictionary;
++ (BOOL)isResponseSuccess:(NSDictionary *)dictionary;
++ (NSString *)getResponseError:(NSDictionary *)dictionary;
 
 @end

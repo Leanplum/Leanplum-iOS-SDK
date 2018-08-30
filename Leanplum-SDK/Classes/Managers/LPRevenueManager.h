@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LPRevenueManager.h
+//  Leanplum iOS SDK
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Atanas Dobrev on 9/9/14
+//  Copyright (c) 2014 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,15 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
+#import <StoreKit/StoreKit.h>
 
-#import "LPVarCache.h"
+@interface LPRevenueManager : NSObject <SKProductsRequestDelegate>
 
-@interface LPVarCache(UnitTest)
++ (LPRevenueManager *)sharedManager;
+- (void)trackRevenue;
+- (void)addTransaction:(SKPaymentTransaction *)transaction;
 
-- (void)reset;
-
-- (void)initialize;
+@property (nonatomic, copy) NSString *eventName;
 
 @end
