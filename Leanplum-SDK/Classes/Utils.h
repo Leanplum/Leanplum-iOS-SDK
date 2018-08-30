@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  Utils.h
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Ben Marten on 6/6/16.
+//  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,35 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
 
-#import "LPVarCache.h"
+@interface Utils : NSObject
 
-@interface LPVarCache(UnitTest)
+/**
+ * Checks if the object is null or empty.
+ */
++ (BOOL)isNullOrEmpty:(id)obj;
 
-+ (void)reset;
+/**
+ * Checks if the string is empty or have spaces.
+ */
++ (BOOL)isBlank:(id)obj;
 
-+ (void)initialize;
+/**
+ * Computes MD5 of NSData. Mostly used for uploading images.
+ */
++ (NSString *)md5OfData:(NSData *)data;
+
+/**
+ * Returns base64 encoded string from NSData. Convenience method
+ * that supports iOS6.
+ */
++ (NSString *)base64EncodedStringFromData:(NSData *)data;
+
+/**
+ * Returns unicode encoded string for supporting international
+ * characters in URL
+ */
++ (NSString *)urlEncodedStringFromString:(NSString *)urlString;
 
 @end
