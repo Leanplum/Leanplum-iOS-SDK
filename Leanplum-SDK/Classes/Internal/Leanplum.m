@@ -880,7 +880,7 @@ BOOL inForeground = NO;
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
         NSSet *enabledCounters = [self parseEnabledCountersFromResponse:response];
-        [[LPCountManager sharedManager] setEnabledCounters:enabledCounters];
+        [LPCountManager sharedManager].enabledCounters = enabledCounters;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];

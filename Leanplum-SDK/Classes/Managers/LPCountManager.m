@@ -29,7 +29,6 @@
 @interface LPCountManager()
 
 @property (nonatomic, strong) NSMutableDictionary *counts;
-@property (nonatomic, strong) NSSet *enabledCounters;
 
 @end
 
@@ -53,14 +52,6 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
     return self;
-}
-
-- (NSSet *)enabledCounters {
-    return self.enabledCounters;
-}
-
-- (void)setEnabledCounters:(NSSet *)_enabledCounters {
-    self.enabledCounters = _enabledCounters;
 }
 
 - (void)incrementCount:(NSString *)name {

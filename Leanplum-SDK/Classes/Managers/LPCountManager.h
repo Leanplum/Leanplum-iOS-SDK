@@ -25,10 +25,10 @@
 @interface LPCountManager : NSObject
 
 + (instancetype)sharedManager;
-- (instancetype)init;
-- (void)setEnabledCounters:(NSSet *)enabledCounters;
+
 - (void)incrementCount:(NSString *)name;
-- (NSDictionary *)getAndClearCounts;
 - (void)sendAllCounts;
+
+@property (nonatomic, strong) NSSet *enabledCounters;
 
 @end
