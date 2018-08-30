@@ -1,5 +1,5 @@
 //
-//  LPFileUploadManager.h
+//  LPRequestSender.h
 //  Leanplum
 //
 //  Created by Mayank Sanganeria on 6/30/18.
@@ -25,16 +25,29 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
+#import "LPRequesting.h"
 
-@interface LPFileUploadDownloadManager : NSObject
+@interface LPRequestSender : NSObject
 
-@property (nonatomic, strong) NSString *uploadUrl;
-@property (nonatomic, readonly) int numPendingDownloads;
++ (instancetype)sharedInstance;
 
-+ (instancetype)sharedManager;
-- (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData;
+- (void)sendRequest:(id<LPRequesting>)request;
+- (void)sendNowRequest:(id<LPRequesting>)request;
+- (void)sendEventuallyRequest:(id<LPRequesting>)request;
+- (void)sendIfConnectedRequest:(id<LPRequesting>)request;
+- (void)sendIfConnectedSync:(BOOL)sync request:(id<LPRequesting>)request;
+// Sends the request if another request hasn't been sent within a particular time delay.
+- (void)sendIfDelayedRequest:(id<LPRequesting>)request;
 
-- (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock;
-- (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)noPendingDownloadsBlock;
+/**
+ * Sends one data. Uses sendDatasNow: internally. See this method for more information.
+ */
+- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(id<LPRequesting>)request;
+
+/**
+ * Send datas where key is the name and object is the data.
+ * For example, key can be "file0" and object is NSData of png.
+ */
+- (void)sendDatasNow:(NSDictionary *)datas request:(id<LPRequesting>)request;
 
 @end

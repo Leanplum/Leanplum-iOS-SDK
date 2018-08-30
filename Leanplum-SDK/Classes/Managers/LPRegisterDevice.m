@@ -23,10 +23,10 @@
 //  under the License.
 
 #import "LPRegisterDevice.h"
-#import "LeanplumRequest.h"
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
 #import "Constants.h"
+#import "LPRequestSender.h"
 
 @interface LPRegisterDevice()
 
@@ -54,7 +54,7 @@
 {
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    LeanplumRequest *request = [reqFactory createPostForApiMethod:LP_METHOD_REGISTER_FOR_DEVELOPMENT
+    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_REGISTER_FOR_DEVELOPMENT
                                               params:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
@@ -69,7 +69,7 @@
     [request onError:^(NSError *error) {
         [self showError:[error localizedDescription]];
     }];
-    [request sendNow];
+    [[LPRequestSender sharedInstance] sendNowRequest:request];
 }
 
 @end

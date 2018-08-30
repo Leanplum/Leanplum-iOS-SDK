@@ -29,5 +29,6 @@
 - (void)setEnabledCounters:(NSSet *)enabledCounters;
 - (void)incrementCount:(NSString *)name;
 - (NSDictionary *)getAndClearCounts;
+- (void)sendAllCounts;
 
 @end

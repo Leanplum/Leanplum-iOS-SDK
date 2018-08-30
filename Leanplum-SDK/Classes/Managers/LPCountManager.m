@@ -23,6 +23,8 @@
 //  under the License.
 
 #import "LPCountManager.h"
+#import "Constants.h"
+#import "LeanplumRequest.h"
 
 @interface LPCountManager()
 
@@ -76,6 +78,17 @@ static dispatch_once_t leanplum_onceToken;
     NSDictionary *previousCounts = [[NSDictionary alloc]initWithDictionary:self.counts];
     [self.counts removeAllObjects];
     return previousCounts;
+}
+
+- (void)sendAllCounts {
+    NSDictionary *counts = [[LPCountManager sharedManager] getAndClearCounts];
+    for (NSString *key in counts) { // iterate over counts, creating one request per counter
+        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+        params[LP_PARAM_TYPE] = @"SDK_COUNT";
+        params[LP_PARAM_MESSAGE] = key;
+        params[LP_PARAM_COUNT] = counts[key];
+        [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
+    }
 }
 
 @end

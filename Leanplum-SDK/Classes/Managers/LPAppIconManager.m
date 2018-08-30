@@ -23,10 +23,10 @@
 //  under the License.
 
 #import "LPAppIconManager.h"
-#import "LeanplumRequest.h"
 #import "LeanplumInternal.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
+#import "LPRequestSender.h"
 
 @implementation LPAppIconManager
 
@@ -65,7 +65,7 @@
     }];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    LeanplumRequest *request = [reqFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
+    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
                                               params:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
@@ -74,7 +74,7 @@
     [request onError:^(NSError *error) {
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
     }];
-    [request sendDatasNow:requestDatas];
+    [[LPRequestSender sharedInstance] sendDatasNow:requestDatas request:request];
 }
 
 #pragma mark - Private methods

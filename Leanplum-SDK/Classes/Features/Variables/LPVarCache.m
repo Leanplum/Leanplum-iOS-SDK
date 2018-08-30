@@ -34,7 +34,7 @@
 #import "Leanplum_SocketIO.h"
 #import "Utils.h"
 #import "LPRequestFactory.h"
-#import "LPRequestManager.h"
+#import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 
 @interface LPVarCache()
@@ -660,9 +660,9 @@ static dispatch_once_t leanplum_onceToken;
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
              LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                              initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-             LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
+             id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
                                                     params:args];
-             [req send];
+             [[LPRequestSender sharedInstance] sendRequest:req];
              return YES;
          } @catch (NSException *e) {
              [Leanplum throwError:@"Cannot serialize variable values. "
