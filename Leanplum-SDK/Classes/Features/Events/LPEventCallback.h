@@ -1,9 +1,9 @@
 //
-//  LPVarCache+Extensions.h
-//  Leanplum-SDK
+//  LPEventCallbackManager.h
+//  Leanplum
 //
-//  Created by Milos Jakovljevic on 10/17/16.
-//  Copyright © 2016 Leanplum. All rights reserved.
+//  Created by Alexis Oyama on 7/11/17.
+//  Copyright (c) 2017 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,13 +22,26 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
+#import <Foundation/Foundation.h>
+#import "LPNetworkProtocol.h"
 
-#import "LPVarCache.h"
+@interface LPEventCallback : NSObject
 
-@interface LPVarCache(UnitTest)
+@property (nonatomic, strong) LPNetworkResponseBlock responseBlock;
+@property (nonatomic, strong) LPNetworkErrorBlock errorBlock;
 
-- (void)reset;
+- (id)initWithResponseBlock:(LPNetworkResponseBlock)responseBlock
+                 errorBlock:(LPNetworkErrorBlock)errorBlock;
 
-- (void)initialize;
+/*
+ * Invoke response callback.
+ */
+- (void)invokeResponseWithOperation:(id<LPNetworkOperationProtocol>)operation
+                           response:(id)response;
+
+/*
+ * Invoke error callback.
+ */
+- (void)invokeError:(NSError *)error;
 
 @end

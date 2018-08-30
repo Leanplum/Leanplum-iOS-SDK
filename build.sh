@@ -191,6 +191,10 @@ EOF
   # Copy headers.
   cp "$SDK_DIR/Leanplum-SDK/Classes/Leanplum.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
   cp "$SDK_DIR/Leanplum-SDK/Classes/LPInbox.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
+  cp "$SDK_DIR/Leanplum-SDK/Classes/LPActionArg.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
+  cp "$SDK_DIR/Leanplum-SDK/Classes/LPActionContext.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
+  cp "$SDK_DIR/Leanplum-SDK/Classes/LeanplumCompatibility.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
+  cp "$SDK_DIR/Leanplum-SDK/Classes/LPVar.h" "${RELEASE_DIR}/Leanplum.framework/Headers"
 
   printf "%s\n" "Successfully built Leanplum-SDK (iOS) Framework."
 }
@@ -252,11 +256,27 @@ build_ios_dylib() {
     "${RELEASE_DIR}/Leanplum.framework/"
   mv "${RELEASE_DIR}/Leanplum.framework/Headers/LPInbox.h" \
     "${RELEASE_DIR}/Leanplum.framework/"
+  mv "${RELEASE_DIR}/Leanplum.framework/Headers/LPActionArg.h" \
+    "${RELEASE_DIR}/Leanplum.framework/"
+  mv "${RELEASE_DIR}/Leanplum.framework/Headers/LPActionContext.h" \
+    "${RELEASE_DIR}/Leanplum.framework/"
+  mv "${RELEASE_DIR}/Leanplum.framework/Headers/LeanplumCompatibility.h" \
+    "${RELEASE_DIR}/Leanplum.framework/"
+  mv "${RELEASE_DIR}/Leanplum.framework/Headers/LPVar.h" \
+    "${RELEASE_DIR}/Leanplum.framework/"
   rm -rf "${RELEASE_DIR}/Leanplum.framework/Headers"
   mkdir "${RELEASE_DIR}/Leanplum.framework/Headers"
   mv "${RELEASE_DIR}/Leanplum.framework/Leanplum.h" \
     "${RELEASE_DIR}/Leanplum.framework/Headers/"
   mv "${RELEASE_DIR}/Leanplum.framework/LPInbox.h" \
+    "${RELEASE_DIR}/Leanplum.framework/Headers/"
+  mv "${RELEASE_DIR}/Leanplum.framework/LPActionArg.h" \
+    "${RELEASE_DIR}/Leanplum.framework/Headers/"
+  mv "${RELEASE_DIR}/Leanplum.framework/LPActionContext.h" \
+    "${RELEASE_DIR}/Leanplum.framework/Headers/"
+  mv "${RELEASE_DIR}/Leanplum.framework/LeanplumCompatibility.h" \
+    "${RELEASE_DIR}/Leanplum.framework/Headers/"
+  mv "${RELEASE_DIR}/Leanplum.framework/LPVar.h" \
     "${RELEASE_DIR}/Leanplum.framework/Headers/"
 
   rm -rf "${RELEASE_DIR}/Leanplum.framework/_CodeSignature"
@@ -309,11 +329,27 @@ build_tvos_dylib() {
     "${RELEASE_DIR}/LeanplumTV.framework/"
   mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/LPInbox.h" \
     "${RELEASE_DIR}/LeanplumTV.framework/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/LPActionArg.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/LPActionContext.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/LeanplumCompatibility.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/Headers/LPVar.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/"
   rm -rf "${RELEASE_DIR}/LeanplumTV.framework/Headers"
   mkdir "${RELEASE_DIR}/LeanplumTV.framework/Headers"
   mv "${RELEASE_DIR}/LeanplumTV.framework/Leanplum.h" \
     "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
   mv "${RELEASE_DIR}/LeanplumTV.framework/LPInbox.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/LPActionArg.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/LPActionContext.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/LeanplumCompatibility.h" \
+    "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
+  mv "${RELEASE_DIR}/LeanplumTV.framework/LPVar.h" \
     "${RELEASE_DIR}/LeanplumTV.framework/Headers/"
 
   rm -rf "${RELEASE_DIR}/LeanplumTV.framework/_CodeSignature"
