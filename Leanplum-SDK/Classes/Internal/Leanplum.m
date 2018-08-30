@@ -979,7 +979,7 @@ BOOL inForeground = NO;
 
         [self triggerStartResponse:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
+    [[LPRequestSender sharedInstance] sendIfConnected:req];
     [self triggerStartIssued];
 
     // Pause.
@@ -1057,7 +1057,7 @@ BOOL inForeground = NO;
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
             id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_HEARTBEAT params:nil];
-            [[LPRequestSender sharedInstance] sendIfDelayedRequest:req];
+            [[LPRequestSender sharedInstance] sendIfDelayed:req];
 
         }
         LP_END_TRY
@@ -1160,7 +1160,7 @@ BOOL inForeground = NO;
     [request onError:^(NSError *error) {
         finishTaskHandler();
     }];
-    [[LPRequestSender sharedInstance] sendIfConnectedRequest:request];
+    [[LPRequestSender sharedInstance] sendIfConnected:request];
 }
 
 + (void)resume
@@ -1168,7 +1168,7 @@ BOOL inForeground = NO;
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_RESUME_SESSION params:nil];
-    [[LPRequestSender sharedInstance] sendIfDelayedRequest:request];
+    [[LPRequestSender sharedInstance] sendIfDelayed:request];
 }
 
 + (void)trackCrashes
@@ -2297,7 +2297,7 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
+    [[LPRequestSender sharedInstance] sendIfConnected:req];
     LP_END_TRY
 }
 
@@ -2547,7 +2547,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
-                [[LPRequestSender sharedInstance] sendEventuallyRequest:req];
+                [[LPRequestSender sharedInstance] sendEventually:req];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Unable to send log: %@", exception);
     } @finally {

@@ -82,7 +82,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest send];
     } else {
-        [self sendEventuallyRequest:request];
+        [self sendEventually:request];
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
             NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
             NSTimeInterval delay;
@@ -113,12 +113,12 @@
             return;
         }
 
-        [self sendEventuallyRequest:request];
+        [self sendEventually:request];
         [self sendRequests:async];
     }
 }
 
-- (void)sendEventuallyRequest:(id<LPRequesting>)request
+- (void)sendEventually:(id<LPRequesting>)request
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
@@ -147,7 +147,7 @@
     }
 }
 
-- (void)sendIfConnectedRequest:(id<LPRequesting>)request
+- (void)sendIfConnected:(id<LPRequesting>)request
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
@@ -172,7 +172,7 @@
                 [self sendNowRequest:request];
             }
         } else {
-            [self sendEventuallyRequest:request];
+            [self sendEventually:request];
             if (request.errorBlock) {
                 request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
                                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
@@ -193,13 +193,13 @@
 
 // Wait 1 second for potential other API calls, and then sends the call synchronously
 // if no other call has been sent within 1 minute.
-- (void)sendIfDelayedRequest:(id<LPRequesting>)request
+- (void)sendIfDelayed:(id<LPRequesting>)request
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest sendIfDelayed];
     } else {
-        [self sendEventuallyRequest:request];
+        [self sendEventually:request];
         [self performSelector:@selector(sendIfDelayedHelperRequest:)
                    withObject:request
                    afterDelay:LP_REQUEST_RESUME_DELAY];
@@ -216,7 +216,7 @@
     } else {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         if (!self.lastSentTime || currentTime - self.lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {
-            [self sendIfConnectedRequest:request];
+            [self sendIfConnected:request];
         }
     }
     LP_END_TRY

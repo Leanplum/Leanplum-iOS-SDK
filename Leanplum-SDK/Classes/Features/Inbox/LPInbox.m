@@ -473,7 +473,7 @@ static NSObject *updatingLock;
     [req onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
+    [[LPRequestSender sharedInstance] sendIfConnected:req];
     LP_END_TRY
 }
 

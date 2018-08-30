@@ -413,7 +413,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
                 LP_END_TRY
              }];
-            [[LPRequestSender sharedInstance] sendIfConnectedRequest:req];
+            [[LPRequestSender sharedInstance] sendIfConnected:req];
         }
         LP_BEGIN_USER_CODE
     }];
