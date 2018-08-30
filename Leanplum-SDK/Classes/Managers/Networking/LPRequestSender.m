@@ -222,17 +222,17 @@
     LP_END_TRY
 }
 
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(id<LPRequesting>)request
+- (void)sendNow:(id<LPRequesting>)request withData:(NSData *)data forKey:(NSString *)key
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest sendDataNow:data forKey:key];
     } else {
-        [self sendDatasNow:@{key: data} request:request];
+        [self sendNow:request withDatas:@{key: data}];
     }
 }
 
-- (void)sendDatasNow:(NSDictionary *)datas request:(id<LPRequesting>)request
+- (void)sendNow:(id<LPRequesting>)request withDatas:(NSDictionary *)datas
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;

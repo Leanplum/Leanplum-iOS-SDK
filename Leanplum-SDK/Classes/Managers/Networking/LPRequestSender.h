@@ -46,12 +46,12 @@
 /**
  * Sends one data. Uses sendDatasNow: internally. See this method for more information.
  */
-- (void)sendDataNow:(NSData *)data forKey:(NSString *)key request:(id<LPRequesting>)request;
+- (void)sendNow:(id<LPRequesting>)request withData:(NSData *)data forKey:(NSString *)key;
 
 /**
  * Send datas where key is the name and object is the data.
  * For example, key can be "file0" and object is NSData of png.
  */
-- (void)sendDatasNow:(NSDictionary *)datas request:(id<LPRequesting>)request;
+- (void)sendNow:(id<LPRequesting>)request withDatas:(NSDictionary *)datas;
 
 @end
