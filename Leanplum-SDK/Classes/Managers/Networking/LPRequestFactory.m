@@ -42,10 +42,16 @@
 }
 
 - (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
+    if ([self.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+
+    }
     return [LeanplumRequest get:apiMethod params:params];
 }
 
 - (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
+    if ([self.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]) {
+
+    }
     return [LeanplumRequest post:apiMethod params:params];
 }
 
