@@ -154,12 +154,12 @@
         [oldLeanplumRequest sendIfConnected];
     } else {
         LP_TRY
-        [self sendIfConnectedSync:NO request:request];
+        [self sendIfConnected:request sync:NO];
         LP_END_TRY
     }
 }
 
-- (void)sendIfConnectedSync:(BOOL)sync request:(id<LPRequesting>)request
+- (void)sendIfConnected:(id<LPRequesting>)request sync:(BOOL)sync
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;

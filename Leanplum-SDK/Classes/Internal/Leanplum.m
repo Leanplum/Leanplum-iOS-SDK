@@ -1045,7 +1045,7 @@ BOOL inForeground = NO;
                     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
                     id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_STOP params:nil];
-                    [[LPRequestSender sharedInstance] sendIfConnectedSync:exitOnSuspend request:req];
+                    [[LPRequestSender sharedInstance] sendIfConnected:req sync:exitOnSuspend];
                     LP_END_TRY
                 }];
 
