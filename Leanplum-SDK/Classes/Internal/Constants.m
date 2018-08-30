@@ -319,14 +319,14 @@ void leanplumInternalError(NSException *e)
         @try {
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> req = [reqFactory createPostForApiMethod:LP_METHOD_LOG
+            id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_LOG
                             params:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
                                      LP_PARAM_VERSION_NAME: versionName
                                      }];
-            [[LPRequestSender sharedInstance] sendRequest:req];
+            [[LPRequestSender sharedInstance] sendRequest:request];
         } @catch (NSException *e) {
             // This empty try/catch is needed to prevent crash <-> loop.
         }
