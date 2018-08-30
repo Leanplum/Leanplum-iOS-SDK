@@ -36,7 +36,7 @@
 - (void)attachApiKeys:(NSMutableDictionary *)dict;
 
 - (void)sendRequest:(id<LPRequesting>)request;
-- (void)sendNowRequest:(id<LPRequesting>)request;
+- (void)sendNow:(id<LPRequesting>)request;
 - (void)sendEventually:(id<LPRequesting>)request;
 - (void)sendIfConnected:(id<LPRequesting>)request;
 - (void)sendIfConnectedSync:(BOOL)sync request:(id<LPRequesting>)request;

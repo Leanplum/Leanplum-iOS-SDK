@@ -169,7 +169,7 @@
             if (sync) {
                 [self sendNowSyncRequest:request];
             } else {
-                [self sendNowRequest:request];
+                [self sendNow:request];
             }
         } else {
             [self sendEventually:request];
@@ -181,7 +181,7 @@
     }
 }
 
-- (void)sendNowRequest:(id<LPRequesting>)request
+- (void)sendNow:(id<LPRequesting>)request
 {
     [self sendNow:YES request:request];
 }
