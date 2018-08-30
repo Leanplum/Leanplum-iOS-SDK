@@ -69,7 +69,7 @@
     [request onError:^(NSError *error) {
         [self showError:[error localizedDescription]];
     }];
-    [[LPRequestSender sharedInstance] sendNowRequest:request];
+    [[LPRequestSender sharedInstance] sendNow:request];
 }
 
 @end
