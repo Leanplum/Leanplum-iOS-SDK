@@ -6,10 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "LPFeatureFlags.h"
 
 @interface LPFeatureFlagManager : NSObject
 
-+ (instancetype)sharedManager;
++ (_Nonnull instancetype)sharedManager;
 
 -(void)refreshEnabledFeatureFlags:(nullable NSArray<NSString *> *)featureFlags;
 -(BOOL)isFeatureFlagEnabled:(nonnull NSString *)featureFlagName;

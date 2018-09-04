@@ -24,9 +24,10 @@
 
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
+#import "LPRequesting.h"
 #import "LPNetworkFactory.h"
 
-@interface LPRequest : NSObject
+@interface LPRequest : NSObject <LPRequesting>
 
 @property (nonatomic, strong) NSString *apiMethod;
 @property (nonatomic, strong) NSDictionary *params;

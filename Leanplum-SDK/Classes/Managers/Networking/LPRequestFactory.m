@@ -23,6 +23,7 @@
 //  under the License.
 
 #import "LPRequestFactory.h"
+#import "LPRequest.h"
 #import "LeanplumRequest.h"
 
 @interface LPRequestFactory()
@@ -42,11 +43,21 @@
 }
 
 - (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
+    if ([self shouldReturnLPRequestClass]) {
+        return [LPRequest get:apiMethod params:params];
+    }
     return [LeanplumRequest get:apiMethod params:params];
 }
 
 - (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
+    if ([self shouldReturnLPRequestClass]) {
+        return [LPRequest get:apiMethod params:params];
+    }
     return [LeanplumRequest post:apiMethod params:params];
+}
+
+-(BOOL)shouldReturnLPRequestClass {
+    return [self.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR];
 }
 
 @end
