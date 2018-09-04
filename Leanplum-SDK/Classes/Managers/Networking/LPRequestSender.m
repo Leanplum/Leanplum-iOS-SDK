@@ -96,7 +96,7 @@
     }
 }
 
-- (void)sendNow:(BOOL)async request:(id<LPRequesting>)request
+- (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
@@ -114,7 +114,7 @@
         }
 
         [self sendEventually:request];
-        [self sendRequests:async];
+        [self sendRequests:sync];
     }
 }
 
@@ -167,7 +167,7 @@
     } else {
         if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
             if (sync) {
-                [self sendNowSyncRequest:request];
+                [self sendNowSync:request];
             } else {
                 [self sendNow:request];
             }
@@ -183,12 +183,12 @@
 
 - (void)sendNow:(id<LPRequesting>)request
 {
-    [self sendNow:YES request:request];
+    [self sendNow:request sync:NO];
 }
 
-- (void)sendNowSyncRequest:(id<LPRequesting>)request
+- (void)sendNowSync:(id<LPRequesting>)request
 {
-    [self sendNow:NO request:request];
+    [self sendNow:request sync:YES];
 }
 
 // Wait 1 second for potential other API calls, and then sends the call synchronously
@@ -315,7 +315,7 @@
     return args;
 }
 
-- (void)sendRequests:(BOOL)async
+- (void)sendRequests:(BOOL)sync
 {
     NSBlockOperation *requestOperation = [NSBlockOperation new];
     __weak NSBlockOperation *weakOperation = requestOperation;
@@ -348,7 +348,7 @@
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
-        int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
+        int timeout = sync ? constants.syncNetworkTimeoutSeconds : constants.networkTimeoutSeconds;
 
         NSTimeInterval uiTimeoutInterval = timeout;
         timeout = 5 * timeout; // let slow operations complete
@@ -384,7 +384,7 @@
 
                 // Send another request if the last request had maximum events per api call.
                 if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                    [self sendRequests:async];
+                    [self sendRequests:sync];
                 }
                 LP_END_TRY
 
@@ -465,7 +465,7 @@
 
     // Send. operationBlock will run synchronously.
     // Adding to OperationQueue puts it in the background.
-    if (async) {
+    if (!sync) {
         [requestOperation addExecutionBlock:operationBlock];
         [[self sendNowQueue] addOperation:requestOperation];
     } else {
