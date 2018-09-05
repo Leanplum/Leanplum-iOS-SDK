@@ -30,7 +30,34 @@
 
 -(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager;
 
-- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
-- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
+//- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
+//- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
+
+- (id<LPRequesting>)startWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)getVarsWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)setVarsWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)stopWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)restartWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)trackWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)advanceWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)pauseSessionWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)pauseStateWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)resumeSessionWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)resumeStateWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)multiWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)registerDeviceWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)setUserAttributesWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)setDeviceAttributesWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)setTrafficSourceInfoWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)uploadFileWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)downloadFileWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)heartbeatWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)saveInterfaceWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)saveInterfaceImageWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)getViewControllerVersionsListWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)logWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)getNewsfeedMessagesWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)markNewsfeedMessageAsReadWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)deleteNewsfeedMessageWithParams:(NSDictionary *)params;
 
 @end

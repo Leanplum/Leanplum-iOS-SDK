@@ -660,8 +660,7 @@ static dispatch_once_t leanplum_onceToken;
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
              LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                              initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-             id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_SET_VARS
-                                                    params:args];
+             id<LPRequesting> request = [reqFactory setVarsWithParams:args];
              [[LPRequestSender sharedInstance] sendRequest:request];
              return YES;
          } @catch (NSException *e) {
@@ -716,8 +715,7 @@ static dispatch_once_t leanplum_onceToken;
     if (filenames.count > 0) {
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        LeanplumRequest *req = [reqFactory createPostForApiMethod:LP_METHOD_UPLOAD_FILE
-                                               params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+        LeanplumRequest *req = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [req sendFilesNow:filenames];
     }
 }
