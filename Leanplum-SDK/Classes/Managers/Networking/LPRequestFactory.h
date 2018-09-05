@@ -30,9 +30,6 @@
 
 -(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager;
 
-//- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
-//- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
-
 - (id<LPRequesting>)startWithParams:(NSDictionary *)params;
 - (id<LPRequesting>)getVarsWithParams:(NSDictionary *)params;
 - (id<LPRequesting>)setVarsWithParams:(NSDictionary *)params;
