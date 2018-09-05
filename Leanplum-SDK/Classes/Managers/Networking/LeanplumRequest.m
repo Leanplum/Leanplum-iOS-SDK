@@ -34,8 +34,6 @@
 #import "LPEventCallbackManager.h"
 #import "LPAPIConfig.h"
 
-NSString *LP_REQ_API_METHOD_MULTI = @"multi";
-
 static id<LPNetworkEngineProtocol> engine;
 static NSString *uploadUrl;
 static NSMutableDictionary *fileTransferStatus;
@@ -101,15 +99,15 @@ static NSDictionary *_requestHheaders;
 
 + (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params
 {
-//    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
-//    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
+    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
+    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
     return [[LeanplumRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
 }
 
 + (LeanplumRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params
 {
-//    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
-//    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
+    LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
+    LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
     return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
@@ -268,7 +266,7 @@ static NSDictionary *_requestHheaders;
                                                    LP_PARAM_DATA: requestData,
                                                    LP_PARAM_SDK_VERSION: constants.sdkVersion,
                                                    LP_PARAM_CLIENT: constants.client,
-                                                   LP_PARAM_ACTION: LP_REQ_API_METHOD_MULTI,
+                                                   LP_PARAM_ACTION: LP_METHOD_MULTI,
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
