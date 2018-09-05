@@ -26,35 +26,39 @@
 #import "LPRequesting.h"
 #import "LPFeatureFlagManager.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPRequestFactory : NSObject
 
 -(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager;
 
-- (id<LPRequesting>)startWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)getVarsWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)setVarsWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)stopWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)restartWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)trackWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)advanceWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)pauseSessionWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)pauseStateWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)resumeSessionWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)resumeStateWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)multiWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)registerDeviceWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)setUserAttributesWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)setDeviceAttributesWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)setTrafficSourceInfoWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)uploadFileWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)downloadFileWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)heartbeatWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)saveInterfaceWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)saveInterfaceImageWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)getViewControllerVersionsListWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)logWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)getNewsfeedMessagesWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)markNewsfeedMessageAsReadWithParams:(NSDictionary *)params;
-- (id<LPRequesting>)deleteNewsfeedMessageWithParams:(NSDictionary *)params;
+- (id<LPRequesting>)startWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)getVarsWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setVarsWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)stopWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)restartWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)trackWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)advanceWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)pauseSessionWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)pauseStateWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)resumeSessionWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)resumeStateWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)multiWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)registerDeviceWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setUserAttributesWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setDeviceAttributesWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setTrafficSourceInfoWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)uploadFileWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)downloadFileWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)heartbeatWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)saveInterfaceWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)saveInterfaceImageWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)getViewControllerVersionsListWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)logWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)getNewsfeedMessagesWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)markNewsfeedMessageAsReadWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)deleteNewsfeedMessageWithParams:(nullable NSDictionary *)params;
 
 @end
+
+NS_ASSUME_NONNULL_END
