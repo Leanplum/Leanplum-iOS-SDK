@@ -227,6 +227,13 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
 
 @end
 
+@interface LPFileManager()
+
+//Dependencies
+@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
+
+@end
+
 @implementation LPFileManager
 
 + (NSString *)appBundlePath

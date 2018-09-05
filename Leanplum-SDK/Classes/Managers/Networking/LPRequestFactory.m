@@ -55,7 +55,8 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 
 @interface LPRequestFactory()
 
-@property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
+//Dependencies
+@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
 
 @end
 

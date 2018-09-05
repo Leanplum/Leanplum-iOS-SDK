@@ -271,6 +271,9 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 @property (nonatomic, strong) NSString *displayedTracked;
 @property (nonatomic, strong) NSDate *displayedTrackedTime;
 
+//Dependencies
+@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
+
 @end
 
 @implementation LPActionManager

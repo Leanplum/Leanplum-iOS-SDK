@@ -32,14 +32,18 @@
 
 @property (nonatomic, copy) LeanplumStartBlock callback;
 
+//Dependencies
+@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
+
 @end
 
 @implementation LPRegisterDevice
 
-- (id)initWithCallback:(LeanplumStartBlock)callback
+- (id)initWithCallback:(LeanplumStartBlock)callback featureFlagManager:(LPFeatureFlagManager *)featureFlagManager
 {
     if (self = [super init]) {
         _callback = callback;
+        _featureFlagManager = featureFlagManager;
     }
     return self;
 }

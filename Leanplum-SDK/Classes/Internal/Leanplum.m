@@ -862,8 +862,7 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory startWithParams:params];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
@@ -943,8 +942,7 @@ BOOL inForeground = NO;
             // Report latency for 0.1% of users.
             NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
             if (arc4random() % 1000 == 0) {
-                LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                                initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                LPRequestFactory *reqFactory = [Leanplum requestFactory];
                 id<LPRequesting> request = [reqFactory logWithParams:@{
                                         LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
                                         @"startLatency": [@(latency) description]
@@ -1041,8 +1039,7 @@ BOOL inForeground = NO;
                     LP_TRY
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                    LPRequestFactory *reqFactory = [Leanplum requestFactory];
                     id<LPRequesting> request = [reqFactory stopWithParams:nil];
                     [[LPRequestSender sharedInstance] sendIfConnected:request sync:exitOnSuspend];
                     LP_END_TRY
@@ -1053,8 +1050,7 @@ BOOL inForeground = NO;
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+            LPRequestFactory *reqFactory = [Leanplum requestFactory];
             id<LPRequesting> request = [reqFactory heartbeatWithParams:nil];
             [[LPRequestSender sharedInstance] sendIfDelayed:request];
 
@@ -1150,8 +1146,7 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
     
     // Send pause event.
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory pauseSessionWithParams:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
@@ -1164,8 +1159,7 @@ BOOL inForeground = NO;
 
 + (void)resume
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory resumeSessionWithParams:nil];
     [[LPRequestSender sharedInstance] sendIfDelayed:request];
 }
@@ -1906,8 +1900,7 @@ BOOL inForeground = NO;
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
         andParameters:(NSDictionary *)params
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory trackWithParams:args];
     [[LPRequestSender sharedInstance] sendRequest:request];
 
@@ -2039,8 +2032,7 @@ andParameters:(NSDictionary *)params
         attributes = @{};
     }
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory setUserAttributesWithParams:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
         LP_PARAM_NEW_USER_ID: userId ? userId : @""
@@ -2115,8 +2107,7 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory setTrafficSourceInfoWithParams:@{
         LP_PARAM_TRAFFIC_SOURCE: info
         }];
@@ -2170,8 +2161,7 @@ andParameters:(NSDictionary *)params
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
             andParameters:(NSDictionary *)params
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory advanceWithParams:args];
     [[LPRequestSender sharedInstance] sendRequest:request];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
@@ -2199,8 +2189,7 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory pauseStateWithParams:@{}];
     [[LPRequestSender sharedInstance] sendRequest:request];
 }
@@ -2221,8 +2210,7 @@ andParameters:(NSDictionary *)params
 
 + (void)resumeStateInternal
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory resumeStateWithParams:@{}];
     [[LPRequestSender sharedInstance] sendRequest:request];
 }
@@ -2250,8 +2238,7 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory getVarsWithParams:params];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
@@ -2538,8 +2525,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LPRequestFactory *reqFactory = [Leanplum requestFactory];
         id<LPRequesting> request = [reqFactory logWithParams:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
@@ -2631,8 +2617,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LPRequestFactory *reqFactory = [Leanplum requestFactory];
     id<LPRequesting> request = [reqFactory setUserAttributesWithParams:params];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         if (response) {
@@ -2662,6 +2647,17 @@ void LPLog(LPLogType type, NSString *format, ...) {
         return response[LP_KEY_VARIANT_DEBUG_INFO];
     }
     return nil;
+}
+
+#pragma mark Dependency providers
+
++(LPRequestFactory *)requestFactory {
+    return [[LPRequestFactory alloc]
+            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+}
+
++(LPFeatureFlagManager *)featureFlagManager {
+    return [LPFeatureFlagManager sharedManager];
 }
 
 @end
