@@ -26,9 +26,11 @@
 
 #import "Leanplum.h"
 
+@class LPRequestFactory;
+
 @interface LPRegisterDevice : NSObject
 
-- (id)initWithCallback:(LeanplumStartBlock)callback;
+- (id)initWithCallback:(LeanplumStartBlock)callback requestFactory:(LPRequestFactory *)requestFactory;
 - (void)registerDevice:(NSString *)email;
 
 @end

@@ -907,7 +907,7 @@ BOOL inForeground = NO;
                 state.registration = [[LPRegisterDevice alloc] initWithCallback:^(BOOL success) {
                                     if (success) {
                                         [Leanplum onHasStartedAndRegisteredAsDeveloper];
-                                    }}];
+                                    }} requestFactory:[Leanplum requestFactory]];
                 [state.registration registerDevice:registrationEmail];
             } else if ([response[LP_KEY_IS_REGISTERED_FROM_OTHER_APP] boolValue]) {
                 // Show if registered from another app ID.

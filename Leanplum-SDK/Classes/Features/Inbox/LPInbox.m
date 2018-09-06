@@ -249,7 +249,7 @@ static NSObject *updatingLock;
 @interface LPInbox()
 
 //Dependencies
-@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
+@property (strong, nonatomic) LPRequestFactory *requestFactory;
 
 @end
 
@@ -264,9 +264,9 @@ static NSObject *updatingLock;
     return sharedInbox;
 }
 
-- (id)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager {
+- (id)initWithRequestFactory:(LPRequestFactory *)requestFactory {
     if (self = [super init]) {
-        _featureFlagManager = featureFlagManager;
+        _requestFactory = requestFactory;
         [self reset];
     }
     return self;

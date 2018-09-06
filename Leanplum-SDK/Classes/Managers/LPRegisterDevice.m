@@ -33,17 +33,17 @@
 @property (nonatomic, copy) LeanplumStartBlock callback;
 
 //Dependencies
-@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
+@property (strong, nonatomic) LPRequestFactory *requestFactory;
 
 @end
 
 @implementation LPRegisterDevice
 
-- (id)initWithCallback:(LeanplumStartBlock)callback featureFlagManager:(LPFeatureFlagManager *)featureFlagManager
+- (id)initWithCallback:(LeanplumStartBlock)callback requestFactory:(LPRequestFactory *)requestFactory
 {
     if (self = [super init]) {
         _callback = callback;
-        _featureFlagManager = featureFlagManager;
+        _requestFactory = requestFactory;
     }
     return self;
 }
@@ -56,9 +56,7 @@
 
 - (void)registerDevice:(NSString *)email
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
+    id<LPRequesting> request = [self.requestFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         BOOL isSuccess = [LPResponse isResponseSuccess:response];

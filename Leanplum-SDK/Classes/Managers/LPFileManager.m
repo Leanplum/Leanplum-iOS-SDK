@@ -230,7 +230,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
 @interface LPFileManager()
 
 //Dependencies
-@property (strong, nonatomic) LPFeatureFlagManager *featureFlagManager;
+@property (strong, nonatomic) LPRequestFactory *requestFactory;
 
 @end
 
