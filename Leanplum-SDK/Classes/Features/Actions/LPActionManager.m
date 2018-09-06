@@ -89,8 +89,8 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES
-                                         params:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+        id<LPRequesting> request = [reqFactory
+                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
         [[LPRequestSender sharedInstance] sendRequest:request];
     }
     LP_END_TRY
@@ -342,7 +342,7 @@ static dispatch_once_t leanplum_onceToken;
             LP_END_USER_CODE
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+            id<LPRequesting> request = [reqFactory setDeviceAttributesWithParams:params];
             [[LPRequestSender sharedInstance] sendRequest:request];
             LP_BEGIN_USER_CODE
         }];

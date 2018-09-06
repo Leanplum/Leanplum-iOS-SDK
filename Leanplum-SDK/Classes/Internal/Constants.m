@@ -96,32 +96,10 @@ NSString *LEANPLUM_DEFAULTS_UUID_KEY = @"__leanplum_uuid";
 
 NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
 
-NSString *LP_METHOD_START = @"start";
 NSString *LP_METHOD_GET_VARS = @"getVars";
-NSString *LP_METHOD_SET_VARS = @"setVars";
-NSString *LP_METHOD_STOP = @"stop";
-NSString *LP_METHOD_RESTART = @"restart";
-NSString *LP_METHOD_TRACK = @"track";
-NSString *LP_METHOD_ADVANCE = @"advance";
-NSString *LP_METHOD_PAUSE_SESSION = @"pauseSession";
-NSString *LP_METHOD_PAUSE_STATE = @"pauseState";
-NSString *LP_METHOD_RESUME_SESSION = @"resumeSession";
-NSString *LP_METHOD_RESUME_STATE = @"resumeState";
 NSString *LP_METHOD_MULTI = @"multi";
-NSString *LP_METHOD_REGISTER_FOR_DEVELOPMENT = @"registerDevice";
-NSString *LP_METHOD_SET_USER_ATTRIBUTES = @"setUserAttributes";
-NSString *LP_METHOD_SET_DEVICE_ATTRIBUTES = @"setDeviceAttributes";
-NSString *LP_METHOD_SET_TRAFFIC_SOURCE_INFO = @"setTrafficSourceInfo";
 NSString *LP_METHOD_UPLOAD_FILE = @"uploadFile";
-NSString *LP_METHOD_DOWNLOAD_FILE = @"downloadFile";
-NSString *LP_METHOD_HEARTBEAT = @"heartbeat";
-NSString *LP_METHOD_SAVE_VIEW_CONTROLLER_VERSION = @"saveInterface";
-NSString *LP_METHOD_SAVE_VIEW_CONTROLLER_IMAGE = @"saveInterfaceImage";
-NSString *LP_METHOD_GET_VIEW_CONTROLLER_VERSIONS_LIST = @"getViewControllerVersionsList";
 NSString *LP_METHOD_LOG = @"log";
-NSString *LP_METHOD_GET_INBOX_MESSAGES = @"getNewsfeedMessages";
-NSString *LP_METHOD_MARK_INBOX_MESSAGE_AS_READ = @"markNewsfeedMessageAsRead";
-NSString *LP_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 
 NSString *LP_PARAM_ACTION = @"action";
 NSString *LP_PARAM_ACTION_DEFINITIONS = @"actionDefinitions";
@@ -319,8 +297,7 @@ void leanplumInternalError(NSException *e)
         @try {
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_LOG
-                            params:@{
+            id<LPRequesting> request = [reqFactory logWithParams:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",

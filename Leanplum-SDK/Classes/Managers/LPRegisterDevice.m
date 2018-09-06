@@ -54,8 +54,7 @@
 {
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory createPostForApiMethod:LP_METHOD_REGISTER_FOR_DEVELOPMENT
-                                              params:@{ LP_PARAM_EMAIL: email }];
+    id<LPRequesting> request = [reqFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         BOOL isSuccess = [LPResponse isResponseSuccess:response];

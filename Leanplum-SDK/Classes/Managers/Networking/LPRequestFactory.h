@@ -26,11 +26,39 @@
 #import "LPRequesting.h"
 #import "LPFeatureFlagManager.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPRequestFactory : NSObject
 
 -(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager;
 
-- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
-- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
+- (id<LPRequesting>)startWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)getVarsWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setVarsWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)stopWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)restartWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)trackWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)advanceWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)pauseSessionWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)pauseStateWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)resumeSessionWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)resumeStateWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)multiWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)registerDeviceWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setUserAttributesWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setDeviceAttributesWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)setTrafficSourceInfoWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)uploadFileWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)downloadFileWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)heartbeatWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)saveInterfaceWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)saveInterfaceImageWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)getViewControllerVersionsListWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)logWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)getNewsfeedMessagesWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)markNewsfeedMessageAsReadWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)deleteNewsfeedMessageWithParams:(nullable NSDictionary *)params;
 
 @end
+
+NS_ASSUME_NONNULL_END
