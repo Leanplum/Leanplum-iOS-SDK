@@ -34,6 +34,8 @@
 #import "LPActionManager.h"
 #import "Constants.h"
 #import "LPRegisterDevice.h"
+#import "LPRequestFactory.h"
+#import "LPFeatureFlagManager.h"
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -1615,12 +1617,13 @@
     [OHHTTPStubs removeStub:startStub];
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"registration"];
-
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:featureFlagManager];
     LPRegisterDevice *registration = [[LPRegisterDevice alloc] initWithCallback:
                                       ^(BOOL success) {
         XCTAssertTrue(success);
         [expectation fulfill];
-    }];
+    } requestFactory:reqFactory];
 
     [registration registerDevice:test_email];
 
