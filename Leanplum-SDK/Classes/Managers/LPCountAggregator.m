@@ -1,5 +1,5 @@
 //
-//  LPCountManager.m
+//  LPCountAggregator.m
 //  Leanplum
 //
 //  Created by Grace Gu on 8/27/18.
@@ -22,26 +22,26 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "LPCountManager.h"
+#import "LPCountAggregator.h"
 #import "Constants.h"
 #import "LeanplumRequest.h"
 
-@interface LPCountManager()
+@interface LPCountAggregator()
 
 @property (nonatomic, strong) NSMutableDictionary *counts;
 
 @end
 
-@implementation LPCountManager
+@implementation LPCountAggregator
 
-static LPCountManager *sharedCountManager = nil;
+static LPCountAggregator *sharedCountAggregator = nil;
 static dispatch_once_t leanplum_onceToken;
 
-+ (instancetype)sharedManager {
++ (instancetype)sharedAggregator {
     dispatch_once(&leanplum_onceToken, ^{
-        sharedCountManager = [[self alloc] init];
+        sharedCountAggregator = [[self alloc] init];
     });
-    return sharedCountManager;
+    return sharedCountAggregator;
 }
 
 - (instancetype)init {
@@ -54,13 +54,24 @@ static dispatch_once_t leanplum_onceToken;
     return self;
 }
 
-- (void)incrementCount:(NSString *)name {
+- (void) incrementCount:(NSString *)name {
     if ([self.enabledCounters containsObject:name]) {
         int count = 0;
         if ([self.counts objectForKey:name]) {
             count = [self.counts[name] intValue];
         }
         count = count + 1;
+        self.counts[name] = [NSNumber numberWithInt:count];
+    }
+}
+
+- (void)incrementCount:(NSString *)name incrementBy:(int)incrementCount {
+    if ([self.enabledCounters containsObject:name]) {
+        int count = 0;
+        if ([self.counts objectForKey:name]) {
+            count = [self.counts[name] intValue];
+        }
+        count = count + incrementCount;
         self.counts[name] = [NSNumber numberWithInt:count];
     }
 }
@@ -72,12 +83,12 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 - (void)sendAllCounts {
-    NSDictionary *counts = [[LPCountManager sharedManager] getAndClearCounts];
-    for (NSString *key in counts) { // iterate over counts, creating one request per counter
+    NSDictionary *counts = [self getAndClearCounts];
+    for (NSString *name in counts) { // iterate over counts, creating one request per counter
         NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
         params[LP_PARAM_TYPE] = @"SDK_COUNT";
-        params[LP_PARAM_MESSAGE] = key;
-        params[LP_PARAM_COUNT] = counts[key];
+        params[LP_PARAM_MESSAGE] = name;
+        params[LP_PARAM_COUNT] = counts[name];
         [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
     }
 }

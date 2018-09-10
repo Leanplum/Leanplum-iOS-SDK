@@ -45,7 +45,7 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
-#import "LPCountManager.h"
+#import "LPCountAggregator.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
@@ -880,7 +880,7 @@ BOOL inForeground = NO;
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
         NSSet *enabledCounters = [self parseEnabledCountersFromResponse:response];
-        [LPCountManager sharedManager].enabledCounters = enabledCounters;
+        [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];

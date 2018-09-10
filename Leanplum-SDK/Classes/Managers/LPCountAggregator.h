@@ -1,5 +1,5 @@
 //
-//  LPCountManager.h
+//  LPCountAggregator.h
 //  Leanplum
 //
 //  Created by Grace Gu on 8/27/18.
@@ -22,13 +22,14 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-@interface LPCountManager : NSObject
-
-+ (instancetype)sharedManager;
-
-- (void)incrementCount:(NSString *)name;
-- (void)sendAllCounts;
+@interface LPCountAggregator : NSObject
 
 @property (nonatomic, strong) NSSet *enabledCounters;
+
++ (instancetype)sharedAggregator;
+
+- (void)incrementCount:(NSString *)name;
+- (void)incrementCount:(NSString *)name incrementBy:(int) incrementCount;
+- (void)sendAllCounts;
 
 @end
