@@ -29,7 +29,7 @@
 + (instancetype)sharedAggregator;
 
 - (void)incrementCount:(NSString *)name;
-- (void)incrementCount:(NSString *)name incrementBy:(int) incrementCount;
+- (void)incrementCount:(NSString *)name by:(int) incrementCount;
 - (void)sendAllCounts;
 
 @end

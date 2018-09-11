@@ -54,7 +54,7 @@ static dispatch_once_t leanplum_onceToken;
     return self;
 }
 
-- (void) incrementCount:(NSString *)name {
+- (void)incrementCount:(NSString *)name {
     if ([self.enabledCounters containsObject:name]) {
         int count = 0;
         if ([self.counts objectForKey:name]) {
@@ -65,7 +65,7 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
-- (void)incrementCount:(NSString *)name incrementBy:(int)incrementCount {
+- (void)incrementCount:(NSString *)name by:(int)incrementCount {
     if ([self.enabledCounters containsObject:name]) {
         int count = 0;
         if ([self.counts objectForKey:name]) {
