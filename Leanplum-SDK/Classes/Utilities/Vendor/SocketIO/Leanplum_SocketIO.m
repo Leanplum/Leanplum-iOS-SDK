@@ -223,7 +223,6 @@
 
 - (void) send:(Leanplum_SocketIOPacket *)packet
 {
-    [self log:@"send()"];
     NSNumber *type = [packet typeAsNumber];
     NSMutableArray *encoded = [NSMutableArray arrayWithObject:type];
 
@@ -257,16 +256,10 @@
     NSString *req = [encoded componentsJoinedByString:@":"];
     if (!_isConnected)
     {
-        [self log:[NSString stringWithFormat:@"queue >>> %@", req]];
         [_queue addObject:packet];
     }
     else
     {
-        if ([req length] > 1000) {
-            [self log:[NSString stringWithFormat:@"send() >>> (%lu chars)", (unsigned long) [req length]]];
-        } else {
-            [self log:[NSString stringWithFormat:@"send() >>> %@", req]];
-        }
         [_webSocket send:req];
 
         if ([_delegate respondsToSelector:@selector(socketIO:didSendMessage:)])
@@ -308,8 +301,6 @@
 
 - (void) onData:(NSString *)data
 {
-    [self log:[NSString stringWithFormat:@"onData %@", data]];
-
     // data arrived -> reset timeout
     [self setTimeout];
 
@@ -337,25 +328,21 @@
         {
             case 0:
                 // TODO: Not sure about the purpose of this one --Ruben
-                [self log:@"disconnect"];
                 [self onDisconnect];
                 break;
 
             case 1:
                 // TODO: Not sure about the purpose of this one --Ruben
-                [self log:@"connect"];
                 // from socket.io.js ... not sure when data will contain sth?!
                 // packet.qs = data || '';
                 [self onConnect];
                 break;
 
             case 2:
-                [self log:@"heartbeat"];
                 [self sendHeartbeat];
                 break;
 
             case 3:
-                [self log:@"message"];
                 if (packet.data && ![packet.data isEqualToString:@""])
                 {
                     if ([_delegate respondsToSelector:@selector(socketIO:didReceiveMessage:)])
@@ -366,7 +353,6 @@
                 break;
 
             case 4:
-                [self log:@"json"];
                 if (packet.data && ![packet.data isEqualToString:@""])
                 {
                     if ([_delegate respondsToSelector:@selector(socketIO:didReceiveJSON:)])
@@ -377,7 +363,6 @@
                 break;
 
             case 5:
-                [self log:@"event"];
                 if (packet.data && ![packet.data isEqualToString:@""])
                 {
                     NSDictionary *json = [packet dataAsJSON];
@@ -414,14 +399,12 @@
 }
 
 - (void)handleAck:(Leanplum_SocketIOPacket *)packet regexPieces:(NSString *)regexPieces {
-    [self log:@"ack"];
     NSArray *pieces = [Leanplum_SocketIO arrayOfCaptureComponentsOfString:packet.data
                                                            matchedByRegex:regexPieces];
 
     if ([pieces count] > 0) {
         NSArray *piece = pieces[0];
         int ackId = [piece[1] intValue];
-        [self log:[NSString stringWithFormat:@"ack id found: %d", ackId]];
 
         NSString *argsStr = piece[3];
         id argsData = nil;
@@ -451,8 +434,6 @@
 
 - (void) doQueue
 {
-    [self log:[NSString stringWithFormat:@"doQueue() >> %lu", (unsigned long)[_queue count]]];
-
     // TODO send all packets at once ... not as separate packets
     while ([_queue count] > 0)
     {
@@ -464,8 +445,6 @@
 
 - (void) onConnect
 {
-    [self log:@"onConnect()"];
-
     _isConnected = YES;
     _isConnecting = NO;
 
@@ -482,7 +461,6 @@
 
 - (void) onDisconnect
 {
-    [self log:@"onDisconnect()"];
     BOOL wasConnected = _isConnected;
 
     _isConnected = NO;
@@ -528,7 +506,6 @@
 
 - (void) setTimeout
 {
-    [self log:@"setTimeout()"];
     if (_timeout != nil)
     {
         [_timeout invalidate];
