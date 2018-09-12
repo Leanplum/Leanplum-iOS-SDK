@@ -57,7 +57,7 @@
     XCTAssert([countAggregator.counts[testString] intValue] == 0);
     
     [countAggregator incrementCount:testString];
-    XCTAssertEqual([countAggregator.counts[testString] intValue], 0);
+    XCTAssert([countAggregator.counts[testString] intValue] == 0);
 }
 
 - (void)test_incrementCount {
@@ -69,7 +69,7 @@
     XCTAssert([countAggregator.counts[testString] intValue] == 1);
     
     [countAggregator incrementCount:testString];
-    XCTAssertEqual([countAggregator.counts[testString] intValue], 2);
+    XCTAssert([countAggregator.counts[testString] intValue] == 2);
     
 }
 
