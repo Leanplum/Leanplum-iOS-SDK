@@ -82,6 +82,12 @@
     XCTAssertNotNil(image);
 }
 
+-(void)test_shared_templates
+{
+    // Previously, this was causing a deadlock.
+    [LPMessageTemplatesClass sharedTemplates];
+}
+
 - (void)test_popup_setup
 {
     // This stub have to be removed when start command is successfully executed.
