@@ -55,14 +55,7 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 - (void)incrementCount:(nonnull NSString *)name {
-    if ([self.enabledCounters containsObject:name]) {
-        int count = 0;
-        if ([self.counts objectForKey:name]) {
-            count = [self.counts[name] intValue];
-        }
-        count = count + 1;
-        self.counts[name] = [NSNumber numberWithInt:count];
-    }
+    [self incrementCount:name by: 1];
 }
 
 - (void)incrementCount:(nonnull NSString *)name by:(int)incrementCount {
