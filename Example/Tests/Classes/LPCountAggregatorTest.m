@@ -2,7 +2,7 @@
 //  AppIconManagerTest.m
 //  Leanplum-SDK
 //
-//  Created by Alexis Oyama on 3/2/17.
+//  Created by Grace Gu on 9/11/18.
 //  Copyright © 2017 Leanplum. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
