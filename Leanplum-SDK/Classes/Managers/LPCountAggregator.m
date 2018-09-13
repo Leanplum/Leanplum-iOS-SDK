@@ -24,7 +24,8 @@
 
 #import "LPCountAggregator.h"
 #import "Constants.h"
-#import "LeanplumRequest.h"
+#import "LPRequestFactory.h"
+#import "LPRequestSender.h"
 
 @interface LPCountAggregator()
 
@@ -82,7 +83,8 @@ static dispatch_once_t leanplum_onceToken;
         params[LP_PARAM_TYPE] = @"SDK_COUNT";
         params[LP_PARAM_MESSAGE] = name;
         params[LP_PARAM_COUNT] = counts[name];
-        [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
+        id<LPRequesting> request = [[[LPRequestFactory alloc] init] logWithParams:params];
+        [[[LPRequestSender alloc] init] sendEventually:request];
     }
 }
 

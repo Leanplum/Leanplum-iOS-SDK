@@ -30,6 +30,7 @@
 
 - (void)incrementCount:(NSString *)name;
 - (void)incrementCount:(NSString *)name by:(int) incrementCount;
+- (NSDictionary *)getAndClearCounts;
 - (void)sendAllCounts;
 
 @end
