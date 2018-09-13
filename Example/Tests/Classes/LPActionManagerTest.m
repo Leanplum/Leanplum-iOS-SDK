@@ -43,6 +43,7 @@
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
+- (void)leanplum_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 @end
 
 @interface LPActionManagerTest : XCTestCase
@@ -176,6 +177,14 @@
                      cancelButtonTitle:OCMOCK_ANY
                      otherButtonTitles:OCMOCK_ANY
                                  block:OCMOCK_ANY]);
+}
+
+- (void)test_did_fail_register_notifications
+{
+    LPActionManager *manager = [LPActionManager sharedManager];
+    UIApplication *app = [UIApplication sharedApplication];
+    NSError *error = [NSError errorWithDomain:@"Leanplum" code:1 userInfo:NULL];
+    [manager leanplum_application: app didFailToRegisterForRemoteNotificationsWithError:error];
 }
 
 - (void) test_receive_notification
