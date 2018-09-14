@@ -723,7 +723,6 @@ BOOL inForeground = NO;
         [self throwError:@"Already called start."];
     }
 
-    state.initializedMessageTemplates = YES;
     [LPMessageTemplatesClass sharedTemplates];
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     if (attributes != nil) {
@@ -1548,10 +1547,6 @@ BOOL inForeground = NO;
     }
 
     LP_TRY
-    if (![LPInternalState sharedState].initializedMessageTemplates) {
-        [LPInternalState sharedState].initializedMessageTemplates = YES;
-        [LPMessageTemplatesClass sharedTemplates];
-    }
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
     [[LPVarCache sharedCache] registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
     if (responder) {
