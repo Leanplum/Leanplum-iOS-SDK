@@ -188,9 +188,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     static LPMessageTemplatesClass *sharedTemplates = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        // This calls defineAction,
-        // and is called by defineAction if initializedMessageTemplates is NO.
-        [LPInternalState sharedState].initializedMessageTemplates = YES;
         sharedTemplates = [[self alloc] init];
     });
 

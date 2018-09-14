@@ -20,7 +20,7 @@
 @property(assign, nonatomic) NSUncaughtExceptionHandler *customExceptionHandler;
 @property(strong, nonatomic) LPRegisterDevice *registration;
 @property(assign, nonatomic) BOOL calledStart, hasStarted, hasStartedAndRegisteredAsDeveloper,
-startSuccessful, issuedStart, initializedMessageTemplates, stripViewControllerFromState;
+startSuccessful, issuedStart, stripViewControllerFromState;
 @property(strong, nonatomic) LPActionManager *actionManager;
 @property(strong, nonatomic) NSString *deviceId;
 @property(strong, nonatomic) NSString *appVersion;

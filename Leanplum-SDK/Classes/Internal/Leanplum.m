@@ -1547,10 +1547,6 @@ BOOL inForeground = NO;
     }
 
     LP_TRY
-    // This should be done elsewhere. I don't know where.
-    if (![LPInternalState sharedState].initializedMessageTemplates) {
-        [LPMessageTemplatesClass sharedTemplates];
-    }
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
     [[LPVarCache sharedCache] registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
     if (responder) {
