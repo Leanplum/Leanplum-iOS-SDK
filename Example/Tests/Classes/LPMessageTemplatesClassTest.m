@@ -82,7 +82,7 @@
     XCTAssertNotNil(image);
 }
 
--(void)test_shared_templates
+-(void)test_shared_templates_creation
 {
     // Previously, this was causing a deadlock.
     [LPMessageTemplatesClass sharedTemplates];
