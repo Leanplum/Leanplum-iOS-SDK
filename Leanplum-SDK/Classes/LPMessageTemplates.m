@@ -27,7 +27,6 @@
 //  THE SOFTWARE.
 
 #import "LPMessageTemplates.h"
-#import "Internal/LPInternalState.h"
 #import <QuartzCore/QuartzCore.h>
 #import <StoreKit/StoreKit.h>
 
