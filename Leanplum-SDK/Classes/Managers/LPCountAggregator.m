@@ -75,13 +75,19 @@ static dispatch_once_t leanplum_onceToken;
     return previousCounts;
 }
 
+- (NSMutableDictionary *)makeParams:(nonnull NSString *)name withCount:(int) count {
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    params[LP_PARAM_TYPE] = @"SDK_COUNT";
+    params[LP_PARAM_MESSAGE] = name;
+    params[LP_PARAM_COUNT] = [NSNumber numberWithInt:count];
+    return params;
+}
+
 - (void)sendAllCounts {
     NSDictionary *counts = [self getAndClearCounts];
     for (NSString *name in counts) { // iterate over counts, creating one request per counter
-        NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-        params[LP_PARAM_TYPE] = @"SDK_COUNT";
-        params[LP_PARAM_MESSAGE] = name;
-        params[LP_PARAM_COUNT] = counts[name];
+        int count = [counts[name] intValue];
+        NSMutableDictionary *params = [self makeParams:name withCount:count];
         [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
     }
 }
