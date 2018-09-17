@@ -25,6 +25,7 @@
 
 #import <XCTest/XCTest.h>
 #import "LPCountAggregator.h"
+#import "Constants.h"
 
 /**
  * Expose private class methods
@@ -32,6 +33,9 @@
 @interface LPCountAggregator(UnitTest)
 
 @property (nonatomic, strong) NSMutableDictionary *counts;
+
+- (NSDictionary *)getAndClearCounts;
+- (NSMutableDictionary *)makeParams:(nonnull NSString *)name withCount:(int) count;
 
 @end
 
@@ -94,6 +98,34 @@
     
     [countAggregator incrementCount:testString by:15];
     XCTAssert([countAggregator.counts[testString] intValue] == 17);
+}
+
+- (void)test_getAndClearCounts {
+    LPCountAggregator *countAggregator = [[LPCountAggregator alloc] init];
+    NSString *testString = @"test";
+    NSString *testString2 = @"test2";
+    countAggregator.enabledCounters = [NSSet setWithObjects:testString, testString2, nil];
+    
+    [countAggregator incrementCount:testString by:2];
+    [countAggregator incrementCount:testString2 by:15];
+    
+    NSDictionary *previousCounts = [countAggregator getAndClearCounts];
+    
+    //test counts is empty after clearing
+    XCTAssert([countAggregator.counts count] == 0);
+    //test counts transferred to previousCounts
+    XCTAssert([previousCounts[testString] intValue] == 2);
+    XCTAssert([previousCounts[testString2] intValue] == 15);
+}
+
+- (void)test_makeParams {
+    LPCountAggregator *countAggregator = [[LPCountAggregator alloc] init];
+    NSString *testString = @"test";
+    NSMutableDictionary *params = [countAggregator makeParams:testString withCount:2];
+
+    XCTAssert([params[LP_PARAM_TYPE] isEqualToString:@"SDK_COUNT"]);
+    XCTAssert([params[LP_PARAM_MESSAGE] isEqualToString:testString]);
+    XCTAssert([params[LP_PARAM_COUNT] intValue] == 2);
 }
 
 @end
