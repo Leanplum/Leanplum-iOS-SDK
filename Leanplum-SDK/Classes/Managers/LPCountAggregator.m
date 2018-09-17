@@ -75,8 +75,7 @@ static dispatch_once_t leanplum_onceToken;
     return previousCounts;
 }
 
-- (NSMutableDictionary *)createRequest:(nonnull NSString *)name
-                             withCount:(int) count {
+- (NSMutableDictionary *)createRequest:(nonnull NSString *)name withCount:(int) count {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[LP_PARAM_TYPE] = @"SDK_COUNT";
     params[LP_PARAM_MESSAGE] = name;
