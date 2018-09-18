@@ -224,6 +224,7 @@ NSString *LP_VALUE_CHAIN_MESSAGE_ACTION_NAME = @"Chain to Existing Message";
 NSString *LP_VALUE_DEFAULT_PUSH_ACTION = @"Open action";
 NSString *LP_VALUE_DEFAULT_PUSH_MESSAGE = @"Push message goes here.";
 NSString *LP_VALUE_SDK_LOG = @"sdkLog";
+NSString *LP_VALUE_SDK_COUNT = @"sdkCount";
 NSString *LP_VALUE_SDK_ERROR = @"sdkError";
 NSString *LP_VALUE_SDK_START_LATENCY = @"sdkStartLatency";
 
