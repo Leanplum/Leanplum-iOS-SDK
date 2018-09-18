@@ -880,6 +880,8 @@ BOOL inForeground = NO;
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
         NSSet *enabledCounters = [self parseEnabledCountersFromResponse:response];
         [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
+        NSSet *enabledFeatureFlags = [self parseEnabledFeatureFlagsFromResponse:response];
+        [LPFeatureFlagManager sharedManager].enabledFeatureFlags = enabledFeatureFlags;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
@@ -2666,6 +2668,14 @@ void LPLog(LPLogType type, NSString *format, ...) {
 {
     if ([response objectForKey:LP_KEY_ENABLED_COUNTERS]) {
         return [NSSet setWithArray:response[LP_KEY_ENABLED_COUNTERS]];
+    }
+    return nil;
+}
+
++ (NSSet *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response
+{
+    if ([response objectForKey:LP_KEY_ENABLED_FEATURE_FLAGS]) {
+        return [NSSet setWithArray:response[LP_KEY_ENABLED_FEATURE_FLAGS]];
     }
     return nil;
 }

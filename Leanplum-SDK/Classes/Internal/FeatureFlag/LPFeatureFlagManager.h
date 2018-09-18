@@ -10,6 +10,8 @@
 
 @interface LPFeatureFlagManager : NSObject
 
+@property (nonatomic, strong) NSSet *enabledFeatureFlags;
+
 + (_Nonnull instancetype)sharedManager;
 
 -(void)refreshEnabledFeatureFlags:(nullable NSArray<NSString *> *)featureFlags;

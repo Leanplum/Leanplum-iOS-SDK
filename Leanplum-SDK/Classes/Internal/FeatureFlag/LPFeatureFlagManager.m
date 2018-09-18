@@ -7,12 +7,6 @@
 
 #import "LPFeatureFlagManager.h"
 
-@interface LPFeatureFlagManager()
-
-@property (strong, nonatomic) NSSet *enabledFeatureFlags;
-
-@end
-
 @implementation LPFeatureFlagManager
 
 static LPFeatureFlagManager *sharedFeatureFlagManager = nil;
