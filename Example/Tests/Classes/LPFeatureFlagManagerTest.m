@@ -13,11 +13,6 @@
 /**
  * Expose private class methods
  */
-@interface LPFeatureFlagManager(UnitTest)
-
-- (BOOL)isFeatureFlagEnabled:(nonnull NSString *)featureFlagName;
-
-@end
 
 @interface LPFeatureFlagManagerTest : XCTestCase
 
