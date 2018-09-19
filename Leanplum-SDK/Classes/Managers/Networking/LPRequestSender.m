@@ -24,6 +24,7 @@
 
 #import "LPRequestSender.h"
 #import "LeanplumInternal.h"
+#import "LPCountAggregator.h"
 #import "LPRequest.h"
 #import "LeanplumRequest.h"
 #import "LPResponse.h"
@@ -330,6 +331,7 @@
         self.lastSentTime = [NSDate timeIntervalSinceReferenceDate];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
+        [[LPCountAggregator sharedAggregator] sendAllCounts];
         // Simulate pop all requests.
         NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
         if (requestsToSend.count == 0) {
