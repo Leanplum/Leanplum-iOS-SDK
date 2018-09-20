@@ -40,6 +40,13 @@
  * and validate whether sdk properly parses the response and calls appropriate methods
  * the test all verifies whether request is properly packed with all necessary data.
  */
+@interface Leanplum (Test)
+
++ (NSSet *)parseEnabledCountersFromResponse:(NSDictionary *)response;
++ (NSSet *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
+
+@end
+
 @interface LeanplumTest : XCTestCase
 
 @end
@@ -1671,6 +1678,28 @@
     [Leanplum setNetworkTimeoutSeconds:-1 forDownloads:20];
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSeconds, timeout);
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSecondsForDownloads, timeout);
+}
+
+- (void)test_parseEnabledCounters
+{
+    NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
+    NSSet *enabledCounters = [Leanplum parseEnabledCountersFromResponse:response];
+    XCTAssertNil(enabledCounters);
+    
+    [response setObject:@[@"test"] forKey:LP_KEY_ENABLED_COUNTERS];
+    enabledCounters = [Leanplum parseEnabledCountersFromResponse:response];
+    XCTAssertEqualObjects([NSSet setWithArray:@[@"test"]], enabledCounters);
+}
+
+- (void)test_parseEnabledFeatureFlags
+{
+    NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
+    NSSet *enabledFeatureFlags = [Leanplum parseEnabledFeatureFlagsFromResponse:response];
+    XCTAssertNil(enabledFeatureFlags);
+    
+    [response setObject:@[@"test"] forKey:LP_KEY_ENABLED_FEATURE_FLAGS];
+    enabledFeatureFlags = [Leanplum parseEnabledFeatureFlagsFromResponse:response];
+    XCTAssertEqualObjects([NSSet setWithArray:@[@"test"]], enabledFeatureFlags);
 }
 
 #pragma mark - Selectors
