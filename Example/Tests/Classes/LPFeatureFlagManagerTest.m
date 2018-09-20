@@ -10,10 +10,6 @@
 #import "LPFeatureFlagManager.h"
 #import "Constants.h"
 
-/**
- * Expose private class methods
- */
-
 @interface LPFeatureFlagManagerTest : XCTestCase
 
 @end
@@ -28,23 +24,26 @@
     [super tearDown];
 }
 
-- (void)test_isFeatureFlagEnabled {
+- (void)test_isFeatureFlagEnabledShouldBeTrueForEnabledFlag {
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
-    
     NSString *testString = @"test";
-    NSString *testString2 = @"test2";
-    
-    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString] == false);
-    
     featureFlagManager.enabledFeatureFlags = [NSSet setWithObjects:testString, nil];
     XCTAssert([featureFlagManager isFeatureFlagEnabled:testString] == true);
-    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString2] == false);
-    
-    featureFlagManager.enabledFeatureFlags = [NSSet setWithObjects:testString, testString2, nil];
-    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString2] == true);
-    
+}
+
+- (void)test_isFeatureFlagEnabledShouldBeFalseForDisabledFlag {
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
+    NSString *testString = @"test";
+    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString] == false);
+}
+
+- (void)test_isFeatureFlagEnabledShouldResetWhenSetToNil {
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
+    NSString *testString = @"test";
+    featureFlagManager.enabledFeatureFlags = [NSSet setWithObjects:testString, nil];
+    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString] == true);
     featureFlagManager.enabledFeatureFlags = nil;
-    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString2] == false);
+    XCTAssert([featureFlagManager isFeatureFlagEnabled:testString] == false);
 }
 
 @end
