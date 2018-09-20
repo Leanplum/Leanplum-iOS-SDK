@@ -50,7 +50,11 @@
     NSMutableDictionary *callbackMap = [LPEventCallbackManager eventCallbackMap];
     LPEventCallback *callback = [[LPEventCallback alloc] initWithResponseBlock:responseBlock
                                                                     errorBlock:errorBlock];
-    callbackMap[@(index)] = callback;
+    NSNumber *atIndex = @(index);
+    
+    if (callbackMap && callback && atIndex) {
+        callbackMap[atIndex] = callback;
+    }
 }
 
 + (void)invokeSuccessCallbacksOnResponses:(id)responses
