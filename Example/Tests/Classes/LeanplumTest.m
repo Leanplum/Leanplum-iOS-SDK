@@ -32,6 +32,8 @@
 #import "LeanplumReachability+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LPActionManager.h"
+#import "LPCountaggregator.h"
+#import "LPFeatureFlagManager.h"
 #import "Constants.h"
 #import "LPRegisterDevice.h"
 
@@ -1678,6 +1680,64 @@
     [Leanplum setNetworkTimeoutSeconds:-1 forDownloads:20];
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSeconds, timeout);
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSecondsForDownloads, timeout);
+}
+
+- (void)testStartResponseShouldParseCounters
+{
+    //Given: start request
+    // This stub have to be removed when start command is successfully executed.
+    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+                                           ^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                                            headers:@{@"Content-Type":@"application/json"}];
+    }];
+
+   [LeanplumHelper setup_development_test];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        [OHHTTPStubs removeStub:startStub];
+        // Then: enabledCounters should be parsed
+        XCTAssertNotNil([[LPCountAggregator sharedAggregator] enabledCounters]);
+        NSSet *enabledCounters = [[LPCountAggregator sharedAggregator] enabledCounters];
+        NSSet *expected = [NSSet setWithArray:@[@"testCounter1", @"testCounter2"]];
+        XCTAssertEqualObjects(expected, enabledCounters);
+
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+}
+
+- (void)testStartResponseShouldParseFeatureFlags
+{
+    //Given: start request
+    // This stub have to be removed when start command is successfully executed.
+    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+                                           ^BOOL(NSURLRequest * _Nonnull request) {
+                                               return [request.URL.host isEqualToString:API_HOST];
+                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                               NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
+                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                                                          headers:@{@"Content-Type":@"application/json"}];
+                                           }];
+    
+    [LeanplumHelper setup_development_test];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        [OHHTTPStubs removeStub:startStub];
+        // Then: enabledFeatureFlags should be parsed
+        XCTAssertNotNil([[LPFeatureFlagManager sharedManager] enabledFeatureFlags]);
+        NSSet *enabledFeatureFlags = [[LPFeatureFlagManager sharedManager] enabledFeatureFlags];
+        NSSet *expected = [NSSet setWithArray:@[@"testFeatureFlag1", @"testFeatureFlag2"]];
+        XCTAssertEqualObjects(expected, enabledFeatureFlags);
+        
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
 }
 
 - (void)test_parseEnabledCounters
