@@ -1,0 +1,12 @@
+language: objective-c
+osx_image: xcode10
+
+xcode_workspace: Example/Leanplum-SDK.xcworkspace
+xcode_scheme: Leanplum-SDK-Example
+xcode_destination: platform=iOS Simulator,OS=10.1,name=iPhone X
+
+
+before_install:
+  - gem install cocoapods
+  - pod repo update
+  - pod install
