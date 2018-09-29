@@ -34,7 +34,7 @@
     NSDictionary *params = @{@"key": @"value"};
     LPRequest *postRequest = [LPRequest post:apiMethod params:params];
 
-//    XCTAssertEqual(postRequest.httpMethod, @"POST");
+    XCTAssertEqual(postRequest.httpMethod, @"POST");
     XCTAssertEqual(postRequest.apiMethod, apiMethod);
     XCTAssertEqual(postRequest.params, params);
 }
@@ -44,7 +44,7 @@
     NSDictionary *params = @{@"key": @"value"};
     LPRequest *getRequest = [LPRequest get:apiMethod params:params];
 
-//    XCTAssertEqual(getRequest.httpMethod, @"GET");
+    XCTAssertEqual(getRequest.httpMethod, @"GET");
     XCTAssertEqual(getRequest.apiMethod, apiMethod);
     XCTAssertEqual(getRequest.params, params);
 }
