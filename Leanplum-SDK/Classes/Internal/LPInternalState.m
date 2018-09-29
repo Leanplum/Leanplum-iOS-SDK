@@ -39,7 +39,6 @@
         _hasStarted = NO;
         _hasStartedAndRegisteredAsDeveloper = NO;
         _startSuccessful = NO;
-        _initializedMessageTemplates = NO;
         _actionManager = nil;
         _deviceId = nil;
         _userAttributeChanges = [NSMutableArray array];

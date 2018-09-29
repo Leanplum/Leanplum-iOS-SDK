@@ -45,6 +45,7 @@
 #import "Utils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
+#import "LPCountAggregator.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
@@ -722,7 +723,6 @@ BOOL inForeground = NO;
         [self throwError:@"Already called start."];
     }
 
-    state.initializedMessageTemplates = YES;
     [LPMessageTemplatesClass sharedTemplates];
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     if (attributes != nil) {
@@ -877,6 +877,8 @@ BOOL inForeground = NO;
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
+        NSSet *enabledCounters = [self parseEnabledCountersFromResponse:response];
+        [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
@@ -1539,10 +1541,6 @@ BOOL inForeground = NO;
     }
 
     LP_TRY
-    if (![LPInternalState sharedState].initializedMessageTemplates) {
-        [LPInternalState sharedState].initializedMessageTemplates = YES;
-        [LPMessageTemplatesClass sharedTemplates];
-    }
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
     [[LPVarCache sharedCache] registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
     if (responder) {
@@ -2641,10 +2639,18 @@ void LPLog(LPLogType type, NSString *format, ...) {
     LP_END_TRY
 }
 
-+(NSDictionary *)parseVariantDebugInfoFromResponse:(NSDictionary *)response
++ (NSDictionary *)parseVariantDebugInfoFromResponse:(NSDictionary *)response
 {
     if ([response objectForKey:LP_KEY_VARIANT_DEBUG_INFO]) {
         return response[LP_KEY_VARIANT_DEBUG_INFO];
+    }
+    return nil;
+}
+
++ (NSSet *)parseEnabledCountersFromResponse:(NSDictionary *)response
+{
+    if ([response objectForKey:LP_KEY_ENABLED_COUNTERS]) {
+        return [NSSet setWithArray:response[LP_KEY_ENABLED_COUNTERS]];
     }
     return nil;
 }

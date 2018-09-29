@@ -87,6 +87,7 @@
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
+		65E53E982148786C00A05040 /* LPCountAggregatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 65E53E962148786C00A05040 /* LPCountAggregatorTest.m */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
 		9CB691DF1F15FFFF002D83D8 /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CB691DD1F15FFF5002D83D8 /* batch_response.json */; };
@@ -186,6 +187,7 @@
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
+		65E53E962148786C00A05040 /* LPCountAggregatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregatorTest.m; sourceTree = "<group>"; };
 		73B565AA61D6B6A4E92607C4 /* Pods-Leanplum-SDK_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		74C2EA3F2D53CAE77A03BFFA /* Pods-Leanplum-tvOS-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-tvOS-SDK_Example/Pods-Leanplum-tvOS-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		7B3A029531D9DAB706B77C73 /* Pods_Leanplum_tvOS_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_tvOS_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -253,6 +255,7 @@
 				07E5C86D1F052B7800A4B092 /* LPEventDataManagerTest.m */,
 				07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */,
 				9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */,
+				65E53E962148786C00A05040 /* LPCountAggregatorTest.m */,
 				07E5C86F1F052B7800A4B092 /* Extensions */,
 				07E5C87B1F052B7800A4B092 /* LPFileManagerTest.m */,
 				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
@@ -814,6 +817,7 @@
 				07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */,
 				07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */,
 				07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */,
+				65E53E982148786C00A05040 /* LPCountAggregatorTest.m in Sources */,
 				07E5C8B91F052B7800A4B092 /* LPMessageTemplatesClassTest.m in Sources */,
 				07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */,
 				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
