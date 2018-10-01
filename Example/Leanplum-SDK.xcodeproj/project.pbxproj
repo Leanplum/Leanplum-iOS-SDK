@@ -95,6 +95,7 @@
 		9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */; };
 		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A84527FC215C3035001FA20D /* LPRequestTest.m */; };
 		A8EEA1AB20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
@@ -200,6 +201,7 @@
 		9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A84527FC215C3035001FA20D /* LPRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
 		B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-tvOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -253,6 +255,7 @@
 			isa = PBXGroup;
 			children = (
 				07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */,
+				A84527FC215C3035001FA20D /* LPRequestTest.m */,
 				07E5C86C1F052B7800A4B092 /* LPAppIconManagerTest.m */,
 				07E5C86D1F052B7800A4B092 /* LPEventDataManagerTest.m */,
 				07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */,
@@ -826,6 +829,7 @@
 				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
 				07E5C8AD1F052B7800A4B092 /* LPEventDataManagerTest.m in Sources */,
 				07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */,
+				A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */,
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
@@ -979,7 +983,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Leanplum-SDK/Leanplum-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Leanplum-SDK/Leanplum-SDK-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -997,7 +1001,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Leanplum-SDK/Leanplum-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Leanplum-SDK/Leanplum-SDK-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
