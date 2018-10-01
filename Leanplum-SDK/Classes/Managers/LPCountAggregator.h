@@ -24,12 +24,12 @@
 
 @interface LPCountAggregator : NSObject
 
-@property (nonatomic, strong) NSSet *enabledCounters;
+@property (nonatomic, strong) NSSet<NSString *> * _Nullable enabledCounters;
 
-+ (instancetype)sharedAggregator;
++ (_Nonnull instancetype)sharedAggregator;
 
-- (void)incrementCount:(NSString *)name;
-- (void)incrementCount:(NSString *)name by:(int) incrementCount;
+- (void)incrementCount:(nonnull NSString *)name;
+- (void)incrementCount:(nonnull NSString *)name by:(int) incrementCount;
 - (void)sendAllCounts;
 
 @end

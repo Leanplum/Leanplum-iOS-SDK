@@ -244,6 +244,14 @@
                  "variants": [
 
                  ],
+                 "enabledSdkCounters": [
+                   "testCounter1",
+                   "testCounter2"
+                 ],
+                 "enabledFeatureFlags": [
+                   "testFeatureFlag1",
+                   "testFeatureFlag2"
+                 ],
                  "syncNewsfeed": false,
                  "success": true,
                  "interfaceEvents": [
@@ -495,6 +503,14 @@
                  "variants": [
 
                  ],
+                 "enabledSdkCounters": [
+                   "testCounter1",
+                   "testCounter2"
+                 ],
+                 "enabledFeatureFlags": [
+                   "testFeatureFlag1",
+                   "testFeatureFlag2"
+                 ],
                  "syncNewsfeed": false,
                  "success": true,
                  "interfaceEvents": [
@@ -745,6 +761,14 @@
                  "token": "juKUmiXERlO4kmTfEL6xEsfUMpg9WUlFrHOvp6H2w4Q",
                  "variants": [
 
+                 ],
+                 "enabledSdkCounters": [
+                    "testCounter1",
+                    "testCounter2"
+                 ],
+                 "enabledFeatureFlags": [
+                    "testFeatureFlag1",
+                    "testFeatureFlag2"
                  ],
                  "syncNewsfeed": false,
                  "success": true,

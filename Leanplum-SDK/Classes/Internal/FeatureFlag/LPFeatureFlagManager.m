@@ -7,12 +7,6 @@
 
 #import "LPFeatureFlagManager.h"
 
-@interface LPFeatureFlagManager()
-
-@property (strong, nonatomic) NSSet *enabledFeatureFlags;
-
-@end
-
 @implementation LPFeatureFlagManager
 
 static LPFeatureFlagManager *sharedFeatureFlagManager = nil;
@@ -25,13 +19,7 @@ static dispatch_once_t leanplum_onceToken;
     return sharedFeatureFlagManager;
 }
 
--(void)refreshEnabledFeatureFlags:(nullable NSArray<NSString *> *)featureFlags {
-    if (featureFlags != nil) {
-        self.enabledFeatureFlags = [NSSet setWithArray:featureFlags];
-    }
-}
-
--(BOOL)isFeatureFlagEnabled:(nonnull NSString *)featureFlagName {
+- (BOOL)isFeatureFlagEnabled:(nonnull NSString *)featureFlagName {
     return [self.enabledFeatureFlags containsObject:featureFlagName];
 }
 

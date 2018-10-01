@@ -28,7 +28,7 @@
 
 @interface LPCountAggregator()
 
-@property (nonatomic, strong) NSMutableDictionary *counts;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *counts;
 
 @end
 
@@ -69,14 +69,14 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
-- (NSDictionary *)getAndClearCounts {
-    NSDictionary *previousCounts = [[NSDictionary alloc]initWithDictionary:self.counts];
+- (NSDictionary<NSString *, NSNumber *> *)getAndClearCounts {
+    NSDictionary<NSString *, NSNumber *> *previousCounts = [[NSDictionary alloc]initWithDictionary:self.counts];
     [self.counts removeAllObjects];
     return previousCounts;
 }
 
-- (NSMutableDictionary *)makeParams:(nonnull NSString *)name withCount:(int) count {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+- (NSMutableDictionary<NSString *, id> *)makeParams:(nonnull NSString *)name withCount:(int) count {
+    NSMutableDictionary<NSString *, id> *params = [[NSMutableDictionary alloc] init];
 
     params[LP_PARAM_TYPE] = LP_VALUE_SDK_COUNT;
     params[LP_PARAM_MESSAGE] = name;
@@ -85,10 +85,10 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 - (void)sendAllCounts {
-    NSDictionary *counts = [self getAndClearCounts];
+    NSDictionary<NSString *, NSNumber *> *counts = [self getAndClearCounts];
     for (NSString *name in counts) { // iterate over counts, creating one request per counter
         int count = [counts[name] intValue];
-        NSMutableDictionary *params = [self makeParams:name withCount:count];
+        NSMutableDictionary<NSString *, id> *params = [self makeParams:name withCount:count];
         [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
     }
 }
