@@ -32,10 +32,10 @@
  */
 @interface LPCountAggregator(UnitTest)
 
-@property (nonatomic, strong) NSMutableDictionary *counts;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *counts;
 
-- (NSDictionary *)getAndClearCounts;
-- (NSMutableDictionary *)makeParams:(nonnull NSString *)name withCount:(int) count;
+- (NSDictionary<NSString *, NSNumber *> *)getAndClearCounts;
+- (NSMutableDictionary<NSString *, id> *)makeParams:(nonnull NSString *)name withCount:(int) count;
 
 @end
 
@@ -109,7 +109,7 @@
     [countAggregator incrementCount:testString by:2];
     [countAggregator incrementCount:testString2 by:15];
     
-    NSDictionary *previousCounts = [countAggregator getAndClearCounts];
+    NSDictionary<NSString *, NSNumber *> *previousCounts = [countAggregator getAndClearCounts];
     
     //test counts is empty after clearing
     XCTAssert([countAggregator.counts count] == 0);
@@ -121,7 +121,7 @@
 - (void)test_makeParams {
     LPCountAggregator *countAggregator = [[LPCountAggregator alloc] init];
     NSString *testString = @"test";
-    NSMutableDictionary *params = [countAggregator makeParams:testString withCount:2];
+    NSMutableDictionary<NSString *, id> *params = [countAggregator makeParams:testString withCount:2];
 
     XCTAssert([params[LP_PARAM_TYPE] isEqualToString:LP_VALUE_SDK_COUNT]);
     XCTAssert([params[LP_PARAM_MESSAGE] isEqualToString:testString]);

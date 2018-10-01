@@ -878,9 +878,9 @@ BOOL inForeground = NO;
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
-        NSSet *enabledCounters = [self parseEnabledCountersFromResponse:response];
+        NSSet<NSString *> *enabledCounters = [self parseEnabledCountersFromResponse:response];
         [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
-        NSSet *enabledFeatureFlags = [self parseEnabledFeatureFlagsFromResponse:response];
+        NSSet<NSString *> *enabledFeatureFlags = [self parseEnabledFeatureFlagsFromResponse:response];
         [LPFeatureFlagManager sharedManager].enabledFeatureFlags = enabledFeatureFlags;
 
         [[LPAPIConfig sharedConfig] setToken:token];
@@ -2664,7 +2664,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
     return nil;
 }
 
-+ (NSSet *)parseEnabledCountersFromResponse:(NSDictionary *)response
++ (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response
 {
     if ([response objectForKey:LP_KEY_ENABLED_COUNTERS]) {
         return [NSSet setWithArray:response[LP_KEY_ENABLED_COUNTERS]];
@@ -2672,7 +2672,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
     return nil;
 }
 
-+ (NSSet *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response
++ (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response
 {
     if ([response objectForKey:LP_KEY_ENABLED_FEATURE_FLAGS]) {
         return [NSSet setWithArray:response[LP_KEY_ENABLED_FEATURE_FLAGS]];

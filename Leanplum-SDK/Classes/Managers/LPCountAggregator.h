@@ -24,7 +24,7 @@
 
 @interface LPCountAggregator : NSObject
 
-@property (nonatomic, strong) NSSet * _Nullable enabledCounters;
+@property (nonatomic, strong) NSSet<NSString *> * _Nullable enabledCounters;
 
 + (_Nonnull instancetype)sharedAggregator;
 

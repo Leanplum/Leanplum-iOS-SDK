@@ -44,8 +44,8 @@
  */
 @interface Leanplum (Test)
 
-+ (NSSet *)parseEnabledCountersFromResponse:(NSDictionary *)response;
-+ (NSSet *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
++ (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response;
++ (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
 
 @end
 
@@ -1731,8 +1731,8 @@
         [OHHTTPStubs removeStub:startStub];
         // Then: enabledFeatureFlags should be parsed
         XCTAssertNotNil([[LPFeatureFlagManager sharedManager] enabledFeatureFlags]);
-        NSSet *enabledFeatureFlags = [[LPFeatureFlagManager sharedManager] enabledFeatureFlags];
-        NSSet *expected = [NSSet setWithArray:@[@"testFeatureFlag1", @"testFeatureFlag2"]];
+        NSSet<NSString *> *enabledFeatureFlags = [[LPFeatureFlagManager sharedManager] enabledFeatureFlags];
+        NSSet<NSString *> *expected = [NSSet setWithArray:@[@"testFeatureFlag1", @"testFeatureFlag2"]];
         XCTAssertEqualObjects(expected, enabledFeatureFlags);
         
         dispatch_semaphore_signal(semaphore);
@@ -1743,7 +1743,7 @@
 - (void)test_parseEnabledCounters
 {
     NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
-    NSSet *enabledCounters = [Leanplum parseEnabledCountersFromResponse:response];
+    NSSet<NSString *> *enabledCounters = [Leanplum parseEnabledCountersFromResponse:response];
     XCTAssertNil(enabledCounters);
     
     [response setObject:@[@"test"] forKey:LP_KEY_ENABLED_COUNTERS];
@@ -1754,7 +1754,7 @@
 - (void)test_parseEnabledFeatureFlags
 {
     NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
-    NSSet *enabledFeatureFlags = [Leanplum parseEnabledFeatureFlagsFromResponse:response];
+    NSSet<NSString *> *enabledFeatureFlags = [Leanplum parseEnabledFeatureFlagsFromResponse:response];
     XCTAssertNil(enabledFeatureFlags);
     
     [response setObject:@[@"test"] forKey:LP_KEY_ENABLED_FEATURE_FLAGS];
