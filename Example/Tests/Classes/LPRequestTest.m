@@ -39,7 +39,7 @@
     XCTAssertTrue([postRequest.httpMethod isEqualToString:@"POST"]);
 }
 
-- (void)testGetShouldCreatePostRequest {
+- (void)testGetShouldCreateGetRequest {
     NSString *apiMethod = @"apiMethod";
     NSDictionary *params = @{@"key": @"value"};
     LPRequest *getRequest = [LPRequest get:apiMethod params:params];
