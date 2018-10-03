@@ -34,19 +34,23 @@
 
 - (void)testSendEventually {
     LPRequest *request = [LPRequest post:@"test" params:@{}];
+    //id<LPRequesting> request =
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
+    //LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+    //                                initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    //id<LPRequesting> request = [reqFactory startWithParams:@{}];
     NSString *uuid = @"uuid";
     [[NSUserDefaults standardUserDefaults] setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
     
     NSMutableDictionary *args = [requestSender createArgsDictionaryForRequest:request];
     args[LP_PARAM_UUID] = uuid;
     
-//    id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
+    id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
 
+    //[requestSender sendNow:request];
     [requestSender sendEventually:request];
-//    OCMVerify([eventDataManagerMock addEvent:args]);
-//    OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
-
+    OCMVerify([eventDataManagerMock addEvent:args]);
+    //OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
 }
 
 
