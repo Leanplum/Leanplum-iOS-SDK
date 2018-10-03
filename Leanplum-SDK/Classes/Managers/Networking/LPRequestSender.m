@@ -138,6 +138,7 @@
             @synchronized ([LPEventCallbackManager eventCallbackMap]) {
                 NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
                 args[LP_PARAM_UUID] = uuid;
+                NSLog(@"send args %@", args);
                 [LPEventDataManager addEvent:args];
 
                 [LPEventCallbackManager addEventCallbackAt:count
@@ -184,6 +185,7 @@
 
 - (void)sendNow:(id<LPRequesting>)request
 {
+    NSLog(@"reached");
     [self sendNow:request sync:NO];
 }
 
