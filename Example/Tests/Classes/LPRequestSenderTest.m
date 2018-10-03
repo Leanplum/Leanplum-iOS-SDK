@@ -49,7 +49,8 @@
 
     //[requestSender sendNow:request];
     [requestSender sendEventually:request];
-    OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
+    OCMVerify([eventDataManagerMock addEvent:args]);
+    //OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
 }
 
 
