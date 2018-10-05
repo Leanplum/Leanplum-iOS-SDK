@@ -68,7 +68,7 @@
 //    id requestSenderMock = OCMPartialMock(requestSender);
 //    [[LPAPIConfig sharedConfig] setAppId:@"appid" withAccessKey:@"access"];
 //    [requestSender sendNow:request];
-//    
+//
 //    OCMVerify([requestSenderMock sendNow:request sync:false]);
 //    OCMVerify([requestSenderMock sendEventually:request]);
 //    OCMVerify([requestSenderMock sendRequests:false]);
@@ -79,7 +79,7 @@
 //    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
 //    id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
 //    [requestSender sendEventually:request];
-//    
+//
 //    OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
 //}
 //
@@ -91,7 +91,7 @@
 //    OCMStub([reachabilityMock reachabilityForInternetConnection]).andReturn(reachabilityMock);
 //    OCMStub([reachabilityMock isReachable]).andReturn(true);
 //    [requestSender sendIfConnected:request];
-//    
+//
 //    OCMVerify([requestSenderMock sendNow:request]);
 //}
 //
@@ -103,7 +103,7 @@
 //    OCMStub([reachabilityMock reachabilityForInternetConnection]).andReturn(reachabilityMock);
 //    OCMStub([reachabilityMock isReachable]).andReturn(false);
 //    [requestSender sendIfConnected:request];
-//    
+//
 //    OCMVerify([requestSenderMock sendEventually:request]);
 //}
 //
@@ -111,11 +111,11 @@
 //    LPRequest *request = [LPRequest post:@"test" params:@{}];
 //    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
 //    id requestSenderMock = OCMPartialMock(requestSender);
-//    
+//
 //    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
 //    data [@"key"] = [@"value" dataUsingEncoding:NSUTF8StringEncoding];
 //    [requestSender sendNow:request withData:data[@"key"] forKey:@"key"];
-//    
+//
 //    OCMVerify([requestSenderMock sendNow:request withDatas:data]);
 //}
 //
@@ -125,11 +125,11 @@
 //    requestSender.engine = OCMProtocolMock(@protocol(LPNetworkEngineProtocol));
 //    id opMock = OCMProtocolMock(@protocol(LPNetworkOperationProtocol));
 //    OCMStub([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:60]).andReturn(opMock);
-//    
+//
 //    NSMutableDictionary *datas = [[NSMutableDictionary alloc] init];
 //    datas[@"key"] = [@"value" dataUsingEncoding:NSUTF8StringEncoding];
 //    [requestSender sendNow:request withDatas:datas];
-//    
+//
 //    OCMVerify([requestSender.engine enqueueOperation:opMock]);
 //    OCMVerify([opMock addData:datas[@"key"] forKey:@"key"]);
 //    OCMVerify([opMock addCompletionHandler:[OCMArg any] errorHandler:[OCMArg any]]);
@@ -142,20 +142,20 @@
 //    id countAggregatorMock = OCMClassMock([LPCountAggregator class]);
 //    OCMStub([countAggregatorMock sharedAggregator]).andReturn(countAggregatorMock);
 //    id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
-//    
+//
 //    NSMutableArray *requestsToSend = [[NSMutableArray alloc] init];
 //    [requestsToSend addObject:[[NSMutableDictionary alloc] init]];
-//    
+//
 //    OCMStub([eventDataManagerMock eventsWithLimit:MAX_EVENTS_PER_API_CALL]).andReturn(requestsToSend);
 //    requestSender.engine = OCMProtocolMock(@protocol(LPNetworkEngineProtocol));
-//    
+//
 //    LPConstantsState *constants = [LPConstantsState sharedState];
 //    int timeout = 5 * constants.syncNetworkTimeoutSeconds;
-//    
+//
 //    id opMock = OCMProtocolMock(@protocol(LPNetworkOperationProtocol));
 //    OCMStub([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]).andReturn(opMock);
 //    [requestSender sendRequests:true];
-//    
+//
 //    OCMVerify([countAggregatorMock sendAllCounts]);
 //    OCMVerify([eventDataManagerMock eventsWithLimit:MAX_EVENTS_PER_API_CALL]);
 //    OCMVerify([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]);
@@ -170,8 +170,8 @@
 //    id mockQueue = OCMClassMock([NSOperationQueue class]);
 //    OCMStub([requestSender sendNowQueue]).andReturn(mockQueue);
 //    [requestSender sendRequests:false];
-//    
+//
 //    OCMVerify([requestOperationMock addExecutionBlock:[OCMArg any]]);
 //    OCMVerify([mockQueue addOperation:requestOperationMock]);
 //}
-//@end
+@end
