@@ -1,67 +1,67 @@
-////
-////  LPRequestSenderTest.m
-////  Leanplum-SDK_Tests
-////
-////  Created by Grace Gu on 10/01/18.
-////  Copyright © 2018 Leanplum. All rights reserved.
-////
 //
-//#import <XCTest/XCTest.h>
-//#import <OCMock/OCMock.h>
-//#import <Leanplum/LPAPIConfig.h>
-//#import <Leanplum/LPEventDataManager.h>
-//#import <Leanplum/LPNetworkProtocol.h>
-//#import <Leanplum/LPRequestSender.h>
-//#import <Leanplum/LPRequestFactory.h>
-//#import <Leanplum/LPRequest.h>
-//#import <Leanplum/LPCountAggregator.h>
+//  LPRequestSenderTest.m
+//  Leanplum-SDK_Tests
 //
-//@interface LPRequestSender(UnitTest)
+//  Created by Grace Gu on 10/01/18.
+//  Copyright © 2018 Leanplum. All rights reserved.
 //
-//@property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
-//
-//- (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync;
-//- (void)sendRequests:(BOOL)sync;
-//- (NSOperationQueue *)sendNowQueue;
-//
-//@end
-//
-//@interface LPRequestSenderTest : XCTestCase
-//
-//@end
-//
-//@implementation LPRequestSenderTest
-//
-//- (void)setUp {
-//    // Put setup code here. This method is called before the invocation of each test method in the class.
-//}
-//
-//- (void)tearDown {
-//    // Put teardown code here. This method is called after the invocation of each test method in the class.
-//}
-//
-//- (void)testCreateArgsDictionaryForRequest {
-//    LPRequest *request = [LPRequest post:@"test" params:@{}];
-//    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
-//    LPConstantsState *constants = [LPConstantsState sharedState];
-//    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-//    NSMutableDictionary *testArgs = [@{
-//                                   LP_PARAM_ACTION: @"test",
-//                                   LP_PARAM_DEVICE_ID: @"",
-//                                   LP_PARAM_USER_ID: @"",
-//                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
-//                                   LP_PARAM_CLIENT: constants.client,
-//                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
-//                                   LP_PARAM_TIME: timestamp,
-//                                   LP_PARAM_UUID: @"uuid",
-//                                   } mutableCopy];
-//    NSMutableDictionary *args = [requestSender createArgsDictionaryForRequest:request];
-//    args[LP_PARAM_UUID] = @"uuid";
-//    args[LP_PARAM_TIME] = timestamp;
-//    
-//    XCTAssertEqualObjects(testArgs, args);
-//}
-//
+
+#import <XCTest/XCTest.h>
+#import <OCMock/OCMock.h>
+#import <Leanplum/LPAPIConfig.h>
+#import <Leanplum/LPEventDataManager.h>
+#import <Leanplum/LPNetworkProtocol.h>
+#import <Leanplum/LPRequestSender.h>
+#import <Leanplum/LPRequestFactory.h>
+#import <Leanplum/LPRequest.h>
+#import <Leanplum/LPCountAggregator.h>
+
+@interface LPRequestSender(UnitTest)
+
+@property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
+
+- (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync;
+- (void)sendRequests:(BOOL)sync;
+- (NSOperationQueue *)sendNowQueue;
+
+@end
+
+@interface LPRequestSenderTest : XCTestCase
+
+@end
+
+@implementation LPRequestSenderTest
+
+- (void)setUp {
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+}
+
+- (void)tearDown {
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+}
+
+- (void)testCreateArgsDictionaryForRequest {
+    LPRequest *request = [LPRequest post:@"test" params:@{}];
+    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
+    LPConstantsState *constants = [LPConstantsState sharedState];
+    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    NSMutableDictionary *testArgs = [@{
+                                   LP_PARAM_ACTION: @"test",
+                                   LP_PARAM_DEVICE_ID: @"",
+                                   LP_PARAM_USER_ID: @"",
+                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                   LP_PARAM_CLIENT: constants.client,
+                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
+                                   LP_PARAM_TIME: timestamp,
+                                   LP_PARAM_UUID: @"uuid",
+                                   } mutableCopy];
+    NSMutableDictionary *args = [requestSender createArgsDictionaryForRequest:request];
+    args[LP_PARAM_UUID] = @"uuid";
+    args[LP_PARAM_TIME] = timestamp;
+    
+    XCTAssertEqualObjects(testArgs, args);
+}
+
 //- (void)testSendNow {
 //    LPRequest *request = [LPRequest post:@"test" params:@{}];
 //    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
