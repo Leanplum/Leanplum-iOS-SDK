@@ -20,4 +20,3 @@ deploy:
   script: ./Tools/push.sh
   on:
     tags: true
-    
