@@ -169,8 +169,10 @@
     [self requestAuthorization];
 
     // Update monitored regions.
-    _isForeground =
+    dispatch_async(dispatch_get_main_queue(), ^{
+        _isForeground =
         [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
+    });
     [self updateMaxGeofences];
     [self setMonitoredRegions];
     [self setApplicationStateObserversForGeofences];
