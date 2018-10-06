@@ -14,3 +14,9 @@ before_install:
 branches:
   only:
   - master
+
+deploy:
+  provider: script
+  script: ./Tools/push.sh
+  on:
+    tags: true
