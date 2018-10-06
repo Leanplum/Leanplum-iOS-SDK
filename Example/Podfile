@@ -6,7 +6,8 @@ target 'Leanplum-SDK_Example' do
   platform :ios, '8.0'
 
   pod 'Leanplum-iOS-SDK-source', :path => '../'
-  
+  pod 'Leanplum-iOS-SDK-source/Location', :path => '../'
+
   target 'Leanplum-SDK_Tests' do
       inherit! :search_paths
 

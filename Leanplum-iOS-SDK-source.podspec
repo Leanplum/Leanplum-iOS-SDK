@@ -28,6 +28,20 @@ Analytics.
   s.library = 'sqlite3'
   s.xcconfig = { 'OTHER_LDFLAGS' => '-ObjC', 'BITCODE_GENERATION_MODE' => 'bitcode' }
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
-  s.source_files = 'Leanplum-SDK/Classes/**/*'
   s.module_name = 'Leanplum'
+  s.default_subspec = 'Core'
+
+  s.subspec 'Core' do |core|
+    core.source_files = 'Leanplum-SDK/Classes/**/*'
+  end
+
+  s.subspec 'Location' do |location|
+    location.source_files = 'Leanplum-iOS-Location/Classes/**/*'
+    location.frameworks = 'CoreLocation'
+  end
+
+  s.subspec 'LocationAndBeacons' do |locationAndBeacons|
+    locationAndBeacons.source_files = 'Leanplum-iOS-Location/Classes/**/*'
+    locationAndBeacons.frameworks = 'CoreLocation'
+  end
 end

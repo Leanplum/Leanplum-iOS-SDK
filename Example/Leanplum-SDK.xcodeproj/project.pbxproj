@@ -733,7 +733,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
+				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source.default-Location/Leanplum.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
