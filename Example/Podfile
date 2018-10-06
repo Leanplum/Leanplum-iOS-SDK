@@ -11,7 +11,8 @@ target 'Leanplum-SDK_Example' do
   target 'Leanplum-SDK_Tests' do
       inherit! :search_paths
 
-      pod 'Leanplum-iOS-SDK-source', :path => '../'
+      pod 'Leanplum-iOS-SDK-source/Core', :path => '../'
+      pod 'Leanplum-iOS-SDK-source/Location', :path => '../'
       pod 'OCMock', '~> 3.3.1'
       pod 'OHHTTPStubs'
   end
