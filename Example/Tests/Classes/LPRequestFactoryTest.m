@@ -43,8 +43,8 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 
 @property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
 
-- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
-- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
+- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
+- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
 - (BOOL)shouldReturnLPRequestClass;
 
 @end
@@ -70,13 +70,11 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
     id LPRequestMock = OCMClassMock([LPRequest class]);
     reqFactory.featureFlagManager = OCMClassMock([LPFeatureFlagManager class]);
     OCMStub([reqFactory.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]).andReturn(true);
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
-    NSString *apiMethod = @"ApiMethod";
+    NSString *apiMethod = @"test";
     
-    [reqFactory createGetForApiMethod:apiMethod params:params];
+    [reqFactory createGetForApiMethod:apiMethod params:nil];
     
-    OCMVerify([LPRequestMock get:apiMethod params:params]);
+    OCMVerify([LPRequestMock get:apiMethod params:nil]);
 }
 
 - (void)testCreateGetForApiMethodLeanplumRequest {
@@ -84,14 +82,11 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id LeanplumRequestMock = OCMClassMock([LeanplumRequest class]);
-    
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     NSString *apiMethod = @"ApiMethod";
     
-    [reqFactory createGetForApiMethod:apiMethod params:params];
+    [reqFactory createGetForApiMethod:apiMethod params:nil];
     
-    OCMVerify([LeanplumRequestMock get:apiMethod params:params]);
+    OCMVerify([LeanplumRequestMock get:apiMethod params:nil]);
 }
 
 - (void)testCreatePostForApiMethodLPRequest {
@@ -102,13 +97,11 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
     reqFactory.featureFlagManager = OCMClassMock([LPFeatureFlagManager class]);
     OCMStub([reqFactory.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]).andReturn(true);
     
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     NSString *apiMethod = @"ApiMethod";
     
-    [reqFactory createPostForApiMethod:apiMethod params:params];
+    [reqFactory createPostForApiMethod:apiMethod params:nil];
     
-    OCMVerify([LPRequestMock post:apiMethod params:params]);
+    OCMVerify([LPRequestMock post:apiMethod params:nil]);
 }
 
 - (void)testCreatePostForApiMethodLeanplumRequest {
@@ -117,325 +110,271 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
                                     initWithFeatureFlagManager:featureFlagManager];
     id LeanplumRequestMock = OCMClassMock([LeanplumRequest class]);
     
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     NSString *apiMethod = @"ApiMethod";
     
-    [reqFactory createPostForApiMethod:apiMethod params:params];
+    [reqFactory createPostForApiMethod:apiMethod params:nil];
     
-    OCMVerify([LeanplumRequestMock post:apiMethod params:params]);
+    OCMVerify([LeanplumRequestMock post:apiMethod params:nil]);
 }
 
 - (void)testStartWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory startWithParams:params];
+    [reqFactory startWithParams:nil];
  
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_START params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_START params:nil]);
 }
 
 - (void)testGetVarsWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory getVarsWithParams:params];
+    [reqFactory getVarsWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_GET_VARS params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_GET_VARS params:nil]);
 }
 
 - (void)testSetVarsWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory setVarsWithParams:params];
+    [reqFactory setVarsWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_VARS params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_VARS params:nil]);
 }
 
 - (void)testStopWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory stopWithParams:params];
+    [reqFactory stopWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_STOP params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_STOP params:nil]);
 }
 
 - (void)testRestartWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory restartWithParams:params];
+    [reqFactory restartWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_RESTART params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_RESTART params:nil]);
 }
 
 - (void)testTrackWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory trackWithParams:params];
+    [reqFactory trackWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_TRACK params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_TRACK params:nil]);
 }
 
 - (void)testAdvanceWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory advanceWithParams:params];
+    [reqFactory advanceWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_ADVANCE params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_ADVANCE params:nil]);
 }
 
 - (void)testPauseSessionWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory pauseSessionWithParams:params];
+    [reqFactory pauseSessionWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_PAUSE_SESSION params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_PAUSE_SESSION params:nil]);
 }
 
 - (void)testPauseStateWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory pauseStateWithParams:params];
+    [reqFactory pauseStateWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_PAUSE_STATE params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_PAUSE_STATE params:nil]);
 }
 
 - (void)testResumeSessionWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory resumeSessionWithParams:params];
+    [reqFactory resumeSessionWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_RESUME_SESSION params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_RESUME_SESSION params:nil]);
 }
 
 - (void)testResumeStateWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory resumeStateWithParams:params];
+    [reqFactory resumeStateWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_RESUME_STATE params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_RESUME_STATE params:nil]);
 }
 
 - (void)testMultiWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory multiWithParams:params];
+    [reqFactory multiWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_MULTI params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_MULTI params:nil]);
 }
 
 - (void)testRegisterDeviceWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory registerDeviceWithParams:params];
+    [reqFactory registerDeviceWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_REGISTER_FOR_DEVELOPMENT params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_REGISTER_FOR_DEVELOPMENT params:nil]);
 }
 
 - (void)testSetUserAttributesWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory setUserAttributesWithParams:params];
+    [reqFactory setUserAttributesWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_USER_ATTRIBUTES params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_USER_ATTRIBUTES params:nil]);
 }
 
 - (void)testSetDeviceAttributesWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory setDeviceAttributesWithParams:params];
+    [reqFactory setDeviceAttributesWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_DEVICE_ATTRIBUTES params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_DEVICE_ATTRIBUTES params:nil]);
 }
 
 - (void)testSetTrafficSourceInfoWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory setTrafficSourceInfoWithParams:params];
+    [reqFactory setTrafficSourceInfoWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_TRAFFIC_SOURCE_INFO params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SET_TRAFFIC_SOURCE_INFO params:nil]);
 }
 
 - (void)testUploadFileWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory uploadFileWithParams:params];
+    [reqFactory uploadFileWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_UPLOAD_FILE params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_UPLOAD_FILE params:nil]);
 }
 
 - (void)testDownloadFileWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory downloadFileWithParams:params];
+    [reqFactory downloadFileWithParams:nil];
     
-    OCMVerify([reqFactoryMock createGetForApiMethod:LP_API_METHOD_DOWNLOAD_FILE params:params]);
+    OCMVerify([reqFactoryMock createGetForApiMethod:LP_API_METHOD_DOWNLOAD_FILE params:nil]);
 }
 
 - (void)testHeartbeatWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory heartbeatWithParams:params];
+    [reqFactory heartbeatWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_HEARTBEAT params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_HEARTBEAT params:nil]);
 }
 
 - (void)testSaveInterfaceWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory saveInterfaceWithParams:params];
+    [reqFactory saveInterfaceWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_VERSION params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_VERSION params:nil]);
 }
 
 - (void)testSaveInterfaceImageWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory saveInterfaceImageWithParams:params];
+    [reqFactory saveInterfaceImageWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_IMAGE params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_IMAGE params:nil]);
 }
 
 - (void)testGetViewControllerVersionsListWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory getViewControllerVersionsListWithParams:params];
+    [reqFactory getViewControllerVersionsListWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_GET_VIEW_CONTROLLER_VERSIONS_LIST params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_GET_VIEW_CONTROLLER_VERSIONS_LIST params:nil]);
 }
 
 - (void)testLogWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory logWithParams:params];
+    [reqFactory logWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_LOG params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_LOG params:nil]);
 }
 
 - (void)testGetNewsfeedMessagesWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory getNewsfeedMessagesWithParams:params];
+    [reqFactory getNewsfeedMessagesWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_GET_INBOX_MESSAGES params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_GET_INBOX_MESSAGES params:nil]);
 }
 
 - (void)testMarkNewsfeedMessageAsReadWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory markNewsfeedMessageAsReadWithParams:params];
+    [reqFactory markNewsfeedMessageAsReadWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_MARK_INBOX_MESSAGE_AS_READ params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_MARK_INBOX_MESSAGE_AS_READ params:nil]);
 }
 
 - (void)testDeleteNewsfeedMessageWithParams {
-    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
-    params[@"key"] = @"value";
     LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
-    [reqFactory deleteNewsfeedMessageWithParams:params];
+    [reqFactory deleteNewsfeedMessageWithParams:nil];
     
-    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_DELETE_INBOX_MESSAGE params:params]);
+    OCMVerify([reqFactoryMock createPostForApiMethod:LP_API_METHOD_DELETE_INBOX_MESSAGE params:nil]);
 }
 
 @end

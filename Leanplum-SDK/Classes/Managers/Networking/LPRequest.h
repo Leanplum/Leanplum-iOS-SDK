@@ -27,18 +27,20 @@
 #import "LPRequesting.h"
 #import "LPNetworkFactory.h"
 
+NS_ASSUME_NONNULL_BEGIN
 @interface LPRequest : NSObject <LPRequesting>
 
 @property (nonatomic, strong) NSString *apiMethod;
-@property (nonatomic, strong) NSDictionary *params;
+@property (nonatomic, strong, nullable) NSDictionary *params;
 @property (atomic) BOOL sent;
-@property (nonatomic, copy) LPNetworkResponseBlock responseBlock;
-@property (nonatomic, copy) LPNetworkErrorBlock errorBlock;
+@property (nonatomic, copy, nullable) LPNetworkResponseBlock responseBlock;
+@property (nonatomic, copy, nullable) LPNetworkErrorBlock errorBlock;
 
-+ (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params;
-+ (LPRequest *)post:(NSString *)apiMethod params:(NSDictionary *)params;
++ (LPRequest *)get:(NSString *)apiMethod params:(nullable NSDictionary *)params;
++ (LPRequest *)post:(NSString *)apiMethod params:(nullable NSDictionary *)params;
 
-- (void)onResponse:(LPNetworkResponseBlock)response;
-- (void)onError:(LPNetworkErrorBlock)error;
+- (void)onResponse:(nullable LPNetworkResponseBlock)response;
+- (void)onError:(nullable LPNetworkErrorBlock)error;
 
 @end
+NS_ASSUME_NONNULL_END
