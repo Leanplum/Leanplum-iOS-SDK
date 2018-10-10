@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name = 'Leanplum-iOS-SDK-source'
-  s.version = '2.0.6'
+  s.version = '2.2-beta-3'
   s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
   s.description = <<-DESC
 Leanplum’s integrated solution delivers meaningful engagement across messaging and the in-app
@@ -20,9 +20,9 @@ Analytics.
   s.author = { 'Leanplum' => 'support@leanplum.com' }
   s.social_media_url = 'https://twitter.com/leanplum'
   s.requires_arc = true
-  s.source = { :git => 'https://github.com/Leanplum/Leanplum-SDK-Internal.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '7.0'
-  s.tvos.deployment_target = '7.0'
+  s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
+  s.ios.deployment_target = '8.0'
+  s.tvos.deployment_target = '8.0'
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.library = 'sqlite3'

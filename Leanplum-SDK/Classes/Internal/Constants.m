@@ -187,6 +187,7 @@ NSString *LP_KEY_UPLOAD_URL = @"uploadUrl";
 NSString *LP_KEY_VARIANTS = @"variants";
 NSString *LP_KEY_VARIANT_DEBUG_INFO = @"variantDebugInfo";
 NSString *LP_KEY_ENABLED_COUNTERS = @"enabledSdkCounters";
+NSString *LP_KEY_ENABLED_FEATURE_FLAGS = @"enabledFeatureFlags";
 NSString *LP_KEY_INBOX_MESSAGES = @"newsfeedMessages";
 NSString *LP_KEY_UNREAD_COUNT = @"unreadCount";
 NSString *LP_KEY_SYNC_INBOX = @"syncNewsfeed";
