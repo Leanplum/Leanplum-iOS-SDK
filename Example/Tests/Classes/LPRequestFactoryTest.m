@@ -41,6 +41,8 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 
 @interface LPRequestFactory(UnitTest)
 
+@property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
+
 - (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
 - (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params;
 - (BOOL)shouldReturnLPRequestClass;
@@ -62,12 +64,12 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 }
 
 - (void)testCreateGetForApiMethodLPRequest {
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id LPRequestMock = OCMClassMock([LPRequest class]);
-    id reqFactoryMock = OCMPartialMock(reqFactory);
-    OCMStub([reqFactoryMock shouldReturnLPRequestClass]).andReturn(true);
-    
+    reqFactory.featureFlagManager = OCMClassMock([LPFeatureFlagManager class]);
+    OCMStub([reqFactory.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]).andReturn(true);
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
     NSString *apiMethod = @"ApiMethod";
@@ -75,13 +77,12 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
     [reqFactory createGetForApiMethod:apiMethod params:params];
     
     OCMVerify([LPRequestMock get:apiMethod params:params]);
-    
-    [reqFactoryMock stopMocking];
 }
 
 - (void)testCreateGetForApiMethodLeanplumRequest {
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id LeanplumRequestMock = OCMClassMock([LeanplumRequest class]);
     
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
@@ -94,11 +95,12 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 }
 
 - (void)testCreatePostForApiMethodLPRequest {
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id LPRequestMock = OCMClassMock([LPRequest class]);
-    id reqFactoryMock = OCMPartialMock(reqFactory);
-    OCMStub([reqFactoryMock shouldReturnLPRequestClass]).andReturn(true);
+    reqFactory.featureFlagManager = OCMClassMock([LPFeatureFlagManager class]);
+    OCMStub([reqFactory.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR]).andReturn(true);
     
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
@@ -107,13 +109,12 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
     [reqFactory createPostForApiMethod:apiMethod params:params];
     
     OCMVerify([LPRequestMock post:apiMethod params:params]);
-    
-    [reqFactoryMock stopMocking];
 }
 
 - (void)testCreatePostForApiMethodLeanplumRequest {
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id LeanplumRequestMock = OCMClassMock([LeanplumRequest class]);
     
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
@@ -128,8 +129,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testStartWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory startWithParams:params];
  
@@ -139,8 +141,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testGetVarsWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory getVarsWithParams:params];
     
@@ -150,8 +153,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testSetVarsWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory setVarsWithParams:params];
     
@@ -161,8 +165,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testStopWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory stopWithParams:params];
     
@@ -172,8 +177,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testRestartWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory restartWithParams:params];
     
@@ -183,8 +189,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testTrackWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory trackWithParams:params];
     
@@ -194,8 +201,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testAdvanceWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory advanceWithParams:params];
     
@@ -205,8 +213,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testPauseSessionWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory pauseSessionWithParams:params];
     
@@ -216,8 +225,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testPauseStateWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory pauseStateWithParams:params];
     
@@ -227,8 +237,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testResumeSessionWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory resumeSessionWithParams:params];
     
@@ -238,8 +249,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testResumeStateWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory resumeStateWithParams:params];
     
@@ -249,8 +261,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testMultiWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory multiWithParams:params];
     
@@ -260,8 +273,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testRegisterDeviceWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory registerDeviceWithParams:params];
     
@@ -271,8 +285,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testSetUserAttributesWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory setUserAttributesWithParams:params];
     
@@ -282,8 +297,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testSetDeviceAttributesWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory setDeviceAttributesWithParams:params];
     
@@ -293,8 +309,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testSetTrafficSourceInfoWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory setTrafficSourceInfoWithParams:params];
     
@@ -304,8 +321,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testUploadFileWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory uploadFileWithParams:params];
     
@@ -315,8 +333,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testDownloadFileWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory downloadFileWithParams:params];
     
@@ -326,8 +345,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testHeartbeatWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory heartbeatWithParams:params];
     
@@ -337,8 +357,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testSaveInterfaceWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory saveInterfaceWithParams:params];
     
@@ -348,8 +369,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testSaveInterfaceImageWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory saveInterfaceImageWithParams:params];
     
@@ -359,8 +381,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testGetViewControllerVersionsListWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory getViewControllerVersionsListWithParams:params];
     
@@ -370,8 +393,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testLogWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory logWithParams:params];
     
@@ -381,8 +405,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testGetNewsfeedMessagesWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory getNewsfeedMessagesWithParams:params];
     
@@ -392,8 +417,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testMarkNewsfeedMessageAsReadWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory markNewsfeedMessageAsReadWithParams:params];
     
@@ -403,8 +429,9 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (void)testDeleteNewsfeedMessageWithParams {
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     params[@"key"] = @"value";
+    LPFeatureFlagManager *featureFlagManager = [[LPFeatureFlagManager alloc] init];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                    initWithFeatureFlagManager:featureFlagManager];
     id reqFactoryMock = OCMPartialMock(reqFactory);
     [reqFactory deleteNewsfeedMessageWithParams:params];
     
