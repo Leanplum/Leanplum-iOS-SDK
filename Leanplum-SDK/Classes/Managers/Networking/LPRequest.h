@@ -33,8 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) NSString *apiMethod;
 @property (nonatomic, strong, nullable) NSDictionary *params;
 @property (atomic) BOOL sent;
-@property (nonatomic, copy) LPNetworkResponseBlock responseBlock;
-@property (nonatomic, copy) LPNetworkErrorBlock errorBlock;
+@property (nonatomic, copy, nullable) LPNetworkResponseBlock responseBlock;
+@property (nonatomic, copy, nullable) LPNetworkErrorBlock errorBlock;
 @property (nonatomic, strong) NSString *requestId;
 
 + (LPRequest *)get:(NSString *)apiMethod params:(nullable NSDictionary *)params;

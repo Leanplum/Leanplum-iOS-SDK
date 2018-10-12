@@ -29,6 +29,11 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
+- (void)testRequestHasRequestID {
+    LPRequest *request = [[LPRequest alloc] init];
+
+}
+
 - (void)testPostShouldCreatePostRequest {
     NSString *apiMethod = @"apiMethod";
     NSDictionary *params = @{@"key": @"value"};
