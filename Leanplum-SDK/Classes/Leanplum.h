@@ -371,6 +371,13 @@ typedef enum {
  */
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
+typedef void (^LeanplumMessageDisplayedBlock)(LPActionContext *actionContext);
+
+/**
+ * Block to call when a message is displayed to the user.
+ */
++ (void)onMessageDisplayed:(LeanplumMessageDisplayedBlock)block;
+
 /**
  * Clears cached values for messages, variables and test assignments.
  * Use sparingly as if the app is updated, you'll have to deal with potentially
