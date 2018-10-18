@@ -8,6 +8,7 @@
 #import "LeanplumInternal.h"
 #import "LeanplumCompatibility.h"
 #import "Constants.h"
+#import "LPCountAggregator.h"
 
 @implementation LeanplumCompatibility
 
@@ -126,6 +127,8 @@ NSString *CAMPAIGN_CONTENT = @"&cc";
         }
     }
     LP_END_TRY
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"gaTrack"];
 }
 
 

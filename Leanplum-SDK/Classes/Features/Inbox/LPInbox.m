@@ -34,6 +34,7 @@
 #import "Utils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
+#import "LPCountAggregator.h"
 
 static NSObject *updatingLock;
 
@@ -508,6 +509,7 @@ static NSObject *updatingLock;
         [messages addObject:[self messageForId:messageId]];
     }
     LP_END_TRY
+    [[LPCountAggregator sharedAggregator] incrementCount:@"allMessages"];
     return messages;
 }
 

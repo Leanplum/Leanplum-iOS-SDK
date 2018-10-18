@@ -9,6 +9,7 @@
 #import "LPVarCache.h"
 #import "LPFileManager.h"
 #import "Utils.h"
+#import "LPCountAggregator.h"
 
 typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
@@ -511,6 +512,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         [Leanplum triggerAction:childContext];
     });
     LP_END_TRY
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"runActionNamed"];
 }
 
 - (void)runTrackedActionNamed:(NSString *)name
@@ -524,6 +527,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         [self trackMessageEvent:name withValue:0.0 andInfo:nil andParameters:nil];
     }
     [self runActionNamed:name];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"runTrackedActionNamed"];
 }
 
 - (void)trackMessageEvent:(NSString *)event withValue:(double)value andInfo:(NSString *)info

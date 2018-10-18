@@ -36,6 +36,7 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
+#import "LPCountAggregator.h"
 
 @interface LPVarCache()
 @property (strong, nonatomic) NSRegularExpression *varNameRegex;
@@ -66,6 +67,7 @@
 @property (assign, nonatomic) int contentVersion;
 @property (assign, nonatomic) BOOL hasTooManyFiles;
 @property (strong, nonatomic) RegionInitBlock regionInitBlock;
+@property (strong, nonatomic) LPCountAggregator *countAggregator;
 
 @end
 
@@ -87,6 +89,7 @@ static dispatch_once_t leanplum_onceToken;
     self = [super init];
     if (self) {
         [self initialize];
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -121,6 +124,8 @@ static dispatch_once_t leanplum_onceToken;
         [Leanplum throwError:@"[LPVarCache define:with:kind:] Empty name parameter provided."];
         return nil;
     }
+    
+    [self.countAggregator incrementCount:@"define"];
 
     @synchronized (self.vars) {
         LP_TRY

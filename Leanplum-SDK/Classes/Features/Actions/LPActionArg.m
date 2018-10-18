@@ -8,6 +8,7 @@
 #import "LeanplumInternal.h"
 #import "Utils.h"
 #import "LPVarCache.h"
+#import "LPCountAggregator.h"
 
 @interface LPActionArg (PrivateProperties)
 
@@ -35,6 +36,8 @@
                 withDefaultValue:(NSString *) defaultValue];
     }
     LP_END_TRY
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"argNamed"];
     return arg;
 }
 

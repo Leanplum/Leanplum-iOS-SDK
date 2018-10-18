@@ -25,6 +25,13 @@
 #import "LPEventCallback.h"
 #import "LeanplumRequest.h"
 #import "LPResponse.h"
+#import "LPCountAggregator.h"
+
+@interface LPEventCallback()
+
+@property (strong, nonatomic) LPCountAggregator *countAggregator;
+
+@end
 
 @implementation LPEventCallback
 
@@ -34,6 +41,7 @@
     if (self = [super init]) {
         self.responseBlock = [responseBlock copy];
         self.errorBlock = [errorBlock copy];
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -44,6 +52,8 @@
     if (!self.responseBlock) {
         return;
     }
+    
+    [self.countAggregator incrementCount:@"invokeResponseWithOperation"];
     
     // Ensure all callbacks are on main thread.
     if (![NSThread isMainThread]) {

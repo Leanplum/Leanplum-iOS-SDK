@@ -25,6 +25,7 @@
 
 #import "LPUIAlert.h"
 #import "Constants.h"
+#import "LPCountAggregator.h"
 
 @implementation LPUIAlert
 
@@ -84,6 +85,7 @@
         [alertView show];
 #endif
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"showWithTitle"];
 }
 
 @end
