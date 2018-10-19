@@ -513,7 +513,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     });
     LP_END_TRY
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"runActionNamed"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"run_action_named"];
 }
 
 - (void)runTrackedActionNamed:(NSString *)name
@@ -527,7 +527,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         [self trackMessageEvent:name withValue:0.0 andInfo:nil andParameters:nil];
     }
     [self runActionNamed:name];
-    [[LPCountAggregator sharedAggregator] incrementCount:@"runTrackedActionNamed"];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"run_tracked_action_named"];
 }
 
 - (void)trackMessageEvent:(NSString *)event withValue:(double)value andInfo:(NSString *)info

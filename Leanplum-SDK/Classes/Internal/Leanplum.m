@@ -341,7 +341,7 @@ BOOL inForeground = NO;
     LP_TRY
     [LPFileManager initAsync:async];
     LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"syncResources"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"sync_resources"];
 }
 
 + (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
@@ -358,7 +358,7 @@ BOOL inForeground = NO;
     [LPFileManager initWithInclusions:patternsToIncludeOrNil andExclusions:patternsToExcludeOrNil
                                 async:async];
     LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"syncResourcePaths"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"sync_resource_paths"];
 }
 
 + (void)synchronizeDefaults
@@ -690,7 +690,7 @@ BOOL inForeground = NO;
         return;
     }
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"startWithUserId"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"start_with_user_id"];
     
     LP_TRY
     NSDate *startTime = [NSDate date];
@@ -1270,6 +1270,7 @@ BOOL inForeground = NO;
         [[LPInternalState sharedState].startBlocks addObject:[block copy]];
         LP_END_TRY
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"on_start_response"];
 }
 
 + (void)addStartResponseResponder:(id)responder withSelector:(SEL)selector
@@ -1478,7 +1479,7 @@ BOOL inForeground = NO;
 
 + (void)clearUserContent {
     [[LPVarCache sharedCache] clearUserContent];
-    [[LPCountAggregator sharedAggregator] incrementCount:@"clearUserContent"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"clear_user_content"];
 }
 
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector
@@ -1561,7 +1562,7 @@ BOOL inForeground = NO;
     }
     LP_END_TRY
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"defineAction"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
 }
 
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block
@@ -1597,7 +1598,7 @@ BOOL inForeground = NO;
                                                        withAction:nil
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"handleNotification"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"handle_notification"];
 }
 
 #if LP_NOT_TV
@@ -1811,7 +1812,7 @@ BOOL inForeground = NO;
 {
     [LPInternalState sharedState].isVariantDebugInfoEnabled = variantDebugInfoEnabled;
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"setVariantDebugInfoEnabled"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"set_variant_debug_info_enabled"];
 }
 
 + (void)trackAllAppScreens
@@ -2178,7 +2179,7 @@ andParameters:(NSDictionary *)params
     }];
     LP_END_TRY
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"advanceTo"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"advance_to"];
 }
 
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
@@ -2248,7 +2249,7 @@ andParameters:(NSDictionary *)params
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
 {
-    [[LPCountAggregator sharedAggregator] incrementCount:@"forceContentUpdate"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"force_content_update"];
     
     if (IS_NOOP) {
         if (block) {

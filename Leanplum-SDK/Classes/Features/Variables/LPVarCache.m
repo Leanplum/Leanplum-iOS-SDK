@@ -125,7 +125,7 @@ static dispatch_once_t leanplum_onceToken;
         return nil;
     }
     
-    [self.countAggregator incrementCount:@"define"];
+    [self.countAggregator incrementCount:@"define_varcache"];
 
     @synchronized (self.vars) {
         LP_TRY
@@ -419,6 +419,8 @@ static dispatch_once_t leanplum_onceToken;
         NSLog(@"Leanplum: Could not load variable diffs: %@", exception);
     }
     [self userAttributes];
+    
+    [self.countAggregator incrementCount:@"load_diffs"];
 }
 
 - (void)saveDiffs
@@ -454,6 +456,7 @@ static dispatch_once_t leanplum_onceToken;
         
         [Leanplum synchronizeDefaults];
     }
+    [self.countAggregator incrementCount:@"save_diffs"];
 }
 
 - (void)applyVariableDiffs:(NSDictionary *)diffs_
@@ -563,6 +566,7 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
     }
+    [self.countAggregator incrementCount:@"apply_variable_diffs"];
 }
 
 - (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs
@@ -737,16 +741,22 @@ static dispatch_once_t leanplum_onceToken;
 - (void)onUpdate:(CacheUpdateBlock) block
 {
     self.updateBlock = block;
+    
+    [self.countAggregator incrementCount:@"on_update_varcache"];
 }
 
 - (void)onInterfaceUpdate:(CacheUpdateBlock)block
 {
     self.interfaceUpdateBlock = block;
+    
+    [self.countAggregator incrementCount:@"on_interface_update"];
 }
 
 - (void)onEventsUpdate:(CacheUpdateBlock)block
 {
     self.eventsUpdateBlock = block;
+    
+    [self.countAggregator incrementCount:@"on_events_update"];
 }
 
 - (NSMutableDictionary *)userAttributes
@@ -789,6 +799,8 @@ static dispatch_once_t leanplum_onceToken;
     
     [defaults setObject:encryptedData forKey:LEANPLUM_DEFAULTS_ATTRIBUTES_KEY];
     [Leanplum synchronizeDefaults];
+    
+    [self.countAggregator incrementCount:@"save_user_attributes"];
 }
 
 - (void)registerActionDefinition:(NSString *)name

@@ -593,7 +593,7 @@ static dispatch_once_t leanplum_onceToken;
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
-    [self.countAggregator incrementCount:@"didReceiveRemoteNotification"];
+    [self.countAggregator incrementCount:@"did_receive_remote_notification"];
     
     // If app was inactive, then handle notification because the user tapped it.
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
@@ -1223,7 +1223,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     [self incrementMessageTriggerOccurrences:messageId];
     
-    [self.countAggregator incrementCount:@"recordMessageTrigger"];
+    [self.countAggregator incrementCount:@"record_message_trigger"];
 }
 
 /**

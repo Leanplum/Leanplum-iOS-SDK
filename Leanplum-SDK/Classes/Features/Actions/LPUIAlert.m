@@ -85,7 +85,7 @@
         [alertView show];
 #endif
     }
-    [[LPCountAggregator sharedAggregator] incrementCount:@"showWithTitle"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"show_With_title"];
 }
 
 @end

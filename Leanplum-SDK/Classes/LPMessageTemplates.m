@@ -191,7 +191,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         sharedTemplates = [[self alloc] init];
     });
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"sharedTemplates"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"shared_templates"];
+    
     return sharedTemplates;
 }
 

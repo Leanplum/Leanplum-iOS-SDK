@@ -47,6 +47,8 @@ NSString *CAMPAIGN_CONTENT = @"&cc";
 
 + (void)gaTrack:(NSObject *)trackingObject
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"ga_track"];
+    
     LP_TRY
     if ([trackingObject isKindOfClass:[NSString class]]) {
         [Leanplum track:(NSString *)trackingObject];
@@ -127,8 +129,6 @@ NSString *CAMPAIGN_CONTENT = @"&cc";
         }
     }
     LP_END_TRY
-    
-    [[LPCountAggregator sharedAggregator] incrementCount:@"gaTrack"];
 }
 
 

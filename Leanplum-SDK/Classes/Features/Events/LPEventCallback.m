@@ -53,7 +53,7 @@
         return;
     }
     
-    [self.countAggregator incrementCount:@"invokeResponseWithOperation"];
+    [self.countAggregator incrementCount:@"invoke_response_with_operation"];
     
     // Ensure all callbacks are on main thread.
     if (![NSThread isMainThread]) {

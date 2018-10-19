@@ -24,6 +24,7 @@
 
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
+#import "LPCountAggregator.h"
 
 @interface LPRequest()
 
@@ -49,6 +50,9 @@
 {
     LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
     LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_lprequest"];
+    
     return [[LPRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
 }
 
@@ -56,17 +60,24 @@
 {
     LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
     LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"post_lpquest"];
+    
     return [[LPRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
 - (void)onResponse:(LPNetworkResponseBlock)responseBlock
 {
     self.responseBlock = responseBlock;
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"on_response_lprequest"];
 }
 
 - (void)onError:(LPNetworkErrorBlock)errorBlock
 {
     self.errorBlock = errorBlock;
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"on_error_lprequest"];
 }
 
 @end

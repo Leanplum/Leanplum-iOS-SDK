@@ -27,10 +27,12 @@
 #import "LPResponse.h"
 #import "Constants.h"
 #import "LPRequestSender.h"
+#import "LPCountAggregator.h"
 
 @interface LPRegisterDevice()
 
 @property (nonatomic, copy) LeanplumStartBlock callback;
+@property (strong, nonatomic) LPCountAggregator *countAggregator;
 
 @end
 
@@ -40,7 +42,9 @@
 {
     if (self = [super init]) {
         _callback = callback;
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
+    [self.countAggregator incrementCount:@"init_with_callback"];
     return self;
 }
 
@@ -69,6 +73,8 @@
         [self showError:[error localizedDescription]];
     }];
     [[LPRequestSender sharedInstance] sendNow:request];
+    
+    [self.countAggregator incrementCount:@"register_device"];
 }
 
 @end

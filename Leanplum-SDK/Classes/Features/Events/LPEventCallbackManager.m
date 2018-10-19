@@ -26,6 +26,7 @@
 #import "LeanplumRequest.h"
 #import "LPEventCallback.h"
 #import "LPResponse.h"
+#import "LPCountAggregator.h"
 
 @implementation LPEventCallbackManager
 
@@ -55,6 +56,7 @@
     if (callbackMap && callback && atIndex) {
         callbackMap[atIndex] = callback;
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"add_event_callback_at"];
 }
 
 + (void)invokeSuccessCallbacksOnResponses:(id)responses
@@ -90,6 +92,7 @@
         id response = [LPResponse getResponseAt:index fromDictionary:responses];
         responseBlock(operation, response);
     }];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"invoke_success_callbacks_on_responses"];
 }
 
 + (void)invokeErrorCallbacksOnResponses:(id)responses
@@ -117,6 +120,7 @@
             [callback invokeError:error];
         }
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"invoke_error_callbacks_on_responses"];
 }
 
 + (void)invokeErrorCallbacksWithError:(NSError *)error

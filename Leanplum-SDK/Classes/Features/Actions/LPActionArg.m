@@ -37,7 +37,7 @@
     }
     LP_END_TRY
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"argNamed"];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"arg_named"];
     return arg;
 }
 

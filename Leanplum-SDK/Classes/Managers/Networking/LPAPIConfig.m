@@ -11,6 +11,7 @@
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
+#import "LPCountAggregator.h"
 
 @interface LPAPIConfig()
 
@@ -36,6 +37,8 @@
 {
     self.appId = appId;
     self.accessKey = accessKey;
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"set_app_id"];
 }
 
 - (void)loadToken
@@ -49,6 +52,8 @@
     }
 
     [self setToken:token_];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"load_token"];
 }
 
 - (void)saveToken
@@ -59,6 +64,8 @@
                       forServiceName:LP_KEYCHAIN_SERVICE_NAME
                       updateExisting:YES
                                error:&err];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"save_token"];
 }
 
 @end

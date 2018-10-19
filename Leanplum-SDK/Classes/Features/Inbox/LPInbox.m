@@ -509,7 +509,9 @@ static NSObject *updatingLock;
         [messages addObject:[self messageForId:messageId]];
     }
     LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"allMessages"];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"all_messages_inbox"];
+    
     return messages;
 }
 

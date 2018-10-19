@@ -6,6 +6,7 @@
 //
 
 #import "LPFeatureFlagManager.h"
+#import "LPCountAggregator.h"
 
 @implementation LPFeatureFlagManager
 
@@ -20,6 +21,7 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 - (BOOL)isFeatureFlagEnabled:(nonnull NSString *)featureFlagName {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"is_feature_flag_enabled"];
     return [self.enabledFeatureFlags containsObject:featureFlagName];
 }
 

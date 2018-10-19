@@ -27,6 +27,7 @@
 #import "Utils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
+#import "LPCountAggregator.h"
 
 @implementation LPAppIconManager
 
@@ -74,6 +75,8 @@
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
     }];
     [[LPRequestSender sharedInstance] sendNow:request withDatas:requestDatas];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"upload_app_icons_on_dev_mode"];
 }
 
 #pragma mark - Private methods
