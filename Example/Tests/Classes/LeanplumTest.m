@@ -46,6 +46,7 @@
 
 + (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response;
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
++ (void)triggerMessageDisplayed:(LPActionContext *)context;
 
 @end
 
@@ -1779,6 +1780,24 @@
 - (void)on_start_response:(BOOL) success
 {
     XCTAssertTrue(success);
+}
+
+/**
+ * Test trigger message displayed calls callback
+ */
+-(void)test_triggerMessageDisplayed
+{
+    __block BOOL blockCalled = NO;
+    LPActionContext *testActionContext = [[LPActionContext alloc] init];
+    LeanplumMessageDisplayedBlock block = ^void(LPActionContext *actionContext) {
+        blockCalled = YES;
+        XCTAssertEqual(actionContext, testActionContext);
+    };
+
+    [Leanplum onMessageDisplayed:block];
+    [Leanplum triggerMessageDisplayed:testActionContext];
+
+    XCTAssertTrue(blockCalled);
 }
 
 @end
