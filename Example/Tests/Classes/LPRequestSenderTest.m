@@ -87,6 +87,8 @@
     [requestSender sendEventually:request];
 
     OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
+
+    [eventDataManagerMock stopMocking];
 }
 
 - (void)testSendIfConnected {
@@ -169,12 +171,15 @@
     OCMStub([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]).andReturn(opMock);
     [requestSender sendRequests:true];
 
-    //OCMVerify([countAggregatorMock sendAllCounts]);
+    OCMVerify([countAggregatorMock sendAllCounts]);
     OCMVerify([eventDataManagerMock eventsWithLimit:MAX_EVENTS_PER_API_CALL]);
     OCMVerify([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]);
     OCMVerify([opMock addCompletionHandler:[OCMArg any] errorHandler:[OCMArg any]]);
     OCMVerify([requestSender.engine enqueueOperation:opMock]);
+
+    [requestOperationMock stopMocking];
     [countAggregatorMock stopMocking];
+    [eventDataManagerMock stopMocking];
 }
 
 - (void) testSendRequestsAsync {
