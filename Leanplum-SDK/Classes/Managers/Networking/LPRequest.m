@@ -29,6 +29,7 @@
 @interface LPRequest()
 
 @property (nonatomic, strong) NSString *httpMethod;
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
 
 @end
 
@@ -42,6 +43,7 @@
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -70,14 +72,14 @@
 {
     self.responseBlock = responseBlock;
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"on_response_lprequest"];
+    [self.countAggregator incrementCount:@"on_response_lprequest"];
 }
 
 - (void)onError:(LPNetworkErrorBlock)errorBlock
 {
     self.errorBlock = errorBlock;
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"on_error_lprequest"];
+    [self.countAggregator incrementCount:@"on_error_lprequest"];
 }
 
 @end
