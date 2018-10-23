@@ -261,6 +261,7 @@ static NSObject *updatingLock;
 - (id)init {
     if (self = [super init]) {
         [self reset];
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -510,7 +511,7 @@ static NSObject *updatingLock;
     }
     LP_END_TRY
     
-    [[LPCountAggregator sharedAggregator] incrementCount:@"all_messages_inbox"];
+    [self.countAggregator incrementCount:@"all_messages_inbox"];
     
     return messages;
 }
