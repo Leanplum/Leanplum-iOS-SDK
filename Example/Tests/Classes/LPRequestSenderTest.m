@@ -154,8 +154,6 @@
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id requestOperationMock = OCMClassMock([NSBlockOperation class]);
     OCMStub([NSBlockOperation new]).andReturn(requestOperationMock);
-    id countAggregatorMock = OCMClassMock([LPCountAggregator class]);
-    OCMStub([countAggregatorMock sharedAggregator]).andReturn(countAggregatorMock);
     id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
 
     NSMutableArray *requestsToSend = [[NSMutableArray alloc] init];
@@ -171,14 +169,12 @@
     OCMStub([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]).andReturn(opMock);
     [requestSender sendRequests:true];
 
-    OCMVerify([countAggregatorMock sendAllCounts]);
     OCMVerify([eventDataManagerMock eventsWithLimit:MAX_EVENTS_PER_API_CALL]);
     OCMVerify([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]);
     OCMVerify([opMock addCompletionHandler:[OCMArg any] errorHandler:[OCMArg any]]);
     OCMVerify([requestSender.engine enqueueOperation:opMock]);
 
     [requestOperationMock stopMocking];
-    [countAggregatorMock stopMocking];
     [eventDataManagerMock stopMocking];
 }
 
