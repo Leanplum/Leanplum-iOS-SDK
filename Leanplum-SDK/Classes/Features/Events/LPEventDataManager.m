@@ -25,6 +25,7 @@
 #import "LPEventDataManager.h"
 #import "LPDatabase.h"
 #import "LPJSON.h"
+#import "LPCountAggregator.h"
 
 @implementation LPEventDataManager
 
@@ -33,6 +34,8 @@
     NSString *query = @"INSERT INTO event (data) VALUES (?);";
     NSArray *objectsToBind = @[[LPJSON stringFromJSON:event]];
     [[LPDatabase sharedDatabase] runQuery:query bindObjects:objectsToBind];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"add_event"];
 }
 
 + (void)addEvents:(NSArray *)events
@@ -52,6 +55,8 @@
         [objectsToBind addObject:dataString];
     }];
     [[LPDatabase sharedDatabase] runQuery:query bindObjects:objectsToBind];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"add_events"];
 }
 
 + (NSArray *)eventsWithLimit:(NSInteger)limit
@@ -70,6 +75,8 @@
         [events addObject:[event mutableCopy]];
     }
     
+    [[LPCountAggregator sharedAggregator] incrementCount:@"events_with_limit"];
+    
     return events;
 }
 
@@ -82,6 +89,8 @@
                                                   "(SELECT rowid FROM event ORDER BY rowid "
                                                   "LIMIT %ld);", (long)limit];
     [[LPDatabase sharedDatabase] runQuery:query];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"delete_events_with_limit"];
 }
 
 + (NSInteger)count

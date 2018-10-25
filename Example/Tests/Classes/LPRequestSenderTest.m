@@ -87,6 +87,8 @@
     [requestSender sendEventually:request];
 
     OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
+
+    [eventDataManagerMock stopMocking];
 }
 
 - (void)testSendIfConnected {
@@ -99,6 +101,8 @@
     [requestSender sendIfConnected:request];
 
     OCMVerify([requestSenderMock sendNow:request]);
+    
+    [requestSenderMock stopMocking];
 }
 
 - (void)testSendIfNotConnected {
@@ -126,6 +130,8 @@
     [requestSender sendNow:request withData:data[@"key"] forKey:@"key"];
 
     OCMVerify([requestSenderMock sendNow:request withDatas:data]);
+    
+    [requestSenderMock stopMocking];
 }
 
 - (void)testSendNowWithDatas {
@@ -170,7 +176,10 @@
     OCMVerify([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:timeout]);
     OCMVerify([opMock addCompletionHandler:[OCMArg any] errorHandler:[OCMArg any]]);
     OCMVerify([requestSender.engine enqueueOperation:opMock]);
+
+    [requestOperationMock stopMocking];
     [countAggregatorMock stopMocking];
+    [eventDataManagerMock stopMocking];
 }
 
 - (void) testSendRequestsAsync {
@@ -183,5 +192,8 @@
 
     OCMVerify([requestOperationMock addExecutionBlock:[OCMArg any]]);
     OCMVerify([mockQueue addOperation:requestOperationMock]);
+    
+    [requestOperationMock stopMocking];
+    [mockQueue stopMocking];
 }
 @end

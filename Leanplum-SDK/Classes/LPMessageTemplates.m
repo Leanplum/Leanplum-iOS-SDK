@@ -29,6 +29,7 @@
 #import "LPMessageTemplates.h"
 #import <QuartzCore/QuartzCore.h>
 #import <StoreKit/StoreKit.h>
+#import "LPCountAggregator.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -189,7 +190,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     dispatch_once(&onceToken, ^{
         sharedTemplates = [[self alloc] init];
     });
-
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"shared_templates"];
+    
     return sharedTemplates;
 }
 

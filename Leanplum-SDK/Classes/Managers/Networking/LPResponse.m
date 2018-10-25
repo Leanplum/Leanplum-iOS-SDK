@@ -32,6 +32,7 @@
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
+#import "LPCountAggregator.h"
 
 @implementation LPResponse
 
@@ -42,6 +43,7 @@
 
 + (NSDictionary *)getResponseAt:(NSUInteger)index fromDictionary:(NSDictionary *)dictionary
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_response_at"];
     if (index < [LPResponse numResponsesInDictionary:dictionary]) {
         return [dictionary[@"response"] objectAtIndex:index];
     }
@@ -50,17 +52,20 @@
 
 + (NSDictionary *)getLastResponse:(NSDictionary *)dictionary
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_last_response"];
     return [LPResponse getResponseAt:[LPResponse numResponsesInDictionary:dictionary] - 1
                       fromDictionary:dictionary];
 }
 
 + (BOOL)isResponseSuccess:(NSDictionary *)dictionary
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"is_response_success"];
     return [dictionary[@"success"] boolValue];
 }
 
 + (NSString *)getResponseError:(NSDictionary *)dictionary
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_response_error"];
     return dictionary[@"error"][@"message"];
 }
 

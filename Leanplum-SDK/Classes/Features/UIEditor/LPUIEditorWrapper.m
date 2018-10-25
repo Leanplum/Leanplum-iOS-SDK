@@ -23,6 +23,7 @@
 //  under the License.
 
 #import "LPUIEditorWrapper.h"
+#import "LPCountAggregator.h"
 
 @implementation LPUIEditorWrapper
 
@@ -46,6 +47,8 @@ NSString *LP_EDITOR_PARAM_AUTOMATIC_SCREEN_TRACKING = @"editorAutomaticScreenTra
     [[NSNotificationCenter defaultCenter] postNotificationName:LP_EDITOR_EVENT_NAME
                                                         object:nil
                                                       userInfo:data];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"start_updating_ui"];
 }
 
 + (void)stopUpdating
@@ -66,6 +69,8 @@ NSString *LP_EDITOR_PARAM_AUTOMATIC_SCREEN_TRACKING = @"editorAutomaticScreenTra
     [[NSNotificationCenter defaultCenter] postNotificationName:LP_EDITOR_EVENT_NAME
                                                         object:nil
                                                       userInfo:data];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_update_ui"];
 }
 
 + (void)sendUpdateDelayed

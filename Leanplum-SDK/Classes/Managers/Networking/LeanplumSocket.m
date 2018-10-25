@@ -31,8 +31,15 @@
 #import "LPUIAlert.h"
 #import "LPUIEditorWrapper.h"
 #import "LPAPIConfig.h"
+#import "LPCountAggregator.h"
 
 id<LPNetworkEngineProtocol> engine_;
+
+@interface LeanplumSocket()
+
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
+
+@end
 
 @implementation LeanplumSocket
 
@@ -75,6 +82,7 @@ static dispatch_once_t leanplum_onceToken;
             }
             _connected = NO;
         }
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -90,6 +98,8 @@ static dispatch_once_t leanplum_onceToken;
     _reconnectTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self
                                                      selector:@selector(reconnect)
                                                      userInfo:nil repeats:YES];
+    
+    [self.countAggregator incrementCount:@"connect_to_app_id"];
 }
 
 - (void)connect
@@ -214,6 +224,8 @@ static dispatch_once_t leanplum_onceToken;
 - (void) sendEvent:(NSString *)eventName withData:(NSDictionary *)data
 {
     [_socketIO sendEvent:eventName withData:data];
+    
+    [self.countAggregator incrementCount:@"send_event_socket"];
 }
 
 @end

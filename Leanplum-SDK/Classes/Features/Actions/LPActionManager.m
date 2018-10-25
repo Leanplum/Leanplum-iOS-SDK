@@ -35,6 +35,7 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
+#import "LPCountAggregator.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -270,6 +271,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 @property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
 @property (nonatomic, strong) NSString *displayedTracked;
 @property (nonatomic, strong) NSDate *displayedTrackedTime;
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
 
 @end
 
@@ -303,6 +305,7 @@ static dispatch_once_t leanplum_onceToken;
         _sessionOccurrences = [NSMutableDictionary dictionary];
         _messageImpressionOccurrences = [NSMutableDictionary dictionary];
         _messageTriggerOccurrences = [NSMutableDictionary dictionary];
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -590,6 +593,8 @@ static dispatch_once_t leanplum_onceToken;
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+    [self.countAggregator incrementCount:@"did_receive_remote_notification"];
+    
     // If app was inactive, then handle notification because the user tapped it.
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [self handleNotification:userInfo
@@ -1217,6 +1222,8 @@ static dispatch_once_t leanplum_onceToken;
 - (void)recordMessageTrigger:(NSString *)messageId
 {
     [self incrementMessageTriggerOccurrences:messageId];
+    
+    [self.countAggregator incrementCount:@"record_message_trigger"];
 }
 
 /**
