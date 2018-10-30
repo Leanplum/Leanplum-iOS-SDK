@@ -25,6 +25,7 @@
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
+#import <OCMock/OCMock.h>
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
@@ -1788,16 +1789,38 @@
 -(void)test_triggerMessageDisplayed
 {
     __block BOOL blockCalled = NO;
+
+    NSString *testMessageID = @"testMessageID";
+    NSString *testMessageBody = @"testMessageBody";
+    NSString *testRecipientUserID = @"recipientUserID";
+
     LPActionContext *testActionContext = [[LPActionContext alloc] init];
-    LeanplumMessageDisplayedBlock block = ^void(LPActionContext *actionContext) {
+    id actionContextMock = OCMPartialMock(testActionContext);
+
+    OCMStub([actionContextMock messageId]).andReturn(testMessageID);
+    OCMStub([actionContextMock args]).andReturn(@{@"message":testMessageBody});
+
+    id leanplumMock = OCMClassMock([Leanplum class]);
+    OCMStub([leanplumMock userId]).andReturn(testRecipientUserID);
+
+    LeanplumMessageDisplayedCallbackBlock block = ^void(NSString *messageID,
+                                                        NSString *messageBody,
+                                                        NSString *recipientUserID,
+                                                        NSDate *deliveryDateTime) {
         blockCalled = YES;
-        XCTAssertEqual(actionContext, testActionContext);
+        XCTAssertEqual(messageID, testMessageID);
+        XCTAssertEqual(messageBody, testMessageBody);
+        XCTAssertEqual(recipientUserID, testRecipientUserID);
+        NSDate *now = [NSDate date];
+        NSTimeInterval interval = [now timeIntervalSinceDate:deliveryDateTime];
+        XCTAssertTrue(interval < 1000);
     };
 
     [Leanplum onMessageDisplayed:block];
     [Leanplum triggerMessageDisplayed:testActionContext];
 
     XCTAssertTrue(blockCalled);
+    
 }
 
 @end

@@ -508,12 +508,19 @@ BOOL inForeground = NO;
 + (void)triggerMessageDisplayed:(LPActionContext *)context
 {
     LP_BEGIN_USER_CODE
-    for (LeanplumMessageDisplayedBlock block in [LPInternalState sharedState]
+    NSString *messageID = context.messageId;
+    NSString *messageKey = @"message";
+    NSString *messageBody = @"";
+    if ([context.args valueForKey:messageKey]) {
+        messageBody = [context.args valueForKey:messageKey];
+    }
+    NSString *recipientUserID = [Leanplum userId];
+    NSDate *deliveryDateTime = [NSDate date];
+    for (LeanplumMessageDisplayedCallbackBlock block in [LPInternalState sharedState]
          .messageDisplayedBlocks.copy) {
-        block(context);
+        block(messageID, messageBody, recipientUserID, deliveryDateTime);
     }
     LP_END_USER_CODE
-
 }
 
 + (void)triggerAction:(LPActionContext *)context
@@ -1487,7 +1494,7 @@ BOOL inForeground = NO;
 }
 
 
-+ (void)onMessageDisplayed:(LeanplumMessageDisplayedBlock)block {
++ (void)onMessageDisplayed:(LeanplumMessageDisplayedCallbackBlock)block {
     if (!block) {
         [self throwError:@"[Leanplum onMessageDisplayed:] Nil block "
          @"parameter provided."];

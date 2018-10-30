@@ -371,12 +371,15 @@ typedef enum {
  */
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
-typedef void (^LeanplumMessageDisplayedBlock)(LPActionContext *actionContext);
+typedef void (^LeanplumMessageDisplayedCallbackBlock)(NSString *messageID,
+                                                      NSString *messageBody,
+                                                      NSString *recipientUserID,
+                                                      NSDate *deliveryDateTime);
 
 /**
  * Block to call when a message is displayed to the user.
  */
-+ (void)onMessageDisplayed:(LeanplumMessageDisplayedBlock)block;
++ (void)onMessageDisplayed:(LeanplumMessageDisplayedCallbackBlock)block;
 
 /**
  * Clears cached values for messages, variables and test assignments.
