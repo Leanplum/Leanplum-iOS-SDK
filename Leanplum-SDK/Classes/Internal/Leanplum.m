@@ -509,7 +509,7 @@ BOOL inForeground = NO;
 {
     LP_BEGIN_USER_CODE
     NSString *messageID = context.messageId;
-    NSString *messageKey = @"message";
+    NSString *messageKey = @"Message";
     NSString *messageBody = @"";
     if ([context.args valueForKey:messageKey]) {
         messageBody = [context.args valueForKey:messageKey];

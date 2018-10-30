@@ -1798,7 +1798,7 @@
     id actionContextMock = OCMPartialMock(testActionContext);
 
     OCMStub([actionContextMock messageId]).andReturn(testMessageID);
-    OCMStub([actionContextMock args]).andReturn(@{@"message":testMessageBody});
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":testMessageBody});
 
     id leanplumMock = OCMClassMock([Leanplum class]);
     OCMStub([leanplumMock userId]).andReturn(testRecipientUserID);
