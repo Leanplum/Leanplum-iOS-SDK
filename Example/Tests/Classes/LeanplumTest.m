@@ -1784,9 +1784,9 @@
 }
 
 /**
- * Test trigger message displayed calls callback
+ * Test that method triggerMessageDisplayed calls user defined callback
  */
--(void)test_triggerMessageDisplayed
+-(void)test_triggerMessageDisplayedCallsCallback
 {
     __block BOOL blockCalled = NO;
 
@@ -1813,12 +1813,10 @@
         NSTimeInterval interval = [now timeIntervalSinceDate:messageArchiveData.deliveryDateTime];
         XCTAssertTrue(interval < 1000);
     };
-
     [Leanplum onMessageDisplayed:block];
     [Leanplum triggerMessageDisplayed:actionContext];
 
     XCTAssertTrue(blockCalled);
-    
 }
 
 @end
