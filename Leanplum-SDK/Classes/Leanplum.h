@@ -27,6 +27,7 @@
 #import "LPActionArg.h"
 #import "LPActionContext.h"
 #import "LPVar.h"
+#import "LPMessageArchiveData.h"
 
 #ifndef LP_NOT_TV
 #if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
@@ -370,6 +371,13 @@ typedef enum {
  * no files needed to be downloaded or all downloads have been completed).
  */
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
+
+typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *messageArchiveData);
+
+/**
+ * Block to call when a message is displayed to the user.
+ */
++ (void)onMessageDisplayed:(LeanplumMessageDisplayedCallbackBlock)block;
 
 /**
  * Clears cached values for messages, variables and test assignments.

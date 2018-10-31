@@ -26,6 +26,7 @@
         _eventsChangedBlocks = nil;
         _noDownloadsBlocks = nil;
         _onceNoDownloadsBlocks = nil;
+        _messageDisplayedBlocks = nil;
         _actionBlocks = nil;
         _actionResponders = nil;
         _startResponders = nil;

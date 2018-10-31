@@ -507,6 +507,29 @@ BOOL inForeground = NO;
     LP_END_USER_CODE
 }
 
++ (void)triggerMessageDisplayed:(LPActionContext *)context
+{
+    LP_BEGIN_USER_CODE
+    NSString *messageID = context.messageId;
+    NSString *messageKey = @"Message";
+    NSString *messageBody = @"";
+    if ([context.args valueForKey:messageKey]) {
+        messageBody = [context.args valueForKey:messageKey];
+    }
+    NSString *recipientUserID = [Leanplum userId];
+    NSDate *deliveryDateTime = [NSDate date];
+    for (LeanplumMessageDisplayedCallbackBlock block in [LPInternalState sharedState]
+         .messageDisplayedBlocks.copy) {
+        LPMessageArchiveData *messageArchiveData = [[LPMessageArchiveData alloc]
+                                                    initWithMessageID: messageID
+                                                    messageBody:messageBody
+                                                    recipientUserID:recipientUserID
+                                                    deliveryDateTime:deliveryDateTime];
+        block(messageArchiveData);
+    }
+    LP_END_USER_CODE
+}
+
 + (void)triggerAction:(LPActionContext *)context
 {
     [self triggerAction:context handledBlock:nil];
@@ -534,6 +557,9 @@ BOOL inForeground = NO;
 
         if (handledBlock) {
             handledBlock(handled);
+            if (handled) {
+                [Leanplum triggerMessageDisplayed:context];
+            }
         }
     };
 
@@ -1475,6 +1501,21 @@ BOOL inForeground = NO;
         }
         LP_END_TRY
     }
+}
+
+
++ (void)onMessageDisplayed:(LeanplumMessageDisplayedCallbackBlock)block {
+    if (!block) {
+        [self throwError:@"[Leanplum onMessageDisplayed:] Nil block "
+         @"parameter provided."];
+        return;
+    }
+    LP_TRY
+    if (![LPInternalState sharedState].messageDisplayedBlocks) {
+        [LPInternalState sharedState].messageDisplayedBlocks = [NSMutableArray array];
+    }
+    [[LPInternalState sharedState].messageDisplayedBlocks addObject:[block copy]];
+    LP_END_TRY
 }
 
 + (void)clearUserContent {
