@@ -25,5 +25,19 @@
 
 @implementation LPMessageArchiveData
 
+-(instancetype)initWithMessageID:(NSString *)messageID
+                     messageBody:(NSString *)messageBody
+                 recipientUserID:(NSString *)recipientUserID
+                deliveryDateTime:(NSDate *)deliveryDateTime {
+    self = [super init];
+    if (self) {
+        _messageID = messageID;
+        _messageBody = messageBody;
+        _recipientUserID = recipientUserID;
+        _deliveryDateTime = deliveryDateTime;
+    }
+    return self;
+}
+
 
 @end

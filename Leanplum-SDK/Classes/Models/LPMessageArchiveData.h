@@ -27,6 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPMessageArchiveData : NSObject
 
+-(instancetype)init NS_UNAVAILABLE;
+-(instancetype)initWithMessageID:(NSString *)messageID
+                     messageBody:(NSString *)messageBody
+                 recipientUserID:(NSString *)recipientUserID
+                deliveryDateTime:(NSDate *)deliveryDateTime;
+
 @property (nonatomic, copy) NSString *messageID;
 @property (nonatomic, copy) NSString *messageBody;
 @property (nonatomic, copy) NSString *recipientUserID;

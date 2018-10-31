@@ -518,11 +518,11 @@ BOOL inForeground = NO;
     NSDate *deliveryDateTime = [NSDate date];
     for (LeanplumMessageDisplayedCallbackBlock block in [LPInternalState sharedState]
          .messageDisplayedBlocks.copy) {
-        LPMessageArchiveData *messageArchiveData = [[LPMessageArchiveData alloc] init];
-        messageArchiveData.messageID = messageID;
-        messageArchiveData.messageBody = messageBody;
-        messageArchiveData.recipientUserID = recipientUserID;
-        messageArchiveData.deliveryDateTime = deliveryDateTime;
+        LPMessageArchiveData *messageArchiveData = [[LPMessageArchiveData alloc]
+                                                    initWithMessageID: messageID
+                                                    messageBody:messageBody
+                                                    recipientUserID:recipientUserID
+                                                    deliveryDateTime:deliveryDateTime];
         block(messageArchiveData);
     }
     LP_END_USER_CODE
