@@ -1790,34 +1790,32 @@
 {
     __block BOOL blockCalled = NO;
 
-    NSString *testMessageID = @"testMessageID";
-    NSString *testMessageBody = @"testMessageBody";
-    NSString *testRecipientUserID = @"recipientUserID";
+    NSString *messageID = @"testMessageID";
+    NSString *messageBody = @"testMessageBody";
+    NSString *recipientUserID = @"recipientUserID";
 
-    LPActionContext *testActionContext = [[LPActionContext alloc] init];
-    id actionContextMock = OCMPartialMock(testActionContext);
+    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    id actionContextMock = OCMPartialMock(actionContext);
 
-    OCMStub([actionContextMock messageId]).andReturn(testMessageID);
-    OCMStub([actionContextMock args]).andReturn(@{@"Message":testMessageBody});
+    OCMStub([actionContextMock messageId]).andReturn(messageID);
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":messageBody});
 
     id leanplumMock = OCMClassMock([Leanplum class]);
-    OCMStub([leanplumMock userId]).andReturn(testRecipientUserID);
+    OCMStub([leanplumMock userId]).andReturn(recipientUserID);
 
-    LeanplumMessageDisplayedCallbackBlock block = ^void(NSString *messageID,
-                                                        NSString *messageBody,
-                                                        NSString *recipientUserID,
-                                                        NSDate *deliveryDateTime) {
+    LeanplumMessageDisplayedCallbackBlock block =
+    ^void(LPMessageArchiveData *messageArchiveData) {
         blockCalled = YES;
-        XCTAssertEqual(messageID, testMessageID);
-        XCTAssertEqual(messageBody, testMessageBody);
-        XCTAssertEqual(recipientUserID, testRecipientUserID);
+        XCTAssertEqual(messageArchiveData.messageID, messageID);
+        XCTAssertEqual(messageArchiveData.messageBody, messageBody);
+        XCTAssertEqual(messageArchiveData.recipientUserID, recipientUserID);
         NSDate *now = [NSDate date];
-        NSTimeInterval interval = [now timeIntervalSinceDate:deliveryDateTime];
+        NSTimeInterval interval = [now timeIntervalSinceDate:messageArchiveData.deliveryDateTime];
         XCTAssertTrue(interval < 1000);
     };
 
     [Leanplum onMessageDisplayed:block];
-    [Leanplum triggerMessageDisplayed:testActionContext];
+    [Leanplum triggerMessageDisplayed:actionContext];
 
     XCTAssertTrue(blockCalled);
     

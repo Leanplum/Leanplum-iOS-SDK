@@ -27,6 +27,7 @@
 #import "LPActionArg.h"
 #import "LPActionContext.h"
 #import "LPVar.h"
+#import "LPMessageArchiveData.h"
 
 #ifndef LP_NOT_TV
 #if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
@@ -371,10 +372,7 @@ typedef enum {
  */
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
-typedef void (^LeanplumMessageDisplayedCallbackBlock)(NSString *messageID,
-                                                      NSString *messageBody,
-                                                      NSString *recipientUserID,
-                                                      NSDate *deliveryDateTime);
+typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *messageArchiveData);
 
 /**
  * Block to call when a message is displayed to the user.
