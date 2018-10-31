@@ -9,6 +9,7 @@
 #import "LPVarCache.h"
 #import "LPFileManager.h"
 #import "Utils.h"
+#import "LPCountAggregator.h"
 
 typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
@@ -26,6 +27,13 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 @end
 
+@interface LPActionContext()
+
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
+
+@end
+
+
 @implementation LPActionContext
 
 @synthesize name=_name;
@@ -38,6 +46,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @synthesize key=_key;
 @synthesize preventRealtimeUpdating=_preventRealtimeUpdating;
 @synthesize contextualValues=_contextualValues;
+@synthesize countAggregator=_countAggregator;
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(NSDictionary *)args
@@ -67,6 +76,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     context->_isRooted = YES;
     context->_isPreview = NO;
     context->_priority = priority;
+    context->_countAggregator = [LPCountAggregator sharedAggregator];
     return context;
 }
 
@@ -511,6 +521,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         [Leanplum triggerAction:childContext];
     });
     LP_END_TRY
+    
+    [self.countAggregator incrementCount:@"run_action_named"];
 }
 
 - (void)runTrackedActionNamed:(NSString *)name
@@ -524,6 +536,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         [self trackMessageEvent:name withValue:0.0 andInfo:nil andParameters:nil];
     }
     [self runActionNamed:name];
+    
+    [self.countAggregator incrementCount:@"run_tracked_action_named"];
 }
 
 - (void)trackMessageEvent:(NSString *)event withValue:(double)value andInfo:(NSString *)info

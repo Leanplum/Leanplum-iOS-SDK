@@ -34,6 +34,7 @@
 #include <unistd.h>
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
+#import "LPCountAggregator.h"
 
 typedef enum {
     kLeanplumFileOperationGet = 0,
@@ -566,6 +567,9 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     if (IS_NOOP) {
         return NO;
     }
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"maybe_download_file"];
+    
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];

@@ -24,8 +24,10 @@
 
 
 #import <XCTest/XCTest.h>
+#import <OCMock/OCMock.h>
 #import "LPCountAggregator.h"
 #import "Constants.h"
+#import "LeanplumRequest.h"
 
 /**
  * Expose private class methods
@@ -126,6 +128,21 @@
     XCTAssert([params[LP_PARAM_TYPE] isEqualToString:LP_VALUE_SDK_COUNT]);
     XCTAssert([params[LP_PARAM_MESSAGE] isEqualToString:testString]);
     XCTAssert([params[LP_PARAM_COUNT] intValue] == 2);
+}
+
+- (void)test_sendAllCounts {
+    LPCountAggregator *countAggregator = [[LPCountAggregator alloc] init];
+    NSString *testString = @"test";
+    countAggregator.enabledCounters = [NSSet setWithObjects:testString, nil];
+    [countAggregator incrementCount:testString];
+    
+    id leanplumRequestMock = OCMClassMock([LeanplumRequest class]);
+    
+    OCMStub([leanplumRequestMock post:LP_METHOD_LOG params:[OCMArg any]]).andReturn(leanplumRequestMock);
+    
+    [countAggregator sendAllCounts];
+    
+    OCMVerify([leanplumRequestMock sendEventually]);
 }
 
 @end

@@ -25,11 +25,13 @@
 #import "LPNetworkEngine.h"
 #import "LPNetworkOperation.h"
 #import "LeanplumInternal.h"
+#import "LPCountAggregator.h"
 
 @interface LPNetworkEngine()
 
 @property (nonatomic, copy) NSString *hostName;
 @property (nonatomic, strong)NSURLRequest *request;
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
 
 @end
 
@@ -45,6 +47,7 @@
         self.sessionConfiguration.URLCache = nil;
         self.sessionConfiguration.URLCredentialStorage = nil;
         self.sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
+        self.countAggregator = [LPCountAggregator sharedAggregator];
         _hostName = @"";
     }
     return self;
@@ -89,6 +92,9 @@
     NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@://%@",
                                   useSSL ? @"https" : @"http", self.hostName];
     [urlString appendFormat:@"/%@", path];
+    
+    [self.countAggregator incrementCount:@"operation_with_path"];
+    
     return [self operationWithURLString:urlString params:body httpMethod:method
                          timeoutSeconds:timeout];
 }
@@ -112,6 +118,7 @@
 
 - (id<LPNetworkOperationProtocol>)operationWithURLString:(NSString *)urlString
 {
+    [self.countAggregator incrementCount:@"operation_with_url_string"];
     return [self operationWithURLString:urlString params:nil httpMethod:@"GET"
                          timeoutSeconds:[LPConstantsState sharedState].networkTimeoutSeconds];
 }
@@ -123,6 +130,7 @@
     } else {
         LPLog(LPError, @"LPNetworkOperation is not used with LPNetworkEngine");
     }
+    [self.countAggregator incrementCount:@"enqueue_operation"];
 }
 
 - (void)runSynchronously:(id<LPNetworkOperationProtocol>)operation

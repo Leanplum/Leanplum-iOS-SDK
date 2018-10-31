@@ -48,6 +48,8 @@
 @property (nonatomic, strong) NSTimer *uiTimeoutTimer;
 @property (nonatomic, assign) BOOL didUiTimeout;
 
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
+
 @end
 
 
@@ -73,6 +75,7 @@
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];
         }
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -95,6 +98,7 @@
             [self performSelector:@selector(sendIfConnectedRequest:) withObject:request afterDelay:delay];
         }
     }
+    [self.countAggregator incrementCount:@"send_request_lp"];
 }
 
 - (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync
@@ -117,6 +121,7 @@
         [self sendEventually:request];
         [self sendRequests:sync];
     }
+    [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
 - (void)sendEventually:(id<LPRequesting>)request
@@ -146,6 +151,7 @@
             }
         }
     }
+    [self.countAggregator incrementCount:@"send_eventually_lp"];
 }
 
 - (void)sendIfConnected:(id<LPRequesting>)request
@@ -158,6 +164,7 @@
         [self sendIfConnected:request sync:NO];
         LP_END_TRY
     }
+    [self.countAggregator incrementCount:@"send_if_connected_lp"];
 }
 
 - (void)sendIfConnected:(id<LPRequesting>)request sync:(BOOL)sync
@@ -180,6 +187,7 @@
             }
         }
     }
+    [self.countAggregator incrementCount:@"send_if_connected_sync_lp"];
 }
 
 - (void)sendNow:(id<LPRequesting>)request
@@ -231,6 +239,8 @@
     } else {
         [self sendNow:request withDatas:@{key: data}];
     }
+    
+    [self.countAggregator incrementCount:@"send_now_with_data_lp"];
 }
 
 - (void)sendNow:(id<LPRequesting>)request withDatas:(NSDictionary *)datas
@@ -265,6 +275,7 @@
         }];
         [self.engine enqueueOperation: op];
     }
+    [self.countAggregator incrementCount:@"send_now_with_datas_lp"];
 }
 
 - (void)attachApiKeys:(NSMutableDictionary *)dict

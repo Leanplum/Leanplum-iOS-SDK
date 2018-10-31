@@ -34,6 +34,7 @@
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 #import "LPAPIConfig.h"
+#import "LPCountAggregator.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *uploadUrl;
@@ -102,6 +103,9 @@ static NSDictionary *_requestHheaders;
 {
     LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
     LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_request"];
+    
     return [[LeanplumRequest alloc] initWithHttpMethod:@"GET" apiMethod:apiMethod params:params];
 }
 
@@ -109,6 +113,9 @@ static NSDictionary *_requestHheaders;
 {
     LPLogType level = [apiMethod isEqualToString:LP_METHOD_LOG] ? LPDebug : LPVerbose;
     LPLog(level, @"Will call API method %@ with arguments %@", apiMethod, params);
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"post_request"];
+    
     return [[LeanplumRequest alloc] initWithHttpMethod:@"POST" apiMethod:apiMethod params:params];
 }
 
@@ -124,11 +131,15 @@ static NSDictionary *_requestHheaders;
 - (void)onResponse:(LPNetworkResponseBlock)response
 {
     _response = [response copy];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"on_response"];
 }
 
 - (void)onError:(LPNetworkErrorBlock)error
 {
     _error = [error copy];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"on_error"];
 }
 
 - (NSMutableDictionary *)createArgsDictionary
@@ -164,6 +175,7 @@ static NSDictionary *_requestHheaders;
         }
         [self performSelector:@selector(sendIfConnected) withObject:nil afterDelay:delay];
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_request"];
 }
 
 // Wait 1 second for potential other API calls, and then sends the call synchronously
@@ -174,6 +186,8 @@ static NSDictionary *_requestHheaders;
     [self performSelector:@selector(sendIfDelayedHelper)
                withObject:nil
                afterDelay:LP_REQUEST_RESUME_DELAY];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_if_delayed"];
 }
 
 // Sends the call synchronously if no other call has been sent within 1 minute.
@@ -196,6 +210,8 @@ static NSDictionary *_requestHheaders;
     LP_TRY
     [self sendIfConnectedSync:NO];
     LP_END_TRY
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_if_connected"];
 }
 
 - (void)sendIfConnectedSync:(BOOL)sync
@@ -213,6 +229,7 @@ static NSDictionary *_requestHheaders;
                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
         }
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_if_connected_sync"];
 }
 
 - (void)attachApiKeys:(NSMutableDictionary *)dict
@@ -236,6 +253,8 @@ static NSDictionary *_requestHheaders;
         
     [self sendEventually];
     [self sendRequests:async];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_now"];
 }
 
 - (void)sendRequests:(BOOL)async
@@ -386,6 +405,8 @@ static NSDictionary *_requestHheaders;
 - (void)sendNow
 {
     [self sendNow:YES];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_now"];
 }
 
 - (void)sendNowSync
@@ -415,6 +436,7 @@ static NSDictionary *_requestHheaders;
                                                onError:_error];
         }
     }
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_eventually"];
 }
 
 + (NSString *)getSizeAsString:(int)size
@@ -541,6 +563,7 @@ static NSDictionary *_requestHheaders;
 - (void)sendDataNow:(NSData *)data forKey:(NSString *)key
 {
     [self sendDatasNow:@{key: data}];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_data_now"];
 }
 
 - (void)sendDatasNow:(NSDictionary *)datas
@@ -570,6 +593,8 @@ static NSDictionary *_requestHheaders;
         LP_END_TRY
     }];
     [engine enqueueOperation: op];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_datas_now"];
 }
 
 - (void)sendFilesNow:(NSArray *)filenames
@@ -602,6 +627,8 @@ static NSDictionary *_requestHheaders;
     [self maybeSendNextUpload];
  
     NSLog(@"Leanplum: Uploading files...");
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"send_files_now"];
 }
 
 - (void)downloadFile:(NSString *)path
@@ -656,6 +683,8 @@ static NSDictionary *_requestHheaders;
         LP_END_TRY
     }];
     [engine enqueueOperation: op];
+    
+    [[LPCountAggregator sharedAggregator] incrementCount:@"download_file"];
 }
 
 + (int)numPendingDownloads

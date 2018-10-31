@@ -29,6 +29,7 @@
 #import "LPActionManager.h"
 #import "LPJSON.h"
 #import "LPInternalState.h"
+#import "LPCountAggregator.h"
 
 @class LeanplumSocket;
 @class LPRegisterDevice;
@@ -117,6 +118,7 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 @property(strong, nonatomic) NSMutableSet *inboxChangedResponders;
 @property(strong, nonatomic) NSMutableArray *inboxSyncedBlocks;
 @property(strong, nonatomic) NSMutableSet *downloadedImageUrls;
+@property(strong, nonatomic) LPCountAggregator *countAggregator;
 
 #pragma mark - LPInbox method declaration
 

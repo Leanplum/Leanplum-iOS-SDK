@@ -27,6 +27,7 @@
 #import "LeanplumInternal.h"
 #import "Constants.h"
 #import "Utils.h"
+#import "LPCountAggregator.h"
 
 #pragma mark - SKPaymentQueue(LPSKPaymentQueueExtension) implementation
 
@@ -47,6 +48,7 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
 
 @property (nonatomic, strong) NSMutableDictionary *transactions;
 @property (nonatomic, strong) NSMutableDictionary *requests;
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
 
 @end
 
@@ -61,6 +63,7 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     if (self = [super init]) {
         _transactions = [[NSMutableDictionary alloc] init];
         _requests = [[NSMutableDictionary alloc] init];
+        _countAggregator = [LPCountAggregator sharedAggregator];
         [self loadTransactions];
         // If crash happens or the os/user terminates the app and there are pending transactions.
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -112,6 +115,7 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
                                 forClass:[SKPaymentQueue class]
                    withReplacementMethod:(IMP) leanplum_finishTransaction];
     });
+    [self.countAggregator incrementCount:@"track_revenue"];
 }
 
 #pragma mark - add transaction methods

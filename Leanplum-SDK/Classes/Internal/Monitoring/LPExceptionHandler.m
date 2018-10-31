@@ -22,10 +22,12 @@
 //  under the License.
 
 #import "LPExceptionHandler.h"
+#import "LPCountAggregator.h"
 
 @interface LPExceptionHandler()
 
 @property (nonatomic, strong) id<LPExceptionReporting> exceptionReporter;
+@property (nonatomic, strong) LPCountAggregator *countAggregator;
 
 @end
 
@@ -47,6 +49,7 @@
     self = [super init];
     if (self) {
         [self initializeLeanplumReporter];
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }
@@ -63,6 +66,8 @@
 {
     if (self.exceptionReporter) {
         [self.exceptionReporter reportException:exception];
+        
+        [self.countAggregator incrementCount:@"report_exception"];
     }
 }
 

@@ -25,6 +25,7 @@
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
+#import <OCMock/OCMock.h>
 #import <OHHTTPStubs/OHHTTPStubs.h>
 #import <OHHTTPStubs/OHPathHelpers.h>
 #import "LeanplumHelper.h"
@@ -46,6 +47,7 @@
 
 + (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response;
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
++ (void)triggerMessageDisplayed:(LPActionContext *)context;
 
 @end
 
@@ -1779,6 +1781,42 @@
 - (void)on_start_response:(BOOL) success
 {
     XCTAssertTrue(success);
+}
+
+/**
+ * Test that method triggerMessageDisplayed calls user defined callback
+ */
+-(void)test_triggerMessageDisplayedCallsCallback
+{
+    __block BOOL blockCalled = NO;
+
+    NSString *messageID = @"testMessageID";
+    NSString *messageBody = @"testMessageBody";
+    NSString *recipientUserID = @"recipientUserID";
+
+    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    id actionContextMock = OCMPartialMock(actionContext);
+
+    OCMStub([actionContextMock messageId]).andReturn(messageID);
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":messageBody});
+
+    id leanplumMock = OCMClassMock([Leanplum class]);
+    OCMStub([leanplumMock userId]).andReturn(recipientUserID);
+
+    LeanplumMessageDisplayedCallbackBlock block =
+    ^void(LPMessageArchiveData *messageArchiveData) {
+        blockCalled = YES;
+        XCTAssertEqual(messageArchiveData.messageID, messageID);
+        XCTAssertEqual(messageArchiveData.messageBody, messageBody);
+        XCTAssertEqual(messageArchiveData.recipientUserID, recipientUserID);
+        NSDate *now = [NSDate date];
+        NSTimeInterval interval = [now timeIntervalSinceDate:messageArchiveData.deliveryDateTime];
+        XCTAssertTrue(interval < 1000);
+    };
+    [Leanplum onMessageDisplayed:block];
+    [Leanplum triggerMessageDisplayed:actionContext];
+
+    XCTAssertTrue(blockCalled);
 }
 
 @end
