@@ -76,7 +76,6 @@
     
     [countAggregator incrementCount:testString];
     XCTAssert([countAggregator.counts[testString] intValue] == 2);
-    
 }
 
 - (void)test_incrementDisabledCountMultiple {
