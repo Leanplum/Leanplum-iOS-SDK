@@ -125,7 +125,7 @@
     NSMutableDictionary<NSString *, id> *params = [countAggregator makeParams:testString withCount:2];
 
     XCTAssert([params[LP_PARAM_TYPE] isEqualToString:LP_VALUE_SDK_COUNT]);
-    XCTAssert([params[LP_PARAM_MESSAGE] isEqualToString:testString]);
+    XCTAssert([params[LP_PARAM_NAME] isEqualToString:testString]);
     XCTAssert([params[LP_PARAM_COUNT] intValue] == 2);
 }
 
