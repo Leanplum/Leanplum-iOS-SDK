@@ -144,6 +144,7 @@ NSString *LP_PARAM_VERSION_NAME = @"versionName";
 NSString *LP_PARAM_TOKEN = @"token";
 NSString *LP_PARAM_PARAMS = @"params";
 NSString *LP_PARAM_LIMIT_TRACKING = @"limitTracking";
+NSString *LP_PARAM_NAME = @"name";
 NSString *LP_PARAM_MESSAGE = @"message";
 NSString *LP_PARAM_MESSAGE_ID = @"messageId";
 NSString *LP_PARAM_BACKGROUND = @"background";

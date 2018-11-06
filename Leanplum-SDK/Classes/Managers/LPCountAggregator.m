@@ -79,7 +79,7 @@ static dispatch_once_t leanplum_onceToken;
     NSMutableDictionary<NSString *, id> *params = [[NSMutableDictionary alloc] init];
 
     params[LP_PARAM_TYPE] = LP_VALUE_SDK_COUNT;
-    params[LP_PARAM_MESSAGE] = name;
+    params[LP_PARAM_NAME] = name;
     params[LP_PARAM_COUNT] = [NSNumber numberWithInt:count];
     return params;
 }
