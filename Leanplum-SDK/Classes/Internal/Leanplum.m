@@ -414,10 +414,10 @@ BOOL inForeground = NO;
     [self startWithUserId:userId userAttributes:attributes responseHandler:nil];
 }
 
-+ (void)requestAuthorization
++ (void)requestAuthorizationWithResponseHandler:(LeanplumRequestAuthorizationBlock)response;
 {
 #if LP_NOT_TV
-    [[LPMessageTemplatesClass sharedTemplates] enableSystemPush];
+    [[LPMessageTemplatesClass sharedTemplates] requestAuthorizationWithResponseHandler:response];
 #endif
 }
 

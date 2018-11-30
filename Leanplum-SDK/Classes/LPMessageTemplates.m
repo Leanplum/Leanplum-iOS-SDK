@@ -879,7 +879,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     return enabled;
 }
 
-- (void)enableSystemPush
+- (void)requestAuthorizationWithResponseHandler:(LeanplumRequestAuthorizationBlock)response
 {
     // The commented lines below are an alternative for iOS 8 that will deep link to the app in
     // device Settings.
@@ -891,6 +891,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     if (block) {
         // If the app used [Leanplum setPushSetup:...], call the block.
         block();
+        if (response) {
+            response(false, nil);
+        }
         return;
     }
     // Otherwise use boilerplate code from docs.
@@ -913,6 +916,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                          NSLog(@"Leanplum: Failed to request authorization for user "
                                "notifications: %@", error);
                      }
+                     if (response) {
+                        response(granted, error);
+                     }
                  });
         }
         [[UIApplication sharedApplication] registerForRemoteNotifications];
@@ -933,6 +939,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 #pragma clang diagnostic pop
          UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge];
     }
+}
+
+- (void)enableSystemPush
+{
+    [self requestAuthorizationWithResponseHandler:nil];
 }
 
 // If notification were enabled by Leanplum's "Push Ask to Ask" or "Register For Push",

@@ -130,6 +130,7 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
  * @{
  */
 typedef void (^LeanplumStartBlock)(BOOL success);
+typedef void (^LeanplumRequestAuthorizationBlock)(BOOL granted, NSError *__nullable error);
 typedef void (^LeanplumInterfaceChangedBlock)(void);
 typedef void (^LeanplumSetLocationBlock)(BOOL success);
 // Returns whether the action was handled.
@@ -333,7 +334,7 @@ typedef enum {
  * as the mechanism to push authorization requests. Otherwise, please use the Push 
  * Pre-Permission or Register For Push messages from the dashboard.
  */
-+ (void)requestAuthorization;
++ (void)requestAuthorizationWithResponseHandler:(LeanplumRequestAuthorizationBlock)response;
 
 /**
  * @{
