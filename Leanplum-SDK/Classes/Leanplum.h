@@ -327,6 +327,15 @@ typedef enum {
 /**@}*/
 
 /**
+ * Request authorization to interact with the user when local or remote notifications
+ * are delivered to the user's device.
+ * This should only be used if your app does not intend to use the Leanplum dashboard
+ * as the mechanism to push authorization requests. Otherwise, please use the Push 
+ * Pre-Permission or Register For Push messages from the dashboard.
+ */
++ (void)requestAuthorization;
+
+/**
  * @{
  * Returns whether or not Leanplum has finished starting.
  */

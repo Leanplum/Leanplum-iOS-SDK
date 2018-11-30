@@ -41,6 +41,7 @@
 #if LP_NOT_TV
 - (void)disableAskToAsk;
 - (void)refreshPushPermissions;
+- (void)enableSystemPush;
 #endif
 
 @end

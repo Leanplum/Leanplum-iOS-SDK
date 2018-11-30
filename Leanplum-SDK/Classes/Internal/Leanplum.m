@@ -414,6 +414,13 @@ BOOL inForeground = NO;
     [self startWithUserId:userId userAttributes:attributes responseHandler:nil];
 }
 
++ (void)requestAuthorization
+{
+#if LP_NOT_TV
+    [[LPMessageTemplatesClass sharedTemplates] enableSystemPush];
+#endif
+}
+
 + (void)triggerStartIssued
 {
     [LPInternalState sharedState].issuedStart = YES;
