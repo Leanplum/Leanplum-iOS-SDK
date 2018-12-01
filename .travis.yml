@@ -11,12 +11,20 @@ before_install:
 - gem install cocoapods # Since Travis is not always on latest version
 - pod install --project-directory=Example
 
-after_success:
+before_deploy:
 - ./build.sh
 
 deploy:
-  skip_cleanup: true
-  provider: script
-  script: ./Tools/push.sh
-  on:
-    tags: true
+  - provider: script
+    script: ./Tools/push.sh
+    on:
+      tags: true
+  - provider: releases
+    api_key:
+      secure: $GITHUB_TOKEN
+    file: Leanplum.framework.zip
+    skip_cleanup: true
+    draft: true
+    on:
+      tags: true
+

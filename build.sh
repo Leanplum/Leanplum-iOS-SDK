@@ -220,6 +220,7 @@ build_ios_dylib() {
 zip_ios_dylib() {
   cd "${RELEASE_DIR}"
   zip -r Leanplum.framework.zip Leanplum.framework
+  mv Leanplum.framework.zip "$SDK_DIR"
 }
 #######################################
 # Builds the dynamic library tvOS target.
