@@ -15,8 +15,8 @@ before_deploy:
 - ./build.sh
 
 deploy:
-  skip_cleanup: true
   - provider: releases
+    skip_cleanup: true
     api_key:
       secure: $GITHUB_TOKEN
     file: Leanplum.framework.zip
