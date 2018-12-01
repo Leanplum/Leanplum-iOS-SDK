@@ -20,7 +20,6 @@ deploy:
     api_key:
       secure: $GITHUB_TOKEN
     file: Leanplum.framework.zip
-    draft: true
     on:
       tags: true
   - provider: script
