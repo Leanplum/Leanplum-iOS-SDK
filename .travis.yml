@@ -11,6 +11,9 @@ before_install:
 - gem install cocoapods # Since Travis is not always on latest version
 - pod install --project-directory=Example
 
+after_success:
+- ./build.sh
+
 deploy:
   provider: script
   script: ./Tools/push.sh
