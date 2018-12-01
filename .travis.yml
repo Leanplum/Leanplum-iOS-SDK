@@ -15,15 +15,15 @@ before_deploy:
 - ./build.sh
 
 deploy:
-  - provider: script
-    script: ./Tools/push.sh
-    on:
-      tags: true
+  skip_cleanup: true
+  # - provider: script
+  #   script: ./Tools/push.sh
+  #   on:
+  #     tags: true
   - provider: releases
     api_key:
       secure: $GITHUB_TOKEN
     file: Leanplum.framework.zip
-    skip_cleanup: true
     draft: true
     on:
       tags: true
