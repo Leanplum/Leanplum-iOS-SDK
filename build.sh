@@ -111,7 +111,7 @@ main() {
   pod install
   cd "$SDK_DIR/Example/Pods"
   build_ios_dylib
-  build_tvos_dylib
+  # build_tvos_dylib
 
   echo "${GREEN} Done.${NORMAL}"
 }
