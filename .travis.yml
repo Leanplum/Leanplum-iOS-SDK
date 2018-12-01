@@ -15,6 +15,7 @@ after_success:
 - ./build.sh
 
 deploy:
+  skip_cleanup: true
   provider: script
   script: ./Tools/push.sh
   on:
