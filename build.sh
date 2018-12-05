@@ -111,7 +111,9 @@ main() {
   pod install
   cd "$SDK_DIR/Example/Pods"
   build_ios_dylib
-  build_tvos_dylib
+  # build_tvos_dylib
+
+  zip_ios_dylib
 
   echo "${GREEN} Done.${NORMAL}"
 }
@@ -206,6 +208,20 @@ build_ios_dylib() {
   printf "%s\n" "Successfully built Leanplum-SDK (iOS) Framework.\n"
 }
 
+#######################################
+# Builds the iOS dynamic library Target.
+# Globals:
+#   None
+# Arguments:
+#   None
+# Returns:
+#   None
+#######################################
+zip_ios_dylib() {
+  cd "${RELEASE_DIR}"
+  zip -r Leanplum.framework.zip Leanplum.framework
+  mv Leanplum.framework.zip "$SDK_DIR"
+}
 #######################################
 # Builds the dynamic library tvOS target.
 # Globals:
