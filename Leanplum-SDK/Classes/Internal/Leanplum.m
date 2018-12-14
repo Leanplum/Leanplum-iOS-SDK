@@ -1915,23 +1915,10 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-+ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info
-      andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params
-{
-    RETURN_IF_NOOP;
-    LP_TRY
-    
-    // Track should not be called in background.
-    if (![NSThread isMainThread]) {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self track:event withValue:value andInfo:info andArgs:args andParameters:params];
-        });
-        return;
-    }
-    
++ (NSMutableDictionary *)makeTrackArgs:(NSString *)event withValue:(double)value andInfo: (NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params {
     NSString *valueStr = [NSString stringWithFormat:@"%f", value];
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithObjectsAndKeys:
-                                 valueStr, LP_PARAM_VALUE, nil];
+                                      valueStr, LP_PARAM_VALUE, nil];
     if (args) {
         [arguments addEntriesFromDictionary:args];
     }
@@ -1948,13 +1935,62 @@ BOOL inForeground = NO;
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         arguments[@"allowOffline"] = @YES;
     }
+    return arguments;
+}
 
++ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info
+      andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params
+{
+    RETURN_IF_NOOP;
+    LP_TRY
+    
+    // Track should not be called in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self track:event withValue:value andInfo:info andArgs:args andParameters:params];
+        });
+        return;
+    }
+    
+    NSMutableDictionary *arguments = [self makeTrackArgs:event withValue:value andInfo:info andArgs:args andParameters:params];
+    
     [self onStartIssued:^{
         [self trackInternal:event withArgs:arguments andParameters:params];
     }];
     LP_END_TRY
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"track"];
+}
+
++ (void)trackGeofence:(NSString *)event withInfo:(NSString *)info {
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:@"track_geofence"]) {
+        [self trackGeofence:event withValue:0.0 andInfo:info andArgs:nil andParameters:nil];
+    } else {
+        [[LPCountAggregator sharedAggregator] incrementCount:@"track_geofence_disabled"];
+    }
+}
+
++ (void)trackGeofence:(NSString *)event withValue:(double)value andInfo:(NSString *)info
+                           andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params
+{
+    RETURN_IF_NOOP;
+    LP_TRY
+    
+    // TrackGeofence should not be called in background.
+    if (![NSThread isMainThread]) {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self trackGeofence:event withValue:value andInfo:info andArgs:args andParameters:params];
+        });
+        return;
+    }
+    
+    NSMutableDictionary *arguments = [self makeTrackArgs:event withValue:value andInfo:info andArgs:args andParameters:params];
+    
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> request = [reqFactory trackGeofenceWithParams:arguments];
+    [[LPRequestSender sharedInstance] sendRequest:request];
+    LP_END_TRY
 }
 
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args

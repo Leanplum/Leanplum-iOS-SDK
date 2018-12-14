@@ -610,6 +610,9 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info andParameters:(NSDictionary *)params;
 /**@}*/
 
++ (void)trackGeofence:(NSString *)event withInfo:(NSString *)info;
++ (void)trackGeofence:(NSString *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
+
 /**
  * @{
  * Gets the path for a particular resource. The resource can be overridden by the server.

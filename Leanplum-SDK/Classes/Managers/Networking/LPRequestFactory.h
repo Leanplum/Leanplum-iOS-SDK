@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (id<LPRequesting>)stopWithParams:(nullable NSDictionary *)params;
 - (id<LPRequesting>)restartWithParams:(nullable NSDictionary *)params;
 - (id<LPRequesting>)trackWithParams:(nullable NSDictionary *)params;
+- (id<LPRequesting>)trackGeofenceWithParams:(nullable NSDictionary *)params;
 - (id<LPRequesting>)advanceWithParams:(nullable NSDictionary *)params;
 - (id<LPRequesting>)pauseSessionWithParams:(nullable NSDictionary *)params;
 - (id<LPRequesting>)pauseStateWithParams:(nullable NSDictionary *)params;

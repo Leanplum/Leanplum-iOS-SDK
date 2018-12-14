@@ -33,6 +33,7 @@ NSString *LP_API_METHOD_SET_VARS = @"setVars";
 NSString *LP_API_METHOD_STOP = @"stop";
 NSString *LP_API_METHOD_RESTART = @"restart";
 NSString *LP_API_METHOD_TRACK = @"track";
+NSString *LP_API_METHOD_TRACK_GEOFENCE = @"trackGeofence";
 NSString *LP_API_METHOD_ADVANCE = @"advance";
 NSString *LP_API_METHOD_PAUSE_SESSION = @"pauseSession";
 NSString *LP_API_METHOD_PAUSE_STATE = @"pauseState";
@@ -103,6 +104,12 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 {
     [self.countAggregator incrementCount:@"track_with_params"];
     return [self createPostForApiMethod:LP_API_METHOD_TRACK params:params];
+}
+
+- (id<LPRequesting>)trackGeofenceWithParams:(NSDictionary *)params;
+{
+    [self.countAggregator incrementCount:@"track_geofence_with_params"];
+    return [self createPostForApiMethod:LP_API_METHOD_TRACK_GEOFENCE params:params];
 }
 - (id<LPRequesting>)advanceWithParams:(NSDictionary *)params;
 {
