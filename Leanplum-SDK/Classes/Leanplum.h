@@ -611,7 +611,6 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 /**@}*/
 
 + (void)trackGeofence:(NSString *)event withInfo:(NSString *)info;
-+ (void)trackGeofence:(NSString *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
 
 /**
  * @{

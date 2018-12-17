@@ -49,6 +49,8 @@
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
 + (void)triggerMessageDisplayed:(LPActionContext *)context;
 
++ (void)trackGeofence:(NSString *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
+
 @end
 
 @interface LeanplumTest : XCTestCase
@@ -887,6 +889,19 @@
                   withValue:1.99
             andCurrencyCode:@"USD"
               andParameters:trackParams];
+    [Leanplum forceContentUpdate];
+    
+    // Validate track geofence with info request.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"trackGeofence");
+        // Check if request has all params.
+        XCTAssertTrue([params[@"event"] isEqualToString:trackName]);
+        XCTAssertTrue([params[@"info"] isEqualToString:trackInfo]);
+        return YES;
+    }];
+    [Leanplum trackGeofence:trackName withValue:0.0 andInfo:trackInfo andArgs:nil andParameters:nil];
     [Leanplum forceContentUpdate];
 
     XCTAssertTrue([Leanplum hasStarted]);
