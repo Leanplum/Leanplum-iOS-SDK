@@ -1984,7 +1984,7 @@ BOOL inForeground = NO;
         return;
     }
     
-    NSString *eventName = [self getEventNameFromGeofenceType:event];
+    NSString *eventName = [LPEnumConstants getEventNameFromGeofenceType:event];
     
     NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
@@ -1993,23 +1993,6 @@ BOOL inForeground = NO;
     id<LPRequesting> request = [reqFactory trackGeofenceWithParams:arguments];
     [[LPRequestSender sharedInstance] sendRequest:request];
     LP_END_TRY
-}
-
-+ (NSString *)getEventNameFromGeofenceType:(LPGeofenceEventType)event {
-    NSString *result = nil;
-    
-    switch(event) {
-        case LPEnterRegion:
-            result = @"enter_region";
-            break;
-        case LPExitRegion:
-            result = @"exit_region";
-            break;
-        default:
-            [NSException raise:NSGenericException format:@"Unexpected geofenceEventType."];
-    }
-    
-    return result;
 }
 
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args

@@ -28,6 +28,7 @@
 #import "LPActionContext.h"
 #import "LPVar.h"
 #import "LPMessageArchiveData.h"
+#import "EnumConstants.h"
 
 #ifndef LP_NOT_TV
 #if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
@@ -150,11 +151,6 @@ typedef enum {
     kLeanplumActionKindMessage = 0b1,
     kLeanplumActionKindAction = 0b10,
 } LeanplumActionKind;
-
-typedef enum {
-    LPEnterRegion,
-    LPExitRegion,
-} LPGeofenceEventType;
 
 #define LP_PURCHASE_EVENT @"Purchase"
 
