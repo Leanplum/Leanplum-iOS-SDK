@@ -37,6 +37,7 @@
 #import "LPFeatureFlagManager.h"
 #import "Constants.h"
 #import "LPRegisterDevice.h"
+#import "Leanplum.h"
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -49,7 +50,7 @@
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
 + (void)triggerMessageDisplayed:(LPActionContext *)context;
 
-+ (void)trackGeofence:(NSString *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
++ (void)trackGeofence:(LPGeofenceEventType *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
 
 @end
 
@@ -897,11 +898,11 @@
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"trackGeofence");
         // Check if request has all params.
-        XCTAssertTrue([params[@"event"] isEqualToString:trackName]);
+        XCTAssertTrue([params[@"event"] isEqualToString:@"enter_region"]);
         XCTAssertTrue([params[@"info"] isEqualToString:trackInfo]);
         return YES;
     }];
-    [Leanplum trackGeofence:trackName withValue:0.0 andInfo:trackInfo andArgs:nil andParameters:nil];
+    [Leanplum trackGeofence:LPEnterRegion withValue:0.0 andInfo:trackInfo andArgs:nil andParameters:nil];
     [Leanplum forceContentUpdate];
 
     XCTAssertTrue([Leanplum hasStarted]);

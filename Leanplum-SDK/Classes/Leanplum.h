@@ -151,6 +151,11 @@ typedef enum {
     kLeanplumActionKindAction = 0b10,
 } LeanplumActionKind;
 
+typedef enum {
+    LPEnterRegion,
+    LPExitRegion,
+} LPGeofenceEventType;
+
 #define LP_PURCHASE_EVENT @"Purchase"
 
 @interface Leanplum : NSObject
@@ -610,7 +615,7 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info andParameters:(NSDictionary *)params;
 /**@}*/
 
-+ (void)trackGeofence:(NSString *)event withInfo:(NSString *)info;
++ (void)trackGeofence:(LPGeofenceEventType)event withInfo:(NSString *)info;
 
 /**
  * @{

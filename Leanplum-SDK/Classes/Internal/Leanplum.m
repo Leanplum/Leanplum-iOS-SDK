@@ -1962,7 +1962,7 @@ BOOL inForeground = NO;
     [[LPCountAggregator sharedAggregator] incrementCount:@"track"];
 }
 
-+ (void)trackGeofence:(NSString *)event withInfo:(NSString *)info {
++ (void)trackGeofence:(LPGeofenceEventType)event withInfo:(NSString *)info {
     if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:@"track_geofence"]) {
         [self trackGeofence:event withValue:0.0 andInfo:info andArgs:nil andParameters:nil];
     } else {
@@ -1970,7 +1970,7 @@ BOOL inForeground = NO;
     }
 }
 
-+ (void)trackGeofence:(NSString *)event withValue:(double)value andInfo:(NSString *)info
++ (void)trackGeofence:(LPGeofenceEventType)event withValue:(double)value andInfo:(NSString *)info
                            andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params
 {
     RETURN_IF_NOOP;
@@ -1984,13 +1984,32 @@ BOOL inForeground = NO;
         return;
     }
     
-    NSMutableDictionary *arguments = [self makeTrackArgs:event withValue:value andInfo:info andArgs:args andParameters:params];
+    NSString *eventName = [self getEventNameFromGeofenceType:event];
+    
+    NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory trackGeofenceWithParams:arguments];
     [[LPRequestSender sharedInstance] sendRequest:request];
     LP_END_TRY
+}
+
++ (NSString *)getEventNameFromGeofenceType:(LPGeofenceEventType)event {
+    NSString *result = nil;
+    
+    switch(event) {
+        case LPEnterRegion:
+            result = @"enter_region";
+            break;
+        case LPExitRegion:
+            result = @"exit_region";
+            break;
+        default:
+            [NSException raise:NSGenericException format:@"Unexpected geofenceEventType."];
+    }
+    
+    return result;
 }
 
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
