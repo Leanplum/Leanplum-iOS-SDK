@@ -1991,7 +1991,7 @@ BOOL inForeground = NO;
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory trackGeofenceWithParams:arguments];
-    [[LPRequestSender sharedInstance] sendRequest:request];
+    [[LPRequestSender sharedInstance] sendIfConnected:request];
     LP_END_TRY
 }
 
