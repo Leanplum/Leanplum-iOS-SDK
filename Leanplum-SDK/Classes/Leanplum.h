@@ -28,6 +28,7 @@
 #import "LPActionContext.h"
 #import "LPVar.h"
 #import "LPMessageArchiveData.h"
+#import "EnumConstants.h"
 
 #ifndef LP_NOT_TV
 #if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
@@ -609,6 +610,8 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 + (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary *)params;
 + (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info andParameters:(NSDictionary *)params;
 /**@}*/
+
++ (void)trackGeofence:(LPGeofenceEventType)event withInfo:(NSString *)info;
 
 /**
  * @{
