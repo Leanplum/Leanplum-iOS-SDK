@@ -1023,14 +1023,17 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [self updateNonWebPopupLayout:statusBarHeight];
         _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     }
-    
+   
+    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
+    CGFloat leftSafeAreaX = safeAreaInsets.left;
     CGFloat dismissButtonX = screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
     CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
     if (!fullscreen) {
         dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
         dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
     }
-    _dismissButton.frame = CGRectMake(dismissButtonX, dismissButtonY, _dismissButton.frame.size.width,
+    
+    _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
                                       _dismissButton.frame.size.height);
 }
 
@@ -1092,20 +1095,10 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         
     } else if (isIPhoneX) {
-        // Do not offset the bottom safe area (control panel) on landscape.
-        // Safe area is present on left and right on landscape.
-        CGFloat leftSafeAreaHeight = safeAreaInsets.left;
-#if LP_NOT_TV
-        UIInterfaceOrientation orientation = [UIApplication sharedApplication].statusBarOrientation;
-        if (orientation == UIInterfaceOrientationLandscapeRight ||
-            orientation == UIInterfaceOrientationLandscapeLeft) {
-            bottomSafeAreaHeight = 0;
-            leftSafeAreaHeight += safeAreaInsets.right;
-        }
-#endif
-        _popupGroup.frame = CGRectMake(-leftSafeAreaHeight, -safeAreaInsets.top,
-                                       screenWidth+safeAreaInsets.left+safeAreaInsets.right,
-                                       screenHeight+safeAreaInsets.top+bottomSafeAreaHeight);
+        _popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
+                                       screenWidth - safeAreaInsets.left - safeAreaInsets.right,
+                                       screenHeight - safeAreaInsets.top - bottomSafeAreaHeight);
+        
         NSLog( @"%@", NSStringFromCGRect(_popupGroup.frame) );
         NSLog(@"%f, %f", screenWidth, screenHeight);
         NSLog(@"%@", NSStringFromUIEdgeInsets(safeAreaInsets));
