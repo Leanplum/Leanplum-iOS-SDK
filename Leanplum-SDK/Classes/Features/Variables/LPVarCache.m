@@ -488,6 +488,7 @@ static dispatch_once_t leanplum_onceToken;
         if (messages_) {
             // Store messages.
             self.messageDiffs = messages_;
+            self.messages = [NSMutableDictionary dictionary];
             for (NSString *name in messages_) {
                 NSDictionary *messageConfig = messages_[name];
                 NSMutableDictionary *newConfig = [messageConfig mutableCopy];
