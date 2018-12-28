@@ -513,8 +513,13 @@ BOOL inForeground = NO;
     NSString *messageID = context.messageId;
     NSString *messageKey = @"Message";
     NSString *messageBody = @"";
-    if ([context.args valueForKey:messageKey]) {
-        messageBody = [context.args valueForKey:messageKey];
+    id messageObject = [context.args valueForKey:messageKey];
+    if (messageObject) {
+        if ([messageObject isKindOfClass:[NSString class]]) {
+            messageBody = messageObject;
+        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
+            // fill in
+        }
     }
     NSString *recipientUserID = [Leanplum userId];
     NSDate *deliveryDateTime = [NSDate date];
