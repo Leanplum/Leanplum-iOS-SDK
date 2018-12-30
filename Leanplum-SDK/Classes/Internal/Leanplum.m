@@ -518,7 +518,7 @@ BOOL inForeground = NO;
     LP_END_USER_CODE
 }
 
-+(LPMessageArchiveData *) messageArchiveDataFromContext:(LPActionContext *)context {
++ (LPMessageArchiveData *)messageArchiveDataFromContext:(LPActionContext *)context {
     NSString *messageID = context.messageId;
     NSString *messageBody = [self messageBodyFromContext:context];
     NSString *recipientUserID = [Leanplum userId];
@@ -530,7 +530,7 @@ BOOL inForeground = NO;
                                           deliveryDateTime:deliveryDateTime];
 }
 
-+(NSString *)messageBodyFromContext:(LPActionContext *)context {
++ (NSString *)messageBodyFromContext:(LPActionContext *)context {
     NSString *messageBody = @"";
     NSString *messageKey = @"Message";
     id messageObject = [context.args valueForKey:messageKey];
