@@ -512,15 +512,7 @@ BOOL inForeground = NO;
     LP_BEGIN_USER_CODE
     NSString *messageID = context.messageId;
     NSString *messageKey = @"Message";
-    NSString *messageBody = @"";
-    id messageObject = [context.args valueForKey:messageKey];
-    if (messageObject) {
-        if ([messageObject isKindOfClass:[NSString class]]) {
-            messageBody = messageObject;
-        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
-            // fill in
-        }
-    }
+    NSString *messageBody = [self messageBodyFromContext:context];
     NSString *recipientUserID = [Leanplum userId];
     NSDate *deliveryDateTime = [NSDate date];
     for (LeanplumMessageDisplayedCallbackBlock block in [LPInternalState sharedState]
@@ -533,6 +525,24 @@ BOOL inForeground = NO;
         block(messageArchiveData);
     }
     LP_END_USER_CODE
+}
+
++(NSString *)messageBodyFromContext:(LPActionContext *)context {
+    NSString *messageBody = @"";
+    id messageObject = [context.args valueForKey:messageKey];
+    if (messageObject) {
+        if ([messageObject isKindOfClass:[NSString class]]) {
+            messageBody = messageObject;
+        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *messageDict = (NSDictionary *) messageObject;
+            if ([messageDict objectForKey:@"Text"]) {
+                messageBody = [messageDict objectForKey:@"Text"];
+            } else if ([messageDict objectForKey:@"Text Value"]) {
+                messageBody = [messageDict objectForKey:@"Text Value"];
+            }
+        }
+    }
+    return messageBody;
 }
 
 + (void)triggerAction:(LPActionContext *)context
