@@ -510,34 +510,38 @@ BOOL inForeground = NO;
 + (void)triggerMessageDisplayed:(LPActionContext *)context
 {
     LP_BEGIN_USER_CODE
-    NSString *messageID = context.messageId;
-    NSString *messageKey = @"Message";
-    NSString *messageBody = [self messageBodyFromContext:context];
-    NSString *recipientUserID = [Leanplum userId];
-    NSDate *deliveryDateTime = [NSDate date];
+    LPMessageArchiveData *messageArchiveData = [self messageArchiveDataFromContext:context];
     for (LeanplumMessageDisplayedCallbackBlock block in [LPInternalState sharedState]
          .messageDisplayedBlocks.copy) {
-        LPMessageArchiveData *messageArchiveData = [[LPMessageArchiveData alloc]
-                                                    initWithMessageID: messageID
-                                                    messageBody:messageBody
-                                                    recipientUserID:recipientUserID
-                                                    deliveryDateTime:deliveryDateTime];
         block(messageArchiveData);
     }
     LP_END_USER_CODE
 }
 
++(LPMessageArchiveData *) messageArchiveDataFromContext:(LPActionContext *)context {
+    NSString *messageID = context.messageId;
+    NSString *messageBody = [self messageBodyFromContext:context];
+    NSString *recipientUserID = [Leanplum userId];
+    NSDate *deliveryDateTime = [NSDate date];
+
+    return [[LPMessageArchiveData alloc] initWithMessageID: messageID
+                                               messageBody:messageBody
+                                           recipientUserID:recipientUserID
+                                          deliveryDateTime:deliveryDateTime];
+}
+
 +(NSString *)messageBodyFromContext:(LPActionContext *)context {
     NSString *messageBody = @"";
+    NSString *messageKey = @"Message";
     id messageObject = [context.args valueForKey:messageKey];
     if (messageObject) {
         if ([messageObject isKindOfClass:[NSString class]]) {
             messageBody = messageObject;
         } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
             NSDictionary *messageDict = (NSDictionary *) messageObject;
-            if ([messageDict objectForKey:@"Text"]) {
+            if ([[messageDict objectForKey:@"Text"] isKindOfClass:[NSString class]]) {
                 messageBody = [messageDict objectForKey:@"Text"];
-            } else if ([messageDict objectForKey:@"Text Value"]) {
+            } else if ([[messageDict objectForKey:@"Text Value"] isKindOfClass:[NSString class]]) {
                 messageBody = [messageDict objectForKey:@"Text Value"];
             }
         }
