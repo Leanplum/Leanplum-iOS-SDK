@@ -549,6 +549,24 @@ BOOL inForeground = NO;
     return messageBody;
 }
 
++(NSString *)messageBodyFromContext:(LPActionContext *)context {
+    NSString *messageBody = @"";
+    id messageObject = [context.args valueForKey:messageKey];
+    if (messageObject) {
+        if ([messageObject isKindOfClass:[NSString class]]) {
+            messageBody = messageObject;
+        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *messageDict = (NSDictionary *) messageObject;
+            if ([messageDict objectForKey:@"Text"]) {
+                messageBody = [messageDict objectForKey:@"Text"];
+            } else if ([messageDict objectForKey:@"Text Value"]) {
+                messageBody = [messageDict objectForKey:@"Text Value"];
+            }
+        }
+    }
+    return messageBody;
+}
+
 + (void)triggerAction:(LPActionContext *)context
 {
     [self triggerAction:context handledBlock:nil];
