@@ -49,6 +49,8 @@
 + (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response;
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
 + (void)triggerMessageDisplayed:(LPActionContext *)context;
++ (LPMessageArchiveData *)messageArchiveDataFromContext:(LPActionContext *)context;
++ (NSString *)messageBodyFromContext:(LPActionContext *)context;
 
 + (void)trackGeofence:(LPGeofenceEventType *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
 
@@ -1833,6 +1835,62 @@
     [Leanplum triggerMessageDisplayed:actionContext];
 
     XCTAssertTrue(blockCalled);
+}
+
+/**
+ * Test that method messageBodyFromContext gets the correct message body for string.
+ */
+-(void)test_messageBodyFromContextGetsCorrectBodyForString
+{
+    NSString *messageID = @"testMessageID";
+    NSString *messageBody = @"testMessageBody";
+    NSString *recipientUserID = @"recipientUserID";
+
+    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    id actionContextMock = OCMPartialMock(actionContext);
+
+    OCMStub([actionContextMock messageId]).andReturn(messageID);
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":messageBody});
+
+    XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
+}
+
+/**
+ * Test that method messageBodyFromContext gets the correct message body for
+ * dictionary with key "Text".
+ */
+-(void)test_messageBodyFromContextGetsCorrectBodyForDictionaryKeyText
+{
+    NSString *messageID = @"testMessageID";
+    NSString *messageBody = @"testMessageBody";
+    NSString *recipientUserID = @"recipientUserID";
+
+    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    id actionContextMock = OCMPartialMock(actionContext);
+
+    OCMStub([actionContextMock messageId]).andReturn(messageID);
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text":messageBody}});
+
+    XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
+}
+
+/**
+ * Test that method messageBodyFromContext gets the correct message body for
+ * dictionary with key "Text Value".
+ */
+-(void)test_messageBodyFromContextGetsCorrectBodyForDictionaryKeyTextValue
+{
+    NSString *messageID = @"testMessageID";
+    NSString *messageBody = @"testMessageBody";
+    NSString *recipientUserID = @"recipientUserID";
+
+    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    id actionContextMock = OCMPartialMock(actionContext);
+
+    OCMStub([actionContextMock messageId]).andReturn(messageID);
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text Value":messageBody}});
+
+    XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
 }
 
 @end
