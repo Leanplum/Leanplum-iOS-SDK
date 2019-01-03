@@ -541,8 +541,8 @@ BOOL inForeground = NO;
             NSDictionary *messageDict = (NSDictionary *) messageObject;
             if ([[messageDict objectForKey:@"Text"] isKindOfClass:[NSString class]]) {
                 messageBody = [messageDict objectForKey:@"Text"];
-            } else if ([[messageDict objectForKey:@"Text Value"] isKindOfClass:[NSString class]]) {
-                messageBody = [messageDict objectForKey:@"Text Value"];
+            } else if ([[messageDict objectForKey:@"Text value"] isKindOfClass:[NSString class]]) {
+                messageBody = [messageDict objectForKey:@"Text value"];
             }
         }
     }
