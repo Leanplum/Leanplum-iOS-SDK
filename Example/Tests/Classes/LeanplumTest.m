@@ -1876,7 +1876,7 @@
 
 /**
  * Test that method messageBodyFromContext gets the correct message body for
- * dictionary with key "Text Value".
+ * dictionary with key "Text value".
  */
 -(void)test_messageBodyFromContextGetsCorrectBodyForDictionaryKeyTextValue
 {
@@ -1888,7 +1888,7 @@
     id actionContextMock = OCMPartialMock(actionContext);
 
     OCMStub([actionContextMock messageId]).andReturn(messageID);
-    OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text Value":messageBody}});
+    OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text value":messageBody}});
 
     XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
 }
