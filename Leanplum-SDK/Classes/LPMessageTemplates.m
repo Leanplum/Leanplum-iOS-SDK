@@ -961,11 +961,13 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                        [context.actionName isEqualToString:LPMT_HTML_NAME]);
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
                  [context.actionName isEqualToString:LPMT_HTML_NAME];
-    
-    CGFloat statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? 0
+
+    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
+
+    CGFloat statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? safeAreaInsets.top
     : MIN([UIApplication sharedApplication].statusBarFrame.size.height,
           [UIApplication sharedApplication].statusBarFrame.size.width);
-    
+
     UIInterfaceOrientation orientation;
     if (LP_SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
         orientation = UIInterfaceOrientationPortrait;
@@ -1023,8 +1025,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [self updateNonWebPopupLayout:statusBarHeight];
         _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     }
-   
-    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
     CGFloat leftSafeAreaX = safeAreaInsets.left;
     CGFloat dismissButtonX = screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
     CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
@@ -1242,7 +1242,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 {
     UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
     if (@available(iOS 11.0, *)) {
-        insets =  [UIApplication sharedApplication].keyWindow.safeAreaInsets;
+        insets = [UIApplication sharedApplication].keyWindow.safeAreaInsets;
+    } else {
+        insets.top = [[UIApplication sharedApplication] isStatusBarHidden] ? 0 : 20.0;
     }
     return insets;
 }
