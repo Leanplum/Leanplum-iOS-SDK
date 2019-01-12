@@ -1834,20 +1834,26 @@ BOOL inForeground = NO;
     // Make sure to capture the held back.
     [LPActionContext sortByPriority:actionContexts];
     NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
-    BOOL messageActionTriggered = NO;
-    
+    NSNumber *countDownThreshold = [self fetchCountDownForContext: (LPActionContext *) [actionContexts firstObject]];
+    BOOL isPrioritySame = NO;
     for (LPActionContext *actionContext in actionContexts) {
         NSNumber *priority = [actionContext priority];
         if (priority.intValue > priorityThreshold.intValue) {
             break;
         }
-        
+        if (isPrioritySame) {//priority is same
+            NSNumber *currentCountDown = [self fetchCountDownForContext:actionContext];
+            //multiple messages have same priority and same countDown, only display one message
+            if (currentCountDown == countDownThreshold) {
+                break;
+            }
+        }
+        isPrioritySame = YES;
         if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
             [[LPInternalState sharedState].actionManager
                  recordHeldBackImpression:[actionContext messageId]
                         originalMessageId:[actionContext originalMessageId]];
-        } else if (!messageActionTriggered) {
-            messageActionTriggered = YES;
+        } else {
             [self triggerAction:actionContext handledBlock:^(BOOL success) {
                 if (success) {
                     [[LPInternalState sharedState].actionManager
@@ -1856,6 +1862,16 @@ BOOL inForeground = NO;
             }];
         }
     }
+}
+
++ (NSNumber *)fetchCountDownForContext:(LPActionContext *)actionContext
+{
+    NSDictionary *messageConfig = [LPVarCache sharedCache].messageDiffs[actionContext.messageId];
+    NSNumber *countdown = messageConfig[@"countdown"];
+    if (actionContext.isPreview) {
+        countdown = @(5.0);
+    }
+    return countdown;
 }
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId
