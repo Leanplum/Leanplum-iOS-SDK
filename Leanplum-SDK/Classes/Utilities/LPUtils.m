@@ -1,5 +1,5 @@
 //
-//  Utils.m
+//  LPUtils.m
 //  Leanplum
 //
 //  Created by Ben Marten on 6/6/16.
@@ -22,11 +22,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Utils.h"
+#import "LPUtils.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "LPExceptionHandler.h"
 
-@implementation Utils
+@implementation LPUtils
 
 + (BOOL)isNullOrEmpty:(id)obj
 {
@@ -46,7 +46,7 @@
 
 + (NSString *)md5OfData:(NSData *)data
 {
-    if ([Utils isNullOrEmpty:data]) {
+    if ([LPUtils isNullOrEmpty:data]) {
         return @"";
     }
 

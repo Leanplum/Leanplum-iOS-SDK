@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "LPFeatureFlagManager.h"
-#import "Constants.h"
+#import "LPConstants.h"
 
 @interface LPFeatureFlagManagerTest : XCTestCase
 

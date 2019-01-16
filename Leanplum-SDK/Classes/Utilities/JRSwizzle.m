@@ -4,7 +4,7 @@
 //   https://github.com/rentzsch/jrswizzle
 
 #import "JRSwizzle.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LeanplumInternal.h"
 
 #if TARGET_OS_IPHONE

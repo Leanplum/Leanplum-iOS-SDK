@@ -26,7 +26,7 @@
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 #import "LPCountAggregator.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LeanplumRequest.h"
 
 /**

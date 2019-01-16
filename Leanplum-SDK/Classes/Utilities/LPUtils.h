@@ -1,5 +1,5 @@
 //
-//  Utils.h
+//  LPUtils.h
 //  Leanplum
 //
 //  Created by Ben Marten on 6/6/16.
@@ -24,7 +24,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Utils : NSObject
+@interface LPUtils : NSObject
 
 /**
  * Checks if the object is null or empty.

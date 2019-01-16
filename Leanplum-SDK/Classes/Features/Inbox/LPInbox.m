@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPInbox.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
 #import "LPVarCache.h"
@@ -31,7 +31,7 @@
 #import "LPAES.h"
 #import "LPKeychainWrapper.h"
 #import "LPFileManager.h"
-#import "Utils.h"
+#import "LPUtils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPCountAggregator.h"
@@ -127,9 +127,9 @@ static NSObject *updatingLock;
 - (NSString *)filePathOfImageURL
 {
     NSString *imageURLString = [_context stringNamed:LP_KEY_IMAGE];
-    if (![Utils isNullOrEmpty:imageURLString] && [LPFileManager fileExists:imageURLString]) {
+    if (![LPUtils isNullOrEmpty:imageURLString] && [LPFileManager fileExists:imageURLString]) {
         NSString *filePath = [LPFileManager fileValue:imageURLString withDefaultValue:@""];
-        if (![Utils isNullOrEmpty:filePath]) {
+        if (![LPUtils isNullOrEmpty:filePath]) {
             return [LPFileManager fileValue:imageURLString withDefaultValue:@""];
         }
     }
@@ -233,7 +233,7 @@ static NSObject *updatingLock;
     }
 
     NSString *imageURLString = [_context stringNamed:LP_KEY_IMAGE];
-    if ([Utils isNullOrEmpty:imageURLString] ||
+    if ([LPUtils isNullOrEmpty:imageURLString] ||
         [[Leanplum inbox].downloadedImageUrls containsObject:imageURLString]) {
         return NO;
     }

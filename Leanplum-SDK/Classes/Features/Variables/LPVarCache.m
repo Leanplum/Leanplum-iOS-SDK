@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
@@ -32,7 +32,7 @@
 #import "LPKeychainWrapper.h"
 #import "LPAES.h"
 #import "Leanplum_SocketIO.h"
-#import "Utils.h"
+#import "LPUtils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
@@ -120,7 +120,7 @@ static dispatch_once_t leanplum_onceToken;
 
 - (LPVar *)define:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPVarCache define:with:kind:] Empty name parameter provided."];
         return nil;
     }

@@ -35,7 +35,7 @@
 #import "LPActionManager.h"
 #import "LPCountaggregator.h"
 #import "LPFeatureFlagManager.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPRegisterDevice.h"
 #import "Leanplum.h"
 

@@ -31,7 +31,7 @@
 #import "LeanplumRequest+Categories.h"
 #import "Leanplum+Extensions.h"
 #import "LPActionManager.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPRegisterDevice.h"
 #import "LPMessageTemplates.h"
 

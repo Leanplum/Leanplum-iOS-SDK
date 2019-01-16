@@ -25,7 +25,7 @@
 #import "LPRegisterDevice.h"
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPRequestSender.h"
 #import "LPCountAggregator.h"
 

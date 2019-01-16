@@ -29,7 +29,7 @@
 #import "LeanplumHelper.h"
 #import "LPEventDataManager.h"
 #import "LPDatabase.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LeanplumRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"

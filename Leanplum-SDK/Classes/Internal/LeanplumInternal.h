@@ -25,7 +25,7 @@
 #import "Leanplum.h"
 #import "LPActionContext-Internal.h"
 #import "LPVar-Internal.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPActionManager.h"
 #import "LPJSON.h"
 #import "LPInternalState.h"

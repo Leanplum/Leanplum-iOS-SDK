@@ -24,7 +24,7 @@
 
 #import "LPAppIconManager.h"
 #import "LeanplumInternal.h"
-#import "Utils.h"
+#import "LPUtils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPCountAggregator.h"
@@ -39,7 +39,7 @@
     }
 
     NSDictionary *alternativeIcons = [LPAppIconManager alternativeIconsBundle];
-    if ([Utils isNullOrEmpty:alternativeIcons]) {
+    if ([LPUtils isNullOrEmpty:alternativeIcons]) {
         LPLog(LPWarning, @"Your project does not contain any alternate app icons. "
               "Add one or more alternate icons to the info.plist. "
               "https://support.leanplum.com/hc/en-us/articles/115001519046");
@@ -133,7 +133,7 @@
                          iconName:(NSString *)iconName
 {
     for (NSString *iconImageName in bundle[@"CFBundleIconFiles"]) {
-        if ([Utils isNullOrEmpty:iconName]) {
+        if ([LPUtils isNullOrEmpty:iconName]) {
             continue;
         }
 
@@ -153,7 +153,7 @@
         NSString *filename = [NSString stringWithFormat:@"%@%@.png", LP_APP_ICON_FILE_PREFIX,
                               iconName];
         NSDictionary *param = @{LP_KEY_FILENAME: filename,
-                                LP_KEY_HASH: [Utils md5OfData:iconData],
+                                LP_KEY_HASH: [LPUtils md5OfData:iconData],
                                 LP_KEY_SIZE: @(iconData.length)};
         [requestParam addObject:param];
         return;

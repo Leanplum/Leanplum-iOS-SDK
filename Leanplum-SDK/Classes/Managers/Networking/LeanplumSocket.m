@@ -25,7 +25,7 @@
 #import "LeanplumSocket.h"
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPVarCache.h"
 #import "LPActionManager.h"
 #import "LPUIAlert.h"

@@ -22,8 +22,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Constants.h"
-#import "Utils.h"
+#import "LPConstants.h"
+#import "LPUtils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 
@@ -276,7 +276,7 @@ void leanplumIncrementUserCodeBlock(int delta)
 
 void leanplumInternalError(NSException *e)
 {
-    [Utils handleException:e];
+    [LPUtils handleException:e];
     if ([e.name isEqualToString:@"Leanplum Error"]) {
         @throw e;
     }

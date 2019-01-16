@@ -33,7 +33,7 @@
 #import "Leanplum+Extensions.h"
 #import "LeanplumReachability+Category.h"
 #import "LPActionManager.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPRegisterDevice.h"
 
 @interface ExceptionsTest : XCTestCase

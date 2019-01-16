@@ -24,7 +24,7 @@
 //  under the License.
 
 #import "LPUIAlert.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPCountAggregator.h"
 
 @implementation LPUIAlert

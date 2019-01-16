@@ -6,7 +6,7 @@
 //
 
 #import "LeanplumInternal.h"
-#import "Utils.h"
+#import "LPUtils.h"
 #import "LPVarCache.h"
 #import "LPCountAggregator.h"
 
@@ -22,7 +22,7 @@
 
 + (LPActionArg *)argNamed:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPVar argNamed:with:kind:] Empty name parameter provided."];
         return nil;
     }

@@ -25,7 +25,7 @@
 #import "LPDatabase.h"
 #import "LPFileManager.h"
 #import "LeanplumInternal.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import <sqlite3.h>
 
 static sqlite3 *sqlite;

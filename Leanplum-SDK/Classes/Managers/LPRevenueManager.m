@@ -25,8 +25,8 @@
 #import "LPRevenueManager.h"
 #import "JRSwizzle.h"
 #import "LeanplumInternal.h"
-#import "Constants.h"
-#import "Utils.h"
+#import "LPConstants.h"
+#import "LPUtils.h"
 #import "LPCountAggregator.h"
 
 #pragma mark - SKPaymentQueue(LPSKPaymentQueueExtension) implementation
@@ -143,7 +143,7 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
 #pragma GCC diagnostic pop
     }
 
-    NSString *receiptBase64String = [Utils base64EncodedStringFromData:receipt];
+    NSString *receiptBase64String = [LPUtils base64EncodedStringFromData:receipt];
     NSDictionary *transactionDictionary = @{
                                             @"transactionIdentifier":transaction.
                                             transactionIdentifier ?: [NSNull null],

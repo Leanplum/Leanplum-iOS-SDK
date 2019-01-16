@@ -7,7 +7,7 @@
 
 #import "LeanplumInternal.h"
 #import "LeanplumCompatibility.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPCountAggregator.h"
 
 @implementation LeanplumCompatibility

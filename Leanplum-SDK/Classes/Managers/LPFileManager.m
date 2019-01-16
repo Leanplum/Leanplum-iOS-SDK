@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Constants.h"
+#import "LPConstants.h"
 #import "JRSwizzle.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"

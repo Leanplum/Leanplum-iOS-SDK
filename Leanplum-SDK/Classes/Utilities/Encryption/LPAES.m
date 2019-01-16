@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPAES.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LeanplumRequest.h"
 #import <CommonCrypto/CommonCryptor.h>
 #import "LPAPIConfig.h"
