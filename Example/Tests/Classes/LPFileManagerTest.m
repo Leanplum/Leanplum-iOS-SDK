@@ -31,7 +31,7 @@
 #import "LeanplumRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
-#import "Constants.h"
+#import "LPConstants.h"
 
 /**
  * Tests file manager public methods.

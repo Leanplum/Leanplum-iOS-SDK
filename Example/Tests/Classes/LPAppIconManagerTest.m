@@ -29,7 +29,7 @@
 #import "LPAppIconManager.h"
 #import "LeanplumHelper.h"
 #import "LPVarCache.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LeanplumRequest+Categories.h"
 #import "LPJSON.h"
 

@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "EnumConstants.h"
+#import "LPEnumConstants.h"
 
 @implementation LPEnumConstants
 

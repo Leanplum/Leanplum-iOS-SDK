@@ -1,5 +1,5 @@
 //
-//  Constants.h
+//  LPConstants.h
 //  Leanplum
 //
 //  Created by Andrew First on 5/2/12.

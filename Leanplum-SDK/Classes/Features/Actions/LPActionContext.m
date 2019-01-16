@@ -8,7 +8,7 @@
 #import "LeanplumInternal.h"
 #import "LPVarCache.h"
 #import "LPFileManager.h"
-#import "Utils.h"
+#import "LPUtils.h"
 #import "LPCountAggregator.h"
 
 typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
@@ -143,7 +143,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
             callback(value, defaultValue);
 
             // Check for specific file type extension (HTML).
-        } else if ([arg hasPrefix:@"__file__"] && ![Utils isNullOrEmpty:value]) {
+        } else if ([arg hasPrefix:@"__file__"] && ![LPUtils isNullOrEmpty:value]) {
             callback(value, defaultValue);
 
             // Need to check for nil because server actions like push notifications aren't
@@ -210,7 +210,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSString *)stringNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext stringNamed:] Empty name parameter provided."];
         return nil;
     }
@@ -247,7 +247,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSString *)htmlWithTemplateNamed:(NSString *)templateName
 {
-    if ([Utils isNullOrEmpty:templateName]) {
+    if ([LPUtils isNullOrEmpty:templateName]) {
         [Leanplum throwError:@"[LPActionContext htmlWithTemplateNamed:] "
          "Empty name parameter provided."];
         return nil;
@@ -324,7 +324,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSString *)fileNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext fileNamed:] Empty name parameter provided."];
         return nil;
     }
@@ -337,7 +337,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSNumber *)numberNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext numberNamed:] Empty name parameter provided."];
         return nil;
     }
@@ -352,7 +352,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (BOOL)boolNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext boolNamed:] Empty name parameter provided."];
         return NO;
     }
@@ -367,7 +367,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSDictionary *)dictionaryNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext dictionaryNamed:] Empty name parameter provided."];
         return nil;
     }
@@ -386,7 +386,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSArray *)arrayNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext arrayNamed:] Empty name parameter provided."];
         return nil;
     }
@@ -395,7 +395,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (UIColor *)colorNamed:(NSString *)name
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext colorNamed:] Empty name parameter provided."];
         return nil;
     }
@@ -462,7 +462,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (void)runActionNamed:(NSString *)name
 {
     LP_TRY
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [Leanplum throwError:@"[LPActionContext runActionNamed:] Empty name parameter provided."];
         return;
     }
@@ -528,7 +528,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (void)runTrackedActionNamed:(NSString *)name
 {
     if (!IS_NOOP && _messageId && _isRooted) {
-        if ([Utils isNullOrEmpty:name]) {
+        if ([LPUtils isNullOrEmpty:name]) {
             [Leanplum throwError:@"[LPActionContext runTrackedActionNamed:] Empty name parameter "
              @"provided."];
             return;

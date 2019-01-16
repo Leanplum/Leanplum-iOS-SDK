@@ -26,7 +26,7 @@
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
 #import "LPResponse.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
 #import "LPKeychainWrapper.h"

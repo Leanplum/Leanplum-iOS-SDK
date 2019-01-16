@@ -39,7 +39,7 @@
 //  Modified by Ruben Nine http://leftbee.net in order to add SSL support
 
 #import "Leanplum_SocketIO.h"
-#import "Constants.h"
+#import "LPConstants.h"
 
 #import "LPNetworkProtocol.h"
 #import "Leanplum_WebSocket.h"

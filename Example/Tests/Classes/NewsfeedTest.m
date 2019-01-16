@@ -32,7 +32,7 @@
 #import "Leanplum+Extensions.h"
 #import "LPFileManager.h"
 #import "LPActionManager.h"
-#import "Constants.h"
+#import "LPConstants.h"
 
 @interface NewsfeedTest : XCTestCase
 

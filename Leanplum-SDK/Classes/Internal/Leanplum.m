@@ -24,7 +24,7 @@
 
 #import "LeanplumInternal.h"
 #import "LeanplumRequest.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "UIDevice+IdentifierAddition.h"
 #import "LPVarCache.h"
 #import "Leanplum_SocketIO.h"
@@ -42,7 +42,7 @@
 #import "JRSwizzle.h"
 #import "LPInbox.h"
 #import "LPUIAlert.h"
-#import "Utils.h"
+#import "LPUtils.h"
 #import "LPAppIconManager.h"
 #import "LPUIEditorWrapper.h"
 #import "LPCountAggregator.h"
@@ -112,12 +112,12 @@ BOOL inForeground = NO;
        withServletName:(NSString *)servletName
               usingSsl:(BOOL)ssl
 {
-    if ([Utils isNullOrEmpty:hostName]) {
+    if ([LPUtils isNullOrEmpty:hostName]) {
         [self throwError:@"[Leanplum setApiHostName:withServletName:usingSsl:] Empty hostname "
          @"parameter provided."];
         return;
     }
-    if ([Utils isNullOrEmpty:servletName]) {
+    if ([LPUtils isNullOrEmpty:servletName]) {
         [self throwError:@"[Leanplum setApiHostName:withServletName:usingSsl:] Empty servletName "
          @"parameter provided."];
         return;
@@ -132,7 +132,7 @@ BOOL inForeground = NO;
 
 + (void)setSocketHostName:(NSString *)hostName withPortNumber:(int)port
 {
-    if ([Utils isNullOrEmpty:hostName]) {
+    if ([LPUtils isNullOrEmpty:hostName]) {
         [self throwError:@"[Leanplum setSocketHostName:withPortNumber] Empty hostname parameter "
          @"provided."];
         return;
@@ -233,7 +233,7 @@ BOOL inForeground = NO;
 
 + (void)setInAppPurchaseEventName:(NSString *)event
 {
-    if ([Utils isNullOrEmpty:event]) {
+    if ([LPUtils isNullOrEmpty:event]) {
         [self throwError:@"[Leanplum setInAppPurchaseEventName:] Empty event parameter provided."];
         return;
     }
@@ -245,12 +245,12 @@ BOOL inForeground = NO;
 
 + (void)setAppId:(NSString *)appId withDevelopmentKey:(NSString *)accessKey
 {
-    if ([Utils isNullOrEmpty:appId]) {
+    if ([LPUtils isNullOrEmpty:appId]) {
         [self throwError:@"[Leanplum setAppId:withDevelopmentKey:] Empty appId parameter "
          @"provided."];
         return;
     }
-    if ([Utils isNullOrEmpty:accessKey]) {
+    if ([LPUtils isNullOrEmpty:accessKey]) {
         [self throwError:@"[Leanplum setAppId:withDevelopmentKey:] Empty accessKey parameter "
          @"provided."];
         return;
@@ -272,11 +272,11 @@ BOOL inForeground = NO;
 
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey
 {
-    if ([Utils isNullOrEmpty:appId]) {
+    if ([LPUtils isNullOrEmpty:appId]) {
         [self throwError:@"[Leanplum setAppId:withProductionKey:] Empty appId parameter provided."];
         return;
     }
-    if ([Utils isNullOrEmpty:accessKey]) {
+    if ([LPUtils isNullOrEmpty:accessKey]) {
         [self throwError:@"[Leanplum setAppId:withProductionKey:] Empty accessKey parameter "
          @"provided."];
         return;
@@ -315,7 +315,7 @@ BOOL inForeground = NO;
 
 + (void)setDeviceId:(NSString *)deviceId
 {
-    if ([Utils isBlank:deviceId]) {
+    if ([LPUtils isBlank:deviceId]) {
         [self throwError:@"[Leanplum setDeviceId:] Empty deviceId parameter provided."];
         return;
     }
@@ -1133,7 +1133,7 @@ BOOL inForeground = NO;
     LP_END_TRY
     
     LP_TRY
-    [Utils initExceptionHandling];
+    [LPUtils initExceptionHandling];
     LP_END_TRY
 }
 
@@ -1598,7 +1598,7 @@ BOOL inForeground = NO;
          withOptions:(NSDictionary *)options
        withResponder:(LeanplumActionBlock)responder
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [self throwError:@"[Leanplum defineAction:ofKind:withArguments:] Empty name parameter "
          @"provided."];
         return;
@@ -1627,7 +1627,7 @@ BOOL inForeground = NO;
 
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block
 {
-    if ([Utils isNullOrEmpty:actionName]) {
+    if ([LPUtils isNullOrEmpty:actionName]) {
         [self throwError:@"[Leanplum onAction:invoke:] Empty actionName parameter provided."];
         return;
     }
@@ -2211,7 +2211,7 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfo:(NSDictionary *)info
 {
-    if ([Utils isNullOrEmpty:info]) {
+    if ([LPUtils isNullOrEmpty:info]) {
         [self throwError:@"[Leanplum setTrafficSourceInfo:] Empty info parameter provided."];
         return;
     }
@@ -2451,11 +2451,11 @@ void leanplumExceptionHandler(NSException *exception)
 
 + (NSString *)pathForResource:(NSString *)name ofType:(NSString *)extension
 {
-    if ([Utils isNullOrEmpty:name]) {
+    if ([LPUtils isNullOrEmpty:name]) {
         [self throwError:@"[Leanplum pathForResource:ofType:] Empty name parameter provided."];
         return nil;
     }
-    if ([Utils isNullOrEmpty:extension]) {
+    if ([LPUtils isNullOrEmpty:extension]) {
         [self throwError:@"[Leanplum pathForResource:ofType:] Empty name extension provided."];
         return nil;
     }

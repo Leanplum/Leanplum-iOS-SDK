@@ -27,7 +27,7 @@
 #import <OCMock/OCMock.h>
 #import <XCTest/XCTest.h>
 #import "LeanplumHelper.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LPJSON.h"
 #import "LPActionManager.h"
 #import "LPVarCache.h"

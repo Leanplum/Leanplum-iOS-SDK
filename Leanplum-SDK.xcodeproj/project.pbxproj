@@ -181,16 +181,16 @@
 		5B2340A021ED964F00206ACB /* LPEventDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FDC21ED964F00206ACB /* LPEventDataManager.m */; };
 		5B2340A121ED964F00206ACB /* LPEventCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FDD21ED964F00206ACB /* LPEventCallback.h */; };
 		5B2340A221ED964F00206ACB /* LPEventCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FDD21ED964F00206ACB /* LPEventCallback.h */; };
-		5B2340A321ED964F00206ACB /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FDF21ED964F00206ACB /* Constants.m */; };
-		5B2340A421ED964F00206ACB /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FDF21ED964F00206ACB /* Constants.m */; };
+		5B2340A321ED964F00206ACB /* LPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FDF21ED964F00206ACB /* LPConstants.m */; };
+		5B2340A421ED964F00206ACB /* LPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FDF21ED964F00206ACB /* LPConstants.m */; };
 		5B2340A521ED964F00206ACB /* LeanplumInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE021ED964F00206ACB /* LeanplumInternal.h */; };
 		5B2340A621ED964F00206ACB /* LeanplumInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE021ED964F00206ACB /* LeanplumInternal.h */; };
 		5B2340A721ED964F00206ACB /* LPInternalState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE121ED964F00206ACB /* LPInternalState.m */; };
 		5B2340A821ED964F00206ACB /* LPInternalState.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE121ED964F00206ACB /* LPInternalState.m */; };
 		5B2340A921ED964F00206ACB /* LPContextualValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE221ED964F00206ACB /* LPContextualValues.h */; };
 		5B2340AA21ED964F00206ACB /* LPContextualValues.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE221ED964F00206ACB /* LPContextualValues.h */; };
-		5B2340AB21ED964F00206ACB /* EnumConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE321ED964F00206ACB /* EnumConstants.m */; };
-		5B2340AC21ED964F00206ACB /* EnumConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE321ED964F00206ACB /* EnumConstants.m */; };
+		5B2340AB21ED964F00206ACB /* LPEnumConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE321ED964F00206ACB /* LPEnumConstants.m */; };
+		5B2340AC21ED964F00206ACB /* LPEnumConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE321ED964F00206ACB /* LPEnumConstants.m */; };
 		5B2340AD21ED964F00206ACB /* LPFeatureFlagManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE521ED964F00206ACB /* LPFeatureFlagManager.h */; };
 		5B2340AE21ED964F00206ACB /* LPFeatureFlagManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE521ED964F00206ACB /* LPFeatureFlagManager.h */; };
 		5B2340AF21ED964F00206ACB /* LPFeatureFlags.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE621ED964F00206ACB /* LPFeatureFlags.h */; };
@@ -199,14 +199,14 @@
 		5B2340B221ED964F00206ACB /* LPFeatureFlagManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE721ED964F00206ACB /* LPFeatureFlagManager.m */; };
 		5B2340B321ED964F00206ACB /* LeanplumCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE821ED964F00206ACB /* LeanplumCompatibility.m */; };
 		5B2340B421ED964F00206ACB /* LeanplumCompatibility.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FE821ED964F00206ACB /* LeanplumCompatibility.m */; };
-		5B2340B521ED964F00206ACB /* Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE921ED964F00206ACB /* Constants.h */; };
-		5B2340B621ED964F00206ACB /* Constants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE921ED964F00206ACB /* Constants.h */; };
+		5B2340B521ED964F00206ACB /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE921ED964F00206ACB /* LPConstants.h */; };
+		5B2340B621ED964F00206ACB /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FE921ED964F00206ACB /* LPConstants.h */; };
 		5B2340B721ED964F00206ACB /* LPInternalState.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FEA21ED964F00206ACB /* LPInternalState.h */; };
 		5B2340B821ED964F00206ACB /* LPInternalState.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FEA21ED964F00206ACB /* LPInternalState.h */; };
 		5B2340B921ED964F00206ACB /* Leanplum.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FEB21ED964F00206ACB /* Leanplum.m */; };
 		5B2340BA21ED964F00206ACB /* Leanplum.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FEB21ED964F00206ACB /* Leanplum.m */; };
-		5B2340BB21ED964F00206ACB /* EnumConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FEC21ED964F00206ACB /* EnumConstants.h */; };
-		5B2340BC21ED964F00206ACB /* EnumConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FEC21ED964F00206ACB /* EnumConstants.h */; };
+		5B2340BB21ED964F00206ACB /* LPEnumConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FEC21ED964F00206ACB /* LPEnumConstants.h */; };
+		5B2340BC21ED964F00206ACB /* LPEnumConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FEC21ED964F00206ACB /* LPEnumConstants.h */; };
 		5B2340BD21ED964F00206ACB /* LPContextualValues.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FED21ED964F00206ACB /* LPContextualValues.m */; };
 		5B2340BE21ED964F00206ACB /* LPContextualValues.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FED21ED964F00206ACB /* LPContextualValues.m */; };
 		5B2340BF21ED964F00206ACB /* LPExceptionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FEF21ED964F00206ACB /* LPExceptionHandler.m */; };
@@ -225,8 +225,8 @@
 		5B2340CC21ED964F00206ACB /* LPAES.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FF821ED964F00206ACB /* LPAES.m */; };
 		5B2340CD21ED964F00206ACB /* LPAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FF921ED964F00206ACB /* LPAES.h */; };
 		5B2340CE21ED964F00206ACB /* LPAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FF921ED964F00206ACB /* LPAES.h */; };
-		5B2340CF21ED965000206ACB /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFA21ED964F00206ACB /* Utils.h */; };
-		5B2340D021ED965000206ACB /* Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFA21ED964F00206ACB /* Utils.h */; };
+		5B2340CF21ED965000206ACB /* LPUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFA21ED964F00206ACB /* LPUtils.h */; };
+		5B2340D021ED965000206ACB /* LPUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFA21ED964F00206ACB /* LPUtils.h */; };
 		5B2340D121ED965000206ACB /* LPDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FFB21ED964F00206ACB /* LPDatabase.m */; };
 		5B2340D221ED965000206ACB /* LPDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FFB21ED964F00206ACB /* LPDatabase.m */; };
 		5B2340D321ED965000206ACB /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFC21ED964F00206ACB /* JRSwizzle.h */; };
@@ -239,8 +239,8 @@
 		5B2340DA21ED965000206ACB /* LPKeychainWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */; };
 		5B2340DB21ED965000206ACB /* LPDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400021ED964F00206ACB /* LPDatabase.h */; };
 		5B2340DC21ED965000206ACB /* LPDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400021ED964F00206ACB /* LPDatabase.h */; };
-		5B2340DD21ED965000206ACB /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400121ED964F00206ACB /* Utils.m */; };
-		5B2340DE21ED965000206ACB /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400121ED964F00206ACB /* Utils.m */; };
+		5B2340DD21ED965000206ACB /* LPUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400121ED964F00206ACB /* LPUtils.m */; };
+		5B2340DE21ED965000206ACB /* LPUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400121ED964F00206ACB /* LPUtils.m */; };
 		5B2340DF21ED965000206ACB /* FileMD5Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400221ED964F00206ACB /* FileMD5Hash.h */; };
 		5B2340E021ED965000206ACB /* FileMD5Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400221ED964F00206ACB /* FileMD5Hash.h */; };
 		5B2340E121ED965000206ACB /* LPJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400321ED964F00206ACB /* LPJSON.h */; };
@@ -478,19 +478,19 @@
 		5B233FDB21ED964F00206ACB /* LPEventCallbackManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManager.m; sourceTree = "<group>"; };
 		5B233FDC21ED964F00206ACB /* LPEventDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventDataManager.m; sourceTree = "<group>"; };
 		5B233FDD21ED964F00206ACB /* LPEventCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPEventCallback.h; sourceTree = "<group>"; };
-		5B233FDF21ED964F00206ACB /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		5B233FDF21ED964F00206ACB /* LPConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPConstants.m; sourceTree = "<group>"; };
 		5B233FE021ED964F00206ACB /* LeanplumInternal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumInternal.h; sourceTree = "<group>"; };
 		5B233FE121ED964F00206ACB /* LPInternalState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInternalState.m; sourceTree = "<group>"; };
 		5B233FE221ED964F00206ACB /* LPContextualValues.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPContextualValues.h; sourceTree = "<group>"; };
-		5B233FE321ED964F00206ACB /* EnumConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EnumConstants.m; sourceTree = "<group>"; };
+		5B233FE321ED964F00206ACB /* LPEnumConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEnumConstants.m; sourceTree = "<group>"; };
 		5B233FE521ED964F00206ACB /* LPFeatureFlagManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPFeatureFlagManager.h; sourceTree = "<group>"; };
 		5B233FE621ED964F00206ACB /* LPFeatureFlags.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPFeatureFlags.h; sourceTree = "<group>"; };
 		5B233FE721ED964F00206ACB /* LPFeatureFlagManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFeatureFlagManager.m; sourceTree = "<group>"; };
 		5B233FE821ED964F00206ACB /* LeanplumCompatibility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumCompatibility.m; sourceTree = "<group>"; };
-		5B233FE921ED964F00206ACB /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		5B233FE921ED964F00206ACB /* LPConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPConstants.h; sourceTree = "<group>"; };
 		5B233FEA21ED964F00206ACB /* LPInternalState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPInternalState.h; sourceTree = "<group>"; };
 		5B233FEB21ED964F00206ACB /* Leanplum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Leanplum.m; sourceTree = "<group>"; };
-		5B233FEC21ED964F00206ACB /* EnumConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EnumConstants.h; sourceTree = "<group>"; };
+		5B233FEC21ED964F00206ACB /* LPEnumConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPEnumConstants.h; sourceTree = "<group>"; };
 		5B233FED21ED964F00206ACB /* LPContextualValues.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPContextualValues.m; sourceTree = "<group>"; };
 		5B233FEF21ED964F00206ACB /* LPExceptionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPExceptionHandler.m; sourceTree = "<group>"; };
 		5B233FF021ED964F00206ACB /* LPExceptionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPExceptionHandler.h; sourceTree = "<group>"; };
@@ -500,14 +500,14 @@
 		5B233FF521ED964F00206ACB /* LPMessageArchiveData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageArchiveData.h; sourceTree = "<group>"; };
 		5B233FF821ED964F00206ACB /* LPAES.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAES.m; sourceTree = "<group>"; };
 		5B233FF921ED964F00206ACB /* LPAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPAES.h; sourceTree = "<group>"; };
-		5B233FFA21ED964F00206ACB /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		5B233FFA21ED964F00206ACB /* LPUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPUtils.h; sourceTree = "<group>"; };
 		5B233FFB21ED964F00206ACB /* LPDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPDatabase.m; sourceTree = "<group>"; };
 		5B233FFC21ED964F00206ACB /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
 		5B233FFD21ED964F00206ACB /* LPJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSON.m; sourceTree = "<group>"; };
 		5B233FFE21ED964F00206ACB /* FileMD5Hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileMD5Hash.c; sourceTree = "<group>"; };
 		5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPKeychainWrapper.h; sourceTree = "<group>"; };
 		5B23400021ED964F00206ACB /* LPDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPDatabase.h; sourceTree = "<group>"; };
-		5B23400121ED964F00206ACB /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
+		5B23400121ED964F00206ACB /* LPUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUtils.m; sourceTree = "<group>"; };
 		5B23400221ED964F00206ACB /* FileMD5Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileMD5Hash.h; sourceTree = "<group>"; };
 		5B23400321ED964F00206ACB /* LPJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPJSON.h; sourceTree = "<group>"; };
 		5B23400421ED964F00206ACB /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
@@ -941,17 +941,17 @@
 		5B233FDE21ED964F00206ACB /* Internal */ = {
 			isa = PBXGroup;
 			children = (
-				5B233FDF21ED964F00206ACB /* Constants.m */,
+				5B233FDF21ED964F00206ACB /* LPConstants.m */,
 				5B233FE021ED964F00206ACB /* LeanplumInternal.h */,
 				5B233FE121ED964F00206ACB /* LPInternalState.m */,
 				5B233FE221ED964F00206ACB /* LPContextualValues.h */,
-				5B233FE321ED964F00206ACB /* EnumConstants.m */,
+				5B233FE321ED964F00206ACB /* LPEnumConstants.m */,
 				5B233FE421ED964F00206ACB /* FeatureFlag */,
 				5B233FE821ED964F00206ACB /* LeanplumCompatibility.m */,
-				5B233FE921ED964F00206ACB /* Constants.h */,
+				5B233FE921ED964F00206ACB /* LPConstants.h */,
 				5B233FEA21ED964F00206ACB /* LPInternalState.h */,
 				5B233FEB21ED964F00206ACB /* Leanplum.m */,
-				5B233FEC21ED964F00206ACB /* EnumConstants.h */,
+				5B233FEC21ED964F00206ACB /* LPEnumConstants.h */,
 				5B233FED21ED964F00206ACB /* LPContextualValues.m */,
 				5B233FEE21ED964F00206ACB /* Monitoring */,
 			);
@@ -990,14 +990,14 @@
 			isa = PBXGroup;
 			children = (
 				5B233FF721ED964F00206ACB /* Encryption */,
-				5B233FFA21ED964F00206ACB /* Utils.h */,
+				5B233FFA21ED964F00206ACB /* LPUtils.h */,
 				5B233FFB21ED964F00206ACB /* LPDatabase.m */,
 				5B233FFC21ED964F00206ACB /* JRSwizzle.h */,
 				5B233FFD21ED964F00206ACB /* LPJSON.m */,
 				5B233FFE21ED964F00206ACB /* FileMD5Hash.c */,
 				5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */,
 				5B23400021ED964F00206ACB /* LPDatabase.h */,
-				5B23400121ED964F00206ACB /* Utils.m */,
+				5B23400121ED964F00206ACB /* LPUtils.m */,
 				5B23400221ED964F00206ACB /* FileMD5Hash.h */,
 				5B23400321ED964F00206ACB /* LPJSON.h */,
 				5B23400421ED964F00206ACB /* JRSwizzle.m */,
@@ -1183,7 +1183,7 @@
 				5B2340E721ED965000206ACB /* Leanplum_AsyncSocket.h in Headers */,
 				5B2340A521ED964F00206ACB /* LeanplumInternal.h in Headers */,
 				5B23403D21ED964F00206ACB /* LPRegisterDevice.h in Headers */,
-				5B2340BB21ED964F00206ACB /* EnumConstants.h in Headers */,
+				5B2340BB21ED964F00206ACB /* LPEnumConstants.h in Headers */,
 				5B23403F21ED964F00206ACB /* LPRevenueManager.h in Headers */,
 				5B23404921ED964F00206ACB /* LPRequest.h in Headers */,
 				5B2340E521ED965000206ACB /* Leanplum_WebSocket.h in Headers */,
@@ -1198,7 +1198,7 @@
 				5B23403121ED964F00206ACB /* LPActionContext.h in Headers */,
 				5B2340D921ED965000206ACB /* LPKeychainWrapper.h in Headers */,
 				5B23404F21ED964F00206ACB /* LPRequesting.h in Headers */,
-				5B2340B521ED964F00206ACB /* Constants.h in Headers */,
+				5B2340B521ED964F00206ACB /* LPConstants.h in Headers */,
 				5B23403321ED964F00206ACB /* LeanplumCompatibility.h in Headers */,
 				5B23407D21ED964F00206ACB /* LPUIEditorWrapper.h in Headers */,
 				5B2340AF21ED964F00206ACB /* LPFeatureFlags.h in Headers */,
@@ -1226,7 +1226,7 @@
 				5B23406321ED964F00206ACB /* LPRequestSender.h in Headers */,
 				5B2340B721ED964F00206ACB /* LPInternalState.h in Headers */,
 				5B23404521ED964F00206ACB /* LPResponse.h in Headers */,
-				5B2340CF21ED965000206ACB /* Utils.h in Headers */,
+				5B2340CF21ED965000206ACB /* LPUtils.h in Headers */,
 				5B23408321ED964F00206ACB /* LPVar-Internal.h in Headers */,
 				5B2340ED21ED965000206ACB /* Leanplum_SocketIO.h in Headers */,
 				5B23406F21ED964F00206ACB /* LPFileManager.h in Headers */,
@@ -1242,7 +1242,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B2340D021ED965000206ACB /* Utils.h in Headers */,
+				5B2340D021ED965000206ACB /* LPUtils.h in Headers */,
 				5B2340CE21ED964F00206ACB /* LPAES.h in Headers */,
 				5B23403C21ED964F00206ACB /* LPAppIconManager.h in Headers */,
 				5B23404A21ED964F00206ACB /* LPRequest.h in Headers */,
@@ -1275,7 +1275,7 @@
 				5B2340E221ED965000206ACB /* LPJSON.h in Headers */,
 				5B23406A21ED964F00206ACB /* LPNetworkEngine.h in Headers */,
 				5B23408C21ED964F00206ACB /* LPUIAlert.h in Headers */,
-				5B2340B621ED964F00206ACB /* Constants.h in Headers */,
+				5B2340B621ED964F00206ACB /* LPConstants.h in Headers */,
 				5B23404621ED964F00206ACB /* LPResponse.h in Headers */,
 				5B23412A21ED965000206ACB /* LPMessageTemplates.h in Headers */,
 				5B2340C421ED964F00206ACB /* LPInbox.h in Headers */,
@@ -1305,7 +1305,7 @@
 				5B23406421ED964F00206ACB /* LPRequestSender.h in Headers */,
 				5B2340F821ED965000206ACB /* NSTimer+Blocks.h in Headers */,
 				5B23408421ED964F00206ACB /* LPVar-Internal.h in Headers */,
-				5B2340BC21ED964F00206ACB /* EnumConstants.h in Headers */,
+				5B2340BC21ED964F00206ACB /* LPEnumConstants.h in Headers */,
 				5B23411621ED965000206ACB /* NSDate+RFC1123.h in Headers */,
 				5B2340C221ED964F00206ACB /* LPExceptionHandler.h in Headers */,
 				5B23412221ED965000206ACB /* NSString+MKNetworkKitAdditions.h in Headers */,
@@ -1539,7 +1539,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1550,7 +1550,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8F17F0283B37AFEA207AE526 /* [CP] Check Pods Manifest.lock */ = {
@@ -1583,7 +1583,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK-source/Leanplum.framework",
 				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
@@ -1598,7 +1598,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EF696FE2963AE44141D91048 /* [CP] Embed Pods Frameworks */ = {
@@ -1609,7 +1609,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-tvOS-Example/Pods-Leanplum-tvOS-Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-tvOS-Example/Pods-Leanplum-tvOS-Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-tvOS-SDK-source/LeanplumTV.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1620,7 +1620,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-tvOS-Example/Pods-Leanplum-tvOS-Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-tvOS-Example/Pods-Leanplum-tvOS-Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FE31991B4356AF7EAA1064C0 /* [CP] Check Pods Manifest.lock */ = {
@@ -1686,7 +1686,7 @@
 				5B2340D521ED965000206ACB /* LPJSON.m in Sources */,
 				5B23404321ED964F00206ACB /* LPAPIConfig.m in Sources */,
 				5B2340B121ED964F00206ACB /* LPFeatureFlagManager.m in Sources */,
-				5B2340DD21ED965000206ACB /* Utils.m in Sources */,
+				5B2340DD21ED965000206ACB /* LPUtils.m in Sources */,
 				5B23407921ED964F00206ACB /* LPCountAggregator.m in Sources */,
 				5B23408721ED964F00206ACB /* LPVar.m in Sources */,
 				5B23408D21ED964F00206ACB /* LPUIAlert.m in Sources */,
@@ -1718,7 +1718,7 @@
 				5B23407321ED964F00206ACB /* LPRevenueManager.m in Sources */,
 				5B23405B21ED964F00206ACB /* LPNetworkOperation.m in Sources */,
 				5B2340EF21ED965000206ACB /* Leanplum_SocketIO.m in Sources */,
-				5B2340A321ED964F00206ACB /* Constants.m in Sources */,
+				5B2340A321ED964F00206ACB /* LPConstants.m in Sources */,
 				5B23404D21ED964F00206ACB /* LPRequestFactory.m in Sources */,
 				5B23411B21ED965000206ACB /* NSDictionary+RequestEncoding.m in Sources */,
 				5B23407521ED964F00206ACB /* LPRegisterDevice.m in Sources */,
@@ -1726,7 +1726,7 @@
 				5B23403921ED964F00206ACB /* LPMessageTemplates.m in Sources */,
 				5B23408F21ED964F00206ACB /* LPActionManager.m in Sources */,
 				5B2340CB21ED964F00206ACB /* LPAES.m in Sources */,
-				5B2340AB21ED964F00206ACB /* EnumConstants.m in Sources */,
+				5B2340AB21ED964F00206ACB /* LPEnumConstants.m in Sources */,
 				5B23409D21ED964F00206ACB /* LPEventCallbackManager.m in Sources */,
 				5B23407121ED964F00206ACB /* LPAppIconManager.m in Sources */,
 				5B23410721ED965000206ACB /* Leanplum_MKNetworkOperation.m in Sources */,
@@ -1791,7 +1791,7 @@
 				5B2340D621ED965000206ACB /* LPJSON.m in Sources */,
 				5B23404421ED964F00206ACB /* LPAPIConfig.m in Sources */,
 				5B2340B221ED964F00206ACB /* LPFeatureFlagManager.m in Sources */,
-				5B2340DE21ED965000206ACB /* Utils.m in Sources */,
+				5B2340DE21ED965000206ACB /* LPUtils.m in Sources */,
 				5B23407A21ED964F00206ACB /* LPCountAggregator.m in Sources */,
 				5B23408821ED964F00206ACB /* LPVar.m in Sources */,
 				5B23408E21ED964F00206ACB /* LPUIAlert.m in Sources */,
@@ -1823,7 +1823,7 @@
 				5B23407421ED964F00206ACB /* LPRevenueManager.m in Sources */,
 				5B23405C21ED964F00206ACB /* LPNetworkOperation.m in Sources */,
 				5B2340F021ED965000206ACB /* Leanplum_SocketIO.m in Sources */,
-				5B2340A421ED964F00206ACB /* Constants.m in Sources */,
+				5B2340A421ED964F00206ACB /* LPConstants.m in Sources */,
 				5B23404E21ED964F00206ACB /* LPRequestFactory.m in Sources */,
 				5B23411C21ED965000206ACB /* NSDictionary+RequestEncoding.m in Sources */,
 				5B23407621ED964F00206ACB /* LPRegisterDevice.m in Sources */,
@@ -1831,7 +1831,7 @@
 				5B23403A21ED964F00206ACB /* LPMessageTemplates.m in Sources */,
 				5B23409021ED964F00206ACB /* LPActionManager.m in Sources */,
 				5B2340CC21ED964F00206ACB /* LPAES.m in Sources */,
-				5B2340AC21ED964F00206ACB /* EnumConstants.m in Sources */,
+				5B2340AC21ED964F00206ACB /* LPEnumConstants.m in Sources */,
 				5B23409E21ED964F00206ACB /* LPEventCallbackManager.m in Sources */,
 				5B23407221ED964F00206ACB /* LPAppIconManager.m in Sources */,
 				5B23410821ED965000206ACB /* Leanplum_MKNetworkOperation.m in Sources */,

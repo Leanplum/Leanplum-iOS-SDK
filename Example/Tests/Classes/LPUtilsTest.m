@@ -25,7 +25,7 @@
 
 #import <XCTest/XCTest.h>
 #import "NSString+MD5Addition.h"
-#import "Utils.h"
+#import "LPUtils.h"
 
 @interface LPUtilsTest : XCTestCase
 
@@ -50,32 +50,32 @@
 }
 
 - (void)test_isNullOrEmpty {
-    XCTAssertTrue([Utils isNullOrEmpty:nil]);
-    XCTAssertTrue([Utils isNullOrEmpty:@""]);
-    XCTAssertTrue([Utils isNullOrEmpty:@[]]);
-    XCTAssertTrue([Utils isNullOrEmpty:@{}]);
-    XCTAssertFalse([Utils isNullOrEmpty:@"test"]);
-    XCTAssertFalse([Utils isNullOrEmpty:@[@"test"]]);
-    XCTAssertFalse([Utils isNullOrEmpty:@{@"test":@""}]);
+    XCTAssertTrue([LPUtils isNullOrEmpty:nil]);
+    XCTAssertTrue([LPUtils isNullOrEmpty:@""]);
+    XCTAssertTrue([LPUtils isNullOrEmpty:@[]]);
+    XCTAssertTrue([LPUtils isNullOrEmpty:@{}]);
+    XCTAssertFalse([LPUtils isNullOrEmpty:@"test"]);
+    XCTAssertFalse([LPUtils isNullOrEmpty:@[@"test"]]);
+    XCTAssertFalse([LPUtils isNullOrEmpty:@{@"test":@""}]);
 }
 
 - (void)test_isBlank {
-    XCTAssertTrue([Utils isBlank:@""]);
-    XCTAssertTrue([Utils isBlank:@"  "]);
-    XCTAssertTrue([Utils isBlank:@"     "]);
-    XCTAssertFalse([Utils isBlank:@"   test  "]);
+    XCTAssertTrue([LPUtils isBlank:@""]);
+    XCTAssertTrue([LPUtils isBlank:@"  "]);
+    XCTAssertTrue([LPUtils isBlank:@"     "]);
+    XCTAssertFalse([LPUtils isBlank:@"   test  "]);
 }
 
 - (void)test_md5OfData {
     NSData *data = [@"test_string" dataUsingEncoding:NSUTF8StringEncoding];
     NSString *expectedSring = @"3474851a3410906697ec77337df7aae4";
-    XCTAssertEqualObjects([Utils md5OfData:data], expectedSring);
+    XCTAssertEqualObjects([LPUtils md5OfData:data], expectedSring);
 }
 
 - (void)test_base64EncodedStringFromData {
     NSData *data = [@"test_string" dataUsingEncoding:NSUTF8StringEncoding];
     NSString *expectedSring = @"dGVzdF9zdHJpbmc=";
-    NSString *base64String = [Utils base64EncodedStringFromData:data];
+    NSString *base64String = [LPUtils base64EncodedStringFromData:data];
     XCTAssertEqualObjects(base64String, expectedSring);
 }
 

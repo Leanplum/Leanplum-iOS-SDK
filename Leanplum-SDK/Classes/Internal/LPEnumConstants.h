@@ -1,5 +1,5 @@
 //
-//  EnumConstants.h
+//  LPEnumConstants.h
 //  Leanplum-SDK
 //
 //  Created by Grace Gu on 12/19/18.

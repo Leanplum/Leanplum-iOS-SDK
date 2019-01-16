@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPCountAggregator.h"
-#import "Constants.h"
+#import "LPConstants.h"
 #import "LeanplumRequest.h"
 
 @interface LPCountAggregator()

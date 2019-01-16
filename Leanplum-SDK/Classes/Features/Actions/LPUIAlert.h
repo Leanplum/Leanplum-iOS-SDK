@@ -23,7 +23,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "Constants.h"
+#import "LPConstants.h"
 #import <UIKit/UIKit.h>
 
 typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);

@@ -28,7 +28,7 @@
 #import "LPActionContext.h"
 #import "LPVar.h"
 #import "LPMessageArchiveData.h"
-#import "EnumConstants.h"
+#import "LPEnumConstants.h"
 
 #ifndef LP_NOT_TV
 #if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
