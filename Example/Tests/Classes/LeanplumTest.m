@@ -728,7 +728,51 @@
 }
 
 /**
- * Tests all track methods.
+ * Tests track with events of same type , priority and countdown.
+ */
+- (void) test_track_events_priority_countDown
+{
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+
+    // Sample track params.
+    NSString *trackName = @"pushLocal";
+    
+    // Validate track request.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                        NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"track");
+        XCTAssertTrue([params[@"event"] isEqualToString:trackName]);
+        XCTAssertNotNil(params[@"event"]);
+        return YES;
+    }];
+    NSString *messageIdOne = @"4982955628167168";
+    NSString *messageIdSecond = @"5571264209354752";
+    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        NSDictionary *outputDict = json[@"messages"];
+        XCTAssertNotNil(outputDict);
+        XCTAssertEqual([[outputDict allKeys] count], 2, @"Wrong array size.");
+        XCTAssertNotNil(outputDict[messageIdOne]);
+        XCTAssertNotNil(outputDict[messageIdSecond]);
+        XCTAssertEqual(outputDict[messageIdOne][@"priority"], outputDict[messageIdOne][@"priority"], @"Priority not Equal");
+        XCTAssertEqual(outputDict[messageIdOne][@"countdown"], outputDict[messageIdOne][@"countdown"], @"Countdown not Equal");
+    }];
+    [Leanplum track:trackName];
+    [Leanplum forceContentUpdate];
+    XCTAssertTrue([Leanplum hasStarted]);
+    
+}
+
+/**
+ * Tests  track methods.
  */
 - (void) test_track
 {
