@@ -215,6 +215,16 @@
                      withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 }
 
+- (void) test_tied_priorities_identical_different_time
+{
+    // Testing three messages with the same priority.
+    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPrioritiesDifferentDelay"
+                                                              ofType:@"json"];
+    NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
+    [self runInAppMessagePrioritizationTest:messageConfigs
+                     withExpectedMessageIds:[NSSet setWithObjects:@"1", @"2", @"3", nil]];
+}
+
 - (void) test_different_priorities_with_missing_values
 {
     // Testing  three messages with priorities of 10, 30, and no value.
