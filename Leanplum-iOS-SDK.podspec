@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name = 'Leanplum-iOS-SDK'
-  s.version = '2.2.2'
+  s.version = '2.2.3-beta.1'
   s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
   s.description = <<-DESC
 Leanplum’s integrated solution delivers meaningful engagement across messaging and the in-app
