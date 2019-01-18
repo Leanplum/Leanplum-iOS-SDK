@@ -1834,7 +1834,7 @@ BOOL inForeground = NO;
     // Make sure to capture the held back.
     [LPActionContext sortByPriority:actionContexts];
     NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
-    NSNumber *countDownThreshold = [self fetchCountDownForContext: (LPActionContext *) [actionContexts firstObject]];
+    NSNumber *countDownThreshold = [self fetchCountDownForContext: (LPActionContext *) [actionContexts firstObject] withMessages:messages];
     BOOL isPrioritySame = NO;
     for (LPActionContext *actionContext in actionContexts) {
         NSNumber *priority = [actionContext priority];
@@ -1842,7 +1842,7 @@ BOOL inForeground = NO;
             break;
         }
         if (isPrioritySame) {//priority is same
-            NSNumber *currentCountDown = [self fetchCountDownForContext:actionContext];
+            NSNumber *currentCountDown = [self fetchCountDownForContext:actionContext withMessages:messages];
             //multiple messages have same priority and same countDown, only display one message
             if (currentCountDown == countDownThreshold) {
                 break;
@@ -1864,9 +1864,9 @@ BOOL inForeground = NO;
     }
 }
 
-+ (NSNumber *)fetchCountDownForContext:(LPActionContext *)actionContext
++ (NSNumber *)fetchCountDownForContext:(LPActionContext *)actionContext withMessages:(NSDictionary *)messageDict
 {
-    NSDictionary *messageConfig = [LPVarCache sharedCache].messageDiffs[actionContext.messageId];
+    NSDictionary *messageConfig = messageDict[actionContext.messageId];
     NSNumber *countdown = messageConfig[@"countdown"];
     if (actionContext.isPreview) {
         countdown = @(5.0);
