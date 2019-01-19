@@ -4,5 +4,7 @@
 #
 ####################################################################
 
-deploy:
+tagCommit:
 	git tag `cat sdk-version.txt`; git push --tags
+
+deploy: tagCommit
