@@ -62,6 +62,22 @@
     XCTAssertEqualObjects(testArgs, args);
 }
 
+- (void)testSend {
+    LPRequest *request = [LPRequest post:@"test" params:@{}];
+    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
+    id requestSenderMock = OCMPartialMock(requestSender);
+    id configMock = OCMClassMock([LPAPIConfig class]);
+    OCMStub([configMock sharedConfig]).andReturn(configMock);
+    OCMStub([configMock appId]).andReturn(@"appID");
+    OCMStub([configMock accessKey]).andReturn(@"accessKey");
+    [requestSender send:request];
+
+    OCMVerify([requestSenderMock sendEventually:request]);
+
+    [requestSenderMock stopMocking];
+    [configMock stopMocking];
+}
+
 - (void)testSendNow {
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];

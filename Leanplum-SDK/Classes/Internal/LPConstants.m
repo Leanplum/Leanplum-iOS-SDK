@@ -307,7 +307,7 @@ void leanplumInternalError(NSException *e)
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
                                      LP_PARAM_VERSION_NAME: versionName
                                      }];
-            [[LPRequestSender sharedInstance] sendRequest:request];
+            [[LPRequestSender sharedInstance] send:request];
         } @catch (NSException *e) {
             // This empty try/catch is needed to prevent crash <-> loop.
         }
