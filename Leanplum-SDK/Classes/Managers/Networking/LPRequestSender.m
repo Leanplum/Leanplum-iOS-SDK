@@ -80,7 +80,7 @@
     return self;
 }
 
-- (void)sendRequest:(id<LPRequesting>)request
+- (void)send:(id<LPRequesting>)request
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
@@ -221,7 +221,7 @@
 {
     LP_TRY
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        [self sendRequest:request];
+        [self send:request];
     } else {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         if (!self.lastSentTime || currentTime - self.lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {
