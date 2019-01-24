@@ -95,7 +95,7 @@
             } else {
                 delay = (self.lastSentTime + LP_REQUEST_DEVELOPMENT_MAX_DELAY) - currentTime;
             }
-            [self performSelector:@selector(sendIfConnectedRequest:) withObject:request afterDelay:delay];
+            [self performSelector:@selector(sendIfConnected:) withObject:request afterDelay:delay];
         }
     }
     [self.countAggregator incrementCount:@"send_request_lp"];
