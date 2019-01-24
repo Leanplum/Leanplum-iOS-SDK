@@ -209,7 +209,7 @@
         [oldLeanplumRequest sendIfDelayed];
     } else {
         [self sendEventually:request];
-        [self performSelector:@selector(sendIfDelayedHelperRequest:)
+        [self performSelector:@selector(sendIfDelayedHelper:)
                    withObject:request
                    afterDelay:LP_REQUEST_RESUME_DELAY];
 
@@ -217,7 +217,7 @@
 }
 
 // Sends the call synchronously if no other call has been sent within 1 minute.
-- (void)sendIfDelayedHelperRequest:(LPRequest *)request
+- (void)sendIfDelayedHelper:(LPRequest *)request
 {
     LP_TRY
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
