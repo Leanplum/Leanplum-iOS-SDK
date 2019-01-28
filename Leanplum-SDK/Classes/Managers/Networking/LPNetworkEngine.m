@@ -112,6 +112,7 @@
     [request setValue:[NSString stringWithFormat:@"%@, en-us",
                        [[NSLocale preferredLanguages] componentsJoinedByString:@", "]]
                         forHTTPHeaderField:@"Accept-Language"];
+    [request setValue:@"gzip" forHTTPHeaderField:@"Accept-Encoding"];
     return [[LPNetworkOperation alloc] initWithSessionConfiguration:self.sessionConfiguration
                                                             request:request param:body];
 }
