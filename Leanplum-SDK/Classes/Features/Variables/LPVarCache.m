@@ -671,7 +671,7 @@ static dispatch_once_t leanplum_onceToken;
              LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                              initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
              id<LPRequesting> request = [reqFactory setVarsWithParams:args];
-             [[LPRequestSender sharedInstance] sendRequest:request];
+             [[LPRequestSender sharedInstance] send:request];
              return YES;
          } @catch (NSException *e) {
              [Leanplum throwError:@"Cannot serialize variable values. "

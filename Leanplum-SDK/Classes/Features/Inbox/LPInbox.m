@@ -193,7 +193,7 @@ static NSObject *updatingLock;
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
         id<LPRequesting> request = [reqFactory markNewsfeedMessageAsReadWithParams:params];
-        [[LPRequestSender sharedInstance] sendRequest:request];
+        [[LPRequestSender sharedInstance] send:request];
         LP_END_TRY
     }
     
@@ -374,7 +374,7 @@ static NSObject *updatingLock;
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory deleteNewsfeedMessageWithParams:params];
-    [[LPRequestSender sharedInstance] sendRequest:request];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 

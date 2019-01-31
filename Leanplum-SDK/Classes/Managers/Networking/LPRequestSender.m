@@ -80,7 +80,7 @@
     return self;
 }
 
-- (void)sendRequest:(id<LPRequesting>)request
+- (void)send:(id<LPRequesting>)request
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
@@ -95,7 +95,7 @@
             } else {
                 delay = (self.lastSentTime + LP_REQUEST_DEVELOPMENT_MAX_DELAY) - currentTime;
             }
-            [self performSelector:@selector(sendIfConnectedRequest:) withObject:request afterDelay:delay];
+            [self performSelector:@selector(sendIfConnected:) withObject:request afterDelay:delay];
         }
     }
     [self.countAggregator incrementCount:@"send_request_lp"];
@@ -209,7 +209,7 @@
         [oldLeanplumRequest sendIfDelayed];
     } else {
         [self sendEventually:request];
-        [self performSelector:@selector(sendIfDelayedHelperRequest:)
+        [self performSelector:@selector(sendIfDelayedHelper:)
                    withObject:request
                    afterDelay:LP_REQUEST_RESUME_DELAY];
 
@@ -217,11 +217,11 @@
 }
 
 // Sends the call synchronously if no other call has been sent within 1 minute.
-- (void)sendIfDelayedHelperRequest:(LPRequest *)request
+- (void)sendIfDelayedHelper:(LPRequest *)request
 {
     LP_TRY
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        [self sendRequest:request];
+        [self send:request];
     } else {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         if (!self.lastSentTime || currentTime - self.lastSentTime > LP_REQUEST_PRODUCTION_DELAY) {

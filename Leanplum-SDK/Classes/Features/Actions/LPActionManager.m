@@ -92,7 +92,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
         id<LPRequesting> request = [reqFactory
                                     setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [[LPRequestSender sharedInstance] sendRequest:request];
+        [[LPRequestSender sharedInstance] send:request];
     }
     LP_END_TRY
 
@@ -346,7 +346,7 @@ static dispatch_once_t leanplum_onceToken;
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
             id<LPRequesting> request = [reqFactory setDeviceAttributesWithParams:params];
-            [[LPRequestSender sharedInstance] sendRequest:request];
+            [[LPRequestSender sharedInstance] send:request];
             LP_BEGIN_USER_CODE
         }];
     }
