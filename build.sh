@@ -89,10 +89,12 @@ main() {
   default="${BUILD_DIR}${X86_DIR}/${CONFIGURATION}-iphonesimulator"
   CURRENTCONFIG_X86_DEVICE_DIR=${CURRENTCONFIG_X86_DEVICE_DIR:-$default}
   default="${BUILD_DIR}${X8664_DIR}/${CONFIGURATION}-iphonesimulator"
-  
+  CURRENTCONFIG_X8664_SIMULATOR_DIR=${CURRENTCONFIG_X8664_SIMULATOR_DIR:-$default}
+  ACTION="clean build"
+
   DEVICE_SDK="iphoneos"
   SIM_SDK="iphonesimulator"
-  
+
   rm -rf "$RELEASE_DIR_BASE"
   mkdir -p "$RELEASE_DIR_BASE"
   RELEASE_DIR="$RELEASE_DIR_BASE"
