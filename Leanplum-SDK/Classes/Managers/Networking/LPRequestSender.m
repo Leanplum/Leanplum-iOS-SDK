@@ -319,7 +319,7 @@
                                    LP_PARAM_CLIENT: constants.client,
                                    LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
                                    LP_PARAM_TIME: timestamp,
-                                   LP_PARAM_REQ_ID: request.requestId,
+                                   LP_PARAM_REQUEST_ID: request.requestId,
                                    } mutableCopy];
     if ([LPAPIConfig sharedConfig].token) {
         args[LP_PARAM_TOKEN] = [LPAPIConfig sharedConfig].token;
