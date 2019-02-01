@@ -37,6 +37,7 @@
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
+#import "LPFileTransferManager.h"
 
 @interface LPVarCache()
 @property (strong, nonatomic) NSRegularExpression *varNameRegex;
@@ -723,10 +724,7 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
     if (filenames.count > 0) {
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        LeanplumRequest *req = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
-        [req sendFilesNow:filenames];
+        [[LPFileTransferManager sharedInstance] sendFilesNow:filenames];
     }
 }
 
