@@ -54,6 +54,7 @@
                                    LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
                                    LP_PARAM_TIME: timestamp,
                                    LP_PARAM_UUID: @"uuid",
+                                   LP_PARAM_REQUEST_ID: request.requestId,
                                    } mutableCopy];
     NSMutableDictionary *args = [requestSender createArgsDictionaryForRequest:request];
     args[LP_PARAM_UUID] = @"uuid";

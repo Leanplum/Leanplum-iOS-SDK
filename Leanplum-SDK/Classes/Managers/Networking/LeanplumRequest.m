@@ -73,7 +73,7 @@ static NSDictionary *_requestHheaders;
         _httpMethod = httpMethod;
         _apiMethod = apiMethod;
         _params = params;
-        
+        _requestId = [[NSUUID UUID] UUIDString];
         if (engine == nil) {
             if (!_requestHheaders) {
                 _requestHheaders = [LeanplumRequest createHeaders];

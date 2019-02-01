@@ -35,6 +35,7 @@
     LPNetworkResponseBlock _response;
     LPNetworkErrorBlock _error;
     BOOL _sent;
+    NSString *_requestId;
 }
 
 + (void)initializeStaticVars;

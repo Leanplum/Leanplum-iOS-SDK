@@ -44,6 +44,7 @@
         _apiMethod = apiMethod;
         _params = params;
         _countAggregator = [LPCountAggregator sharedAggregator];
+        _requestId = [[NSUUID UUID] UUIDString];
     }
     return self;
 }
