@@ -572,7 +572,11 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     [[LPCountAggregator sharedAggregator] incrementCount:@"maybe_download_file"];
     
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        [[LPFileTransferManager sharedInstance] downloadFile:value withCompletionHandler:^(NSError * _Nonnull error) {
+        [[LPFileTransferManager sharedInstance] downloadFile:value onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if (complete) {
+                complete();
+            }
+        } onError:^(NSError *error) {
             if (complete) {
                 complete();
             }

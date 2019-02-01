@@ -724,7 +724,7 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
     if (filenames.count > 0) {
-        [[LPFileTransferManager sharedInstance] sendFilesNow:filenames];
+        [[LPFileTransferManager sharedInstance] sendFilesNow:filenames fileData:fileData];
     }
 }
 

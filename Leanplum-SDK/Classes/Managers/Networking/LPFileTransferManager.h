@@ -15,10 +15,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPFileTransferManager : NSObject
 
-+ (instancetype)sharedInstance;
+@property (nonatomic, strong) NSString *uploadUrl;
+@property (nonatomic, readonly) int numPendingDownloads;
 
-- (void)sendFilesNow:(NSArray *)filenames;
-- (void)downloadFile:(NSString *)path withCompletionHandler:(void (^__nullable)(NSError *error))completion;
++ (instancetype)sharedInstance;
+- (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData;
+
+- (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock;
+- (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)noPendingDownloadsBlock;
 
 @end
 
