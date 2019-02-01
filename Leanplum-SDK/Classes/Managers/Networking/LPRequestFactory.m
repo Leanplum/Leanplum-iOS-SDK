@@ -217,18 +217,18 @@ NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
 - (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
     [self.countAggregator incrementCount:@"create_get_for_api_method"];
     
-//    if ([self shouldReturnLPRequestClass]) {
-//        return [LPRequest get:apiMethod params:params];
-//    }
+    if ([self shouldReturnLPRequestClass]) {
+        return [LPRequest get:apiMethod params:params];
+    }
     return [LeanplumRequest get:apiMethod params:params];
 }
 
 - (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
     [self.countAggregator incrementCount:@"create_post_for_api_method"];
     
-//    if ([self shouldReturnLPRequestClass]) {
-//        return [LPRequest post:apiMethod params:params];
-//    }
+    if ([self shouldReturnLPRequestClass]) {
+        return [LPRequest post:apiMethod params:params];
+    }
     return [LeanplumRequest post:apiMethod params:params];
 }
 
