@@ -581,20 +581,6 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
                 complete();
             }
         }];
-//        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-//                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-//        LeanplumRequest *downloadRequest = [reqFactory downloadFileWithParams:nil];
-//        [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-//            if (complete) {
-//                complete();
-//            }
-//        }];
-//        [downloadRequest onError:^(NSError *op) {
-//            if (complete) {
-//                complete();
-//            }
-//        }];
-//        [downloadRequest downloadFile:value];
         return YES;
     }
     return NO;

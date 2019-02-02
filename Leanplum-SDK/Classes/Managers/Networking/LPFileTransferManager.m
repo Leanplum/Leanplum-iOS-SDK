@@ -25,6 +25,7 @@
 #import "LPFileTransferManager.h"
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
+#import "LeanplumRequest.h"
 #import "LPRequestSender.h"
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
@@ -230,60 +231,74 @@
 
 - (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
-    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
-    dict[LP_KEY_FILENAME] = path;
-
-    RETURN_IF_TEST_MODE;
-    if ([self.fileTransferStatus[path] boolValue]) {
-        return;
-    }
-    self.pendingDownloads++;
-    NSLog(@"Leanplum: Downloading resource %@", path);
-    self.fileTransferStatus[path] = @(YES);
-
-    [[LPRequestSender sharedInstance] attachApiKeys:dict];
-
-    // Download it directly if the argument is URL.
-    // Otherwise continue with the api request.
-    id<LPNetworkOperationProtocol> op;
-    if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
-        op = [self.engine operationWithURLString:path];
-    } else {
-        op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
-                                     params:dict
-                                 httpMethod:[LPNetworkFactory fileRequestMethod]
-                                        ssl:[LPConstantsState sharedState].apiSSL
-                             timeoutSeconds:[LPConstantsState sharedState]
-              .networkTimeoutSecondsForDownloads];
-    }
-
-    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-        LP_TRY
-        [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
-                                                            createMissingDirectories:YES] atomically:YES];
-        self.pendingDownloads--;
-        if (responseBlock != nil) {
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *downloadRequest = [reqFactory downloadFileWithParams:nil];
+    [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        if (responseBlock) {
             responseBlock(operation, json);
         }
-        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
-            self.noPendingDownloadsBlock();
-        }
-        LP_END_TRY
-    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-        LP_TRY
-        NSLog(@"Leanplum: %@", err);
-        self.pendingDownloads--;
-        if (errorBlock != nil) {
-            errorBlock(err);
-        }
-        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
-            self.noPendingDownloadsBlock();
-        }
-        LP_END_TRY
     }];
-    [self.engine enqueueOperation: op];
+    [downloadRequest onError:^(NSError *op) {
+        if (errorBlock) {
+            errorBlock(op);
+        }
+    }];
+    [downloadRequest downloadFile:path];
+//    LPRequestFactory *reqFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+//    id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
+//    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+//    dict[LP_KEY_FILENAME] = path;
+//
+//    RETURN_IF_TEST_MODE;
+//    if ([self.fileTransferStatus[path] boolValue]) {
+//        return;
+//    }
+//    self.pendingDownloads++;
+//    NSLog(@"Leanplum: Downloading resource %@", path);
+//    self.fileTransferStatus[path] = @(YES);
+//
+//    [[LPRequestSender sharedInstance] attachApiKeys:dict];
+//
+//    // Download it directly if the argument is URL.
+//    // Otherwise continue with the api request.
+//    id<LPNetworkOperationProtocol> op;
+//    if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
+//        op = [self.engine operationWithURLString:path];
+//    } else {
+//        op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+//                                     params:dict
+//                                 httpMethod:[LPNetworkFactory fileRequestMethod]
+//                                        ssl:[LPConstantsState sharedState].apiSSL
+//                             timeoutSeconds:[LPConstantsState sharedState]
+//              .networkTimeoutSecondsForDownloads];
+//    }
+//
+//    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+//        LP_TRY
+//        [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
+//                                                            createMissingDirectories:YES] atomically:YES];
+//        self.pendingDownloads--;
+//        if (responseBlock != nil) {
+//            responseBlock(operation, json);
+//        }
+//        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
+//            self.noPendingDownloadsBlock();
+//        }
+//        LP_END_TRY
+//    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
+//        LP_TRY
+//        NSLog(@"Leanplum: %@", err);
+//        self.pendingDownloads--;
+//        if (errorBlock != nil) {
+//            errorBlock(err);
+//        }
+//        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
+//            self.noPendingDownloadsBlock();
+//        }
+//        LP_END_TRY
+//    }];
+//    [self.engine enqueueOperation: op];
 }
 
 - (int)numPendingDownloads
