@@ -230,6 +230,11 @@
 
 - (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
+    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+    dict[LP_KEY_FILENAME] = path;
+
     RETURN_IF_TEST_MODE;
     if ([self.fileTransferStatus[path] boolValue]) {
         return;
@@ -238,10 +243,6 @@
     NSLog(@"Leanplum: Downloading resource %@", path);
     self.fileTransferStatus[path] = @(YES);
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
-    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
-    dict[LP_KEY_FILENAME] = path;
     [[LPRequestSender sharedInstance] attachApiKeys:dict];
 
     // Download it directly if the argument is URL.
