@@ -572,15 +572,20 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     [[LPCountAggregator sharedAggregator] incrementCount:@"maybe_download_file"];
     
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        [[LPFileTransferManager sharedInstance] downloadFile:value onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-            if (complete) {
-                complete();
-            }
-        } onError:^(NSError *error) {
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        LeanplumRequest *downloadRequest = [reqFactory downloadFileWithParams:nil];
+        [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (complete) {
                 complete();
             }
         }];
+        [downloadRequest onError:^(NSError *op) {
+            if (complete) {
+                complete();
+            }
+        }];
+        [downloadRequest downloadFile:value];
         return YES;
     }
     return NO;
