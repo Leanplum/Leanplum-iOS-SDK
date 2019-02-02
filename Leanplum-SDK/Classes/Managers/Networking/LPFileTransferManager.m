@@ -86,16 +86,17 @@
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
-    if ([downloadRequest isKindOfClass:[LeanplumRequest class]]) {
+    if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldRequest = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [oldRequest sendFilesNow:filenames];
     } else {
         NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
-        dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-        [[LPRequestSender sharedInstance] attachApiKeys:dict];
 
         RETURN_IF_TEST_MODE;
         NSMutableArray *filesToUpload = [NSMutableArray array];
+        dict[LP_PARAM_COUNT] = @(filesToUpload.count);
+        [[LPRequestSender sharedInstance] attachApiKeys:dict];
+
         for (NSString *filename in filenames) {
             // Set state.
             if ([self.fileTransferStatus[filename] boolValue]) {
@@ -240,7 +241,7 @@
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
-    if ([downloadRequest isKindOfClass:[LeanplumRequest class]]) {
+    if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldRequest = request;
         [oldRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
             if (responseBlock) {
