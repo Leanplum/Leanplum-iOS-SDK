@@ -83,35 +83,41 @@
 
 - (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData
 {
-    RETURN_IF_TEST_MODE;
-    NSMutableArray *filesToUpload = [NSMutableArray array];
-    for (NSString *filename in filenames) {
-        // Set state.
-        if ([self.fileTransferStatus[filename] boolValue]) {
-            [filesToUpload addObject:@""];
-        } else {
-            [filesToUpload addObject:filename];
-            self.fileTransferStatus[filename] = @(YES);
-            NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil] objectForKey:NSFileSize];
-            self.fileUploadSize[filename] = size;
-            self.fileUploadProgress[filename] = @0.0;
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    id<LPRequesting> request = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+    if ([downloadRequest isKindOfClass:[LeanplumRequest class]]) {
+        LeanplumRequest *oldRequest = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+        [oldRequest sendFilesNow:filenames];
+    } else {
+        NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+        dict[LP_PARAM_COUNT] = @(filesToUpload.count);
+        [[LPRequestSender sharedInstance] attachApiKeys:dict];
+
+        RETURN_IF_TEST_MODE;
+        NSMutableArray *filesToUpload = [NSMutableArray array];
+        for (NSString *filename in filenames) {
+            // Set state.
+            if ([self.fileTransferStatus[filename] boolValue]) {
+                [filesToUpload addObject:@""];
+            } else {
+                [filesToUpload addObject:filename];
+                self.fileTransferStatus[filename] = @(YES);
+                NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil] objectForKey:NSFileSize];
+                self.fileUploadSize[filename] = size;
+                self.fileUploadProgress[filename] = @0.0;
+            }
         }
-    }
-    if (filesToUpload.count == 0) {
-        return;
-    }
+        if (filesToUpload.count == 0) {
+            return;
+        }
+        @synchronized (self.pendingUploads) {
+            self.pendingUploads[filesToUpload] = dict;
+        }
+        [self maybeSendNextUpload];
 
-    LPRequest *request = [LPRequest post:LP_METHOD_UPLOAD_FILE
-                                  params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
-    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
-    dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-    [[LPRequestSender sharedInstance] attachApiKeys:dict];
-    @synchronized (self.pendingUploads) {
-        self.pendingUploads[filesToUpload] = dict;
+        NSLog(@"Leanplum: Uploading files...");
     }
-    [self maybeSendNextUpload];
-
-    NSLog(@"Leanplum: Uploading files...");
 }
 
 - (void)printUploadProgress
