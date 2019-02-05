@@ -35,6 +35,7 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPCountAggregator.h"
+#import "LPFileTransferManager.h"
 
 typedef enum {
     kLeanplumFileOperationGet = 0,
@@ -571,20 +572,15 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     [[LPCountAggregator sharedAggregator] incrementCount:@"maybe_download_file"];
     
     if ([self shouldDownloadFile:value defaultValue:defaultValue]) {
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        LeanplumRequest *downloadRequest = [reqFactory downloadFileWithParams:nil];
-        [downloadRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [[LPFileTransferManager sharedInstance] downloadFile:value onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+            if (complete) {
+                complete();
+            }
+        } onError:^(NSError *error) {
             if (complete) {
                 complete();
             }
         }];
-        [downloadRequest onError:^(NSError *op) {
-            if (complete) {
-                complete();
-            }
-        }];
-        [downloadRequest downloadFile:value];
         return YES;
     }
     return NO;
