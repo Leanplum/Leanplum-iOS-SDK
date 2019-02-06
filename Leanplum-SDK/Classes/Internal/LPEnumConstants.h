@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-@import Foundation;
+#include <Foundation/Foundation.h>
 
 #ifndef EnumConstants_h
 #define EnumConstants_h
