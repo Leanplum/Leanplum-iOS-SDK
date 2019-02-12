@@ -12,6 +12,7 @@ before_install:
 - pod install --project-directory=Example
 
 before_deploy:
+- ./Tools/verifyTag.sh
 - ./build.sh
 
 deploy:
