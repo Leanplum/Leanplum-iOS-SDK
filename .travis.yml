@@ -13,7 +13,7 @@ before_install:
 
 before_deploy:
 - ./Tools/verifyTag.sh
-- ./build.sh
+- ./Tools/build.sh
 
 deploy:
   - provider: releases
