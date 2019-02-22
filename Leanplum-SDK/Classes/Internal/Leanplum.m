@@ -2399,6 +2399,7 @@ andParameters:(NSDictionary *)params
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
             ![updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs] ||
             ![eventRules isEqualToArray:[LPVarCache sharedCache].eventRulesDiffs] ||
+            ![variants isEqualToArray:[LPVarCache sharedCache].variants] ||
             ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
             [[LPVarCache sharedCache] applyVariableDiffs:values
                                   messages:messages
