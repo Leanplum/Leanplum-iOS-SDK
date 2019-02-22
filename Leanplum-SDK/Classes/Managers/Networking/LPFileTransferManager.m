@@ -46,6 +46,13 @@
 
 @property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
 
+// Dependencies
+@property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
+@property (nonatomic, strong) LPRequestFactory *requestFactory;
+@property (nonatomic, strong) LPRequestSender *requestSender;
+
+
+
 @end
 
 
@@ -60,6 +67,27 @@
     return sharedManager;
 }
 
+-(LPFeatureFlagManager *)featureFlagManager {
+    if (!_featureFlagManager) {
+        _featureFlagManager = [LPFeatureFlagManager sharedManager];
+    }
+    return _featureFlagManager;
+}
+
+-(LPRequestFactory *)requestFactory
+    if (!_requestFactory) {
+        _requestFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:self.featureFlagManager];
+    }
+    return _requestFactory;
+}
+
+-(LPRequestSender *)requestSender {
+    if (!_requestSender) {
+        _requestSender = [LPRequestSender sharedInstance];
+    }
+    return _requestSender;
+}
+
 - (id)init
 {
     self = [super init];
@@ -71,7 +99,7 @@
 
         if (_engine == nil) {
             if (!_requestHeaders) {
-                _requestHeaders = [[LPRequestSender sharedInstance] createHeaders];
+                _requestHeaders = [self.requestSender createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];
@@ -83,19 +111,17 @@
 
 - (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+    id<LPRequesting> request = [self.requestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldRequest = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [oldRequest sendFilesNow:filenames];
     } else {
-        NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+        NSMutableDictionary *dict = [self.requestSender createArgsDictionaryForRequest:request];
 
         RETURN_IF_TEST_MODE;
         NSMutableArray *filesToUpload = [NSMutableArray array];
         dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-        [[LPRequestSender sharedInstance] attachApiKeys:dict];
+        [self.requestSender attachApiKeys:dict];
 
         for (NSString *filename in filenames) {
             // Set state.
@@ -238,9 +264,7 @@
 
 - (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
+    id<LPRequesting> request = [self.requestFactory downloadFileWithParams:nil];
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldRequest = request;
         [oldRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
@@ -255,7 +279,7 @@
         }];
         [oldRequest downloadFile:path];
     } else {
-        NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+        NSMutableDictionary *dict = [self.requestSender createArgsDictionaryForRequest:request];
         dict[LP_KEY_FILENAME] = path;
 
         RETURN_IF_TEST_MODE;
@@ -266,7 +290,7 @@
         NSLog(@"Leanplum: Downloading resource %@", path);
         self.fileTransferStatus[path] = @(YES);
 
-        [[LPRequestSender sharedInstance] attachApiKeys:dict];
+        [self.requestSender attachApiKeys:dict];
 
         // Download it directly if the argument is URL.
         // Otherwise continue with the api request.
