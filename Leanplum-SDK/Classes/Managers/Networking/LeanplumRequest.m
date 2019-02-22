@@ -96,7 +96,12 @@ static NSDictionary *_requestHheaders;
                                  [[UIDevice currentDevice] systemName],
                                  [[UIDevice currentDevice] systemVersion],
                                  LEANPLUM_PACKAGE_IDENTIFIER];
-    return @{@"User-Agent": userAgentString};
+    
+    
+    NSString *languageHeader = [NSString stringWithFormat:@"%@, en-us",
+                                [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
+
+    return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : @"gzip"};
 }
 
 + (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params

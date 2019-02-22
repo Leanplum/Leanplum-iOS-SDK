@@ -295,7 +295,11 @@
                                  [[UIDevice currentDevice] systemName],
                                  [[UIDevice currentDevice] systemVersion],
                                  LEANPLUM_PACKAGE_IDENTIFIER];
-    return @{@"User-Agent": userAgentString};
+    
+    NSString *languageHeader = [NSString stringWithFormat:@"%@, en-us",
+                                [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
+    
+    return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : @"gzip"};
 }
 
 - (NSString *)generateUUID
