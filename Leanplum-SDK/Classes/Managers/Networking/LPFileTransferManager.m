@@ -48,13 +48,9 @@
 
 // Dependencies
 @property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
-@property (nonatomic, strong) LPRequestFactory *requestFactory;
 @property (nonatomic, strong) LPRequestSender *requestSender;
 
-
-
 @end
-
 
 @implementation LPFileTransferManager
 
@@ -72,13 +68,6 @@
         _featureFlagManager = [LPFeatureFlagManager sharedManager];
     }
     return _featureFlagManager;
-}
-
--(LPRequestFactory *)requestFactory
-    if (!_requestFactory) {
-        _requestFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:self.featureFlagManager];
-    }
-    return _requestFactory;
 }
 
 -(LPRequestSender *)requestSender {
@@ -111,9 +100,11 @@
 
 - (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData
 {
-    id<LPRequesting> request = [self.requestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+    LPRequestFactory *requestFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:self.featureFlagManager];
+    id<LPRequesting> request = [requestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
     if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldRequest = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+        LPRequestFactory *requestFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:self.featureFlagManager];
+        LeanplumRequest *oldRequest = [requestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
         [oldRequest sendFilesNow:filenames];
     } else {
         NSMutableDictionary *dict = [self.requestSender createArgsDictionaryForRequest:request];
@@ -264,7 +255,8 @@
 
 - (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
-    id<LPRequesting> request = [self.requestFactory downloadFileWithParams:nil];
+    LPRequestFactory *requestFactory = [[LPRequestFactory alloc] initWithFeatureFlagManager:self.featureFlagManager];
+    id<LPRequesting> request = [requestFactory downloadFileWithParams:nil];
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldRequest = request;
         [oldRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
