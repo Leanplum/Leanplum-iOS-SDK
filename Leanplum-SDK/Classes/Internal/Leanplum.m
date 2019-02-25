@@ -49,6 +49,7 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
+#import "LPFeatureFlags.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -1133,7 +1134,9 @@ BOOL inForeground = NO;
     LP_END_TRY
     
     LP_TRY
-    [LPUtils initExceptionHandling];
+    if ([[LPFeatureFlagManager sharedManager] isFeatureFlagEnabled:LP_FEATURE_FLAG_CRASH_MONITORING]) {
+        [LPUtils initExceptionHandling];
+    }
     LP_END_TRY
 }
 

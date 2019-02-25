@@ -9,5 +9,6 @@
 #define LPFeatureFlags_h
 
 #define LP_FEATURE_FLAG_REQUEST_REFACTOR @"request_refactor"
+#define LP_FEATURE_FLAG_CRASH_MONITORING @"crash_monitoring"
 
 #endif /* LPFeatureFlags_h */
