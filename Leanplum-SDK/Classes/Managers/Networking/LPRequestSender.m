@@ -300,7 +300,7 @@
     NSString *languageHeader = [NSString stringWithFormat:@"%@, en-us",
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
     
-    return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : @"gzip"};
+    return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
 }
 
 - (NSString *)generateUUID
