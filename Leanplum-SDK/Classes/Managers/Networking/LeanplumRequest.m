@@ -87,7 +87,7 @@ static NSDictionary *_requestHheaders;
 
 + (NSDictionary *)createHeaders {
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
+    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
                                  infoDict[(NSString *)kCFBundleNameKey],
                                  infoDict[(NSString *)kCFBundleVersionKey],
                                  [LPAPIConfig sharedConfig].appId,
@@ -95,6 +95,7 @@ static NSDictionary *_requestHheaders;
                                  LEANPLUM_SDK_VERSION,
                                  [[UIDevice currentDevice] systemName],
                                  [[UIDevice currentDevice] systemVersion],
+                                 LEANPLUM_SUPPORTED_ENCODING,
                                  LEANPLUM_PACKAGE_IDENTIFIER];
     
     

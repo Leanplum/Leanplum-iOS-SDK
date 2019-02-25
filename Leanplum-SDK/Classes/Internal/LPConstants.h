@@ -51,6 +51,7 @@
 
 #define LEANPLUM_SDK_VERSION @"2.3.0"
 #define LEANPLUM_CLIENT @"ios"
+#define LEANPLUM_SUPPORTED_ENCODING @"gzip"
 
 // Can upload up to 100 files or 50 MB per request.
 #define MAX_UPLOAD_BATCH_SIZES (50 * (1 << 20))
