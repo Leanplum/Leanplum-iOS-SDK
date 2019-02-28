@@ -31,7 +31,6 @@
 
 + (instancetype)sharedInstance;
 
-- (NSDictionary *)createHeaders;
 - (NSMutableDictionary *)createArgsDictionaryForRequest:(id<LPRequesting>)request;
 - (void)attachApiKeys:(NSMutableDictionary *)dict;
 
