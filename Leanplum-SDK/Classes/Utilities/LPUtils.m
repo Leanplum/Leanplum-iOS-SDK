@@ -25,6 +25,8 @@
 #import "LPUtils.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "LPExceptionHandler.h"
+#import "LPAPIConfig.h"
+#import "LPConstants.h"
 
 @implementation LPUtils
 
@@ -80,6 +82,27 @@
 + (void)handleException:(NSException *)exception
 {
     [[LPExceptionHandler sharedExceptionHandler] reportException:exception];
+}
+
+/*
+ Must include `Accept-Encoding: gzip` in the header
+ Must include the phrase `gzip` in the `User-Agent` header
+ https://cloud.google.com/appengine/kb/
+ */
++ (NSDictionary *)createHeaders {
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
+                                 infoDict[(NSString *)kCFBundleNameKey],
+                                 infoDict[(NSString *)kCFBundleVersionKey],
+                                 [LPAPIConfig sharedConfig].appId,
+                                 LEANPLUM_CLIENT,
+                                 LEANPLUM_SDK_VERSION,
+                                 [[UIDevice currentDevice] systemName],
+                                 [[UIDevice currentDevice] systemVersion],
+                                 LEANPLUM_SUPPORTED_ENCODING,
+                                 LEANPLUM_PACKAGE_IDENTIFIER];
+    
+    return @{@"User-Agent": userAgentString, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
 }
 
 @end
