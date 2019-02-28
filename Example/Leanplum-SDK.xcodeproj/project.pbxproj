@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		05B465433932C58CF4B66613 /* Pods_Leanplum_SDK_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92FEC45947F78DD1AD924183 /* Pods_Leanplum_SDK_Tests.framework */; };
+		073DF05B22280C1A00CC96DF /* variants_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 073DF05A22280C1A00CC96DF /* variants_response.json */; };
+		073DF05C22280C1A00CC96DF /* variants_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 073DF05A22280C1A00CC96DF /* variants_response.json */; };
 		07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */; };
 		07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86C1F052B7800A4B092 /* LPAppIconManagerTest.m */; };
 		07E5C8AD1F052B7800A4B092 /* LPEventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86D1F052B7800A4B092 /* LPEventDataManagerTest.m */; };
@@ -123,6 +125,7 @@
 		0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK-source.podspec"; path = "../Leanplum-iOS-SDK-source.podspec"; sourceTree = "<group>"; };
 		0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-tvOS-SDK.podspec"; path = "../Leanplum-tvOS-SDK.podspec"; sourceTree = "<group>"; };
+		073DF05A22280C1A00CC96DF /* variants_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variants_response.json; sourceTree = "<group>"; };
 		07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionManagerTest.m; sourceTree = "<group>"; };
 		07E5C86C1F052B7800A4B092 /* LPAppIconManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAppIconManagerTest.m; sourceTree = "<group>"; };
 		07E5C86D1F052B7800A4B092 /* LPEventDataManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventDataManagerTest.m; sourceTree = "<group>"; };
@@ -330,6 +333,7 @@
 		07E5C8901F052B7800A4B092 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				073DF05A22280C1A00CC96DF /* variants_response.json */,
 				07E5C8911F052B7800A4B092 /* action_response.json */,
 				9CB691DD1F15FFF5002D83D8 /* batch_response.json */,
 				07E5C8931F052B7800A4B092 /* complex_start_response.json */,
@@ -622,6 +626,7 @@
 				07E5C8EA1F052DCC00A4B092 /* MainAppIcon.png in Resources */,
 				07E5C8E21F052DC400A4B092 /* start_variables_response.json in Resources */,
 				07E5C8E71F052DC700A4B092 /* malformed_simple_start_response.json in Resources */,
+				073DF05B22280C1A00CC96DF /* variants_response.json in Resources */,
 				A8EEA1AB20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */,
 				07E5C8F21F052DD000A4B092 /* regionData.json in Resources */,
 				07E5C8F01F052DD000A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */,
@@ -660,6 +665,7 @@
 				07E5C8D21F052B7800A4B092 /* DifferentPriorities1.json in Resources */,
 				07E5C8C91F052B7800A4B092 /* registration_response.json in Resources */,
 				9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */,
+				073DF05C22280C1A00CC96DF /* variants_response.json in Resources */,
 				07E5C8DA1F052B7800A4B092 /* TiedPriorities2.json in Resources */,
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
 				07E5C8D61F052B7800A4B092 /* regionData.json in Resources */,
@@ -718,7 +724,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -727,7 +733,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		AA36E9F20FC263CA34118B64 /* [CP] Check Pods Manifest.lock */ = {
@@ -754,7 +760,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
 				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
@@ -767,7 +773,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
