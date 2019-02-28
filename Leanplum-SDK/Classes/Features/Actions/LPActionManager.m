@@ -762,7 +762,6 @@ static dispatch_once_t leanplum_onceToken;
         NSString *message = [context stringNamed:@"Message"];
 
         // Don't send notification if the user doesn't have the permission enabled.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([app respondsToSelector:@selector(currentUserNotificationSettings)]) {
             BOOL isSilentNotification = message.length == 0 && contentAvailable;
             if (!isSilentNotification) {
@@ -772,7 +771,6 @@ static dispatch_once_t leanplum_onceToken;
                 }
             }
         }
-#endif
 
         NSString *messageId = context.messageId;
 
@@ -814,14 +812,12 @@ static dispatch_once_t leanplum_onceToken;
         }
         localNotif.alertAction = @"View";
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([localNotif respondsToSelector:@selector(setCategory:)]) {
             NSString *category = [context stringNamed:@"iOS options.Category"];
             if (category) {
                 localNotif.category = category;
             }
         }
-#endif
 
         NSString *sound = [context stringNamed:@"iOS options.Sound"];
         if (sound) {

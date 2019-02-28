@@ -35,7 +35,6 @@
     otherButtonTitles:(NSArray *)otherButtonTitles
                 block:(LeanplumUIAlertCompletionBlock)block
 {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if (NSClassFromString(@"UIAlertController")) {
         UIAlertController *alert =
             [UIAlertController alertControllerWithTitle:title
@@ -67,7 +66,6 @@
                                                                                      animated:YES
                                                                                    completion:nil];
     } else
-#endif
     {
 #if LP_NOT_TV
         LPUIAlertView *alertView = [[LPUIAlertView alloc] initWithTitle:title
