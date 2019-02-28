@@ -89,7 +89,6 @@
  Must include the phrase `gzip` in the `User-Agent` header
  https://cloud.google.com/appengine/kb/
  */
-
 + (NSDictionary *)createHeaders {
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
