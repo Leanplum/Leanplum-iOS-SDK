@@ -30,6 +30,7 @@
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
 #import "LPFileManager.h"
+#import "LPUtils.h"
 
 @interface LPFileTransferManager()
 
@@ -71,7 +72,7 @@
 
         if (_engine == nil) {
             if (!_requestHeaders) {
-                _requestHeaders = [[LPRequestSender sharedInstance] createHeaders];
+                _requestHeaders = [LPUtils createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];

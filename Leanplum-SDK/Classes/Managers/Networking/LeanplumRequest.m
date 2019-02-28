@@ -35,6 +35,7 @@
 #import "LPEventCallbackManager.h"
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
+#import "LPUtils.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *uploadUrl;
@@ -76,27 +77,13 @@ static NSDictionary *_requestHheaders;
         _requestId = [[NSUUID UUID] UUIDString];
         if (engine == nil) {
             if (!_requestHheaders) {
-                _requestHheaders = [LeanplumRequest createHeaders];
+                _requestHheaders = [LPUtils createHeaders];
             }
             engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                        customHeaderFields:_requestHheaders];
         }
     }
     return self;
-}
-
-+ (NSDictionary *)createHeaders {
-    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
-                                 infoDict[(NSString *)kCFBundleNameKey],
-                                 infoDict[(NSString *)kCFBundleVersionKey],
-                                 [LPAPIConfig sharedConfig].appId,
-                                 LEANPLUM_CLIENT,
-                                 LEANPLUM_SDK_VERSION,
-                                 [[UIDevice currentDevice] systemName],
-                                 [[UIDevice currentDevice] systemVersion],
-                                 LEANPLUM_PACKAGE_IDENTIFIER];
-    return @{@"User-Agent": userAgentString};
 }
 
 + (LeanplumRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params

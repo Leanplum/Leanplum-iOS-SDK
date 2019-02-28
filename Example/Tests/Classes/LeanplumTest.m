@@ -124,6 +124,48 @@
 }
 
 /**
+ * Tests a simple development start with gzip response and validate success.
+ */
+- (void) test_simple_development_gzip_start
+{
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json", @"Content-Encoding":@"gzip"}];
+    }];
+    
+    // Validate request.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"start");
+        
+        // Check if request has all params.
+        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+        NSString* deviceModel = params[@"deviceModel"];
+        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                      [deviceModel isEqualToString:@"iPhone Simulator"]);
+        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+        XCTAssertNotNil(params[@"locale"]);
+        XCTAssertNotNil(params[@"timezone"]);
+        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+        
+        return YES;
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    XCTAssertTrue([Leanplum hasStarted]);
+    XCTAssertNotNil([Leanplum deviceId]);
+}
+
+/**
  * Tests a simple production start.
  */
 - (void) test_simple_production_start

@@ -32,6 +32,7 @@
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 #import "LPAPIConfig.h"
+#import "LPUtils.h"
 
 @interface LeanplumRequest(LPRequestSender)
 
@@ -70,7 +71,7 @@
     if (self) {
         if (_engine == nil) {
             if (!_requestHeaders) {
-                _requestHeaders = [self createHeaders];
+                _requestHeaders = [LPUtils createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];
@@ -282,20 +283,6 @@
 {
     dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
     dict[LP_PARAM_CLIENT_KEY] = [LPAPIConfig sharedConfig].accessKey;
-}
-
-- (NSDictionary *)createHeaders {
-    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
-    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@",
-                                 infoDict[(NSString *)kCFBundleNameKey],
-                                 infoDict[(NSString *)kCFBundleVersionKey],
-                                 [LPAPIConfig sharedConfig].appId,
-                                 LEANPLUM_CLIENT,
-                                 LEANPLUM_SDK_VERSION,
-                                 [[UIDevice currentDevice] systemName],
-                                 [[UIDevice currentDevice] systemVersion],
-                                 LEANPLUM_PACKAGE_IDENTIFIER];
-    return @{@"User-Agent": userAgentString};
 }
 
 - (NSString *)generateUUID
