@@ -565,9 +565,7 @@ static dispatch_once_t leanplum_onceToken;
 
     void (^onContent)(void) = ^{
 #if LP_NOT_TV
-        if (completionHandler && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
-            completionHandler(UIBackgroundFetchResultNewData);
-        }
+        completionHandler(UIBackgroundFetchResultNewData);
 #endif
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
@@ -617,8 +615,7 @@ static dispatch_once_t leanplum_onceToken;
 #if LP_NOT_TV
     // Call the completion handler only for Leanplum notifications.
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
-    if (messageId && completionHandler &&
-        SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+    if (messageId && completionHandler) {
         completionHandler(UIBackgroundFetchResultNoData);
     }
 #endif

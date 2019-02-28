@@ -969,18 +969,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
           [UIApplication sharedApplication].statusBarFrame.size.width);
 
     UIInterfaceOrientation orientation;
-    if (LP_SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        orientation = UIInterfaceOrientationPortrait;
-    } else {
-        UIViewController *emptyViewController = [[UIViewController alloc] init];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        orientation = [emptyViewController interfaceOrientation];
-#pragma clang diagnostic pop
-#if !__has_feature(objc_arc)
-        [emptyViewController release];
-#endif
-    }
+    orientation = UIInterfaceOrientationPortrait;
     CGAffineTransform orientationTransform;
     switch (orientation) {
         case UIDeviceOrientationPortraitUpsideDown:
