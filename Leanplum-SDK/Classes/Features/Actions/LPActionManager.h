@@ -26,9 +26,7 @@
 
 #import <Foundation/Foundation.h>
 #import "LPContextualValues.h"
-#if LP_NOT_TV
 #import <UserNotifications/UserNotifications.h>
-#endif
 
 struct LeanplumMessageMatchResult {
     BOOL matchedTrigger;
@@ -62,7 +60,7 @@ typedef enum {
 
 + (LPActionManager*) sharedManager;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
 #endif
 

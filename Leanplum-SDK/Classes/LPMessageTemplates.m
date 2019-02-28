@@ -252,7 +252,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                      } else
 #endif
                      {
-#if LP_NOT_TV
                          UIAlertView *alert = [[UIAlertView alloc]
                                                initWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
                                                message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
@@ -260,7 +259,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                                cancelButtonTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
                                                otherButtonTitles:nil];
                          [alert show];
-#endif
                      }
 
                      [self->_contexts addObject:context];
@@ -301,7 +299,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                      } else
 #endif
                      {
-#if LP_NOT_TV
                          UIAlertView *alert = [[UIAlertView alloc]
                                                initWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
                                                message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
@@ -309,7 +306,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                                cancelButtonTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil)
                                                otherButtonTitles:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil),nil];
                          [alert show];
-#endif
                      }
                      [self->_contexts addObject:context];
                      return YES;
@@ -342,7 +338,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                  }
              }];
     
-#if LP_NOT_TV
     UIColor *defaultButtonTextColor = [UIColor colorWithRed:0 green:0.478431 blue:1 alpha:1];
     
     [Leanplum defineAction:LPMT_PUSH_ASK_TO_ASK
@@ -535,18 +530,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                      return NO;
                  }];
     }
-
-#endif
 }
 
 #pragma mark Alert and Confirm Logic
 
-#if LP_NOT_TV
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
 {
     [self alertDismissedWithButtonIndex:buttonIndex];
 }
-#endif
 
 - (void)alertDismissedWithButtonIndex:(NSInteger)buttonIndex
 {
@@ -568,8 +559,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         LOG_LP_MESSAGE_EXCEPTION;
     }
 }
-
-#if LP_NOT_TV
 
 #pragma mark Center Popup and Interstitial Logic
 
@@ -674,13 +663,10 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [self->_popupGroup setAlpha:1.0];
     }];
     
-#if LP_NOT_TV
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationDidChange:)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
-#endif
-
 }
 
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk
@@ -1434,8 +1420,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
     return json;
 }
-
-#endif
 
 /**
  * Helper method

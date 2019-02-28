@@ -23,9 +23,7 @@
 //  under the License.
 
 #import "LPAppDelegate.h"
-#if LP_NOT_TV & __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000
 #import <UserNotifications/UserNotifications.h>
-#endif
 
 @implementation LPAppDelegate
 
@@ -34,7 +32,7 @@
 {
     // Override point for customization after application launch.
     [[UIApplication sharedApplication] registerForRemoteNotifications];
-#if LP_NOT_TV & __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000
         [[UNUserNotificationCenter currentNotificationCenter] setDelegate:self];
         [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:
          UNAuthorizationOptionAlert|UNAuthorizationOptionBadge|UNAuthorizationOptionSound
@@ -46,7 +44,6 @@
     return YES;
 }
 
-#if LP_NOT_TV
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
        willPresentNotification:(UNNotification *)notification
          withCompletionHandler:(void (^)(UNNotificationPresentationOptions))completionHandler
@@ -64,6 +61,5 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     NSLog(@"didReceiveNotificationResponse: %@", response);
     completionHandler();
 }
-#endif
 
 @end

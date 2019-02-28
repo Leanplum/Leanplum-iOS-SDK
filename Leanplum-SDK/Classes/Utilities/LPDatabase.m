@@ -84,11 +84,7 @@ static BOOL willSendErrorLog;
  */
 + (NSString *)sqliteFilePath
 {
-#if LP_NOT_TV
     return [[LPFileManager documentsDirectory] stringByAppendingPathComponent:LEANPLUM_SQLITE_NAME];
-#else
-    return [[LPFileManager cachesDirectory] stringByAppendingPathComponent:LEANPLUM_SQLITE_NAME];
-#endif
 }
 
 /**

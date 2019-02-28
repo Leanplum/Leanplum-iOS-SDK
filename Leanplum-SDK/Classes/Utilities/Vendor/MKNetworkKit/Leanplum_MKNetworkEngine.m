@@ -147,12 +147,10 @@ static NSOperationQueue *_sharedNetworkQueue;
     
     [[NSNotificationCenter defaultCenter] postNotificationName:kMKNetworkEngineOperationCountChanged 
                                                         object:[NSNumber numberWithInteger:[_sharedNetworkQueue operationCount]]];
-#if LP_NOT_TV
       if ([LPConstantsState sharedState].networkActivityIndicatorEnabled) {
           [UIApplication sharedApplication].networkActivityIndicatorVisible =
           ([_sharedNetworkQueue.operations count] > 0);
       }
-#endif
   }
   else {
     [super observeValueForKeyPath:keyPath ofObject:object 

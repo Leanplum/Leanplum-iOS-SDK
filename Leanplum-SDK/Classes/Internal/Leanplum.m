@@ -1057,7 +1057,7 @@ BOOL inForeground = NO;
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
                     if ([[UIApplication sharedApplication]
                             respondsToSelector:@selector(currentUserNotificationSettings)]) {
                         [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:
@@ -1176,7 +1176,6 @@ BOOL inForeground = NO;
 // sending push tokens to server.
 + (void)maybeRegisterForNotifications
 {
-#if LP_NOT_TV
     Class userMessageTemplatesClass = NSClassFromString(@"LPMessageTemplates");
     if (userMessageTemplatesClass
         && [[userMessageTemplatesClass sharedTemplates]
@@ -1185,7 +1184,6 @@ BOOL inForeground = NO;
     } else {
         [[LPMessageTemplatesClass sharedTemplates] refreshPushPermissions];
     }
-#endif
 }
 
 + (void)pause
@@ -1661,7 +1659,6 @@ BOOL inForeground = NO;
     [[LPCountAggregator sharedAggregator] incrementCount:@"handle_notification"];
 }
 
-#if LP_NOT_TV
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
@@ -1675,7 +1672,6 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 #pragma clang diagnostic pop
-#endif
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
