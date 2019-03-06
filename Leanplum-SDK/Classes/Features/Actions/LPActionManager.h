@@ -63,7 +63,11 @@ typedef enum {
 + (LPActionManager*) sharedManager;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
+#pragma clang diagnostic pop
 #endif
 
 + (void)getForegroundRegionNames:(NSMutableSet **)foregroundRegionNames
