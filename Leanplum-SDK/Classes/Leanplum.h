@@ -30,14 +30,6 @@
 #import "LPMessageArchiveData.h"
 #import "LPEnumConstants.h"
 
-#ifndef LP_NOT_TV
-#if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
-#define LP_NOT_TV 1
-#else
-#define LP_NOT_TV 0
-#endif
-#endif
-
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
 static void __attribute__((constructor)) initialize_##name() { \
 @autoreleasepool { \
@@ -421,7 +413,6 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
         "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
         "completion handler yourself.")));
 
-#if LP_NOT_TV
 /**
  * Call this to handle custom actions for local notifications.
  */
@@ -432,7 +423,6 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)())completionHandler;
 #pragma clang diagnostic pop
-#endif
 
 /**
  * Call this to handle custom actions for remote notifications.

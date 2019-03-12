@@ -54,7 +54,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_disableAskToAsk
 {
-#if LP_NOT_TV
     Class userMessageTemplatesClass = NSClassFromString(@"LPMessageTemplates");
     if (userMessageTemplatesClass &&
         [[userMessageTemplatesClass sharedTemplates] respondsToSelector:@selector(disableAskToAsk)]) {
@@ -62,7 +61,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     } else {
         [[LPMessageTemplatesClass sharedTemplates] disableAskToAsk];
     }
-#endif
 }
 
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -111,7 +109,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
             [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 
 - (void)leanplum_application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
@@ -197,7 +195,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     state.calledHandleNotification = NO;
 }
 
-#if LP_NOT_TV
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
@@ -236,9 +233,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
     state.calledHandleNotification = NO;
 }
 #pragma clang diagnostic pop
-#endif
 
-#if LP_NOT_TV
 - (void)leanplum_application:(UIApplication *)application
  didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
@@ -257,7 +252,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
                    withObject:application withObject:localNotification];
     }
 }
-#endif
 
 @end
 
@@ -299,9 +293,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     if (self = [super init]) {
         [self listenForPushNotifications];
-#if LP_NOT_TV
         [self listenForLocalNotifications];
-#endif
         _sessionOccurrences = [NSMutableDictionary dictionary];
         _messageImpressionOccurrences = [NSMutableDictionary dictionary];
         _messageTriggerOccurrences = [NSMutableDictionary dictionary];
@@ -312,7 +304,7 @@ static dispatch_once_t leanplum_onceToken;
 
 #pragma mark - Push Notifications
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000 && LP_NOT_TV
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
     // Send settings.
@@ -564,11 +556,9 @@ static dispatch_once_t leanplum_onceToken;
     }
 
     void (^onContent)(void) = ^{
-#if LP_NOT_TV
         if (completionHandler && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
-#endif
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
             UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
@@ -614,14 +604,12 @@ static dispatch_once_t leanplum_onceToken;
             return;
         }
     }
-#if LP_NOT_TV
     // Call the completion handler only for Leanplum notifications.
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     if (messageId && completionHandler &&
         SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
         completionHandler(UIBackgroundFetchResultNoData);
     }
-#endif
 }
 
 // Listens for push notifications.
@@ -652,14 +640,12 @@ static dispatch_once_t leanplum_onceToken;
            withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
               forObject:[appDelegate class]];
 
-#if LP_NOT_TV
     // Detect when registered for user notification types.
     swizzledApplicationDidRegisterUserNotificationSettings =
     [LPSwizzle hookInto:@selector(application:didRegisterUserNotificationSettings:)
            withSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
               forObject:[appDelegate class]];
-#endif
-    
+
     // Detect when couldn't register for push notifications.
     swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError =
     [LPSwizzle hookInto:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)
@@ -730,7 +716,6 @@ static dispatch_once_t leanplum_onceToken;
         }
     }
 
-#if LP_NOT_TV
     // Detect local notifications while app is running.
     swizzledApplicationDidReceiveLocalNotification =
     [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
@@ -750,11 +735,9 @@ static dispatch_once_t leanplum_onceToken;
                     completionHandler:nil];
          }
      }];
-#endif
 }
 
 #pragma mark - Local Notifications
-#if LP_NOT_TV
 - (void)listenForLocalNotifications
 {
     [Leanplum onAction:LP_PUSH_NOTIFICATION_ACTION invoke:^BOOL(LPActionContext *context) {
@@ -775,7 +758,6 @@ static dispatch_once_t leanplum_onceToken;
                 }
             }
         }
-#endif
 
         NSString *messageId = context.messageId;
 

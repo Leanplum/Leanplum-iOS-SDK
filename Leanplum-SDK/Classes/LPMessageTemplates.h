@@ -31,16 +31,11 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
 
-@interface LPMessageTemplatesClass : NSObject
-#if LP_NOT_TV
-    <UIAlertViewDelegate, UIWebViewDelegate>
-#endif
+@interface LPMessageTemplatesClass : NSObject <UIAlertViewDelegate, UIWebViewDelegate>
 
 + (LPMessageTemplatesClass *)sharedTemplates;
 
-#if LP_NOT_TV
 - (void)disableAskToAsk;
 - (void)refreshPushPermissions;
-#endif
 
 @end

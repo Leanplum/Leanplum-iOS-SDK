@@ -38,7 +38,6 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 
 @end
 
-#if LP_NOT_TV
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
@@ -48,4 +47,3 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 }
 @end
 #pragma clang diagnostic pop
-#endif
