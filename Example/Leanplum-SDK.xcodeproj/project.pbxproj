@@ -104,11 +104,6 @@
 		A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		B449EB2A21F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */; };
 		B449EB2B21F27B0B005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */; };
-		B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2C1D74B64D005ADEE1 /* main.m */; };
-		B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */; };
-		B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B5CCCA321D74B64D005ADEE1 /* ViewController.m */; };
-		B5CCCA361D74B64D005ADEE1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA341D74B64D005ADEE1 /* Main.storyboard */; };
-		B5CCCA381D74B64D005ADEE1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,7 +205,6 @@
 		A84527FC215C3035001FA20D /* LPRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
 		B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDifferentDelay.json; sourceTree = "<group>"; };
-		B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-tvOS-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -244,13 +238,6 @@
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
 				05B465433932C58CF4B66613 /* Pods_Leanplum_SDK_Tests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B5CCCA261D74B64D005ADEE1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,7 +383,6 @@
 			children = (
 				6003F58A195388D20070C39A /* Leanplum-SDK_Example.app */,
 				6003F5AE195388D20070C39A /* Leanplum-SDK_Tests.xctest */,
-				B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -550,23 +536,6 @@
 			productReference = 6003F5AE195388D20070C39A /* Leanplum-SDK_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B5CCCA281D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = B5CCCA3C1D74B64D005ADEE1 /* Build configuration list for PBXNativeTarget "Leanplum-tvOS-SDK_Example" */;
-			buildPhases = (
-				B5CCCA251D74B64D005ADEE1 /* Sources */,
-				B5CCCA261D74B64D005ADEE1 /* Frameworks */,
-				B5CCCA271D74B64D005ADEE1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "Leanplum-tvOS-SDK_Example";
-			productName = "Leanplum-tvOS-SDK_Example";
-			productReference = B5CCCA291D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example.app */;
-			productType = "com.apple.product-type.application";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -583,9 +552,6 @@
 					6003F5AD195388D20070C39A = {
 						DevelopmentTeam = 4XLWYATZ5P;
 						TestTargetID = 6003F589195388D20070C39A;
-					};
-					B5CCCA281D74B64D005ADEE1 = {
-						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
 			};
@@ -604,7 +570,6 @@
 			targets = (
 				6003F589195388D20070C39A /* Leanplum-SDK_Example */,
 				6003F5AD195388D20070C39A /* Leanplum-SDK_Tests */,
-				B5CCCA281D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example */,
 			);
 		};
 /* End PBXProject section */
@@ -685,15 +650,6 @@
 				07E5C8C51F052B7800A4B092 /* complex_start_response.json in Resources */,
 				07E5C8D71F052B7800A4B092 /* sample_action_notification.json in Resources */,
 				07E5C8C21F052B7800A4B092 /* test.pdf in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B5CCCA271D74B64D005ADEE1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B5CCCA381D74B64D005ADEE1 /* Assets.xcassets in Resources */,
-				B5CCCA361D74B64D005ADEE1 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -815,16 +771,6 @@
 				9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */,
 				07E5C8BE1F052B7800A4B092 /* LPUtilsTest.m in Sources */,
 				07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		B5CCCA251D74B64D005ADEE1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				B5CCCA331D74B64D005ADEE1 /* ViewController.m in Sources */,
-				B5CCCA301D74B64D005ADEE1 /* AppDelegate.m in Sources */,
-				B5CCCA2D1D74B64D005ADEE1 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1030,49 +976,6 @@
 			};
 			name = Release;
 		};
-		B5CCCA3A1D74B64D005ADEE1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Leanplum-tvOS-SDK_Example/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leanplum.Leanplum-tvOS-SDK-Example";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-			};
-			name = Debug;
-		};
-		B5CCCA3B1D74B64D005ADEE1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_NO_COMMON_BLOCKS = YES;
-				INFOPLIST_FILE = "Leanplum-tvOS-SDK_Example/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.leanplum.Leanplum-tvOS-SDK-Example";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = appletvos;
-				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 9.0;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1099,15 +1002,6 @@
 			buildConfigurations = (
 				6003F5C3195388D20070C39A /* Debug */,
 				6003F5C4195388D20070C39A /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		B5CCCA3C1D74B64D005ADEE1 /* Build configuration list for PBXNativeTarget "Leanplum-tvOS-SDK_Example" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				B5CCCA3A1D74B64D005ADEE1 /* Debug */,
-				B5CCCA3B1D74B64D005ADEE1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

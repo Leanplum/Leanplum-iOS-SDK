@@ -38,10 +38,8 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 
 @end
 
-#if LP_NOT_TV
 @interface LPUIAlertView : UIAlertView <UIAlertViewDelegate> {
   @public
     LeanplumUIAlertCompletionBlock block;
 }
 @end
-#endif
