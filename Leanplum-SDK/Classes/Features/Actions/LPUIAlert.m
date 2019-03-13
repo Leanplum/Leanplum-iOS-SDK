@@ -67,7 +67,6 @@
                                                                                    completion:nil];
     } else
     {
-#if LP_NOT_TV
         LPUIAlertView *alertView = [[LPUIAlertView alloc] initWithTitle:title
                                                                 message:message
                                                                delegate:nil
@@ -81,14 +80,12 @@
             alertView->block = block;
         }
         [alertView show];
-#endif
     }
     [[LPCountAggregator sharedAggregator] incrementCount:@"show_With_title"];
 }
 
 @end
 
-#if LP_NOT_TV
 @implementation LPUIAlertView
 
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
@@ -101,4 +98,3 @@
 }
 
 @end
-#endif

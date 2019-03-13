@@ -109,9 +109,6 @@
                                     cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
                                     timeoutInterval:timeout];
     request.HTTPMethod = method;
-    [request setValue:[NSString stringWithFormat:@"%@, en-us",
-                       [[NSLocale preferredLanguages] componentsJoinedByString:@", "]]
-                        forHTTPHeaderField:@"Accept-Language"];
     return [[LPNetworkOperation alloc] initWithSessionConfiguration:self.sessionConfiguration
                                                             request:request param:body];
 }

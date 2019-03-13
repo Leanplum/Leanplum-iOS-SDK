@@ -25,9 +25,7 @@
 #import "Leanplum.h"
 
 #import <Foundation/Foundation.h>
-#if LP_NOT_TV
 #import <UserNotifications/UserNotifications.h>
-#endif
 
 @interface LPContextualValues : NSObject
 

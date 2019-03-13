@@ -57,4 +57,9 @@
  */
 + (void)handleException:(NSException *)exception;
 
+/**
+ * Create Request Headers for network call
+ */
++ (NSDictionary *)createHeaders;
+
 @end

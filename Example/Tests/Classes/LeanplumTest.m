@@ -124,6 +124,48 @@
 }
 
 /**
+ * Tests a simple development start with gzip response and validate success.
+ */
+- (void) test_simple_development_gzip_start
+{
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json", @"Content-Encoding":@"gzip"}];
+    }];
+    
+    // Validate request.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"start");
+        
+        // Check if request has all params.
+        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+        NSString* deviceModel = params[@"deviceModel"];
+        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                      [deviceModel isEqualToString:@"iPhone Simulator"]);
+        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+        XCTAssertNotNil(params[@"locale"]);
+        XCTAssertNotNil(params[@"timezone"]);
+        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+        
+        return YES;
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    XCTAssertTrue([Leanplum hasStarted]);
+    XCTAssertNotNil([Leanplum deviceId]);
+}
+
+/**
  * Tests a simple production start.
  */
 - (void) test_simple_production_start
@@ -1935,6 +1977,82 @@
     OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text value":messageBody}});
 
     XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
+}
+
+- (void) test_forceContentUpdateVariants
+{
+    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"start");
+
+        // Check if request has all params.
+        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+        NSString* deviceModel = params[@"deviceModel"];
+        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                      [deviceModel isEqualToString:@"iPhone Simulator"]);
+        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+        XCTAssertNotNil(params[@"locale"]);
+        XCTAssertNotNil(params[@"timezone"]);
+        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+        return YES;
+    }];
+
+    [LeanplumHelper setup_development_test];
+
+    XCTestExpectation *start_expectation =
+    [self expectationWithDescription:@"start_expectation"];
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        [start_expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+    XCTAssertTrue([Leanplum hasStarted]);
+
+    // Remove stub after start is successful.
+    [OHHTTPStubs removeStub:startStub];
+
+    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"variants_response.json", self.class);
+        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+
+    XCTAssertTrue([[LPVarCache sharedCache] variants].count == 0);
+
+    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary* json) {
+        // Check if response contains variants.
+        XCTAssertNotNil(json[@"variants"]);
+    }];
+
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        // Check api method first.
+        XCTAssertEqualObjects(apiMethod, @"getVars");
+        return YES;
+    }];
+
+    XCTestExpectation *getVars_expectation =
+    [self expectationWithDescription:@"getVars_expectation"];
+    [Leanplum forceContentUpdate:^{
+        [getVars_expectation fulfill];
+    }];
+    [self waitForExpectationsWithTimeout:10 handler:nil];
+
+    XCTAssertTrue([[LPVarCache sharedCache] variants].count == 4);
 }
 
 @end

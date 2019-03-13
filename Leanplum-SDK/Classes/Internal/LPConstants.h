@@ -25,13 +25,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#ifndef LP_NOT_TV
-#if (!defined(TARGET_OS_TV) || !TARGET_OS_TV)
-#define LP_NOT_TV 1
-#else
-#define LP_NOT_TV 0
-#endif
-#endif
+#define IOS_6_SUPPORTED defined(_ARM_ARCH_7) || defined(__i386__) || defined(__LP64__)
 
 #define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 #define IS_SUPPORTED_IOS_VERSION (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"4.3"))
@@ -46,8 +40,9 @@
 #define IS_NOOP ((!IS_SUPPORTED_IOS_VERSION) || IS_JAILBROKEN || [LPConstantsState sharedState].isTestMode || [LPConstantsState sharedState].isInPermanentFailureState)
 #define RETURN_IF_NOOP if (IS_NOOP) return
 
-#define LEANPLUM_SDK_VERSION @"2.3.0"
+#define LEANPLUM_SDK_VERSION @"2.4.0"
 #define LEANPLUM_CLIENT @"ios"
+#define LEANPLUM_SUPPORTED_ENCODING @"gzip"
 
 // Can upload up to 100 files or 50 MB per request.
 #define MAX_UPLOAD_BATCH_SIZES (50 * (1 << 20))
