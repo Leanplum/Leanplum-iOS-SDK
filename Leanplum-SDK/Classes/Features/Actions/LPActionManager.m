@@ -877,7 +877,6 @@ static dispatch_once_t leanplum_onceToken;
         return didCancel;
     }];
 }
-#endif
 
 #pragma mark - Delivery
 
