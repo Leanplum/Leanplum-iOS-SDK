@@ -556,7 +556,7 @@ static dispatch_once_t leanplum_onceToken;
     }
 
     void (^onContent)(void) = ^{
-        if (completionHandler && SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+        if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
@@ -606,8 +606,7 @@ static dispatch_once_t leanplum_onceToken;
     }
     // Call the completion handler only for Leanplum notifications.
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
-    if (messageId && completionHandler &&
-        SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"7.0")) {
+    if (messageId && completionHandler) {
         completionHandler(UIBackgroundFetchResultNoData);
     }
 }
@@ -748,7 +747,6 @@ static dispatch_once_t leanplum_onceToken;
         NSString *message = [context stringNamed:@"Message"];
 
         // Don't send notification if the user doesn't have the permission enabled.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([app respondsToSelector:@selector(currentUserNotificationSettings)]) {
             BOOL isSilentNotification = message.length == 0 && contentAvailable;
             if (!isSilentNotification) {
@@ -799,14 +797,12 @@ static dispatch_once_t leanplum_onceToken;
         }
         localNotif.alertAction = @"View";
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if ([localNotif respondsToSelector:@selector(setCategory:)]) {
             NSString *category = [context stringNamed:@"iOS options.Category"];
             if (category) {
                 localNotif.category = category;
             }
         }
-#endif
 
         NSString *sound = [context stringNamed:@"iOS options.Sound"];
         if (sound) {
@@ -881,7 +877,6 @@ static dispatch_once_t leanplum_onceToken;
         return didCancel;
     }];
 }
-#endif
 
 #pragma mark - Delivery
 
