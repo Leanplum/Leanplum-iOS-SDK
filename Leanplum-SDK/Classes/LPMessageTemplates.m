@@ -325,7 +325,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                          NSString *encodedURLString = [[self class] urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
                          NSURL *url = [NSURL URLWithString: encodedURLString];
                          if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
-                             [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                             if (@available(iOS 10.0, *)) {
+                                 [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+                             } else {
+                                 // Fallback on earlier versions
+                             }
                          } else {
                              [[UIApplication sharedApplication] openURL:url];
                          }
@@ -777,7 +781,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
     
     void (^finishCallback)(void) = ^() {
-        [self removeAllViewsFrom:_popupGroup];
+        [self removeAllViewsFrom:self->_popupGroup];
         
         if (actionName) {
             if (track) {
@@ -1063,7 +1067,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         if ([context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]) {
             _closePopupView = [[LPHitView alloc] initWithCallback:^{
                 [self dismiss];
-                [_closePopupView removeFromSuperview];
+                [self->_closePopupView removeFromSuperview];
             }];
             _closePopupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
             [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
@@ -1240,7 +1244,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         if (NSClassFromString(@"SKStoreReviewController")) {
-            [SKStoreReviewController requestReview];
+            if (@available(iOS 10.3, *)) {
+                [SKStoreReviewController requestReview];
+            } else {
+                // Fallback on earlier versions
+            }
         }
     });
 }
@@ -1274,28 +1282,36 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
             iconName = nil;
         }
 
-        NSString *currentIconName = [app alternateIconName];
-        if ((iconName && [iconName isEqualToString:currentIconName]) ||
-            (iconName == nil && currentIconName == nil)) {
-            return;
-        }
-
-        [app setAlternateIconName:iconName completionHandler:^(NSError * _Nullable error) {
-            if (!error) {
+        if (@available(iOS 10.3, *)) {
+            NSString *currentIconName = [app alternateIconName];
+            if ((iconName && [iconName isEqualToString:currentIconName]) ||
+                (iconName == nil && currentIconName == nil)) {
                 return;
             }
-            
-            // Common failure is when setAlternateIconName: is called right upon start.
-            // Try again after 1 second.
-            NSLog(@"Fail to change app icon: %@. Trying again.", error);
-            dispatch_time_t dispatchTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
-            dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
-                [[UIApplication sharedApplication] setAlternateIconName:iconName
-                                                      completionHandler:^(NSError *error) {
-                    NSLog(@"Fail to change app icon: %@", error);
-                }];
-            });
-        }];
+        } else {
+            // Fallback on earlier versions
+        }
+
+        if (@available(iOS 10.3, *)) {
+            [app setAlternateIconName:iconName completionHandler:^(NSError * _Nullable error) {
+                if (!error) {
+                    return;
+                }
+                
+                // Common failure is when setAlternateIconName: is called right upon start.
+                // Try again after 1 second.
+                NSLog(@"Fail to change app icon: %@. Trying again.", error);
+                dispatch_time_t dispatchTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
+                dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
+                    [[UIApplication sharedApplication] setAlternateIconName:iconName
+                                                          completionHandler:^(NSError *error) {
+                                                              NSLog(@"Fail to change app icon: %@", error);
+                                                          }];
+                });
+            }];
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }
 

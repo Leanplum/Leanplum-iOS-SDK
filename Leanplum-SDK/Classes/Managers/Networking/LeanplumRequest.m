@@ -281,7 +281,7 @@ static NSDictionary *_requestHheaders;
         int timeout = async ? constants.networkTimeoutSeconds : constants.syncNetworkTimeoutSeconds;
         id<LPNetworkOperationProtocol> op = [engine operationWithPath:constants.apiServlet
                                                                params:multiRequestArgs
-                                                           httpMethod:_httpMethod
+                                                           httpMethod:self->_httpMethod
                                                                   ssl:constants.apiSSL
                                                        timeoutSeconds:timeout];
         
@@ -368,7 +368,7 @@ static NSDictionary *_requestHheaders;
         // Request timed out.
         if (status != 0) {
             LP_TRY
-            NSLog(@"Leanplum: Request %@ timed out", _apiMethod);
+            NSLog(@"Leanplum: Request %@ timed out", self->_apiMethod);
             [op cancel];
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
@@ -507,8 +507,8 @@ static NSDictionary *_requestHheaders;
         }
         [LeanplumRequest printUploadProgress];
         LP_END_TRY
-        if (_response != nil) {
-            _response(operation, json);
+        if (self->_response != nil) {
+            self->_response(operation, json);
         }
         LP_TRY
         @synchronized (pendingUploads) {
@@ -526,8 +526,8 @@ static NSDictionary *_requestHheaders;
          }
          [LeanplumRequest printUploadProgress];
          NSLog(@"Leanplum: %@", err);
-         if (_error != nil) {
-             _error(err);
+         if (self->_error != nil) {
+             self->_error(err);
          }
          [self maybeSendNextUpload];
          LP_END_TRY
@@ -569,13 +569,13 @@ static NSDictionary *_requestHheaders;
     }];
     
     [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-        if (_response != nil) {
-            _response(operation, json);
+        if (self->_response != nil) {
+            self->_response(operation, json);
         }
     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
         LP_TRY
-        if (_error != nil) {
-            _error(err);
+        if (self->_error != nil) {
+            self->_error(err);
         }
         LP_END_TRY
     }];
@@ -650,8 +650,8 @@ static NSDictionary *_requestHheaders;
         [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
                                               createMissingDirectories:YES] atomically:YES];
         pendingDownloads--;
-        if (_response != nil) {
-            _response(operation, json);
+        if (self->_response != nil) {
+            self->_response(operation, json);
         }
         if (pendingDownloads == 0 && noPendingDownloadsBlock) {
             noPendingDownloadsBlock();
@@ -661,8 +661,8 @@ static NSDictionary *_requestHheaders;
         LP_TRY
         NSLog(@"Leanplum: %@", err);
         pendingDownloads--;
-        if (_error != nil) {
-            _error(err);
+        if (self->_error != nil) {
+            self->_error(err);
         }
         if (pendingDownloads == 0 && noPendingDownloadsBlock) {
             noPendingDownloadsBlock();
@@ -700,5 +700,15 @@ static NSDictionary *_requestHheaders;
     });
     return _sendNowQueue;
 }
+
+@synthesize apiMethod;
+
+@synthesize errorBlock;
+
+@synthesize params;
+
+@synthesize responseBlock;
+
+@synthesize sent;
 
 @end

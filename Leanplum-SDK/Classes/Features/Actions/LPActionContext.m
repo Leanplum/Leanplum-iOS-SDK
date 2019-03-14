@@ -23,7 +23,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @property (nonatomic, strong) LPActionContext *parentContext;
 @property (nonatomic) int contentVersion;
 @property (nonatomic, strong) NSString *key;
-@property (nonatomic) BOOL preventRealtimeUpdating;
 
 @end
 
@@ -78,11 +77,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     context->_priority = priority;
     context->_countAggregator = [LPCountAggregator sharedAggregator];
     return context;
-}
-
-- (void)preventRealtimeUpdating
-{
-    _preventRealtimeUpdating = YES;
 }
 
 - (NSDictionary *)defaultValues
@@ -479,8 +473,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         LPActionContext *chainedActionContext =
         [Leanplum createActionContextForMessageId:messageId];
         chainedActionContext.contextualValues = self.contextualValues;
-        chainedActionContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
-        chainedActionContext->_isRooted = _isRooted;
+        chainedActionContext->_preventRealtimeUpdating = self->_preventRealtimeUpdating;
+        chainedActionContext->_isRooted = self->_isRooted;
         dispatch_async(dispatch_get_main_queue(), ^{
             [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
                 if (success) {

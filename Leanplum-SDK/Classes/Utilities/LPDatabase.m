@@ -139,7 +139,7 @@ static BOOL willSendErrorLog;
                                    SQLITE_TRANSIENT);
         
         if (result != SQLITE_OK) {
-            NSString *message = [NSString stringWithFormat:@"SQLite fail to bind %@ to %ld", obj, idx+1];
+            NSString *message = [NSString stringWithFormat:@"SQLite fail to bind %@ to %u", obj, idx+1];
             [self handleSQLiteError:message errorResult:result query:query];
         }
     }];

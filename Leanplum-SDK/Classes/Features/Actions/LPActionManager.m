@@ -200,7 +200,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
       withCompletionHandler:(void (^)())completionHandler
-{
+API_AVAILABLE(ios(10.0)){
     NSDictionary *userInfo = response.notification.request.content.userInfo;
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
@@ -472,7 +472,7 @@ static dispatch_once_t leanplum_onceToken;
         context = [LPActionContext actionContextWithName:LP_PUSH_NOTIFICATION_ACTION
                                                     args:args
                                                messageId:messageId];
-        [context preventRealtimeUpdating];
+        context.preventRealtimeUpdating = YES;
     } else {
         context = [Leanplum createActionContextForMessageId:messageId];
     }
@@ -659,7 +659,7 @@ static dispatch_once_t leanplum_onceToken;
         [appDelegate class],
         applicationDidReceiveRemoteNotificationSelector);
     void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
-        swizzledApplicationDidReceiveRemoteNotification =
+        self->swizzledApplicationDidReceiveRemoteNotification =
         [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
                withSelector:@selector(leanplum_application:
                                       didReceiveRemoteNotification:)
@@ -672,7 +672,7 @@ static dispatch_once_t leanplum_onceToken;
         [appDelegate class],
         applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
     void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
-        swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
+        self->swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
         [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
                withSelector:@selector(leanplum_application:
                                       didReceiveRemoteNotification:
@@ -686,7 +686,7 @@ static dispatch_once_t leanplum_onceToken;
     class_getInstanceMethod([appDelegate class],
             userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
     void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
-        swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
+        self->swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
         [LPSwizzle hookInto:
          userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
                withSelector:@selector(leanplum_userNotificationCenter:

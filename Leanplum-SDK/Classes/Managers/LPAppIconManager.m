@@ -100,7 +100,11 @@
     
     UIApplication *app = [UIApplication sharedApplication];
     if ([app respondsToSelector:@selector(supportsAlternateIcons)]) {
-        return [app supportsAlternateIcons];
+        if (@available(iOS 10.3, *)) {
+            return [app supportsAlternateIcons];
+        } else {
+            // Fallback on earlier versions
+        }
     }
     return NO;
 }
