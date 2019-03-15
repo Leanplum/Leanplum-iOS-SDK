@@ -8,7 +8,7 @@ use_frameworks!
       config.build_settings['BITCODE_GENERATION_MODE'] = 'bitcode'
     end
   end
-end	end
+end
 
 target 'Leanplum-SDK_Example' do
   platform :ios, '8.0'
