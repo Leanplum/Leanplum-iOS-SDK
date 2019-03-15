@@ -701,4 +701,14 @@ static NSDictionary *_requestHheaders;
     return _sendNowQueue;
 }
 
+@synthesize apiMethod;
+
+@synthesize errorBlock;
+
+@synthesize params;
+
+@synthesize responseBlock;
+
+@synthesize sent;
+
 @end
