@@ -200,7 +200,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
       withCompletionHandler:(void (^)())completionHandler
-{
+API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
     NSDictionary *userInfo = response.notification.request.content.userInfo;
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
