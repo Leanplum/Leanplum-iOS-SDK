@@ -777,7 +777,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
     
     void (^finishCallback)(void) = ^() {
-        [self removeAllViewsFrom:_popupGroup];
+        [self removeAllViewsFrom:self->_popupGroup];
         
         if (actionName) {
             if (track) {
@@ -1063,7 +1063,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         if ([context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]) {
             _closePopupView = [[LPHitView alloc] initWithCallback:^{
                 [self dismiss];
-                [_closePopupView removeFromSuperview];
+                [self->_closePopupView removeFromSuperview];
             }];
             _closePopupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
             [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
