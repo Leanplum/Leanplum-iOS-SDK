@@ -257,7 +257,7 @@ static dispatch_once_t leanplum_onceToken;
                  value:var.defaultValue
                   kind:var.kind
                 values:self.valuesFromClient
-                 kinds:[self.defaultKinds mutableCopy]];
+                 kinds:self.defaultKinds];
 }
 
 - (LPVar *)getVariable:(NSString *)name
