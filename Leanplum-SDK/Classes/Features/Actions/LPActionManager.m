@@ -658,7 +658,7 @@ static dispatch_once_t leanplum_onceToken;
         [appDelegate class],
         applicationDidReceiveRemoteNotificationSelector);
     void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
-        swizzledApplicationDidReceiveRemoteNotification =
+        self->swizzledApplicationDidReceiveRemoteNotification =
         [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
                withSelector:@selector(leanplum_application:
                                       didReceiveRemoteNotification:)
@@ -671,7 +671,7 @@ static dispatch_once_t leanplum_onceToken;
         [appDelegate class],
         applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
     void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
-        swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
+        self->swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
         [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
                withSelector:@selector(leanplum_application:
                                       didReceiveRemoteNotification:
@@ -685,7 +685,7 @@ static dispatch_once_t leanplum_onceToken;
     class_getInstanceMethod([appDelegate class],
             userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
     void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
-        swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
+        self->swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
         [LPSwizzle hookInto:
          userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
                withSelector:@selector(leanplum_userNotificationCenter:
