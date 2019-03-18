@@ -239,7 +239,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                              ]
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
                      if (NSClassFromString(@"UIAlertController")) {
                          UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
                          UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
@@ -250,7 +249,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                          [[LPMessageTemplatesClass visibleViewController]
                           presentViewController:alert animated:YES completion:nil];
                      } else
-#endif
                      {
                          UIAlertView *alert = [[UIAlertView alloc]
                                                initWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
@@ -282,7 +280,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                              ]
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
                      if (NSClassFromString(@"UIAlertController")) {
                          UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
                          UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -297,7 +294,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                          [[LPMessageTemplatesClass visibleViewController]
                           presentViewController:alert animated:YES completion:nil];
                      } else
-#endif
                      {
                          UIAlertView *alert = [[UIAlertView alloc]
                                                initWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
@@ -851,7 +847,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     UIApplication *application = [UIApplication sharedApplication];
     BOOL enabled;
     
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     // Try to use the newer isRegisteredForRemoteNotifications otherwise use the enabledRemoteNotificationTypes.
     if ([application respondsToSelector:@selector(isRegisteredForRemoteNotifications)]) {
         enabled = [application isRegisteredForRemoteNotifications];
@@ -862,10 +857,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         enabled = types & UIRemoteNotificationTypeAlert;
 #pragma clang diagnostic pop
     }
-#else
-    UIRemoteNotificationType types = [application enabledRemoteNotificationTypes];
-    enabled = types & UIRemoteNotificationTypeAlert;
-#endif
     return enabled;
 }
 
@@ -959,18 +950,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
           [UIApplication sharedApplication].statusBarFrame.size.width);
 
     UIInterfaceOrientation orientation;
-    if (LP_SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"8.0")) {
-        orientation = UIInterfaceOrientationPortrait;
-    } else {
-        UIViewController *emptyViewController = [[UIViewController alloc] init];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        orientation = [emptyViewController interfaceOrientation];
-#pragma clang diagnostic pop
-#if !__has_feature(objc_arc)
-        [emptyViewController release];
-#endif
-    }
+    orientation = UIInterfaceOrientationPortrait;
     CGAffineTransform orientationTransform;
     switch (orientation) {
         case UIDeviceOrientationPortraitUpsideDown:
@@ -1122,11 +1102,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     UIFont* font = button.titleLabel.font;
     NSString *text = button.titleLabel.text;
     CGSize textSize = CGSizeZero;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if ([text respondsToSelector:@selector(sizeWithAttributes:)]) {
         textSize = [text sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize]}];
     } else
-#endif
     {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
