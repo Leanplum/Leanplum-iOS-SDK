@@ -52,14 +52,9 @@
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 __weak static NSExtensionContext *_extensionContext = nil;
-#else
-__weak static id *_extensionContext = nil;
-#endif
 static LeanplumPushSetupBlock pushSetupBlock;
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 @implementation NSExtensionContext (Leanplum)
 
 - (void)leanplum_completeRequestReturningItems:(NSArray *)items
@@ -80,7 +75,6 @@ static LeanplumPushSetupBlock pushSetupBlock;
 }
 
 @end
-#endif
 
 void leanplumExceptionHandler(NSException *exception);
 
@@ -289,14 +283,12 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 + (void)setExtensionContext:(NSExtensionContext *)context
 {
     LP_TRY
     _extensionContext = context;
     LP_END_TRY
 }
-#endif
 
 + (void)allowInterfaceEditing
 {
@@ -760,7 +752,6 @@ BOOL inForeground = NO;
     }
 
     if (state.calledStart) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         // With iOS extensions, Leanplum may already be loaded when the extension runs.
         // This is because Leanplum can stay loaded when the extension is opened and closed
         // multiple times.
@@ -768,7 +759,6 @@ BOOL inForeground = NO;
             [Leanplum resume];
             return;
         }
-#endif
         [self throwError:@"Already called start."];
     }
 
@@ -817,15 +807,11 @@ BOOL inForeground = NO;
         deviceId = nil;
     }
     if (!deviceId) {
-#if IOS_6_SUPPORTED
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         if (state.deviceId) {
             deviceId = state.deviceId;
         } else {
             deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         }
-#endif
-#endif
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
@@ -1116,7 +1102,6 @@ BOOL inForeground = NO;
     } repeats:YES];
 
     // Extension close.
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if (_extensionContext) {
         [LPSwizzle
             swizzleMethod:@selector(completeRequestReturningItems:completionHandler:)
@@ -1128,7 +1113,6 @@ BOOL inForeground = NO;
                            error:nil
                            class:[NSExtensionContext class]];
     }
-#endif
     [self maybeRegisterForNotifications];
     LP_END_TRY
     

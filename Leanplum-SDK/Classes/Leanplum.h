@@ -113,9 +113,7 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 
 @class LPActionContext;
 @class SKPaymentTransaction;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 @class NSExtensionContext;
-#endif
 
 /**
  * @defgroup _ Callback Blocks
@@ -215,13 +213,11 @@ typedef enum {
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey;
 /**@}*/
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 /**
  * Apps running as extensions need to call this before start.
  * @param context The current extensionContext. You can get this from UIViewController.
  */
 + (void)setExtensionContext:(NSExtensionContext *)context;
-#endif
 
 /**
  * @{
