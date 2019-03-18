@@ -817,14 +817,12 @@ BOOL inForeground = NO;
         deviceId = nil;
     }
     if (!deviceId) {
-#if IOS_6_SUPPORTED
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
         if (state.deviceId) {
             deviceId = state.deviceId;
         } else {
             deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         }
-#endif
 #endif
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];

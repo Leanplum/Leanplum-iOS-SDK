@@ -80,11 +80,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return context;
 }
 
-- (void)preventRealtimeUpdating
-{
-    _preventRealtimeUpdating = YES;
-}
-
 - (NSDictionary *)defaultValues
 {
     return [LPVarCache sharedCache].actionDefinitions[_name][@"values"];

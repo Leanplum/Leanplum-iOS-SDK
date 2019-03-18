@@ -29,7 +29,7 @@
 @property (readonly, strong) LPActionContext *parentContext;
 @property (readonly) int contentVersion;
 @property (readonly, strong) NSString *key;
-@property (readonly) BOOL preventRealtimeUpdating;
+@property (assign) BOOL preventRealtimeUpdating;
 @property (nonatomic, assign) BOOL isRooted;
 @property (nonatomic, assign) BOOL isPreview;
 @property (nonatomic, strong) LPContextualValues *contextualValues;

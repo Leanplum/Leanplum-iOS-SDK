@@ -160,7 +160,7 @@ static dispatch_once_t leanplum_onceToken;
                                                                          args:action
                                                                     messageId:messageId];
             [context setIsPreview:YES];
-            [context preventRealtimeUpdating];
+            context.preventRealtimeUpdating = YES;
             [context setIsRooted:isRooted];
             [context maybeDownloadFiles];
             [Leanplum triggerAction:context];

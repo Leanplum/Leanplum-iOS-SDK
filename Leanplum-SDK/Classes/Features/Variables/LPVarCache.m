@@ -45,7 +45,7 @@
 @property (strong, nonatomic) NSMutableDictionary *filesToInspect;
 @property (strong, nonatomic) NSMutableDictionary *fileAttributes;
 @property (strong, nonatomic) NSMutableDictionary *valuesFromClient;
-@property (strong, nonatomic) NSMutableDictionary *defaultKinds;
+@property (readwrite, nonatomic) NSMutableDictionary *defaultKinds;
 @property (strong, nonatomic) NSMutableDictionary *actionDefinitions;
 @property (strong, nonatomic) NSDictionary *diffs;
 @property (strong, nonatomic) NSDictionary *messageDiffs;
@@ -257,7 +257,7 @@ static dispatch_once_t leanplum_onceToken;
                  value:var.defaultValue
                   kind:var.kind
                 values:self.valuesFromClient
-                 kinds:self.defaultKinds];
+                 kinds:_defaultKinds];
 }
 
 - (LPVar *)getVariable:(NSString *)name
