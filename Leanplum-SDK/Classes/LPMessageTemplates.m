@@ -706,9 +706,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     _messageLabel = [[UILabel alloc] init];
     _messageLabel.textAlignment = ALIGN_CENTER;
     _messageLabel.numberOfLines = 0;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 60000
     _messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-#endif
     _messageLabel.backgroundColor = [UIColor clearColor];
     [_popupView addSubview:_messageLabel];
     
