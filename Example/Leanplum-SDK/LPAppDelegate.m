@@ -56,7 +56,7 @@
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center
 didReceiveNotificationResponse:(UNNotificationResponse *)response
-         withCompletionHandler:(void(^)(void))completionHandler
+         withCompletionHandler:(void (^)())completionHandler
 {
     NSLog(@"didReceiveNotificationResponse: %@", response);
     completionHandler();
