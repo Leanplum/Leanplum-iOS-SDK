@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		05B465433932C58CF4B66613 /* Pods_Leanplum_SDK_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 92FEC45947F78DD1AD924183 /* Pods_Leanplum_SDK_Tests.framework */; };
 		073DF05B22280C1A00CC96DF /* variants_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 073DF05A22280C1A00CC96DF /* variants_response.json */; };
 		073DF05C22280C1A00CC96DF /* variants_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 073DF05A22280C1A00CC96DF /* variants_response.json */; };
 		07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */; };
@@ -76,7 +75,6 @@
 		07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A81F052B7800A4B092 /* SingleMessage.json */; };
 		07E5C8F51F052DD000A4B092 /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */; };
 		07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */; };
-		38FBE3A8C92D53D6FD531D14 /* Pods_Leanplum_SDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 350BB24D9BF687C26729864F /* Pods_Leanplum_SDK_Example.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -85,7 +83,6 @@
 		6003F59E195388D20070C39A /* LPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F59D195388D20070C39A /* LPAppDelegate.m */; };
 		6003F5A7195388D20070C39A /* LPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5A6195388D20070C39A /* LPViewController.m */; };
 		6003F5A9195388D20070C39A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5A8195388D20070C39A /* Images.xcassets */; };
-		6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F5AF195388D20070C39A /* XCTest.framework */; };
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
@@ -117,9 +114,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK-source.podspec"; path = "../Leanplum-iOS-SDK-source.podspec"; sourceTree = "<group>"; };
 		0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
-		0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-tvOS-SDK.podspec"; path = "../Leanplum-tvOS-SDK.podspec"; sourceTree = "<group>"; };
 		073DF05A22280C1A00CC96DF /* variants_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variants_response.json; sourceTree = "<group>"; };
 		07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionManagerTest.m; sourceTree = "<group>"; };
 		07E5C86C1F052B7800A4B092 /* LPAppIconManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAppIconManagerTest.m; sourceTree = "<group>"; };
@@ -170,7 +165,6 @@
 		07E5C8A91F052B7800A4B092 /* TiedPriorities1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities1.json; sourceTree = "<group>"; };
 		07E5C8AA1F052B7800A4B092 /* TiedPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities2.json; sourceTree = "<group>"; };
 		29ABF5FA9E1826C5BBE433C9 /* Pods-Leanplum-SDK_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		350BB24D9BF687C26729864F /* Pods_Leanplum_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* Leanplum-SDK_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Leanplum-SDK_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -185,7 +179,6 @@
 		6003F5A6195388D20070C39A /* LPViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPViewController.m; sourceTree = "<group>"; };
 		6003F5A8195388D20070C39A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6003F5AE195388D20070C39A /* Leanplum-SDK_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Leanplum-SDK_Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6003F5AF195388D20070C39A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		6003F5B7195388D20070C39A /* Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Tests-Info.plist"; sourceTree = "<group>"; };
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
@@ -194,25 +187,14 @@
 		65E189C5216BDB82005E6B93 /* LPRequestFactoryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestFactoryTest.m; sourceTree = "<group>"; };
 		65E53E962148786C00A05040 /* LPCountAggregatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregatorTest.m; sourceTree = "<group>"; };
 		73B565AA61D6B6A4E92607C4 /* Pods-Leanplum-SDK_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		7B3A029531D9DAB706B77C73 /* Pods_Leanplum_tvOS_SDK_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_tvOS_SDK_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		84A3C33C701600A874B8C63F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
-		92FEC45947F78DD1AD924183 /* Pods_Leanplum_SDK_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CB691DD1F15FFF5002D83D8 /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
 		9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
-		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84527FC215C3035001FA20D /* LPRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
 		B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDifferentDelay.json; sourceTree = "<group>"; };
-		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		B5CCCA311D74B64D005ADEE1 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		B5CCCA321D74B64D005ADEE1 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
-		B5CCCA351D74B64D005ADEE1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B5CCCA391D74B64D005ADEE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2BDBCD86C8BEA8BF5B15B99 /* Pods-Leanplum-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		ED67DCDB70EA6598AF12284A /* Pods-Leanplum-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		F5CF859C9DD307380E6F9A30 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
@@ -226,7 +208,6 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				38FBE3A8C92D53D6FD531D14 /* Pods_Leanplum_SDK_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,10 +215,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				05B465433932C58CF4B66613 /* Pods_Leanplum_SDK_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,7 +350,6 @@
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* Example for Leanplum-SDK */,
 				6003F5B5195388D20070C39A /* Tests */,
-				B5CCCA2A1D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
 				EDBECEC2D40CE48179E4D0D9 /* Pods */,
@@ -393,11 +371,6 @@
 				6003F58D195388D20070C39A /* Foundation.framework */,
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
-				6003F5AF195388D20070C39A /* XCTest.framework */,
-				A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */,
-				350BB24D9BF687C26729864F /* Pods_Leanplum_SDK_Example.framework */,
-				92FEC45947F78DD1AD924183 /* Pods_Leanplum_SDK_Tests.framework */,
-				7B3A029531D9DAB706B77C73 /* Pods_Leanplum_tvOS_SDK_Example.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -451,36 +424,11 @@
 		60FF7A9C1954A5C5007DD14C /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				0723D6CA1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK-source.podspec */,
 				0723D6CB1ED8CCAA004AE3A5 /* Leanplum-iOS-SDK.podspec */,
-				0723D6CC1ED8CCAA004AE3A5 /* Leanplum-tvOS-SDK.podspec */,
 				84A3C33C701600A874B8C63F /* README.md */,
 				F5CF859C9DD307380E6F9A30 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
-			sourceTree = "<group>";
-		};
-		B5CCCA2A1D74B64D005ADEE1 /* Leanplum-tvOS-SDK_Example */ = {
-			isa = PBXGroup;
-			children = (
-				B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */,
-				B5CCCA2F1D74B64D005ADEE1 /* AppDelegate.m */,
-				B5CCCA311D74B64D005ADEE1 /* ViewController.h */,
-				B5CCCA321D74B64D005ADEE1 /* ViewController.m */,
-				B5CCCA341D74B64D005ADEE1 /* Main.storyboard */,
-				B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */,
-				B5CCCA391D74B64D005ADEE1 /* Info.plist */,
-				B5CCCA2B1D74B64D005ADEE1 /* Supporting Files */,
-			);
-			path = "Leanplum-tvOS-SDK_Example";
-			sourceTree = "<group>";
-		};
-		B5CCCA2B1D74B64D005ADEE1 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				B5CCCA2C1D74B64D005ADEE1 /* main.m */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 		EDBECEC2D40CE48179E4D0D9 /* Pods */ = {
@@ -799,14 +747,6 @@
 				6003F5B9195388D20070C39A /* en */,
 			);
 			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		B5CCCA341D74B64D005ADEE1 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				B5CCCA351D74B64D005ADEE1 /* Base */,
-			);
-			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
