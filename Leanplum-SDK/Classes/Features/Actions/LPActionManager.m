@@ -472,7 +472,7 @@ static dispatch_once_t leanplum_onceToken;
         context = [LPActionContext actionContextWithName:LP_PUSH_NOTIFICATION_ACTION
                                                     args:args
                                                messageId:messageId];
-        [context preventRealtimeUpdating];
+        context.preventRealtimeUpdating = YES;
     } else {
         context = [Leanplum createActionContextForMessageId:messageId];
     }

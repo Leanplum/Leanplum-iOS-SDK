@@ -63,7 +63,7 @@ static NSObject *updatingLock;
         _context = [LPActionContext actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
                                                      args:actionArgs
                                                 messageId:messageIdParts[0]];
-        [_context preventRealtimeUpdating];
+        _context.preventRealtimeUpdating = YES;
         [self downloadImageIfPrefetchingEnabled];
     }
     return self;
@@ -89,7 +89,7 @@ static NSObject *updatingLock;
         _context = [LPActionContext actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
                                                      args:actionArgs
                                                 messageId:messageIdParts[0]];
-        [_context preventRealtimeUpdating];
+        _context.preventRealtimeUpdating = YES;
         if ([LPConstantsState sharedState].isInboxImagePrefetchingEnabled) {
             [_context maybeDownloadFiles];
         }
