@@ -109,8 +109,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
             [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
-
 - (void)leanplum_application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
     LP_TRY
@@ -127,8 +125,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
                    withObject:application withObject:notificationSettings];
     }
 }
-
-#endif
 
 - (void)leanplum_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
@@ -304,7 +300,6 @@ static dispatch_once_t leanplum_onceToken;
 
 #pragma mark - Push Notifications
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
     // Send settings.
@@ -343,7 +338,6 @@ static dispatch_once_t leanplum_onceToken;
         }];
     }
 }
-#endif
 
 // Block to run to decide whether to show the notification
 // when it is received while the app is running.

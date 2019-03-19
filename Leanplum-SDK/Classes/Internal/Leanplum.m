@@ -1043,14 +1043,12 @@ BOOL inForeground = NO;
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
                     if ([[UIApplication sharedApplication]
                             respondsToSelector:@selector(currentUserNotificationSettings)]) {
                         [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:
                                                              [[UIApplication sharedApplication]
                                                                  currentUserNotificationSettings]];
                     }
-#endif
                     [Leanplum resume];
                     if (startedInBackground && !inForeground) {
                         inForeground = YES;
