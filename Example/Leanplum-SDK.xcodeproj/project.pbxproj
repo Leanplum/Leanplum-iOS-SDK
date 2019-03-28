@@ -90,6 +90,7 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		653192A121517D4F00D7DDDC /* LPFeatureFlagManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 653192A021517D4F00D7DDDC /* LPFeatureFlagManagerTest.m */; };
+		65D4AB49224CA963009BA5F3 /* LPActionContextTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */; };
 		65E189C421643631005E6B93 /* LPRequestSenderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 65E189C321643631005E6B93 /* LPRequestSenderTest.m */; };
 		65E189C6216BDB82005E6B93 /* LPRequestFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 65E189C5216BDB82005E6B93 /* LPRequestFactoryTest.m */; };
 		65E53E982148786C00A05040 /* LPCountAggregatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 65E53E962148786C00A05040 /* LPCountAggregatorTest.m */; };
@@ -190,6 +191,7 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
 		653192A021517D4F00D7DDDC /* LPFeatureFlagManagerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPFeatureFlagManagerTest.m; sourceTree = "<group>"; };
+		65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPActionContextTest.m; sourceTree = "<group>"; };
 		65E189C321643631005E6B93 /* LPRequestSenderTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTest.m; sourceTree = "<group>"; };
 		65E189C5216BDB82005E6B93 /* LPRequestFactoryTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestFactoryTest.m; sourceTree = "<group>"; };
 		65E53E962148786C00A05040 /* LPCountAggregatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregatorTest.m; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
 				07E5C8841F052B7800A4B092 /* Utilities */,
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
+				65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -749,6 +752,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65D4AB49224CA963009BA5F3 /* LPActionContextTest.m in Sources */,
 				07E5C8B31F052B7800A4B092 /* LPFileManagerTest.m in Sources */,
 				07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */,
 				07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */,
