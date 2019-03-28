@@ -188,9 +188,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if (parent) {
             _args = [parent getChildArgs:_key];
         } else if (_messageId) {
-            NSDictionary *cachedArgs = [LPVarCache sharedCache].messages[_messageId][LP_KEY_VARS];
-            if (cachedArgs) {
-                _args = cachedArgs;
+            NSDictionary *message = [LPVarCache sharedCache].messages[_messageId];
+            if (message) {
+                _args = message[LP_KEY_VARS];
             }
         }
     }
