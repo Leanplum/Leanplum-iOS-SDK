@@ -249,6 +249,8 @@
 		07E5C86A1F052B7800A4B092 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				07E5C86F1F052B7800A4B092 /* Extensions */,
+				07E5C8841F052B7800A4B092 /* Utilities */,
 				07E5C86B1F052B7800A4B092 /* LPActionManagerTest.m */,
 				A84527FC215C3035001FA20D /* LPRequestTest.m */,
 				65E189C321643631005E6B93 /* LPRequestSenderTest.m */,
@@ -259,14 +261,12 @@
 				9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */,
 				65E53E962148786C00A05040 /* LPCountAggregatorTest.m */,
 				653192A021517D4F00D7DDDC /* LPFeatureFlagManagerTest.m */,
-				07E5C86F1F052B7800A4B092 /* Extensions */,
 				07E5C87B1F052B7800A4B092 /* LPFileManagerTest.m */,
 				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
 				07E5C87F1F052B7800A4B092 /* LPJSONTest.m */,
 				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
 				07E5C8811F052B7800A4B092 /* LPMessageTemplatesClassTest.m */,
 				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
-				07E5C8841F052B7800A4B092 /* Utilities */,
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
 				65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */,
 			);
@@ -563,6 +563,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);

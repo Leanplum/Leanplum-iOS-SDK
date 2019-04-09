@@ -26,7 +26,6 @@
 #define LPRequesting_h
 
 #import "LPNetworkProtocol.h"
-#import "LeanplumInternal.h"
 
 @protocol LPRequesting<NSObject>
 
