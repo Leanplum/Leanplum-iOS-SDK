@@ -866,6 +866,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     //    [[UIApplication sharedApplication] openURL:appSettings];
 
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:DEFAULTS_LEANPLUM_ENABLED_PUSH];
+    
+    // When system asks user for push notification we should also disable our dialog, because
+    // if users accept/declines we don't want to show dialog anymore since system will block default one.
+    [self disableAskToAsk];
+    
     LeanplumPushSetupBlock block = [Leanplum pushSetupBlock];
     if (block) {
         // If the app used [Leanplum setPushSetup:...], call the block.
