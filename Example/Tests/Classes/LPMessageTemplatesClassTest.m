@@ -43,6 +43,7 @@
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk;
 - (void)updatePopupLayout;
 - (void)showPopup;
+- (void)enableSystemPush;
 
 @end
 
@@ -137,6 +138,12 @@
     XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"http://www.leanplum.com?q=simple_english1&test=2"], @"http://www.leanplum.com?q=simple_english1&test=2");
     XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"https://ramsey.tfaforms.net/356302?id={}"], @"https://ramsey.tfaforms.net/356302?id=%7B%7D");
     XCTAssertEqualObjects([LPMessageTemplatesClass urlEncodedStringFromString:@"lomotif://music/月亮"], @"lomotif://music/%E6%9C%88%E4%BA%AE");
+}
+
+- (void)test_pushEnableOnce
+{
+    [[LPMessageTemplatesClass sharedTemplates] enableSystemPush];
+    XCTAssertTrue([[NSUserDefaults standardUserDefaults] boolForKey:@"__Leanplum_asked_to_push"]);
 }
 
 @end
