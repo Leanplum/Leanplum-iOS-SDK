@@ -243,6 +243,8 @@ NSString *LP_APP_ICON_PRIMARY_NAME = @"PrimaryIcon";
 
 NSString *LP_INVALID_IDFA = @"00000000-0000-0000-0000-000000000000";
 
+NSString *LP_NOTIFICATION_LOCATION_UPDATE = @"updateLocationForUser";
+
 long long leanplum_colorToInt(UIColor *value) {
     if (value == nil) {
         return 0;

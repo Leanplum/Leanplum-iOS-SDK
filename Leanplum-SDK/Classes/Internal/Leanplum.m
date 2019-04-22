@@ -2143,11 +2143,18 @@ andParameters:(NSDictionary *)params
     if (!attributes) {
         attributes = @{};
     }
-
+    if (![LPConstantsState sharedState].isLocationCollectionEnabled) {
+        NSMutableDictionary *attributesValues = [attributes mutableCopy];
+        attributesValues[LP_KEY_CITY] = LP_VALUE_DETECT;
+        attributesValues[LP_KEY_REGION] = LP_VALUE_DETECT;
+        attributesValues[LP_KEY_COUNTRY] = LP_VALUE_DETECT;
+        attributesValues[LP_KEY_LOCATION] = LP_VALUE_DETECT;
+    }
+    
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
     id<LPRequesting> request = [reqFactory setUserAttributesWithParams:@{
-        LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
+        LP_PARAM_USER_ATTRIBUTES: attributesValues ? [LPJSON stringFromJSON:attributesValues] : @"",
         LP_PARAM_NEW_USER_ID: userId ? userId : @""
         }];
     [[LPRequestSender sharedInstance] send:request];
@@ -2159,15 +2166,18 @@ andParameters:(NSDictionary *)params
         }
     }
 
-    if (attributes != nil) {
+    if (attributesValues != nil) {
         @synchronized([LPInternalState sharedState].userAttributeChanges) {
-            [[LPInternalState sharedState].userAttributeChanges addObject:attributes];
+            [[LPInternalState sharedState].userAttributeChanges addObject:attributesValues];
         }
     }
 
     [Leanplum onStartResponse:^(BOOL success) {
         LP_END_USER_CODE
         [self recordAttributeChanges];
+        if ([LPConstantsState sharedState].isLocationCollectionEnabled) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:LP_NOTIFICATION_LOCATION_UPDATE object:self];
+        }
         LP_BEGIN_USER_CODE
     }];
 
