@@ -2155,6 +2155,10 @@ andParameters:(NSDictionary *)params
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
 
+    id<LPRequesting> request = [reqFactory setUserAttributesWithParams:@{
+                                                                         LP_PARAM_USER_ATTRIBUTES: attributesValues ? [LPJSON stringFromJSON:attributesValues] : @"",
+                                                                         LP_PARAM_NEW_USER_ID: userId ? userId : @""
+                                                                         }];
     [[LPRequestSender sharedInstance] send:request];
 
     if (userId.length) {
