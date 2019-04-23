@@ -2138,25 +2138,23 @@ andParameters:(NSDictionary *)params
         LPLog(LPWarning, @"setUserId is called with NSNumber. Please use NSString.");
         userId = [tempUserId stringValue];
     }
-
+    NSMutableDictionary *attributesValues = [[NSMutableDictionary alloc] init];
+    
     // Attributes can't be nil
-    if (!attributes) {
-        attributes = @{};
+    if (attributes) {
+        attributesValues = [attributes mutableCopy];
     }
     if (![LPConstantsState sharedState].isLocationCollectionEnabled) {
-        NSMutableDictionary *attributesValues = [attributes mutableCopy];
         attributesValues[LP_KEY_CITY] = LP_VALUE_DETECT;
         attributesValues[LP_KEY_REGION] = LP_VALUE_DETECT;
         attributesValues[LP_KEY_COUNTRY] = LP_VALUE_DETECT;
         attributesValues[LP_KEY_LOCATION] = LP_VALUE_DETECT;
     }
     
+    
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory setUserAttributesWithParams:@{
-        LP_PARAM_USER_ATTRIBUTES: attributesValues ? [LPJSON stringFromJSON:attributesValues] : @"",
-        LP_PARAM_NEW_USER_ID: userId ? userId : @""
-        }];
+
     [[LPRequestSender sharedInstance] send:request];
 
     if (userId.length) {
