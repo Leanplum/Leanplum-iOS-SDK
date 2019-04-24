@@ -31,7 +31,7 @@
 #import "LeanplumSocket.h"
 #import "LPJSON.h"
 #import "LPRegisterDevice.h"
-#import "LPFileManager.h"dmnsafsdmnhf
+#import "LPFileManager.h"
 #import <QuartzCore/QuartzCore.h>
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
@@ -47,6 +47,7 @@
 #import "LPUIEditorWrapper.h"
 #import "LPCountAggregator.h"
 #import "LPRequestFactory.h"
+#import "LPFileTransferManager.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 
@@ -917,6 +918,9 @@ BOOL inForeground = NO;
         [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
         NSSet<NSString *> *enabledFeatureFlags = [self parseEnabledFeatureFlagsFromResponse:response];
         [LPFeatureFlagManager sharedManager].enabledFeatureFlags = enabledFeatureFlags;
+
+        NSDictionary *filenameToURL = [self parseFileURLsFromResponse:response];
+        [LPFileTransferManager sharedInstance].filenameToURL = filenameToURL;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
@@ -2790,4 +2794,10 @@ void LPLog(LPLogType type, NSString *format, ...) {
     return nil;
 }
 
++ (NSDictionary *)parseFileURLsFromResponse:(NSDictionary *)response {
+    if ([response objectForKey:LP_KEY_FILES]) {
+        return [NSDictionary dictionaryWithDictionary:[response objectForKey:LP_KEY_FILES]];
+    }
+    return nil;
+}
 @end

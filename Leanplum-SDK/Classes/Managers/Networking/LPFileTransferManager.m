@@ -274,6 +274,8 @@
         id<LPNetworkOperationProtocol> op;
         if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
             op = [self.engine operationWithURLString:path];
+        } else if ([self.filenameToURL valueForKey:path]) {
+            op = [self.engine operationWithURLString:[self.filenameToURL valueForKey:path]];
         } else {
             op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
                                          params:dict
