@@ -2140,18 +2140,15 @@ andParameters:(NSDictionary *)params
     }
     NSMutableDictionary *attributesValues = [[NSMutableDictionary alloc] init];
     
-    // Attributes can't be nil
-    if (attributes) {
+    if (attributes != nil) {
         attributesValues = [attributes mutableCopy];
     }
-    if (![LPConstantsState sharedState].isLocationCollectionEnabled) {
-        attributesValues[LP_KEY_CITY] = LP_VALUE_DETECT;
-        attributesValues[LP_KEY_REGION] = LP_VALUE_DETECT;
-        attributesValues[LP_KEY_COUNTRY] = LP_VALUE_DETECT;
-        attributesValues[LP_KEY_LOCATION] = LP_VALUE_DETECT;
-    }
     
-    
+    attributesValues[LP_KEY_CITY] = LP_VALUE_DETECT;
+    attributesValues[LP_KEY_REGION] = LP_VALUE_DETECT;
+    attributesValues[LP_KEY_COUNTRY] = LP_VALUE_DETECT;
+    attributesValues[LP_KEY_LOCATION] = LP_VALUE_DETECT;
+
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
 
