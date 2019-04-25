@@ -36,6 +36,7 @@
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
 #import "LPUtils.h"
+#import "LPFileTransferManager.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *uploadUrl;
@@ -636,6 +637,8 @@ static NSDictionary *_requestHheaders;
     id<LPNetworkOperationProtocol> op;
     if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
         op = [engine operationWithURLString:path];
+    } else if ([[LPFileTransferManager sharedInstance].filenameToURL valueForKey:path]) {
+        op = [engine operationWithURLString:[[LPFileTransferManager sharedInstance].filenameToURL valueForKey:path]];
     } else {
         op = [engine operationWithPath:[LPConstantsState sharedState].apiServlet
                                 params:dict
