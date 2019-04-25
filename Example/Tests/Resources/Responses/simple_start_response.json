@@ -814,6 +814,10 @@
         "fileAttributes": {
             
         },
+        "files": {
+            "file1.jpg" : "http://www.domain.com/file1.jpg",
+            "file2.jpg" : "http://www.domain.com/file2.jpg"
+        },
         "token": "juKUmiXERlO4kmTfEL6xEsfUMpg9WUlFrHOvp6H2w4Q",
         "variants": [
             
