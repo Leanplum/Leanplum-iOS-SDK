@@ -918,8 +918,8 @@ BOOL inForeground = NO;
         [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
         NSSet<NSString *> *enabledFeatureFlags = [self parseEnabledFeatureFlagsFromResponse:response];
         [LPFeatureFlagManager sharedManager].enabledFeatureFlags = enabledFeatureFlags;
-        NSDictionary *filenameToURL = [self parseFileURLsFromResponse:response];
-        [LPFileTransferManager sharedInstance].filenameToURL = filenameToURL;
+        NSDictionary *filenameToURLs = [self parseFileURLsFromResponse:response];
+        [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
@@ -2375,8 +2375,8 @@ andParameters:(NSDictionary *)params
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
-        NSDictionary *filenameToURL = [self parseFileURLsFromResponse:response];
-        [LPFileTransferManager sharedInstance].filenameToURL = filenameToURL;
+        NSDictionary *filenameToURLs = [self parseFileURLsFromResponse:response];
+        [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
 
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||

@@ -637,8 +637,8 @@ static NSDictionary *_requestHheaders;
     id<LPNetworkOperationProtocol> op;
     if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
         op = [engine operationWithURLString:path];
-    } else if ([[LPFileTransferManager sharedInstance].filenameToURL valueForKey:path]) {
-        op = [engine operationWithURLString:[[LPFileTransferManager sharedInstance].filenameToURL valueForKey:path]];
+    } else if ([[LPFileTransferManager sharedInstance].filenameToURLs valueForKey:path]) {
+        op = [engine operationWithURLString:[[LPFileTransferManager sharedInstance].filenameToURLs valueForKey:path]];
     } else {
         op = [engine operationWithPath:[LPConstantsState sharedState].apiServlet
                                 params:dict

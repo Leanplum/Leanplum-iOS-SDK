@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) NSString *uploadUrl;
 @property (nonatomic, readonly) int numPendingDownloads;
-@property (nonatomic, strong) NSDictionary *filenameToURL;
+@property (nonatomic, strong) NSDictionary *filenameToURLs;
 
 + (instancetype)sharedInstance;
 - (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData;
