@@ -628,26 +628,8 @@ static NSDictionary *_requestHheaders;
     pendingDownloads++;
     NSLog(@"Leanplum: Downloading resource %@", path);
     fileTransferStatus[path] = @(YES);
-    NSMutableDictionary *dict = [self createArgsDictionary];
-    dict[LP_KEY_FILENAME] = path;
-    [self attachApiKeys:dict];
 
-    // Download it directly if the argument is URL.
-    // Otherwise continue with the api request.
-    id<LPNetworkOperationProtocol> op;
-    if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
-        op = [engine operationWithURLString:path];
-    } else if ([[LPFileTransferManager sharedInstance].filenameToURLs valueForKey:path]) {
-        op = [engine operationWithURLString:[[LPFileTransferManager sharedInstance].filenameToURLs valueForKey:path]];
-    } else {
-        op = [engine operationWithPath:[LPConstantsState sharedState].apiServlet
-                                params:dict
-                            httpMethod:[LPNetworkFactory fileRequestMethod]
-                                   ssl:[LPConstantsState sharedState].apiSSL
-                        timeoutSeconds:[LPConstantsState sharedState]
-                                        .networkTimeoutSecondsForDownloads];
-    }
-
+    id<LPNetworkOperationProtocol> op = [self operationForDownloadFile:path];
     [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
         LP_TRY
         [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
@@ -675,6 +657,29 @@ static NSDictionary *_requestHheaders;
     [engine enqueueOperation: op];
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"download_file"];
+}
+
+- (id<LPNetworkOperationProtocol>)operationForDownloadFile:(NSString *)path {
+    // Download it directly if the argument is URL.
+    // Otherwise look up the URL in the filenameToURLs dictionary.
+    // Otherwise continue with the api request.
+    id<LPNetworkOperationProtocol> op;
+    if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
+        op = [engine operationWithURLString:path];
+    } else if ([[LPFileTransferManager sharedInstance].filenameToURLs valueForKey:path]) {
+        op = [engine operationWithURLString:[[LPFileTransferManager sharedInstance].filenameToURLs valueForKey:path]];
+    } else {
+        NSMutableDictionary *dict = [self createArgsDictionary];
+        dict[LP_KEY_FILENAME] = path;
+        [self attachApiKeys:dict];
+        op = [engine operationWithPath:[LPConstantsState sharedState].apiServlet
+                                params:dict
+                            httpMethod:[LPNetworkFactory fileRequestMethod]
+                                   ssl:[LPConstantsState sharedState].apiSSL
+                        timeoutSeconds:[LPConstantsState sharedState]
+              .networkTimeoutSecondsForDownloads];
+    }
+    return op;
 }
 
 + (int)numPendingDownloads
