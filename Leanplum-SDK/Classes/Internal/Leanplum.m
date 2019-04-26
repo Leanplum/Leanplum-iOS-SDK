@@ -31,7 +31,7 @@
 #import "LeanplumSocket.h"
 #import "LPJSON.h"
 #import "LPRegisterDevice.h"
-#import "LPFileManager.h"dmnsafsdmnhf
+#import "LPFileManager.h"
 #import <QuartzCore/QuartzCore.h>
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
@@ -47,6 +47,7 @@
 #import "LPUIEditorWrapper.h"
 #import "LPCountAggregator.h"
 #import "LPRequestFactory.h"
+#import "LPFileTransferManager.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 
@@ -917,6 +918,8 @@ BOOL inForeground = NO;
         [LPCountAggregator sharedAggregator].enabledCounters = enabledCounters;
         NSSet<NSString *> *enabledFeatureFlags = [self parseEnabledFeatureFlagsFromResponse:response];
         [LPFeatureFlagManager sharedManager].enabledFeatureFlags = enabledFeatureFlags;
+        NSDictionary *filenameToURLs = [self parseFileURLsFromResponse:response];
+        [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
 
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
@@ -2372,6 +2375,8 @@ andParameters:(NSDictionary *)params
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
+        NSDictionary *filenameToURLs = [self parseFileURLsFromResponse:response];
+        [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
 
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
@@ -2790,4 +2795,10 @@ void LPLog(LPLogType type, NSString *format, ...) {
     return nil;
 }
 
++ (NSDictionary *)parseFileURLsFromResponse:(NSDictionary *)response {
+    if ([response objectForKey:LP_KEY_FILES]) {
+        return [NSDictionary dictionaryWithDictionary:[response objectForKey:LP_KEY_FILES]];
+    }
+    return nil;
+}
 @end

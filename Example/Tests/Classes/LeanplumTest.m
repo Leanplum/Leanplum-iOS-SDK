@@ -35,6 +35,7 @@
 #import "LPActionManager.h"
 #import "LPCountAggregator.h"
 #import "LPFeatureFlagManager.h"
+#import "LPFileTransferManager.h"
 #import "LPConstants.h"
 #import "LPRegisterDevice.h"
 #import "Leanplum.h"
@@ -48,6 +49,7 @@
 
 + (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response;
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
++ (NSDictionary *)parseFileURLsFromResponse:(NSDictionary *)response;
 + (void)triggerMessageDisplayed:(LPActionContext *)context;
 + (LPMessageArchiveData *)messageArchiveDataFromContext:(LPActionContext *)context;
 + (NSString *)messageBodyFromContext:(LPActionContext *)context;
@@ -1844,6 +1846,49 @@
         dispatch_semaphore_signal(semaphore);
     }];
     dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+}
+
+- (void)testStartResponseShouldParseFilenameToURLs
+{
+    //Given: start request
+    // This stub have to be removed when start command is successfully executed.
+    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+                                           ^BOOL(NSURLRequest * _Nonnull request) {
+                                               return [request.URL.host isEqualToString:API_HOST];
+                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                               NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
+                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                                                          headers:@{@"Content-Type":@"application/json"}];
+                                           }];
+
+    [LeanplumHelper setup_development_test];
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertTrue(success);
+        [OHHTTPStubs removeStub:startStub];
+        // Then: FilenameToURLs should be parsed
+        XCTAssertNotNil([LPFileTransferManager sharedInstance].filenameToURLs);
+        NSDictionary *filenameToURLs = [LPFileTransferManager sharedInstance].filenameToURLs;
+        NSDictionary *expected = @{
+                                   @"file1.jpg" : @"http://www.domain.com/file1.jpg",
+                                   @"file2.jpg" : @"http://www.domain.com/file2.jpg"
+                                   };
+        XCTAssertEqualObjects(expected, filenameToURLs);
+        dispatch_semaphore_signal(semaphore);
+    }];
+    dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+}
+
+- (void)test_parseFilenameToURLs
+{
+    NSMutableDictionary *response = [[NSMutableDictionary alloc] init];
+    NSDictionary *filenameToURLs = [Leanplum parseFileURLsFromResponse:response];
+    XCTAssertNil(filenameToURLs);
+
+    NSDictionary *testFilenameToURLs = @{@"filename.jpg" : @"http://www.domain.com/filename.jpg"};
+    [response setObject:testFilenameToURLs forKey:LP_KEY_FILES];
+    filenameToURLs = [Leanplum parseFileURLsFromResponse:response];
+    XCTAssertEqualObjects(filenameToURLs, testFilenameToURLs);
 }
 
 - (void)test_parseEnabledCounters
