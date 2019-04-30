@@ -170,22 +170,13 @@
 		5B2340FB21ED965000206ACB /* UIDevice+IdentifierAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23401721ED964F00206ACB /* UIDevice+IdentifierAddition.m */; };
 		5B2340FD21ED965000206ACB /* NSString+MD5Addition.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23401821ED964F00206ACB /* NSString+MD5Addition.h */; };
 		5B2340FF21ED965000206ACB /* UIDevice+IdentifierAddition.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23401921ED964F00206ACB /* UIDevice+IdentifierAddition.h */; };
-		5B23410121ED965000206ACB /* Leanplum_MKNKOperationWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23401B21ED964F00206ACB /* Leanplum_MKNKOperationWrapper.m */; };
-		5B23410321ED965000206ACB /* Leanplum_MKNetworkEngine.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23401C21ED964F00206ACB /* Leanplum_MKNetworkEngine.m */; };
 		5B23410521ED965000206ACB /* MKNetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23401D21ED964F00206ACB /* MKNetworkKit.h */; };
-		5B23410721ED965000206ACB /* Leanplum_MKNetworkOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23401E21ED964F00206ACB /* Leanplum_MKNetworkOperation.m */; };
-		5B23410921ED965000206ACB /* Leanplum_MKNKEngineWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23401F21ED964F00206ACB /* Leanplum_MKNKEngineWrapper.m */; };
 		5B23410B21ED965000206ACB /* Leanplum_MKNKOperationWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402021ED964F00206ACB /* Leanplum_MKNKOperationWrapper.h */; };
 		5B23410D21ED965000206ACB /* Leanplum_MKNetworkEngine.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402121ED964F00206ACB /* Leanplum_MKNetworkEngine.h */; };
-		5B23410F21ED965000206ACB /* UIAlertView+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23402321ED964F00206ACB /* UIAlertView+MKNetworkKitAdditions.m */; };
 		5B23411121ED965000206ACB /* NSDictionary+RequestEncoding.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402421ED964F00206ACB /* NSDictionary+RequestEncoding.h */; };
-		5B23411321ED965000206ACB /* NSString+MKNetworkKitAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23402521ED964F00206ACB /* NSString+MKNetworkKitAdditions.m */; };
 		5B23411521ED965000206ACB /* NSDate+RFC1123.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402621ED964F00206ACB /* NSDate+RFC1123.h */; };
 		5B23411721ED965000206ACB /* NSData+Base64.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402721ED964F00206ACB /* NSData+Base64.h */; };
 		5B23411921ED965000206ACB /* UIAlertView+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402821ED964F00206ACB /* UIAlertView+MKNetworkKitAdditions.h */; };
-		5B23411B21ED965000206ACB /* NSDictionary+RequestEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23402921ED964F00206ACB /* NSDictionary+RequestEncoding.m */; };
-		5B23411D21ED965000206ACB /* NSData+Base64.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23402A21ED964F00206ACB /* NSData+Base64.m */; };
-		5B23411F21ED965000206ACB /* NSDate+RFC1123.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23402B21ED964F00206ACB /* NSDate+RFC1123.m */; };
 		5B23412121ED965000206ACB /* NSString+MKNetworkKitAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402C21ED964F00206ACB /* NSString+MKNetworkKitAdditions.h */; };
 		5B23412321ED965000206ACB /* Leanplum_MKNKEngineWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402D21ED964F00206ACB /* Leanplum_MKNKEngineWrapper.h */; };
 		5B23412521ED965000206ACB /* Leanplum_MKNetworkOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402E21ED964F00206ACB /* Leanplum_MKNetworkOperation.h */; };
@@ -1334,11 +1325,9 @@
 				5B23406B21ED964F00206ACB /* LPNetworkFactory.m in Sources */,
 				5B23407721ED964F00206ACB /* LPFileManager.m in Sources */,
 				5B2340C721ED964F00206ACB /* LPMessageArchiveData.m in Sources */,
-				5B23411321ED965000206ACB /* NSString+MKNetworkKitAdditions.m in Sources */,
 				5B2340EB21ED965000206ACB /* Leanplum_WebSocket.m in Sources */,
 				5B23404B21ED964F00206ACB /* LPRequestSender.m in Sources */,
 				5B23405721ED964F00206ACB /* LeanplumSocket.m in Sources */,
-				5B23411F21ED965000206ACB /* NSDate+RFC1123.m in Sources */,
 				5B23405921ED964F00206ACB /* LPResponse.m in Sources */,
 				5B2340D521ED965000206ACB /* LPJSON.m in Sources */,
 				5B23404321ED964F00206ACB /* LPAPIConfig.m in Sources */,
@@ -1355,14 +1344,11 @@
 				5B2340D721ED965000206ACB /* FileMD5Hash.c in Sources */,
 				5B23406521ED964F00206ACB /* LPRequest.m in Sources */,
 				5B2340F521ED965000206ACB /* NSTimer+Blocks.m in Sources */,
-				5B23410921ED965000206ACB /* Leanplum_MKNKEngineWrapper.m in Sources */,
-				5B23410F21ED965000206ACB /* UIAlertView+MKNetworkKitAdditions.m in Sources */,
 				A8DBE2662204FDA00080818A /* LPFileTransferManager.m in Sources */,
 				5B2340F921ED965000206ACB /* NSString+MD5Addition.m in Sources */,
 				5B2340A721ED964F00206ACB /* LPInternalState.m in Sources */,
 				5B2340BD21ED964F00206ACB /* LPContextualValues.m in Sources */,
 				5B23409521ED964F00206ACB /* LPActionArg.m in Sources */,
-				5B23410121ED965000206ACB /* Leanplum_MKNKOperationWrapper.m in Sources */,
 				5B23412721ED965000206ACB /* LPKeychainWrapper.m in Sources */,
 				5B23407B21ED964F00206ACB /* LPInbox.m in Sources */,
 				5B2340B921ED964F00206ACB /* Leanplum.m in Sources */,
@@ -1372,13 +1358,11 @@
 				5B23408121ED964F00206ACB /* LPVarCache.m in Sources */,
 				5B2340BF21ED964F00206ACB /* LPExceptionHandler.m in Sources */,
 				5B2340E321ED965000206ACB /* JRSwizzle.m in Sources */,
-				5B23411D21ED965000206ACB /* NSData+Base64.m in Sources */,
 				5B23407321ED964F00206ACB /* LPRevenueManager.m in Sources */,
 				5B23405B21ED964F00206ACB /* LPNetworkOperation.m in Sources */,
 				5B2340EF21ED965000206ACB /* Leanplum_SocketIO.m in Sources */,
 				5B2340A321ED964F00206ACB /* LPConstants.m in Sources */,
 				5B23404D21ED964F00206ACB /* LPRequestFactory.m in Sources */,
-				5B23411B21ED965000206ACB /* NSDictionary+RequestEncoding.m in Sources */,
 				5B23407521ED964F00206ACB /* LPRegisterDevice.m in Sources */,
 				5B23407F21ED964F00206ACB /* LPUIEditorWrapper.m in Sources */,
 				5B23403921ED964F00206ACB /* LPMessageTemplates.m in Sources */,
@@ -1387,10 +1371,8 @@
 				5B2340AB21ED964F00206ACB /* LPEnumConstants.m in Sources */,
 				5B23409D21ED964F00206ACB /* LPEventCallbackManager.m in Sources */,
 				5B23407121ED964F00206ACB /* LPAppIconManager.m in Sources */,
-				5B23410721ED965000206ACB /* Leanplum_MKNetworkOperation.m in Sources */,
 				5B2340FB21ED965000206ACB /* UIDevice+IdentifierAddition.m in Sources */,
 				5B23405321ED964F00206ACB /* LeanplumRequest.m in Sources */,
-				5B23410321ED965000206ACB /* Leanplum_MKNetworkEngine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
