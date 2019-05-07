@@ -2688,6 +2688,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
 + (void)setDeviceLocationWithLatitude:(double)latitude
                             longitude:(double)longitude
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"setDeviceLocationWithLatitude:longitude"];
     [Leanplum setDeviceLocationWithLatitude:latitude
                                   longitude:longitude
                                        type:LPLocationAccuracyCELL];
@@ -2697,6 +2698,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
                             longitude:(double)longitude
                                  type:(LPLocationAccuracyType)type
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"setDeviceLocationWithLatitude:longitude:type"];
     [Leanplum setDeviceLocationWithLatitude:latitude longitude:longitude
                                        city:nil region:nil country:nil
                                        type:type];
@@ -2709,6 +2711,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
                               country:(NSString *)country
                                  type:(LPLocationAccuracyType)type
 {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"setDeviceLocationWithLatitude:longitude:city:region:country:type"];
     LP_TRY
     if ([LPConstantsState sharedState].isLocationCollectionEnabled &&
         NSClassFromString(@"LPLocationManager")) {
