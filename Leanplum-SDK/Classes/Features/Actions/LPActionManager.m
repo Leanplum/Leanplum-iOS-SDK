@@ -518,18 +518,6 @@ static dispatch_once_t leanplum_onceToken;
     return NO;
 }
 
-- (void)trackMessageDisplayed:(NSDictionary *)userInfo
-{
-    // Don't track duplicate notifications.
-    if ([self hasTrackedDisplayed:userInfo]) {
-        return;
-    }
-
-    NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
-    [Leanplum track:@"Displayed" withValue:0.0 andInfo:nil
-            andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
-}
-
 + (BOOL)areActionsEmbedded:(NSDictionary *)userInfo
 {
     return userInfo[LP_KEY_PUSH_ACTION] != nil ||
@@ -558,8 +546,6 @@ static dispatch_once_t leanplum_onceToken;
             UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
             if (appState != UIApplicationStateBackground) {
                 [self maybePerformNotificationActions:userInfo action:action active:active];
-            } else {
-                [self trackMessageDisplayed:userInfo];
             }
         }
     };
