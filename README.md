@@ -24,8 +24,7 @@ pod install
 open "Leanplum-SDK.xcworkspace"
 ```
 ## Development Workflow
-- We are using GitFlow branching model: https://github.com/nvie/gitflow
-- We use the Conventional Changelog Commit Style for commit messages: https://github.com/commitizen/cz-cli
+- We use feature branches that get merged to `master`.
 ## Build the SDK
 To build the sdk run:
 ```bash
@@ -35,7 +34,7 @@ cd -
 ./build.sh
 ```
 ## Contributing
-Please follow the Conventional Changelog Commit Style and send a pull request to `develop` branch.
+Please follow the Conventional Changelog Commit Style and send a pull request to `master` branch.
 ## License
 See LICENSE file.
 ## Support
