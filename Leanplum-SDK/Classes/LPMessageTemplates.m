@@ -952,33 +952,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     : MIN([UIApplication sharedApplication].statusBarFrame.size.height,
           [UIApplication sharedApplication].statusBarFrame.size.width);
 
-    UIInterfaceOrientation orientation;
-    orientation = UIInterfaceOrientationPortrait;
-    CGAffineTransform orientationTransform;
-    switch (orientation) {
-        case UIDeviceOrientationPortraitUpsideDown:
-            orientationTransform = CGAffineTransformMakeRotation(M_PI);
-            break;
-        case UIDeviceOrientationLandscapeLeft:
-            orientationTransform = CGAffineTransformMakeRotation(M_PI / 2);
-            break;
-        case UIDeviceOrientationLandscapeRight:
-            orientationTransform = CGAffineTransformMakeRotation(-M_PI / 2);
-            break;
-        default:
-            orientationTransform = CGAffineTransformIdentity;
-    }
-    _popupGroup.transform = orientationTransform;
     CGSize screenSize = window.screen.bounds.size;
     _popupGroup.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
     
     CGFloat screenWidth = screenSize.width;
     CGFloat screenHeight = screenSize.height;
-    if (orientation == UIDeviceOrientationLandscapeLeft ||
-        orientation == UIDeviceOrientationLandscapeRight) {
-        screenWidth = screenSize.height;
-        screenHeight = screenSize.width;
-    }
     
     _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     if (!fullscreen) {
@@ -1068,13 +1046,20 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         
     } else if (isIPhoneX) {
+        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+            safeAreaInsets.left = -safeAreaInsets.left;
+            safeAreaInsets.right = 0;
+            bottomSafeAreaHeight = 0;
+        }
+
         _popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
                                        screenWidth - safeAreaInsets.left - safeAreaInsets.right,
                                        screenHeight - safeAreaInsets.top - bottomSafeAreaHeight);
         
-        NSLog( @"%@", NSStringFromCGRect(_popupGroup.frame) );
+        NSLog(@"frame %@", NSStringFromCGRect(_popupGroup.frame) );
         NSLog(@"%f, %f", screenWidth, screenHeight);
-        NSLog(@"%@", NSStringFromUIEdgeInsets(safeAreaInsets));
+        NSLog(@"insets %@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     
     _popupView.frame = _popupGroup.bounds;
@@ -1199,6 +1184,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     webView.allowsInlineMediaPlayback = YES;
                     webView.mediaPlaybackRequiresUserAction = NO;
                     NSString *html = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
+                    NSLog(@"html %@", html);
                     [webView loadHTMLString:html baseURL:nil];
                 }
             }
@@ -1217,6 +1203,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     } else {
         insets.top = [[UIApplication sharedApplication] isStatusBarHidden] ? 0 : 20.0;
     }
+    
     return insets;
 }
 
