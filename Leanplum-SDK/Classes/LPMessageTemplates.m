@@ -982,6 +982,12 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     if (!fullscreen) {
         dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
         dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
+    } else {
+        BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
+        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (isIphoneX && UIInterfaceOrientationIsLandscape(interfaceOrientation) {
+            
+        }
     }
     
     _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
@@ -1048,7 +1054,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     } else if (isIPhoneX) {
         UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
         if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-            safeAreaInsets.left = -safeAreaInsets.left;
+            safeAreaInsets.left = 0;
             safeAreaInsets.right = 0;
             bottomSafeAreaHeight = 0;
         }
@@ -1057,8 +1063,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                        screenWidth - safeAreaInsets.left - safeAreaInsets.right,
                                        screenHeight - safeAreaInsets.top - bottomSafeAreaHeight);
         
-        NSLog(@"frame %@", NSStringFromCGRect(_popupGroup.frame) );
-        NSLog(@"%f, %f", screenWidth, screenHeight);
+        NSLog(@"frame dim %@ %@", NSStringFromCGRect(_popupGroup.frame), NSStringFromCGSize(_popupGroup.frame.size));
+        NSLog(@"screen %f, %f", screenWidth, screenHeight);
         NSLog(@"insets %@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     
@@ -1177,6 +1183,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                 UIWebView *webView = (UIWebView *)_popupView;
                 _webViewNeedsFade = YES;
                 webView.delegate = self;
+                if (@available(iOS 11.0, *)) {
+                    webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+                }
                 if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
                     [webView loadRequest:[NSURLRequest requestWithURL:
                                         [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]]];
