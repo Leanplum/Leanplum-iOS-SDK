@@ -951,12 +951,36 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     CGFloat statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? safeAreaInsets.top
     : MIN([UIApplication sharedApplication].statusBarFrame.size.height,
           [UIApplication sharedApplication].statusBarFrame.size.width);
+    
+    UIInterfaceOrientation orientation;
+    orientation = UIInterfaceOrientationPortrait;
+    CGAffineTransform orientationTransform;
+    switch (orientation) {
+            case UIDeviceOrientationPortraitUpsideDown:
+            orientationTransform = CGAffineTransformMakeRotation(M_PI);
+            break;
+            case UIDeviceOrientationLandscapeLeft:
+            orientationTransform = CGAffineTransformMakeRotation(M_PI / 2);
+            break;
+            case UIDeviceOrientationLandscapeRight:
+            orientationTransform = CGAffineTransformMakeRotation(-M_PI / 2);
+            break;
+            default:
+            orientationTransform = CGAffineTransformIdentity;
+        }
+    _popupGroup.transform = orientationTransform;
 
     CGSize screenSize = window.screen.bounds.size;
     _popupGroup.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
     
     CGFloat screenWidth = screenSize.width;
     CGFloat screenHeight = screenSize.height;
+    
+    if (orientation == UIDeviceOrientationLandscapeLeft ||
+        orientation == UIDeviceOrientationLandscapeRight) {
+        screenWidth = screenSize.height;
+        screenHeight = screenSize.width;
+    }
     
     _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     if (!fullscreen) {
