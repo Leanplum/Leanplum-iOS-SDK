@@ -951,7 +951,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     CGFloat statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? safeAreaInsets.top
     : MIN([UIApplication sharedApplication].statusBarFrame.size.height,
           [UIApplication sharedApplication].statusBarFrame.size.width);
-    
+
     UIInterfaceOrientation orientation;
     orientation = UIInterfaceOrientationPortrait;
     CGAffineTransform orientationTransform;
@@ -967,7 +967,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
             break;
         default:
             orientationTransform = CGAffineTransformIdentity;
-        }
+    }
     _popupGroup.transform = orientationTransform;
 
     CGSize screenSize = window.screen.bounds.size;
@@ -975,7 +975,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     
     CGFloat screenWidth = screenSize.width;
     CGFloat screenHeight = screenSize.height;
-    
+
     if (orientation == UIDeviceOrientationLandscapeLeft ||
         orientation == UIDeviceOrientationLandscapeRight) {
         screenWidth = screenSize.height;
@@ -1006,6 +1006,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
         dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
     }
+
     _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
                                       _dismissButton.frame.size.height);
 }
@@ -1209,7 +1210,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     webView.allowsInlineMediaPlayback = YES;
                     webView.mediaPlaybackRequiresUserAction = NO;
                     NSString *html = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
-                    NSLog(@"html %@", html);
                     [webView loadHTMLString:html baseURL:nil];
                 }
             }
@@ -1228,7 +1228,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     } else {
         insets.top = [[UIApplication sharedApplication] isStatusBarHidden] ? 0 : 20.0;
     }
-    
+
     return insets;
 }
 
