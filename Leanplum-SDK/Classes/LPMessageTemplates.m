@@ -956,16 +956,16 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     orientation = UIInterfaceOrientationPortrait;
     CGAffineTransform orientationTransform;
     switch (orientation) {
-            case UIDeviceOrientationPortraitUpsideDown:
+        case UIDeviceOrientationPortraitUpsideDown:
             orientationTransform = CGAffineTransformMakeRotation(M_PI);
             break;
-            case UIDeviceOrientationLandscapeLeft:
+        case UIDeviceOrientationLandscapeLeft:
             orientationTransform = CGAffineTransformMakeRotation(M_PI / 2);
             break;
-            case UIDeviceOrientationLandscapeRight:
+        case UIDeviceOrientationLandscapeRight:
             orientationTransform = CGAffineTransformMakeRotation(-M_PI / 2);
             break;
-            default:
+        default:
             orientationTransform = CGAffineTransformIdentity;
         }
     _popupGroup.transform = orientationTransform;
@@ -981,7 +981,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         screenWidth = screenSize.height;
         screenHeight = screenSize.width;
     }
-    
     _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     if (!fullscreen) {
         _popupView.frame = CGRectMake(0, 0, [[context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue],
