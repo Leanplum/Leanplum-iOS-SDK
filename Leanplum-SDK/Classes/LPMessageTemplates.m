@@ -650,9 +650,22 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         _dismissButton.layer.cornerRadius = LPMT_DISMISS_BUTTON_SIZE / 2;
         [_popupGroup addSubview:_dismissButton];
     }
+//    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
+//    BOOL fullscreen = ([context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME] ||
+//                       [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
+//                       [context.actionName isEqualToString:LPMT_HTML_NAME]);
+//    CGFloat statusBarHeight = ([[UIApplication sharedApplication] isStatusBarHidden] || !fullscreen) ? safeAreaInsets.top
+//    : MIN([UIApplication sharedApplication].statusBarFrame.size.height,
+//          [UIApplication sharedApplication].statusBarFrame.size.width);
+//    BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
+//    UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+//    if (isIPhoneX && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+//        [_dismissButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+//        _dismissButton.frame = CGRectMake(0, 50, _dismissButton.frame.size.width, _dismissButton.frame.size.height);
+//    }
     
-    [_dismissButton addTarget:self action:@selector(dismiss)
-             forControlEvents:UIControlEventTouchUpInside];
+//    [_dismissButton addTarget:self action:@selector(dismiss)
+//             forControlEvents:UIControlEventTouchUpInside];
     
     [self refreshPopupContent];
     [self updatePopupLayout];
@@ -978,20 +991,22 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
     CGFloat leftSafeAreaX = safeAreaInsets.left;
     CGFloat dismissButtonX = screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
-    CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
-    if (!fullscreen) {
-        dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
-        dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
-    } else {
-        BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
-        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if (isIphoneX && UIInterfaceOrientationIsLandscape(interfaceOrientation) {
-            
-        }
-    }
+//    CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
+//    if (!fullscreen) {
+//        dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
+//        dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
+//    }
+//    } else {
+//        BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
+//        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+//        if (isIPhoneX && UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+//            dismissButtonX -= safeAreaInsets.left*3;
+//            dismissButtonY += safeAreaInsets.left;
+//        }
+//    }
     
-    _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
-                                      _dismissButton.frame.size.height);
+//    _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
+//                                      _dismissButton.frame.size.height);
 }
 
 - (void)updateHtmlLayoutWithContext:(LPActionContext *)context
