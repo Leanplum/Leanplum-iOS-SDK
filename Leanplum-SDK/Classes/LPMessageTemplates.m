@@ -1228,7 +1228,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     } else {
         insets.top = [[UIApplication sharedApplication] isStatusBarHidden] ? 0 : 20.0;
     }
-
     return insets;
 }
 
