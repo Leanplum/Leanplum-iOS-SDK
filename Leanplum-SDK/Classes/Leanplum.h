@@ -460,6 +460,10 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
         "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
         "completion handler yourself.")));
 
++ (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
++ (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
++ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+
 /**
  * Call this to handle custom actions for local notifications.
  */

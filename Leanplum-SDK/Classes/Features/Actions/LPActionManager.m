@@ -71,27 +71,9 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
         // didRegisterUserNotificationSettings and the ask to push will have been triggered.
         [self leanplum_disableAskToAsk];
     }
+
+    [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
     
-    // Format push token.
-    NSString *formattedToken = [deviceToken description];
-    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
-                       stringByReplacingOccurrencesOfString:@">" withString:@""]
-                      stringByReplacingOccurrencesOfString:@" " withString:@""];
-
-    // Send push token if we don't have one and when the token changed.
-    // We no longer send in start's response because saved push token will be send in start too.
-    NSString *tokenKey = [Leanplum pushTokenKey];
-    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
-    if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
-        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> request = [reqFactory
-                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [[LPRequestSender sharedInstance] send:request];
-    }
     LP_END_TRY
 
     // Call overridden method.
@@ -111,12 +93,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
-    LP_TRY
-    [self leanplum_disableAskToAsk];
-
-    [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:notificationSettings];
-
-    LP_END_TRY
+    [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
 
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterUserNotificationSettings &&
@@ -128,14 +105,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    LP_TRY
-    [self leanplum_disableAskToAsk];
-    NSString *tokenKey = [Leanplum pushTokenKey];
-    if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    LP_END_TRY
+    [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
 
     // Call overridden method.
     if ([LPActionManager sharedManager]->swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError &&
@@ -612,24 +582,31 @@ static dispatch_once_t leanplum_onceToken;
             // it doesn't work for this particular selector.
         }
     }
+    
+    if ([[LPConstantsState sharedState] enableMethodSwizzling])
+    {
+        // Detect when registered for push notifications.
+        swizzledApplicationDidRegisterRemoteNotifications =
+        [LPSwizzle hookInto:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
+               withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
+                  forObject:[appDelegate class]];
 
-    // Detect when registered for push notifications.
-    swizzledApplicationDidRegisterRemoteNotifications =
-    [LPSwizzle hookInto:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
-           withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
-              forObject:[appDelegate class]];
+        // Detect when registered for user notification types.
+        swizzledApplicationDidRegisterUserNotificationSettings =
+        [LPSwizzle hookInto:@selector(application:didRegisterUserNotificationSettings:)
+               withSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
+                  forObject:[appDelegate class]];
 
-    // Detect when registered for user notification types.
-    swizzledApplicationDidRegisterUserNotificationSettings =
-    [LPSwizzle hookInto:@selector(application:didRegisterUserNotificationSettings:)
-           withSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
-              forObject:[appDelegate class]];
-
-    // Detect when couldn't register for push notifications.
-    swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError =
-    [LPSwizzle hookInto:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)
-           withSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
-              forObject:[appDelegate class]];
+        // Detect when couldn't register for push notifications.
+        swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError =
+        [LPSwizzle hookInto:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)
+               withSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
+                  forObject:[appDelegate class]];
+    }
+    else
+    {
+        LPLog(LPWarning, @"Method swizzling is disabled, make sure to manually set push token and handle errors.");
+    }
     
     // Detect push while app is running.
     SEL applicationDidReceiveRemoteNotificationSelector =
@@ -714,6 +691,54 @@ static dispatch_once_t leanplum_onceToken;
                     completionHandler:nil];
          }
      }];
+}
+
+- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
+{
+    LP_TRY
+    // Format push token.
+    NSString *formattedToken = [token description];
+    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                       stringByReplacingOccurrencesOfString:@">" withString:@""]
+                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    // Send push token if we don't have one and when the token changed.
+    // We no longer send in start's response because saved push token will be send in start too.
+    NSString *tokenKey = [Leanplum pushTokenKey];
+    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
+    if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
+        
+        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        
+        id<LPRequesting> request = [reqFactory
+                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+        [[LPRequestSender sharedInstance] send:request];
+    }
+    LP_END_TRY
+}
+
+- (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    LP_TRY
+    [self leanplum_disableAskToAsk];
+    NSString *tokenKey = [Leanplum pushTokenKey];
+    if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    LP_END_TRY
+}
+
+- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    LP_TRY
+    [self leanplum_disableAskToAsk];
+    [self sendUserNotificationSettingsIfChanged:notificationSettings];
+    LP_END_TRY
 }
 
 #pragma mark - Local Notifications

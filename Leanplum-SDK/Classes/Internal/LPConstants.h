@@ -121,6 +121,7 @@
 @property(assign, nonatomic) BOOL networkActivityIndicatorEnabled;
 @property(assign, nonatomic) BOOL isLocationCollectionEnabled;
 @property(assign, nonatomic) BOOL isInboxImagePrefetchingEnabled;
+@property(assign, nonatomic) BOOL enableMethodSwizzling;
 
 + (LPConstantsState *)sharedState;
 

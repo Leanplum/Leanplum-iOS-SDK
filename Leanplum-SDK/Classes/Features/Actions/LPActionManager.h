@@ -60,10 +60,16 @@ typedef enum {
 
 + (LPActionManager*) sharedManager;
 
+#pragma mark - Push Notifications
+
+- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
+- (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 
+- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
 
@@ -75,6 +81,8 @@ typedef enum {
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+
+#pragma mark - Messages
 
 - (LeanplumMessageMatchResult)shouldShowMessage:(NSString *)messageId
                                      withConfig:(NSDictionary *)messageConfig
@@ -90,6 +98,7 @@ typedef enum {
 - (void)muteFutureMessagesOfKind:(NSString *)messageId;
 
 #pragma mark - Leanplum Tests
+
 + (void)reset;
 
 @end

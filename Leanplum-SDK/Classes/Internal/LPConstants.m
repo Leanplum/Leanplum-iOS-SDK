@@ -60,6 +60,7 @@
         _sdkVersion = LEANPLUM_SDK_VERSION;
         _isLocationCollectionEnabled = YES;
         _isInboxImagePrefetchingEnabled = YES;
+        _enableMethodSwizzling = YES;
     }
     return self;
 }

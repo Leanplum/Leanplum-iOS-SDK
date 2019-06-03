@@ -1644,6 +1644,21 @@ BOOL inForeground = NO;
     [[LPCountAggregator sharedAggregator] incrementCount:@"handle_notification"];
 }
 
++ (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
+{
+    [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
+}
+
++ (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
+}
+
++ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
+}
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
