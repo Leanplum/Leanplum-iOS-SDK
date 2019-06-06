@@ -34,7 +34,7 @@ cd -
 ./build.sh
 ```
 ## Contributing
-Please follow the Conventional Changelog Commit Style and send a pull request to `master` branch.
+Please follow the guidelines under https://github.com/Leanplum/Leanplum-iOS-SDK/blob/master/CONTRIBUTING.md
 ## License
 See LICENSE file.
 ## Support
