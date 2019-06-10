@@ -969,17 +969,18 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
             orientationTransform = CGAffineTransformIdentity;
     }
     _popupGroup.transform = orientationTransform;
+
     CGSize screenSize = window.screen.bounds.size;
     _popupGroup.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
     
     CGFloat screenWidth = screenSize.width;
     CGFloat screenHeight = screenSize.height;
+
     if (orientation == UIDeviceOrientationLandscapeLeft ||
         orientation == UIDeviceOrientationLandscapeRight) {
         screenWidth = screenSize.height;
         screenHeight = screenSize.width;
     }
-    
     _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     if (!fullscreen) {
         _popupView.frame = CGRectMake(0, 0, [[context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue],
@@ -1005,7 +1006,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         dismissButtonX = _popupView.frame.origin.x + _popupView.frame.size.width - 3 * _dismissButton.frame.size.width / 4;
         dismissButtonY = _popupView.frame.origin.y - _dismissButton.frame.size.height / 4;
     }
-    
+
     _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
                                       _dismissButton.frame.size.height);
 }
@@ -1068,13 +1069,20 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         
     } else if (isIPhoneX) {
+        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+            safeAreaInsets.left = 0;
+            safeAreaInsets.right = 0;
+            bottomSafeAreaHeight = 0;
+        }
+
         _popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
                                        screenWidth - safeAreaInsets.left - safeAreaInsets.right,
                                        screenHeight - safeAreaInsets.top - bottomSafeAreaHeight);
         
-        NSLog( @"%@", NSStringFromCGRect(_popupGroup.frame) );
-        NSLog(@"%f, %f", screenWidth, screenHeight);
-        NSLog(@"%@", NSStringFromUIEdgeInsets(safeAreaInsets));
+        NSLog(@"frame dim %@ %@", NSStringFromCGRect(_popupGroup.frame), NSStringFromCGSize(_popupGroup.frame.size));
+        NSLog(@"screen %f, %f", screenWidth, screenHeight);
+        NSLog(@"insets %@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     
     _popupView.frame = _popupGroup.bounds;
@@ -1192,6 +1200,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                 UIWebView *webView = (UIWebView *)_popupView;
                 _webViewNeedsFade = YES;
                 webView.delegate = self;
+                if (@available(iOS 11.0, *)) {
+                    webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
+                }
                 if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
                     [webView loadRequest:[NSURLRequest requestWithURL:
                                         [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]]];
