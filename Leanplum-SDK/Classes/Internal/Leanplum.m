@@ -2804,4 +2804,8 @@ void LPLog(LPLogType type, NSString *format, ...) {
     }
     return nil;
 }
+
+- (void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
 @end
