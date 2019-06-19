@@ -488,11 +488,12 @@ static dispatch_once_t leanplum_onceToken;
                                  action:(NSString *)action
                                  active:(BOOL)active
 {
+    LP_TRY
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
         return;
     }
-
+    LP_END_TRY
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     NSString *actionName;
