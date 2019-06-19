@@ -256,8 +256,7 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
 @property (nonatomic, strong) NSMutableDictionary *messageImpressionOccurrences;
 @property (nonatomic, strong) NSMutableDictionary *messageTriggerOccurrences;
 @property (nonatomic, strong) NSMutableDictionary *sessionOccurrences;
-@property (nonatomic, strong) NSString *notificationHandled;
-@property (nonatomic, strong) NSDate *notificationHandledTime;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSDate *> *handledNotifications;
 @property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
 @property (nonatomic, strong) NSString *displayedTracked;
 @property (nonatomic, strong) NSDate *displayedTrackedTime;
@@ -266,6 +265,8 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
 @end
 
 @implementation LPActionManager
+
+@synthesize handledNotifications = _handledNotifications;
 
 static LPActionManager *leanplum_sharedActionManager = nil;
 static dispatch_once_t leanplum_onceToken;
@@ -425,14 +426,60 @@ static dispatch_once_t leanplum_onceToken;
 
 - (BOOL)isDuplicateNotification:(NSDictionary *)userInfo
 {
-    if ([self.notificationHandled isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
-        [[NSDate date] timeIntervalSinceDate:self.notificationHandledTime] < 10.0) {
-        return YES;
+    BOOL isDuplicate = NO;
+    NSString *messageId;
+    if (userInfo[@"_lpn"]) {
+        messageId = userInfo[@"_lpn"];
+    }
+    if (userInfo[@"_lpm"]) {
+        messageId = userInfo[@"_lpm"];
     }
 
-    self.notificationHandled = [LPJSON stringFromJSON:userInfo];
-    self.notificationHandledTime = [NSDate date];
-    return NO;
+    NSMutableDictionary *handledNotifications = self.handledNotifications;
+
+    [self purgeExpiredHandledNotifications:handledNotifications];
+    if (handledNotifications[messageId]) {
+        NSDate *timeNotificationShown = handledNotifications[messageId];
+        if ([[NSDate date] timeIntervalSinceDate:timeNotificationShown] < 3600) {
+            isDuplicate = YES;
+        }
+    } else {
+        handledNotifications[messageId] = [NSDate date];
+    }
+    self.handledNotifications = handledNotifications;
+    return isDuplicate;
+}
+
+- (NSString *)handledNotificationsKey {
+    return @"lp_action_manager_handled_notifications";
+}
+
+-(NSMutableDictionary *)handledNotifications {
+    if (!_handledNotifications) {
+        NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+        _handledNotifications = [standardDefaults objectForKey:[self handledNotificationsKey]];
+        if (!_handledNotifications) {
+            _handledNotifications = [NSMutableDictionary dictionary];
+        }
+    }
+    return _handledNotifications;
+}
+
+-(void)setHandledNotifications:(NSMutableDictionary<NSString *,NSDate *> *)handledNotifications {
+    _handledNotifications = handledNotifications;
+    NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
+    [standardDefaults setObject:handledNotifications forKey:[self handledNotificationsKey]];
+    [standardDefaults synchronize];
+}
+
+-(void) purgeExpiredHandledNotifications:(NSMutableDictionary *)handledNotifications {
+    NSDate *now = [NSDate date];
+    for (NSString *messageId in handledNotifications) {
+        NSDate *timeNotificationShown = handledNotifications[messageId];
+        if ([now timeIntervalSinceDate:timeNotificationShown] > 3600) {
+            [handledNotifications removeObjectForKey:messageId];
+        }
+    }
 }
 
 // Performs the notification action if
