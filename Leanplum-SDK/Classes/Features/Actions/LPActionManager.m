@@ -457,7 +457,8 @@ static dispatch_once_t leanplum_onceToken;
 -(NSMutableDictionary *)handledNotifications {
     if (!_handledNotifications) {
         NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-        _handledNotifications = [standardDefaults objectForKey:[self handledNotificationsKey]];
+        NSData *data = [standardDefaults objectForKey:[self handledNotificationsKey]];
+        _handledNotifications = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         if (!_handledNotifications) {
             _handledNotifications = [NSMutableDictionary dictionary];
         }
@@ -468,7 +469,8 @@ static dispatch_once_t leanplum_onceToken;
 -(void)setHandledNotifications:(NSMutableDictionary<NSString *,NSDate *> *)handledNotifications {
     _handledNotifications = handledNotifications;
     NSUserDefaults *standardDefaults = [NSUserDefaults standardUserDefaults];
-    [standardDefaults setObject:handledNotifications forKey:[self handledNotificationsKey]];
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:handledNotifications];
+    [standardDefaults setObject:data forKey:[self handledNotificationsKey]];
     [standardDefaults synchronize];
 }
 
