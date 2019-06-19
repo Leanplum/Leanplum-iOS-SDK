@@ -439,10 +439,7 @@ static dispatch_once_t leanplum_onceToken;
 
     [self purgeExpiredHandledNotifications:handledNotifications];
     if (handledNotifications[messageId]) {
-        NSDate *timeNotificationShown = handledNotifications[messageId];
-        if ([[NSDate date] timeIntervalSinceDate:timeNotificationShown] < 3600) {
-            isDuplicate = YES;
-        }
+        isDuplicate = YES;
     } else {
         handledNotifications[messageId] = [NSDate date];
     }
