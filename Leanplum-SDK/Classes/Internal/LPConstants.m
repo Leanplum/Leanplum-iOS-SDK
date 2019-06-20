@@ -238,6 +238,7 @@ NSString *LP_KEYCHAIN_USERNAME = @"defaultUser";
 
 NSString *LP_PATH_DOCUMENTS = @"Leanplum_Resources";
 NSString *LP_PATH_BUNDLE = @"Leanplum_Bundle";
+NSString *LP_SWIZZLING_ENABLED = @"LeanplumSwizzlingEnabled";
 
 NSString *LP_APP_ICON_NAME = @"__iOSAppIcon";
 NSString *LP_APP_ICON_FILE_PREFIX = @"__iOSAppIcon-";

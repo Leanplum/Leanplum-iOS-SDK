@@ -1646,17 +1646,55 @@ BOOL inForeground = NO;
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
 {
+    LP_TRY
     [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
+    LP_END_TRY
 }
 
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
+    LP_TRY
     [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
+    LP_END_TRY
 }
 
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
+    LP_TRY
     [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
+    LP_END_TRY
+}
+
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    LP_TRY
+    [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
+    LP_END_TRY
+}
+
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+{
+    LP_TRY
+    [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
+                                           fetchCompletionHandler:completionHandler];
+    LP_END_TRY
+}
+
+- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
+                 withCompletionHandler:(void (^)(void))completionHandler
+{
+    LP_TRY
+    [[LPActionManager sharedManager] didReceiveNotificationResponse:response
+                                              withCompletionHandler:completionHandler];
+    LP_END_TRY
+}
+
+- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
+{
+    LP_TRY
+    [[LPActionManager sharedManager] didReceiveLocalNotification:localNotification];
+    LP_END_TRY
 }
 
 #pragma clang diagnostic push

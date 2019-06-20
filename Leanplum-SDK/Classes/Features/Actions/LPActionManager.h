@@ -48,14 +48,6 @@ typedef enum {
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
 @interface LPActionManager : NSObject {
-  @package
-    BOOL swizzledApplicationDidRegisterRemoteNotifications;
-    BOOL swizzledApplicationDidRegisterUserNotificationSettings;
-    BOOL swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError;
-    BOOL swizzledApplicationDidReceiveRemoteNotification;
-    BOOL swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler;
-    BOOL swizzledApplicationDidReceiveLocalNotification;
-    BOOL swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler;
 }
 
 + (LPActionManager*) sharedManager;
@@ -64,6 +56,12 @@ typedef enum {
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
+                 withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
+- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
