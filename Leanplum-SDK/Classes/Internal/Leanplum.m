@@ -1665,14 +1665,14 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     LP_TRY
     [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
     LP_END_TRY
 }
 
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
     LP_TRY
@@ -1681,7 +1681,7 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
++ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
                  withCompletionHandler:(void (^)(void))completionHandler
 {
     LP_TRY
@@ -1690,7 +1690,7 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
++ (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
     LP_TRY
     [[LPActionManager sharedManager] didReceiveLocalNotification:localNotification];

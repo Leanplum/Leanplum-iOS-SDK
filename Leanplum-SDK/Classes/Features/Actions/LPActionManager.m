@@ -65,16 +65,8 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    LP_TRY
-    if (![[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        // In pre-ios 8, didRegisterForRemoteNotificationsWithDeviceToken has combined semantics with
-        // didRegisterUserNotificationSettings and the ask to push will have been triggered.
-        [self leanplum_disableAskToAsk];
-    }
-
+    LPLog(LPDebug, @"Called swizzled didRegisterForRemoteNotificationsWithDeviceToken");
     [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
-    
-    LP_END_TRY
 
     // Call overridden method.
     if ([self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
@@ -92,6 +84,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
+    LPLog(LPDebug, @"Called swizzled didRegisterUserNotificationSettings:notificationSettings");
     [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
 
     // Call overridden method.
@@ -103,6 +96,8 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
+    LPLog(LPDebug, @"Called swizzled didFailToRegisterForRemoteNotificationsWithError");
+
     [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
 
     // Call overridden method.
@@ -116,6 +111,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     LP_TRY
+    LPLog(LPDebug, @"Called swizzled didReceiveRemoteNotification");
     [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:nil];
@@ -132,6 +128,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 didReceiveRemoteNotification:(NSDictionary *)userInfo
       fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+    LPLog(LPDebug, @"Called swizzled didReceiveRemoteNotification:fetchCompletionHandler");
+    
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
     LeanplumFetchCompletionBlock leanplumCompletionHandler;
@@ -162,6 +160,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 didReceiveNotificationResponse:(UNNotificationResponse *)response
       withCompletionHandler:(void (^)())completionHandler
 API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
+
+    LPLog(LPDebug, @"Called swizzled didReceiveNotificationResponse:withCompletionHandler");
 
     // Call overridden method.
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
@@ -246,8 +246,16 @@ static dispatch_once_t leanplum_onceToken;
 + (void) load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [LPActionManager listenForPushNotifications];
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleApplicationDidBecomeActive:)
+                                   name:UIApplicationDidFinishLaunchingNotification
+                                 object:nil];
     });
+}
+
++ (void)handleApplicationDidBecomeActive:(NSNotification *)notification {
+    [LPActionManager swizzleAppMethods];
 }
 
 #pragma mark - Push Notifications
@@ -588,9 +596,15 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 // Listens for push notifications.
-+ (void)listenForPushNotifications
++ (void)swizzleAppMethods
 {
-    BOOL swizzlingEnabled = [[[[NSBundle mainBundle] infoDictionary] valueForKey:LP_SWIZZLING_ENABLED] boolValue];
+    BOOL swizzlingEnabled = YES;
+    
+    id plistValue = [[[NSBundle mainBundle] infoDictionary] valueForKey:LP_SWIZZLING_ENABLED];
+    if (plistValue && ![plistValue boolValue]) {
+        LPLog(LPDebug, @"Method swizzling is disabled.");
+        swizzlingEnabled = NO;
+    }
     
     id appDelegate = [[UIApplication sharedApplication] delegate];
     if (appDelegate && [NSStringFromClass([appDelegate class])
@@ -717,6 +731,12 @@ static dispatch_once_t leanplum_onceToken;
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
 {
     LP_TRY
+    if (![[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        // In pre-ios 8, didRegisterForRemoteNotificationsWithDeviceToken has combined semantics with
+        // didRegisterUserNotificationSettings and the ask to push will have been triggered.
+        [self leanplum_disableAskToAsk];
+    }
+
     // Format push token.
     NSString *formattedToken = [token description];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
