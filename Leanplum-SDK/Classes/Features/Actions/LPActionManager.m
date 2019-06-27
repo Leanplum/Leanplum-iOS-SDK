@@ -50,6 +50,14 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     return result;
 }
 
+BOOL swizzledApplicationDidRegisterRemoteNotifications = NO;
+BOOL swizzledApplicationDidRegisterUserNotificationSettings = NO;
+BOOL swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = NO;
+BOOL swizzledApplicationDidReceiveRemoteNotification = NO;
+BOOL swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = NO;
+BOOL swizzledApplicationDidReceiveLocalNotification = NO;
+BOOL swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = NO;
+
 @implementation NSObject (LeanplumExtension)
 
 - (void)leanplum_disableAskToAsk
@@ -69,7 +77,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 
     // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
+    if (swizzledApplicationDidRegisterRemoteNotifications && [self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
         [self performSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
                    withObject:application withObject:deviceToken];
     }
@@ -88,7 +96,8 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
 
     // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)]) {
+    if (swizzledApplicationDidRegisterUserNotificationSettings &&
+        [self respondsToSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)]) {
         [self performSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
                    withObject:application withObject:notificationSettings];
     }
@@ -96,12 +105,12 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    LPLog(LPDebug, @"Called swizzled didFailToRegisterForRemoteNotificationsWithError");
-
+    LPLog(LPDebug, @"Called swizzled didFailToRegisterForRemoteNotificationsWithError: %@", error);
     [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
 
     // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)]) {
+    if (swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError &&
+        [self respondsToSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)]) {
         [self performSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
                    withObject:application withObject:error];
     }
@@ -118,7 +127,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     LP_END_TRY
 
     // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:)]) {
+    if (swizzledApplicationDidReceiveRemoteNotification && [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:)]) {
         [self performSelector:@selector(leanplum_application:didReceiveRemoteNotification:)
                    withObject:application withObject:userInfo];
     }
@@ -135,7 +144,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     LeanplumFetchCompletionBlock leanplumCompletionHandler;
 
     // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
+    if (swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler && [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
         leanplumCompletionHandler = nil;
         [self leanplum_application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
     } else {
@@ -628,16 +637,19 @@ static dispatch_once_t leanplum_onceToken;
     if (swizzlingEnabled)
     {
         // Detect when registered for push notifications.
+        swizzledApplicationDidRegisterRemoteNotifications =
         [LPSwizzle hookInto:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
                withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
                   forObject:[appDelegate class]];
-
+        
         // Detect when registered for user notification types.
+        swizzledApplicationDidRegisterUserNotificationSettings =
         [LPSwizzle hookInto:@selector(application:didRegisterUserNotificationSettings:)
                withSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
                   forObject:[appDelegate class]];
-
+        
         // Detect when couldn't register for push notifications.
+        swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError =
         [LPSwizzle hookInto:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)
                withSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
                   forObject:[appDelegate class]];
@@ -649,6 +661,7 @@ static dispatch_once_t leanplum_onceToken;
                                                                                        applicationDidReceiveRemoteNotificationSelector);
         
         void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
+            swizzledApplicationDidReceiveRemoteNotification =
             [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
                    withSelector:@selector(leanplum_application:
                                           didReceiveRemoteNotification:)
@@ -661,6 +674,7 @@ static dispatch_once_t leanplum_onceToken;
                                                                                                         [appDelegate class],
                                                                                                         applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
         void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
+            swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
             [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
                    withSelector:@selector(leanplum_application:
                                           didReceiveRemoteNotification:
@@ -674,8 +688,8 @@ static dispatch_once_t leanplum_onceToken;
         class_getInstanceMethod([appDelegate class],
                                 userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
         void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
-            [LPSwizzle hookInto:
-             userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
+            swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
+            [LPSwizzle hookInto:userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
                    withSelector:@selector(leanplum_userNotificationCenter:
                                           didReceiveNotificationResponse:
                                           withCompletionHandler:)
@@ -704,6 +718,7 @@ static dispatch_once_t leanplum_onceToken;
         }
         
         // Detect local notifications while app is running.
+        swizzledApplicationDidReceiveLocalNotification =
         [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
                withSelector:@selector(leanplum_application:didReceiveLocalNotification:)
                   forObject:[appDelegate class]];

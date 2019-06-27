@@ -48,14 +48,7 @@ typedef enum {
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
 @interface LPActionManager : NSObject {
-    @package
-    BOOL swizzledApplicationDidRegisterRemoteNotifications;
-    BOOL swizzledApplicationDidRegisterUserNotificationSettings;
-    BOOL swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError;
-    BOOL swizzledApplicationDidReceiveRemoteNotification;
-    BOOL swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler;
-    BOOL swizzledApplicationDidReceiveLocalNotification;
-    BOOL swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler;
+    
 }
 
 + (LPActionManager*) sharedManager;
