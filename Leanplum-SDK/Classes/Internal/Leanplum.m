@@ -1647,7 +1647,7 @@ BOOL inForeground = NO;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
     }
@@ -1661,7 +1661,7 @@ BOOL inForeground = NO;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
     }
@@ -1675,7 +1675,7 @@ BOOL inForeground = NO;
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
     }
@@ -1689,7 +1689,7 @@ BOOL inForeground = NO;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
     }
@@ -1704,7 +1704,7 @@ BOOL inForeground = NO;
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
                                                fetchCompletionHandler:completionHandler];
@@ -1720,7 +1720,7 @@ BOOL inForeground = NO;
                  withCompletionHandler:(void (^)(void))completionHandler
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didReceiveNotificationResponse:response
                                                   withCompletionHandler:completionHandler];
@@ -1735,7 +1735,7 @@ BOOL inForeground = NO;
 + (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
     LP_TRY
-    if ([LPUtils isSwizzlingEnabled])
+    if (![LPUtils isSwizzlingEnabled])
     {
         [[LPActionManager sharedManager] didReceiveLocalNotification:localNotification];
     }

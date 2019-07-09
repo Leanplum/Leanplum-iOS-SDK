@@ -117,6 +117,7 @@
     if (plistValue && ![plistValue boolValue]) {
         swizzlingEnabled = NO;
     }
+
     return swizzlingEnabled;
 }
 
