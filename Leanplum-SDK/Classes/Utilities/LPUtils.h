@@ -62,4 +62,9 @@
  */
 + (NSDictionary *)createHeaders;
 
+/**
+ * Whether swizzling flag is setup in plist file
+ */
++ (BOOL)isSwizzlingEnabled;
+
 @end

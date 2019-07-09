@@ -607,12 +607,10 @@ static dispatch_once_t leanplum_onceToken;
 // Listens for push notifications.
 + (void)swizzleAppMethods
 {
-    BOOL swizzlingEnabled = YES;
-    
-    id plistValue = [[[NSBundle mainBundle] infoDictionary] valueForKey:LP_SWIZZLING_ENABLED];
-    if (plistValue && ![plistValue boolValue]) {
+    BOOL swizzlingEnabled = [LPUtils isSwizzlingEnabled];
+    if (!swizzlingEnabled)
+    {
         LPLog(LPDebug, @"Method swizzling is disabled.");
-        swizzlingEnabled = NO;
     }
     
     id appDelegate = [[UIApplication sharedApplication] delegate];
