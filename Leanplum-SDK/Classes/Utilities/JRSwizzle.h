@@ -45,8 +45,8 @@
 // Returns if the method already exists.
 + (BOOL)hookInto:(SEL)originalSelector withSelector:(SEL)newSelector forObject:(id)object;
 
-+ (BOOL)swizzleInstanceMethod:(SEL)originalMethod forClass:(Class)class withReplacementMethod:(IMP)replacement;
-+ (Class)originalImplementingClassForInstanceMethod:(SEL)selector forClass:(Class)class;
-+ (IMP)originalImplementationForInstanceMethod:(SEL)selector forClass:(Class)class;
++ (BOOL)swizzleInstanceMethod:(SEL)originalMethod forClass:(Class)clazz withReplacementMethod:(IMP)replacement;
++ (Class)originalImplementingClassForInstanceMethod:(SEL)selector forClass:(Class)clazz;
++ (IMP)originalImplementationForInstanceMethod:(SEL)selector forClass:(Class)clazz;
 
 @end
