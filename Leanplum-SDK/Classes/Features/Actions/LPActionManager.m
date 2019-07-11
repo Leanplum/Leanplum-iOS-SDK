@@ -50,6 +50,14 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     return result;
 }
 
+BOOL swizzledApplicationDidRegisterRemoteNotifications = NO;
+BOOL swizzledApplicationDidRegisterUserNotificationSettings = NO;
+BOOL swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = NO;
+BOOL swizzledApplicationDidReceiveRemoteNotification = NO;
+BOOL swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = NO;
+BOOL swizzledApplicationDidReceiveLocalNotification = NO;
+BOOL swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = NO;
+
 @implementation NSObject (LeanplumExtension)
 
 - (void)leanplum_disableAskToAsk
@@ -65,38 +73,11 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
-    LP_TRY
-    if (![[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
-        // In pre-ios 8, didRegisterForRemoteNotificationsWithDeviceToken has combined semantics with
-        // didRegisterUserNotificationSettings and the ask to push will have been triggered.
-        [self leanplum_disableAskToAsk];
-    }
-    
-    // Format push token.
-    NSString *formattedToken = [deviceToken description];
-    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
-                       stringByReplacingOccurrencesOfString:@">" withString:@""]
-                      stringByReplacingOccurrencesOfString:@" " withString:@""];
-
-    // Send push token if we don't have one and when the token changed.
-    // We no longer send in start's response because saved push token will be send in start too.
-    NSString *tokenKey = [Leanplum pushTokenKey];
-    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
-    if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
-        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> request = [reqFactory
-                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
-        [[LPRequestSender sharedInstance] send:request];
-    }
-    LP_END_TRY
+    LPLog(LPDebug, @"Called swizzled didRegisterForRemoteNotificationsWithDeviceToken");
+    [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:deviceToken];
 
     // Call overridden method.
-    if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterRemoteNotifications &&
-        [self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
+    if (swizzledApplicationDidRegisterRemoteNotifications && [self respondsToSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]) {
         [self performSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
                    withObject:application withObject:deviceToken];
     }
@@ -111,15 +92,11 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
-    LP_TRY
-    [self leanplum_disableAskToAsk];
-
-    [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:notificationSettings];
-
-    LP_END_TRY
+    LPLog(LPDebug, @"Called swizzled didRegisterUserNotificationSettings:notificationSettings");
+    [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
 
     // Call overridden method.
-    if ([LPActionManager sharedManager]->swizzledApplicationDidRegisterUserNotificationSettings &&
+    if (swizzledApplicationDidRegisterUserNotificationSettings &&
         [self respondsToSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)]) {
         [self performSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
                    withObject:application withObject:notificationSettings];
@@ -128,17 +105,11 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 - (void)leanplum_application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
 {
-    LP_TRY
-    [self leanplum_disableAskToAsk];
-    NSString *tokenKey = [Leanplum pushTokenKey];
-    if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
-    LP_END_TRY
+    LPLog(LPDebug, @"Called swizzled didFailToRegisterForRemoteNotificationsWithError: %@", error);
+    [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
 
     // Call overridden method.
-    if ([LPActionManager sharedManager]->swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError &&
+    if (swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError &&
         [self respondsToSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)]) {
         [self performSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
                    withObject:application withObject:error];
@@ -149,14 +120,14 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
     LP_TRY
+    LPLog(LPDebug, @"Called swizzled didReceiveRemoteNotification");
     [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:nil];
     LP_END_TRY
 
     // Call overridden method.
-    if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveRemoteNotification &&
-        [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:)]) {
+    if (swizzledApplicationDidReceiveRemoteNotification && [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:)]) {
         [self performSelector:@selector(leanplum_application:didReceiveRemoteNotification:)
                    withObject:application withObject:userInfo];
     }
@@ -166,13 +137,14 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 didReceiveRemoteNotification:(NSDictionary *)userInfo
       fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+    LPLog(LPDebug, @"Called swizzled didReceiveRemoteNotification:fetchCompletionHandler");
+    
     LPInternalState *state = [LPInternalState sharedState];
     state.calledHandleNotification = NO;
     LeanplumFetchCompletionBlock leanplumCompletionHandler;
 
     // Call overridden method.
-    if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler &&
-        [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
+    if (swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler && [self respondsToSelector:@selector(leanplum_application:didReceiveRemoteNotification:fetchCompletionHandler:)]) {
         leanplumCompletionHandler = nil;
         [self leanplum_application:application didReceiveRemoteNotification:userInfo fetchCompletionHandler:completionHandler];
     } else {
@@ -197,36 +169,20 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 didReceiveNotificationResponse:(UNNotificationResponse *)response
       withCompletionHandler:(void (^)())completionHandler
 API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
-    NSDictionary *userInfo = response.notification.request.content.userInfo;
-    LPInternalState *state = [LPInternalState sharedState];
-    state.calledHandleNotification = NO;
-    LeanplumFetchCompletionBlock leanplumCompletionHandler =
-        ^(LeanplumUIBackgroundFetchResult result) {
-            completionHandler();
-        };
+
+    LPLog(LPDebug, @"Called swizzled didReceiveNotificationResponse:withCompletionHandler");
 
     // Call overridden method.
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
                              withCompletionHandler:);
-    LPActionManager *manager = [LPActionManager sharedManager];
-    if (manager->swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler
-            && [self respondsToSelector:selector]) {
-        leanplumCompletionHandler = nil;
+
+    if ([self respondsToSelector:selector]) {
         [self leanplum_userNotificationCenter:center
                 didReceiveNotificationResponse:response
                        withCompletionHandler:completionHandler];
     }
-
-    // Prevents handling the notification twice if the original method calls handleNotification
-    // explicitly.
-    if (!state.calledHandleNotification) {
-        LP_TRY
-        [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
-                                                           withAction:nil
-                                               fetchCompletionHandler:leanplumCompletionHandler];
-        LP_END_TRY
-    }
-    state.calledHandleNotification = NO;
+    
+    [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
 #pragma clang diagnostic pop
 
@@ -242,8 +198,7 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
     LP_END_TRY
 
     // Call overridden method.
-    if ([LPActionManager sharedManager]->swizzledApplicationDidReceiveLocalNotification &&
-        [self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
+    if ([self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
         [self performSelector:@selector(leanplum_application:didReceiveLocalNotification:)
                    withObject:application withObject:localNotification];
     }
@@ -288,7 +243,6 @@ static dispatch_once_t leanplum_onceToken;
 - (id)init
 {
     if (self = [super init]) {
-        [self listenForPushNotifications];
         [self listenForLocalNotifications];
         _sessionOccurrences = [NSMutableDictionary dictionary];
         _messageImpressionOccurrences = [NSMutableDictionary dictionary];
@@ -296,6 +250,21 @@ static dispatch_once_t leanplum_onceToken;
         _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
+}
+
++ (void) load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleApplicationDidBecomeActive:)
+                                   name:UIApplicationDidFinishLaunchingNotification
+                                 object:nil];
+    });
+}
+
++ (void)handleApplicationDidBecomeActive:(NSNotification *)notification {
+    [LPActionManager swizzleAppMethods];
 }
 
 #pragma mark - Push Notifications
@@ -560,6 +529,16 @@ static dispatch_once_t leanplum_onceToken;
 }
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [self didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+}
+
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+{
+    [self didReceiveRemoteNotification:userInfo withAction:nil fetchCompletionHandler:completionHandler];
+}
+
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
@@ -591,9 +570,49 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
-// Listens for push notifications.
-- (void)listenForPushNotifications
+- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
 {
+    NSDictionary *userInfo = response.notification.request.content.userInfo;
+    LPInternalState *state = [LPInternalState sharedState];
+    state.calledHandleNotification = NO;
+    
+    LeanplumFetchCompletionBlock leanplumCompletionHandler =
+    ^(LeanplumUIBackgroundFetchResult result) {
+        completionHandler();
+    };
+    
+    // Prevents handling the notification twice if the original method calls handleNotification
+    // explicitly.
+    if (!state.calledHandleNotification) {
+        LP_TRY
+        [self didReceiveRemoteNotification:userInfo
+                                withAction:nil
+                    fetchCompletionHandler:leanplumCompletionHandler];
+        LP_END_TRY
+    }
+    state.calledHandleNotification = NO;
+}
+
+- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
+{
+    NSDictionary *userInfo = [localNotification userInfo];
+    
+    LP_TRY
+    [self didReceiveRemoteNotification:userInfo
+                            withAction:nil
+                fetchCompletionHandler:nil];
+    LP_END_TRY
+}
+
+// Listens for push notifications.
++ (void)swizzleAppMethods
+{
+    BOOL swizzlingEnabled = [LPUtils isSwizzlingEnabled];
+    if (!swizzlingEnabled)
+    {
+        LPLog(LPDebug, @"Method swizzling is disabled.");
+    }
+    
     id appDelegate = [[UIApplication sharedApplication] delegate];
     if (appDelegate && [NSStringFromClass([appDelegate class])
                         rangeOfString:@"AppDelegateProxy"].location != NSNotFound) {
@@ -612,94 +631,100 @@ static dispatch_once_t leanplum_onceToken;
             // it doesn't work for this particular selector.
         }
     }
-
-    // Detect when registered for push notifications.
-    swizzledApplicationDidRegisterRemoteNotifications =
-    [LPSwizzle hookInto:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
-           withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
-              forObject:[appDelegate class]];
-
-    // Detect when registered for user notification types.
-    swizzledApplicationDidRegisterUserNotificationSettings =
-    [LPSwizzle hookInto:@selector(application:didRegisterUserNotificationSettings:)
-           withSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
-              forObject:[appDelegate class]];
-
-    // Detect when couldn't register for push notifications.
-    swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError =
-    [LPSwizzle hookInto:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)
-           withSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
-              forObject:[appDelegate class]];
     
-    // Detect push while app is running.
-    SEL applicationDidReceiveRemoteNotificationSelector =
-        @selector(application:didReceiveRemoteNotification:);
-    Method applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(
-        [appDelegate class],
-        applicationDidReceiveRemoteNotificationSelector);
-    void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
-        self->swizzledApplicationDidReceiveRemoteNotification =
-        [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
-               withSelector:@selector(leanplum_application:
-                                      didReceiveRemoteNotification:)
+    if (swizzlingEnabled)
+    {
+        // Detect when registered for push notifications.
+        swizzledApplicationDidRegisterRemoteNotifications =
+        [LPSwizzle hookInto:@selector(application:didRegisterForRemoteNotificationsWithDeviceToken:)
+               withSelector:@selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)
                   forObject:[appDelegate class]];
-    };
-
-    SEL applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector =
+        
+        // Detect when registered for user notification types.
+        swizzledApplicationDidRegisterUserNotificationSettings =
+        [LPSwizzle hookInto:@selector(application:didRegisterUserNotificationSettings:)
+               withSelector:@selector(leanplum_application:didRegisterUserNotificationSettings:)
+                  forObject:[appDelegate class]];
+        
+        // Detect when couldn't register for push notifications.
+        swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError =
+        [LPSwizzle hookInto:@selector(application:didFailToRegisterForRemoteNotificationsWithError:)
+               withSelector:@selector(leanplum_application:didFailToRegisterForRemoteNotificationsWithError:)
+                  forObject:[appDelegate class]];
+        
+        // Detect push while app is running.
+        SEL applicationDidReceiveRemoteNotificationSelector = @selector(application:didReceiveRemoteNotification:);
+        Method applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(
+                                                                                       [appDelegate class],
+                                                                                       applicationDidReceiveRemoteNotificationSelector);
+        
+        void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
+            swizzledApplicationDidReceiveRemoteNotification =
+            [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
+                   withSelector:@selector(leanplum_application:
+                                          didReceiveRemoteNotification:)
+                      forObject:[appDelegate class]];
+        };
+        
+        SEL applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector =
         @selector(application:didReceiveRemoteNotification:fetchCompletionHandler:);
-    Method applicationDidReceiveRemoteNotificationCompletionHandlerMethod = class_getInstanceMethod(
-        [appDelegate class],
-        applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
-    void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
-        self->swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
-        [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
-               withSelector:@selector(leanplum_application:
-                                      didReceiveRemoteNotification:
-                                      fetchCompletionHandler:)
-                  forObject:[appDelegate class]];
-    };
-
-    SEL userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector =
-    @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:);
-    Method userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod =
-    class_getInstanceMethod([appDelegate class],
-            userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
-    void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
-        self->swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
-        [LPSwizzle hookInto:
-         userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
-               withSelector:@selector(leanplum_userNotificationCenter:
-                                      didReceiveNotificationResponse:
-                                      withCompletionHandler:)
-                  forObject:[appDelegate class]];
-    };
-
-    if (!applicationDidReceiveRemoteNotificationMethod
-        && !applicationDidReceiveRemoteNotificationCompletionHandlerMethod) {
-        swizzleApplicationDidReceiveRemoteNotification();
-        swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler();
-        if (NSClassFromString(@"UNUserNotificationCenter")) {
-            swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler();
-        }
-    } else {
-        if (applicationDidReceiveRemoteNotificationMethod) {
+        Method applicationDidReceiveRemoteNotificationCompletionHandlerMethod = class_getInstanceMethod(
+                                                                                                        [appDelegate class],
+                                                                                                        applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
+        void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
+            swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
+            [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
+                   withSelector:@selector(leanplum_application:
+                                          didReceiveRemoteNotification:
+                                          fetchCompletionHandler:)
+                      forObject:[appDelegate class]];
+        };
+        
+        SEL userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector =
+        @selector(userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler:);
+        Method userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod =
+        class_getInstanceMethod([appDelegate class],
+                                userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
+        void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
+            swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
+            [LPSwizzle hookInto:userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
+                   withSelector:@selector(leanplum_userNotificationCenter:
+                                          didReceiveNotificationResponse:
+                                          withCompletionHandler:)
+                      forObject:[appDelegate class]];
+        };
+        
+        if (!applicationDidReceiveRemoteNotificationMethod
+            && !applicationDidReceiveRemoteNotificationCompletionHandlerMethod) {
             swizzleApplicationDidReceiveRemoteNotification();
-        }
-        if (applicationDidReceiveRemoteNotificationCompletionHandlerMethod) {
             swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler();
-        }
-        if (NSClassFromString(@"UNUserNotificationCenter")) {
-            if (userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod) {
+            if (NSClassFromString(@"UNUserNotificationCenter")) {
                 swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler();
             }
+        } else {
+            if (applicationDidReceiveRemoteNotificationMethod) {
+                swizzleApplicationDidReceiveRemoteNotification();
+            }
+            if (applicationDidReceiveRemoteNotificationCompletionHandlerMethod) {
+                swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler();
+            }
+            if (NSClassFromString(@"UNUserNotificationCenter")) {
+                if (userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod) {
+                    swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler();
+                }
+            }
         }
+        
+        // Detect local notifications while app is running.
+        swizzledApplicationDidReceiveLocalNotification =
+        [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
+               withSelector:@selector(leanplum_application:didReceiveLocalNotification:)
+                  forObject:[appDelegate class]];
     }
-
-    // Detect local notifications while app is running.
-    swizzledApplicationDidReceiveLocalNotification =
-    [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
-           withSelector:@selector(leanplum_application:didReceiveLocalNotification:)
-              forObject:[appDelegate class]];
+    else
+    {
+        LPLog(LPWarning, @"Method swizzling is disabled, make sure to manually call Leanplum methods.");
+    }
     
     // Detect receiving notifications.
     [[NSNotificationCenter defaultCenter]
@@ -707,13 +732,67 @@ static dispatch_once_t leanplum_onceToken;
      usingBlock:^(NSNotification *notification) {
          if (notification.userInfo) {
              NSDictionary *userInfo = notification.userInfo
-                                       [UIApplicationLaunchOptionsRemoteNotificationKey];
-             [self handleNotification:userInfo
-                           withAction:nil
-                            appActive:NO
-                    completionHandler:nil];
+             [UIApplicationLaunchOptionsRemoteNotificationKey];
+             [[LPActionManager sharedManager] handleNotification:userInfo
+                                                      withAction:nil
+                                                       appActive:NO
+                                               completionHandler:nil];
          }
      }];
+}
+
+- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
+{
+    LP_TRY
+    if (![[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        // In pre-ios 8, didRegisterForRemoteNotificationsWithDeviceToken has combined semantics with
+        // didRegisterUserNotificationSettings and the ask to push will have been triggered.
+        [self leanplum_disableAskToAsk];
+    }
+
+    // Format push token.
+    NSString *formattedToken = [token description];
+    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                       stringByReplacingOccurrencesOfString:@">" withString:@""]
+                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+    // Send push token if we don't have one and when the token changed.
+    // We no longer send in start's response because saved push token will be send in start too.
+    NSString *tokenKey = [Leanplum pushTokenKey];
+    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
+    if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
+        
+        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        
+        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+        
+        id<LPRequesting> request = [reqFactory
+                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+        [[LPRequestSender sharedInstance] send:request];
+    }
+    LP_END_TRY
+}
+
+- (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    LP_TRY
+    [self leanplum_disableAskToAsk];
+    NSString *tokenKey = [Leanplum pushTokenKey];
+    if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
+    LP_END_TRY
+}
+
+- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
+{
+    LP_TRY
+    [self leanplum_disableAskToAsk];
+    [self sendUserNotificationSettingsIfChanged:notificationSettings];
+    LP_END_TRY
 }
 
 #pragma mark - Local Notifications

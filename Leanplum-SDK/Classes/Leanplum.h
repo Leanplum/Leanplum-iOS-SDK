@@ -23,6 +23,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <UserNotifications/UserNotifications.h>
 #import "LPInbox.h"
 #import "LPActionArg.h"
 #import "LPActionContext.h"
@@ -459,6 +460,15 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
         "implement application:didReceiveRemoteNotification:fetchCompletionHandler: in your app "
         "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
         "completion handler yourself.")));
+
++ (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
++ (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
++ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
++ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
++ (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
 
 /**
  * Call this to handle custom actions for local notifications.
