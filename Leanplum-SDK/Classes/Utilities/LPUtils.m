@@ -28,6 +28,7 @@
 #import "LPAPIConfig.h"
 #import "LPConstants.h"
 
+
 @implementation LPUtils
 
 + (BOOL)isNullOrEmpty:(id)obj
@@ -106,6 +107,18 @@
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
     
     return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
+}
+
++(BOOL)isSwizzlingEnabled
+{
+    BOOL swizzlingEnabled = YES;
+    
+    id plistValue = [[[NSBundle mainBundle] infoDictionary] valueForKey:LP_SWIZZLING_ENABLED];
+    if (plistValue && ![plistValue boolValue]) {
+        swizzlingEnabled = NO;
+    }
+
+    return swizzlingEnabled;
 }
 
 @end
