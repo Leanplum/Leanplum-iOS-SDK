@@ -178,11 +178,11 @@ static NSMutableDictionary *_methodTable;
     return currentClass;
 }
 
-+ (BOOL)swizzleInstanceMethod:(SEL)originalSelector forClass:(Class)class withReplacementMethod:(IMP)replacement;
++ (BOOL)swizzleInstanceMethod:(SEL)originalSelector forClass:(Class)clazz withReplacementMethod:(IMP)replacement;
 {
-    class = [self implementingSuperclassForSelector:originalSelector onClass:class];
+    clazz = [self implementingSuperclassForSelector:originalSelector onClass:clazz];
 
-    Method method = class_getInstanceMethod(class, originalSelector);
+    Method method = class_getInstanceMethod(clazz, originalSelector);
 
     if (method_getImplementation(method) == replacement) {
         return NO;
@@ -194,9 +194,9 @@ static NSMutableDictionary *_methodTable;
     if (!_methodTable) {
         _methodTable = [NSMutableDictionary dictionary];
     }
-    NSString *className = NSStringFromClass(class);
+    NSString *className = NSStringFromClass(clazz);
     if (!_methodTable[className]) {
-        _methodTable[NSStringFromClass(class)] = [NSMutableDictionary dictionary];
+        _methodTable[NSStringFromClass(clazz)] = [NSMutableDictionary dictionary];
     }
     NSString *originalMethodName = NSStringFromSelector(originalSelector);
     _methodTable[className][originalMethodName] = impValue;
@@ -206,11 +206,11 @@ static NSMutableDictionary *_methodTable;
     return YES;
 }
 
-+ (Class)originalImplementingClassForInstanceMethod:(SEL)selector forClass:(Class)class
++ (Class)originalImplementingClassForInstanceMethod:(SEL)selector forClass:(Class)clazz
 {
     NSString *selectorName = NSStringFromSelector(selector);
     IMP value = NULL;
-    Class currentClass = class;
+    Class currentClass = clazz;
     while (currentClass) {
         value = (IMP) [_methodTable[NSStringFromClass(currentClass)][selectorName] pointerValue];
         if (value) {
@@ -221,17 +221,17 @@ static NSMutableDictionary *_methodTable;
     return nil;
 }
 
-+ (IMP)originalImplementationForInstanceMethod:(SEL)selector forClass:(Class)class
++ (IMP)originalImplementationForInstanceMethod:(SEL)selector forClass:(Class)clazz
 {
     NSString *selectorName = NSStringFromSelector(selector);
     IMP value = NULL;
-    Class currentClass = class;
+    Class currentClass = clazz;
     while (!value && currentClass) {
         value = (IMP) [_methodTable[NSStringFromClass(currentClass)][selectorName] pointerValue];
         currentClass = [currentClass superclass];
     }
 
-    LPLog(LPDebug, @"Implementation for %@ %@: %llu", class, NSStringFromSelector(selector),
+    LPLog(LPDebug, @"Implementation for %@ %@: %llu", clazz, NSStringFromSelector(selector),
           (unsigned long long) value);
     
     if (!value) {
