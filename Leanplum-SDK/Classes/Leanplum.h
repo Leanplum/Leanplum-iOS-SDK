@@ -42,7 +42,7 @@
 #import "LeanplumCompatibility.h"
 #import "LPUIAlert.h"
 //#import "LPRequest.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 //#import "LeanplumInternal.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
