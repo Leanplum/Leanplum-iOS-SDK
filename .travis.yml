@@ -11,6 +11,9 @@ before_install:
 - gem install cocoapods # Since Travis is not always on latest version
 - pod install --project-directory=Example
 
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
 before_deploy:
 - ./Tools/verifyTag.sh
 - ./Tools/build.sh
