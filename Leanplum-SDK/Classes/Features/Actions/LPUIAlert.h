@@ -38,6 +38,8 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 
 @end
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #if LP_NOT_TV
 @interface LPUIAlertView : UIAlertView <UIAlertViewDelegate> {
   @public
@@ -45,3 +47,4 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 }
 @end
 #endif
+#pragma clang diagnostic pop
