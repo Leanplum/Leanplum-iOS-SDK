@@ -62,11 +62,10 @@ typedef enum {
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 - (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
                  withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
-- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
+- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
 
 - (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
