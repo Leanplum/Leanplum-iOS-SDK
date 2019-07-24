@@ -24,7 +24,7 @@
 
 
 #import "LeanplumRequest+Categories.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 
 @implementation LeanplumRequest(MethodSwizzling)
 
