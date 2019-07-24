@@ -1145,11 +1145,19 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                          _popupView.frame.size.width / 2,
                                          textSize.height + 2*LPMT_TWO_BUTTON_PADDING);
     } else {
+        CGFloat acceptButtonY;
+        LPActionContext *context = _contexts.lastObject;
+        if ([context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME]) {
+            acceptButtonY = _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN - [self safeAreaInsets].bottom;
+        } else {
+            acceptButtonY = _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN;
+        }
         _acceptButton.frame = CGRectMake(
                                          (_popupView.frame.size.width - textSize.width - 2*LPMT_ACCEPT_BUTTON_MARGIN) / 2,
-                                         _popupView.frame.size.height - textSize.height - 3*LPMT_ACCEPT_BUTTON_MARGIN - [self safeAreaInsets].bottom,
+                                         acceptButtonY,
                                          textSize.width + 2*LPMT_ACCEPT_BUTTON_MARGIN,
                                          textSize.height + 2*LPMT_ACCEPT_BUTTON_MARGIN);
+
     }
     _titleLabel.frame = CGRectMake(LPMT_ACCEPT_BUTTON_MARGIN, LPMT_ACCEPT_BUTTON_MARGIN + statusBarHeight,
                                    _popupView.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN * 2, LPMT_TITLE_LABEL_HEIGHT);
