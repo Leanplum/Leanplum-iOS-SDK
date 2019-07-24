@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPConstants.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "Leanplum.h"

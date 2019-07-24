@@ -24,7 +24,7 @@
 
 
 #import "LPNetworkOperation+Category.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 #import "LPNetworkOperation.h"
 
 @implementation LPNetworkOperation (MethodSwizzling)

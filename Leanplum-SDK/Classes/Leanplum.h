@@ -42,7 +42,7 @@
 #import "LeanplumCompatibility.h"
 #import "LPUIAlert.h"
 //#import "LPRequest.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 //#import "LeanplumInternal.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
@@ -463,12 +463,20 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+#pragma clang diagnostic pop
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
+#pragma clang diagnostic pop
 
 /**
  * Call this to handle custom actions for local notifications.

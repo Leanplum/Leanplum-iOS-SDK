@@ -23,7 +23,7 @@
 //  under the License.
 
 #import "LPRevenueManager.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 #import "LeanplumInternal.h"
 #import "LPConstants.h"
 #import "LPUtils.h"

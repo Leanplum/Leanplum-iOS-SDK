@@ -3,7 +3,7 @@
 //   Some rights reserved: http://opensource.org/licenses/MIT
 //   https://github.com/rentzsch/jrswizzle
 
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 #import "LPConstants.h"
 #import "LeanplumInternal.h"
 

@@ -24,7 +24,7 @@
 
 
 #import "LeanplumReachability+Category.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 
 @implementation Leanplum_Reachability(UnitTest)
 
