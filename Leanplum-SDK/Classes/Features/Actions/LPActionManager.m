@@ -176,10 +176,11 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
                              withCompletionHandler:);
 
-    if ([self respondsToSelector:selector]) {
+    if (swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler &&
+        [self respondsToSelector:selector]) {
         [self leanplum_userNotificationCenter:center
-                didReceiveNotificationResponse:response
-                       withCompletionHandler:completionHandler];
+               didReceiveNotificationResponse:response
+                        withCompletionHandler:completionHandler];
     }
     
     [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
