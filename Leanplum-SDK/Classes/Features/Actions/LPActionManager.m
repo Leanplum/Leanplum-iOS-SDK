@@ -176,10 +176,11 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
                              withCompletionHandler:);
 
-    if ([self respondsToSelector:selector]) {
+    if (swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler &&
+        [self respondsToSelector:selector]) {
         [self leanplum_userNotificationCenter:center
-                didReceiveNotificationResponse:response
-                       withCompletionHandler:completionHandler];
+               didReceiveNotificationResponse:response
+                        withCompletionHandler:completionHandler];
     }
     
     [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
@@ -197,8 +198,8 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
                                            fetchCompletionHandler:nil];
     LP_END_TRY
 
-    // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
+    if (swizzledApplicationDidReceiveLocalNotification &&
+        [self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
         [self performSelector:@selector(leanplum_application:didReceiveLocalNotification:)
                    withObject:application withObject:localNotification];
     }
