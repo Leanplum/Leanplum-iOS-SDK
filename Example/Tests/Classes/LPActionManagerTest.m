@@ -312,10 +312,10 @@
 
 -(void)testHexadecimalStringFromData {
     LPActionManager *manager = [[LPActionManager alloc] init];
-    NSString *testString = @"testString";
+    NSString *testString = @"74657374537472696e67";
     NSData *data = [self hexDataFromString:testString];
     NSString *parsedString = [manager hexadecimalStringFromData:data];
-    XCTAssertEqual(testString, parsedString);
+    XCTAssertEqualObjects(testString, parsedString);
 }
 
 #pragma mark Helpers
