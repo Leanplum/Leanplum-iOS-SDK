@@ -1430,7 +1430,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
     decisionHandler(WKNavigationActionPolicyAllow);
 }
-s
+
 /**
  * Copied from LPJSON. TODO: Remove when we open source.
  */
