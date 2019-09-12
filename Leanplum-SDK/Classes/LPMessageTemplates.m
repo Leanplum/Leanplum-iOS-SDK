@@ -617,7 +617,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     BOOL isPushAskToAsk = [context.actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK];
     
     if (isWeb) {
-        _popupView = [[UIWebView alloc] init];
+        WKWebViewConfiguration* configuration = [WKWebViewConfiguration new];
+        configuration.allowsInlineMediaPlayback = YES;
+        configuration.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
+
+        _popupView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
     } else {
         _popupView = [[UIView alloc] init];
     }
@@ -627,8 +631,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
         _popupView.backgroundColor = [UIColor clearColor];
         [_popupView setOpaque:NO];
-        ((UIWebView *)_popupView).scrollView.scrollEnabled = NO;
-        ((UIWebView *)_popupView).scrollView.bounces = NO;
+        ((WKWebView *)_popupView).scrollView.scrollEnabled = NO;
+        ((WKWebView *)_popupView).scrollView.bounces = NO;
     }
     
     if (!isWeb) {
@@ -758,7 +762,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
     
     // UI can't be modified in background.
-    if (![NSThread isMainThread]) {
+    if (![NSThread isMainThread]) { 
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self closePopupWithAnimation:animated actionNamed:actionName track:track];
         });
@@ -770,8 +774,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     
     if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
         [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
-        ((UIWebView *)_popupView).delegate = nil;
-        [(UIWebView *)_popupView stopLoading];
+        ((WKWebView *)_popupView).navigationDelegate = nil;
+        [(WKWebView *)_popupView stopLoading];
     }
     
     void (^finishCallback)(void) = ^() {
@@ -1205,9 +1209,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                    [actionName isEqualToString:LPMT_HTML_NAME]) {
             if (_popupGroup) {
                 [_popupGroup setHidden:YES];  // Keep hidden until load is done
-                UIWebView *webView = (UIWebView *)_popupView;
+                WKWebView *webView = (WKWebView *)_popupView;
                 _webViewNeedsFade = YES;
-                webView.delegate = self;
+                webView.navigationDelegate = self;
                 if (@available(iOS 11.0, *)) {
                     webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
                 }
@@ -1215,8 +1219,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     [webView loadRequest:[NSURLRequest requestWithURL:
                                         [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]]];
                 } else {
-                    webView.allowsInlineMediaPlayback = YES;
-                    webView.mediaPlaybackRequiresUserAction = NO;
                     NSString *html = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
                     [webView loadHTMLString:html baseURL:nil];
                 }
@@ -1315,9 +1317,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
 }
 
-#pragma mark - UIWebViewDelegate methods
+#pragma mark - WKWebViewDelegate methods
 
-- (void)showWebview:(UIWebView *)webview {
+- (void)showWebview:(WKWebView *)webview {
     [_popupGroup setHidden:NO];
     if (_webViewNeedsFade) {
         _webViewNeedsFade = NO;
@@ -1345,7 +1347,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     return components;
 }
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
 {
     if (webView.isLoading) {
         return;
@@ -1358,29 +1360,32 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
 }
 
-- (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request
- navigationType:(UIWebViewNavigationType)navigationType
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
 {
     LPActionContext *context = _contexts.lastObject;
     @try {
-        NSString *url = request.URL.absoluteString;
+
+        NSString *url = [navigationAction request].URL.absoluteString;
         NSDictionary *queryComponents = [self queryComponentsFromUrl:url];
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
             [self dismiss];
             if (queryComponents[@"result"]) {
                 [Leanplum track:queryComponents[@"result"]];
             }
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
         }
 
         // Only continue for HTML Template. Web Insterstitial will be deprecated.
         if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
-            return YES;
+            decisionHandler(WKNavigationActionPolicyAllow);
+            return;
         }
 
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_OPEN]].location != NSNotFound) {
             [self showWebview:webView];
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
         }
 
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_TRACK]].location != NSNotFound) {
@@ -1399,14 +1404,16 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     [Leanplum track:event withValue:value andInfo:info andParameters:parameters];
                 }
             }
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
         }
 
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_ACTION]].location != NSNotFound) {
             if (queryComponents[@"action"]) {
                 [self closePopupWithAnimation:YES actionNamed:queryComponents[@"action"] track:NO];
             }
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
         }
 
         if ([url rangeOfString:
@@ -1414,13 +1421,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
             if (queryComponents[@"action"]) {
                 [self closePopupWithAnimation:YES actionNamed:queryComponents[@"action"] track:YES];
             }
-            return NO;
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
         }
     }
     @catch (NSException *exception) {
         LOG_LP_MESSAGE_EXCEPTION;
     }
-    return YES;
+    decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 /**
