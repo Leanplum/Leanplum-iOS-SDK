@@ -1220,7 +1220,10 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                         [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]]];
                 } else {
                     NSString *html = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
-                    [webView loadHTMLString:html baseURL:nil];
+                    NSString *path = [LPFileManager documentsPath];
+                    NSURL* baseURL = [NSURL fileURLWithPath:path];
+                    // Base URL needs to be provided so WK can find refrenced resources.
+                    [webView loadHTMLString:html baseURL:baseURL];
                 }
             }
         }
