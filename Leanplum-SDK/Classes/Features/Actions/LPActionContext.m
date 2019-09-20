@@ -243,7 +243,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return value;
 }
 
-- (NSString *)htmlWithTemplateNamed:(NSString *)templateName
+- (NSURL *)htmlWithTemplateNamed:(NSString *)templateName
 {
     if ([LPUtils isNullOrEmpty:templateName]) {
         [Leanplum throwError:@"[LPActionContext htmlWithTemplateNamed:] "
@@ -298,9 +298,19 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     }
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##Vars##"
                                                        withString:jsonString];
-    return [self fillTemplate:htmlString];
+
+    htmlString = [self fillTemplate:htmlString];
+
+    // Save filled template to temp file which will be used by WebKit
+    NSString *randomUUID = [[[NSUUID UUID] UUIDString] lowercaseString];
+    NSString *tmpPath = [LPFileManager fileRelativeToDocuments:randomUUID createMissingDirectories:YES];
+    NSURL *tmpURL = [[NSURL fileURLWithPath:tmpPath] URLByAppendingPathExtension:@"html"];
+
+    [htmlString writeToURL:tmpURL atomically:YES encoding:NSUTF8StringEncoding error:nil];
+
+    return tmpURL;
     LP_END_TRY
-    return @"";
+    return nil;
 }
 
 - (NSString *)getDefaultValue:(NSString *)name
