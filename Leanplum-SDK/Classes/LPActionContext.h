@@ -35,7 +35,7 @@
 - (NSDictionary *)dictionaryNamed:(NSString *)name;
 - (NSArray *)arrayNamed:(NSString *)name;
 - (UIColor *)colorNamed:(NSString *)name;
-- (NSString *)htmlWithTemplateNamed:(NSString *)templateName;
+- (NSURL *)htmlWithTemplateNamed:(NSString *)templateName;
 
 /**
  * Runs the action given by the "name" key.
