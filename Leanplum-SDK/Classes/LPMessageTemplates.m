@@ -1219,8 +1219,20 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                     [webView loadRequest:[NSURLRequest requestWithURL:
                                         [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]]];
                 } else {
-                    NSString *html = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
-                    [webView loadHTMLString:html baseURL:nil];
+                    if (@available(iOS 9.0, *))
+                    {
+                        NSURL *htmlURL = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
+                        // Allow access to base folder.
+                        NSString *path = [LPFileManager documentsPath];
+                        NSURL* baseURL = [NSURL fileURLWithPath:path isDirectory:YES];
+
+                        [webView loadFileURL:htmlURL allowingReadAccessToURL:baseURL];
+                    }
+                    else
+                    {
+                        NSURL *htmlURL = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
+                        [webView loadRequest:[NSURLRequest requestWithURL:htmlURL]];
+                    }
                 }
             }
         }
