@@ -411,6 +411,7 @@ static dispatch_once_t leanplum_onceToken;
 - (void)maybePerformNotificationActions:(NSDictionary *)userInfo
                                  action:(NSString *)action
                                  active:(BOOL)active
+                                 hasAlert:(BOOL)hasAlert
 {
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
@@ -452,8 +453,8 @@ static dispatch_once_t leanplum_onceToken;
         if (self.shouldHandleNotification) {
             self.shouldHandleNotification(userInfo, handleNotificationBlock);
         } else {
-            if (userInfo[LP_KEY_PUSH_NO_ACTION] ||
-                userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
+            if ((userInfo[LP_KEY_PUSH_NO_ACTION] ||
+                userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) && !hasAlert) {
                 handleNotificationBlock();
             } else {
                 id message = userInfo[@"aps"][@"alert"];
@@ -501,26 +502,21 @@ static dispatch_once_t leanplum_onceToken;
                  appActive:(BOOL)active
          completionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+
     // Don't handle non-Leanplum notifications.
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
-
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
-        if (hasAlert) {
-            UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-            if (appState != UIApplicationStateBackground) {
-                [self maybePerformNotificationActions:userInfo action:action active:active];
-            }
-        }
+        [self maybePerformNotificationActions:userInfo action:action active:active hasAlert:hasAlert];
     };
 
-    [Leanplum onStartIssued:^() {
+    [Leanplum onStartIssued:^(){
         if ([LPActionManager areActionsEmbedded:userInfo]) {
             onContent();
         } else {
