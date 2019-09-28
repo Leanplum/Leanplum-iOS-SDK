@@ -16,6 +16,7 @@
 @interface LeanplumRequest()
 - (void)downloadFile:(NSString *)path;
 - (id<LPNetworkOperationProtocol>)operationForDownloadFile:(NSString *)path;
+-(NSArray *)removeIrrelevantBackgroundStartRequests:(NSArray *)requests;
 @end
 
 @interface LeanplumRequestTest : XCTestCase
@@ -47,5 +48,21 @@
     LPNetworkOperation *op = (LPNetworkOperation *)[request operationForDownloadFile:path];
     XCTAssertTrue([urlString isEqualToString:[op request].URL.absoluteString]);
 }
+
+- (void)testRemoveIrrelevantBackgroundStartRequests {
+    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
+                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+    LeanplumRequest *request1 = [reqFactory startWithParams:nil];
+    LeanplumRequest *request2 = [reqFactory startWithParams:nil];
+    LeanplumRequest *request3 = [reqFactory advanceWithParams:nil];
+
+    NSArray *requests = @[request1, request2, request3];
+    NSArray *relevantRequests = [request1 removeIrrelevantBackgroundStartRequests:requests];
+
+    XCTAssertTrue(relevantRequests.count == 2);
+    NSArray *expectedArray = @[request1, request3];
+    XCTAssertTrue([relevantRequests isEqualToArray:expectedArray]);
+}
+
 
 @end

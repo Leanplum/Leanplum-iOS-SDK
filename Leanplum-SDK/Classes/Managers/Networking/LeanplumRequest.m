@@ -262,7 +262,8 @@ static NSDictionary *_requestHheaders;
 
         [[LPCountAggregator sharedAggregator] sendAllCounts];
         // Simulate pop all requests.
-        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
+        NSArray *requestsToSend = [self removeIrrelevantBackgroundStartRequests:[LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL]];
+
         if (requestsToSend.count == 0) {
             return;
         }
@@ -657,6 +658,24 @@ static NSDictionary *_requestHheaders;
     [engine enqueueOperation: op];
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"download_file"];
+}
+
+-(NSArray *)removeIrrelevantBackgroundStartRequests:(NSArray *)requests {
+    NSMutableArray *relevantRequests = [NSMutableArray arrayWithCapacity:requests.count];
+    NSUInteger requestCount = requests.count;
+    BOOL foundStartCall = NO;
+    for (int i=0 ; i < requestCount ; i++) {
+        NSDictionary *request = requests[i];
+        if ([request[LP_PARAM_ACTION] isEqualToString:@"start"]) {
+            if (!foundStartCall) {
+                [relevantRequests addObject:request];
+                foundStartCall = YES;
+            }
+        } else {
+            [relevantRequests addObject:request];
+        }
+    }
+  return relevantRequests;
 }
 
 - (id<LPNetworkOperationProtocol>)operationForDownloadFile:(NSString *)path {
