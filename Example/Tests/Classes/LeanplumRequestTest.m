@@ -17,6 +17,7 @@
 - (void)downloadFile:(NSString *)path;
 - (id<LPNetworkOperationProtocol>)operationForDownloadFile:(NSString *)path;
 + (NSArray *)removeIrrelevantBackgroundStartRequests:(NSArray *)requests;
+- (NSMutableDictionary *)createArgsDictionary;
 @end
 
 @interface LeanplumRequestTest : XCTestCase
@@ -52,9 +53,9 @@
 - (void)testRemoveIrrelevantBackgroundStartRequests {
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    LeanplumRequest *request1 = [reqFactory startWithParams:nil];
-    LeanplumRequest *request2 = [reqFactory startWithParams:nil];
-    LeanplumRequest *request3 = [reqFactory advanceWithParams:nil];
+    NSDictionary *request1 = [(LeanplumRequest *)[reqFactory startWithParams:nil] createArgsDictionary];
+    NSDictionary *request2 = [(LeanplumRequest *)[reqFactory startWithParams:nil] createArgsDictionary];
+    NSDictionary *request3 = [(LeanplumRequest *)[reqFactory advanceWithParams:nil] createArgsDictionary];
 
     NSArray *requests = @[request1, request2, request3];
     NSArray *relevantRequests = [LeanplumRequest removeIrrelevantBackgroundStartRequests:requests];
@@ -63,6 +64,5 @@
     NSArray *expectedArray = @[request1, request3];
     XCTAssertTrue([relevantRequests isEqualToArray:expectedArray]);
 }
-
 
 @end

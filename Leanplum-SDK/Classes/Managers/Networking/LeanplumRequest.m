@@ -666,8 +666,8 @@ static NSDictionary *_requestHheaders;
     NSUInteger requestCount = requests.count;
     BOOL foundStartCall = NO;
     for (int i=0 ; i < requestCount ; i++) {
-        LeanplumRequest *request = requests[i];
-        if ([request->_apiMethod isEqualToString:@"start"]) {
+        NSDictionary *request = requests[i];
+        if ([request[LP_PARAM_ACTION] isEqualToString:@"start"]) {
             if (!foundStartCall) {
                 [relevantRequests addObject:request];
                 foundStartCall = YES;
