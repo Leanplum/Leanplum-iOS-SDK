@@ -37,6 +37,7 @@
 #import "LPCountAggregator.h"
 #import "LPUtils.h"
 #import "LPFileTransferManager.h"
+#import "LPOperationQueue.h"
 
 static id<LPNetworkEngineProtocol> engine;
 static NSString *uploadUrl;
@@ -266,7 +267,7 @@ static NSDictionary *_requestHheaders;
         if (requestsToSend.count == 0) {
             return;
         }
-        
+        NSLog(@"sending req serially: %@", requestsToSend);
         // Set up request operation.
         NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
         NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
@@ -356,7 +357,7 @@ static NSDictionary *_requestHheaders;
                 }
                 // Invoke errors on all requests.
                 [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-                [[LeanplumRequest sendNowQueue] cancelAllOperations];
+                [[LPOperationQueue requestQueue] cancelAllOperations];
             }
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
@@ -375,7 +376,7 @@ static NSDictionary *_requestHheaders;
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[LeanplumRequest sendNowQueue] cancelAllOperations];
+            [[LPOperationQueue requestQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
@@ -385,7 +386,7 @@ static NSDictionary *_requestHheaders;
     // Adding to OperationQueue puts it in the background.
     if (async) {
         [requestOperation addExecutionBlock:operationBlock];
-        [[LeanplumRequest sendNowQueue] addOperation:requestOperation];
+        [[LPOperationQueue requestQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }
@@ -408,22 +409,34 @@ static NSDictionary *_requestHheaders;
     RETURN_IF_TEST_MODE;
     if (!_sent) {
         _sent = YES;
-        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-        NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
-        NSInteger count = [LPEventDataManager count];
-        if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
-            uuid = [LeanplumRequest generateUUID];
-        }
-        
-        @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-            NSMutableDictionary *args = [self createArgsDictionary];
-            args[LP_PARAM_UUID] = uuid;
-            [LPEventDataManager addEvent:args];
-            
-            [LPEventCallbackManager addEventCallbackAt:count
-                                             onSuccess:_response
-                                               onError:_error];
-        }
+
+        __weak typeof(self) weakSelf = self;
+
+        [[LPOperationQueue databaseQueue] addOperation:[NSBlockOperation blockOperationWithBlock:^{
+            typeof(self) strongSelf = weakSelf;
+            if (!strongSelf) {
+                return;
+            }
+
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+            NSInteger count = [LPEventDataManager count];
+            if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
+                uuid = [LeanplumRequest generateUUID];
+            }
+
+            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
+                NSMutableDictionary *args = [self createArgsDictionary];
+                args[LP_PARAM_UUID] = uuid;
+                NSLog(@"saving serially: %@", args);
+
+                [LPEventDataManager addEvent:args];
+
+                [LPEventCallbackManager addEventCallbackAt:count
+                                                 onSuccess:strongSelf->_response
+                                                   onError:strongSelf->_error];
+            }
+        }]];
     }
     [[LPCountAggregator sharedAggregator] incrementCount:@"send_eventually"];
 }
@@ -691,23 +704,6 @@ static NSDictionary *_requestHheaders;
 + (void)onNoPendingDownloads:(LeanplumVariablesChangedBlock)block
 {
     noPendingDownloadsBlock = block;
-}
-
-/**
- * Static sendNowQueue with thread protection.
- * Returns an operation queue that manages sendNow to run in order.
- * This is required to prevent from having out of order error in the backend.
- * Also it is very crucial with the uuid logic.
- */
-+ (NSOperationQueue *)sendNowQueue
-{
-    static NSOperationQueue *_sendNowQueue;
-    static dispatch_once_t sendNowQueueToken;
-    dispatch_once(&sendNowQueueToken, ^{
-        _sendNowQueue = [NSOperationQueue new];
-        _sendNowQueue.maxConcurrentOperationCount = 1;
-    });
-    return _sendNowQueue;
 }
 
 @synthesize apiMethod;

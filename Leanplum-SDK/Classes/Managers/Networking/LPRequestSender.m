@@ -33,6 +33,7 @@
 #import "LPEventCallbackManager.h"
 #import "LPAPIConfig.h"
 #import "LPUtils.h"
+#import "LPOperationQueue.h"
 
 @interface LeanplumRequest(LPRequestSender)
 
@@ -440,7 +441,7 @@
 
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-            [[self sendNowQueue] cancelAllOperations];
+            [[LPOperationQueue requestQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -458,7 +459,7 @@
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[self sendNowQueue] cancelAllOperations];
+            [[LPOperationQueue requestQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
@@ -468,7 +469,7 @@
     // Adding to OperationQueue puts it in the background.
     if (!sync) {
         [requestOperation addExecutionBlock:operationBlock];
-        [[self sendNowQueue] addOperation:requestOperation];
+        [[LPOperationQueue requestQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }
@@ -481,23 +482,6 @@
     // Invoke errors on all requests.
     NSError *error = [NSError errorWithDomain:@"leanplum" code:-1001 userInfo:[NSDictionary dictionaryWithObject:@"Request timed out" forKey:NSLocalizedDescriptionKey]];
     [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-}
-
-/**
- * Static sendNowQueue with thread protection.
- * Returns an operation queue that manages sendNow to run in order.
- * This is required to prevent from having out of order error in the backend.
- * Also it is very crucial with the uuid logic.
- */
-- (NSOperationQueue *)sendNowQueue
-{
-    static NSOperationQueue *_sendNowQueue;
-    static dispatch_once_t sendNowQueueToken;
-    dispatch_once(&sendNowQueueToken, ^{
-        _sendNowQueue = [NSOperationQueue new];
-        _sendNowQueue.maxConcurrentOperationCount = 1;
-    });
-    return _sendNowQueue;
 }
 
 @end
