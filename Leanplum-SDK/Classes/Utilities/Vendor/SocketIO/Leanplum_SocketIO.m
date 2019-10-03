@@ -107,7 +107,7 @@
 
         _host = host;
         _port = port;
-        //_useTLS  = useTLS;
+        _useTLS  = useTLS;
 
         // do handshake via HTTP/HTTPS request
         NSString *s = [NSString stringWithFormat:HANDSHAKE_URL, useTLS ? @"s" : @"", _host, (int) _port, rand()];
