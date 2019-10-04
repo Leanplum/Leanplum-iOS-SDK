@@ -15,6 +15,7 @@
 #import <Leanplum/LPRequestFactory.h>
 #import <Leanplum/LPRequest.h>
 #import <Leanplum/LPCountAggregator.h>
+#import "LPOperationQueue.h"
 
 @interface LPRequestSender(UnitTest)
 
@@ -22,7 +23,6 @@
 
 - (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync;
 - (void)sendRequests:(BOOL)sync;
-- (NSOperationQueue *)sendNowQueue;
 
 @end
 
@@ -204,7 +204,7 @@
     id requestOperationMock = OCMClassMock([NSBlockOperation class]);
     OCMStub([requestOperationMock new]).andReturn(requestOperationMock);
     id mockQueue = OCMClassMock([NSOperationQueue class]);
-    OCMStub([requestSender sendNowQueue]).andReturn(mockQueue);
+    OCMStub([LPOperationQueue requestQueue]).andReturn(mockQueue);
     [requestSender sendRequests:false];
 
     OCMVerify([requestOperationMock addExecutionBlock:[OCMArg any]]);

@@ -34,6 +34,7 @@
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
+#import "LPOperationQueue.h"
 
 @interface LPEventDataManager(UnitTest)
 
@@ -44,7 +45,6 @@
 @interface LeanplumRequest(UnitTest)
 
 - (void)sendNow:(BOOL)async;
-+ (NSOperationQueue *)sendNowQueue;
 
 @end
 
@@ -163,8 +163,8 @@
     XCTAssertTrue(timedOut == 0);
     
     // Clean up.
-    [[LeanplumRequest sendNowQueue] cancelAllOperations];
-    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    [[LPOperationQueue requestQueue] cancelAllOperations];
+    [[LPOperationQueue requestQueue] waitUntilAllOperationsAreFinished];
     [OHHTTPStubs removeAllStubs];
 }
 
@@ -300,8 +300,8 @@
     }];
     
     // Freeze the operation queue for a bit to let events queue up.
-    NSOperationQueue *sendNowQueue = [LeanplumRequest sendNowQueue];
-    [sendNowQueue addOperationWithBlock:^{
+    NSOperationQueue *requestQueue = [LPOperationQueue requestQueue];
+    [requestQueue addOperationWithBlock:^{
         [NSThread sleepForTimeInterval:0.2];
     }];
     
