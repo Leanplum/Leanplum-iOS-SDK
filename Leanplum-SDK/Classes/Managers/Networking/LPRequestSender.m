@@ -88,7 +88,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest send];
     } else {
-        [self sendEventually:request];
+        [self sendEventually:request async: YES];
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
             NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
             NSTimeInterval delay;
@@ -120,36 +120,45 @@
             return;
         }
 
-        [self sendEventually:request];
+        [self sendEventually:request async:!sync];
         [self sendRequests:sync];
     }
     [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
-- (void)sendEventually:(id<LPRequesting>)request
+- (void)sendEventually:(id<LPRequesting>)request async:(BOOL) async
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendEventually];
+        [oldLeanplumRequest sendEventually:async];
     } else {
         RETURN_IF_TEST_MODE;
         if (!request.sent) {
             request.sent = YES;
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
-            NSInteger count = [LPEventDataManager count];
-            if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
-                uuid = [self generateUUID];
-            }
 
-            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
-                args[LP_PARAM_UUID] = uuid;
-                [LPEventDataManager addEvent:args];
+            void (^operationBlock)(void) = ^void() {
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+                NSInteger count = [LPEventDataManager count];
+                if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
+                    uuid = [self generateUUID];
+                }
 
-                [LPEventCallbackManager addEventCallbackAt:count
-                                                 onSuccess:request.responseBlock
-                                                   onError:request.errorBlock];
+                @synchronized ([LPEventCallbackManager eventCallbackMap]) {
+                    NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
+                    args[LP_PARAM_UUID] = uuid;
+                    [LPEventDataManager addEvent:args];
+
+                    [LPEventCallbackManager addEventCallbackAt:count
+                                                     onSuccess:request.responseBlock
+                                                       onError:request.errorBlock];
+                }
+            };
+
+            if (async) {
+                [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
+            } else {
+                operationBlock();
             }
         }
     }
@@ -182,7 +191,7 @@
                 [self sendNow:request];
             }
         } else {
-            [self sendEventually:request];
+            [self sendEventually:request async:!sync];
             if (request.errorBlock) {
                 request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
                                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
@@ -210,7 +219,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest sendIfDelayed];
     } else {
-        [self sendEventually:request];
+        [self sendEventually:request async:YES];
         [self performSelector:@selector(sendIfDelayedHelper:)
                    withObject:request
                    afterDelay:LP_REQUEST_RESUME_DELAY];
@@ -441,7 +450,7 @@
 
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-            [[LPOperationQueue requestQueue] cancelAllOperations];
+            [[LPOperationQueue serialQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -459,7 +468,7 @@
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[LPOperationQueue requestQueue] cancelAllOperations];
+            [[LPOperationQueue serialQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
@@ -469,7 +478,7 @@
     // Adding to OperationQueue puts it in the background.
     if (!sync) {
         [requestOperation addExecutionBlock:operationBlock];
-        [[LPOperationQueue requestQueue] addOperation:requestOperation];
+        [[LPOperationQueue serialQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }

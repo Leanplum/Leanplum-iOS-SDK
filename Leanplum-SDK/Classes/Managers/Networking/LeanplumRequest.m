@@ -153,7 +153,7 @@ static NSDictionary *_requestHheaders;
 
 - (void)send
 {
-    [self sendEventually];
+    [self sendEventually:YES];
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         NSTimeInterval delay;
@@ -171,7 +171,7 @@ static NSDictionary *_requestHheaders;
 // if no other call has been sent within 1 minute.
 - (void)sendIfDelayed
 {
-    [self sendEventually];
+    [self sendEventually:YES];
     [self performSelector:@selector(sendIfDelayedHelper)
                withObject:nil
                afterDelay:LP_REQUEST_RESUME_DELAY];
@@ -212,7 +212,7 @@ static NSDictionary *_requestHheaders;
             [self sendNow];
         }
     } else {
-        [self sendEventually];
+        [self sendEventually:!sync];
         if (_error) {
             _error([NSError errorWithDomain:@"Leanplum" code:1
                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
@@ -239,10 +239,10 @@ static NSDictionary *_requestHheaders;
         NSLog(@"Leanplum: Cannot send request. accessKey is not set");
         return;
     }
-        
-    [self sendEventually];
+
+    [self sendEventually:async];
     [self sendRequests:async];
-    
+
     [[LPCountAggregator sharedAggregator] incrementCount:@"send_now"];
 }
 
@@ -357,7 +357,7 @@ static NSDictionary *_requestHheaders;
                 }
                 // Invoke errors on all requests.
                 [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-                [[LPOperationQueue requestQueue] cancelAllOperations];
+                [[LPOperationQueue serialQueue] cancelAllOperations];
             }
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
@@ -376,7 +376,7 @@ static NSDictionary *_requestHheaders;
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[LPOperationQueue requestQueue] cancelAllOperations];
+            [[LPOperationQueue serialQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
@@ -386,7 +386,7 @@ static NSDictionary *_requestHheaders;
     // Adding to OperationQueue puts it in the background.
     if (async) {
         [requestOperation addExecutionBlock:operationBlock];
-        [[LPOperationQueue requestQueue] addOperation:requestOperation];
+        [[LPOperationQueue serialQueue] addOperation:requestOperation];
     } else {
         operationBlock();
     }
@@ -404,20 +404,13 @@ static NSDictionary *_requestHheaders;
     [self sendNow:NO];
 }
 
-- (void)sendEventually
+- (void)sendEventually:(BOOL) async
 {
     RETURN_IF_TEST_MODE;
     if (!_sent) {
         _sent = YES;
 
-        __weak typeof(self) weakSelf = self;
-
-        [[LPOperationQueue databaseQueue] addOperation:[NSBlockOperation blockOperationWithBlock:^{
-            typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) {
-                return;
-            }
-
+        void (^operationBlock)(void) = ^void() {
             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
             NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
             NSInteger count = [LPEventDataManager count];
@@ -428,15 +421,20 @@ static NSDictionary *_requestHheaders;
             @synchronized ([LPEventCallbackManager eventCallbackMap]) {
                 NSMutableDictionary *args = [self createArgsDictionary];
                 args[LP_PARAM_UUID] = uuid;
-                NSLog(@"saving serially: %@", args);
 
                 [LPEventDataManager addEvent:args];
 
                 [LPEventCallbackManager addEventCallbackAt:count
-                                                 onSuccess:strongSelf->_response
-                                                   onError:strongSelf->_error];
+                                                 onSuccess:self->_response
+                                                   onError:self->_error];
             }
-        }]];
+        };
+
+        if (async) {
+            [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
+        } else {
+            operationBlock();
+        }
     }
     [[LPCountAggregator sharedAggregator] incrementCount:@"send_eventually"];
 }

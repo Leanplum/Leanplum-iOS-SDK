@@ -559,11 +559,11 @@ static dispatch_once_t leanplum_onceToken;
                 self.updateBlock();
             }
             
-            if (interfaceUpdated) {
+            if (interfaceUpdated && self.interfaceUpdateBlock) {
                 self.interfaceUpdateBlock();
             }
             
-            if (eventsUpdated) {
+            if (eventsUpdated && self.eventsUpdateBlock) {
                 self.eventsUpdateBlock();
             }
         }

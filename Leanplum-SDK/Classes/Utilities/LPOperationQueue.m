@@ -26,18 +26,7 @@
 
 @implementation LPOperationQueue
 
-+ (NSOperationQueue *) databaseQueue
-{
-    static NSOperationQueue *_operationQueue;
-    static dispatch_once_t token;
-    dispatch_once(&token, ^{
-        _operationQueue = [NSOperationQueue new];
-        _operationQueue.maxConcurrentOperationCount = 1;
-    });
-    return _operationQueue;
-}
-
-+ (NSOperationQueue *) requestQueue
++ (NSOperationQueue *) serialQueue
 {
     static NSOperationQueue *_operationQueue;
     static dispatch_once_t token;

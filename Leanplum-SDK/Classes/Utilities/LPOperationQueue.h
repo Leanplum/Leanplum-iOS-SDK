@@ -29,16 +29,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPOperationQueue : NSObject
 
 /**
- * Database Operation Queue should be used to run operations and
- * to making sure that each write is executed serially.
- */
-+ (NSOperationQueue *) databaseQueue;
-
-/**
- * Request Operation Queue should be used to run operations and
+ * Serial Operation Queue should be used to run operations and
  * to make sure that requests are sent serially.
  */
-+ (NSOperationQueue *) requestQueue;
++ (NSOperationQueue *) serialQueue;
 
 @end
 

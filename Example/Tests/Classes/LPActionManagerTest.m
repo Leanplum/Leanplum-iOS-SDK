@@ -33,6 +33,7 @@
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LPUIAlert.h"
+#import "LPOperationQueue.h"
 
 @interface LPActionManager (Test)
 - (void)requireMessageContent:(NSString *)messageId
@@ -276,6 +277,7 @@
         return YES;
     }];
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 

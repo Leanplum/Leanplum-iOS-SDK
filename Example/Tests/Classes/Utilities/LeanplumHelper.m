@@ -124,8 +124,8 @@ static BOOL swizzled = NO;
     [[LPAPIConfig sharedConfig] setToken:nil];
     [LeanplumRequest reset];
     [LeanplumHelper reset_user_defaults];
-    [[LPOperationQueue requestQueue] cancelAllOperations];
-    [[LPOperationQueue requestQueue] waitUntilAllOperationsAreFinished];
+    [[LPOperationQueue serialQueue] cancelAllOperations];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
 }
 
 + (dispatch_time_t)default_dispatch_time {

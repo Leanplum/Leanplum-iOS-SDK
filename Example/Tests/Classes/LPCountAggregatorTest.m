@@ -141,7 +141,7 @@
     
     [countAggregator sendAllCounts];
     
-    OCMVerify([leanplumRequestMock sendEventually]);
+    OCMVerify([leanplumRequestMock sendEventually:[OCMArg any]]);
 }
 
 @end
