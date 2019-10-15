@@ -255,6 +255,12 @@
     [test_data writeToFile:path atomically:YES];
 
     XCTAssertTrue([LPFileManager addSkipBackupAttributeToItemAtPath:path]);
+
+    NSURL* url = [NSURL fileURLWithPath:path];
+    NSNumber* excluded = [NSNumber new];
+    [url getResourceValue:&excluded forKey:NSURLIsExcludedFromBackupKey error:nil];
+
+    XCTAssertEqual([excluded boolValue], YES);
 }
 
 @end

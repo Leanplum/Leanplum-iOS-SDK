@@ -841,7 +841,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         return NO;
     }
 
-    NSURL* url= [NSURL fileURLWithPath: filePathString];
+    NSURL* url= [NSURL fileURLWithPath:filePathString];
     if (url && [[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
         NSError *error = nil;
         BOOL success = [url setResourceValue:[NSNumber numberWithBool: YES]
