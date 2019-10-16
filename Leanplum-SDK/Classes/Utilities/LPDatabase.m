@@ -55,6 +55,15 @@ static BOOL willSendErrorLog;
         [self handleSQLiteError:@"SQLite fail to open" errorResult:result query:nil];
         return nil;
     }
+
+    if (result == SQLITE_OK) {
+        if ([LPFileManager addSkipBackupAttributeToItemAtPath:[LPDatabase sqliteFilePath]]) {
+            NSLog(@"Leanplum: Successfully excluded database from syncing.");
+        } else {
+            NSLog(@"Leanplum: Unable to exclude database from syncing.");
+        }
+    }
+
     retryOnCorrupt = NO;
     
     // Create tables.
