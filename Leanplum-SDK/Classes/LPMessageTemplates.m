@@ -1437,7 +1437,10 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
             return;
         }
     }
-    @catch (NSException *exception) {
+    @catch (id exception) {
+        // In case we catch exception here, hide the overlaying message.
+        [self dismiss];
+        // Handle the exception message.
         LOG_LP_MESSAGE_EXCEPTION;
     }
     decisionHandler(WKNavigationActionPolicyAllow);
