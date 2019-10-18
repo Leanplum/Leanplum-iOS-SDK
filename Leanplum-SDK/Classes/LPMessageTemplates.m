@@ -821,7 +821,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)dismiss
 {
+    LP_TRY
     [self closePopupWithAnimation:YES];
+    LP_END_TRY
 }
 
 - (void)enablePush
