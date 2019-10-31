@@ -1068,6 +1068,21 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         }
         _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
         
+    } else if (isIPhoneX) {
+        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
+        if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+            safeAreaInsets.left = 0;
+            safeAreaInsets.right = 0;
+            bottomSafeAreaHeight = 0;
+        }
+
+        _popupGroup.frame = CGRectMake(safeAreaInsets.left, 0,
+                                       screenWidth - safeAreaInsets.left - safeAreaInsets.right,
+                                       screenHeight - bottomSafeAreaHeight);
+        
+        NSLog(@"frame dim %@ %@", NSStringFromCGRect(_popupGroup.frame), NSStringFromCGSize(_popupGroup.frame.size));
+        NSLog(@"screen %f, %f", screenWidth, screenHeight);
+        NSLog(@"insets %@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
     _popupView.frame = _popupGroup.bounds;
 }

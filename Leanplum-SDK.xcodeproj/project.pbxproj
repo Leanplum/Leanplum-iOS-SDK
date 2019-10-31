@@ -1245,7 +1245,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -1254,7 +1254,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A5B8E66A75DE62DC40AAD216 /* [CP] Embed Pods Frameworks */ = {
@@ -1263,7 +1263,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
 				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
@@ -1276,7 +1276,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FE31991B4356AF7EAA1064C0 /* [CP] Check Pods Manifest.lock */ = {
