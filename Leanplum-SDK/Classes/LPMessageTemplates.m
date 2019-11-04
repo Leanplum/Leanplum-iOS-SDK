@@ -951,6 +951,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                        [context.actionName isEqualToString:LPMT_HTML_NAME]);
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
                  [context.actionName isEqualToString:LPMT_HTML_NAME];
+    
+    BOOL isPushAskToAsk = [context.actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK];
 
     UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
 
@@ -1002,7 +1004,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
 
     if (!isWeb) {
-        [self updateNonWebPopupLayout:statusBarHeight];
+        [self updateNonWebPopupLayout:statusBarHeight isPushAskToAsk:isPushAskToAsk];
         _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
     }
     CGFloat leftSafeAreaX = safeAreaInsets.left;
@@ -1133,12 +1135,12 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     return textSize;
 }
 
-- (void)updateNonWebPopupLayout:(int)statusBarHeight
+- (void)updateNonWebPopupLayout:(int)statusBarHeight isPushAskToAsk:(BOOL)isPushAskToAsk
 {
     _popupBackground.frame = CGRectMake(0, 0, _popupView.frame.size.width, _popupView.frame.size.height);
     CGSize textSize = [self getTextSizeFromButton:_acceptButton];
 
-    if (_cancelButton) {
+    if (isPushAskToAsk) {
         CGSize cancelTextSize = [self getTextSizeFromButton:_cancelButton];
         textSize = CGSizeMake(MAX(textSize.width, cancelTextSize.width),
                               MAX(textSize.height, cancelTextSize.height));
