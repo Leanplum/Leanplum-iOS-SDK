@@ -43,6 +43,7 @@
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken;
+- (NSString *)hexadecimalStringFromData:(NSData *)data;
 @end
 
 @interface LPActionManagerTest : XCTestCase
@@ -309,6 +310,14 @@
 
 }
 
+-(void)testHexadecimalStringFromData {
+    LPActionManager *manager = [[LPActionManager alloc] init];
+    NSString *testString = @"74657374537472696e67";
+    NSData *data = [self hexDataFromString:testString];
+    NSString *parsedString = [manager hexadecimalStringFromData:data];
+    XCTAssertEqualObjects(testString, parsedString);
+}
+
 #pragma mark Helpers
 
 -(NSDictionary *)messageConfigInActivePeriod:(BOOL)inActivePeriod
@@ -324,4 +333,22 @@
                              };
     return config;
 }
+
+-(NSMutableData*)hexDataFromString:(NSString*)string {
+
+    NSMutableData *hexData= [[NSMutableData alloc] init];
+    unsigned char whole_byte;
+    char byte_chars[3] = {'\0','\0','\0'};
+    int i;
+    for (i=0; i < [string length]/2; i++) {
+        byte_chars[0] = [string characterAtIndex:i*2];
+        byte_chars[1] = [string characterAtIndex:i*2+1];
+        whole_byte = strtol(byte_chars, NULL, 16);
+        [hexData appendBytes:&whole_byte length:1];
+    }
+    return hexData;
+}
+
+
+
 @end

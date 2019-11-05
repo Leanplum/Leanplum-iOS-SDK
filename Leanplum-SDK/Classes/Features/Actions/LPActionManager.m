@@ -25,7 +25,7 @@
 #import "LPActionManager.h"
 
 #import "LPConstants.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 #import "LeanplumInternal.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
@@ -176,10 +176,11 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
     SEL selector = @selector(leanplum_userNotificationCenter:didReceiveNotificationResponse:
                              withCompletionHandler:);
 
-    if ([self respondsToSelector:selector]) {
+    if (swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler &&
+        [self respondsToSelector:selector]) {
         [self leanplum_userNotificationCenter:center
-                didReceiveNotificationResponse:response
-                       withCompletionHandler:completionHandler];
+               didReceiveNotificationResponse:response
+                        withCompletionHandler:completionHandler];
     }
     
     [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
@@ -197,8 +198,8 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
                                            fetchCompletionHandler:nil];
     LP_END_TRY
 
-    // Call overridden method.
-    if ([self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
+    if (swizzledApplicationDidReceiveLocalNotification &&
+        [self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
         [self performSelector:@selector(leanplum_application:didReceiveLocalNotification:)
                    withObject:application withObject:localNotification];
     }
@@ -751,7 +752,7 @@ static dispatch_once_t leanplum_onceToken;
     }
 
     // Format push token.
-    NSString *formattedToken = [token description];
+    NSString *formattedToken = [self hexadecimalStringFromData:token];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
@@ -1317,6 +1318,22 @@ static dispatch_once_t leanplum_onceToken;
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setBool:YES forKey:[NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]];
     }
+}
+
+#pragma mark - Helper methods
+- (NSString *)hexadecimalStringFromData:(NSData *)data
+{
+    NSUInteger dataLength = data.length;
+    if (dataLength == 0) {
+        return nil;
+    }
+
+    const unsigned char *dataBuffer = data.bytes;
+    NSMutableString *hexString  = [NSMutableString stringWithCapacity:(dataLength * 2)];
+    for (int i = 0; i < dataLength; ++i) {
+        [hexString appendFormat:@"%02x", dataBuffer[i]];
+    }
+    return [hexString copy];
 }
 
 @end

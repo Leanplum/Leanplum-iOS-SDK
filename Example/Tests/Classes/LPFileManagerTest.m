@@ -241,4 +241,26 @@
     XCTAssertNil(result);
 }
 
+- (void)test_addSkipBackupAttribute
+{
+    NSString *path = nil;
+    XCTAssertFalse([LPFileManager addSkipBackupAttributeToItemAtPath:path]);
+
+    // Creates a sample file in directory for test.
+    NSString *cacheDirectory = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
+                                                                   NSUserDomainMask, YES)[0];
+
+    NSData *test_data = [@"sample data" dataUsingEncoding:NSUTF8StringEncoding];
+    path = [cacheDirectory stringByAppendingPathComponent:@"sample.txt"];
+    [test_data writeToFile:path atomically:YES];
+
+    XCTAssertTrue([LPFileManager addSkipBackupAttributeToItemAtPath:path]);
+
+    NSURL* url = [NSURL fileURLWithPath:path];
+    NSNumber* excluded = [NSNumber new];
+    [url getResourceValue:&excluded forKey:NSURLIsExcludedFromBackupKey error:nil];
+
+    XCTAssertEqual([excluded boolValue], YES);
+}
+
 @end

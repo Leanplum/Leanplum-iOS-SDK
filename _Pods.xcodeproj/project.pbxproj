@@ -107,7 +107,7 @@
 		79C1DDA8F25FC3F84957E0D6C1A2E558 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC2CD2988A256685FA60554BC1DBA2E5 /* UIKit.framework */; };
 		79C72499078B688D172C1C021DBB0005 /* LPEditorEventsTapGestureRecognizer.h in Headers */ = {isa = PBXBuildFile; fileRef = 0416085AA4C9227C10AA375FC56E15F0 /* LPEditorEventsTapGestureRecognizer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7B710EAC7E6C1F46C8CAA44FC2B579CD /* MKNetworkKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E76700B3C28E1626212B3921268C18E /* MKNetworkKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7ED947ADC52BC07822DC6DCDA31CA125 /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 215EA0C7A5CCDAC71E98865A29650325 /* JRSwizzle.m */; };
+		7ED947ADC52BC07822DC6DCDA31CA125 /* LPSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 215EA0C7A5CCDAC71E98865A29650325 /* LPSwizzle.m */; };
 		8083516D38A4BA699BC678B7CD42EA05 /* Leanplum_SocketIO.h in Headers */ = {isa = PBXBuildFile; fileRef = 17808E090AF8E105039B7B30667C5C67 /* Leanplum_SocketIO.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		838FA3F939C7703721E553E9B7758894 /* LPFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 74E62E4527BCAADA75596ADF08051E0D /* LPFileManager.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		88F0DB597C71C99C3EE770CD32718D17 /* LPRegisterDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 575BE7106B59B4732F82182A58177421 /* LPRegisterDevice.m */; };
@@ -171,7 +171,7 @@
 		CF33CB507319FB99FE6F1DA85B592EE9 /* LPRequestStorage.m in Sources */ = {isa = PBXBuildFile; fileRef = F49C3B3C8474B48F74A86B6BF7BD3695 /* LPRequestStorage.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		CF98BD739C967CDCB5583838C7FC0E85 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 3336C288C53717A89C86AF99265370E8 /* README.md */; };
 		D014CF24A19B519465456333BDBB164B /* LPUIAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = 99878589E5EDA496853DE3BB01E82A81 /* LPUIAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D06CB1863A63EDD976582E88F7F31914 /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C527CEF0CF7FE9D9DCA18533732BBCE /* JRSwizzle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D06CB1863A63EDD976582E88F7F31914 /* LPSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C527CEF0CF7FE9D9DCA18533732BBCE /* LPSwizzle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0EE5F4A9A219CEEA8A91A45A5D79414 /* LPEditorEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 7C91DFC067D0C938891FE83FD0776916 /* LPEditorEvent.m */; };
 		D24D4A6397C6D5FA444F07B880FAAA2F /* LPVarCache.h in Headers */ = {isa = PBXBuildFile; fileRef = A9C4EB4E65120824BEF8886C2F9D7FF6 /* LPVarCache.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D4D5F19AB85F041198714BFC7F364220 /* Leanplum_MKNKOperationWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 04A77B1D2E64D88D487DEB0120AFABB2 /* Leanplum_MKNKOperationWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -179,9 +179,9 @@
 		D64D0CC3530073C5B37DEB3FB5D1B095 /* LPUIEditorWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 2082B3A9B338F6A82AEC7E8D4EE618C1 /* LPUIEditorWrapper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D7A034B1FFC3C323F66BA7945D61CC40 /* Leanplum_WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 38FACEEF27F9B941E1857DAF7836AF01 /* Leanplum_WebSocket.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D8BAC88522A2CF12374EDC0E4A5AC239 /* LPFileManager.h in Headers */ = {isa = PBXBuildFile; fileRef = F5241C7D9F84F722BE21D20649218435 /* LPFileManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D8BC81A9205458747A06C8E4A90E8C4F /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 215EA0C7A5CCDAC71E98865A29650325 /* JRSwizzle.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		D8BC81A9205458747A06C8E4A90E8C4F /* LPSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 215EA0C7A5CCDAC71E98865A29650325 /* LPSwizzle.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		D96D664A19576612D46A0BAA49B20B9C /* LPInterfaceEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = B27AFF8AF3C075349DC54416F6928349 /* LPInterfaceEditor.m */; };
-		DA17BD9416CD72BDA3255B3071C332BD /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C527CEF0CF7FE9D9DCA18533732BBCE /* JRSwizzle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DA17BD9416CD72BDA3255B3071C332BD /* LPSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2C527CEF0CF7FE9D9DCA18533732BBCE /* LPSwizzle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DD6DAB9C95B74B8A4B598281A792930E /* LPInterfaceProperty.m in Sources */ = {isa = PBXBuildFile; fileRef = 9753BC599ECC1BE89CEBD242E598CE46 /* LPInterfaceProperty.m */; };
 		DE7E7972FB524C465613998BDAECD48A /* LPUIEditorWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 40AB7727C22B1D429E1BF2989CEA38B9 /* LPUIEditorWrapper.m */; };
 		DFD7306AF96404930AA423EFFE45D56B /* UIDevice+IdentifierAddition.m in Sources */ = {isa = PBXBuildFile; fileRef = 802F6C3274F5439FC3E73008FA6285FF /* UIDevice+IdentifierAddition.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
@@ -275,14 +275,14 @@
 		1F6C89D78B9F3792AA626BA4F613BF91 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS10.2.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
 		1FC65CD16C4B366490E906CA5F3F590B /* Leanplum_MKNKEngineWrapper.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = Leanplum_MKNKEngineWrapper.m; sourceTree = "<group>"; };
 		2082B3A9B338F6A82AEC7E8D4EE618C1 /* LPUIEditorWrapper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LPUIEditorWrapper.h; sourceTree = "<group>"; };
-		215EA0C7A5CCDAC71E98865A29650325 /* JRSwizzle.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		215EA0C7A5CCDAC71E98865A29650325 /* LPSwizzle.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = LPSwizzle.m; sourceTree = "<group>"; };
 		220924F352F5EA16F6515824B50E2479 /* LPEditorEvent.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LPEditorEvent.h; sourceTree = "<group>"; };
 		22A702B4A5593433738A75627EE2D885 /* Leanplum_MKNKEngineWrapper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = Leanplum_MKNKEngineWrapper.h; sourceTree = "<group>"; };
 		239BED1D2CFCB61D1D5AB73CC0D1B51B /* NSString+MKNetworkKitAdditions.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSString+MKNetworkKitAdditions.m"; sourceTree = "<group>"; };
 		24BEEC598CAB2004B4A2B3930733F400 /* Leanplum-iOS-Editor.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Leanplum-iOS-Editor.xcconfig"; sourceTree = "<group>"; };
 		28842FE966111D31F658EB94C4EE18C8 /* NSDate+RFC1123.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSDate+RFC1123.m"; sourceTree = "<group>"; };
 		2A5E0DC28A7D986BB0F1C712DD61DBFD /* NSString+MKNetworkKitAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSString+MKNetworkKitAdditions.h"; sourceTree = "<group>"; };
-		2C527CEF0CF7FE9D9DCA18533732BBCE /* JRSwizzle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
+		2C527CEF0CF7FE9D9DCA18533732BBCE /* LPSwizzle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LPSwizzle.h; sourceTree = "<group>"; };
 		31B1259F7EB3D50353DF8522880E4841 /* LPNetworkOperation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = LPNetworkOperation.m; sourceTree = "<group>"; };
 		3336C288C53717A89C86AF99265370E8 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; path = README.md; sourceTree = "<group>"; };
 		333A6980B064039B4A24FF02DE812985 /* LeanplumInternal.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = LeanplumInternal.h; sourceTree = "<group>"; };
@@ -514,8 +514,8 @@
 				DDD9D58EF0E5E34187DEB6F3A77DDC67 /* Constants.m */,
 				60F18C44F6639C313E35BE68FCF77F1B /* FileMD5Hash.c */,
 				763F9EBD03C339F3B4C29D4D75603F70 /* FileMD5Hash.h */,
-				2C527CEF0CF7FE9D9DCA18533732BBCE /* JRSwizzle.h */,
-				215EA0C7A5CCDAC71E98865A29650325 /* JRSwizzle.m */,
+				2C527CEF0CF7FE9D9DCA18533732BBCE /* LPSwizzle.h */,
+				215EA0C7A5CCDAC71E98865A29650325 /* LPSwizzle.m */,
 				1A8F53B7AE5BEBF3DE5DE136BFACCAB3 /* Leanplum.h */,
 				D26CE6C329844ACE80CF2533135E2699 /* Leanplum.m */,
 				333A6980B064039B4A24FF02DE812985 /* LeanplumInternal.h */,
@@ -829,7 +829,7 @@
 			files = (
 				5B169184897C77584E73CC467AF31A76 /* Constants.h in Headers */,
 				63495203EC32FB1184DBBFF956B5847A /* FileMD5Hash.h in Headers */,
-				DA17BD9416CD72BDA3255B3071C332BD /* JRSwizzle.h in Headers */,
+				DA17BD9416CD72BDA3255B3071C332BD /* LPSwizzle.h in Headers */,
 				1A60F320773D9B4F7D2026D957299C06 /* Leanplum.h in Headers */,
 				8F7AE6D9744E6C00CD268732664B3DEC /* Leanplum_AsyncSocket.h in Headers */,
 				8CDEA7D2096968469CE4861E551D8C5C /* Leanplum_MKNetworkEngine.h in Headers */,
@@ -879,7 +879,7 @@
 			files = (
 				9AA0C4D5E3F7E9276113CB637B89DA83 /* Constants.h in Headers */,
 				51EFAF1B745CAA2036B57425E1E75462 /* FileMD5Hash.h in Headers */,
-				D06CB1863A63EDD976582E88F7F31914 /* JRSwizzle.h in Headers */,
+				D06CB1863A63EDD976582E88F7F31914 /* LPSwizzle.h in Headers */,
 				CDDCB8B76AEF4819BF3DC139618238D3 /* Leanplum.h in Headers */,
 				B7AA22D51C1D693B2821D2E914E86347 /* Leanplum_AsyncSocket.h in Headers */,
 				B8DF28A45757ED31D4177D1A30A1889B /* Leanplum_MKNetworkEngine.h in Headers */,
@@ -1066,7 +1066,7 @@
 			files = (
 				32894405F687675CF2E507FACE92AC9E /* Constants.m in Sources */,
 				522711D972BFAA5BFB5989841C652EEB /* FileMD5Hash.c in Sources */,
-				7ED947ADC52BC07822DC6DCDA31CA125 /* JRSwizzle.m in Sources */,
+				7ED947ADC52BC07822DC6DCDA31CA125 /* LPSwizzle.m in Sources */,
 				1EC86036FA0EDB5ADEB0B42FFDAEEFB9 /* Leanplum-SDK-iOS-dummy.m in Sources */,
 				F2E7D1340B6B5B54912F80C296142BF3 /* Leanplum.m in Sources */,
 				0330647E121C51FE444BA48723A13840 /* Leanplum_AsyncSocket.m in Sources */,
@@ -1118,7 +1118,7 @@
 			files = (
 				212589549095BFAC810B6A434320217B /* Constants.m in Sources */,
 				B4038D1AF46CF239DE5B93794C32F10B /* FileMD5Hash.c in Sources */,
-				D8BC81A9205458747A06C8E4A90E8C4F /* JRSwizzle.m in Sources */,
+				D8BC81A9205458747A06C8E4A90E8C4F /* LPSwizzle.m in Sources */,
 				B488A21942886CE7DB8F64A1EC037369 /* Leanplum-SDK-tvOS-dummy.m in Sources */,
 				B94615B8BF4086DC527B05F80276984F /* Leanplum.m in Sources */,
 				2F16F9D771F480EB66B7411B666BA966 /* Leanplum_AsyncSocket.m in Sources */,

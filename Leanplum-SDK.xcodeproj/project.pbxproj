@@ -147,7 +147,7 @@
 		5B2340CD21ED964F00206ACB /* LPAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FF921ED964F00206ACB /* LPAES.h */; };
 		5B2340CF21ED965000206ACB /* LPUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFA21ED964F00206ACB /* LPUtils.h */; };
 		5B2340D121ED965000206ACB /* LPDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FFB21ED964F00206ACB /* LPDatabase.m */; };
-		5B2340D321ED965000206ACB /* JRSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFC21ED964F00206ACB /* JRSwizzle.h */; };
+		5B2340D321ED965000206ACB /* LPSwizzle.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFC21ED964F00206ACB /* LPSwizzle.h */; };
 		5B2340D521ED965000206ACB /* LPJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FFD21ED964F00206ACB /* LPJSON.m */; };
 		5B2340D721ED965000206ACB /* FileMD5Hash.c in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FFE21ED964F00206ACB /* FileMD5Hash.c */; };
 		5B2340D921ED965000206ACB /* LPKeychainWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */; };
@@ -155,7 +155,7 @@
 		5B2340DD21ED965000206ACB /* LPUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400121ED964F00206ACB /* LPUtils.m */; };
 		5B2340DF21ED965000206ACB /* FileMD5Hash.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400221ED964F00206ACB /* FileMD5Hash.h */; };
 		5B2340E121ED965000206ACB /* LPJSON.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400321ED964F00206ACB /* LPJSON.h */; };
-		5B2340E321ED965000206ACB /* JRSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400421ED964F00206ACB /* JRSwizzle.m */; };
+		5B2340E321ED965000206ACB /* LPSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400421ED964F00206ACB /* LPSwizzle.m */; };
 		5B2340E521ED965000206ACB /* Leanplum_WebSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400721ED964F00206ACB /* Leanplum_WebSocket.h */; };
 		5B2340E721ED965000206ACB /* Leanplum_AsyncSocket.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23400921ED964F00206ACB /* Leanplum_AsyncSocket.h */; };
 		5B2340E921ED965000206ACB /* Leanplum_AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23400A21ED964F00206ACB /* Leanplum_AsyncSocket.m */; };
@@ -361,7 +361,7 @@
 		5B233FF921ED964F00206ACB /* LPAES.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPAES.h; sourceTree = "<group>"; };
 		5B233FFA21ED964F00206ACB /* LPUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPUtils.h; sourceTree = "<group>"; };
 		5B233FFB21ED964F00206ACB /* LPDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPDatabase.m; sourceTree = "<group>"; };
-		5B233FFC21ED964F00206ACB /* JRSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRSwizzle.h; sourceTree = "<group>"; };
+		5B233FFC21ED964F00206ACB /* LPSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPSwizzle.h; sourceTree = "<group>"; };
 		5B233FFD21ED964F00206ACB /* LPJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSON.m; sourceTree = "<group>"; };
 		5B233FFE21ED964F00206ACB /* FileMD5Hash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = FileMD5Hash.c; sourceTree = "<group>"; };
 		5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPKeychainWrapper.h; sourceTree = "<group>"; };
@@ -369,7 +369,7 @@
 		5B23400121ED964F00206ACB /* LPUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUtils.m; sourceTree = "<group>"; };
 		5B23400221ED964F00206ACB /* FileMD5Hash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileMD5Hash.h; sourceTree = "<group>"; };
 		5B23400321ED964F00206ACB /* LPJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPJSON.h; sourceTree = "<group>"; };
-		5B23400421ED964F00206ACB /* JRSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRSwizzle.m; sourceTree = "<group>"; };
+		5B23400421ED964F00206ACB /* LPSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSwizzle.m; sourceTree = "<group>"; };
 		5B23400721ED964F00206ACB /* Leanplum_WebSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Leanplum_WebSocket.h; sourceTree = "<group>"; };
 		5B23400921ED964F00206ACB /* Leanplum_AsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Leanplum_AsyncSocket.h; sourceTree = "<group>"; };
 		5B23400A21ED964F00206ACB /* Leanplum_AsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Leanplum_AsyncSocket.m; sourceTree = "<group>"; };
@@ -836,7 +836,7 @@
 				5B233FF721ED964F00206ACB /* Encryption */,
 				5B233FFA21ED964F00206ACB /* LPUtils.h */,
 				5B233FFB21ED964F00206ACB /* LPDatabase.m */,
-				5B233FFC21ED964F00206ACB /* JRSwizzle.h */,
+				5B233FFC21ED964F00206ACB /* LPSwizzle.h */,
 				5B233FFD21ED964F00206ACB /* LPJSON.m */,
 				5B233FFE21ED964F00206ACB /* FileMD5Hash.c */,
 				5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */,
@@ -844,7 +844,7 @@
 				5B23400121ED964F00206ACB /* LPUtils.m */,
 				5B23400221ED964F00206ACB /* FileMD5Hash.h */,
 				5B23400321ED964F00206ACB /* LPJSON.h */,
-				5B23400421ED964F00206ACB /* JRSwizzle.m */,
+				5B23400421ED964F00206ACB /* LPSwizzle.m */,
 				5B23400521ED964F00206ACB /* Vendor */,
 				5B23402F21ED964F00206ACB /* LPKeychainWrapper.m */,
 			);
@@ -1016,7 +1016,7 @@
 				5B23411521ED965000206ACB /* NSDate+RFC1123.h in Headers */,
 				5B23412121ED965000206ACB /* NSString+MKNetworkKitAdditions.h in Headers */,
 				5B23409721ED964F00206ACB /* LPEventDataManager.h in Headers */,
-				5B2340D321ED965000206ACB /* JRSwizzle.h in Headers */,
+				5B2340D321ED965000206ACB /* LPSwizzle.h in Headers */,
 				5B2340C321ED964F00206ACB /* LPInbox.h in Headers */,
 				5B23405F21ED964F00206ACB /* LPNetworkProtocol.h in Headers */,
 				5B23412921ED965000206ACB /* LPMessageTemplates.h in Headers */,
@@ -1357,7 +1357,7 @@
 				5B2340F121ED965000206ACB /* Leanplum_Reachability.m in Sources */,
 				5B23408121ED964F00206ACB /* LPVarCache.m in Sources */,
 				5B2340BF21ED964F00206ACB /* LPExceptionHandler.m in Sources */,
-				5B2340E321ED965000206ACB /* JRSwizzle.m in Sources */,
+				5B2340E321ED965000206ACB /* LPSwizzle.m in Sources */,
 				5B23407321ED964F00206ACB /* LPRevenueManager.m in Sources */,
 				5B23405B21ED964F00206ACB /* LPNetworkOperation.m in Sources */,
 				5B2340EF21ED965000206ACB /* Leanplum_SocketIO.m in Sources */,

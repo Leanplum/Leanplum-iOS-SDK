@@ -29,9 +29,10 @@
 // That's it!
 
 #import <Foundation/Foundation.h>
+#import <WebKit/WebKit.h>
 #import "Leanplum.h"
 
-@interface LPMessageTemplatesClass : NSObject <UIAlertViewDelegate, UIWebViewDelegate>
+@interface LPMessageTemplatesClass : NSObject <UIAlertViewDelegate, WKNavigationDelegate>
 
 + (LPMessageTemplatesClass *)sharedTemplates;
 

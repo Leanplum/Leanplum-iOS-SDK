@@ -39,7 +39,7 @@
 #import "LPMessageTemplates.h"
 #include <sys/sysctl.h>
 #import "LPRevenueManager.h"
-#import "JRSwizzle.h"
+#import "LPSwizzle.h"
 #import "LPInbox.h"
 #import "LPUIAlert.h"
 #import "LPUtils.h"
