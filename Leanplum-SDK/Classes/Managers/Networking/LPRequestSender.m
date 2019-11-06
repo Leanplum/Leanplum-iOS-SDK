@@ -88,7 +88,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest send];
     } else {
-        [self sendEventually:request async: YES];
+        [self sendEventually:request sync:NO];
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
             NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
             NSTimeInterval delay;
@@ -120,17 +120,17 @@
             return;
         }
 
-        [self sendEventually:request async:!sync];
+        [self sendEventually:request sync:sync];
         [self sendRequests:sync];
     }
     [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
-- (void)sendEventually:(id<LPRequesting>)request async:(BOOL) async
+- (void)sendEventually:(id<LPRequesting>)request sync:(BOOL)sync;
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendEventually:async];
+        [oldLeanplumRequest sendEventually:sync];
     } else {
         RETURN_IF_TEST_MODE;
         if (!request.sent) {
@@ -155,10 +155,10 @@
                 }
             };
 
-            if (async) {
-                [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
-            } else {
+            if (sync) {
                 operationBlock();
+            } else {
+                [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
             }
         }
     }
@@ -191,7 +191,7 @@
                 [self sendNow:request];
             }
         } else {
-            [self sendEventually:request async:!sync];
+            [self sendEventually:request sync:sync];
             if (request.errorBlock) {
                 request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
                                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
@@ -219,7 +219,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest sendIfDelayed];
     } else {
-        [self sendEventually:request async:YES];
+        [self sendEventually:request sync:NO];
         [self performSelector:@selector(sendIfDelayedHelper:)
                    withObject:request
                    afterDelay:LP_REQUEST_RESUME_DELAY];
@@ -476,11 +476,11 @@
 
     // Send. operationBlock will run synchronously.
     // Adding to OperationQueue puts it in the background.
-    if (!sync) {
+    if (sync) {
+        operationBlock();
+    } else {
         [requestOperation addExecutionBlock:operationBlock];
         [[LPOperationQueue serialQueue] addOperation:requestOperation];
-    } else {
-        operationBlock();
     }
 }
 

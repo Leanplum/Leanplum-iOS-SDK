@@ -153,7 +153,7 @@ static NSDictionary *_requestHheaders;
 
 - (void)send
 {
-    [self sendEventually:YES];
+    [self sendEventually:NO];
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
         NSTimeInterval delay;
@@ -171,7 +171,7 @@ static NSDictionary *_requestHheaders;
 // if no other call has been sent within 1 minute.
 - (void)sendIfDelayed
 {
-    [self sendEventually:YES];
+    [self sendEventually:NO];
     [self performSelector:@selector(sendIfDelayedHelper)
                withObject:nil
                afterDelay:LP_REQUEST_RESUME_DELAY];
@@ -212,7 +212,7 @@ static NSDictionary *_requestHheaders;
             [self sendNow];
         }
     } else {
-        [self sendEventually:!sync];
+        [self sendEventually:sync];
         if (_error) {
             _error([NSError errorWithDomain:@"Leanplum" code:1
                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
@@ -240,7 +240,8 @@ static NSDictionary *_requestHheaders;
         return;
     }
 
-    [self sendEventually:async];
+    // Sends the requests asynchronous [self sendEventually:NO].
+    [self sendEventually:!async];
     [self sendRequests:async];
 
     [[LPCountAggregator sharedAggregator] incrementCount:@"send_now"];
@@ -267,7 +268,7 @@ static NSDictionary *_requestHheaders;
         if (requestsToSend.count == 0) {
             return;
         }
-        NSLog(@"sending req serially: %@", requestsToSend);
+
         // Set up request operation.
         NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
         NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
@@ -404,7 +405,7 @@ static NSDictionary *_requestHheaders;
     [self sendNow:NO];
 }
 
-- (void)sendEventually:(BOOL) async
+- (void)sendEventually:(BOOL)sync;
 {
     RETURN_IF_TEST_MODE;
     if (!_sent) {
@@ -430,10 +431,10 @@ static NSDictionary *_requestHheaders;
             }
         };
 
-        if (async) {
-            [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
-        } else {
+        if (sync) {
             operationBlock();
+        } else {
+            [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
         }
     }
     [[LPCountAggregator sharedAggregator] incrementCount:@"send_eventually"];

@@ -77,7 +77,7 @@
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
     [requestSender send:request];
 
-    OCMVerify([requestSenderMock sendEventually:request async:[OCMArg any]]);
+    OCMVerify([requestSenderMock sendEventually:request sync:[OCMArg any]]);
 
     [requestSenderMock stopMocking];
     [configMock stopMocking];
@@ -94,7 +94,7 @@
     [requestSender sendNow:request];
 
     OCMVerify([requestSenderMock sendNow:request sync:false]);
-    OCMVerify([requestSenderMock sendEventually:request async:[OCMArg any]]);
+    OCMVerify([requestSenderMock sendEventually:request sync:[OCMArg any]]);
     OCMVerify([requestSenderMock sendRequests:false]);
     
     [requestSenderMock stopMocking];
@@ -105,7 +105,7 @@
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
-    [requestSender sendEventually:request async:NO];
+    [requestSender sendEventually:request sync:NO];
 
     OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
 
@@ -135,7 +135,7 @@
     OCMStub([reachabilityMock isReachable]).andReturn(false);
     [requestSender sendIfConnected:request];
 
-    OCMVerify([requestSenderMock sendEventually:request async:[OCMArg any]]);
+    OCMVerify([requestSenderMock sendEventually:request sync:[OCMArg any]]);
     
     [requestSenderMock stopMocking];
     [reachabilityMock stopMocking];
