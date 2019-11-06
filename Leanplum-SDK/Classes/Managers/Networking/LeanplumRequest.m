@@ -405,7 +405,7 @@ static NSDictionary *_requestHheaders;
     [self sendNow:NO];
 }
 
-- (void)sendEventually:(BOOL)sync;
+- (void)sendEventually:(BOOL)sync
 {
     RETURN_IF_TEST_MODE;
     if (!_sent) {

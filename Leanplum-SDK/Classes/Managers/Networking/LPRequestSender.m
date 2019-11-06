@@ -126,7 +126,7 @@
     [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
-- (void)sendEventually:(id<LPRequesting>)request sync:(BOOL)sync;
+- (void)sendEventually:(id<LPRequesting>)request sync:(BOOL)sync
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
