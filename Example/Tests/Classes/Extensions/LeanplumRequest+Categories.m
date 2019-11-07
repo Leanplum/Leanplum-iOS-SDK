@@ -38,6 +38,10 @@ static LPNetworkResponseBlock responseCallback;
                                  withMethod:@selector(swizzle_sendNow)
                                       error:&error
                                       class:[LeanplumRequest class]];
+    success &= [LPSwizzle swizzleMethod:@selector(sendEventually:)
+                             withMethod:@selector(swizzle_sendEventually:)
+                                  error:&error
+                                  class:[LeanplumRequest class]];
     success &= [LPSwizzle swizzleClassMethod:@selector(get:params:)
                              withClassMethod:@selector(swizzle_get:params:)
                                        error:&error
@@ -61,6 +65,11 @@ static LPNetworkResponseBlock responseCallback;
     IMP imp = [self methodForSelector:selector];
     void (*func) (id, SEL) = (void*)imp;
     func(self, selector);
+}
+
+- (void)swizzle_sendEventually:(BOOL) sync
+{
+    [self swizzle_sendEventually:YES];
 }
 
 - (void)swizzle_download

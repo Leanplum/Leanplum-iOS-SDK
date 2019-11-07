@@ -261,7 +261,7 @@
         return YES;
     }];
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
-    
+
     // Test push token is sent if the token changes.
     token = [@"sample2" dataUsingEncoding:NSUTF8StringEncoding];
     formattedToken = [token description];
