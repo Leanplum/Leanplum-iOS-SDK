@@ -77,4 +77,9 @@
          current:(NSString *__nonnull)relativeDir
            files:(NSMutableArray *__nonnull)files;
 
+/**
+ * Adds an attribute to a file at filepath to exclude it from iCloud and iTunes backup.
+ */
++ (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *__nonnull) filePathString;
+
 @end

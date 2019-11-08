@@ -834,4 +834,26 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     }
 }
 
++ (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *) filePathString
+{
+    LP_TRY
+    if (!filePathString) {
+        return NO;
+    }
+
+    NSURL* url= [NSURL fileURLWithPath:filePathString];
+    if (url && [[NSFileManager defaultManager] fileExistsAtPath:[url path]]) {
+        NSError *error = nil;
+        BOOL success = [url setResourceValue:[NSNumber numberWithBool: YES]
+                                      forKey:NSURLIsExcludedFromBackupKey
+                                       error:&error];
+        if (!success) {
+            NSLog(@"Leanplum: Error excluding %@ from backup %@", [url lastPathComponent], error);
+        }
+        return success;
+    }
+    return NO;
+    LP_END_TRY
+}
+
 @end
