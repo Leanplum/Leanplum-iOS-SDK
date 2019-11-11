@@ -140,8 +140,8 @@
     OCMStub([leanplumRequestMock post:LP_METHOD_LOG params:[OCMArg any]]).andReturn(leanplumRequestMock);
     
     [countAggregator sendAllCounts];
-    
-    OCMVerify([leanplumRequestMock sendEventually]);
+
+    [[[leanplumRequestMock verify] ignoringNonObjectArgs] sendEventually:[OCMArg any]];
 }
 
 @end

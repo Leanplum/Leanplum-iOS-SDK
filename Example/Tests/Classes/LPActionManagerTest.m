@@ -33,6 +33,7 @@
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LPUIAlert.h"
+#import "LPOperationQueue.h"
 
 @interface LPActionManager (Test)
 - (void)requireMessageContent:(NSString *)messageId
@@ -260,7 +261,7 @@
         return YES;
     }];
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
-    
+
     // Test push token is sent if the token changes.
     token = [@"sample2" dataUsingEncoding:NSUTF8StringEncoding];
     formattedToken = [token description];
@@ -276,6 +277,7 @@
         return YES;
     }];
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 

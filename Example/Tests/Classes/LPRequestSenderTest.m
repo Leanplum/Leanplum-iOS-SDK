@@ -15,6 +15,8 @@
 #import <Leanplum/LPRequestFactory.h>
 #import <Leanplum/LPRequest.h>
 #import <Leanplum/LPCountAggregator.h>
+#import "LeanplumHelper.h"
+#import "LPOperationQueue.h"
 
 @interface LPRequestSender(UnitTest)
 
@@ -22,7 +24,6 @@
 
 - (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync;
 - (void)sendRequests:(BOOL)sync;
-- (NSOperationQueue *)sendNowQueue;
 
 @end
 
@@ -32,8 +33,11 @@
 
 @implementation LPRequestSenderTest
 
-- (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
++ (void)setUp
+{
+    [super setUp];
+    // Called only once to setup method swizzling.
+    [LeanplumHelper setup_method_swizzling];
 }
 
 - (void)tearDown {
@@ -73,7 +77,7 @@
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
     [requestSender send:request];
 
-    OCMVerify([requestSenderMock sendEventually:request]);
+    [[[requestSenderMock verify] ignoringNonObjectArgs] sendEventually:request sync:[OCMArg any]];
 
     [requestSenderMock stopMocking];
     [configMock stopMocking];
@@ -89,9 +93,9 @@
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
     [requestSender sendNow:request];
 
-    OCMVerify([requestSenderMock sendNow:request sync:false]);
-    OCMVerify([requestSenderMock sendEventually:request]);
-    OCMVerify([requestSenderMock sendRequests:false]);
+    [[[requestSenderMock verify] ignoringNonObjectArgs] sendNow:request sync:[OCMArg any]];
+    [[[requestSenderMock verify] ignoringNonObjectArgs] sendEventually:request sync:[OCMArg any]];
+    [[[requestSenderMock verify] ignoringNonObjectArgs] sendRequests:[OCMArg any]];
     
     [requestSenderMock stopMocking];
     [configMock stopMocking];
@@ -101,7 +105,7 @@
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
-    [requestSender sendEventually:request];
+    [requestSender sendEventually:request sync:YES];
 
     OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
 
@@ -131,7 +135,7 @@
     OCMStub([reachabilityMock isReachable]).andReturn(false);
     [requestSender sendIfConnected:request];
 
-    OCMVerify([requestSenderMock sendEventually:request]);
+    [[[requestSenderMock verify] ignoringNonObjectArgs] sendEventually:request sync:[OCMArg any]];
     
     [requestSenderMock stopMocking];
     [reachabilityMock stopMocking];
@@ -199,18 +203,4 @@
     [eventDataManagerMock stopMocking];
 }
 
-- (void) testSendRequestsAsync {
-    LPRequestSender *requestSender = OCMPartialMock([[LPRequestSender alloc] init]);
-    id requestOperationMock = OCMClassMock([NSBlockOperation class]);
-    OCMStub([requestOperationMock new]).andReturn(requestOperationMock);
-    id mockQueue = OCMClassMock([NSOperationQueue class]);
-    OCMStub([requestSender sendNowQueue]).andReturn(mockQueue);
-    [requestSender sendRequests:false];
-
-    OCMVerify([requestOperationMock addExecutionBlock:[OCMArg any]]);
-    OCMVerify([mockQueue addOperation:requestOperationMock]);
-    
-    [requestOperationMock stopMocking];
-    [mockQueue stopMocking];
-}
 @end

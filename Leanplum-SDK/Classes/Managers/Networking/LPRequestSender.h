@@ -36,7 +36,7 @@
 
 - (void)send:(id<LPRequesting>)request;
 - (void)sendNow:(id<LPRequesting>)request;
-- (void)sendEventually:(id<LPRequesting>)request;
+- (void)sendEventually:(id<LPRequesting>)request sync:(BOOL)sync;
 - (void)sendIfConnected:(id<LPRequesting>)request;
 - (void)sendIfConnected:(id<LPRequesting>)request sync:(BOOL)sync;
 // Sends the request if another request hasn't been sent within a particular time delay.

@@ -33,6 +33,7 @@
 #import "LPEventCallbackManager.h"
 #import "LPAPIConfig.h"
 #import "LPUtils.h"
+#import "LPOperationQueue.h"
 
 @interface LeanplumRequest(LPRequestSender)
 
@@ -87,7 +88,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest send];
     } else {
-        [self sendEventually:request];
+        [self sendEventually:request sync:NO];
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
             NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
             NSTimeInterval delay;
@@ -119,36 +120,45 @@
             return;
         }
 
-        [self sendEventually:request];
+        [self sendEventually:request sync:sync];
         [self sendRequests:sync];
     }
     [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
-- (void)sendEventually:(id<LPRequesting>)request
+- (void)sendEventually:(id<LPRequesting>)request sync:(BOOL)sync
 {
     if ([request isKindOfClass:[LeanplumRequest class]]) {
         LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendEventually];
+        [oldLeanplumRequest sendEventually:sync];
     } else {
         RETURN_IF_TEST_MODE;
         if (!request.sent) {
             request.sent = YES;
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
-            NSInteger count = [LPEventDataManager count];
-            if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
-                uuid = [self generateUUID];
-            }
 
-            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
-                args[LP_PARAM_UUID] = uuid;
-                [LPEventDataManager addEvent:args];
+            void (^operationBlock)(void) = ^void() {
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+                NSInteger count = [LPEventDataManager count];
+                if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
+                    uuid = [self generateUUID];
+                }
 
-                [LPEventCallbackManager addEventCallbackAt:count
-                                                 onSuccess:request.responseBlock
-                                                   onError:request.errorBlock];
+                @synchronized ([LPEventCallbackManager eventCallbackMap]) {
+                    NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
+                    args[LP_PARAM_UUID] = uuid;
+                    [LPEventDataManager addEvent:args];
+
+                    [LPEventCallbackManager addEventCallbackAt:count
+                                                     onSuccess:request.responseBlock
+                                                       onError:request.errorBlock];
+                }
+            };
+
+            if (sync) {
+                operationBlock();
+            } else {
+                [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
             }
         }
     }
@@ -181,7 +191,7 @@
                 [self sendNow:request];
             }
         } else {
-            [self sendEventually:request];
+            [self sendEventually:request sync:sync];
             if (request.errorBlock) {
                 request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
                                                    userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
@@ -209,7 +219,7 @@
         LeanplumRequest *oldLeanplumRequest = request;
         [oldLeanplumRequest sendIfDelayed];
     } else {
-        [self sendEventually:request];
+        [self sendEventually:request sync:NO];
         [self performSelector:@selector(sendIfDelayedHelper:)
                    withObject:request
                    afterDelay:LP_REQUEST_RESUME_DELAY];
@@ -440,7 +450,7 @@
 
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-            [[self sendNowQueue] cancelAllOperations];
+            [[LPOperationQueue serialQueue] cancelAllOperations];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -458,7 +468,7 @@
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[self sendNowQueue] cancelAllOperations];
+            [[LPOperationQueue serialQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
@@ -466,11 +476,11 @@
 
     // Send. operationBlock will run synchronously.
     // Adding to OperationQueue puts it in the background.
-    if (!sync) {
-        [requestOperation addExecutionBlock:operationBlock];
-        [[self sendNowQueue] addOperation:requestOperation];
-    } else {
+    if (sync) {
         operationBlock();
+    } else {
+        [requestOperation addExecutionBlock:operationBlock];
+        [[LPOperationQueue serialQueue] addOperation:requestOperation];
     }
 }
 
@@ -481,23 +491,6 @@
     // Invoke errors on all requests.
     NSError *error = [NSError errorWithDomain:@"leanplum" code:-1001 userInfo:[NSDictionary dictionaryWithObject:@"Request timed out" forKey:NSLocalizedDescriptionKey]];
     [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-}
-
-/**
- * Static sendNowQueue with thread protection.
- * Returns an operation queue that manages sendNow to run in order.
- * This is required to prevent from having out of order error in the backend.
- * Also it is very crucial with the uuid logic.
- */
-- (NSOperationQueue *)sendNowQueue
-{
-    static NSOperationQueue *_sendNowQueue;
-    static dispatch_once_t sendNowQueueToken;
-    dispatch_once(&sendNowQueueToken, ^{
-        _sendNowQueue = [NSOperationQueue new];
-        _sendNowQueue.maxConcurrentOperationCount = 1;
-    });
-    return _sendNowQueue;
 }
 
 @end
