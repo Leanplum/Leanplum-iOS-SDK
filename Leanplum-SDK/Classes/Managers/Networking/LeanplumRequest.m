@@ -295,27 +295,20 @@ static NSDictionary *_requestHheaders;
                 dispatch_semaphore_signal(semaphore);
                 return;
             }
-            
-            // We need to lock sendNowCallbackMap so that new event callback won't be triggered
-            // right after it gets deleted.
-            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                LP_TRY
-                // Delete events on success.
-                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
-                
-                // Send another request if the last request had maximum events per api call.
-                if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                    [self sendRequests:async];
-                }
-                LP_END_TRY
 
-                [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
-                                                                 requests:requestsToSend
-                                                                operation:operation];
+            // Delete events on success.
+            [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+
+            // Send another request if the last request had maximum events per api call.
+            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                [self sendRequests:async];
             }
+
+            [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
+                                                             requests:requestsToSend
+                                                            operation:operation];
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
-            
         } errorHandler:^(id<LPNetworkOperationProtocol> completedOperation, NSError *err) {
             LP_TRY
             if ([weakOperation isCancelled]) {
@@ -323,43 +316,42 @@ static NSDictionary *_requestHheaders;
                 return;
             }
 
-            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                // Retry on 500 and other network failures.
-                NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
-                if (httpStatusCode == 408
-                    || (httpStatusCode >= 500 && httpStatusCode < 600)
-                    || err.code == NSURLErrorBadServerResponse
-                    || err.code == NSURLErrorCannotConnectToHost
-                    || err.code == NSURLErrorDNSLookupFailed
-                    || err.code == NSURLErrorNotConnectedToInternet
-                    || err.code == NSURLErrorTimedOut) {
-                    NSLog(@"Leanplum: %@", err);
-                } else {
-                    id errorResponse = completedOperation.responseJSON;
-                    NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
-                    if (errorMessage) {
-                        if ([errorMessage hasPrefix:@"App not found"]) {
-                            errorMessage = @"No app matching the provided app ID was found.";
-                            constants.isInPermanentFailureState = YES;
-                        } else if ([errorMessage hasPrefix:@"Invalid access key"]) {
-                            errorMessage = @"The access key you provided is not valid for this app.";
-                            constants.isInPermanentFailureState = YES;
-                        } else if ([errorMessage hasPrefix:@"Development mode requested but not permitted"]) {
-                            errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
-                            constants.isInPermanentFailureState = YES;
-                        }
-                        NSLog(@"Leanplum: %@", errorMessage);
-                    } else {
-                        NSLog(@"Leanplum: %@", err);
+            // Retry on 500 and other network failures.
+            NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
+            if (httpStatusCode == 408
+                || (httpStatusCode >= 500 && httpStatusCode < 600)
+                || err.code == NSURLErrorBadServerResponse
+                || err.code == NSURLErrorCannotConnectToHost
+                || err.code == NSURLErrorDNSLookupFailed
+                || err.code == NSURLErrorNotConnectedToInternet
+                || err.code == NSURLErrorTimedOut) {
+                NSLog(@"Leanplum: %@", err);
+            } else {
+                id errorResponse = completedOperation.responseJSON;
+                NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
+                if (errorMessage) {
+                    if ([errorMessage hasPrefix:@"App not found"]) {
+                        errorMessage = @"No app matching the provided app ID was found.";
+                        constants.isInPermanentFailureState = YES;
+                    } else if ([errorMessage hasPrefix:@"Invalid access key"]) {
+                        errorMessage = @"The access key you provided is not valid for this app.";
+                        constants.isInPermanentFailureState = YES;
+                    } else if ([errorMessage hasPrefix:@"Development mode requested but not permitted"]) {
+                        errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
+                        constants.isInPermanentFailureState = YES;
                     }
-
-                    // Delete on permanant error state.
-                    [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+                    NSLog(@"Leanplum: %@", errorMessage);
+                } else {
+                    NSLog(@"Leanplum: %@", err);
                 }
-                // Invoke errors on all requests.
-                [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-                [[LPOperationQueue serialQueue] cancelAllOperations];
+
+                // Delete on permanant error state.
+                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
             }
+            // Invoke errors on all requests.
+            [LPEventCallbackManager invokeErrorCallbacksWithError:err];
+            [[LPOperationQueue serialQueue] cancelAllOperations];
+
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -412,6 +404,7 @@ static NSDictionary *_requestHheaders;
         _sent = YES;
 
         void (^operationBlock)(void) = ^void() {
+            LP_TRY
             NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
             NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
             NSInteger count = [LPEventDataManager count];
@@ -419,16 +412,15 @@ static NSDictionary *_requestHheaders;
                 uuid = [LeanplumRequest generateUUID];
             }
 
-            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                NSMutableDictionary *args = [self createArgsDictionary];
-                args[LP_PARAM_UUID] = uuid;
+            NSMutableDictionary *args = [self createArgsDictionary];
+            args[LP_PARAM_UUID] = uuid;
+            
+            [LPEventDataManager addEvent:args];
 
-                [LPEventDataManager addEvent:args];
-
-                [LPEventCallbackManager addEventCallbackAt:count
-                                                 onSuccess:self->_response
-                                                   onError:self->_error];
-            }
+            [LPEventCallbackManager addEventCallbackAt:count
+                                             onSuccess:self->_response
+                                               onError:self->_error];
+            LP_END_TRY
         };
 
         if (sync) {
