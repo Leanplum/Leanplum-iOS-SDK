@@ -89,7 +89,7 @@ static dispatch_once_t leanplum_onceToken;
     for (NSString *name in counts) { // iterate over counts, creating one request per counter
         int count = [counts[name] intValue];
         NSMutableDictionary<NSString *, id> *params = [self makeParams:name withCount:count];
-        [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually];
+        [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually:NO];
     }
 }
 

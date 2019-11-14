@@ -34,6 +34,7 @@
 #import "LPNetworkEngine+Category.h"
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
+#import "LPOperationQueue.h"
 
 @interface LPEventDataManager(UnitTest)
 
@@ -44,7 +45,6 @@
 @interface LeanplumRequest(UnitTest)
 
 - (void)sendNow:(BOOL)async;
-+ (NSOperationQueue *)sendNowQueue;
 
 @end
 
@@ -112,10 +112,12 @@
     [LPEventDataManager deleteEventsWithLimit:10000];
     
     [Leanplum track:@"sample"];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 1);
     
     [Leanplum track:@"sample2"];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 2);
     
@@ -163,8 +165,8 @@
     XCTAssertTrue(timedOut == 0);
     
     // Clean up.
-    [[LeanplumRequest sendNowQueue] cancelAllOperations];
-    [[LeanplumRequest sendNowQueue] waitUntilAllOperationsAreFinished];
+    [[LPOperationQueue serialQueue] cancelAllOperations];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     [OHHTTPStubs removeAllStubs];
 }
 
@@ -217,6 +219,9 @@
     [Leanplum track:@"sample"];
     [Leanplum track:@"sample2"];
     [[LeanplumRequest post:@"sample3" params:nil] sendNow:YES];
+
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 3);
     XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
@@ -225,6 +230,9 @@
     // After sending, the last one should have a different uuid.
     [NSThread sleepForTimeInterval:0.4];
     [Leanplum track:@"sample4"];
+
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 4);
     XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
@@ -244,6 +252,7 @@
     
     [[LeanplumRequest post:@"sample4" params:nil] sendNow:NO];
     [NSThread sleepForTimeInterval:0.1];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 0);
     
@@ -251,6 +260,7 @@
     for (int i=0; i<MAX_EVENTS_PER_API_CALL+1; i++) {
         [Leanplum track:@"s"];
     }
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     events = [LPEventDataManager eventsWithLimit:900000];
     XCTAssertTrue(events.count == MAX_EVENTS_PER_API_CALL+1);
     XCTAssertFalse([events[0][@"uuid"] isEqual:events[MAX_EVENTS_PER_API_CALL][@"uuid"]]);
@@ -294,14 +304,14 @@
     [self expectationWithDescription:@"operationExpectation"];
     [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
         NSArray *events = [LPEventDataManager eventsWithLimit:900000];
-        XCTAssertTrue(events.count == 3);
+        XCTAssertTrue(events.count == 1);
         [operationExpectation fulfill];
         return YES;
     }];
     
     // Freeze the operation queue for a bit to let events queue up.
-    NSOperationQueue *sendNowQueue = [LeanplumRequest sendNowQueue];
-    [sendNowQueue addOperationWithBlock:^{
+    NSOperationQueue *serialQueue = [LPOperationQueue serialQueue];
+    [serialQueue addOperationWithBlock:^{
         [NSThread sleepForTimeInterval:0.2];
     }];
     
@@ -315,11 +325,14 @@
         [responseExpectation fulfill];
     }];
     [request sendNow:YES];
-    
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+
+
     // Add extra events.
     [Leanplum track:@"s"];
     [Leanplum track:@"s2"];
-    
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 

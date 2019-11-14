@@ -2761,7 +2761,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
-                [[LPRequestSender sharedInstance] sendEventually:request];
+                [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Unable to send log: %@", exception);
     } @finally {

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07A97FFF23466CD8008AEC06 /* LPOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */; };
+		07A9800023466CD8008AEC06 /* LPOperationQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */; };
 		5B233C3A21ED902900206ACB /* LeanplumSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B233C3021ED902900206ACB /* LeanplumSDK.framework */; };
 		5B233DDE21ED921100206ACB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B233D5D21ED913400206ACB /* InfoPlist.strings */; };
 		5B233E2021ED923200206ACB /* DifferentPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 5B233DE121ED923200206ACB /* DifferentPriorities2.json */; };
@@ -201,6 +203,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPOperationQueue.m; sourceTree = "<group>"; };
+		07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPOperationQueue.h; sourceTree = "<group>"; };
 		090C8E91DAFDE753EF49E13C /* Pods_Leanplum_iOS_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_iOS_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		109EB4343026F1EF42D08574 /* Pods-Leanplum-iOS-Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-iOS-Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example.debug.xcconfig"; sourceTree = "<group>"; };
 		5B233C3021ED902900206ACB /* LeanplumSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LeanplumSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -834,19 +838,21 @@
 			isa = PBXGroup;
 			children = (
 				5B233FF721ED964F00206ACB /* Encryption */,
-				5B233FFA21ED964F00206ACB /* LPUtils.h */,
-				5B233FFB21ED964F00206ACB /* LPDatabase.m */,
-				5B233FFC21ED964F00206ACB /* LPSwizzle.h */,
-				5B233FFD21ED964F00206ACB /* LPJSON.m */,
 				5B233FFE21ED964F00206ACB /* FileMD5Hash.c */,
-				5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */,
-				5B23400021ED964F00206ACB /* LPDatabase.h */,
-				5B23400121ED964F00206ACB /* LPUtils.m */,
 				5B23400221ED964F00206ACB /* FileMD5Hash.h */,
+				5B23400021ED964F00206ACB /* LPDatabase.h */,
+				5B233FFB21ED964F00206ACB /* LPDatabase.m */,
 				5B23400321ED964F00206ACB /* LPJSON.h */,
-				5B23400421ED964F00206ACB /* LPSwizzle.m */,
-				5B23400521ED964F00206ACB /* Vendor */,
+				5B233FFD21ED964F00206ACB /* LPJSON.m */,
+				5B233FFF21ED964F00206ACB /* LPKeychainWrapper.h */,
 				5B23402F21ED964F00206ACB /* LPKeychainWrapper.m */,
+				07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */,
+				07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */,
+				5B233FFC21ED964F00206ACB /* LPSwizzle.h */,
+				5B23400421ED964F00206ACB /* LPSwizzle.m */,
+				5B233FFA21ED964F00206ACB /* LPUtils.h */,
+				5B23400121ED964F00206ACB /* LPUtils.m */,
+				5B23400521ED964F00206ACB /* Vendor */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1044,6 +1050,7 @@
 				5B23403321ED964F00206ACB /* LeanplumCompatibility.h in Headers */,
 				5B23407D21ED964F00206ACB /* LPUIEditorWrapper.h in Headers */,
 				5B2340AF21ED964F00206ACB /* LPFeatureFlags.h in Headers */,
+				07A9800023466CD8008AEC06 /* LPOperationQueue.h in Headers */,
 				5B23403B21ED964F00206ACB /* LPAppIconManager.h in Headers */,
 				5B23411121ED965000206ACB /* NSDictionary+RequestEncoding.h in Headers */,
 				5B23403521ED964F00206ACB /* LPVar.h in Headers */,
@@ -1244,17 +1251,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A5B8E66A75DE62DC40AAD216 /* [CP] Embed Pods Frameworks */ = {
@@ -1262,21 +1268,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
-				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
-				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OHHTTPStubs.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FE31991B4356AF7EAA1064C0 /* [CP] Check Pods Manifest.lock */ = {
@@ -1325,6 +1326,7 @@
 				5B23406B21ED964F00206ACB /* LPNetworkFactory.m in Sources */,
 				5B23407721ED964F00206ACB /* LPFileManager.m in Sources */,
 				5B2340C721ED964F00206ACB /* LPMessageArchiveData.m in Sources */,
+				07A97FFF23466CD8008AEC06 /* LPOperationQueue.m in Sources */,
 				5B2340EB21ED965000206ACB /* Leanplum_WebSocket.m in Sources */,
 				5B23404B21ED964F00206ACB /* LPRequestSender.m in Sources */,
 				5B23405721ED964F00206ACB /* LeanplumSocket.m in Sources */,

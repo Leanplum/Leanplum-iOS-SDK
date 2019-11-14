@@ -54,7 +54,7 @@
 
 - (void)send;
 - (void)sendNow;
-- (void)sendEventually;
+- (void)sendEventually:(BOOL)sync;
 - (void)sendIfConnected;
 - (void)sendIfConnectedSync:(BOOL)sync;
 // Sends the request if another request hasn't been sent within a particular time delay.

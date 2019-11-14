@@ -39,6 +39,7 @@
 #import "LPConstants.h"
 #import "LPRegisterDevice.h"
 #import "Leanplum.h"
+#import "LPOperationQueue.h"
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -810,9 +811,9 @@
         XCTAssertEqual(outputDict[messageIdOne][@"countdown"], outputDict[messageIdOne][@"countdown"], @"Countdown not Equal");
     }];
     [Leanplum track:trackName];
+    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     [Leanplum forceContentUpdate];
     XCTAssertTrue([Leanplum hasStarted]);
-    
 }
 
 /**
