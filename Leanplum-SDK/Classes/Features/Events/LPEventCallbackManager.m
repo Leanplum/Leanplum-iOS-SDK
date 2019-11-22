@@ -57,9 +57,6 @@
         NSNumber *atIndex = @(index);
 
         if (callbackMap && callback && atIndex) {
-            callbackMap = nil;
-            callback = nil;
-            atIndex = nil;
             callbackMap[atIndex] = callback;
         }
         [[LPCountAggregator sharedAggregator] incrementCount:@"add_event_callback_at"];
