@@ -137,6 +137,7 @@
             request.sent = YES;
 
             void (^operationBlock)(void) = ^void() {
+                LP_TRY
                 NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
                 NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
                 NSInteger count = [LPEventDataManager count];
@@ -144,15 +145,14 @@
                     uuid = [self generateUUID];
                 }
 
-                @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                    NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
-                    args[LP_PARAM_UUID] = uuid;
-                    [LPEventDataManager addEvent:args];
+                NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
+                args[LP_PARAM_UUID] = uuid;
+                [LPEventDataManager addEvent:args];
 
-                    [LPEventCallbackManager addEventCallbackAt:count
-                                                     onSuccess:request.responseBlock
-                                                       onError:request.errorBlock];
-                }
+                [LPEventCallbackManager addEventCallbackAt:count
+                                                 onSuccess:request.responseBlock
+                                                   onError:request.errorBlock];
+                LP_END_TRY
             };
 
             if (sync) {
@@ -386,24 +386,18 @@
             [self.uiTimeoutTimer invalidate];
             self.uiTimeoutTimer = nil;
 
-            // We need to lock sendNowCallbackMap so that new event callback won't be triggered
-            // right after it gets deleted.
-            @synchronized ([LPEventCallbackManager eventCallbackMap]) {
-                LP_TRY
-                // Delete events on success.
-                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+            // Delete events on success.
+            [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
 
-                // Send another request if the last request had maximum events per api call.
-                if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                    [self sendRequests:sync];
-                }
-                LP_END_TRY
+            // Send another request if the last request had maximum events per api call.
+            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+                [self sendRequests:sync];
+            }
 
-                if (!self.didUiTimeout) {
-                    [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
-                                                                     requests:requestsToSend
-                                                                    operation:operation];
-                }
+            if (!self.didUiTimeout) {
+                [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
+                                                                 requests:requestsToSend
+                                                                operation:operation];
             }
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
