@@ -224,7 +224,13 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
     // Cache computed values.
     if ([_value isKindOfClass:NSString.class]) {
         _stringValue = (NSString *) _value;
-        _numberValue = [NSNumber numberWithDouble:[_stringValue doubleValue]];
+        if ([self stringIsNumeric:_stringValue]) {
+            _numberValue = [NSNumber numberWithDouble:[_stringValue doubleValue]];
+        } else {
+            if ([_defaultValue isKindOfClass:NSNumber.class]) {
+                _numberValue = [NSNumber numberWithDouble:[_defaultValue doubleValue]];
+            }
+        }
     } else if ([_value isKindOfClass:NSNumber.class]) {
         _stringValue = [NSString stringWithFormat:@"%@", _value];
         _numberValue = (NSNumber *) _value;
@@ -233,6 +239,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
         _numberValue = nil;
     }
 }
+
 
 - (void)update
 {
