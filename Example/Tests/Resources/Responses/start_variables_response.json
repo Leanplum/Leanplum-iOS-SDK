@@ -251,7 +251,8 @@
                  "floatVariable": 5,
                  "integerVariable": 1,
                  "fileVariable": "Mario.png",
-                 "stringVariable": "test_string"
+                 "stringVariable": "test_string",
+                 "integerVariableString": "test"
                  },
                  "latestVersion": "1.4.0.2",
                  "vars": {

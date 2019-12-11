@@ -1139,6 +1139,7 @@
     [LPVar define:@"D" withDictionary:@{}];
     [LPVar define:@"D.a" withInteger:1];
     [LPVar define:@"mario" withFile:@"Mario.png"];
+    [LPVar define:@"integerVariableString" withInteger:12];
     [LPVar define:@"params" withDictionary:@{
                                              @"jumpDuration": @1.0,
                                              @"jumpButton": @"Jump!",
@@ -1186,6 +1187,7 @@
         XCTAssertEqualObjects(([NSMutableArray arrayWithObjects:@1, @2, @3, @4, @5, nil]),
                               variablesData[@"myArray"]);
         XCTAssertEqualObjects(@"Mario.png", variablesData[@"mario"]);
+        XCTAssertEqualObjects(@12, variablesData[@"integerVariableString"]);
         XCTAssertEqualObjects(@"Welcome to Leanplum!", variablesData[@"welcomeMessage"]);
         XCTAssertEqualObjects((@{@"jumpButton": @"Jump!",
                                  @"jumpDuration": @1,
@@ -1208,6 +1210,7 @@
                                      @"long" : @"integer",
                                      @"long_long" : @"integer",
                                      @"mario" : @"file",
+                                     @"integerVariableString" : @"integer",
                                      @"myArray" : @"list",
                                      @"number" : @"float",
                                      @"params" : @"group",
