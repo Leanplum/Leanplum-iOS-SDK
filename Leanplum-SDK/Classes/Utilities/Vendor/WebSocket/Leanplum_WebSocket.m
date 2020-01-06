@@ -52,9 +52,6 @@ enum {
     if (self) {
         self.delegate = aDelegate;
         url = [NSURL URLWithString:urlString];
-        if (![url.scheme isEqualToString:@"ws"]) {
-            [NSException raise:Leanplum_WebSocketException format:@"Unsupported protocol %@", url];
-        }
         socket = [[Leanplum_AsyncSocket alloc] initWithDelegate:self];
         self.runLoopModes = @[NSRunLoopCommonModes];
     }
