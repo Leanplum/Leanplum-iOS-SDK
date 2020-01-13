@@ -179,6 +179,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     UIButton *_overlayView;
     LPHitView *_closePopupView;
     BOOL _webViewNeedsFade;
+    UIDeviceOrientation _orientation;
 }
 
 #pragma mark Initialization
@@ -739,13 +740,20 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 - (void)orientationDidChange:(NSNotification *)notification
 {
-    [self updatePopupLayout];
-    
-    // isStatusBarHidden is not updated synchronously
-    LPActionContext *conteext = _contexts.lastObject;
-    if ([conteext.actionName isEqualToString:LPMT_INTERSTITIAL_NAME]) {
-        [self performSelector:@selector(updatePopupLayout) withObject:nil afterDelay:0];
+    UIDevice *device = notification.object;
+    // Bug with iOS, calls orientation did change even without change,
+    // Check if the orientation is not changed than before.
+    if (_orientation != device.orientation) {
+        _orientation = device.orientation;
+        [self updatePopupLayout];
+        
+        // isStatusBarHidden is not updated synchronously
+        LPActionContext *conteext = _contexts.lastObject;
+        if ([conteext.actionName isEqualToString:LPMT_INTERSTITIAL_NAME]) {
+            [self performSelector:@selector(updatePopupLayout) withObject:nil afterDelay:0];
+        }
     }
+
 }
 
 - (void)closePopupWithAnimation:(BOOL)animated
