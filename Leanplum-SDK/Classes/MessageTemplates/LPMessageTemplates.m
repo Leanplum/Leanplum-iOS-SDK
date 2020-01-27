@@ -355,34 +355,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }
 }
 
-#pragma mark Alert and Confirm Logic
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    [self alertDismissedWithButtonIndex:buttonIndex];
-}
-
-- (void)alertDismissedWithButtonIndex:(NSInteger)buttonIndex
-{
-    LPActionContext *context = _contexts.lastObject;
-    @try {
-        [_contexts removeLastObject];
-        
-        if ([context.actionName isEqualToString:LPMT_ALERT_NAME]) {
-            [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
-        } else {
-            if (buttonIndex == 1) {
-                [context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
-            } else {
-                [context runActionNamed:LPMT_ARG_CANCEL_ACTION];
-            }
-        }
-    }
-    @catch (NSException *exception) {
-        LOG_LP_MESSAGE_EXCEPTION;
-    }
-}
-
 #pragma mark Center Popup and Interstitial Logic
 
 // Creates a 1x1 image with the specified color.

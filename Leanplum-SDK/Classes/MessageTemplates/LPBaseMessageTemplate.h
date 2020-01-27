@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "Leanplum.h"
 #import "LPMessageTemplateConstants.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,6 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIViewController *)visibleViewController;
 
 @property  (nonatomic, strong) NSMutableArray *contexts;
+
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex;
+- (void)alertDismissedWithButtonIndex:(NSInteger)buttonIndex;
 
 @end
 
