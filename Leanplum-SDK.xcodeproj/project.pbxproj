@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -72,7 +72,6 @@
 		5B23403321ED964F00206ACB /* LeanplumCompatibility.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233F9E21ED964F00206ACB /* LeanplumCompatibility.h */; };
 		5B23403521ED964F00206ACB /* LPVar.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233F9F21ED964F00206ACB /* LPVar.h */; };
 		5B23403721ED964F00206ACB /* Leanplum.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FA021ED964F00206ACB /* Leanplum.h */; };
-		5B23403921ED964F00206ACB /* LPMessageTemplates.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FA121ED964F00206ACB /* LPMessageTemplates.m */; };
 		5B23403B21ED964F00206ACB /* LPAppIconManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FA321ED964F00206ACB /* LPAppIconManager.h */; };
 		5B23403D21ED964F00206ACB /* LPRegisterDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FA421ED964F00206ACB /* LPRegisterDevice.h */; };
 		5B23403F21ED964F00206ACB /* LPRevenueManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FA521ED964F00206ACB /* LPRevenueManager.h */; };
@@ -183,10 +182,16 @@
 		5B23412321ED965000206ACB /* Leanplum_MKNKEngineWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402D21ED964F00206ACB /* Leanplum_MKNKEngineWrapper.h */; };
 		5B23412521ED965000206ACB /* Leanplum_MKNetworkOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23402E21ED964F00206ACB /* Leanplum_MKNetworkOperation.h */; };
 		5B23412721ED965000206ACB /* LPKeychainWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B23402F21ED964F00206ACB /* LPKeychainWrapper.m */; };
-		5B23412921ED965000206ACB /* LPMessageTemplates.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B23403021ED964F00206ACB /* LPMessageTemplates.h */; };
 		5B23412D21ED970600206ACB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5B23412C21ED970600206ACB /* UIKit.framework */; };
 		5B23414721ED995500206ACB /* LeanplumSDK_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233C3321ED902900206ACB /* LeanplumSDK_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61B186A824E44665ED526E8F /* Pods_Leanplum_iOS_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 090C8E91DAFDE753EF49E13C /* Pods_Leanplum_iOS_Example.framework */; };
+		A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */; };
+		A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */; };
+		A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */; };
+		A8D39E8623DFA0D500B0C51E /* LPMessageTemplateConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */; };
+		A8D39E8723DFA0D500B0C51E /* LPMessageTemplates.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E8123DFA0D500B0C51E /* LPMessageTemplates.m */; };
+		A8D39E8823DFA0D500B0C51E /* LPAlertMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8223DFA0D500B0C51E /* LPAlertMessageTemplate.h */; };
+		A8D39E8A23DFA0D500B0C51E /* LPMessageTemplates.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8423DFA0D500B0C51E /* LPMessageTemplates.h */; };
 		A8DBE2652204FDA00080818A /* LPFileTransferManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A8DBE2632204FDA00080818A /* LPFileTransferManager.h */; };
 		A8DBE2662204FDA00080818A /* LPFileTransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DBE2642204FDA00080818A /* LPFileTransferManager.m */; };
 		F10BE7FBEDF1FD42E0D5C8C0 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4F21D3DB0BE369EA3E87FDC /* Pods_LeanplumSDKTests.framework */; };
@@ -288,7 +293,6 @@
 		5B233F9E21ED964F00206ACB /* LeanplumCompatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumCompatibility.h; sourceTree = "<group>"; };
 		5B233F9F21ED964F00206ACB /* LPVar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPVar.h; sourceTree = "<group>"; };
 		5B233FA021ED964F00206ACB /* Leanplum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Leanplum.h; sourceTree = "<group>"; };
-		5B233FA121ED964F00206ACB /* LPMessageTemplates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPMessageTemplates.m; sourceTree = "<group>"; };
 		5B233FA321ED964F00206ACB /* LPAppIconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPAppIconManager.h; sourceTree = "<group>"; };
 		5B233FA421ED964F00206ACB /* LPRegisterDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRegisterDevice.h; sourceTree = "<group>"; };
 		5B233FA521ED964F00206ACB /* LPRevenueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRevenueManager.h; sourceTree = "<group>"; };
@@ -408,7 +412,6 @@
 		5B23402D21ED964F00206ACB /* Leanplum_MKNKEngineWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Leanplum_MKNKEngineWrapper.h; sourceTree = "<group>"; };
 		5B23402E21ED964F00206ACB /* Leanplum_MKNetworkOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Leanplum_MKNetworkOperation.h; sourceTree = "<group>"; };
 		5B23402F21ED964F00206ACB /* LPKeychainWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPKeychainWrapper.m; sourceTree = "<group>"; };
-		5B23403021ED964F00206ACB /* LPMessageTemplates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplates.h; sourceTree = "<group>"; };
 		5B23412C21ED970600206ACB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		5B23413421ED985A00206ACB /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		5B23413521ED985A00206ACB /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -421,6 +424,13 @@
 		8B6F288A14D3DC03AE34508A /* Pods-Leanplum-iOS-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-iOS-Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-iOS-Example/Pods-Leanplum-iOS-Example.release.xcconfig"; sourceTree = "<group>"; };
 		9A9A6BD32DCA7415FAF3B6A7 /* Pods_Leanplum_tvOS_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_tvOS_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4A6ABC6920A431C861DC0C7 /* Pods-LeanplumSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
+		A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBaseMessageTemplate.h; sourceTree = "<group>"; };
+		A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseMessageTemplate.m; sourceTree = "<group>"; };
+		A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageTemplate.m; sourceTree = "<group>"; };
+		A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplateConstants.h; sourceTree = "<group>"; };
+		A8D39E8123DFA0D500B0C51E /* LPMessageTemplates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LPMessageTemplates.m; path = MessageTemplates/LPMessageTemplates.m; sourceTree = "<group>"; };
+		A8D39E8223DFA0D500B0C51E /* LPAlertMessageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPAlertMessageTemplate.h; sourceTree = "<group>"; };
+		A8D39E8423DFA0D500B0C51E /* LPMessageTemplates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplates.h; sourceTree = "<group>"; };
 		A8DBE2632204FDA00080818A /* LPFileTransferManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPFileTransferManager.h; sourceTree = "<group>"; };
 		A8DBE2642204FDA00080818A /* LPFileTransferManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPFileTransferManager.m; sourceTree = "<group>"; };
 		B36C7F13E8B7873FD7B2D1CA /* Pods_LeanplumSDK_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDK_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -657,7 +667,8 @@
 				5B233F9E21ED964F00206ACB /* LeanplumCompatibility.h */,
 				5B233F9F21ED964F00206ACB /* LPVar.h */,
 				5B233FA021ED964F00206ACB /* Leanplum.h */,
-				5B233FA121ED964F00206ACB /* LPMessageTemplates.m */,
+				A8D39E8123DFA0D500B0C51E /* LPMessageTemplates.m */,
+				A8D39E7E23DFA0D500B0C51E /* MessageTemplates */,
 				5B233FA221ED964F00206ACB /* Managers */,
 				5B233FC421ED964F00206ACB /* Features */,
 				5B233FDE21ED964F00206ACB /* Internal */,
@@ -665,7 +676,6 @@
 				5B233FF221ED964F00206ACB /* LPActionArg.h */,
 				5B233FF321ED964F00206ACB /* Models */,
 				5B233FF621ED964F00206ACB /* Utilities */,
-				5B23403021ED964F00206ACB /* LPMessageTemplates.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1009,6 +1019,19 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		A8D39E7E23DFA0D500B0C51E /* MessageTemplates */ = {
+			isa = PBXGroup;
+			children = (
+				A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */,
+				A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */,
+				A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */,
+				A8D39E8223DFA0D500B0C51E /* LPAlertMessageTemplate.h */,
+				A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */,
+				A8D39E8423DFA0D500B0C51E /* LPMessageTemplates.h */,
+			);
+			path = MessageTemplates;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1021,11 +1044,11 @@
 				5B23405521ED964F00206ACB /* LPNetworkFactory.h in Headers */,
 				5B23411521ED965000206ACB /* NSDate+RFC1123.h in Headers */,
 				5B23412121ED965000206ACB /* NSString+MKNetworkKitAdditions.h in Headers */,
+				A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */,
 				5B23409721ED964F00206ACB /* LPEventDataManager.h in Headers */,
 				5B2340D321ED965000206ACB /* LPSwizzle.h in Headers */,
 				5B2340C321ED964F00206ACB /* LPInbox.h in Headers */,
 				5B23405F21ED964F00206ACB /* LPNetworkProtocol.h in Headers */,
-				5B23412921ED965000206ACB /* LPMessageTemplates.h in Headers */,
 				5B23410521ED965000206ACB /* MKNetworkKit.h in Headers */,
 				5B23414721ED995500206ACB /* LeanplumSDK_iOS.h in Headers */,
 				5B2340E721ED965000206ACB /* Leanplum_AsyncSocket.h in Headers */,
@@ -1061,6 +1084,7 @@
 				5B23404121ED964F00206ACB /* LPNetworkOperation.h in Headers */,
 				5B2340DF21ED965000206ACB /* FileMD5Hash.h in Headers */,
 				5B2340C921ED964F00206ACB /* LPMessageArchiveData.h in Headers */,
+				A8D39E8823DFA0D500B0C51E /* LPAlertMessageTemplate.h in Headers */,
 				5B23405D21ED964F00206ACB /* LPAPIConfig.h in Headers */,
 				5B2340F721ED965000206ACB /* NSTimer+Blocks.h in Headers */,
 				5B23409321ED964F00206ACB /* LPActionContext-Internal.h in Headers */,
@@ -1070,8 +1094,10 @@
 				5B23406721ED964F00206ACB /* LeanplumRequest.h in Headers */,
 				5B23410D21ED965000206ACB /* Leanplum_MKNetworkEngine.h in Headers */,
 				5B23408921ED964F00206ACB /* LPActionManager.h in Headers */,
+				A8D39E8623DFA0D500B0C51E /* LPMessageTemplateConstants.h in Headers */,
 				5B23406D21ED964F00206ACB /* LPCountAggregator.h in Headers */,
 				5B2340FF21ED965000206ACB /* UIDevice+IdentifierAddition.h in Headers */,
+				A8D39E8A23DFA0D500B0C51E /* LPMessageTemplates.h in Headers */,
 				5B2340A121ED964F00206ACB /* LPEventCallback.h in Headers */,
 				5B23406321ED964F00206ACB /* LPRequestSender.h in Headers */,
 				5B2340B721ED964F00206ACB /* LPInternalState.h in Headers */,
@@ -1334,7 +1360,9 @@
 				5B2340D521ED965000206ACB /* LPJSON.m in Sources */,
 				5B23404321ED964F00206ACB /* LPAPIConfig.m in Sources */,
 				5B2340B121ED964F00206ACB /* LPFeatureFlagManager.m in Sources */,
+				A8D39E8723DFA0D500B0C51E /* LPMessageTemplates.m in Sources */,
 				5B2340DD21ED965000206ACB /* LPUtils.m in Sources */,
+				A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */,
 				5B23407921ED964F00206ACB /* LPCountAggregator.m in Sources */,
 				5B23408721ED964F00206ACB /* LPVar.m in Sources */,
 				5B23408D21ED964F00206ACB /* LPUIAlert.m in Sources */,
@@ -1359,6 +1387,7 @@
 				5B2340F121ED965000206ACB /* Leanplum_Reachability.m in Sources */,
 				5B23408121ED964F00206ACB /* LPVarCache.m in Sources */,
 				5B2340BF21ED964F00206ACB /* LPExceptionHandler.m in Sources */,
+				A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */,
 				5B2340E321ED965000206ACB /* LPSwizzle.m in Sources */,
 				5B23407321ED964F00206ACB /* LPRevenueManager.m in Sources */,
 				5B23405B21ED964F00206ACB /* LPNetworkOperation.m in Sources */,
@@ -1367,7 +1396,6 @@
 				5B23404D21ED964F00206ACB /* LPRequestFactory.m in Sources */,
 				5B23407521ED964F00206ACB /* LPRegisterDevice.m in Sources */,
 				5B23407F21ED964F00206ACB /* LPUIEditorWrapper.m in Sources */,
-				5B23403921ED964F00206ACB /* LPMessageTemplates.m in Sources */,
 				5B23408F21ED964F00206ACB /* LPActionManager.m in Sources */,
 				5B2340CB21ED964F00206ACB /* LPAES.m in Sources */,
 				5B2340AB21ED964F00206ACB /* LPEnumConstants.m in Sources */,
@@ -1576,9 +1604,10 @@
 		5B233C4521ED902900206ACB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1599,9 +1628,10 @@
 		5B233C4621ED902900206ACB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1624,6 +1654,7 @@
 			baseConfigurationReference = A4A6ABC6920A431C861DC0C7 /* Pods-LeanplumSDKTests.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				INFOPLIST_FILE = "Example/Tests/Tests-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1641,6 +1672,7 @@
 			baseConfigurationReference = D6B0753F90046AC95834890C /* Pods-LeanplumSDKTests.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				INFOPLIST_FILE = "Example/Tests/Tests-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1659,6 +1691,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				GCC_PREFIX_HEADER = "Example/Leanplum-SDK/Leanplum-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Example/Leanplum-SDK/Leanplum-SDK-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1677,6 +1710,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				GCC_PREFIX_HEADER = "Example/Leanplum-SDK/Leanplum-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Example/Leanplum-SDK/Leanplum-SDK-Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
