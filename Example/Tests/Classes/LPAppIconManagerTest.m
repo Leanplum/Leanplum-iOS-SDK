@@ -24,8 +24,8 @@
 
 
 #import <XCTest/XCTest.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LPAppIconManager.h"
 #import "LeanplumHelper.h"
 #import "LPVarCache.h"
@@ -69,7 +69,7 @@
     [super tearDown];
     // Clean up after every test.
     [LeanplumHelper clean_up];
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
 }
 
 - (void)test_supportsAlternateIcons {
