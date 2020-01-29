@@ -25,8 +25,8 @@
 
 
 #import <XCTest/XCTest.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "LeanplumRequest+Categories.h"
 #import "LPVarCache+Extensions.h"
@@ -72,16 +72,16 @@ static BOOL swizzled = NO;
     [LeanplumHelper setup_development_test];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    id startStub = [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    id startStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
     [Leanplum startWithResponseHandler:^(BOOL success) {
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         if (success) {
             dispatch_semaphore_signal(semaphore);
         } else {
@@ -96,16 +96,16 @@ static BOOL swizzled = NO;
     [LeanplumHelper setup_production_test];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     
-    id startStub = [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    id startStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
     [Leanplum startWithResponseHandler:^(BOOL success) {
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
