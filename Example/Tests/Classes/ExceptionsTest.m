@@ -25,8 +25,8 @@
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "LeanplumRequest+Categories.h"
 #import "LPNetworkEngine+Category.h"
@@ -54,7 +54,7 @@
     [super tearDown];
     // Clean up after every test.
     [LeanplumHelper clean_up];
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
     
 }
 
@@ -63,11 +63,11 @@
     [Leanplum_Reachability online:NO];
     [LeanplumHelper setup_development_test];
 
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -86,12 +86,12 @@
 
 - (void) test_start_malformed_response
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString* response_file = OHPathForFile(@"malformed_simple_start_response.json",
                                                 self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -100,11 +100,11 @@
 
 - (void) test_start_http_error_400
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:400
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:400
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -113,11 +113,11 @@
 
 - (void) test_start_http_error_401
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:401
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:401
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -126,11 +126,11 @@
 
 - (void) test_start_http_error_404
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:404
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:404
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -140,12 +140,12 @@
 - (void) test_failed_track
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -154,15 +154,15 @@
     }
 
     // Remove stub after start is successful.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     // Create a stub for track event response.
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"malformed_track_event_response.json",
                                                 self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:404
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:404
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 

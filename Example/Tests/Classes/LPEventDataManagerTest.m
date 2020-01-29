@@ -24,8 +24,8 @@
 
 
 #import <XCTest/XCTest.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "LPEventDataManager.h"
 #import "LPDatabase.h"
@@ -134,11 +134,11 @@
     [Leanplum_Reachability online:YES];
     
     // Simulate slow network.
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"action_response.json", self.class);
-        return [[OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [[HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}]
                 requestTime:1.0 responseTime:1.0];
     }];
@@ -167,7 +167,7 @@
     // Clean up.
     [[LPOperationQueue serialQueue] cancelAllOperations];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
 }
 
 - (void)test_response_code
@@ -179,11 +179,11 @@
     [Leanplum_Reachability online:YES];
     
     // Simulate error from http response code.
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
         return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSData *data = [@"Fail" dataUsingEncoding:NSUTF8StringEncoding];
-        return [OHHTTPStubsResponse responseWithData:data statusCode:500 headers:nil];
+        return [HTTPStubsResponse responseWithData:data statusCode:500 headers:nil];
     }];
     
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
@@ -195,7 +195,7 @@
     XCTAssertTrue(events.count == 1);
     
     [LPEventDataManager deleteEventsWithLimit:10000];
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
 }
 
 - (void)test_uuid
@@ -207,12 +207,12 @@
     [Leanplum_Reachability online:YES];
     
     // Simulate Error.
-    id<OHHTTPStubsDescriptor> stubs = [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+    id<HTTPStubsDescriptor> stubs = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
         return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                              code:NSURLErrorBadServerResponse userInfo:nil];
-        return [OHHTTPStubsResponse responseWithError:error];
+        return [HTTPStubsResponse responseWithError:error];
     }];
     
     // UUID should be the same.
@@ -241,12 +241,12 @@
     XCTAssertFalse([events[0][@"uuid"] isEqual:events[3][@"uuid"]]);
     
     // Delete events on success.
-    [OHHTTPStubs removeStub:stubs];
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs removeStub:stubs];
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSData *responseData = [@"Success" dataUsingEncoding:NSUTF8StringEncoding];
-        return [OHHTTPStubsResponse responseWithData:responseData statusCode:200
+        return [HTTPStubsResponse responseWithData:responseData statusCode:200
                                              headers:@{@"Content-Type":@"application/json"}];
     }];
     
@@ -291,11 +291,11 @@
     [Leanplum_Reachability online:YES];
     [NSThread sleepForTimeInterval:0.1];
     
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"batch_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     

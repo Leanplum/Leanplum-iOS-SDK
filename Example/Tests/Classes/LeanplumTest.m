@@ -26,8 +26,8 @@
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
 #import <OCMock/OCMock.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "LeanplumRequest+Categories.h"
 #import "LeanplumReachability+Category.h"
@@ -81,7 +81,7 @@
     [super tearDown];
     // Clean up after every test.
     [LeanplumHelper clean_up];
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
 }
 
 /**
@@ -89,11 +89,11 @@
  */
 - (void) test_simple_development_start
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -131,11 +131,11 @@
  */
 - (void) test_simple_development_gzip_start
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json", @"Content-Encoding":@"gzip"}];
     }];
     
@@ -173,11 +173,11 @@
  */
 - (void) test_simple_production_start
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -218,11 +218,11 @@
  */
 - (void) test_complex_development_start
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"complex_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -275,11 +275,11 @@
 - (void) testStartWithParamShouldIncludeVariantDebugInfo
 {
     [Leanplum setVariantDebugInfoEnabled:YES];
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
@@ -318,11 +318,11 @@
  */
 - (void) test_complex_production_start
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"complex_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -379,11 +379,11 @@
  */
 - (void) test_start
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -425,11 +425,11 @@
 - (void) test_start_with_attributes
 {
     [LeanplumHelper clean_up];
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -483,11 +483,11 @@
  */
 - (void) test_start_with_user_id
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -537,11 +537,11 @@
 
 - (void) test_start_with_attributes_and_response
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -595,11 +595,11 @@
 
 - (void) test_start_with_id_and_attributes
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -651,11 +651,11 @@
 
 - (void) test_start_with_id_and_response
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -712,11 +712,11 @@
     [Leanplum addStartResponseResponder:self withSelector:@selector(on_start_response:)];
     XCTAssertTrue([LPInternalState sharedState].startResponders.count == 1);
 
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -743,11 +743,11 @@
  */
 - (void) test_user_attributes
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -777,11 +777,11 @@
  */
 - (void) test_track_events_priority_countDown
 {
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
@@ -822,26 +822,26 @@
 - (void) test_track
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
     // Remove stub after start is successful.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     // Create a stub for track event response.
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"track_event_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1005,17 +1005,17 @@
 - (void)test_set_location
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-       return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+       return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                   headers:@{@"Content-Type":@"application/json"}];
     }];
     XCTAssertTrue([LeanplumHelper start_development_test]);
     // Remove stub after start is successful.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     // Test disable location collection.
     XCTAssertTrue([LPConstantsState sharedState].isLocationCollectionEnabled);
@@ -1066,12 +1066,12 @@
 - (void)test_variables
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString* response_file = OHPathForFile(@"start_variables_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1079,17 +1079,17 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         dispatch_semaphore_signal(semaphore);
     }];
     dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
 
     // Remove stub after start is successful, so we don't capture requests from other methods
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString* response_file = OHPathForFile(@"variables_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1294,12 +1294,12 @@
     //When: VariantDebugInfoEnabled is YES
     [Leanplum setVariantDebugInfoEnabled:YES];
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
                                                return [request.URL.host isEqualToString:API_HOST];
-                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                           } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
                                                NSString* response_file = OHPathForFile(@"start_with_variant_debug_info_response.json", self.class);
-                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                               return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                                                           headers:@{@"Content-Type":@"application/json"}];
                                            }];
     
@@ -1307,7 +1307,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         // Then: variantDebugInfo should be parsed
         XCTAssertNotNil([[LPVarCache sharedCache] variantDebugInfo]);
         NSDictionary *abTests = [[LPVarCache sharedCache] variantDebugInfo][@"abTests"];
@@ -1353,19 +1353,19 @@
 - (void)test_advance
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
     // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     NSString *advanceName = @"advance to test";
     NSString *advanceInfo = @"advance info";
@@ -1423,25 +1423,25 @@
 - (void)test_states
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
     // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"state_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1469,19 +1469,19 @@
 - (void)test_metadata
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
     // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     NSDictionary *messages = @{@"123":@{@"action":@"",
                                         @"vars":@{},
@@ -1502,25 +1502,25 @@
 - (void)test_file_syncing
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
     // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"state_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1556,19 +1556,19 @@
 - (void)test_define_actions
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
     // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     NSString *action_name = @"test_action";
 
@@ -1641,11 +1641,11 @@
     }];
 
     // Handle action response.
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"action_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1699,23 +1699,23 @@
 - (void)test_device_registration
 {
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
     XCTAssertTrue([LeanplumHelper start_development_test]);
 
 
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"registration_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1730,7 +1730,7 @@
     }];
 
     // Remove stub after start is successful, so we don't capture requests from other methods.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
     XCTestExpectation *expectation = [self expectationWithDescription:@"registration"];
 
@@ -1795,12 +1795,12 @@
 {
     //Given: start request
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                                             headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -1808,7 +1808,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         // Then: enabledCounters should be parsed
         XCTAssertNotNil([[LPCountAggregator sharedAggregator] enabledCounters]);
         NSSet *enabledCounters = [[LPCountAggregator sharedAggregator] enabledCounters];
@@ -1824,12 +1824,12 @@
 {
     //Given: start request
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
                                                return [request.URL.host isEqualToString:API_HOST];
-                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                           } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
                                                NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
-                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                               return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                                                           headers:@{@"Content-Type":@"application/json"}];
                                            }];
     
@@ -1837,7 +1837,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         // Then: enabledFeatureFlags should be parsed
         XCTAssertNotNil([[LPFeatureFlagManager sharedManager] enabledFeatureFlags]);
         NSSet<NSString *> *enabledFeatureFlags = [[LPFeatureFlagManager sharedManager] enabledFeatureFlags];
@@ -1853,12 +1853,12 @@
 {
     //Given: start request
     // This stub have to be removed when start command is successfully executed.
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
                                            ^BOOL(NSURLRequest * _Nonnull request) {
                                                return [request.URL.host isEqualToString:API_HOST];
-                                           } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+                                           } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
                                                NSString* response_file = OHPathForFile(@"simple_start_response.json", self.class);
-                                               return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                               return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                                                           headers:@{@"Content-Type":@"application/json"}];
                                            }];
 
@@ -1866,7 +1866,7 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        [OHHTTPStubs removeStub:startStub];
+        [HTTPStubs removeStub:startStub];
         // Then: FilenameToURLs should be parsed
         XCTAssertNotNil([LPFileTransferManager sharedInstance].filenameToURLs);
         NSDictionary *filenameToURLs = [LPFileTransferManager sharedInstance].filenameToURLs;
@@ -2027,11 +2027,11 @@
 
 - (void) test_forceContentUpdateVariants
 {
-    id<OHHTTPStubsDescriptor> startStub = [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
@@ -2067,13 +2067,13 @@
     XCTAssertTrue([Leanplum hasStarted]);
 
     // Remove stub after start is successful.
-    [OHHTTPStubs removeStub:startStub];
+    [HTTPStubs removeStub:startStub];
 
-    [OHHTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"variants_response.json", self.class);
-        return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 

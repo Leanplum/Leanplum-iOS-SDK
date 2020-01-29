@@ -25,8 +25,8 @@
 
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "LeanplumRequest+Categories.h"
 #import "Leanplum+Extensions.h"
@@ -68,7 +68,7 @@
     [super tearDown];
     // Clean up after every test.
     [LeanplumHelper clean_up];
-    [OHHTTPStubs removeAllStubs];
+    [HTTPStubs removeAllStubs];
 }
 
 - (void)test_image_from_color
@@ -92,12 +92,12 @@
 - (void)test_popup_setup
 {
     // This stub have to be removed when start command is successfully executed.
-    [OHHTTPStubs stubRequestsPassingTest:
+    [HTTPStubs stubRequestsPassingTest:
      ^BOOL(NSURLRequest * _Nonnull request) {
          return [request.URL.host isEqualToString:API_HOST];
-     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
          NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-         return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                     headers:@{@"Content-Type":@"application/json"}];
      }];
     
@@ -113,12 +113,12 @@
 - (void)test_push_popup_setup
 {
     // This stub have to be removed when start command is successfully executed.
-    [OHHTTPStubs stubRequestsPassingTest:
+    [HTTPStubs stubRequestsPassingTest:
      ^BOOL(NSURLRequest * _Nonnull request) {
          return [request.URL.host isEqualToString:API_HOST];
-     } withStubResponse:^OHHTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
          NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-         return [OHHTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                     headers:@{@"Content-Type":@"application/json"}];
      }];
     

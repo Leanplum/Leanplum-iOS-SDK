@@ -25,8 +25,8 @@
 
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
-#import <OHHTTPStubs/OHHTTPStubs.h>
-#import <OHHTTPStubs/OHPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LPActionManager.h"
 #import "LeanplumHelper.h"
 #import "LeanplumRequest+Categories.h"
