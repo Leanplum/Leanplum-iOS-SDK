@@ -30,7 +30,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import <StoreKit/StoreKit.h>
 #import "LPCountAggregator.h"
-#import "LPMessageTemplateConstants.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
