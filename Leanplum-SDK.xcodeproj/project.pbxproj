@@ -189,11 +189,11 @@
 		A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */; };
 		A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */; };
 		A8D39E8623DFA0D500B0C51E /* LPMessageTemplateConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */; };
-		A8D39E8723DFA0D500B0C51E /* LPMessageTemplates.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E8123DFA0D500B0C51E /* LPMessageTemplates.m */; };
 		A8D39E8823DFA0D500B0C51E /* LPAlertMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8223DFA0D500B0C51E /* LPAlertMessageTemplate.h */; };
-		A8D39E8A23DFA0D500B0C51E /* LPMessageTemplates.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8423DFA0D500B0C51E /* LPMessageTemplates.h */; };
 		A8D39E8D23DFA21A00B0C51E /* LPConfirmMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E8B23DFA21A00B0C51E /* LPConfirmMessageTemplate.h */; };
 		A8D39E8E23DFA21A00B0C51E /* LPConfirmMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E8C23DFA21A00B0C51E /* LPConfirmMessageTemplate.m */; };
+		A8D39E9923E23FBE00B0C51E /* LPMessageTemplates.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E9723E23FBE00B0C51E /* LPMessageTemplates.m */; };
+		A8D39E9A23E23FBE00B0C51E /* LPMessageTemplates.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E9823E23FBE00B0C51E /* LPMessageTemplates.h */; };
 		A8DBE2652204FDA00080818A /* LPFileTransferManager.h in Headers */ = {isa = PBXBuildFile; fileRef = A8DBE2632204FDA00080818A /* LPFileTransferManager.h */; };
 		A8DBE2662204FDA00080818A /* LPFileTransferManager.m in Sources */ = {isa = PBXBuildFile; fileRef = A8DBE2642204FDA00080818A /* LPFileTransferManager.m */; };
 		F10BE7FBEDF1FD42E0D5C8C0 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F4F21D3DB0BE369EA3E87FDC /* Pods_LeanplumSDKTests.framework */; };
@@ -430,11 +430,11 @@
 		A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplateConstants.h; sourceTree = "<group>"; };
-		A8D39E8123DFA0D500B0C51E /* LPMessageTemplates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LPMessageTemplates.m; path = MessageTemplates/LPMessageTemplates.m; sourceTree = "<group>"; };
 		A8D39E8223DFA0D500B0C51E /* LPAlertMessageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPAlertMessageTemplate.h; sourceTree = "<group>"; };
-		A8D39E8423DFA0D500B0C51E /* LPMessageTemplates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplates.h; sourceTree = "<group>"; };
 		A8D39E8B23DFA21A00B0C51E /* LPConfirmMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPConfirmMessageTemplate.h; sourceTree = "<group>"; };
 		A8D39E8C23DFA21A00B0C51E /* LPConfirmMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPConfirmMessageTemplate.m; sourceTree = "<group>"; };
+		A8D39E9723E23FBE00B0C51E /* LPMessageTemplates.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPMessageTemplates.m; sourceTree = "<group>"; };
+		A8D39E9823E23FBE00B0C51E /* LPMessageTemplates.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplates.h; sourceTree = "<group>"; };
 		A8DBE2632204FDA00080818A /* LPFileTransferManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPFileTransferManager.h; sourceTree = "<group>"; };
 		A8DBE2642204FDA00080818A /* LPFileTransferManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPFileTransferManager.m; sourceTree = "<group>"; };
 		B36C7F13E8B7873FD7B2D1CA /* Pods_LeanplumSDK_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDK_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -671,7 +671,8 @@
 				5B233F9E21ED964F00206ACB /* LeanplumCompatibility.h */,
 				5B233F9F21ED964F00206ACB /* LPVar.h */,
 				5B233FA021ED964F00206ACB /* Leanplum.h */,
-				A8D39E8123DFA0D500B0C51E /* LPMessageTemplates.m */,
+				A8D39E9823E23FBE00B0C51E /* LPMessageTemplates.h */,
+				A8D39E9723E23FBE00B0C51E /* LPMessageTemplates.m */,
 				A8D39E7E23DFA0D500B0C51E /* MessageTemplates */,
 				5B233FA221ED964F00206ACB /* Managers */,
 				5B233FC421ED964F00206ACB /* Features */,
@@ -1033,7 +1034,6 @@
 				A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */,
 				A8D39E8B23DFA21A00B0C51E /* LPConfirmMessageTemplate.h */,
 				A8D39E8C23DFA21A00B0C51E /* LPConfirmMessageTemplate.m */,
-				A8D39E8423DFA0D500B0C51E /* LPMessageTemplates.h */,
 			);
 			path = MessageTemplates;
 			sourceTree = "<group>";
@@ -1101,10 +1101,10 @@
 				5B23406721ED964F00206ACB /* LeanplumRequest.h in Headers */,
 				5B23410D21ED965000206ACB /* Leanplum_MKNetworkEngine.h in Headers */,
 				5B23408921ED964F00206ACB /* LPActionManager.h in Headers */,
+				A8D39E9A23E23FBE00B0C51E /* LPMessageTemplates.h in Headers */,
 				A8D39E8623DFA0D500B0C51E /* LPMessageTemplateConstants.h in Headers */,
 				5B23406D21ED964F00206ACB /* LPCountAggregator.h in Headers */,
 				5B2340FF21ED965000206ACB /* UIDevice+IdentifierAddition.h in Headers */,
-				A8D39E8A23DFA0D500B0C51E /* LPMessageTemplates.h in Headers */,
 				5B2340A121ED964F00206ACB /* LPEventCallback.h in Headers */,
 				5B23406321ED964F00206ACB /* LPRequestSender.h in Headers */,
 				5B2340B721ED964F00206ACB /* LPInternalState.h in Headers */,
@@ -1367,7 +1367,6 @@
 				5B2340D521ED965000206ACB /* LPJSON.m in Sources */,
 				5B23404321ED964F00206ACB /* LPAPIConfig.m in Sources */,
 				5B2340B121ED964F00206ACB /* LPFeatureFlagManager.m in Sources */,
-				A8D39E8723DFA0D500B0C51E /* LPMessageTemplates.m in Sources */,
 				5B2340DD21ED965000206ACB /* LPUtils.m in Sources */,
 				A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */,
 				5B23407921ED964F00206ACB /* LPCountAggregator.m in Sources */,
@@ -1403,6 +1402,7 @@
 				5B2340A321ED964F00206ACB /* LPConstants.m in Sources */,
 				5B23404D21ED964F00206ACB /* LPRequestFactory.m in Sources */,
 				5B23407521ED964F00206ACB /* LPRegisterDevice.m in Sources */,
+				A8D39E9923E23FBE00B0C51E /* LPMessageTemplates.m in Sources */,
 				5B23407F21ED964F00206ACB /* LPUIEditorWrapper.m in Sources */,
 				5B23408F21ED964F00206ACB /* LPActionManager.m in Sources */,
 				5B2340CB21ED964F00206ACB /* LPAES.m in Sources */,

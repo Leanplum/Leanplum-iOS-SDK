@@ -14,12 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPBaseMessageTemplate : NSObject
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts;
-- (UIViewController *)visibleViewController;
-
 @property  (nonatomic, strong) NSMutableArray *contexts;
 
+- (UIViewController *)visibleViewController;
 
+- (void)defineActionWithContexts:(NSMutableArray *)contexts;
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex;
 - (void)alertDismissedWithButtonIndex:(NSInteger)buttonIndex;
 
