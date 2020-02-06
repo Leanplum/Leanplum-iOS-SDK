@@ -32,6 +32,7 @@
 #import "LPCountAggregator.h"
 #import "LPAlertMessageTemplate.h"
 #import "LPConfirmMessageTemplate.h"
+#import "LPHitView.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -39,33 +40,6 @@
 
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
-
-#pragma mark Helper View Class
-@interface LPHitView : UIView
-@property (strong, nonatomic) void (^callback)(void);
-@end
-
-@implementation LPHitView
-- (id)initWithCallback:(void (^)(void))callback
-{
-    if (self = [super init]) {
-        self.callback = [callback copy];
-    }
-    return self;
-}
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView *hitView = [super hitTest:point withEvent:event];
-    if (hitView == self) {
-        if (self.callback) {
-            self.callback();
-        }
-        return nil;
-    }
-    return hitView;
-}
-@end
 
 @implementation LPMessageTemplatesClass {
     NSMutableArray *_contexts;
@@ -267,41 +241,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                              ]
              withResponder:messageResponder];
     
-    [Leanplum defineAction:LPMT_INTERSTITIAL_NAME
-                    ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
-             withArguments:@[
-                             [LPActionArg argNamed:LPMT_ARG_TITLE_TEXT withString:APP_NAME],
-                             [LPActionArg argNamed:LPMT_ARG_TITLE_COLOR withColor:[UIColor blackColor]],
-                             [LPActionArg argNamed:LPMT_ARG_MESSAGE_TEXT withString:LPMT_DEFAULT_INTERSTITIAL_MESSAGE],
-                             [LPActionArg argNamed:LPMT_ARG_MESSAGE_COLOR withColor:[UIColor blackColor]],
-                             [LPActionArg argNamed:LPMT_ARG_BACKGROUND_IMAGE withFile:nil],
-                             [LPActionArg argNamed:LPMT_ARG_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR withColor:defaultButtonTextColor],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil]
-                             ]
-             withResponder:messageResponder];
-
-    [Leanplum defineAction:LPMT_WEB_INTERSTITIAL_NAME
-                    ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
-             withArguments:@[
-                    [LPActionArg argNamed:LPMT_ARG_URL withString:LPMT_DEFAULT_URL],
-                    [LPActionArg argNamed:LPMT_ARG_URL_CLOSE withString:LPMT_DEFAULT_CLOSE_URL],
-                    [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON
-                                 withBool:LPMT_DEFAULT_HAS_DISMISS_BUTTON]]
-             withResponder:^BOOL(LPActionContext *context) {
-                 @try {
-                     [self closePopupWithAnimation:NO];
-                     [self->_contexts addObject:context];
-                     [self showPopup];
-                     return YES;
-                 }
-                 @catch (NSException *exception) {
-                     LOG_LP_MESSAGE_EXCEPTION;
-                     return NO;
-                 }
-             }];
 
     [Leanplum defineAction:LPMT_HTML_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
