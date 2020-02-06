@@ -32,6 +32,7 @@
 #import "LPCountAggregator.h"
 #import "LPAlertMessageTemplate.h"
 #import "LPConfirmMessageTemplate.h"
+#import "LPHitView.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -39,33 +40,6 @@
 
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
-
-#pragma mark Helper View Class
-@interface LPHitView : UIView
-@property (strong, nonatomic) void (^callback)(void);
-@end
-
-@implementation LPHitView
-- (id)initWithCallback:(void (^)(void))callback
-{
-    if (self = [super init]) {
-        self.callback = [callback copy];
-    }
-    return self;
-}
-
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
-{
-    UIView *hitView = [super hitTest:point withEvent:event];
-    if (hitView == self) {
-        if (self.callback) {
-            self.callback();
-        }
-        return nil;
-    }
-    return hitView;
-}
-@end
 
 @implementation LPMessageTemplatesClass {
     NSMutableArray *_contexts;
