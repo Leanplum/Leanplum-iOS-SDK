@@ -34,6 +34,7 @@
 #import "LPConfirmMessageTemplate.h"
 #import "LPInterstitialMessageTemplate.h"
 #import "LPWebInterstitialMessageTemplate.h"
+#import "LPOpenUrlMessageTemplate.h"
 #import "LPHitView.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
@@ -112,33 +113,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     [[[LPConfirmMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPWebInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
+    [[[LPOpenUrlMessageTemplate alloc] init] defineActionWithContexts:_contexts];
 
-    [Leanplum defineAction:LPMT_OPEN_URL_NAME
-                    ofKind:kLeanplumActionKindAction
-             withArguments:@[[LPActionArg argNamed:LPMT_ARG_URL withString:LPMT_DEFAULT_URL]]
-             withResponder:^BOOL(LPActionContext *context) {
-                 @try {
-                     dispatch_async(dispatch_get_main_queue(), ^{
-                         NSString *encodedURLString = [[self class] urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
-                         NSURL *url = [NSURL URLWithString: encodedURLString];
-                         if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
-                             if (@available(iOS 10.0, *)) {
-                                 [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-                             } else {
-                                 // Fallback on earlier versions
-                             }
-                         } else {
-                             [[UIApplication sharedApplication] openURL:url];
-                         }
-                     });
-                     return YES;
-                 }
-                 @catch (NSException *exception) {
-                     LOG_LP_MESSAGE_EXCEPTION;
-                     return NO;
-                 }
-             }];
-    
     UIColor *defaultButtonTextColor = [UIColor colorWithRed:0 green:0.478431 blue:1 alpha:1];
     
     [Leanplum defineAction:LPMT_PUSH_ASK_TO_ASK
