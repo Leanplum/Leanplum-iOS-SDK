@@ -7,7 +7,6 @@
 //
 
 #import "LPInterstitialMessageTemplate.h"
-#import "LPConfirmMessageTemplate.h"
 
 @implementation LPInterstitialMessageTemplate
 
