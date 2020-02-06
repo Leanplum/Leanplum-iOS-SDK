@@ -193,6 +193,8 @@
 		A80A31E623ECD79D00F90E95 /* LPBaseAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31E423ECD79D00F90E95 /* LPBaseAlertMessageTemplate.m */; };
 		A80A31E923ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A80A31E723ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h */; };
 		A80A31EA23ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31E823ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m */; };
+		A80A31ED23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31EB23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.m */; };
+		A80A31EE23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A80A31EC23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.h */; };
 		A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */; };
 		A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */; };
 		A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */; };
@@ -442,6 +444,8 @@
 		A80A31E423ECD79D00F90E95 /* LPBaseAlertMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseAlertMessageTemplate.m; sourceTree = "<group>"; };
 		A80A31E723ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBaseInterstitialMessageTemplate.h; sourceTree = "<group>"; };
 		A80A31E823ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseInterstitialMessageTemplate.m; sourceTree = "<group>"; };
+		A80A31EB23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialMessageTemplate.m; sourceTree = "<group>"; };
+		A80A31EC23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPWebInterstitialMessageTemplate.h; sourceTree = "<group>"; };
 		A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBaseMessageTemplate.h; sourceTree = "<group>"; };
 		A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageTemplate.m; sourceTree = "<group>"; };
@@ -1058,6 +1062,8 @@
 				A8D39E8C23DFA21A00B0C51E /* LPConfirmMessageTemplate.m */,
 				A80A31DB23ECD51500F90E95 /* LPInterstitialMessageTemplate.h */,
 				A80A31DC23ECD51500F90E95 /* LPInterstitialMessageTemplate.m */,
+				A80A31EC23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.h */,
+				A80A31EB23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.m */,
 			);
 			path = MessageTemplates;
 			sourceTree = "<group>";
@@ -1146,6 +1152,7 @@
 				5B2340C521ED964F00206ACB /* LPActionArg.h in Headers */,
 				5B23406121ED964F00206ACB /* LPRequestFactory.h in Headers */,
 				5B2340AD21ED964F00206ACB /* LPFeatureFlagManager.h in Headers */,
+				A80A31EE23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1396,6 +1403,7 @@
 				5B23404321ED964F00206ACB /* LPAPIConfig.m in Sources */,
 				5B2340B121ED964F00206ACB /* LPFeatureFlagManager.m in Sources */,
 				A80A31DE23ECD51500F90E95 /* LPInterstitialMessageTemplate.m in Sources */,
+				A80A31ED23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.m in Sources */,
 				5B2340DD21ED965000206ACB /* LPUtils.m in Sources */,
 				A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */,
 				5B23407921ED964F00206ACB /* LPCountAggregator.m in Sources */,

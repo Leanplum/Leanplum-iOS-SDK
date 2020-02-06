@@ -32,6 +32,8 @@
 #import "LPCountAggregator.h"
 #import "LPAlertMessageTemplate.h"
 #import "LPConfirmMessageTemplate.h"
+#import "LPInterstitialMessageTemplate.h"
+#import "LPWebInterstitialMessageTemplate.h"
 #import "LPHitView.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
@@ -108,6 +110,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
     [[[LPAlertMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPConfirmMessageTemplate alloc] init] defineActionWithContexts:_contexts];
+    [[[LPInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
+    [[[LPWebInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
 
     [Leanplum defineAction:LPMT_OPEN_URL_NAME
                     ofKind:kLeanplumActionKindAction

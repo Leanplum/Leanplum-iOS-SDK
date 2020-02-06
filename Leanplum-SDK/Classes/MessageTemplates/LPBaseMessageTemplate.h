@@ -15,10 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPBaseMessageTemplate : NSObject
 
 @property  (nonatomic, strong) NSMutableArray *contexts;
-// confirmation
-@property  (nonatomic, strong) UIView *popupView;
-@property  (nonatomic, strong) UIView *popupGroup;
-@property  (nonatomic, strong) UIButton *dismissButton;
 
 //UIImageView *_popupBackground;
 //UILabel *_titleLabel;
@@ -35,7 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)defineActionWithContexts:(NSMutableArray *)contexts;
 
 //interstitial
-- (void)closePopupWithAnimation:(BOOL)animated;
 
 
 @end
