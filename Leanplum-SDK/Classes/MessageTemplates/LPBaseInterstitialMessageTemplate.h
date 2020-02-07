@@ -29,6 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)showPopup;
 - (void)closePopupWithAnimation:(BOOL)animated;
+- (void)closePopupWithAnimation:(BOOL)animated
+                    actionNamed:(NSString *)actionName
+                          track:(BOOL)track;
 
 @end
 

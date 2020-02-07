@@ -195,6 +195,14 @@
 		A80A31EA23ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31E823ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m */; };
 		A80A31ED23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31EB23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.m */; };
 		A80A31EE23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A80A31EC23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.h */; };
+		A80A31F523ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A80A31F323ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.h */; };
+		A80A31F623ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31F423ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m */; };
+		A80A31F923ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A80A31F723ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h */; };
+		A80A31FA23ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31F823ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m */; };
+		A8484E3323EE146800FCDD58 /* LPBasePushMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E3123EE146800FCDD58 /* LPBasePushMessageTemplate.h */; };
+		A8484E3423EE146800FCDD58 /* LPBasePushMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E3223EE146800FCDD58 /* LPBasePushMessageTemplate.m */; };
+		A8484E3723EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E3523EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h */; };
+		A8484E3823EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E3623EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.m */; };
 		A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */; };
 		A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */; };
 		A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */; };
@@ -446,6 +454,14 @@
 		A80A31E823ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseInterstitialMessageTemplate.m; sourceTree = "<group>"; };
 		A80A31EB23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialMessageTemplate.m; sourceTree = "<group>"; };
 		A80A31EC23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPWebInterstitialMessageTemplate.h; sourceTree = "<group>"; };
+		A80A31F323ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPOpenUrlMessageTemplate.h; sourceTree = "<group>"; };
+		A80A31F423ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplate.m; sourceTree = "<group>"; };
+		A80A31F723ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPPushAsktoAskMessageTemplate.h; sourceTree = "<group>"; };
+		A80A31F823ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPPushAsktoAskMessageTemplate.m; sourceTree = "<group>"; };
+		A8484E3123EE146800FCDD58 /* LPBasePushMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBasePushMessageTemplate.h; sourceTree = "<group>"; };
+		A8484E3223EE146800FCDD58 /* LPBasePushMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBasePushMessageTemplate.m; sourceTree = "<group>"; };
+		A8484E3523EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPRegisterForPushMessageTemplate.h; sourceTree = "<group>"; };
+		A8484E3623EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRegisterForPushMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBaseMessageTemplate.h; sourceTree = "<group>"; };
 		A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageTemplate.m; sourceTree = "<group>"; };
@@ -1056,12 +1072,20 @@
 				A80A31E423ECD79D00F90E95 /* LPBaseAlertMessageTemplate.m */,
 				A80A31E723ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h */,
 				A80A31E823ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.m */,
+				A8484E3123EE146800FCDD58 /* LPBasePushMessageTemplate.h */,
+				A8484E3223EE146800FCDD58 /* LPBasePushMessageTemplate.m */,
+				A80A31F723ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h */,
+				A80A31F823ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m */,
+				A8484E3523EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h */,
+				A8484E3623EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.m */,
 				A8D39E8223DFA0D500B0C51E /* LPAlertMessageTemplate.h */,
 				A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */,
 				A8D39E8B23DFA21A00B0C51E /* LPConfirmMessageTemplate.h */,
 				A8D39E8C23DFA21A00B0C51E /* LPConfirmMessageTemplate.m */,
 				A80A31DB23ECD51500F90E95 /* LPInterstitialMessageTemplate.h */,
 				A80A31DC23ECD51500F90E95 /* LPInterstitialMessageTemplate.m */,
+				A80A31F323ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.h */,
+				A80A31F423ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m */,
 				A80A31EC23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.h */,
 				A80A31EB23ECDC6500F90E95 /* LPWebInterstitialMessageTemplate.m */,
 			);
@@ -1075,6 +1099,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A80A31F523ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.h in Headers */,
 				5B2340CD21ED964F00206ACB /* LPAES.h in Headers */,
 				5B2340C121ED964F00206ACB /* LPExceptionHandler.h in Headers */,
 				5B23405521ED964F00206ACB /* LPNetworkFactory.h in Headers */,
@@ -1083,6 +1108,7 @@
 				A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */,
 				5B23409721ED964F00206ACB /* LPEventDataManager.h in Headers */,
 				5B2340D321ED965000206ACB /* LPSwizzle.h in Headers */,
+				A8484E3723EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h in Headers */,
 				A80A31E923ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h in Headers */,
 				5B2340C321ED964F00206ACB /* LPInbox.h in Headers */,
 				5B23405F21ED964F00206ACB /* LPNetworkProtocol.h in Headers */,
@@ -1096,6 +1122,7 @@
 				5B23403F21ED964F00206ACB /* LPRevenueManager.h in Headers */,
 				5B23404921ED964F00206ACB /* LPRequest.h in Headers */,
 				5B2340E521ED965000206ACB /* Leanplum_WebSocket.h in Headers */,
+				A8484E3323EE146800FCDD58 /* LPBasePushMessageTemplate.h in Headers */,
 				5B23412321ED965000206ACB /* Leanplum_MKNKEngineWrapper.h in Headers */,
 				5B2340F321ED965000206ACB /* Leanplum_Reachability.h in Headers */,
 				5B23404721ED964F00206ACB /* LeanplumSocket.h in Headers */,
@@ -1141,6 +1168,7 @@
 				5B2340FF21ED965000206ACB /* UIDevice+IdentifierAddition.h in Headers */,
 				5B2340A121ED964F00206ACB /* LPEventCallback.h in Headers */,
 				5B23406321ED964F00206ACB /* LPRequestSender.h in Headers */,
+				A80A31F923ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h in Headers */,
 				5B2340B721ED964F00206ACB /* LPInternalState.h in Headers */,
 				5B23404521ED964F00206ACB /* LPResponse.h in Headers */,
 				5B2340CF21ED965000206ACB /* LPUtils.h in Headers */,
@@ -1392,6 +1420,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5B23406B21ED964F00206ACB /* LPNetworkFactory.m in Sources */,
+				A80A31F623ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m in Sources */,
 				5B23407721ED964F00206ACB /* LPFileManager.m in Sources */,
 				5B2340C721ED964F00206ACB /* LPMessageArchiveData.m in Sources */,
 				07A97FFF23466CD8008AEC06 /* LPOperationQueue.m in Sources */,
@@ -1403,6 +1432,7 @@
 				5B23404321ED964F00206ACB /* LPAPIConfig.m in Sources */,
 				5B2340B121ED964F00206ACB /* LPFeatureFlagManager.m in Sources */,
 				A80A31DE23ECD51500F90E95 /* LPInterstitialMessageTemplate.m in Sources */,
+				A8484E3423EE146800FCDD58 /* LPBasePushMessageTemplate.m in Sources */,
 				A80A31ED23ECDC6600F90E95 /* LPWebInterstitialMessageTemplate.m in Sources */,
 				5B2340DD21ED965000206ACB /* LPUtils.m in Sources */,
 				A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */,
@@ -1426,6 +1456,7 @@
 				5B23409521ED964F00206ACB /* LPActionArg.m in Sources */,
 				5B23412721ED965000206ACB /* LPKeychainWrapper.m in Sources */,
 				5B23407B21ED964F00206ACB /* LPInbox.m in Sources */,
+				A80A31FA23ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m in Sources */,
 				5B2340B921ED964F00206ACB /* Leanplum.m in Sources */,
 				5B23409F21ED964F00206ACB /* LPEventDataManager.m in Sources */,
 				A8D39E8E23DFA21A00B0C51E /* LPConfirmMessageTemplate.m in Sources */,
@@ -1450,6 +1481,7 @@
 				5B23409D21ED964F00206ACB /* LPEventCallbackManager.m in Sources */,
 				5B23407121ED964F00206ACB /* LPAppIconManager.m in Sources */,
 				5B2340FB21ED965000206ACB /* UIDevice+IdentifierAddition.m in Sources */,
+				A8484E3823EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.m in Sources */,
 				5B23405321ED964F00206ACB /* LeanplumRequest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
