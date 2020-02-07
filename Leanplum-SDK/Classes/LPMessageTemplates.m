@@ -40,6 +40,7 @@
 #import "LPHitView.h"
 #import "LPCenterPopupMessageTemplate.h"
 #import "LPHtmlMessageTemplate.h"
+#import "LPAppRatingMessageTemplate.h"
 
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
@@ -123,19 +124,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     [[[LPRegisterForPushMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPCenterPopupMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPHtmlMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-
-    [Leanplum defineAction:LPMT_APP_RATING_NAME
-                    ofKind:kLeanplumActionKindAction withArguments:@[]
-             withResponder:^BOOL(LPActionContext *context) {
-                 @try {
-                     [self appStorePrompt];
-                     return YES;
-                 }
-                 @catch (NSException *exception) {
-                     LOG_LP_MESSAGE_EXCEPTION;
-                 }
-                 return NO;
-             }];
+    [[[LPAppRatingMessageTemplate alloc] init] defineActionWithContexts:_contexts];
 
     if ([self hasAlternateIcon]) {
         [Leanplum defineAction:LPMT_ICON_CHANGE_NAME
@@ -862,19 +851,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     return insets;
 }
 
-
-- (void)appStorePrompt
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (NSClassFromString(@"SKStoreReviewController")) {
-            if (@available(iOS 10.3, *)) {
-                [SKStoreReviewController requestReview];
-            } else {
-                // Fallback on earlier versions
-            }
-        }
-    });
-}
 
 - (BOOL)hasAlternateIcon
 {

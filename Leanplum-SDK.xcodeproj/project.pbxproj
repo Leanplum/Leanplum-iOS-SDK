@@ -207,6 +207,8 @@
 		A8484E3C23EE161F00FCDD58 /* LPCenterPopupMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E3A23EE161F00FCDD58 /* LPCenterPopupMessageTemplate.m */; };
 		A8484E3F23EE168A00FCDD58 /* LPHtmlMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E3D23EE168A00FCDD58 /* LPHtmlMessageTemplate.h */; };
 		A8484E4023EE168A00FCDD58 /* LPHtmlMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E3E23EE168A00FCDD58 /* LPHtmlMessageTemplate.m */; };
+		A8484E4323EE170600FCDD58 /* LPAppRatingMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */; };
+		A8484E4423EE170600FCDD58 /* LPAppRatingMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */; };
 		A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */; };
 		A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */; };
 		A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */; };
@@ -470,6 +472,8 @@
 		A8484E3A23EE161F00FCDD58 /* LPCenterPopupMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPCenterPopupMessageTemplate.m; sourceTree = "<group>"; };
 		A8484E3D23EE168A00FCDD58 /* LPHtmlMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPHtmlMessageTemplate.h; sourceTree = "<group>"; };
 		A8484E3E23EE168A00FCDD58 /* LPHtmlMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPHtmlMessageTemplate.m; sourceTree = "<group>"; };
+		A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPAppRatingMessageTemplate.h; sourceTree = "<group>"; };
+		A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPAppRatingMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBaseMessageTemplate.h; sourceTree = "<group>"; };
 		A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageTemplate.m; sourceTree = "<group>"; };
@@ -1076,6 +1080,8 @@
 				A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */,
 				A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */,
 				A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */,
+				A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */,
+				A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */,
 				A80A31E323ECD79D00F90E95 /* LPBaseAlertMessageTemplate.h */,
 				A80A31E423ECD79D00F90E95 /* LPBaseAlertMessageTemplate.m */,
 				A80A31E723ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h */,
@@ -1131,6 +1137,7 @@
 				A80A31E523ECD79D00F90E95 /* LPBaseAlertMessageTemplate.h in Headers */,
 				5B23403D21ED964F00206ACB /* LPRegisterDevice.h in Headers */,
 				5B2340BB21ED964F00206ACB /* LPEnumConstants.h in Headers */,
+				A8484E4323EE170600FCDD58 /* LPAppRatingMessageTemplate.h in Headers */,
 				5B23403F21ED964F00206ACB /* LPRevenueManager.h in Headers */,
 				5B23404921ED964F00206ACB /* LPRequest.h in Headers */,
 				5B2340E521ED965000206ACB /* Leanplum_WebSocket.h in Headers */,
@@ -1439,6 +1446,7 @@
 				5B2340C721ED964F00206ACB /* LPMessageArchiveData.m in Sources */,
 				07A97FFF23466CD8008AEC06 /* LPOperationQueue.m in Sources */,
 				5B2340EB21ED965000206ACB /* Leanplum_WebSocket.m in Sources */,
+				A8484E4423EE170600FCDD58 /* LPAppRatingMessageTemplate.m in Sources */,
 				5B23404B21ED964F00206ACB /* LPRequestSender.m in Sources */,
 				5B23405721ED964F00206ACB /* LeanplumSocket.m in Sources */,
 				A8484E4023EE168A00FCDD58 /* LPHtmlMessageTemplate.m in Sources */,
