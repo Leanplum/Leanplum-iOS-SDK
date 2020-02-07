@@ -18,7 +18,7 @@
              withResponder:^BOOL(LPActionContext *context) {
         @try {
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *encodedURLString = [[self class] urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
+                NSString *encodedURLString = [self urlEncodedStringFromString:[context stringNamed:LPMT_ARG_URL]];
                 NSURL *url = [NSURL URLWithString: encodedURLString];
                 if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
                     if (@available(iOS 10.0, *)) {
@@ -37,6 +37,16 @@
             return NO;
         }
     }];
+}
+
+- (NSString *)urlEncodedStringFromString:(NSString *)urlString {
+    NSString *unreserved = @":-._~/?&=";
+    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
+                                      alphanumericCharacterSet];
+    [allowed addCharactersInString:unreserved];
+    return [urlString
+            stringByAddingPercentEncodingWithAllowedCharacters:
+            allowed];
 }
 
 @end
