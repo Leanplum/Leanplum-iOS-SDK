@@ -38,6 +38,7 @@
 #import "LPPushAskToAskMessageTemplate.h"
 #import "LPRegisterForPushMessageTemplate.h"
 #import "LPHitView.h"
+#import "LPCenterPopupMessageTemplate.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -118,6 +119,9 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     [[[LPOpenUrlMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPPushAsktoAskMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPRegisterForPushMessageTemplate alloc] init] defineActionWithContexts:_contexts];
+    [[[LPCenterPopupMessageTemplate alloc] init] defineActionWithContexts:_contexts];
+
+
 
     UIColor *defaultButtonTextColor = [UIColor colorWithRed:0 green:0.478431 blue:1 alpha:1];
         
@@ -138,23 +142,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         }
     };
 
-    [Leanplum defineAction:LPMT_CENTER_POPUP_NAME
-                    ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
-             withArguments:@[
-                             [LPActionArg argNamed:LPMT_ARG_TITLE_TEXT withString:APP_NAME],
-                             [LPActionArg argNamed:LPMT_ARG_TITLE_COLOR withColor:[UIColor blackColor]],
-                             [LPActionArg argNamed:LPMT_ARG_MESSAGE_TEXT withString:LPMT_DEFAULT_POPUP_MESSAGE],
-                             [LPActionArg argNamed:LPMT_ARG_MESSAGE_COLOR withColor:[UIColor blackColor]],
-                             [LPActionArg argNamed:LPMT_ARG_BACKGROUND_IMAGE withFile:nil],
-                             [LPActionArg argNamed:LPMT_ARG_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR withColor:defaultButtonTextColor],
-                             [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
-                             [LPActionArg argNamed:LPMT_ARG_LAYOUT_WIDTH withNumber:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH)],
-                             [LPActionArg argNamed:LPMT_ARG_LAYOUT_HEIGHT withNumber:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT)]
-                             ]
-             withResponder:messageResponder];
     
 
     [Leanplum defineAction:LPMT_HTML_NAME

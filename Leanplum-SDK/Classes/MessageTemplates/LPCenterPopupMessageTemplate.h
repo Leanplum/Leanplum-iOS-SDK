@@ -1,8 +1,8 @@
 //
-//  LPInterstitialMessageTemplate.h
+//  LPCenterPopupMessageTemplate.h
 //  LeanplumSDK-iOS
 //
-//  Created by Mayank Sanganeria on 2/6/20.
+//  Created by Mayank Sanganeria on 2/7/20.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPInterstitialMessageTemplate : LPBaseInterstitialMessageTemplate
+@interface LPCenterPopupMessageTemplate : LPBaseInterstitialMessageTemplate
 
 @end
 
