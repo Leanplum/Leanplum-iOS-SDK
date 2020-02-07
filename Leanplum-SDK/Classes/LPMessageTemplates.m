@@ -41,7 +41,7 @@
 #import "LPCenterPopupMessageTemplate.h"
 #import "LPHtmlMessageTemplate.h"
 #import "LPAppRatingMessageTemplate.h"
-
+#import "LPIconChangeMessageTemplate.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -114,7 +114,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 // Please give us suggestions for other types of messages!
 - (void)defineActions
 {
-
     [[[LPAlertMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPConfirmMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
@@ -125,26 +124,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     [[[LPCenterPopupMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPHtmlMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPAppRatingMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-
-    if ([self hasAlternateIcon]) {
-        [Leanplum defineAction:LPMT_ICON_CHANGE_NAME
-                        ofKind:kLeanplumActionKindAction
-                 withArguments:@[
-                                 [LPActionArg argNamed:LPMT_ARG_APP_ICON
-                                              withFile:LPMT_DEFAULT_APP_ICON]
-                                 ]
-                 withResponder:^BOOL(LPActionContext *context) {
-                     @try {
-                         NSString *filename = [context stringNamed:LPMT_ARG_APP_ICON];
-                         [self setAlternateIconWithFilename:filename];
-                         return YES;
-                     }
-                     @catch (NSException *exception) {
-                         LOG_LP_MESSAGE_EXCEPTION;
-                     }
-                     return NO;
-                 }];
-    }
+    [[[LPIconChangeMessageTemplate alloc] init] defineActionWithContexts:_contexts];
 }
 
 #pragma mark Center Popup and Interstitial Logic
@@ -852,67 +832,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 }
 
 
-- (BOOL)hasAlternateIcon
-{
-    NSDictionary *bundleIcons = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleIcons"];
-    NSDictionary *alternativeIconsBundle = bundleIcons[@"CFBundleAlternateIcons"];
-    return alternativeIconsBundle && alternativeIconsBundle.count > 0;
-}
-
-- (void)setAlternateIconWithFilename:(NSString *)filename
-{
-    if (![NSThread isMainThread]) {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self setAlternateIconWithFilename:filename];
-            return;
-        });
-    }
-    
-    NSString *iconName = [filename stringByReplacingOccurrencesOfString:LPMT_ICON_FILE_PREFIX
-                                                             withString:@""];
-    iconName = [iconName stringByReplacingOccurrencesOfString:@".png" withString:@""];
-
-    UIApplication *app = [UIApplication sharedApplication];
-    if ([app respondsToSelector:@selector(setAlternateIconName:completionHandler:)] &&
-        [app respondsToSelector:@selector(alternateIconName)]) {
-        // setAlternateIconName:nil sets to the default icon.
-        if (iconName && (iconName.length == 0 ||
-                         [iconName isEqualToString:LPMT_ICON_PRIMARY_NAME])) {
-            iconName = nil;
-        }
-
-        if (@available(iOS 10.3, *)) {
-            NSString *currentIconName = [app alternateIconName];
-            if ((iconName && [iconName isEqualToString:currentIconName]) ||
-                (iconName == nil && currentIconName == nil)) {
-                return;
-            }
-        } else {
-            // Fallback on earlier versions
-        }
-
-        if (@available(iOS 10.3, *)) {
-            [app setAlternateIconName:iconName completionHandler:^(NSError * _Nullable error) {
-                if (!error) {
-                    return;
-                }
-
-                // Common failure is when setAlternateIconName: is called right upon start.
-                // Try again after 1 second.
-                NSLog(@"Fail to change app icon: %@. Trying again.", error);
-                dispatch_time_t dispatchTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
-                dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
-                    [[UIApplication sharedApplication] setAlternateIconName:iconName
-                                                          completionHandler:^(NSError *error) {
-                                                              NSLog(@"Fail to change app icon: %@", error);
-                                                          }];
-                });
-            }];
-        } else {
-            // Fallback on earlier versions
-        }
-    }
-}
 
 #pragma mark - WKWebViewDelegate methods
 

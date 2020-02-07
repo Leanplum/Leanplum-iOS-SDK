@@ -209,6 +209,8 @@
 		A8484E4023EE168A00FCDD58 /* LPHtmlMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E3E23EE168A00FCDD58 /* LPHtmlMessageTemplate.m */; };
 		A8484E4323EE170600FCDD58 /* LPAppRatingMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */; };
 		A8484E4423EE170600FCDD58 /* LPAppRatingMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */; };
+		A8484E4723EE177A00FCDD58 /* LPIconChangeMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E4523EE177A00FCDD58 /* LPIconChangeMessageTemplate.h */; };
+		A8484E4823EE177A00FCDD58 /* LPIconChangeMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E4623EE177A00FCDD58 /* LPIconChangeMessageTemplate.m */; };
 		A8D39E7B23DFA00F00B0C51E /* LPBaseMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */; };
 		A8D39E7C23DFA00F00B0C51E /* LPBaseMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */; };
 		A8D39E8523DFA0D500B0C51E /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */; };
@@ -474,6 +476,8 @@
 		A8484E3E23EE168A00FCDD58 /* LPHtmlMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPHtmlMessageTemplate.m; sourceTree = "<group>"; };
 		A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPAppRatingMessageTemplate.h; sourceTree = "<group>"; };
 		A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPAppRatingMessageTemplate.m; sourceTree = "<group>"; };
+		A8484E4523EE177A00FCDD58 /* LPIconChangeMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPIconChangeMessageTemplate.h; sourceTree = "<group>"; };
+		A8484E4623EE177A00FCDD58 /* LPIconChangeMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPIconChangeMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7923DFA00F00B0C51E /* LPBaseMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBaseMessageTemplate.h; sourceTree = "<group>"; };
 		A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBaseMessageTemplate.m; sourceTree = "<group>"; };
 		A8D39E7F23DFA0D500B0C51E /* LPAlertMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageTemplate.m; sourceTree = "<group>"; };
@@ -1082,6 +1086,8 @@
 				A8D39E7A23DFA00F00B0C51E /* LPBaseMessageTemplate.m */,
 				A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */,
 				A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */,
+				A8484E4523EE177A00FCDD58 /* LPIconChangeMessageTemplate.h */,
+				A8484E4623EE177A00FCDD58 /* LPIconChangeMessageTemplate.m */,
 				A80A31E323ECD79D00F90E95 /* LPBaseAlertMessageTemplate.h */,
 				A80A31E423ECD79D00F90E95 /* LPBaseAlertMessageTemplate.m */,
 				A80A31E723ECD82B00F90E95 /* LPBaseInterstitialMessageTemplate.h */,
@@ -1198,6 +1204,7 @@
 				5B23406F21ED964F00206ACB /* LPFileManager.h in Headers */,
 				5B23412521ED965000206ACB /* Leanplum_MKNetworkOperation.h in Headers */,
 				5B23411921ED965000206ACB /* UIAlertView+MKNetworkKitAdditions.h in Headers */,
+				A8484E4723EE177A00FCDD58 /* LPIconChangeMessageTemplate.h in Headers */,
 				5B2340C521ED964F00206ACB /* LPActionArg.h in Headers */,
 				5B23406121ED964F00206ACB /* LPRequestFactory.h in Headers */,
 				5B2340AD21ED964F00206ACB /* LPFeatureFlagManager.h in Headers */,
@@ -1476,6 +1483,7 @@
 				A8DBE2662204FDA00080818A /* LPFileTransferManager.m in Sources */,
 				5B2340F921ED965000206ACB /* NSString+MD5Addition.m in Sources */,
 				5B2340A721ED964F00206ACB /* LPInternalState.m in Sources */,
+				A8484E4823EE177A00FCDD58 /* LPIconChangeMessageTemplate.m in Sources */,
 				5B2340BD21ED964F00206ACB /* LPContextualValues.m in Sources */,
 				5B23409521ED964F00206ACB /* LPActionArg.m in Sources */,
 				5B23412721ED965000206ACB /* LPKeychainWrapper.m in Sources */,
