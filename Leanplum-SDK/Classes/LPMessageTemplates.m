@@ -90,15 +90,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     return self;
 }
 
-+ (UIViewController *)visibleViewController
-{
-    UIViewController *topController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    while (topController.presentedViewController) {
-        topController = topController.presentedViewController;
-    }
-    return topController;
-}
-
 // Defines the preset in-app messaging and action templates.
 // The presets are:
 //   Alert: Displays a system UIAlertVIew with a single button
