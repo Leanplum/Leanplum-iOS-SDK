@@ -16,11 +16,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property  (nonatomic, strong) NSMutableArray *contexts;
 
+//UIImageView *_popupBackground;
+//UILabel *_titleLabel;
+//UILabel *_messageLabel;
+//UIButton *_acceptButton;
+//UIButton *_cancelButton;
+//UIButton *_overlayView;
+//LPHitView *_closePopupView;
+//BOOL _webViewNeedsFade;
+//UIDeviceOrientation _orientation;
+
 - (UIViewController *)visibleViewController;
 
 - (void)defineActionWithContexts:(NSMutableArray *)contexts;
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex;
-- (void)alertDismissedWithButtonIndex:(NSInteger)buttonIndex;
+
+//interstitial
+
 
 @end
 

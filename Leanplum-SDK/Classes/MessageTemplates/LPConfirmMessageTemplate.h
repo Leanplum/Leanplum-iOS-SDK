@@ -6,11 +6,11 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPBaseMessageTemplate.h"
+#import "LPBaseAlertMessageTemplate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPConfirmMessageTemplate : LPBaseMessageTemplate
+@interface LPConfirmMessageTemplate : LPBaseAlertMessageTemplate
 
 @end
 
