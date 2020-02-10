@@ -57,8 +57,10 @@
     
     // Ensure all callbacks are on main thread.
     if (![NSThread isMainThread]) {
+        __weak __typeof__(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.responseBlock(operation, response);
+            __typeof__(self) strongSelf = weakSelf;
+            strongSelf.responseBlock(operation, response);
         });
         return;
     }
@@ -74,8 +76,10 @@
     
     // Ensure all callbacks are on main thread.
     if (![NSThread isMainThread]) {
+        __weak __typeof__(self) weakSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.errorBlock(error);
+            __typeof__(self) strongSelf = weakSelf;
+            strongSelf.errorBlock(error);
         });
         return;
     }

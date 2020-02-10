@@ -82,13 +82,13 @@
 
             // If index is in range, execute and remove it.
             // If not, requests are in the future. Update the index.
-            [callbackMap removeObjectForKey:indexObject];
             if (index >= requests.count) {
                 index -= requests.count;
                 updatedCallbackMap[@(index)] = eventCallback;
             } else if (eventCallback.responseBlock) {
                 activeResponseMap[indexObject] = [eventCallback.responseBlock copy];
             }
+            [callbackMap removeObjectForKey:indexObject];
         }
         [callbackMap addEntriesFromDictionary:updatedCallbackMap];
 
