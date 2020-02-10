@@ -199,6 +199,7 @@
 		A80A31F623ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31F423ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m */; };
 		A80A31F923ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A80A31F723ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h */; };
 		A80A31FA23ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A80A31F823ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m */; };
+		A81BA47223EE1EC100500772 /* LPBaseInterstitialMessageTemplatesClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A81BA47123EE1EC100500772 /* LPBaseInterstitialMessageTemplatesClassTest.m */; };
 		A8484E3323EE146800FCDD58 /* LPBasePushMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E3123EE146800FCDD58 /* LPBasePushMessageTemplate.h */; };
 		A8484E3423EE146800FCDD58 /* LPBasePushMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = A8484E3223EE146800FCDD58 /* LPBasePushMessageTemplate.m */; };
 		A8484E3723EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = A8484E3523EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h */; };
@@ -466,6 +467,7 @@
 		A80A31F423ECFA5A00F90E95 /* LPOpenUrlMessageTemplate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplate.m; sourceTree = "<group>"; };
 		A80A31F723ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPPushAsktoAskMessageTemplate.h; sourceTree = "<group>"; };
 		A80A31F823ECFA7C00F90E95 /* LPPushAsktoAskMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPPushAsktoAskMessageTemplate.m; sourceTree = "<group>"; };
+		A81BA47123EE1EC100500772 /* LPBaseInterstitialMessageTemplatesClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPBaseInterstitialMessageTemplatesClassTest.m; sourceTree = "<group>"; };
 		A8484E3123EE146800FCDD58 /* LPBasePushMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPBasePushMessageTemplate.h; sourceTree = "<group>"; };
 		A8484E3223EE146800FCDD58 /* LPBasePushMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPBasePushMessageTemplate.m; sourceTree = "<group>"; };
 		A8484E3523EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPRegisterForPushMessageTemplate.h; sourceTree = "<group>"; };
@@ -644,6 +646,7 @@
 				5B233E0121ED923200206ACB /* NewsfeedTest.m */,
 				5B233E0221ED923200206ACB /* LPFileManagerTest.m */,
 				5B233E0321ED923200206ACB /* LPMessageTemplatesClassTest.m */,
+				A81BA47123EE1EC100500772 /* LPBaseInterstitialMessageTemplatesClassTest.m */,
 				5B233E0421ED923200206ACB /* LPCountAggregatorTest.m */,
 				5B233E0521ED923200206ACB /* LPRequestFactoryTest.m */,
 				5B233E0621ED923200206ACB /* ExceptionsTest.m */,
@@ -1534,6 +1537,7 @@
 				5B233E4D21ED923200206ACB /* MessagesTest.m in Sources */,
 				5B233E4121ED923200206ACB /* ExceptionsTest.m in Sources */,
 				5B233E4F21ED923200206ACB /* LPEventCallbackManagerTest.m in Sources */,
+				A81BA47223EE1EC100500772 /* LPBaseInterstitialMessageTemplatesClassTest.m in Sources */,
 				5B233E4E21ED923200206ACB /* LPFeatureFlagManagerTest.m in Sources */,
 				5B233E4421ED923200206ACB /* LPRequestSenderTest.m in Sources */,
 				5B233E4521ED923200206ACB /* LPRequestTest.m in Sources */,
