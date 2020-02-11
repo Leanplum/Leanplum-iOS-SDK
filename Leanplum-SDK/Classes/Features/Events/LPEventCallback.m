@@ -61,7 +61,9 @@
         __strong __typeof__(self) strongSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             __typeof__(self) weakSelf = strongSelf;
-            weakSelf.responseBlock(operation, response);
+            if (weakSelf) {
+                weakSelf.responseBlock(operation, response);
+            }
         });
         return;
     }
@@ -81,7 +83,9 @@
         __strong __typeof__(self) strongSelf = self;
         dispatch_async(dispatch_get_main_queue(), ^{
             __typeof__(self) weakSelf = strongSelf;
-            weakSelf.errorBlock(error);
+            if (weakSelf) {
+                weakSelf.errorBlock(error);
+            }
         });
         return;
     }
