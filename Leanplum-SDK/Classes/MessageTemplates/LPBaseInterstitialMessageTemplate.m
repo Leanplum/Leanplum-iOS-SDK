@@ -734,7 +734,7 @@
  * Helper method
  */
 
-+ (NSString *)urlEncodedStringFromString:(NSString *)urlString {
+- (NSString *)urlEncodedStringFromString:(NSString *)urlString {
     NSString *unreserved = @":-._~/?&=";
     NSMutableCharacterSet *allowed = [NSMutableCharacterSet
                                       alphanumericCharacterSet];

@@ -104,6 +104,8 @@
 		A8CB8A36227276A400E1001D /* LeanplumRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */; };
 		A8EEA1AB20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
+		A8F5D58823F3488600313C98 /* LPBaseInterstitialMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F5D58623F3483E00313C98 /* LPBaseInterstitialMessageTemplateTest.m */; };
+		A8F5D58A23F34AD400313C98 /* LPBasePushMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F5D58923F34AD400313C98 /* LPBasePushMessageTemplateTest.m */; };
 		B449EB2A21F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */; };
 		B449EB2B21F27B0B005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */; };
 /* End PBXBuildFile section */
@@ -208,6 +210,8 @@
 		A84527FC215C3035001FA20D /* LPRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LeanplumRequestTest.m; sourceTree = "<group>"; };
 		A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
+		A8F5D58623F3483E00313C98 /* LPBaseInterstitialMessageTemplateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPBaseInterstitialMessageTemplateTest.m; sourceTree = "<group>"; };
+		A8F5D58923F34AD400313C98 /* LPBasePushMessageTemplateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPBasePushMessageTemplateTest.m; sourceTree = "<group>"; };
 		B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDifferentDelay.json; sourceTree = "<group>"; };
 		B5CCCA2C1D74B64D005ADEE1 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B5CCCA2E1D74B64D005ADEE1 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -268,6 +272,8 @@
 				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
 				07E5C87F1F052B7800A4B092 /* LPJSONTest.m */,
 				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
+				A8F5D58623F3483E00313C98 /* LPBaseInterstitialMessageTemplateTest.m */,
+				A8F5D58923F34AD400313C98 /* LPBasePushMessageTemplateTest.m */,
 				07E5C8811F052B7800A4B092 /* LPMessageTemplatesClassTest.m */,
 				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
@@ -764,6 +770,7 @@
 				07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */,
 				65E53E982148786C00A05040 /* LPCountAggregatorTest.m in Sources */,
 				07E5C8B91F052B7800A4B092 /* LPMessageTemplatesClassTest.m in Sources */,
+				A8F5D58A23F34AD400313C98 /* LPBasePushMessageTemplateTest.m in Sources */,
 				07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */,
 				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
 				65E189C6216BDB82005E6B93 /* LPRequestFactoryTest.m in Sources */,
@@ -771,6 +778,7 @@
 				65E189C421643631005E6B93 /* LPRequestSenderTest.m in Sources */,
 				07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */,
 				A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */,
+				A8F5D58823F3488600313C98 /* LPBaseInterstitialMessageTemplateTest.m in Sources */,
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
@@ -930,7 +938,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Leanplum-SDK/Leanplum-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Leanplum-SDK/Leanplum-SDK-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -948,7 +956,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Leanplum-SDK/Leanplum-SDK-Prefix.pch";
 				INFOPLIST_FILE = "Leanplum-SDK/Leanplum-SDK-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
