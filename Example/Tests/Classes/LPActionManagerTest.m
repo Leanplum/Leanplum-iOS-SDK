@@ -240,7 +240,7 @@
     UIApplication *app = [UIApplication sharedApplication];
     XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
     NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
-    NSString *formattedToken = [token description];
+    NSString *formattedToken = [manager hexadecimalStringFromData:token];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
@@ -264,7 +264,7 @@
 
     // Test push token is sent if the token changes.
     token = [@"sample2" dataUsingEncoding:NSUTF8StringEncoding];
-    formattedToken = [token description];
+    formattedToken = [manager hexadecimalStringFromData:token];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
