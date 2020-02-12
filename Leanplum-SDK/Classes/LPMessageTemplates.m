@@ -47,24 +47,13 @@
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
 
 
-static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
-static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
+@interface LPMessageTemplatesClass()
 
-@implementation LPMessageTemplatesClass {
-    NSMutableArray *_contexts;
-    UIView *_popupView;
-    UIImageView *_popupBackground;
-    UILabel *_titleLabel;
-    UILabel *_messageLabel;
-    UIView *_popupGroup;
-    UIButton *_acceptButton;
-    UIButton *_cancelButton;
-    UIButton *_dismissButton;
-    UIButton *_overlayView;
-    LPHitView *_closePopupView;
-    BOOL _webViewNeedsFade;
-    UIDeviceOrientation _orientation;
-}
+@property (nonatomic, strong) NSMutableArray *contexts;
+
+@end
+
+@implementation LPMessageTemplatesClass
 
 #pragma mark Initialization
 
@@ -105,6 +94,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 // Please give us suggestions for other types of messages!
 - (void)defineActions
 {
+
     [[[LPAlertMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPConfirmMessageTemplate alloc] init] defineActionWithContexts:_contexts];
     [[[LPInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
@@ -123,14 +113,12 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 // refreshPushPermissions is called by [Leanplum start].
 - (void)refreshPushPermissions
 {
-//    if ([[NSUserDefaults standardUserDefaults] boolForKey:DEFAULTS_LEANPLUM_ENABLED_PUSH]) {
-//        [self enableSystemPush];
-//    }
+    [[[LPPushAsktoAskMessageTemplate alloc] init] refreshPushPermissions];
 }
 
 - (void)disableAskToAsk
 {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:DEFAULTS_ASKED_TO_PUSH];
+    [[[LPPushAsktoAskMessageTemplate alloc] init] hasDisabledAskToAsk];
 }
 
 @end

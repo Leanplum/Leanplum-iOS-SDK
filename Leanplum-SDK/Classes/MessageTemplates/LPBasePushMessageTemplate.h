@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)enablePush;
 - (void)deferPush;
 - (BOOL)isPushEnabled;
+- (void)disableAskToAsk;
 - (void)enableSystemPush;
 - (void)refreshPushPermissions;
 - (BOOL)hasDisabledAskToAsk;
