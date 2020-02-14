@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPBaseInterstitialMessageTemplate : LPBaseMessageTemplate
+@interface LPBaseInterstitialMessageTemplate : LPBaseMessageTemplate <WKNavigationDelegate>
 
 // confirmation
 @property  (nonatomic, strong) UIView *popupView;
@@ -27,8 +27,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property  (nonatomic, assign) BOOL webViewNeedsFade;
 @property  (nonatomic, assign) UIDeviceOrientation orientation;
 
+- (void)accept;
 - (void)showPopup;
 - (void)closePopupWithAnimation:(BOOL)animated;
+- (void)closePopupWithAnimation:(BOOL)animated
+                    actionNamed:(NSString *)actionName
+                          track:(BOOL)track;
 
 @end
 
