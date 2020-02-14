@@ -24,8 +24,6 @@
 
 
 #import <Foundation/Foundation.h>
-#import "Leanplum.h"
-#import "LPVarCache.h"
 
 extern NSString *APPLICATION_ID;
 extern NSString *DEVELOPMENT_KEY;

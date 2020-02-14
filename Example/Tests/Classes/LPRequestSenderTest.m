@@ -16,7 +16,6 @@
 #import <Leanplum/LPRequest.h>
 #import <Leanplum/LPCountAggregator.h>
 #import "LeanplumHelper.h"
-#import "LPOperationQueue.h"
 
 @interface LPRequestSender(UnitTest)
 
