@@ -1,27 +1,17 @@
 //
-//  LPBaseInterstitialMessageTemplate.m
+//  LPBaseWebMessageTemplate.m
 //  LeanplumSDK-iOS
 //
 //  Created by Mayank Sanganeria on 2/6/20.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPBaseInterstitialMessageTemplate.h"
+#import "LPBaseWebMessageTemplate.h"
 #import "LPJSON.h"
 
-@implementation LPBaseInterstitialMessageTemplate
+@implementation LPBaseWebMessageTemplate
 
 #pragma mark Interstitial logic
-
-- (void)accept
-{
-    [self closePopupWithAnimation:YES actionNamed:LPMT_ARG_ACCEPT_ACTION track:YES];
-}
-
-- (void)closePopupWithAnimation:(BOOL)animated
-{
-    [self closePopupWithAnimation:animated actionNamed:nil track:NO];
-}
 
 - (void)closePopupWithAnimation:(BOOL)animated
                     actionNamed:(NSString *)actionName
@@ -87,20 +77,11 @@
     }
 
     LPActionContext *context = self.contexts.lastObject;
-    BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
-    BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-                 [context.actionName isEqualToString:LPMT_HTML_NAME];
-    BOOL isPushAskToAsk = [context.actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK];
-
-    if (isWeb) {
         WKWebViewConfiguration* configuration = [WKWebViewConfiguration new];
         configuration.allowsInlineMediaPlayback = YES;
         configuration.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
 
         _popupView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
-    } else {
-        _popupView = [[UIView alloc] init];
-    }
 
     self.popupGroup = [[UIView alloc] init];
     self.popupGroup.backgroundColor = [UIColor clearColor];
@@ -427,73 +408,6 @@
                                      LPMT_ACCEPT_BUTTON_MARGIN * 2 + LPMT_TITLE_LABEL_HEIGHT + statusBarHeight,
                                      _popupView.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN * 2,
                                      _popupView.frame.size.height - LPMT_ACCEPT_BUTTON_MARGIN * 4 - LPMT_TITLE_LABEL_HEIGHT - LPMT_ACCEPT_BUTTON_HEIGHT - statusBarHeight);
-}
-
-- (CGSize)getTextSizeFromButton:(UIButton *)button
-{
-    UIFont* font = button.titleLabel.font;
-    NSString *text = button.titleLabel.text;
-    CGSize textSize = CGSizeZero;
-    if ([text respondsToSelector:@selector(sizeWithAttributes:)]) {
-        textSize = [text sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize]}];
-    } else
-    {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        textSize = [text sizeWithFont:[UIFont fontWithName:font.fontName size:font.pointSize]];
-#pragma clang diagnostic pop
-    }
-    textSize.width = textSize.width > 50 ? textSize.width : LPMT_ACCEPT_BUTTON_WIDTH;
-    textSize.height = textSize.height > 15 ? textSize.height : LPMT_ACCEPT_BUTTON_HEIGHT;
-    return textSize;
-}
-
-// Creates the X icon used in the popup's dismiss button.
-- (UIImage *)dismissImage:(UIColor *)color withSize:(int)size
-{
-    CGRect rect = CGRectMake(0, 0, size, size);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-
-    int margin = size * 3 / 8;
-
-    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
-    CGContextSetLineWidth(context, 1.5);
-    CGContextMoveToPoint(context, margin, margin);
-    CGContextAddLineToPoint(context, size - margin, size - margin);
-    CGContextMoveToPoint(context, size - margin, margin);
-    CGContextAddLineToPoint(context, margin, size - margin);
-    CGContextStrokePath(context);
-
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return img;
-}
-
--(UIEdgeInsets)safeAreaInsets
-{
-    UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
-    if (@available(iOS 11.0, *)) {
-        insets = [UIApplication sharedApplication].keyWindow.safeAreaInsets;
-    } else {
-        insets.top = [[UIApplication sharedApplication] isStatusBarHidden] ? 0 : 20.0;
-    }
-    return insets;
-}
-
-// Creates a 1x1 image with the specified color.
-- (UIImage *)imageFromColor:(UIColor *)color
-{
-    CGRect rect = CGRectMake(0, 0, 1, 1);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return img;
 }
 
 - (void)updateHtmlLayoutWithContext:(LPActionContext *)context
