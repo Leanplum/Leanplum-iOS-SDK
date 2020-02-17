@@ -2,13 +2,9 @@
 
 <p align="center">
     <img src='https://img.shields.io/badge/branch-master-blue.svg'>
-    <img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk-master' alt="Build status">
-    &nbsp;&nbsp;&nbsp;&nbsp;
-    <img src='https://img.shields.io/badge/branch-develop-red.svg'>
-    <img src='https://jenkins.leanplum.com/buildStatus/icon?job=apple-sdk-develop' alt="Build status">
+    <img src='https://travis-ci.org/Leanplum/Leanplum-iOS-SDK.svg?branch=master' alt="Build status">
 </p>
 <p align="center">
-<img src="https://img.shields.io/cocoapods/dt/Leanplum-iOS-SDK.svg?maxAge=3600" alt="Downloads" />
 <img src="https://img.shields.io/badge/platform-iOS-blue.svg?style=flat" alt="Platform iOS" />
 <a href="https://cocoapods.org/pods/Leanplum-iOS-SDK"><img src="https://img.shields.io/cocoapods/v/Leanplum-iOS-SDK.svg?style=flat" alt="CocoaPods compatible" /></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible" /></a>
