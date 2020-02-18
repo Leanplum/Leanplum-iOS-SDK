@@ -410,10 +410,12 @@ BOOL inForeground = NO;
 + (void)triggerStartIssued
 {
     [LPInternalState sharedState].issuedStart = YES;
-    for (LeanplumStartIssuedBlock block in [LPInternalState sharedState].startIssuedBlocks.copy) {
-        block();
+    @synchronized ([LPInternalState sharedState].startIssuedBlocks) {
+        for (LeanplumStartIssuedBlock block in [LPInternalState sharedState].startIssuedBlocks.copy) {
+            block();
+        }
+        [[LPInternalState sharedState].startIssuedBlocks removeAllObjects];
     }
-    [[LPInternalState sharedState].startIssuedBlocks removeAllObjects];
 }
 
 + (void)triggerStartResponse:(BOOL)success
@@ -1274,10 +1276,12 @@ BOOL inForeground = NO;
     if ([LPInternalState sharedState].issuedStart) {
         block();
     } else {
-        if (![LPInternalState sharedState].startIssuedBlocks) {
-            [LPInternalState sharedState].startIssuedBlocks = [NSMutableArray array];
+        @synchronized ([LPInternalState sharedState].startIssuedBlocks) {
+            if (![LPInternalState sharedState].startIssuedBlocks) {
+                [LPInternalState sharedState].startIssuedBlocks = [NSMutableArray array];
+            }
+            [[LPInternalState sharedState].startIssuedBlocks addObject:[block copy]];
         }
-        [[LPInternalState sharedState].startIssuedBlocks addObject:[block copy]];
     }
 }
 

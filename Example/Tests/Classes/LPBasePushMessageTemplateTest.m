@@ -1,9 +1,9 @@
 //
-//  MessageTemplatesTest.m
-//  Leanplum-SDK-Tests
+//  LPBaseInterstitialMessageTemplateTest.m
+//  Leanplum-SDK
 //
-//  Created by Milos Jakovljevic on 6/16/17.
-//  Copyright © 2017 Leanplum. All rights reserved.
+//  Created by Mayank Sanganeria on 2/1/20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -24,29 +24,23 @@
 
 
 #import <XCTest/XCTest.h>
-#import <UIKit/UIKit.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "Leanplum+Extensions.h"
-#import "LPActionManager.h"
-#import "LPConstants.h"
-#import "LPRegisterDevice.h"
-#import "LPMessageTemplates.h"
+#import "LPBasePushMessageTemplate.h"
 
-@interface LPMessageTemplatesClassTest : XCTestCase
+@interface LPBasePushMessageTemplate (Test)
+
+- (void)enableSystemPush;
 
 @end
 
-@implementation LPMessageTemplatesClassTest
 
-+ (void)setUp
-{
-    [super setUp];
-    // Called only once to setup method swizzling.
-    [LeanplumHelper setup_method_swizzling];
-}
+@interface LPBasePushMessageTemplateTest : XCTestCase
+
+@end
+
+@implementation LPBasePushMessageTemplateTest
 
 - (void)setUp {
     [super setUp];
@@ -54,15 +48,13 @@
 
 - (void)tearDown {
     [super tearDown];
-    // Clean up after every test.
-    [LeanplumHelper clean_up];
-    [HTTPStubs removeAllStubs];
 }
 
--(void)test_shared_templates_creation
+- (void)test_pushEnableOnce
 {
-    // Previously, this was causing a deadlock.
-    [LPMessageTemplatesClass sharedTemplates];
+    LPBasePushMessageTemplate *template = [[LPBasePushMessageTemplate alloc] init];
+    [template enableSystemPush];
+    XCTAssertTrue([[NSUserDefaults standardUserDefaults] boolForKey:@"__Leanplum_asked_to_push"]);
 }
 
 @end

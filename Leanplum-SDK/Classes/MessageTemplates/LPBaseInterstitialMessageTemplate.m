@@ -12,6 +12,11 @@
 
 #pragma mark Interstitial logic
 
+- (void)accept
+{
+    [self closePopupWithAnimation:YES actionNamed:LPMT_ARG_ACCEPT_ACTION track:YES];
+}
+
 - (void)closePopupWithAnimation:(BOOL)animated
 {
     [self closePopupWithAnimation:animated actionNamed:nil track:NO];
@@ -150,6 +155,23 @@
     }];
     [view removeFromSuperview];
     view = nil;
+}
+
+- (void)orientationDidChange:(NSNotification *)notification
+{
+    UIDevice *device = notification.object;
+    // Bug with iOS, calls orientation did change even without change,
+    // Check if the orientation is not changed than before.
+    if (_orientation != device.orientation) {
+        _orientation = device.orientation;
+        [self updatePopupLayout];
+
+        // isStatusBarHidden is not updated synchronously
+        LPActionContext *conteext = self.contexts.lastObject;
+        if ([conteext.actionName isEqualToString:LPMT_INTERSTITIAL_NAME]) {
+            [self performSelector:@selector(updatePopupLayout) withObject:nil afterDelay:0];
+        }
+    }
 }
 
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk
@@ -575,6 +597,151 @@
     LP_TRY
     [self closePopupWithAnimation:YES];
     LP_END_TRY
+}
+
+#pragma mark - WKWebViewDelegate methods
+
+- (void)showWebview:(WKWebView *)webview {
+    [_popupGroup setHidden:NO];
+    if (_webViewNeedsFade) {
+        _webViewNeedsFade = NO;
+        [_popupGroup setAlpha:0.0];
+        [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
+            [self->_popupGroup setAlpha:1.0];
+        }];
+    }
+}
+
+- (NSDictionary *)queryComponentsFromUrl:(NSString *)url {
+    NSMutableDictionary *components = [NSMutableDictionary new];
+    NSArray *urlComponents = [url componentsSeparatedByString:@"?"];
+    if ([urlComponents count] > 1) {
+        NSString *queryString = urlComponents[1];
+        NSArray *parameters = [queryString componentsSeparatedByString:@"&"];
+        for (NSString *parameter in parameters) {
+            NSArray *parameterComponents = [parameter componentsSeparatedByString:@"="];
+            if ([parameterComponents count] > 1) {
+                components[parameterComponents[0]] = [parameterComponents[1]
+                    stringByReplacingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+            }
+        }
+    }
+    return components;
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    if (webView.isLoading) {
+        return;
+    }
+
+    // Show for WEB INSTERSTITIAL. HTML will show after js loads the template.
+    LPActionContext *context = self.contexts.lastObject;
+    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+        [self showWebview:webView];
+    }
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    LPActionContext *context = self.contexts.lastObject;
+    @try {
+
+        NSString *url = [navigationAction request].URL.absoluteString;
+        NSDictionary *queryComponents = [self queryComponentsFromUrl:url];
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
+            [self dismiss];
+            if (queryComponents[@"result"]) {
+                [Leanplum track:queryComponents[@"result"]];
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        // Only continue for HTML Template. Web Insterstitial will be deprecated.
+        if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+            decisionHandler(WKNavigationActionPolicyAllow);
+            return;
+        }
+
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_OPEN]].location != NSNotFound) {
+            [self showWebview:webView];
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_TRACK]].location != NSNotFound) {
+            NSString *event = queryComponents[@"event"];
+            if (event) {
+                double value = [queryComponents[@"value"] doubleValue];
+                NSString *info = queryComponents[@"info"];
+                NSDictionary *parameters = [self JSONFromString:queryComponents[@"parameters"]];
+
+                if (queryComponents[@"isMessageEvent"]) {
+                    [context trackMessageEvent:event
+                                     withValue:value
+                                       andInfo:info
+                                 andParameters: parameters];
+                } else {
+                    [Leanplum track:event withValue:value andInfo:info andParameters:parameters];
+                }
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_ACTION]].location != NSNotFound) {
+            if (queryComponents[@"action"]) {
+                [self closePopupWithAnimation:YES actionNamed:queryComponents[@"action"] track:NO];
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        if ([url rangeOfString:
+             [context stringNamed:LPMT_ARG_URL_TRACK_ACTION]].location != NSNotFound) {
+            if (queryComponents[@"action"]) {
+                [self closePopupWithAnimation:YES actionNamed:queryComponents[@"action"] track:YES];
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+    }
+    @catch (id exception) {
+        // In case we catch exception here, hide the overlaying message.
+        [self dismiss];
+        // Handle the exception message.
+        LOG_LP_MESSAGE_EXCEPTION;
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+
+/**
+ * Copied from LPJSON. TODO: Remove when we open source.
+ */
+- (id)JSONFromString:(NSString *)string
+{
+    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
+    NSError *error;
+    id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
+    if (error) {
+        return nil;
+    }
+    return json;
+}
+
+/**
+ * Helper method
+ */
+
+- (NSString *)urlEncodedStringFromString:(NSString *)urlString {
+    NSString *unreserved = @":-._~/?&=";
+    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
+                                      alphanumericCharacterSet];
+    [allowed addCharactersInString:unreserved];
+    return [urlString
+            stringByAddingPercentEncodingWithAllowedCharacters:
+            allowed];
 }
 
 @end
