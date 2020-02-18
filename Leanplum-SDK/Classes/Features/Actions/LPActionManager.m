@@ -513,10 +513,7 @@ static dispatch_once_t leanplum_onceToken;
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-            if (appState != UIApplicationStateBackground) {
-                [self maybePerformNotificationActions:userInfo action:action active:active];
-            }
+            [self maybePerformNotificationActions:userInfo action:action active:active];
         }
     };
 
