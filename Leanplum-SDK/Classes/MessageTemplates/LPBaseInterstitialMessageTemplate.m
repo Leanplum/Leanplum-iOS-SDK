@@ -49,6 +49,9 @@
 
     void (^finishCallback)(void) = ^() {
         [self removeAllViewsFrom:self->_popupGroup];
+        UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+        UIView *mainView = mainWindow.subviews[0];
+        mainView.isAccessibilityElement = NO;
 
         if (actionName) {
             if (track) {
@@ -137,7 +140,15 @@
     [self updatePopupLayout];
 
     [self.popupGroup setAlpha:0.0];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
+    //set accessibility elemements for VoiceOver
+    UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+    UIView *mainView = mainWindow.subviews[0];
+    [mainWindow addSubview:self.popupGroup];
+    mainWindow.accessibilityElements = @[mainView, self.popupGroup];
+    mainView.isAccessibilityElement = YES;
+    self.popupGroup.isAccessibilityElement = NO;
+    [self performSelector:@selector(setFocusForAccessibilityElement:) withObject:self.dismissButton afterDelay:0.1];
+    
     [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
         [self->_popupGroup setAlpha:1.0];
     }];
@@ -146,6 +157,11 @@
                                              selector:@selector(orientationDidChange:)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
+}
+
+- (void)setFocusForAccessibilityElement:(UIView *)accessibleView {
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification,
+    accessibleView);
 }
 
 - (void)removeAllViewsFrom:(UIView *)view
