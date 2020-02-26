@@ -102,6 +102,7 @@
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A84527FC215C3035001FA20D /* LPRequestTest.m */; };
 		A86C8CF42405E271003F5E4E /* LPAlertMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CF32405E271003F5E4E /* LPAlertMessageSnapshotTest.m */; };
+		A86C8CF624072814003F5E4E /* LPOpenUrlMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CF524072814003F5E4E /* LPOpenUrlMessageTemplateTest.m */; };
 		A8CB8A36227276A400E1001D /* LeanplumRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */; };
 		A8EEA1AB20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
@@ -210,6 +211,7 @@
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A84527FC215C3035001FA20D /* LPRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		A86C8CF32405E271003F5E4E /* LPAlertMessageSnapshotTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageSnapshotTest.m; sourceTree = "<group>"; };
+		A86C8CF524072814003F5E4E /* LPOpenUrlMessageTemplateTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplateTest.m; sourceTree = "<group>"; };
 		A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LeanplumRequestTest.m; sourceTree = "<group>"; };
 		A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
 		A8F5D58623F3483E00313C98 /* LPBaseInterstitialMessageTemplateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPBaseInterstitialMessageTemplateTest.m; sourceTree = "<group>"; };
@@ -277,6 +279,7 @@
 				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
 				A8F5D58623F3483E00313C98 /* LPBaseInterstitialMessageTemplateTest.m */,
 				A8F5D58923F34AD400313C98 /* LPBasePushMessageTemplateTest.m */,
+				A86C8CF524072814003F5E4E /* LPOpenUrlMessageTemplateTest.m */,
 				07E5C8811F052B7800A4B092 /* LPMessageTemplatesClassTest.m */,
 				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
@@ -794,6 +797,7 @@
 				A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */,
 				A8F5D58823F3488600313C98 /* LPBaseInterstitialMessageTemplateTest.m in Sources */,
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
+				A86C8CF624072814003F5E4E /* LPOpenUrlMessageTemplateTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
 				653192A121517D4F00D7DDDC /* LPFeatureFlagManagerTest.m in Sources */,

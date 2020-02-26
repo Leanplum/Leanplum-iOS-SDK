@@ -7,6 +7,7 @@
 //
 
 #import "LPBaseInterstitialMessageTemplate.h"
+#import "LPJSON.h"
 
 @implementation LPBaseInterstitialMessageTemplate
 
@@ -675,7 +676,7 @@
             if (event) {
                 double value = [queryComponents[@"value"] doubleValue];
                 NSString *info = queryComponents[@"info"];
-                NSDictionary *parameters = [self JSONFromString:queryComponents[@"parameters"]];
+                NSDictionary *parameters = [LPJSON JSONFromString:queryComponents[@"parameters"]];
 
                 if (queryComponents[@"isMessageEvent"]) {
                     [context trackMessageEvent:event
@@ -714,34 +715,6 @@
         LOG_LP_MESSAGE_EXCEPTION;
     }
     decisionHandler(WKNavigationActionPolicyAllow);
-}
-
-/**
- * Copied from LPJSON. TODO: Remove when we open source.
- */
-- (id)JSONFromString:(NSString *)string
-{
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error;
-    id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (error) {
-        return nil;
-    }
-    return json;
-}
-
-/**
- * Helper method
- */
-
-- (NSString *)urlEncodedStringFromString:(NSString *)urlString {
-    NSString *unreserved = @":-._~/?&=";
-    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
-                                      alphanumericCharacterSet];
-    [allowed addCharactersInString:unreserved];
-    return [urlString
-            stringByAddingPercentEncodingWithAllowedCharacters:
-            allowed];
 }
 
 @end
