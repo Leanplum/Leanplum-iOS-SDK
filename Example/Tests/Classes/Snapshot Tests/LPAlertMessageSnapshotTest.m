@@ -8,6 +8,21 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
+#import <Leanplum/LPAlertMessageTemplate.h>
+
+@interface LPAlertMessageTemplate()
+
+-(UIViewController *)viewControllerWithContext:(LPActionContext *)context;
+
+@end
+
+@interface LPActionContext(UnitTest)
+
++ (LPActionContext *)actionContextWithName:(NSString *)name
+                                      args:(NSDictionary *)args
+                                 messageId:(NSString *)messageId;
+
+@end
 
 @interface LPAlertMessageSnapshotTest : FBSnapshotTestCase
 
@@ -26,20 +41,16 @@
     [super tearDown];
 }
 
-- (void)testExample {
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
-    UIView *view = [[UIView alloc] init];
-    view.frame = CGRectMake(0, 0, 100, 100);
-    view.backgroundColor = [UIColor redColor];
-    FBSnapshotVerifyView(view, nil);
-}
+- (void)testView {
+    LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
+    LPActionContext *context = [LPActionContext actionContextWithName:LPMT_ALERT_NAME args:@{
+        LPMT_ARG_TITLE:APP_NAME,
+        LPMT_ARG_MESSAGE:LPMT_DEFAULT_ALERT_MESSAGE,
+        LPMT_ARG_DISMISS_TEXT:LPMT_DEFAULT_OK_BUTTON_TEXT,
+    } messageId:0];
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
+    UIViewController* viewController = [template viewControllerWithContext:context];
+    FBSnapshotVerifyView(viewController.view, nil);
 }
 
 @end
