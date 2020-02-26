@@ -21,5 +21,6 @@ target 'Leanplum-SDK_Example' do
       pod 'Leanplum-iOS-SDK', :path => '../'
       pod 'OCMock', '~> 3.3.1'
       pod 'OHHTTPStubs', '~> 9.0.0'
+      pod 'iOSSnapshotTestCase/Core'
   end
 end
