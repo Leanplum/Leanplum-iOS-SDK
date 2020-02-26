@@ -51,6 +51,7 @@
         [self removeAllViewsFrom:self->_popupGroup];
         UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
         UIView *mainView = mainWindow.subviews[0];
+        [[UIApplication sharedApplication] setAccessibilityElements:@[mainView]];
         mainView.isAccessibilityElement = NO;
 
         if (actionName) {
@@ -144,10 +145,10 @@
     UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
     UIView *mainView = mainWindow.subviews[0];
     [mainWindow addSubview:self.popupGroup];
-    mainWindow.accessibilityElements = @[mainView, self.popupGroup];
+    [[UIApplication sharedApplication] setAccessibilityElements:@[mainView, self.popupGroup]];
     mainView.isAccessibilityElement = YES;
     self.popupGroup.isAccessibilityElement = NO;
-    [self performSelector:@selector(setFocusForAccessibilityElement:) withObject:self.dismissButton afterDelay:0.1];
+    [self setFocusForAccessibilityElement:self.dismissButton];
     
     [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
         [self->_popupGroup setAlpha:1.0];
