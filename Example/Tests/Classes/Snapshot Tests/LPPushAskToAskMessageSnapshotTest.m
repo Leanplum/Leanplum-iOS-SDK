@@ -8,11 +8,12 @@
 //
 //#import <XCTest/XCTest.h>
 //#import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-//#import <Leanplum/LPPushAskToAskMessageTemplate.h>
+//#import <Leanplum/LPCenterPopupMessageTemplate.h>
 //
-//@interface LPPushAskToAskMessageTemplate()
+//@interface LPCenterPopupMessageTemplate()
 //
-//-(UIViewController *)viewControllerWithContext:(LPActionContext *)context;
+//@property  (nonatomic, strong) UIView *popupGroup;
+//- (void)setupPopupViewWithContext:(LPActionContext *)context;
 //
 //@end
 //
@@ -24,11 +25,11 @@
 //
 //@end
 //
-//@interface LPPushAskToAskMessageSnapshotTest : FBSnapshotTestCase
+//@interface LPCenterPopupMessageSnapshotTest : FBSnapshotTestCase
 //
 //@end
 //
-//@implementation LPPushAskToAskMessageSnapshotTest
+//@implementation LPCenterPopupMessageSnapshotTest
 //
 //- (void)setUp {
 //    [super setUp];
@@ -40,16 +41,22 @@
 //}
 //
 //- (void)testView {
-//    LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
-//    LPActionContext *context = [LPActionContext actionContextWithName:LPMT_PushAskToAsk_NAME args:@{
-//        LPMT_ARG_TITLE: APP_NAME,
-//        LPMT_ARG_MESSAGE: LPMT_DEFAULT_PushAskToAsk_MESSAGE,
-//        LPMT_ARG_ACCEPT_TEXT: LPMT_DEFAULT_YES_BUTTON_TEXT,
-//        LPMT_ARG_CANCEL_TEXT: LPMT_DEFAULT_NO_BUTTON_TEXT,
-//    } messageId:0];
-//
-//    UIViewController* viewController = [template viewControllerWithContext:context];
-//    FBSnapshotVerifyView(viewController.view, nil);
+//    LPCenterPopupMessageTemplate *template = [[LPCenterPopupMessageTemplate alloc] init];
+//    LPActionContext *context = [LPActionContext actionContextWithName:LPMT_CENTER_POPUP_NAME args:@{
+//        LPMT_ARG_TITLE_TEXT:APP_NAME,
+//        LPMT_ARG_TITLE_COLOR:[UIColor blackColor],
+//        LPMT_ARG_MESSAGE_TEXT:LPMT_DEFAULT_POPUP_MESSAGE,
+//        LPMT_ARG_MESSAGE_COLOR:[UIColor blackColor],
+//        LPMT_ARG_BACKGROUND_COLOR:[UIColor whiteColor],
+//        LPMT_ARG_ACCEPT_BUTTON_TEXT:LPMT_DEFAULT_OK_BUTTON_TEXT,
+//        LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR:[UIColor whiteColor],
+////        LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR:defaultButtonTextColor,
+//        LPMT_ARG_LAYOUT_WIDTH:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH),
+//        LPMT_ARG_LAYOUT_HEIGHT:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT),
+//    }
+//                                                            messageId:0];
+//    [template setupPopupViewWithContext:context];
+//    FBSnapshotVerifyView(template.popupGroup, nil);
 //}
 //
 //@end
