@@ -50,6 +50,7 @@
 #import "LPFileTransferManager.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
+#import "LPOperationQueue.h"
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -1180,13 +1181,16 @@ BOOL inForeground = NO;
     
     // Block that finish task.
     void (^finishTaskHandler)(void) = ^(){
+        // Make sure all database operations are done before ending the background task.
+        [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+
         [application endBackgroundTask:backgroundTask];
         backgroundTask = UIBackgroundTaskInvalid;
     };
     
     // Start background task to make sure it runs when the app is in background.
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
-    
+
     // Send pause event.
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                     initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
