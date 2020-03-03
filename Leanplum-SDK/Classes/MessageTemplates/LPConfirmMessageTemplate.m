@@ -25,29 +25,9 @@
                              ]
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
-                     if (NSClassFromString(@"UIAlertController")) {
-                         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
-                         UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-                             [self alertDismissedWithButtonIndex:0];
-                         }];
-                         [alert addAction:cancel];
-                         UIAlertAction *accept = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                             [self alertDismissedWithButtonIndex:1];
-                         }];
-                         [alert addAction:accept];
 
                          [[self visibleViewController]
-                          presentViewController:alert animated:YES completion:nil];
-                     } else
-                     {
-                         UIAlertView *alert = [[UIAlertView alloc]
-                                               initWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
-                                               message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
-                                               delegate:self
-                                               cancelButtonTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil)
-                                               otherButtonTitles:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil),nil];
-                         [alert show];
-                     }
+                          presentViewController:[self viewControllerWithContext:context] animated:YES completion:nil];
                      [self.contexts addObject:context];
                      return YES;
                  }
@@ -59,4 +39,16 @@
     
 }
 
+-(UIViewController *)viewControllerWithContext:(LPActionContext *)context {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil) style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        [self alertDismissedWithButtonIndex:0];
+    }];
+    [alert addAction:cancel];
+    UIAlertAction *accept = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self alertDismissedWithButtonIndex:1];
+    }];
+    [alert addAction:accept];
+    return alert;
+}
 @end
