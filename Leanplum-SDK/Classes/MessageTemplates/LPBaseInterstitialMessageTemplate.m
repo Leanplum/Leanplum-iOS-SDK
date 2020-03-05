@@ -85,11 +85,11 @@
         });
         return;
     }
-    [self setupPopupViewWithContext:self.contexts.lastObject];
+    [self setupPopupView];
     [self.popupGroup setAlpha:0.0];
     [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
     [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-        [self->_popupGroup setAlpha:1.0];
+        [self->_popupGroup setAlpha:0.5];
     }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -98,7 +98,8 @@
                                                object:nil];
 }
 
-- (void)setupPopupViewWithContext:(LPActionContext *)context {
+- (void)setupPopupView {
+    LPActionContext *context = self.contexts.lastObject;
     BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
                  [context.actionName isEqualToString:LPMT_HTML_NAME];
