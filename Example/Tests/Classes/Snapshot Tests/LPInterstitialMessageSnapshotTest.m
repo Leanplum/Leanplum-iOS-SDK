@@ -52,8 +52,7 @@
         LPMT_ARG_ACCEPT_BUTTON_TEXT:LPMT_DEFAULT_OK_BUTTON_TEXT,
         LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR:[UIColor whiteColor],
         LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR:[UIColor blackColor],
-    }
-                                                            messageId:0];
+    } messageId:0];
     id contextMock = OCMPartialMock(context);
     OCMStub([contextMock stringNamed:LPMT_ARG_TITLE_TEXT]).andReturn(APP_NAME);
     OCMStub([contextMock colorNamed:LPMT_ARG_TITLE_COLOR]).andReturn([UIColor blackColor]);
