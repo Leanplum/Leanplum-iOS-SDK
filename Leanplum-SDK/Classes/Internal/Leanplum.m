@@ -1192,11 +1192,13 @@ BOOL inForeground = NO;
     
     // Block that finish task.
     void (^finishTaskHandler)(void) = ^(){
-        // Make sure all database operations are done before ending the background task.
-        [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // Make sure all database operations are done before ending the background task.
+            [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
 
-        [application endBackgroundTask:backgroundTask];
-        backgroundTask = UIBackgroundTaskInvalid;
+            [application endBackgroundTask:backgroundTask];
+            backgroundTask = UIBackgroundTaskInvalid;
+        });
     };
     
     // Start background task to make sure it runs when the app is in background.
