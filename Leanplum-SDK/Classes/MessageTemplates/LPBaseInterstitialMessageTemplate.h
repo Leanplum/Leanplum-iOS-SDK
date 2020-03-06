@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPBaseInterstitialMessageTemplate : LPBaseMessageTemplate
 
-// confirmation
 @property  (nonatomic, strong) UIView *popupView;
 @property  (nonatomic, strong) UIView *popupGroup;
 @property  (nonatomic, strong) UIButton *dismissButton;
@@ -32,6 +31,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)closePopupWithAnimation:(BOOL)animated
                     actionNamed:(NSString *)actionName
                           track:(BOOL)track;
+
+- (void)removeAllViewsFrom:(UIView *)view;
+- (UIImage *)dismissImage:(UIColor *)color withSize:(int)size;
+-(UIEdgeInsets)safeAreaInsets;
+- (void)dismiss;
 
 @end
 

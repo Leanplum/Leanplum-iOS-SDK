@@ -11,17 +11,7 @@
 
 @implementation LPBaseHtmlMessageTemplate
 
-#pragma mark Interstitial logic
-
-- (void)accept
-{
-    [self closePopupWithAnimation:YES actionNamed:LPMT_ARG_ACCEPT_ACTION track:YES];
-}
-
-- (void)closePopupWithAnimation:(BOOL)animated
-{
-    [self closePopupWithAnimation:animated actionNamed:nil track:NO];
-}
+#pragma mark Overriding Logic for HTML
 
 - (void)closePopupWithAnimation:(BOOL)animated
                     actionNamed:(NSString *)actionName
@@ -42,14 +32,11 @@
     LPActionContext *context = self.contexts.lastObject;
     [self.contexts removeLastObject];
 
-    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-        [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
-        ((WKWebView *)_popupView).navigationDelegate = nil;
-        [(WKWebView *)_popupView stopLoading];
-    }
+    ((WKWebView *)self.popupView).navigationDelegate = nil;
+    [(WKWebView *)self.popupView stopLoading];
 
     void (^finishCallback)(void) = ^() {
-        [self removeAllViewsFrom:self->_popupGroup];
+        [self removeAllViewsFrom:self.popupGroup];
 
         if (actionName) {
             if (track) {
@@ -62,7 +49,7 @@
 
     if (animated) {
         [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-            [self->_popupGroup setAlpha:0.0];
+            [self.popupGroup setAlpha:0.0];
         } completion:^(BOOL finished) {
             finishCallback();
         }];
@@ -75,49 +62,25 @@
                                                   object:nil];
 }
 
-// Displays the Center Popup, Interstitial and Web Interstitial.
-- (void)showPopup
-{
-    // UI can't be modified in background.
-    if (![NSThread isMainThread]) {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self showPopup];
-        });
-        return;
-    }
-    [self setupPopupView];
-    [self.popupGroup setAlpha:0.0];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
-    [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-        [self->_popupGroup setAlpha:1.0];
-    }];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(orientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-}
-
 - (void)setupPopupView {
     LPActionContext *context = self.contexts.lastObject;
-
 
     WKWebViewConfiguration* configuration = [WKWebViewConfiguration new];
     configuration.allowsInlineMediaPlayback = YES;
     configuration.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
 
-    _popupView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
+    self.popupView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
 
     self.popupGroup = [[UIView alloc] init];
     self.popupGroup.backgroundColor = [UIColor clearColor];
     if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
-        _popupView.backgroundColor = [UIColor clearColor];
-        [_popupView setOpaque:NO];
-        ((WKWebView *)_popupView).scrollView.scrollEnabled = NO;
-        ((WKWebView *)_popupView).scrollView.bounces = NO;
+        self.popupView.backgroundColor = [UIColor clearColor];
+        [self.popupView setOpaque:NO];
+        ((WKWebView *)self.popupView).scrollView.scrollEnabled = NO;
+        ((WKWebView *)self.popupView).scrollView.bounces = NO;
     }
 
-    [self.popupGroup addSubview:_popupView];
+    [self.popupGroup addSubview:self.popupView];
     if ([context boolNamed:LPMT_HAS_DISMISS_BUTTON]) {
         // Dismiss button.
         self.dismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -140,73 +103,47 @@
     [self updatePopupLayout];
 }
 
-- (void)removeAllViewsFrom:(UIView *)view
-{
-    [view.subviews enumerateObjectsUsingBlock:^(UIView *obj, NSUInteger idx, BOOL *stop) {
-        [self removeAllViewsFrom:obj];
-    }];
-    [view removeFromSuperview];
-    view = nil;
-}
-
-- (void)orientationDidChange:(NSNotification *)notification
-{
-    UIDevice *device = notification.object;
-    // Bug with iOS, calls orientation did change even without change,
-    // Check if the orientation is not changed than before.
-    if (_orientation != device.orientation) {
-        _orientation = device.orientation;
-        [self updatePopupLayout];
-
-        // isStatusBarHidden is not updated synchronously
-        LPActionContext *conteext = self.contexts.lastObject;
-        if ([conteext.actionName isEqualToString:LPMT_INTERSTITIAL_NAME]) {
-            [self performSelector:@selector(updatePopupLayout) withObject:nil afterDelay:0];
-        }
-    }
-}
-
 - (void)setupPopupLayout:(BOOL)isFullscreen isPushAskToAsk:(BOOL)isPushAskToAsk
 {
-    _popupBackground = [[UIImageView alloc] init];
-    [_popupView addSubview:_popupBackground];
-    _popupBackground.contentMode = UIViewContentModeScaleAspectFill;
+    self.popupBackground = [[UIImageView alloc] init];
+    [self.popupView addSubview:self.popupBackground];
+    self.popupBackground.contentMode = UIViewContentModeScaleAspectFill;
     if (!isFullscreen) {
-        _popupView.layer.cornerRadius = 12;
+        self.popupView.layer.cornerRadius = 12;
     }
-    _popupView.clipsToBounds = YES;
+    self.popupView.clipsToBounds = YES;
 
     // Accept button.
-    _acceptButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    _acceptButton.layer.cornerRadius = 6;
-    _acceptButton.adjustsImageWhenHighlighted = YES;
-    _acceptButton.layer.masksToBounds = YES;
-    _acceptButton.titleLabel.font = [UIFont systemFontOfSize:15];
-    [_popupView addSubview:_acceptButton];
+    self.acceptButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.acceptButton.layer.cornerRadius = 6;
+    self.acceptButton.adjustsImageWhenHighlighted = YES;
+    self.acceptButton.layer.masksToBounds = YES;
+    self.acceptButton.titleLabel.font = [UIFont systemFontOfSize:15];
+    [self.popupView addSubview:self.acceptButton];
 
     // Title.
-    _titleLabel = [[UILabel alloc] init];
-    _titleLabel.textAlignment = ALIGN_CENTER;
-    _titleLabel.font = [UIFont boldSystemFontOfSize:20];
-    _titleLabel.backgroundColor = [UIColor clearColor];
-    [_popupView addSubview:_titleLabel];
+    self.titleLabel = [[UILabel alloc] init];
+    self.titleLabel.textAlignment = ALIGN_CENTER;
+    self.titleLabel.font = [UIFont boldSystemFontOfSize:20];
+    self.titleLabel.backgroundColor = [UIColor clearColor];
+    [self.popupView addSubview:self.titleLabel];
 
     // Message.
-    _messageLabel = [[UILabel alloc] init];
-    _messageLabel.textAlignment = ALIGN_CENTER;
-    _messageLabel.numberOfLines = 0;
-    _messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    _messageLabel.backgroundColor = [UIColor clearColor];
-    [_popupView addSubview:_messageLabel];
+    self.messageLabel = [[UILabel alloc] init];
+    self.messageLabel.textAlignment = ALIGN_CENTER;
+    self.messageLabel.numberOfLines = 0;
+    self.messageLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    self.messageLabel.backgroundColor = [UIColor clearColor];
+    [self.popupView addSubview:self.messageLabel];
 
     // Overlay.
-    _overlayView = [UIButton buttonWithType:UIButtonTypeCustom];
-    _overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.7];
+    self.overlayView = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.overlayView.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:.7];
 
 
-    [_popupGroup addSubview:_overlayView];
+    [self.popupGroup addSubview:self.overlayView];
 
-    [_acceptButton addTarget:self action:@selector(accept)
+    [self.acceptButton addTarget:self action:@selector(accept)
                 forControlEvents:UIControlEventTouchUpInside];
 }
 
@@ -238,10 +175,10 @@
         default:
             orientationTransform = CGAffineTransformIdentity;
     }
-    _popupGroup.transform = orientationTransform;
+    self.popupGroup.transform = orientationTransform;
 
     CGSize screenSize = window.screen.bounds.size;
-    _popupGroup.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+    self.popupGroup.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
 
     CGFloat screenWidth = screenSize.width;
     CGFloat screenHeight = screenSize.height;
@@ -251,8 +188,8 @@
         screenWidth = screenSize.height;
         screenHeight = screenSize.width;
     }
-    _popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-    _popupView.center = CGPointMake(screenWidth / 2.0, screenHeight / 2.0);
+    self.popupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+    self.popupView.center = CGPointMake(screenWidth / 2.0, screenHeight / 2.0);
 
     if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
         [self updateHtmlLayoutWithContext:context
@@ -262,10 +199,10 @@
     }
 
     CGFloat leftSafeAreaX = safeAreaInsets.left;
-    CGFloat dismissButtonX = screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
+    CGFloat dismissButtonX = screenWidth - self.dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
     CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
-    _dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, _dismissButton.frame.size.width,
-                                      _dismissButton.frame.size.height);
+    self.dismissButton.frame = CGRectMake(dismissButtonX - leftSafeAreaX, dismissButtonY, self.dismissButton.frame.size.width,
+                                      self.dismissButton.frame.size.height);
 }
 
 - (void)refreshPopupContent
@@ -273,10 +210,10 @@
     LPActionContext *context = self.contexts.lastObject;
     @try {
         NSString *actionName = [context actionName];
-        if (_popupGroup) {
-            [_popupGroup setHidden:YES];  // Keep hidden until load is done
-            WKWebView *webView = (WKWebView *)_popupView;
-            _webViewNeedsFade = YES;
+        if (self.popupGroup) {
+            [self.popupGroup setHidden:YES];  // Keep hidden until load is done
+            WKWebView *webView = (WKWebView *)self.popupView;
+            self.webViewNeedsFade = YES;
             webView.navigationDelegate = self;
             if (@available(iOS 11.0, *)) {
                 webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
@@ -305,73 +242,6 @@
     @catch (NSException *exception) {
         LOG_LP_MESSAGE_EXCEPTION;
     }
-}
-
-- (CGSize)getTextSizeFromButton:(UIButton *)button
-{
-    UIFont* font = button.titleLabel.font;
-    NSString *text = button.titleLabel.text;
-    CGSize textSize = CGSizeZero;
-    if ([text respondsToSelector:@selector(sizeWithAttributes:)]) {
-        textSize = [text sizeWithAttributes:@{NSFontAttributeName: [UIFont fontWithName:font.fontName size:font.pointSize]}];
-    } else
-    {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        textSize = [text sizeWithFont:[UIFont fontWithName:font.fontName size:font.pointSize]];
-#pragma clang diagnostic pop
-    }
-    textSize.width = textSize.width > 50 ? textSize.width : LPMT_ACCEPT_BUTTON_WIDTH;
-    textSize.height = textSize.height > 15 ? textSize.height : LPMT_ACCEPT_BUTTON_HEIGHT;
-    return textSize;
-}
-
-// Creates the X icon used in the popup's dismiss button.
-- (UIImage *)dismissImage:(UIColor *)color withSize:(int)size
-{
-    CGRect rect = CGRectMake(0, 0, size, size);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-
-    int margin = size * 3 / 8;
-
-    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
-    CGContextSetLineWidth(context, 1.5);
-    CGContextMoveToPoint(context, margin, margin);
-    CGContextAddLineToPoint(context, size - margin, size - margin);
-    CGContextMoveToPoint(context, size - margin, margin);
-    CGContextAddLineToPoint(context, margin, size - margin);
-    CGContextStrokePath(context);
-
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return img;
-}
-
--(UIEdgeInsets)safeAreaInsets
-{
-    UIEdgeInsets insets = UIEdgeInsetsMake(0.0, 0.0, 0.0, 0.0);
-    if (@available(iOS 11.0, *)) {
-        insets = [UIApplication sharedApplication].keyWindow.safeAreaInsets;
-    } else {
-        insets.top = [[UIApplication sharedApplication] isStatusBarHidden] ? 0 : 20.0;
-    }
-    return insets;
-}
-
-// Creates a 1x1 image with the specified color.
-- (UIImage *)imageFromColor:(UIColor *)color
-{
-    CGRect rect = CGRectMake(0, 0, 1, 1);
-    UIGraphicsBeginImageContext(rect.size);
-    CGContextRef context = UIGraphicsGetCurrentContext();
-    CGContextSetFillColorWithColor(context, [color CGColor]);
-    CGContextFillRect(context, rect);
-    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return img;
 }
 
 - (void)updateHtmlLayoutWithContext:(LPActionContext *)context
@@ -412,13 +282,13 @@
 
         // Tap outside to close Banner
         if ([context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]) {
-            _closePopupView = [[LPHitView alloc] initWithCallback:^{
+            self.closePopupView = [[LPHitView alloc] initWithCallback:^{
                 [self dismiss];
-                [self->_closePopupView removeFromSuperview];
+                [self.closePopupView removeFromSuperview];
             }];
-            _closePopupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-            [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
-            [[UIApplication sharedApplication].keyWindow bringSubviewToFront:_popupGroup];
+            self.closePopupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
+            [[UIApplication sharedApplication].keyWindow addSubview:self.closePopupView];
+            [[UIApplication sharedApplication].keyWindow bringSubviewToFront:self.popupGroup];
         }
 
         CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
@@ -429,7 +299,7 @@
                 htmlHeight += bottomSafeAreaHeight;
             }
         }
-        _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
+        self.popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
 
     } else if (isIPhoneX) {
         UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
@@ -439,16 +309,16 @@
             bottomSafeAreaHeight = 0;
         }
 
-        _popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
+        self.popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
                                        screenWidth - safeAreaInsets.left - safeAreaInsets.right,
                                        screenHeight - safeAreaInsets.top - bottomSafeAreaHeight);
 
-        NSLog(@"frame dim %@ %@", NSStringFromCGRect(_popupGroup.frame), NSStringFromCGSize(_popupGroup.frame.size));
+        NSLog(@"frame dim %@ %@", NSStringFromCGRect(self.popupGroup.frame), NSStringFromCGSize(self.popupGroup.frame.size));
         NSLog(@"screen %f, %f", screenWidth, screenHeight);
         NSLog(@"insets %@", NSStringFromUIEdgeInsets(safeAreaInsets));
     }
 
-    _popupView.frame = _popupGroup.bounds;
+    self.popupView.frame = self.popupGroup.bounds;
 }
 
 /**
@@ -471,22 +341,15 @@
     return [[components componentsJoinedByString:@""] floatValue];
 }
 
-- (void)dismiss
-{
-    LP_TRY
-    [self closePopupWithAnimation:YES];
-    LP_END_TRY
-}
-
 #pragma mark - WKWebViewDelegate methods
 
 - (void)showWebview:(WKWebView *)webview {
-    [_popupGroup setHidden:NO];
-    if (_webViewNeedsFade) {
-        _webViewNeedsFade = NO;
-        [_popupGroup setAlpha:0.0];
+    [self.popupGroup setHidden:NO];
+    if (self.webViewNeedsFade) {
+        self.webViewNeedsFade = NO;
+        [self.popupGroup setAlpha:0.0];
         [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-            [self->_popupGroup setAlpha:1.0];
+            [self.popupGroup setAlpha:1.0];
         }];
     }
 }
