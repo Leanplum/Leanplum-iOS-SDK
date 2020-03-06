@@ -100,6 +100,8 @@
 		9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */; };
 		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		A824579A2411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */; };
+		A824579B2411CB600044B1EB /* LPHtmlMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A82457992411CB600044B1EB /* LPHtmlMessageSnapshotTest.m */; };
 		A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A84527FC215C3035001FA20D /* LPRequestTest.m */; };
 		A86C8CF42405E271003F5E4E /* LPAlertMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CF32405E271003F5E4E /* LPAlertMessageSnapshotTest.m */; };
 		A86C8CF624072814003F5E4E /* LPOpenUrlMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CF524072814003F5E4E /* LPOpenUrlMessageTemplateTest.m */; };
@@ -210,6 +212,8 @@
 		9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialMessageSnapshotTest.m; sourceTree = "<group>"; };
+		A82457992411CB600044B1EB /* LPHtmlMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPHtmlMessageSnapshotTest.m; sourceTree = "<group>"; };
 		A84527FC215C3035001FA20D /* LPRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		A86C8CF32405E271003F5E4E /* LPAlertMessageSnapshotTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageSnapshotTest.m; sourceTree = "<group>"; };
 		A86C8CF524072814003F5E4E /* LPOpenUrlMessageTemplateTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplateTest.m; sourceTree = "<group>"; };
@@ -485,6 +489,8 @@
 			children = (
 				A86C8CF32405E271003F5E4E /* LPAlertMessageSnapshotTest.m */,
 				A86C8CF724084236003F5E4E /* LPConfirmMessageSnapshotTest.m */,
+				A82457992411CB600044B1EB /* LPHtmlMessageSnapshotTest.m */,
+				A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */,
 			);
 			path = "Snapshot Tests";
 			sourceTree = "<group>";
@@ -793,6 +799,7 @@
 				A8F5D58A23F34AD400313C98 /* LPBasePushMessageTemplateTest.m in Sources */,
 				07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */,
 				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
+				A824579A2411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m in Sources */,
 				A86C8CF42405E271003F5E4E /* LPAlertMessageSnapshotTest.m in Sources */,
 				65E189C6216BDB82005E6B93 /* LPRequestFactoryTest.m in Sources */,
 				07E5C8AD1F052B7800A4B092 /* LPEventDataManagerTest.m in Sources */,
@@ -802,6 +809,7 @@
 				A8F5D58823F3488600313C98 /* LPBaseInterstitialMessageTemplateTest.m in Sources */,
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
 				A86C8CF624072814003F5E4E /* LPOpenUrlMessageTemplateTest.m in Sources */,
+				A824579B2411CB600044B1EB /* LPHtmlMessageSnapshotTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
 				653192A121517D4F00D7DDDC /* LPFeatureFlagManagerTest.m in Sources */,
