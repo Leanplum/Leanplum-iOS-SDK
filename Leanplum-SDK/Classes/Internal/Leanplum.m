@@ -411,28 +411,39 @@ BOOL inForeground = NO;
 + (void)triggerStartIssued
 {
     [LPInternalState sharedState].issuedStart = YES;
-    @synchronized ([LPInternalState sharedState].startIssuedBlocks) {
-        for (LeanplumStartIssuedBlock block in [LPInternalState sharedState].startIssuedBlocks.copy) {
+    NSMutableArray* startIssuedBlocks = [LPInternalState sharedState].startIssuedBlocks;
+
+    @synchronized (startIssuedBlocks) {
+        for (LeanplumStartIssuedBlock block in startIssuedBlocks) {
             block();
         }
-        [[LPInternalState sharedState].startIssuedBlocks removeAllObjects];
+        [startIssuedBlocks removeAllObjects];
     }
 }
 
 + (void)triggerStartResponse:(BOOL)success
 {
     LP_BEGIN_USER_CODE
-    for (NSInvocation *invocation in [LPInternalState sharedState].startResponders.copy) {
-        [invocation setArgument:&success atIndex:2];
-        [invocation invoke];
+
+    NSMutableSet* startResponders = [LPInternalState sharedState].startResponders;
+    NSMutableArray* startBlocks = [LPInternalState sharedState].startBlocks;
+
+    @synchronized (startResponders) {
+        for (NSInvocation *invocation in startResponders) {
+            [invocation setArgument:&success atIndex:2];
+            [invocation invoke];
+        }
+        [startResponders removeAllObjects];
     }
 
-    for (LeanplumStartBlock block in [LPInternalState sharedState].startBlocks.copy) {
-        block(success);
+    @synchronized (startBlocks) {
+        for (LeanplumStartBlock block in startBlocks) {
+            block(success);
+        }
+        [startBlocks removeAllObjects];
     }
+
     LP_END_USER_CODE
-    [[LPInternalState sharedState].startResponders removeAllObjects];
-    [[LPInternalState sharedState].startBlocks removeAllObjects];
 }
 
 + (void)triggerVariablesChanged
@@ -1181,11 +1192,13 @@ BOOL inForeground = NO;
     
     // Block that finish task.
     void (^finishTaskHandler)(void) = ^(){
-        // Make sure all database operations are done before ending the background task.
-        [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            // Make sure all database operations are done before ending the background task.
+            [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
 
-        [application endBackgroundTask:backgroundTask];
-        backgroundTask = UIBackgroundTaskInvalid;
+            [application endBackgroundTask:backgroundTask];
+            backgroundTask = UIBackgroundTaskInvalid;
+        });
     };
     
     // Start background task to make sure it runs when the app is in background.
