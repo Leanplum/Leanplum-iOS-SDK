@@ -1848,122 +1848,125 @@ BOOL inForeground = NO;
        withContextualValues:(LPContextualValues *)contextualValues
 {
     NSDictionary *messages = [[LPVarCache sharedCache] messages];
-    NSMutableArray *actionContexts = [NSMutableArray array];
-    
-    for (NSString *messageId in [messages allKeys]) {
-        if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
-            continue;
-        }
-        NSDictionary *messageConfig = messages[messageId];
-        NSString *actionType = messageConfig[@"action"];
-        if (![actionType isKindOfClass:NSString.class]) {
-            continue;
-        }
 
-        NSString *internalMessageId;
-        if ([actionType isEqualToString:LP_HELD_BACK_ACTION]) {
-            // Spoof the message ID if this is a held back message.
-            internalMessageId = [LP_HELD_BACK_MESSAGE_PREFIX stringByAppendingString:messageId];
-        } else {
-            internalMessageId = messageId;
-        }
+    @synchronized (messages) {
+        NSMutableArray *actionContexts = [NSMutableArray array];
 
-        // Filter action types that don't match the filtering criteria.
-        BOOL isForeground = ![actionType isEqualToString:LP_PUSH_NOTIFICATION_ACTION];
-        if (isForeground) {
-            if (!(filter & kLeanplumActionFilterForeground)) {
+        for (NSString *messageId in [messages allKeys]) {
+            if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
                 continue;
             }
-        } else {
-            if (!(filter & kLeanplumActionFilterBackground)) {
+            NSDictionary *messageConfig = messages[messageId];
+            NSString *actionType = messageConfig[@"action"];
+            if (![actionType isKindOfClass:NSString.class]) {
                 continue;
             }
-        }
 
-        LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
-        for (NSString *when in whenConditions) {
-            LeanplumMessageMatchResult conditionResult =
-            [[LPInternalState sharedState].actionManager shouldShowMessage:internalMessageId
-                                                                withConfig:messageConfig
-                                                                      when:when
-                                                             withEventName:eventName
-                                                          contextualValues:contextualValues];
-            result.matchedTrigger |= conditionResult.matchedTrigger;
-            result.matchedUnlessTrigger |= conditionResult.matchedUnlessTrigger;
-            result.matchedLimit |= conditionResult.matchedLimit;
-            result.matchedActivePeriod |= conditionResult.matchedActivePeriod;
-        }
+            NSString *internalMessageId;
+            if ([actionType isEqualToString:LP_HELD_BACK_ACTION]) {
+                // Spoof the message ID if this is a held back message.
+                internalMessageId = [LP_HELD_BACK_MESSAGE_PREFIX stringByAppendingString:messageId];
+            } else {
+                internalMessageId = messageId;
+            }
 
-        // Make sure it's within the active period.
-        if (!result.matchedActivePeriod) {
-            continue;
-        }
-        
-        // Make sure we cancel before matching in case the criteria overlap.
-        if (result.matchedUnlessTrigger) {
-            NSString *cancelActionName = [@"__Cancel" stringByAppendingString:actionType];
-            LPActionContext *context = [LPActionContext actionContextWithName:cancelActionName
-                                                                         args:@{}
-                                                                    messageId:messageId];
-            [self triggerAction:context handledBlock:^(BOOL success) {
-                if (success) {
-                    // Track cancel.
-                    [Leanplum track:@"Cancel" withValue:0.0 andInfo:nil
-                            andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
+            // Filter action types that don't match the filtering criteria.
+            BOOL isForeground = ![actionType isEqualToString:LP_PUSH_NOTIFICATION_ACTION];
+            if (isForeground) {
+                if (!(filter & kLeanplumActionFilterForeground)) {
+                    continue;
                 }
-            }];
-        }
-        if (result.matchedTrigger) {
-            [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
-            if (result.matchedLimit) {
-                NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
-                LPActionContext *context = [LPActionContext
-                                            actionContextWithName:actionType
-                                            args:[messageConfig objectForKey:LP_KEY_VARS]
-                                            messageId:internalMessageId
-                                            originalMessageId:messageId
-                                            priority:priority];
-                context.contextualValues = contextualValues;
-                [actionContexts addObject:context];
+            } else {
+                if (!(filter & kLeanplumActionFilterBackground)) {
+                    continue;
+                }
+            }
+
+            LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
+            for (NSString *when in whenConditions) {
+                LeanplumMessageMatchResult conditionResult =
+                [[LPInternalState sharedState].actionManager shouldShowMessage:internalMessageId
+                                                                    withConfig:messageConfig
+                                                                          when:when
+                                                                 withEventName:eventName
+                                                              contextualValues:contextualValues];
+                result.matchedTrigger |= conditionResult.matchedTrigger;
+                result.matchedUnlessTrigger |= conditionResult.matchedUnlessTrigger;
+                result.matchedLimit |= conditionResult.matchedLimit;
+                result.matchedActivePeriod |= conditionResult.matchedActivePeriod;
+            }
+
+            // Make sure it's within the active period.
+            if (!result.matchedActivePeriod) {
+                continue;
+            }
+
+            // Make sure we cancel before matching in case the criteria overlap.
+            if (result.matchedUnlessTrigger) {
+                NSString *cancelActionName = [@"__Cancel" stringByAppendingString:actionType];
+                LPActionContext *context = [LPActionContext actionContextWithName:cancelActionName
+                                                                             args:@{}
+                                                                        messageId:messageId];
+                [self triggerAction:context handledBlock:^(BOOL success) {
+                    if (success) {
+                        // Track cancel.
+                        [Leanplum track:@"Cancel" withValue:0.0 andInfo:nil
+                                andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
+                    }
+                }];
+            }
+            if (result.matchedTrigger) {
+                [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
+                if (result.matchedLimit) {
+                    NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
+                    LPActionContext *context = [LPActionContext
+                                                actionContextWithName:actionType
+                                                args:[messageConfig objectForKey:LP_KEY_VARS]
+                                                messageId:internalMessageId
+                                                originalMessageId:messageId
+                                                priority:priority];
+                    context.contextualValues = contextualValues;
+                    [actionContexts addObject:context];
+                }
             }
         }
-    }
 
-    // Return if there are no action to trigger.
-    if ([actionContexts count] == 0) {
-        return;
-    }
-
-    // Sort the action by priority and only show one message.
-    // Make sure to capture the held back.
-    [LPActionContext sortByPriority:actionContexts];
-    NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
-    NSNumber *countDownThreshold = [self fetchCountDownForContext: (LPActionContext *) [actionContexts firstObject] withMessages:messages];
-    BOOL isPrioritySame = NO;
-    for (LPActionContext *actionContext in actionContexts) {
-        NSNumber *priority = [actionContext priority];
-        if (priority.intValue > priorityThreshold.intValue) {
-            break;
+        // Return if there are no action to trigger.
+        if ([actionContexts count] == 0) {
+            return;
         }
-        if (isPrioritySame) {//priority is same
-            NSNumber *currentCountDown = [self fetchCountDownForContext:actionContext withMessages:messages];
-            //multiple messages have same priority and same countDown, only display one message
-            if (currentCountDown == countDownThreshold) {
+
+        // Sort the action by priority and only show one message.
+        // Make sure to capture the held back.
+        [LPActionContext sortByPriority:actionContexts];
+        NSNumber *priorityThreshold = [((LPActionContext *) [actionContexts firstObject]) priority];
+        NSNumber *countDownThreshold = [self fetchCountDownForContext: (LPActionContext *) [actionContexts firstObject] withMessages:messages];
+        BOOL isPrioritySame = NO;
+        for (LPActionContext *actionContext in actionContexts) {
+            NSNumber *priority = [actionContext priority];
+            if (priority.intValue > priorityThreshold.intValue) {
                 break;
             }
-        }
-        isPrioritySame = YES;
-        if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
-            [[LPInternalState sharedState].actionManager
-                 recordHeldBackImpression:[actionContext messageId]
-                        originalMessageId:[actionContext originalMessageId]];
-        } else {
-            [self triggerAction:actionContext handledBlock:^(BOOL success) {
-                if (success) {
-                    [[LPInternalState sharedState].actionManager
-                         recordMessageImpression:[actionContext messageId]];
+            if (isPrioritySame) {//priority is same
+                NSNumber *currentCountDown = [self fetchCountDownForContext:actionContext withMessages:messages];
+                //multiple messages have same priority and same countDown, only display one message
+                if (currentCountDown == countDownThreshold) {
+                    break;
                 }
-            }];
+            }
+            isPrioritySame = YES;
+            if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
+                [[LPInternalState sharedState].actionManager
+                 recordHeldBackImpression:[actionContext messageId]
+                 originalMessageId:[actionContext originalMessageId]];
+            } else {
+                [self triggerAction:actionContext handledBlock:^(BOOL success) {
+                    if (success) {
+                        [[LPInternalState sharedState].actionManager
+                         recordMessageImpression:[actionContext messageId]];
+                    }
+                }];
+            }
         }
     }
 }
