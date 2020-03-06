@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPBaseInterstitialMessageTemplate : LPBaseMessageTemplate
+@interface LPBaseHtmlMessageTemplate : LPBaseMessageTemplate <WKNavigationDelegate>
 
 // confirmation
 @property  (nonatomic, strong) UIView *popupView;
@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property  (nonatomic, strong) UILabel *messageLabel;
 @property  (nonatomic, strong) UIButton *overlayView;;
 @property  (nonatomic, strong) LPHitView *closePopupView;
+@property  (nonatomic, assign) BOOL webViewNeedsFade;
 @property  (nonatomic, assign) UIDeviceOrientation orientation;
 
 - (void)accept;

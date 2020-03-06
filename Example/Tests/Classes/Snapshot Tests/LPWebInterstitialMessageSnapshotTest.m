@@ -55,6 +55,7 @@
     
     template.contexts = [@[contextMock] mutableCopy];
     [template setupPopupView];
+    sleep(5);
     FBSnapshotVerifyView(template.popupGroup, nil);
 }
 
