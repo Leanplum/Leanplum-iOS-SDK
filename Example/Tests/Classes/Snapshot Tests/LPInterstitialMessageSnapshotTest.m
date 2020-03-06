@@ -34,7 +34,7 @@
 
 - (void)setUp {
     [super setUp];
-    self.recordMode = YES;
+    //self.recordMode = YES;
 }
 
 - (void)tearDown {
