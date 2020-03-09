@@ -98,7 +98,7 @@
     [self addPopupGroupInKeyWindowAndSetupAccessibilityElement];
     
     [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-        [self->_popupGroup setAlpha:0.5];
+        [self->_popupGroup setAlpha:1.0];
     }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
