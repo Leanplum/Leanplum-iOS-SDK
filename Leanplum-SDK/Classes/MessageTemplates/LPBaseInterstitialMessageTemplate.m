@@ -93,7 +93,26 @@
         });
         return;
     }
+    [self setupPopupView];
+    [self.popupGroup setAlpha:0.0];
+    [self addPopupGroupInKeyWindowAndSetupAccessibilityElement];
     
+    [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
+        [self->_popupGroup setAlpha:0.5];
+    }];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidBecomeActive:)
+                                            name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+}
+
+- (void)setupPopupView {
     LPActionContext *context = self.contexts.lastObject;
     BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
@@ -144,8 +163,9 @@
 
     [self refreshPopupContent];
     [self updatePopupLayout];
+}
 
-    [self.popupGroup setAlpha:0.0];
+- (void)addPopupGroupInKeyWindowAndSetupAccessibilityElement {
     //set accessibility elemements for VoiceOver
     UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
     UIView *mainView = mainWindow.subviews.lastObject;
@@ -155,20 +175,6 @@
     mainView.isAccessibilityElement = YES;
     self.popupGroup.isAccessibilityElement = NO;
     [self setFocusForAccessibilityElement:_popupView];
-    
-    [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-        [self->_popupGroup setAlpha:1.0];
-    }];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(orientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(appDidBecomeActive:)
-                                                 name:UIApplicationDidBecomeActiveNotification
-                                               object:nil];
 }
 
 - (void)setFocusForAccessibilityElement:(UIView *)accessibleView {
