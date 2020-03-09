@@ -72,8 +72,8 @@
     OCMStub([contextMock numberNamed:LPMT_ARG_HTML_HEIGHT]).andReturn(@0);
     OCMStub([contextMock stringNamed:LPMT_ARG_HTML_WIDTH]).andReturn(@"100%");
     OCMStub([contextMock stringNamed:LPMT_ARG_HTML_Y_OFFSET]).andReturn(@"0px");
-    OCMStub([contextMock boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]).andReturn(@NO);
-    OCMStub([contextMock boolNamed:LPMT_HAS_DISMISS_BUTTON]).andReturn(@NO);
+    OCMStub([contextMock boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]).andReturn(NO);
+    OCMStub([contextMock boolNamed:LPMT_HAS_DISMISS_BUTTON]).andReturn(NO);
 
     template.contexts = [@[contextMock] mutableCopy];
     [template setupPopupView];
