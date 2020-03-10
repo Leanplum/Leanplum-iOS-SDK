@@ -14,6 +14,7 @@
 @interface LPWebInterstitialMessageTemplate()
 
 @property  (nonatomic, strong) UIView *popupGroup;
+@property  (nonatomic, strong) WKWebView *popupView;
 - (void)setupPopupView;
 
 @end
@@ -34,7 +35,7 @@
 
 - (void)setUp {
     [super setUp];
-    self.recordMode = YES;
+    //self.recordMode = YES;
 }
 
 - (void)tearDown {
@@ -42,55 +43,34 @@
 }
 
 - (void)testView {
-//    LPWebInterstitialMessageTemplate *template = [[LPWebInterstitialMessageTemplate alloc] init];
-//    LPActionContext *context = [LPActionContext actionContextWithName:LPMT_WEB_INTERSTITIAL_NAME args:@{
-//        LPMT_ARG_URL:LPMT_DEFAULT_URL,
-//        LPMT_ARG_URL_CLOSE:LPMT_DEFAULT_CLOSE_URL,
-//        LPMT_HAS_DISMISS_BUTTON:@(LPMT_DEFAULT_HAS_DISMISS_BUTTON),
-//    } messageId:0];
-//    id contextMock = OCMPartialMock(context);
-//    OCMStub([contextMock stringNamed:LPMT_ARG_TITLE_TEXT]).andReturn(LPMT_DEFAULT_URL);
-//    OCMStub([contextMock stringNamed:LPMT_ARG_MESSAGE_TEXT]).andReturn(LPMT_DEFAULT_CLOSE_URL);
-//    OCMStub([contextMock boolNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(LPMT_DEFAULT_HAS_DISMISS_BUTTON);
-//
-//    template.contexts = [@[contextMock] mutableCopy];
-//    [template setupPopupView];
-//    sleep(5);
-//    FBSnapshotVerifyView(template.popupGroup, nil);
-    WKWebView *v = [[WKWebView alloc] initWithFrame:CGRectMake(0, 0, 500, 900)];
-    v.navigationDelegate = self;
-    v.backgroundColor = [UIColor redColor];
-    NSURLRequest *r = [NSURLRequest requestWithURL:[NSURL URLWithString:@"https://www.google.com"]];
-    [v loadRequest:r];
+    LPWebInterstitialMessageTemplate *tmplate = [[LPWebInterstitialMessageTemplate alloc] init];
+    LPActionContext *context = [LPActionContext actionContextWithName:LPMT_WEB_INTERSTITIAL_NAME args:@{
+        LPMT_ARG_URL:LPMT_DEFAULT_URL,
+        LPMT_ARG_URL_CLOSE:LPMT_DEFAULT_CLOSE_URL,
+        LPMT_HAS_DISMISS_BUTTON:@(LPMT_DEFAULT_HAS_DISMISS_BUTTON),
+    } messageId:0];
+    id contextMock = OCMPartialMock(context);
+    OCMStub([contextMock stringNamed:LPMT_ARG_TITLE_TEXT]).andReturn(LPMT_DEFAULT_URL);
+    OCMStub([contextMock stringNamed:LPMT_ARG_MESSAGE_TEXT]).andReturn(LPMT_DEFAULT_CLOSE_URL);
+    OCMStub([contextMock boolNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(LPMT_DEFAULT_HAS_DISMISS_BUTTON);
+    OCMStub([contextMock stringNamed:LPMT_ARG_URL]).andReturn(@"https://www.google.com");
+
+    tmplate.contexts = [@[contextMock] mutableCopy];
+    [tmplate setupPopupView];
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 5.0), dispatch_get_main_queue(), ^{
-        FBSnapshotVerifyView(v, nil);
-        [expects fulfill];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 10.0), dispatch_get_main_queue(), ^{
+        if (@available(iOS 11.0, *)) {
+            [tmplate.popupView takeSnapshotWithConfiguration:nil completionHandler:^(UIImage * _Nullable snapshotImage, NSError * _Nullable error) {
+                UIImageView *imgView = [[UIImageView alloc] initWithImage:snapshotImage];
+                FBSnapshotVerifyView(imgView, @"webContent");
+                FBSnapshotVerifyView(tmplate.popupGroup, @"viewShell");
+                [expects fulfill];
+            }];
+        } else {
+            // Fallback on earlier versions
+        }
     });
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectationsWithTimeout:11 handler:nil];
 }
 
-
-//- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler {
-//
-//}
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
-
-}
-- (void)webView:(WKWebView *)webView didReceiveServerRedirectForProvisionalNavigation:(null_unspecified WKNavigation *)navigation {
-
-}
-- (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
-
-}
-- (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation {
-
-}
-- (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation {
-    webView.backgroundColor = [UIColor yellowColor];
-}
-- (void)webView:(WKWebView *)webView didFailNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error {
-
-
-}
 @end
