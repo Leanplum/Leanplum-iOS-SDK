@@ -23,25 +23,7 @@
                              ]
              withResponder:^BOOL(LPActionContext *context) {
                  @try {
-                     if (NSClassFromString(@"UIAlertController")) {
-                         UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
-                         UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-                             [self alertDismissedWithButtonIndex:0];
-                         }];
-                         [alert addAction:action];
-
-                         [[self visibleViewController] presentViewController:alert animated:YES completion:nil];
-                     } else
-                     {
-                         UIAlertView *alert = [[UIAlertView alloc]
-                                               initWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
-                                               message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
-                                               delegate:self
-                                               cancelButtonTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
-                                               otherButtonTitles:nil];
-                         [alert show];
-                     }
-
+                     [[self visibleViewController] presentViewController:[self viewControllerWithContext:context] animated:YES completion:nil];
                      [self.contexts addObject:context];
                      return YES;
                  }
@@ -51,6 +33,15 @@
                  }
              }];
 
+}
+
+-(UIViewController *)viewControllerWithContext:(LPActionContext *)context {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self alertDismissedWithButtonIndex:0];
+    }];
+    [alert addAction:action];
+    return alert;
 }
 
 @end

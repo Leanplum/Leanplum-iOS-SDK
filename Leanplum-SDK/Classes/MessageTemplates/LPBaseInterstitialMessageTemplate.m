@@ -7,6 +7,7 @@
 //
 
 #import "LPBaseInterstitialMessageTemplate.h"
+#import "LPJSON.h"
 
 @implementation LPBaseInterstitialMessageTemplate
 
@@ -84,7 +85,20 @@
         });
         return;
     }
+    [self setupPopupView];
+    [self.popupGroup setAlpha:0.0];
+    [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
+    [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
+        [self->_popupGroup setAlpha:0.5];
+    }];
 
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+}
+
+- (void)setupPopupView {
     LPActionContext *context = self.contexts.lastObject;
     BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
     BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
@@ -135,17 +149,6 @@
 
     [self refreshPopupContent];
     [self updatePopupLayout];
-
-    [self.popupGroup setAlpha:0.0];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
-    [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-        [self->_popupGroup setAlpha:1.0];
-    }];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(orientationDidChange:)
-                                                 name:UIDeviceOrientationDidChangeNotification
-                                               object:nil];
 }
 
 - (void)removeAllViewsFrom:(UIView *)view
@@ -675,7 +678,7 @@
             if (event) {
                 double value = [queryComponents[@"value"] doubleValue];
                 NSString *info = queryComponents[@"info"];
-                NSDictionary *parameters = [self JSONFromString:queryComponents[@"parameters"]];
+                NSDictionary *parameters = [LPJSON JSONFromString:queryComponents[@"parameters"]];
 
                 if (queryComponents[@"isMessageEvent"]) {
                     [context trackMessageEvent:event
@@ -714,34 +717,6 @@
         LOG_LP_MESSAGE_EXCEPTION;
     }
     decisionHandler(WKNavigationActionPolicyAllow);
-}
-
-/**
- * Copied from LPJSON. TODO: Remove when we open source.
- */
-- (id)JSONFromString:(NSString *)string
-{
-    NSData *data = [string dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error;
-    id json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-    if (error) {
-        return nil;
-    }
-    return json;
-}
-
-/**
- * Helper method
- */
-
-- (NSString *)urlEncodedStringFromString:(NSString *)urlString {
-    NSString *unreserved = @":-._~/?&=";
-    NSMutableCharacterSet *allowed = [NSMutableCharacterSet
-                                      alphanumericCharacterSet];
-    [allowed addCharactersInString:unreserved];
-    return [urlString
-            stringByAddingPercentEncodingWithAllowedCharacters:
-            allowed];
 }
 
 @end
