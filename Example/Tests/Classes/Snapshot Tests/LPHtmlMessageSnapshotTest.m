@@ -81,7 +81,7 @@
     template.contexts = [@[contextMock] mutableCopy];
     [template setupPopupView];
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 5.0), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 15.0), dispatch_get_main_queue(), ^{
         if (@available(iOS 11.0, *)) {
             [template.popupView takeSnapshotWithConfiguration:nil completionHandler:^(UIImage * _Nullable snapshotImage, NSError * _Nullable error) {
                 UIImageView *imgView = [[UIImageView alloc] initWithImage:snapshotImage];
@@ -92,7 +92,7 @@
             // Fallback on earlier versions
         }
     });
-    [self waitForExpectationsWithTimeout:6 handler:nil];
+    [self waitForExpectationsWithTimeout:20 handler:nil];
 
 }
 
