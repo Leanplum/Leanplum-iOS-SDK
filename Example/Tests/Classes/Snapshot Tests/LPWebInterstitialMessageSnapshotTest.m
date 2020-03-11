@@ -58,11 +58,11 @@
     tmplate.contexts = [@[contextMock] mutableCopy];
     [tmplate setupPopupView];
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 10.0), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 15.0), dispatch_get_main_queue(), ^{
         if (@available(iOS 11.0, *)) {
             [tmplate.popupView takeSnapshotWithConfiguration:nil completionHandler:^(UIImage * _Nullable snapshotImage, NSError * _Nullable error) {
                 UIImageView *imgView = [[UIImageView alloc] initWithImage:snapshotImage];
-                FBSnapshotVerifyView(imgView, @"webContent");
+                FBSnapshotVerifyViewWithOptions(imgView, @"webContent", nil, 0.5);
                 FBSnapshotVerifyView(tmplate.popupGroup, @"viewShell");
                 [expects fulfill];
             }];
@@ -70,7 +70,7 @@
             // Fallback on earlier versions
         }
     });
-    [self waitForExpectationsWithTimeout:11 handler:nil];
+    [self waitForExpectationsWithTimeout:20.0 handler:nil];
 }
 
 @end
