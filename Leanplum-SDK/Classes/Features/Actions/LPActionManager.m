@@ -435,6 +435,7 @@ static dispatch_once_t leanplum_onceToken;
                                  action:(NSString *)action
                                  active:(BOOL)active
 {
+    NSLog(@"Push OPENED");
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
         return;
@@ -526,6 +527,7 @@ static dispatch_once_t leanplum_onceToken;
                  appActive:(BOOL)active
          completionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+    NSLog(@"Push RECEIVED");
     // Don't handle non-Leanplum notifications.
     NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
