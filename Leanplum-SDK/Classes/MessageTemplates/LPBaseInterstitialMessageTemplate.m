@@ -561,6 +561,10 @@
             safeAreaInsets.left = 0;
             safeAreaInsets.right = 0;
             bottomSafeAreaHeight = 0;
+        } else {
+            safeAreaInsets.top = 0;
+            safeAreaInsets.bottom = 0;
+            bottomSafeAreaHeight = 0;
         }
 
         _popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
