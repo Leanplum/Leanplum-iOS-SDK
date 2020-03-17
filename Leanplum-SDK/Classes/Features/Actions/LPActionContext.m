@@ -316,6 +316,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                                      encoding:NSUTF8StringEncoding
                                                         error:&error];
     if (error) {
+        LPLog(LPError, @"Fail to get HTML template. Error: %@", [error description]);
         return nil;
     }
     return htmlString;
