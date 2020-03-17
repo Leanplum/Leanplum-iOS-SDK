@@ -44,6 +44,11 @@
 
     void (^finishCallback)(void) = ^() {
         [self removeAllViewsFrom:self->_popupGroup];
+        UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+        UIView *mainView = mainWindow.subviews.lastObject;
+        [[UIApplication sharedApplication] setAccessibilityElements:@[mainWindow, mainView]];
+        mainWindow.isAccessibilityElement = NO;
+        mainView.isAccessibilityElement = NO;
 
         if (actionName) {
             if (track) {
@@ -67,6 +72,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
                                                   object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationDidBecomeActiveNotification
+                                                  object:nil];
 }
 
 // Displays the Center Popup, Interstitial and Web Interstitial.
@@ -81,7 +89,8 @@
     }
     [self setupPopupView];
     [self.popupGroup setAlpha:0.0];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
+    [self addPopupGroupInKeyWindowAndSetupAccessibilityElement];
+    
     [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
         [self->_popupGroup setAlpha:1.0];
     }];
@@ -89,6 +98,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationDidChange:)
                                                  name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidBecomeActive:)
+                                            name:UIApplicationDidBecomeActiveNotification
                                                object:nil];
 }
 
@@ -125,6 +139,31 @@
 
     [self refreshPopupContent];
     [self updatePopupLayout];
+}
+
+- (void)addPopupGroupInKeyWindowAndSetupAccessibilityElement {
+    //set accessibility elemements for VoiceOver
+    UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+    UIView *mainView = mainWindow.subviews.lastObject;
+    [mainWindow addSubview:self.popupGroup];
+    [[UIApplication sharedApplication] setAccessibilityElements:@[mainWindow, mainView, self.popupGroup]];
+    mainWindow.isAccessibilityElement = YES;
+    mainView.isAccessibilityElement = YES;
+    self.popupGroup.isAccessibilityElement = NO;
+    [self setFocusForAccessibilityElement:_popupView];
+}
+
+- (void)setFocusForAccessibilityElement:(UIView *)accessibleView {
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification,
+    accessibleView);
+}
+
+- (void)appDidBecomeActive:(NSNotification *)notification {
+    if (self.popupGroup != nil) {
+        UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+        UIView *lastView = mainWindow.subviews.lastObject;
+        [self setFocusForAccessibilityElement:lastView];
+    }
 }
 
 - (void)removeAllViewsFrom:(UIView *)view

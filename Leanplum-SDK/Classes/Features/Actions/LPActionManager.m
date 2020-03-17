@@ -57,6 +57,7 @@ BOOL swizzledApplicationDidReceiveRemoteNotification = NO;
 BOOL swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = NO;
 BOOL swizzledApplicationDidReceiveLocalNotification = NO;
 BOOL swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = NO;
+BOOL swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = NO;
 
 @implementation NSObject (LeanplumExtension)
 
@@ -166,9 +167,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
-didReceiveNotificationResponse:(UNNotificationResponse *)response
-      withCompletionHandler:(void (^)())completionHandler
-API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
+         didReceiveNotificationResponse:(UNNotificationResponse *)response
+                  withCompletionHandler:(void (^)())completionHandler
+API_AVAILABLE(ios(10.0))
+{
 
     LPLog(LPDebug, @"Called swizzled didReceiveNotificationResponse:withCompletionHandler");
 
@@ -185,6 +187,27 @@ API_AVAILABLE(ios(10.0)) API_AVAILABLE(ios(10.0)){
     
     [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
+
+-(void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
+               willPresentNotification:(UNNotification *)notification
+                 withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+API_AVAILABLE(ios(10.0))
+{
+    LPLog(LPDebug, @"Called swizzled willPresentNotification:withCompletionHandler");
+
+    // Call overridden method.
+    SEL selector = @selector(leanplum_userNotificationCenter:willPresentNotification:withCompletionHandler:);
+
+    if (swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler &&
+        [self respondsToSelector:selector]) {
+        [self leanplum_userNotificationCenter:center
+                      willPresentNotification:notification
+                        withCompletionHandler:completionHandler];
+    }
+
+    [[LPActionManager sharedManager] willPresentNotification:notification withCompletionHandler:completionHandler];
+}
+
 #pragma clang diagnostic pop
 
 - (void)leanplum_application:(UIApplication *)application
@@ -494,6 +517,8 @@ static dispatch_once_t leanplum_onceToken;
         userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil;
 }
 
+#pragma mark - Push Notifications - Handlers
+
 // Handles the notification.
 // Makes sure the data is loaded, and then displays the notification.
 - (void)handleNotification:(NSDictionary *)userInfo
@@ -528,6 +553,80 @@ static dispatch_once_t leanplum_onceToken;
         }
     }];
 }
+
+
+// Will be called when user taps on notification from status bar iff UNUserNotificationCenterDelegate is implemented in UIApplicationDelegate.
+// We need to check first whether the action is muted, and depending on it show or silence the action.
+- (void)handleNotificationResponse:(NSDictionary *)userInfo
+                 completionHandler:(LeanplumFetchCompletionBlock)completionHandler
+{
+    NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
+    if (messageId == nil) {
+        return;
+    }
+
+    void (^onContent)(void) = ^{
+        if (completionHandler) {
+            completionHandler(UIBackgroundFetchResultNewData);
+        }
+        BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
+        if (hasAlert) {
+            [self maybePerformNotificationActions:userInfo action:nil active:NO];
+        }
+    };
+
+    if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
+        [Leanplum onStartIssued:^() {
+            if ([LPActionManager areActionsEmbedded:userInfo]) {
+                onContent();
+            } else {
+                [self requireMessageContent:messageId withCompletionBlock:onContent];
+            }
+        }];
+    } else {
+        if (messageId && completionHandler) {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }
+}
+
+// Will be called when user receives notification and app is in foreground iff UNUserNotificationCenterDelegate is implemented in UIApplicationDelegate.
+// We need to check first whether the action is muted, and depending on it show or silence the action.
+- (void)handleWillPresentNotification:(NSDictionary *)userInfo
+                withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0))
+
+{
+    NSString *messageId = [LPActionManager messageIdFromUserInfo:userInfo];
+    if (messageId == nil) {
+        return;
+    }
+
+    void (^onContent)(void) = ^{
+        if (completionHandler) {
+            completionHandler(UNNotificationPresentationOptionNone);
+        }
+        BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
+        if (hasAlert) {
+            [self maybePerformNotificationActions:userInfo action:nil active:YES];
+        }
+    };
+
+    if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
+        [Leanplum onStartIssued:^() {
+            if ([LPActionManager areActionsEmbedded:userInfo]) {
+                onContent();
+            } else {
+                [self requireMessageContent:messageId withCompletionBlock:onContent];
+            }
+        }];
+    } else {
+        if (messageId && completionHandler) {
+            completionHandler(UNNotificationPresentationOptionNone);
+        }
+    }
+}
+
+#pragma mark - Push Notifications AppDelegate
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
@@ -571,6 +670,19 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
+#pragma mark - Push Notifications UNNotificationFramework
+
+- (void)willPresentNotification:(UNNotification *)notification
+          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
+{
+    LP_TRY
+    // this will be called iff app is active and in foreground visible to the user.
+    // we will have to check whether we gonna show the action or not.
+    NSDictionary* userInfo = [[[notification request] content] userInfo];
+    [self handleWillPresentNotification:userInfo withCompletionHandler:completionHandler];
+    LP_END_TRY
+}
+
 - (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
 {
     NSDictionary *userInfo = response.notification.request.content.userInfo;
@@ -586,9 +698,8 @@ static dispatch_once_t leanplum_onceToken;
     // explicitly.
     if (!state.calledHandleNotification) {
         LP_TRY
-        [self didReceiveRemoteNotification:userInfo
-                                withAction:nil
-                    fetchCompletionHandler:leanplumCompletionHandler];
+        [self handleNotificationResponse:userInfo
+                       completionHandler:leanplumCompletionHandler];
         LP_END_TRY
     }
     state.calledHandleNotification = NO;
@@ -686,13 +797,25 @@ static dispatch_once_t leanplum_onceToken;
         Method userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod =
         class_getInstanceMethod([appDelegate class],
                                 userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
-        void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) =^{
+        void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) = ^{
             swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
             [LPSwizzle hookInto:userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
                    withSelector:@selector(leanplum_userNotificationCenter:
                                           didReceiveNotificationResponse:
                                           withCompletionHandler:)
                       forObject:[appDelegate class]];
+        };
+
+        SEL userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector = @selector(userNotificationCenter:
+                                                                                                   willPresentNotification:
+                                                                                                   withCompletionHandler:);
+        Method userNotificationCenterWillPresentNotificationWithCompletionHandlerMethod = class_getInstanceMethod([appDelegate class],
+                                                                                                                  userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector);
+        void (^swizzleUserNotificationWillPresentNotificationWithCompletionHandler)(void) = ^{
+            swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = [LPSwizzle
+                                                                                          hookInto:userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector
+                                                                                          withSelector:@selector(leanplum_userNotificationCenter:willPresentNotification:withCompletionHandler:)
+                                                                                          forObject:[appDelegate class]];
         };
         
         if (!applicationDidReceiveRemoteNotificationMethod
@@ -701,6 +824,7 @@ static dispatch_once_t leanplum_onceToken;
             swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler();
             if (NSClassFromString(@"UNUserNotificationCenter")) {
                 swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler();
+                swizzleUserNotificationWillPresentNotificationWithCompletionHandler();
             }
         } else {
             if (applicationDidReceiveRemoteNotificationMethod) {
@@ -712,6 +836,9 @@ static dispatch_once_t leanplum_onceToken;
             if (NSClassFromString(@"UNUserNotificationCenter")) {
                 if (userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod) {
                     swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler();
+                }
+                if (userNotificationCenterWillPresentNotificationWithCompletionHandlerMethod) {
+                    swizzleUserNotificationWillPresentNotificationWithCompletionHandler();
                 }
             }
         }
