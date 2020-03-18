@@ -288,11 +288,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     jsonString = [jsonString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
 
     // Template.
-    NSError *error;
-    NSString *htmlString = [NSString stringWithContentsOfFile:[self fileNamed:templateName]
-                                                     encoding:NSUTF8StringEncoding
-                                                        error:&error];
-    if (error) {
+    NSString *htmlString = [self htmlStringContentsOfFile:[self fileNamed:templateName]];
+    if (!htmlString) {
         LPLog(LPError, @"Fail to get HTML template.");
         return nil;
     }
@@ -311,6 +308,18 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return tmpURL;
     LP_END_TRY
     return nil;
+}
+
+-(NSString *)htmlStringContentsOfFile:(NSString *)file {
+    NSError *error;
+    NSString *htmlString = [NSString stringWithContentsOfFile:file
+                                                     encoding:NSUTF8StringEncoding
+                                                        error:&error];
+    if (error) {
+        LPLog(LPError, @"Fail to get HTML template. Error: %@", [error description]);
+        return nil;
+    }
+    return htmlString;
 }
 
 - (NSString *)getDefaultValue:(NSString *)name
