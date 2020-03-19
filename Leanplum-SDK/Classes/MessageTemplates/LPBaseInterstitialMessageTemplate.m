@@ -42,14 +42,13 @@
     LPActionContext *context = self.contexts.lastObject;
     [self.contexts removeLastObject];
 
-    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-        [[context actionName] isEqualToString:LPMT_HTML_NAME] ) {
-        ((WKWebView *)_popupView).navigationDelegate = nil;
-        [(WKWebView *)_popupView stopLoading];
-    }
-
     void (^finishCallback)(void) = ^() {
         [self removeAllViewsFrom:self->_popupGroup];
+        UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+        UIView *mainView = mainWindow.subviews.lastObject;
+        [[UIApplication sharedApplication] setAccessibilityElements:@[mainWindow, mainView]];
+        mainWindow.isAccessibilityElement = NO;
+        mainView.isAccessibilityElement = NO;
 
         if (actionName) {
             if (track) {
@@ -73,6 +72,9 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self
                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
                                                   object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:UIApplicationDidBecomeActiveNotification
+                                                  object:nil];
 }
 
 // Displays the Center Popup, Interstitial and Web Interstitial.
@@ -87,49 +89,37 @@
     }
     [self setupPopupView];
     [self.popupGroup setAlpha:0.0];
-    [[UIApplication sharedApplication].keyWindow addSubview:self.popupGroup];
+    [self addPopupGroupInKeyWindowAndSetupAccessibilityElement];
+    
     [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-        [self->_popupGroup setAlpha:0.5];
+        [self->_popupGroup setAlpha:1.0];
     }];
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationDidChange:)
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(appDidBecomeActive:)
+                                            name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
 }
 
 - (void)setupPopupView {
     LPActionContext *context = self.contexts.lastObject;
     BOOL isFullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
-    BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-                 [context.actionName isEqualToString:LPMT_HTML_NAME];
     BOOL isPushAskToAsk = [context.actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK];
 
-    if (isWeb) {
-        WKWebViewConfiguration* configuration = [WKWebViewConfiguration new];
-        configuration.allowsInlineMediaPlayback = YES;
-        configuration.mediaTypesRequiringUserActionForPlayback = WKAudiovisualMediaTypeNone;
-
-        _popupView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:configuration];
-    } else {
-        _popupView = [[UIView alloc] init];
-    }
+    _popupView = [[UIView alloc] init];
 
     self.popupGroup = [[UIView alloc] init];
     self.popupGroup.backgroundColor = [UIColor clearColor];
-    if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
-        _popupView.backgroundColor = [UIColor clearColor];
-        [_popupView setOpaque:NO];
-        ((WKWebView *)_popupView).scrollView.scrollEnabled = NO;
-        ((WKWebView *)_popupView).scrollView.bounces = NO;
-    }
 
-    if (!isWeb) {
-        [self setupPopupLayout:isFullscreen isPushAskToAsk:isPushAskToAsk];
-    }
+    [self setupPopupLayout:isFullscreen isPushAskToAsk:isPushAskToAsk];
 
     [self.popupGroup addSubview:_popupView];
-    if ((!isWeb || [context boolNamed:LPMT_HAS_DISMISS_BUTTON]) && !isPushAskToAsk) {
+    if (!isPushAskToAsk) {
         // Dismiss button.
         self.dismissButton = [UIButton buttonWithType:UIButtonTypeCustom];
         self.dismissButton.bounds = CGRectMake(0, 0, LPMT_DISMISS_BUTTON_SIZE, LPMT_DISMISS_BUTTON_SIZE);
@@ -149,6 +139,31 @@
 
     [self refreshPopupContent];
     [self updatePopupLayout];
+}
+
+- (void)addPopupGroupInKeyWindowAndSetupAccessibilityElement {
+    //set accessibility elemements for VoiceOver
+    UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+    UIView *mainView = mainWindow.subviews.lastObject;
+    [mainWindow addSubview:self.popupGroup];
+    [[UIApplication sharedApplication] setAccessibilityElements:@[mainWindow, mainView, self.popupGroup]];
+    mainWindow.isAccessibilityElement = YES;
+    mainView.isAccessibilityElement = YES;
+    self.popupGroup.isAccessibilityElement = NO;
+    [self setFocusForAccessibilityElement:_popupView];
+}
+
+- (void)setFocusForAccessibilityElement:(UIView *)accessibleView {
+    UIAccessibilityPostNotification(UIAccessibilityScreenChangedNotification,
+    accessibleView);
+}
+
+- (void)appDidBecomeActive:(NSNotification *)notification {
+    if (self.popupGroup != nil) {
+        UIWindow *mainWindow = [[UIApplication sharedApplication] keyWindow];
+        UIView *lastView = mainWindow.subviews.lastObject;
+        [self setFocusForAccessibilityElement:lastView];
+    }
 }
 
 - (void)removeAllViewsFrom:(UIView *)view
@@ -247,11 +262,7 @@
 
     LPActionContext *context = self.contexts.lastObject;
 
-    BOOL fullscreen = ([context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME] ||
-                       [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-                       [context.actionName isEqualToString:LPMT_HTML_NAME]);
-    BOOL isWeb = [context.actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-                 [context.actionName isEqualToString:LPMT_HTML_NAME];
+    BOOL fullscreen = [context.actionName isEqualToString:LPMT_INTERSTITIAL_NAME];
 
     BOOL isPushAskToAsk = [context.actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK];
 
@@ -297,17 +308,9 @@
     }
     _popupView.center = CGPointMake(screenWidth / 2.0, screenHeight / 2.0);
 
-    if ([context.actionName isEqualToString:LPMT_HTML_NAME]) {
-        [self updateHtmlLayoutWithContext:context
-                          statusBarHeight:statusBarHeight
-                              screenWidth:screenWidth
-                             screenHeight:screenHeight];
-    }
-
-    if (!isWeb) {
-        [self updateNonWebPopupLayout:statusBarHeight isPushAskToAsk:isPushAskToAsk];
+    [self updateNonWebPopupLayout:statusBarHeight isPushAskToAsk:isPushAskToAsk];
         _overlayView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-    }
+
     CGFloat leftSafeAreaX = safeAreaInsets.left;
     CGFloat dismissButtonX = screenWidth - _dismissButton.frame.size.width - LPMT_ACCEPT_BUTTON_MARGIN / 2;
     CGFloat dismissButtonY = statusBarHeight + LPMT_ACCEPT_BUTTON_MARGIN / 2;
@@ -325,65 +328,31 @@
     LPActionContext *context = self.contexts.lastObject;
     @try {
         NSString *actionName = [context actionName];
-        if ([actionName isEqualToString:LPMT_CENTER_POPUP_NAME]
-            || [actionName isEqualToString:LPMT_INTERSTITIAL_NAME]
-            || [actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK]) {
-            if (_popupGroup) {
-                _popupBackground.image = [UIImage imageWithContentsOfFile:
-                                          [context fileNamed:LPMT_ARG_BACKGROUND_IMAGE]];
-                _popupBackground.backgroundColor = [context colorNamed:LPMT_ARG_BACKGROUND_COLOR];
-                [_acceptButton setTitle:[context stringNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT]
+        if (_popupGroup) {
+            _popupBackground.image = [UIImage imageWithContentsOfFile:
+                                      [context fileNamed:LPMT_ARG_BACKGROUND_IMAGE]];
+            _popupBackground.backgroundColor = [context colorNamed:LPMT_ARG_BACKGROUND_COLOR];
+            [_acceptButton setTitle:[context stringNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT]
+                           forState:UIControlStateNormal];
+            [_acceptButton setBackgroundImage:[self imageFromColor:
+                                               [context colorNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR]]
+                                     forState:UIControlStateNormal];
+            [_acceptButton setTitleColor:[context colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]
+                                forState:UIControlStateNormal];
+            if (_cancelButton) {
+                [_cancelButton setTitle:[context stringNamed:LPMT_ARG_CANCEL_BUTTON_TEXT]
                                forState:UIControlStateNormal];
-                [_acceptButton setBackgroundImage:[self imageFromColor:
-                                                   [context colorNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR]]
+                [_cancelButton setBackgroundImage:[self imageFromColor:
+                                                   [context colorNamed:LPMT_ARG_CANCEL_BUTTON_BACKGROUND_COLOR]]
                                          forState:UIControlStateNormal];
-                [_acceptButton setTitleColor:[context colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]
+                [_cancelButton setTitleColor:[context colorNamed:LPMT_ARG_CANCEL_BUTTON_TEXT_COLOR]
                                     forState:UIControlStateNormal];
-                if (_cancelButton) {
-                    [_cancelButton setTitle:[context stringNamed:LPMT_ARG_CANCEL_BUTTON_TEXT]
-                                   forState:UIControlStateNormal];
-                    [_cancelButton setBackgroundImage:[self imageFromColor:
-                                                       [context colorNamed:LPMT_ARG_CANCEL_BUTTON_BACKGROUND_COLOR]]
-                                             forState:UIControlStateNormal];
-                    [_cancelButton setTitleColor:[context colorNamed:LPMT_ARG_CANCEL_BUTTON_TEXT_COLOR]
-                                        forState:UIControlStateNormal];
-                }
-                _titleLabel.text = [context stringNamed:LPMT_ARG_TITLE_TEXT];
-                _titleLabel.textColor = [context colorNamed:LPMT_ARG_TITLE_COLOR];
-                _messageLabel.text = [context stringNamed:LPMT_ARG_MESSAGE_TEXT];
-                _messageLabel.textColor = [context colorNamed:LPMT_ARG_MESSAGE_COLOR];
-                [self updatePopupLayout];
             }
-        } else if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME] ||
-                   [actionName isEqualToString:LPMT_HTML_NAME]) {
-            if (_popupGroup) {
-                [_popupGroup setHidden:YES];  // Keep hidden until load is done
-                WKWebView *webView = (WKWebView *)_popupView;
-                _webViewNeedsFade = YES;
-                webView.navigationDelegate = self;
-                if (@available(iOS 11.0, *)) {
-                    webView.scrollView.contentInsetAdjustmentBehavior = UIScrollViewContentInsetAdjustmentNever;
-                }
-                if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
-                    [webView loadRequest:[NSURLRequest requestWithURL:
-                                        [NSURL URLWithString:[context stringNamed:LPMT_ARG_URL]]]];
-                } else {
-                    if (@available(iOS 9.0, *))
-                    {
-                        NSURL *htmlURL = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
-                        // Allow access to base folder.
-                        NSString *path = [LPFileManager documentsPath];
-                        NSURL* baseURL = [NSURL fileURLWithPath:path isDirectory:YES];
-
-                        [webView loadFileURL:htmlURL allowingReadAccessToURL:baseURL];
-                    }
-                    else
-                    {
-                        NSURL *htmlURL = [context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
-                        [webView loadRequest:[NSURLRequest requestWithURL:htmlURL]];
-                    }
-                }
-            }
+            _titleLabel.text = [context stringNamed:LPMT_ARG_TITLE_TEXT];
+            _titleLabel.textColor = [context colorNamed:LPMT_ARG_TITLE_COLOR];
+            _messageLabel.text = [context stringNamed:LPMT_ARG_MESSAGE_TEXT];
+            _messageLabel.textColor = [context colorNamed:LPMT_ARG_MESSAGE_COLOR];
+            [self updatePopupLayout];
         }
     }
     @catch (NSException *exception) {
@@ -498,229 +467,11 @@
     return img;
 }
 
-- (void)updateHtmlLayoutWithContext:(LPActionContext *)context
-                    statusBarHeight:(CGFloat)statusBarHeight
-                        screenWidth:(CGFloat)screenWidth
-                       screenHeight:(CGFloat)screenHeight
-{
-    // Calculate the height. Fullscreen by default.
-    CGFloat htmlHeight = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
-    BOOL isFullscreen = htmlHeight < 1;
-    UIEdgeInsets safeAreaInsets = [self safeAreaInsets];
-    CGFloat bottomSafeAreaHeight = safeAreaInsets.bottom;
-    BOOL isIPhoneX = statusBarHeight > 40 || safeAreaInsets.left > 40 || safeAreaInsets.right > 40;
-
-    // Banner logic.
-    if (!isFullscreen) {
-        // Calculate Y Offset.
-        CGFloat yOffset = 0;
-        NSString *contextArgYOffset = [context stringNamed:LPMT_ARG_HTML_Y_OFFSET];
-        if (contextArgYOffset && [contextArgYOffset length] > 0) {
-            CGFloat percentRange = screenHeight - htmlHeight - statusBarHeight;
-            yOffset = [self valueFromHtmlString:contextArgYOffset percentRange:percentRange];
-        }
-
-        // HTML banner logic to support top/bottom alignment with dynamic size.
-        CGFloat htmlY = yOffset + statusBarHeight;
-        NSString *htmlAlign = [context stringNamed:LPMT_ARG_HTML_ALIGN];
-        if ([htmlAlign isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM]) {
-            htmlY = screenHeight - htmlHeight - yOffset;
-        }
-
-        // Calculate HTML width by percentage or px (it parses any suffix for extra protection).
-        NSString *contextArgWidth = [context stringNamed:LPMT_ARG_HTML_WIDTH] ?: @"100%";
-        CGFloat htmlWidth = screenWidth;
-        if (contextArgWidth && [contextArgWidth length] > 0) {
-            htmlWidth = [self valueFromHtmlString:contextArgWidth percentRange:screenWidth];
-        }
-
-        // Tap outside to close Banner
-        if ([context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE]) {
-            _closePopupView = [[LPHitView alloc] initWithCallback:^{
-                [self dismiss];
-                [self->_closePopupView removeFromSuperview];
-            }];
-            _closePopupView.frame = CGRectMake(0, 0, screenWidth, screenHeight);
-            [[UIApplication sharedApplication].keyWindow addSubview:_closePopupView];
-            [[UIApplication sharedApplication].keyWindow bringSubviewToFront:_popupGroup];
-        }
-
-        CGFloat htmlX = (screenWidth - htmlWidth) / 2.;
-        // Offset iPhoneX's safe area.
-        if (isIPhoneX) {
-            CGFloat bottomDistance = screenHeight - (htmlY + htmlHeight);
-            if (bottomDistance < bottomSafeAreaHeight) {
-                htmlHeight += bottomSafeAreaHeight;
-            }
-        }
-        _popupGroup.frame = CGRectMake(htmlX, htmlY, htmlWidth, htmlHeight);
-
-    } else if (isIPhoneX) {
-        UIInterfaceOrientation interfaceOrientation = [[UIApplication sharedApplication] statusBarOrientation];
-        if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-            safeAreaInsets.left = 0;
-            safeAreaInsets.right = 0;
-            bottomSafeAreaHeight = 0;
-        } else {
-            safeAreaInsets.top = 0;
-            safeAreaInsets.bottom = 0;
-            bottomSafeAreaHeight = 0;
-        }
-
-        _popupGroup.frame = CGRectMake(safeAreaInsets.left, safeAreaInsets.top,
-                                       screenWidth - safeAreaInsets.left - safeAreaInsets.right,
-                                       screenHeight - safeAreaInsets.top - bottomSafeAreaHeight);
-
-        NSLog(@"frame dim %@ %@", NSStringFromCGRect(_popupGroup.frame), NSStringFromCGSize(_popupGroup.frame.size));
-        NSLog(@"screen %f, %f", screenWidth, screenHeight);
-        NSLog(@"insets %@", NSStringFromUIEdgeInsets(safeAreaInsets));
-    }
-
-    _popupView.frame = _popupGroup.bounds;
-}
-
-/**
- * Get float value by parsing the html string that can have either % or px as a suffix.
- */
-- (CGFloat)valueFromHtmlString:(NSString *)htmlString percentRange:(CGFloat)percentRange
-{
-    if (!htmlString || [htmlString length] == 0) {
-        return 0;
-    }
-
-    if ([htmlString hasSuffix:@"%"]) {
-        NSString *percentageValue = [htmlString stringByReplacingOccurrencesOfString:@"%"
-                                                                          withString:@""];
-        return percentRange * [percentageValue floatValue] / 100.;
-    }
-
-    NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
-    NSArray *components = [htmlString componentsSeparatedByCharactersInSet:letterSet];
-    return [[components componentsJoinedByString:@""] floatValue];
-}
-
 - (void)dismiss
 {
     LP_TRY
     [self closePopupWithAnimation:YES];
     LP_END_TRY
-}
-
-#pragma mark - WKWebViewDelegate methods
-
-- (void)showWebview:(WKWebView *)webview {
-    [_popupGroup setHidden:NO];
-    if (_webViewNeedsFade) {
-        _webViewNeedsFade = NO;
-        [_popupGroup setAlpha:0.0];
-        [UIView animateWithDuration:LPMT_POPUP_ANIMATION_LENGTH animations:^{
-            [self->_popupGroup setAlpha:1.0];
-        }];
-    }
-}
-
-- (NSDictionary *)queryComponentsFromUrl:(NSString *)url {
-    NSMutableDictionary *components = [NSMutableDictionary new];
-    NSArray *urlComponents = [url componentsSeparatedByString:@"?"];
-    if ([urlComponents count] > 1) {
-        NSString *queryString = urlComponents[1];
-        NSArray *parameters = [queryString componentsSeparatedByString:@"&"];
-        for (NSString *parameter in parameters) {
-            NSArray *parameterComponents = [parameter componentsSeparatedByString:@"="];
-            if ([parameterComponents count] > 1) {
-                components[parameterComponents[0]] = [parameterComponents[1]
-                    stringByReplacingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
-            }
-        }
-    }
-    return components;
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
-{
-    if (webView.isLoading) {
-        return;
-    }
-
-    // Show for WEB INSTERSTITIAL. HTML will show after js loads the template.
-    LPActionContext *context = self.contexts.lastObject;
-    if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
-        [self showWebview:webView];
-    }
-}
-
-- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
-{
-    LPActionContext *context = self.contexts.lastObject;
-    @try {
-
-        NSString *url = [navigationAction request].URL.absoluteString;
-        NSDictionary *queryComponents = [self queryComponentsFromUrl:url];
-        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
-            [self dismiss];
-            if (queryComponents[@"result"]) {
-                [Leanplum track:queryComponents[@"result"]];
-            }
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
-        }
-
-        // Only continue for HTML Template. Web Insterstitial will be deprecated.
-        if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
-            decisionHandler(WKNavigationActionPolicyAllow);
-            return;
-        }
-
-        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_OPEN]].location != NSNotFound) {
-            [self showWebview:webView];
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
-        }
-
-        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_TRACK]].location != NSNotFound) {
-            NSString *event = queryComponents[@"event"];
-            if (event) {
-                double value = [queryComponents[@"value"] doubleValue];
-                NSString *info = queryComponents[@"info"];
-                NSDictionary *parameters = [LPJSON JSONFromString:queryComponents[@"parameters"]];
-
-                if (queryComponents[@"isMessageEvent"]) {
-                    [context trackMessageEvent:event
-                                     withValue:value
-                                       andInfo:info
-                                 andParameters: parameters];
-                } else {
-                    [Leanplum track:event withValue:value andInfo:info andParameters:parameters];
-                }
-            }
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
-        }
-
-        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_ACTION]].location != NSNotFound) {
-            if (queryComponents[@"action"]) {
-                [self closePopupWithAnimation:YES actionNamed:queryComponents[@"action"] track:NO];
-            }
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
-        }
-
-        if ([url rangeOfString:
-             [context stringNamed:LPMT_ARG_URL_TRACK_ACTION]].location != NSNotFound) {
-            if (queryComponents[@"action"]) {
-                [self closePopupWithAnimation:YES actionNamed:queryComponents[@"action"] track:YES];
-            }
-            decisionHandler(WKNavigationActionPolicyCancel);
-            return;
-        }
-    }
-    @catch (id exception) {
-        // In case we catch exception here, hide the overlaying message.
-        [self dismiss];
-        // Handle the exception message.
-        LOG_LP_MESSAGE_EXCEPTION;
-    }
-    decisionHandler(WKNavigationActionPolicyAllow);
 }
 
 @end

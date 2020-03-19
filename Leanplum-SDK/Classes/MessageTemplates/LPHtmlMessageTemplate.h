@@ -6,11 +6,11 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPBaseInterstitialMessageTemplate.h"
+#import "LPBaseHtmlMessageTemplate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPHtmlMessageTemplate : LPBaseInterstitialMessageTemplate
+@interface LPHtmlMessageTemplate : LPBaseHtmlMessageTemplate
 
 @end
 
