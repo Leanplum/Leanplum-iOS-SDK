@@ -293,6 +293,12 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         LPLog(LPError, @"Fail to get HTML template.");
         return nil;
     }
+
+    if ([[htmlVars valueForKey:@"Height"] isEqualToString:@"100%"] && [[htmlVars valueForKey:@"Width"] isEqualToString:@"100%"]) {
+        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"/*##MEDIAQUERY##" withString:@""];
+        htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##MEDIAQUERY##*/" withString:@""];
+    }
+    
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##Vars##"
                                                        withString:jsonString];
 
