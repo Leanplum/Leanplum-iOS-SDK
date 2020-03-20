@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property  (nonatomic, strong) UIButton *cancelButton;
 @property  (nonatomic, strong) UILabel *titleLabel;
 @property  (nonatomic, strong) UILabel *messageLabel;
-@property  (nonatomic, strong) UIButton *overlayView;;
+@property  (nonatomic, strong) UIButton *overlayView;
 @property  (nonatomic, strong) LPHitView *closePopupView;
 @property  (nonatomic, assign) UIDeviceOrientation orientation;
 
