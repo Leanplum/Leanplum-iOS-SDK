@@ -856,7 +856,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     LP_END_TRY
 }
 
-+ (void)clearCacheIfNeeded {
++ (void)clearCacheIfSDKUpdated {
     NSString *savedSdkVersionKey = @"savedSdkVersion";
     NSString *savedSdkVersion = [[NSUserDefaults standardUserDefaults] valueForKey:savedSdkVersionKey];
     if(![[LPConstantsState sharedState].sdkVersion isEqualToString:savedSdkVersion]) {

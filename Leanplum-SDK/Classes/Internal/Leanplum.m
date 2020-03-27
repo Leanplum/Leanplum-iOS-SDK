@@ -742,7 +742,7 @@ BOOL inForeground = NO;
         return;
     }
     
-    [LPFileManager clearCacheIfNeeded];
+    [LPFileManager clearCacheIfSDKUpdated];
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"start_with_user_id"];
     
