@@ -381,7 +381,6 @@ BOOL inForeground = NO;
 + (void)start
 {
     [self startWithUserId:nil userAttributes:nil responseHandler:nil];
-    [LPFileManager clearCacheIfNeeded];
 }
 
 + (void)startWithResponseHandler:(LeanplumStartBlock)response
@@ -742,6 +741,8 @@ BOOL inForeground = NO;
         });
         return;
     }
+    
+    [LPFileManager clearCacheIfNeeded];
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"start_with_user_id"];
     
