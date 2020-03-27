@@ -381,6 +381,7 @@ BOOL inForeground = NO;
 + (void)start
 {
     [self startWithUserId:nil userAttributes:nil responseHandler:nil];
+    [LPFileManager clearCacheIfNeeded];
 }
 
 + (void)startWithResponseHandler:(LeanplumStartBlock)response
