@@ -139,7 +139,9 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     } else {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#if !TARGET_OS_MACCATALYST
         receipt = transaction.transactionReceipt;
+#endif
 #pragma GCC diagnostic pop
     }
 
