@@ -1,0 +1,3 @@
+[submodule "Leanplum-iOS-Location"]
+	path = Leanplum-iOS-Location
+	url = https://github.com/Leanplum/Leanplum-iOS-Location
