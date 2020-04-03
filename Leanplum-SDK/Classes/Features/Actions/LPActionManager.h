@@ -53,6 +53,8 @@ typedef enum {
 
 + (LPActionManager*) sharedManager;
 
+@property (nonatomic, assign) BOOL appWasOpenedFromPushNotification;
+
 #pragma mark - Push Notifications
 
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;

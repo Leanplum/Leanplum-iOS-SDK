@@ -197,7 +197,7 @@ typedef enum {
 #define LP_PURCHASE_EVENT @"Purchase"
 
 @interface Leanplum : NSObject
-
++ (void)applicationWillTerminate;
 /**
  * Optional. Sets the API server. The API path is of the form http[s]://hostname/servletName
  * @param hostName The name of the API host, such as api.leanplum.com

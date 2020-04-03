@@ -171,6 +171,10 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                   withCompletionHandler:(void (^)())completionHandler
 API_AVAILABLE(ios(10.0))
 {
+    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+    if (appState == UIApplicationStateActive) {
+        return;
+    }
 
     LPLog(LPDebug, @"Called swizzled didReceiveNotificationResponse:withCompletionHandler");
 
@@ -184,8 +188,12 @@ API_AVAILABLE(ios(10.0))
                didReceiveNotificationResponse:response
                         withCompletionHandler:completionHandler];
     }
-    
-    [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+    if ([[LPActionManager sharedManager] appWasOpenedFromPushNotification]) {
+        NSDictionary* userInfo = [[[[response notification] request] content] userInfo];
+        [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
+    } else {
+        [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
+    }
 }
 
 -(void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
@@ -193,6 +201,11 @@ API_AVAILABLE(ios(10.0))
                  withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler
 API_AVAILABLE(ios(10.0))
 {
+    UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+    if (appState == UIApplicationStateActive) {
+        return;
+    }
+    
     LPLog(LPDebug, @"Called swizzled willPresentNotification:withCompletionHandler");
 
     // Call overridden method.
@@ -640,11 +653,33 @@ static dispatch_once_t leanplum_onceToken;
     [self didReceiveRemoteNotification:userInfo withAction:nil fetchCompletionHandler:completionHandler];
 }
 
+- (BOOL)shouldStopHandleingReceivedNotificationFlowAndMaybePerformNotificationActions:(NSDictionary *)userInfo action:(NSString *)action {
+    BOOL result = NO;
+    if (!_appWasOpenedFromPushNotification) {
+        UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
+        BOOL userNotificationCenterCheck = YES;
+        if (@available(iOS 10, *)) {
+            userNotificationCenterCheck = [UNUserNotificationCenter currentNotificationCenter].delegate == nil;
+        }
+        if (appState == UIApplicationStateInactive && userNotificationCenterCheck) {
+            [self maybePerformNotificationActions:userInfo action:action active:NO];
+            result = YES;
+        }
+    } else {
+        [self setAppWasOpenedFromPushNotification:NO];
+    }
+    return result;
+}
+
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
     [self.countAggregator incrementCount:@"did_receive_remote_notification"];
+    
+    if ([self shouldStopHandleingReceivedNotificationFlowAndMaybePerformNotificationActions:userInfo action:action]) {
+        return;
+    }
     
     // If app was inactive, then handle notification because the user tapped it.
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
@@ -681,7 +716,11 @@ static dispatch_once_t leanplum_onceToken;
     // this will be called iff app is active and in foreground visible to the user.
     // we will have to check whether we gonna show the action or not.
     NSDictionary* userInfo = [[[notification request] content] userInfo];
-    [self handleWillPresentNotification:userInfo withCompletionHandler:completionHandler];
+    if (_appWasOpenedFromPushNotification) {
+        [self didReceiveRemoteNotification:userInfo];
+    } else {
+        [self handleWillPresentNotification:userInfo withCompletionHandler:completionHandler];
+    }
     LP_END_TRY
 }
 

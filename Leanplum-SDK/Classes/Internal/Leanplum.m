@@ -84,6 +84,11 @@ BOOL inForeground = NO;
 
 @implementation Leanplum
 
++ (void)applicationWillTerminate {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"appWasTerminated"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 + (void)throwError:(NSString *)reason
 {
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -1134,6 +1139,9 @@ BOOL inForeground = NO;
     LP_TRY
     [LPUtils initExceptionHandling];
     LP_END_TRY
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"appWasTerminated"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 // On first run with Leanplum, determine if this app was previously installed without Leanplum.
@@ -1724,6 +1732,7 @@ BOOL inForeground = NO;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+    [Leanplum checkIfAppWasOpenedFromPushNotification];
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
@@ -1740,6 +1749,7 @@ BOOL inForeground = NO;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
                  withCompletionHandler:(void (^)(void))completionHandler
 {
+    [Leanplum checkIfAppWasOpenedFromPushNotification];
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
@@ -1765,6 +1775,14 @@ BOOL inForeground = NO;
         LPLog(LPDebug, @"Call to didReceiveLocalNotification will be ignored due to swizzling");
     }
     LP_END_TRY
+}
+
++ (void)checkIfAppWasOpenedFromPushNotification {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"appWasTerminated"]) {
+        [[LPActionManager sharedManager] setAppWasOpenedFromPushNotification:YES];
+        [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"appWasTerminated"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 #pragma clang diagnostic push
