@@ -99,6 +99,8 @@ typedef enum {
 
 - (void)muteFutureMessagesOfKind:(NSString *)messageId;
 
+- (void)addObserverForTerminatingTheApp;
+
 #pragma mark - Leanplum Tests
 
 + (void)reset;

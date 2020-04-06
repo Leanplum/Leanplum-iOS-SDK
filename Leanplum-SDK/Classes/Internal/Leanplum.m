@@ -84,11 +84,6 @@ BOOL inForeground = NO;
 
 @implementation Leanplum
 
-+ (void)applicationWillTerminate {
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"appWasTerminated"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-}
-
 + (void)throwError:(NSString *)reason
 {
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -749,6 +744,8 @@ BOOL inForeground = NO;
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"start_with_user_id"];
     
+    [[LPActionManager sharedManager] addObserverForTerminatingTheApp];
+    
     LP_TRY
     NSDate *startTime = [NSDate date];
     if (startResponse) {
@@ -1139,9 +1136,6 @@ BOOL inForeground = NO;
     LP_TRY
     [LPUtils initExceptionHandling];
     LP_END_TRY
-    
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"appWasTerminated"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 // On first run with Leanplum, determine if this app was previously installed without Leanplum.
@@ -1732,10 +1726,10 @@ BOOL inForeground = NO;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
-    [Leanplum checkIfAppWasOpenedFromPushNotification];
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
+        [Leanplum checkIfAppWasOpenedFromPushNotification];
         [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
                                                fetchCompletionHandler:completionHandler];
     }
@@ -1749,10 +1743,10 @@ BOOL inForeground = NO;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
                  withCompletionHandler:(void (^)(void))completionHandler
 {
-    [Leanplum checkIfAppWasOpenedFromPushNotification];
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
+        [Leanplum checkIfAppWasOpenedFromPushNotification];
         [[LPActionManager sharedManager] didReceiveNotificationResponse:response
                                                   withCompletionHandler:completionHandler];
     }

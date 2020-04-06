@@ -120,6 +120,7 @@ BOOL swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler 
 - (void)leanplum_application:(UIApplication *)application
 didReceiveRemoteNotification:(NSDictionary *)userInfo
 {
+    NSLog(@"Push for dejan check at leanplum_application");
     LP_TRY
     LPLog(LPDebug, @"Called swizzled didReceiveRemoteNotification");
     [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
@@ -171,6 +172,8 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
                   withCompletionHandler:(void (^)())completionHandler
 API_AVAILABLE(ios(10.0))
 {
+    NSLog(@"Push for dejan check at leanplum_userNotificationCenter");
+    [Leanplum checkIfAppWasOpenedFromPushNotification];
     UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
     if (appState == UIApplicationStateActive) {
         return;
@@ -188,6 +191,7 @@ API_AVAILABLE(ios(10.0))
                didReceiveNotificationResponse:response
                         withCompletionHandler:completionHandler];
     }
+    NSLog(@"Push will check for %d flag", [[LPActionManager sharedManager] appWasOpenedFromPushNotification]);
     if ([[LPActionManager sharedManager] appWasOpenedFromPushNotification]) {
         NSDictionary* userInfo = [[[[response notification] request] content] userInfo];
         [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
@@ -531,6 +535,18 @@ static dispatch_once_t leanplum_onceToken;
         userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil;
 }
 
+-(void)addObserverForTerminatingTheApp {
+     UIApplication *app = [UIApplication sharedApplication];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationWillTerminate:)
+                                                 name:UIApplicationWillTerminateNotification
+                                               object:app];
+}
+- (void)applicationWillTerminate:(NSNotification *)notification {
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"appWasTerminated"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSLog(@"Push for dejan setted");
+}
 #pragma mark - Push Notifications - Handlers
 
 // Handles the notification.
@@ -675,6 +691,8 @@ static dispatch_once_t leanplum_onceToken;
                           withAction:(NSString *)action
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
+    NSLog(@"Push for dejan check at didReceiveRemoteNotification");
+    [Leanplum checkIfAppWasOpenedFromPushNotification];
     [self.countAggregator incrementCount:@"did_receive_remote_notification"];
     
     if ([self shouldStopHandleingReceivedNotificationFlowAndMaybePerformNotificationActions:userInfo action:action]) {
