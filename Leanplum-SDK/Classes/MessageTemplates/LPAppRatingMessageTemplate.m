@@ -10,17 +10,21 @@
 
 @implementation LPAppRatingMessageTemplate
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts {
-    [super defineActionWithContexts:contexts];
-    
+@synthesize context = _context;
+
++(void)defineAction
+{
     [Leanplum defineAction:LPMT_APP_RATING_NAME
                     ofKind:kLeanplumActionKindAction withArguments:@[]
              withResponder:^BOOL(LPActionContext *context) {
         @try {
-            [self appStorePrompt];
+            LPAppRatingMessageTemplate *appRatingMessageTemplate = [[LPAppRatingMessageTemplate alloc] init];
+            appRatingMessageTemplate.context = context;
+
+            [appRatingMessageTemplate appStorePrompt];
+
             return YES;
-        }
-        @catch (NSException *exception) {
+        } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
         }
         return NO;
@@ -33,8 +37,6 @@
         if (NSClassFromString(@"SKStoreReviewController")) {
             if (@available(iOS 10.3, *)) {
                 [SKStoreReviewController requestReview];
-            } else {
-                // Fallback on earlier versions
             }
         }
     });

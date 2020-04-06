@@ -1,32 +1,38 @@
 //
-//  LPHtmlMessageTemplate.m
+//  LPRichInterstitialMessageTemplate.m
 //  LeanplumSDK-iOS
 //
-//  Created by Mayank Sanganeria on 2/7/20.
+//  Created by Milos Jakovljevic on 06/04/2020.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPHtmlMessageTemplate.h"
+#import "LPRichInterstitialMessageTemplate.h"
+#import "LPWebInterstitialViewController.h"
 
-@implementation LPHtmlMessageTemplate
+@implementation LPRichInterstitialMessageTemplate
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts {
-    [super defineActionWithContexts:contexts];
+@synthesize context;
 
-    // might be common with others
-    UIColor *defaultButtonTextColor = [UIColor colorWithRed:0 green:0.478431 blue:1 alpha:1];
-    BOOL (^messageResponder)(LPActionContext *) = ^(LPActionContext *context) {
++ (void)defineAction
+{
+    BOOL (^htmlMessageResponder)(LPActionContext *) = ^(LPActionContext *context) {
         if ([context hasMissingFiles]) {
             return NO;
         }
 
         @try {
-            [self closePopupWithAnimation:NO];
-            [self.contexts addObject:context];
-            [self showPopup];
+            NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
+            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:bundle];
+
+            LPWebInterstitialViewController *viewController = (LPWebInterstitialViewController *) ([storyboard instantiateInitialViewController]);
+            viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+            viewController.context = context;
+
+            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+            [rootViewController presentViewController:viewController animated:YES completion:nil];
+
             return YES;
-        }
-        @catch (NSException *exception) {
+        } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
             return NO;
         }
@@ -47,7 +53,7 @@
                  [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
                  [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                  [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
-             withResponder:messageResponder];
+             withResponder:htmlMessageResponder];
 }
 
 @end

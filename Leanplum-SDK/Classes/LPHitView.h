@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) void (^callback)(void);
 
 - (id)initWithCallback:(void (^)(void))callback;
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent * _Nullable )event;
 
 @end
 

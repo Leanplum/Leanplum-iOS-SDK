@@ -6,11 +6,14 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPBasePushMessageTemplate.h"
+#import "LPMessageTemplateProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPPushAsktoAskMessageTemplate : LPBasePushMessageTemplate
+@interface LPPrePushMessageTemplate : NSObject <LPMessageTemplateProtocol>
+
+- (void)refreshPushPermissions;
+- (BOOL)hasDisabledAskToAsk;
 
 @end
 

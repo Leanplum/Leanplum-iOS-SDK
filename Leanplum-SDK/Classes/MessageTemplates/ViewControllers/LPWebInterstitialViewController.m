@@ -1,0 +1,300 @@
+//
+//  LPWebInterstitialViewController.m
+//  LeanplumSDK-iOS
+//
+//  Created by Milos Jakovljevic on 03/04/2020.
+//  Copyright © 2020 Leanplum. All rights reserved.
+//
+
+#import "LPWebInterstitialViewController.h"
+#import "LPMessageTemplateConstants.h"
+
+@interface LPWebInterstitialViewController ()
+
+@property (nonatomic, strong) WKWebView *webView;
+
+@end
+
+@implementation LPWebInterstitialViewController
+
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    self.webView = [[WKWebView alloc] init];
+    self.webView.navigationDelegate = self;
+    [self.view insertSubview:self.webView atIndex:0];
+
+    NSString* actionName = [self.context actionName];
+
+    if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+        [self loadURL];
+        [self handleFullscreen];
+    }
+
+    if ([actionName isEqualToString:LPMT_HTML_NAME]) {
+        CGFloat height = [[self.context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
+        BOOL fullscreen = height < 1;
+
+        if (fullscreen) {
+            [self handleFullscreen];
+        } else {
+            [self handleBanner];
+        }
+
+        [self loadTemplate];
+    }
+
+    if (![self.context boolNamed:LPMT_HAS_DISMISS_BUTTON]) {
+        [self.dismissButton setHidden:YES];
+    }
+
+    BOOL tapOutside = [self.context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE];
+
+    if (tapOutside) {
+        UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)];
+        [self.view addGestureRecognizer:gestureRecognizer];
+    } else {
+
+    }
+}
+
+- (void)handleBanner
+{
+    self.webView.scrollView.scrollEnabled = NO;
+    self.webView.scrollView.bounces = NO;
+
+    self.view.backgroundColor = [UIColor clearColor];
+    [self.view setOpaque:NO];
+
+    self.webView.backgroundColor = [UIColor clearColor];
+    [self.webView setOpaque:NO];
+
+    [self addBannerConstraints];
+}
+
+- (void)handleFullscreen
+{
+    self.webView.scrollView.scrollEnabled = NO;
+    self.webView.scrollView.bounces = NO;
+
+    self.view.backgroundColor = [UIColor clearColor];
+    [self.view setOpaque:NO];
+
+    self.webView.backgroundColor = [UIColor clearColor];
+    [self.webView setOpaque:NO];
+
+    [self addTemplateConstraints];
+}
+
+- (void)loadTemplate
+{
+    NSURL *htmlURL = [self.context htmlWithTemplateNamed:LPMT_ARG_HTML_TEMPLATE];
+    // Allow access to base folder.
+    NSString *path = [LPFileManager documentsPath];
+    NSURL* baseURL = [NSURL fileURLWithPath:path isDirectory:YES];
+
+    [self.webView loadFileURL:htmlURL allowingReadAccessToURL:baseURL];
+}
+
+- (void)loadURL
+{
+    NSString *url = [self.context stringNamed:LPMT_ARG_URL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
+    [self.webView loadRequest:request];
+}
+
+- (void)addTemplateConstraints
+{
+    [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:0] setActive:YES];
+    [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0] setActive:YES];
+    [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:0] setActive:YES];
+    [[self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:0] setActive:YES];
+}
+
+- (void)addBannerConstraints
+{
+    NSString *alignArgument = [self.context stringNamed:LPMT_ARG_HTML_ALIGN];
+    NSString *offsetArgument = [self.context stringNamed:LPMT_ARG_HTML_Y_OFFSET];
+    NSString *widthArgument = [self.context stringNamed:LPMT_ARG_HTML_WIDTH];
+    NSString *heightArgument = [self.context stringNamed:LPMT_ARG_HTML_HEIGHT];
+
+    CGFloat width = self.view.frame.size.width;
+    CGFloat height = [heightArgument doubleValue];
+    BOOL alignBottom = [alignArgument isEqualToString:LPMT_ARG_HTML_ALIGN_BOTTOM];
+
+    if (widthArgument && [widthArgument length] > 0) {
+        width = [self valueFromHtmlString:widthArgument percentRange:width];
+    }
+
+    CGFloat offset = 0;
+    if (offsetArgument && [offsetArgument length] > 0) {
+
+    }
+
+    if (alignBottom) {
+        // align bottom
+        [[self.webView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor constant:0] setActive:YES];
+    } else {
+        // align top
+        [[self.webView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor constant:0] setActive:YES];
+    }
+
+    if (width != self.view.frame.size.width) {
+        [[self.webView.widthAnchor constraintEqualToConstant:width] setActive:YES];
+        [[self.webView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor] setActive:YES];
+    } else {
+        [[self.webView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor multiplier:1] setActive:YES];
+    }
+    [[self.webView.heightAnchor constraintEqualToConstant:height] setActive:YES];
+
+    [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
+}
+
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
+{
+    if (webView.isLoading) {
+        return;
+    }
+
+    // Show for WEB INSTERSTITIAL. HTML will show after js loads the template.
+    if ([[self.context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+//        [self showWebview:webView];
+    }
+}
+
+- (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
+{
+    LPActionContext *context = self.context;
+    @try {
+        NSString *url = [navigationAction request].URL.absoluteString;
+        NSDictionary *queryComponents = [self queryComponentsFromUrl:url];
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
+            [self dismiss];
+            if (queryComponents[@"result"]) {
+                [Leanplum track:queryComponents[@"result"]];
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        // Only continue for HTML Template. Web Insterstitial will be deprecated.
+        if ([[context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+            decisionHandler(WKNavigationActionPolicyAllow);
+            return;
+        }
+
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_OPEN]].location != NSNotFound) {
+//            [self showWebview:webView];
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_TRACK]].location != NSNotFound) {
+            NSString *event = queryComponents[@"event"];
+            if (event) {
+                double value = [queryComponents[@"value"] doubleValue];
+                NSString *info = queryComponents[@"info"];
+                NSDictionary *parameters = [LPJSON JSONFromString:queryComponents[@"parameters"]];
+
+                if (queryComponents[@"isMessageEvent"]) {
+                    [context trackMessageEvent:event
+                                     withValue:value
+                                       andInfo:info
+                                 andParameters: parameters];
+                } else {
+                    [Leanplum track:event withValue:value andInfo:info andParameters:parameters];
+                }
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_ACTION]].location != NSNotFound) {
+            if (queryComponents[@"action"]) {
+                                [self trackAction:queryComponents[@"action"] track:NO];
+                [self dismiss];
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+
+        if ([url rangeOfString:
+             [context stringNamed:LPMT_ARG_URL_TRACK_ACTION]].location != NSNotFound) {
+            if (queryComponents[@"action"]) {
+                [self trackAction:queryComponents[@"action"] track:YES];
+                [self dismiss];
+            }
+            decisionHandler(WKNavigationActionPolicyCancel);
+            return;
+        }
+    }
+    @catch (id exception) {
+        // In case we catch exception here, hide the overlaying message.
+        [self dismiss];
+        // Handle the exception message.
+        LOG_LP_MESSAGE_EXCEPTION;
+    }
+    decisionHandler(WKNavigationActionPolicyAllow);
+}
+- (void)trackAction:(NSString *)actionName track:(BOOL)track
+{
+    if (actionName) {
+        if (track) {
+            [self.context runTrackedActionNamed:actionName];
+        } else {
+            [self.context runActionNamed:actionName];
+        }
+    }
+}
+
+- (NSDictionary *)queryComponentsFromUrl:(NSString *)url
+{
+    NSMutableDictionary *components = [NSMutableDictionary new];
+    NSArray *urlComponents = [url componentsSeparatedByString:@"?"];
+    if ([urlComponents count] > 1) {
+        NSString *queryString = urlComponents[1];
+        NSArray *parameters = [queryString componentsSeparatedByString:@"&"];
+        for (NSString *parameter in parameters) {
+            NSArray *parameterComponents = [parameter componentsSeparatedByString:@"="];
+            if ([parameterComponents count] > 1) {
+                components[parameterComponents[0]] = [parameterComponents[1] stringByRemovingPercentEncoding];
+            }
+        }
+    }
+    return components;
+}
+
+- (IBAction)didTapDismissButton:(id)sender
+{
+    [self dismiss];
+}
+
+- (void) dismiss
+{
+    if (self.navigationController) {
+        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (CGFloat)valueFromHtmlString:(NSString *)htmlString percentRange:(CGFloat)percentRange
+{
+    if (!htmlString || [htmlString length] == 0) {
+        return 0;
+    }
+
+    if ([htmlString hasSuffix:@"%"]) {
+        NSString *percentageValue = [htmlString stringByReplacingOccurrencesOfString:@"%"
+                                                                          withString:@""];
+        return percentRange * [percentageValue floatValue] / 100.;
+    }
+
+    NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
+    NSArray *components = [htmlString componentsSeparatedByCharactersInSet:letterSet];
+    return [[components componentsJoinedByString:@""] floatValue];
+}
+
+@end

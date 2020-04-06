@@ -10,14 +10,19 @@
 
 @implementation LPRegisterForPushMessageTemplate
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts {
-    [super defineActionWithContexts:contexts];
-    
+@synthesize context = _context;
+
++(void)defineAction
+{
     [Leanplum defineAction:LPMT_REGISTER_FOR_PUSH
                     ofKind:kLeanplumActionKindAction
              withArguments:@[]
              withResponder:^BOOL(LPActionContext *context) {
-        [self enableSystemPush];
+
+        LPRegisterForPushMessageTemplate* template = [[LPRegisterForPushMessageTemplate alloc] init];
+        template.context = context;
+
+//        [template enableSystemPush];
         return YES;
     }];
 }

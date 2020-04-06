@@ -6,19 +6,16 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "Leanplum.h"
 #import "LPMessageTemplateConstants.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPBaseMessageTemplate : NSObject
+@protocol LPMessageTemplateProtocol
 
-@property  (nonatomic, strong) NSMutableArray *contexts;
+@property (nonatomic, strong) LPActionContext *context;
 
-- (UIViewController *)visibleViewController;
-
-- (void)defineActionWithContexts:(NSMutableArray *)contexts;
++ (void)defineAction;
 
 @end
 

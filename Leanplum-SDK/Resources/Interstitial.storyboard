@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="WhM-GX-UAe">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Interstitial View Controller-->
+        <scene sceneID="3PJ-gg-10J">
+            <objects>
+                <viewController id="WhM-GX-UAe" customClass="LPInterstitialViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rJ6-Wt-cep">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="UaP-jx-TxP">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DeP-Hm-r0a">
+                                <rect key="frame" x="360" y="44" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="44" id="Dqr-b0-Mas"/>
+                                    <constraint firstAttribute="height" constant="44" id="gQG-47-XeA"/>
+                                </constraints>
+                                <state key="normal" image="close"/>
+                                <connections>
+                                    <action selector="didTapDismissButton:" destination="WhM-GX-UAe" eventType="touchUpInside" id="5ia-NC-Kkc"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="Message" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="94z-H6-Bl5">
+                                <rect key="frame" x="20" y="96" width="374" height="728"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nrx-xe-2sn">
+                                <rect key="frame" x="20" y="56" width="374" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SaE-q6-k6e">
+                                <rect key="frame" x="182.5" y="832" width="49" height="30"/>
+                                <state key="normal" title="Accept"/>
+                                <connections>
+                                    <action selector="didTapAcceptButton:" destination="WhM-GX-UAe" eventType="touchUpInside" id="CzT-L4-edj"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="UaP-jx-TxP" firstAttribute="trailing" secondItem="rJ6-Wt-cep" secondAttribute="trailing" id="8am-O5-aVn"/>
+                            <constraint firstItem="SaE-q6-k6e" firstAttribute="bottom" secondItem="UpV-cP-Khl" secondAttribute="bottom" id="Ewr-HD-ORr"/>
+                            <constraint firstItem="UpV-cP-Khl" firstAttribute="trailing" secondItem="nrx-xe-2sn" secondAttribute="trailing" constant="20" id="MMX-TH-XMs"/>
+                            <constraint firstItem="UpV-cP-Khl" firstAttribute="trailing" secondItem="94z-H6-Bl5" secondAttribute="trailing" constant="20" id="Reo-0M-9hb"/>
+                            <constraint firstItem="SaE-q6-k6e" firstAttribute="centerX" secondItem="rJ6-Wt-cep" secondAttribute="centerX" id="VqZ-kj-fTA"/>
+                            <constraint firstItem="nrx-xe-2sn" firstAttribute="leading" secondItem="UpV-cP-Khl" secondAttribute="leading" constant="20" id="cOD-8r-84X"/>
+                            <constraint firstItem="SaE-q6-k6e" firstAttribute="top" secondItem="94z-H6-Bl5" secondAttribute="bottom" constant="8" id="g7d-nS-wUs"/>
+                            <constraint firstAttribute="bottom" secondItem="UaP-jx-TxP" secondAttribute="bottom" id="gwU-ry-VZJ"/>
+                            <constraint firstItem="94z-H6-Bl5" firstAttribute="top" secondItem="DeP-Hm-r0a" secondAttribute="bottom" constant="8" id="jaq-iT-NIg"/>
+                            <constraint firstItem="DeP-Hm-r0a" firstAttribute="top" secondItem="UpV-cP-Khl" secondAttribute="top" id="kv6-Xo-5MA"/>
+                            <constraint firstItem="94z-H6-Bl5" firstAttribute="leading" secondItem="UpV-cP-Khl" secondAttribute="leading" constant="20" id="uIq-9b-lWT"/>
+                            <constraint firstItem="UaP-jx-TxP" firstAttribute="top" secondItem="rJ6-Wt-cep" secondAttribute="top" id="uOg-tC-U5s"/>
+                            <constraint firstItem="nrx-xe-2sn" firstAttribute="top" secondItem="UpV-cP-Khl" secondAttribute="top" constant="12" id="uxK-Ef-r0J"/>
+                            <constraint firstItem="UpV-cP-Khl" firstAttribute="trailing" secondItem="DeP-Hm-r0a" secondAttribute="trailing" constant="10" id="v6b-kU-Wp4"/>
+                            <constraint firstItem="UaP-jx-TxP" firstAttribute="leading" secondItem="rJ6-Wt-cep" secondAttribute="leading" id="yFc-Od-d5Y"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="UpV-cP-Khl"/>
+                    </view>
+                    <connections>
+                        <outlet property="acceptButton" destination="SaE-q6-k6e" id="XEa-vC-rcj"/>
+                        <outlet property="backgroundImageView" destination="UaP-jx-TxP" id="1Zg-4e-Bqo"/>
+                        <outlet property="dismissButton" destination="DeP-Hm-r0a" id="bYj-qY-4qO"/>
+                        <outlet property="messageLabel" destination="94z-H6-Bl5" id="nwS-9t-63Q"/>
+                        <outlet property="titleLabel" destination="nrx-xe-2sn" id="7Jp-9d-cYR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JGO-VF-80S" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="31.884057971014496" y="185.49107142857142"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="close" width="30" height="30"/>
+    </resources>
+</document>

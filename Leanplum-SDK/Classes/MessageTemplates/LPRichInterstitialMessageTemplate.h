@@ -1,5 +1,5 @@
 //
-//  LPCenterPopupMessageTemplate.h
+//  LPRichInterstitialMessageTemplate.h
 //  LeanplumSDK-iOS
 //
 //  Created by Milos Jakovljevic on 06/04/2020.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPCenterPopupMessageTemplate : NSObject <LPMessageTemplateProtocol>
+@interface LPRichInterstitialMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
 @end
 

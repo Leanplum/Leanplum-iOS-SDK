@@ -2,16 +2,15 @@
 //  LPAlertMessageTemplate.h
 //  LeanplumSDK-iOS
 //
-//  Created by Mayank Sanganeria on 1/27/20.
+//  Created by Milos Jakovljevic on 06/04/2020.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import "LPBaseAlertMessageTemplate.h"
+#import "LPMessageTemplateProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPAlertMessageTemplate : LPBaseAlertMessageTemplate
+@interface LPAlertMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
 @end
 

@@ -2,46 +2,89 @@
 //  LPAlertMessageTemplate.m
 //  LeanplumSDK-iOS
 //
-//  Created by Mayank Sanganeria on 1/27/20.
+//  Created by Milos Jakovljevic on 06/04/2020.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import "LPAlertMessageTemplate.h"
-#import "Leanplum.h"
 
 @implementation LPAlertMessageTemplate
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts {
-    [super defineActionWithContexts:contexts];
+@synthesize context;
+
++ (void)defineAction
+{
+    // Alert
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
              withArguments:@[
-                             [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
-                             [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_ALERT_MESSAGE],
-                             [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
-                             [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
-                             ]
+                 [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
+                 [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_ALERT_MESSAGE],
+                 [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
+                 [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
+             ]
              withResponder:^BOOL(LPActionContext *context) {
-                 @try {
-                     [[self visibleViewController] presentViewController:[self viewControllerWithContext:context] animated:YES completion:nil];
-                     [self.contexts addObject:context];
-                     return YES;
-                 }
-                 @catch (NSException *exception) {
-                     LOG_LP_MESSAGE_EXCEPTION;
-                     return NO;
-                 }
-             }];
+        @try {
+            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
+                                                                                         message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
+                                                                                  preferredStyle:UIAlertControllerStyleAlert];
 
-}
+            UIAlertAction *dismiss = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
+                                                              style:UIAlertActionStyleDefault
+                                                            handler:^(UIAlertAction *action) {
+                [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
+            }];
+            [alertViewController addAction:dismiss];
 
--(UIViewController *)viewControllerWithContext:(LPActionContext *)context {
-    UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil) message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil) preferredStyle:UIAlertControllerStyleAlert];
-    UIAlertAction *action = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil) style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self alertDismissedWithButtonIndex:0];
+            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+            [rootViewController presentViewController:alertViewController animated:YES completion:nil];
+            return YES;
+        }
+        @catch (NSException *exception) {
+            LOG_LP_MESSAGE_EXCEPTION;
+            return NO;
+        }
     }];
-    [alert addAction:action];
-    return alert;
+
+    // Confirm
+    [Leanplum defineAction:LPMT_CONFIRM_NAME
+                    ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
+             withArguments:@[
+                 [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
+                 [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_CONFIRM_MESSAGE],
+                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_TEXT withString:LPMT_DEFAULT_YES_BUTTON_TEXT],
+                 [LPActionArg argNamed:LPMT_ARG_CANCEL_TEXT withString:LPMT_DEFAULT_NO_BUTTON_TEXT],
+                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
+                 [LPActionArg argNamed:LPMT_ARG_CANCEL_ACTION withAction:nil],
+             ]
+             withResponder:^BOOL(LPActionContext *context) {
+        @try {
+            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
+                                                                                         message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
+                                                                                  preferredStyle:UIAlertControllerStyleAlert];
+
+            UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil)
+                                                             style:UIAlertActionStyleCancel
+                                                           handler:^(UIAlertAction *action) {
+                [context runActionNamed:LPMT_ARG_CANCEL_ACTION];
+            }];
+            [alertViewController addAction:cancel];
+            UIAlertAction *accept = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil)
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction *action) {
+                [context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
+            }];
+            [alertViewController addAction:accept];
+
+            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+            [rootViewController presentViewController:alertViewController animated:YES completion:nil];
+            return YES;
+        }
+        @catch (NSException *exception) {
+            LOG_LP_MESSAGE_EXCEPTION;
+            return NO;
+        }
+    }];
 }
 
 @end
