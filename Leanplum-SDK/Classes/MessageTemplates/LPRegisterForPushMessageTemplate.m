@@ -7,10 +7,11 @@
 //
 
 #import "LPRegisterForPushMessageTemplate.h"
+#import "LPPrePushMessageTemplate.h"
 
 @implementation LPRegisterForPushMessageTemplate
 
-@synthesize context = _context;
+@synthesize context;
 
 +(void)defineAction
 {
@@ -19,10 +20,11 @@
              withArguments:@[]
              withResponder:^BOOL(LPActionContext *context) {
 
-        LPRegisterForPushMessageTemplate* template = [[LPRegisterForPushMessageTemplate alloc] init];
+        // TODO: when push check is moved away from templates, refactor to call it.
+        LPPrePushMessageTemplate* template = [[LPPrePushMessageTemplate alloc] init];
         template.context = context;
 
-//        [template enableSystemPush];
+        [template enableSystemPush];
         return YES;
     }];
 }

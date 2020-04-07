@@ -12,7 +12,7 @@
 @implementation LPInterstitialMessageTemplate
 
 
-@synthesize context = _context;
+@synthesize context;
 
 + (void)defineAction
 {

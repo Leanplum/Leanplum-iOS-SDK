@@ -10,7 +10,7 @@
 
 @implementation LPAppRatingMessageTemplate
 
-@synthesize context = _context;
+@synthesize context;
 
 +(void)defineAction
 {

@@ -8,6 +8,7 @@
 
 #import "LPWebInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
+#import "LPHitView.h"
 
 @interface LPWebInterstitialViewController ()
 
@@ -23,43 +24,48 @@
 
     self.webView = [[WKWebView alloc] init];
     self.webView.navigationDelegate = self;
+
+    // must be inserted at index 0
     [self.view insertSubview:self.webView atIndex:0];
 
     NSString* actionName = [self.context actionName];
-
+    // configure and load web interstitial message
     if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
         [self loadURL];
-        [self handleFullscreen];
-    }
-
-    if ([actionName isEqualToString:LPMT_HTML_NAME]) {
+        [self configureFullscreenTemplate];
+    } else if ([actionName isEqualToString:LPMT_HTML_NAME]) {
         CGFloat height = [[self.context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
         BOOL fullscreen = height < 1;
 
         if (fullscreen) {
-            [self handleFullscreen];
+            [self configureFullscreenTemplate];
         } else {
-            [self handleBanner];
+            [self configureBannerTemplate];
         }
 
         [self loadTemplate];
     }
 
+    // hide dismiss button if necessary
     if (![self.context boolNamed:LPMT_HAS_DISMISS_BUTTON]) {
         [self.dismissButton setHidden:YES];
     }
 
+    // passthrough view to send touch events to underlaying ViewController
+    LPHitView* passthroughView = (LPHitView *) self.view;
+    if (passthroughView) {
+        passthroughView.touchDelegate = self.presentingViewController.view;
+    }
+
+    // add gesture recognizer to close message if tap outside to close is set to true.
     BOOL tapOutside = [self.context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE];
-
     if (tapOutside) {
-        UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(dismiss)];
+        UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapOutside)];
         [self.view addGestureRecognizer:gestureRecognizer];
-    } else {
-
     }
 }
 
-- (void)handleBanner
+- (void)configureBannerTemplate
 {
     self.webView.scrollView.scrollEnabled = NO;
     self.webView.scrollView.bounces = NO;
@@ -73,7 +79,7 @@
     [self addBannerConstraints];
 }
 
-- (void)handleFullscreen
+- (void)configureFullscreenTemplate
 {
     self.webView.scrollView.scrollEnabled = NO;
     self.webView.scrollView.bounces = NO;
@@ -132,36 +138,42 @@
     if (offsetArgument && [offsetArgument length] > 0) {
 
     }
-
-    if (alignBottom) {
-        // align bottom
-        [[self.webView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor constant:0] setActive:YES];
+// use safeAreaLayoutGuide if we are targeting iOS 11 and above, otherwise fallback to layoutGuide.
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
+    if (@available(iOS 11, *)) {
+#endif
+        if (alignBottom) {
+            // align bottom
+            [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:0] setActive:YES];
+        } else {
+            // align top
+            [[self.webView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:0] setActive:YES];
+        }
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
     } else {
-        // align top
-        [[self.webView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor constant:0] setActive:YES];
+        if (alignBottom) {
+            // align bottom
+            [[self.webView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor constant:0] setActive:YES];
+        } else {
+            // align top
+            [[self.webView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor constant:0] setActive:YES];
+        }
     }
+#endif
+
+    // height constraint
+    [[self.webView.heightAnchor constraintEqualToConstant:height] setActive:YES];
 
     if (width != self.view.frame.size.width) {
+        // constrain width to constant if its not 100%
         [[self.webView.widthAnchor constraintEqualToConstant:width] setActive:YES];
         [[self.webView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor] setActive:YES];
     } else {
+        // constrain width to full screen width
         [[self.webView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor multiplier:1] setActive:YES];
     }
-    [[self.webView.heightAnchor constraintEqualToConstant:height] setActive:YES];
 
     [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
-}
-
-- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation
-{
-    if (webView.isLoading) {
-        return;
-    }
-
-    // Show for WEB INSTERSTITIAL. HTML will show after js loads the template.
-    if ([[self.context actionName] isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
-//        [self showWebview:webView];
-    }
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
@@ -170,8 +182,9 @@
     @try {
         NSString *url = [navigationAction request].URL.absoluteString;
         NSDictionary *queryComponents = [self queryComponentsFromUrl:url];
+
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
-            [self dismiss];
+            [self dismiss:YES];
             if (queryComponents[@"result"]) {
                 [Leanplum track:queryComponents[@"result"]];
             }
@@ -213,18 +226,17 @@
 
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_ACTION]].location != NSNotFound) {
             if (queryComponents[@"action"]) {
-                                [self trackAction:queryComponents[@"action"] track:NO];
-                [self dismiss];
+                [self trackAction:queryComponents[@"action"] track:NO];
+                [self dismiss:YES];
             }
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
 
-        if ([url rangeOfString:
-             [context stringNamed:LPMT_ARG_URL_TRACK_ACTION]].location != NSNotFound) {
+        if ([url rangeOfString: [context stringNamed:LPMT_ARG_URL_TRACK_ACTION]].location != NSNotFound) {
             if (queryComponents[@"action"]) {
                 [self trackAction:queryComponents[@"action"] track:YES];
-                [self dismiss];
+                [self dismiss:YES];
             }
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
@@ -232,7 +244,7 @@
     }
     @catch (id exception) {
         // In case we catch exception here, hide the overlaying message.
-        [self dismiss];
+        [self dismiss:YES];
         // Handle the exception message.
         LOG_LP_MESSAGE_EXCEPTION;
     }
@@ -268,15 +280,20 @@
 
 - (IBAction)didTapDismissButton:(id)sender
 {
-    [self dismiss];
+    [self dismiss:YES];
 }
 
-- (void) dismiss
+- (void)didTapOutside
+{
+    [self dismiss:YES];
+}
+
+- (void)dismiss:(BOOL)animated
 {
     if (self.navigationController) {
-        [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+        [self.navigationController dismissViewControllerAnimated:animated completion:nil];
     } else {
-        [self dismissViewControllerAnimated:YES completion:nil];
+        [self dismissViewControllerAnimated:animated completion:nil];
     }
 }
 

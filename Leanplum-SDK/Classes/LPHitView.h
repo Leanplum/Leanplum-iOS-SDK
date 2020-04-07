@@ -12,9 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPHitView : UIView
 
-@property (strong, nonatomic) void (^callback)(void);
+@property (weak, nonatomic, nullable) UIView *touchDelegate;
 
-- (id)initWithCallback:(void (^)(void))callback;
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent * _Nullable )event;
 
 @end

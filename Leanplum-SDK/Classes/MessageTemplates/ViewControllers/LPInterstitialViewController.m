@@ -23,13 +23,18 @@
         return;
     }
 
+    // background view params
     self.view.backgroundColor = [self.context colorNamed:LPMT_ARG_BACKGROUND_COLOR];
 
+    // title label view params
     self.titleLabel.text = [self.context stringNamed:LPMT_ARG_TITLE_TEXT];
     self.titleLabel.textColor = [self.context colorNamed:LPMT_ARG_TITLE_COLOR];
+
+    // message label view params
     self.messageLabel.text = [self.context stringNamed:LPMT_ARG_MESSAGE_TEXT];
     self.messageLabel.textColor = [self.context colorNamed:LPMT_ARG_MESSAGE_COLOR];
 
+    // accept button params
     [self.acceptButton setTitle:[self.context stringNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT]
                        forState:UIControlStateNormal];
     [self.acceptButton setTitleColor:[self.context colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]
@@ -40,6 +45,7 @@
     self.acceptButton.layer.masksToBounds = YES;
     self.acceptButton.layer.cornerRadius = 7;
 
+    // background image view params
     self.backgroundImageView.image = [UIImage imageWithContentsOfFile:[self.context fileNamed:LPMT_ARG_BACKGROUND_IMAGE]];
 }
 

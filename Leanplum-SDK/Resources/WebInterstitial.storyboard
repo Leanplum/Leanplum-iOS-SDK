@@ -12,7 +12,7 @@
         <scene sceneID="bul-uQ-sQx">
             <objects>
                 <viewController modalTransitionStyle="crossDissolve" id="wBl-qO-Io0" customClass="LPWebInterstitialViewController" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="Oqo-dm-daA">
+                    <view key="view" contentMode="scaleToFill" id="Oqo-dm-daA" customClass="LPHitView">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>

@@ -28,9 +28,11 @@
 
     NSString *actionName = [self.context actionName];
 
+    // width and height constraints
     self.widthConstraint.constant = [[self.context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue];
     self.heightConstraint.constant = [[self.context numberNamed:LPMT_ARG_LAYOUT_HEIGHT] doubleValue];
 
+    // background view params
     self.containerView.backgroundColor = [self.context colorNamed:LPMT_ARG_BACKGROUND_COLOR];
     self.containerView.layer.cornerRadius = 10;
     self.containerView.layer.shadowColor = UIColor.blackColor.CGColor;
@@ -38,11 +40,15 @@
     self.containerView.layer.shadowOpacity = 0.4;
     self.containerView.layer.shadowOffset = CGSizeZero;
 
+    // title label params
     self.titleLabel.text = [self.context stringNamed:LPMT_ARG_TITLE_TEXT];
     self.titleLabel.textColor = [self.context colorNamed:LPMT_ARG_TITLE_COLOR];
+
+    // message label params
     self.messageLabel.text = [self.context stringNamed:LPMT_ARG_MESSAGE_TEXT];
     self.messageLabel.textColor = [self.context colorNamed:LPMT_ARG_MESSAGE_COLOR];
 
+    // accept button params
     [self.acceptButton setTitle:[self.context stringNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT]
                        forState:UIControlStateNormal];
     [self.acceptButton setTitleColor:[self.context colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]
@@ -53,16 +59,17 @@
     self.acceptButton.layer.masksToBounds = YES;
     self.acceptButton.layer.cornerRadius = 7;
 
+    // background image view params
     self.backgroundImageView.image = [UIImage imageWithContentsOfFile:[self.context fileNamed:LPMT_ARG_BACKGROUND_IMAGE]];
     self.backgroundImageView.layer.cornerRadius = 10;
     self.backgroundImageView.layer.masksToBounds = YES;
 
-    self.view.backgroundColor = [self.context colorNamed:LPMT_ARG_BACKGROUND_COLOR];
-
+    // if its pre push permission dialog, show cancel button
     if ([actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK]) {
         [self.cancelButton setHidden:NO];
         [self.dismissButton setHidden:YES];
 
+        // cancel button params
         [self.cancelButton setTitle:[self.context stringNamed:LPMT_ARG_CANCEL_BUTTON_TEXT]
                            forState:UIControlStateNormal];
         [self.cancelButton setTitleColor:[self.context colorNamed:LPMT_ARG_CANCEL_BUTTON_TEXT_COLOR]

@@ -11,7 +11,7 @@
 
 @implementation LPCenterPopupMessageTemplate
 
-@synthesize context = _context;
+@synthesize context;
 
 + (void)defineAction
 {

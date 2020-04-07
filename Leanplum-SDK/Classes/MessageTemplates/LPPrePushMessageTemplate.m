@@ -14,7 +14,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 @implementation LPPrePushMessageTemplate
 
-@synthesize context = _context;
+@synthesize context;
 
 +(void)defineAction
 {
@@ -57,6 +57,8 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         }
 
         @try {
+            // TODO: move push notifications check outside of templates
+            
             LPPrePushMessageTemplate *template = [[LPPrePushMessageTemplate alloc] init];
             template.context = context;
 
@@ -170,20 +172,23 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     } else if ([[UIApplication sharedApplication] respondsToSelector:
                 @selector(registerUserNotificationSettings:)]) {
-        // iOS 8-9.
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings
-                                                settingsForTypes:UIUserNotificationTypeAlert |
-                                                UIUserNotificationTypeBadge |
-                                                UIUserNotificationTypeSound categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
+            // iOS 8-9.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings
+                                                    settingsForTypes:UIUserNotificationTypeAlert |
+                                                    UIUserNotificationTypeBadge |
+                                                    UIUserNotificationTypeSound categories:nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+#pragma clang diagnostic pop
     } else {
         // iOS 7 and below.
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-#pragma clang diagnostic pop
          UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge];
+#pragma clang diagnostic pop
     }
 }
 

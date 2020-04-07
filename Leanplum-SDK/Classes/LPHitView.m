@@ -10,24 +10,21 @@
 
 @implementation LPHitView
 
-- (id)initWithCallback:(void (^)(void))callback
-{
-    if (self = [super init]) {
-        self.callback = [callback copy];
-    }
-    return self;
-}
-
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event
 {
     UIView *hitView = [super hitTest:point withEvent:event];
-    if (hitView == self) {
-        if (self.callback) {
-            self.callback();
-        }
+
+    if (!hitView) {
         return nil;
     }
-    return hitView;
+
+    if (hitView != self) {
+        return hitView;
+    }
+
+    CGPoint convertedPoint = [self.touchDelegate convertPoint:point toView:self];
+
+    return [self.touchDelegate hitTest:convertedPoint withEvent:event];
 }
 
 @end

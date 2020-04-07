@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPPrePushMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
+- (void)enableSystemPush;
 - (void)refreshPushPermissions;
 - (BOOL)hasDisabledAskToAsk;
 

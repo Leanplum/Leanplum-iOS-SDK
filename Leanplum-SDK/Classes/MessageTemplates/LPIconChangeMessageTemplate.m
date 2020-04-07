@@ -10,7 +10,7 @@
 
 @implementation LPIconChangeMessageTemplate
 
-@synthesize context = _context;
+@synthesize context;
 
 +(void)defineAction
 {

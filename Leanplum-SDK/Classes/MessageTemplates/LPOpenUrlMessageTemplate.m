@@ -9,7 +9,7 @@
 
 @implementation LPOpenUrlMessageTemplate
 
-@synthesize context = _context;
+@synthesize context;
 
 +(void)defineAction
 {
