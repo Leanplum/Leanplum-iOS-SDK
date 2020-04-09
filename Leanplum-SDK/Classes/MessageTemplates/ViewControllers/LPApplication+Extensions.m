@@ -15,34 +15,36 @@
 
 +(void)presentOverVisible:(UIViewController *) viewController
 {
-    [self dismissExisitingViewController];
+    [self dismissExisitingViewController:^{
+        UIViewController *topViewController = [self visibleViewController];
+        [topViewController presentViewController:viewController animated:true completion:nil];
+    }];
+}
 
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    UIViewController *presentedViewController = rootViewController.presentedViewController;
++(void)dismissExisitingViewController:(void (^ __nullable)(void))completion
+{
+    UIViewController *topViewController = [self visibleViewController];
 
-    while (presentedViewController) {
-        presentedViewController = presentedViewController.presentedViewController;
-    }
+    // if its one of ours, dismiss it since we will present new one
+    if ([topViewController isKindOfClass:[LPPopupViewController class]] ||
+        [topViewController isKindOfClass:[LPInterstitialViewController class]] ||
+        [topViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
 
-    if (presentedViewController) {
-        [presentedViewController presentViewController:viewController animated:true completion:nil];
+        [topViewController dismissViewControllerAnimated:false completion:completion];
     } else {
-        [rootViewController presentViewController:viewController animated:nil completion:nil];
+        completion();
     }
 }
 
-+(void)dismissExisitingViewController
++(UIViewController *)visibleViewController
 {
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    UIViewController *presentedViewController = rootViewController.presentedViewController;
+    UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
 
-    // if its one of ours, dismiss it since we will present new one
-    if ([presentedViewController isKindOfClass:[LPPopupViewController class]] ||
-        [presentedViewController isKindOfClass:[LPInterstitialViewController class]] ||
-        [presentedViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
-
-        [presentedViewController dismissViewControllerAnimated:true completion:nil];
+    while (topViewController.presentedViewController) {
+        topViewController = topViewController.presentedViewController;
     }
+
+    return topViewController;
 }
 
 @end
