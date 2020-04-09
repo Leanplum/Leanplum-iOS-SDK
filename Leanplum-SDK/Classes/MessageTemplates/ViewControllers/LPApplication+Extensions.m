@@ -25,11 +25,8 @@
 {
     UIViewController *topViewController = [self visibleViewController];
 
-    // if its one of ours, dismiss it since we will present new one
-    if ([topViewController isKindOfClass:[LPPopupViewController class]] ||
-        [topViewController isKindOfClass:[LPInterstitialViewController class]] ||
-        [topViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
-
+    // dismiss on html view controller for now
+    if ([topViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
         [topViewController dismissViewControllerAnimated:false completion:completion];
     } else {
         completion();

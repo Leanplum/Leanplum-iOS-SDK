@@ -36,8 +36,7 @@
             }];
             [alertViewController addAction:dismiss];
 
-            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-            [rootViewController presentViewController:alertViewController animated:YES completion:nil];
+            [UIApplication presentOverVisible:alertViewController];
             return YES;
         }
         @catch (NSException *exception) {
@@ -76,8 +75,7 @@
             }];
             [alertViewController addAction:accept];
 
-            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-            [rootViewController presentViewController:alertViewController animated:YES completion:nil];
+            [UIApplication presentOverVisible:alertViewController];
             return YES;
         }
         @catch (NSException *exception) {
