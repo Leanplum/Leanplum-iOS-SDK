@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		075D06562437892F0088239A /* Popup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075D06552437892F0088239A /* Popup.storyboard */; };
 		075D065C243797760088239A /* WebInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075D065B243797760088239A /* WebInterstitial.storyboard */; };
+		0792A71A243F721700481217 /* LPApplication+Extensions.h in Headers */ = {isa = PBXBuildFile; fileRef = 0792A718243F721700481217 /* LPApplication+Extensions.h */; };
+		0792A71B243F721700481217 /* LPApplication+Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 0792A719243F721700481217 /* LPApplication+Extensions.m */; };
 		07A97FFF23466CD8008AEC06 /* LPOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */; };
 		07A9800023466CD8008AEC06 /* LPOperationQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */; };
 		07C17DA4243B84F8003E17BF /* LPMessageTemplateProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 07C17DA3243B84F8003E17BF /* LPMessageTemplateProtocol.h */; };
@@ -175,6 +177,8 @@
 /* Begin PBXFileReference section */
 		075D06552437892F0088239A /* Popup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Popup.storyboard; sourceTree = "<group>"; };
 		075D065B243797760088239A /* WebInterstitial.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WebInterstitial.storyboard; sourceTree = "<group>"; };
+		0792A718243F721700481217 /* LPApplication+Extensions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPApplication+Extensions.h"; sourceTree = "<group>"; };
+		0792A719243F721700481217 /* LPApplication+Extensions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "LPApplication+Extensions.m"; sourceTree = "<group>"; };
 		07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPOperationQueue.m; sourceTree = "<group>"; };
 		07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPOperationQueue.h; sourceTree = "<group>"; };
 		07C17DA3243B84F8003E17BF /* LPMessageTemplateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplateProtocol.h; sourceTree = "<group>"; };
@@ -383,6 +387,8 @@
 				07C17DB0243B9218003E17BF /* LPInterstitialViewController.m */,
 				07C17DAF243B9218003E17BF /* LPWebInterstitialViewController.h */,
 				07C17DAD243B9218003E17BF /* LPWebInterstitialViewController.m */,
+				0792A718243F721700481217 /* LPApplication+Extensions.h */,
+				0792A719243F721700481217 /* LPApplication+Extensions.m */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -877,6 +883,7 @@
 				5B23404121ED964F00206ACB /* LPNetworkOperation.h in Headers */,
 				5B2340DF21ED965000206ACB /* FileMD5Hash.h in Headers */,
 				5B2340C921ED964F00206ACB /* LPMessageArchiveData.h in Headers */,
+				0792A71A243F721700481217 /* LPApplication+Extensions.h in Headers */,
 				5B23405D21ED964F00206ACB /* LPAPIConfig.h in Headers */,
 				5B2340F721ED965000206ACB /* NSTimer+Blocks.h in Headers */,
 				5B23409321ED964F00206ACB /* LPActionContext-Internal.h in Headers */,
@@ -1079,6 +1086,7 @@
 				07C17DB4243B9218003E17BF /* LPPopupViewController.m in Sources */,
 				5B23407121ED964F00206ACB /* LPAppIconManager.m in Sources */,
 				5B2340FB21ED965000206ACB /* UIDevice+IdentifierAddition.m in Sources */,
+				0792A71B243F721700481217 /* LPApplication+Extensions.m in Sources */,
 				07C17DBE243B9D19003E17BF /* LPInterstitialMessageTemplate.m in Sources */,
 				A8484E3823EE158F00FCDD58 /* LPRegisterForPushMessageTemplate.m in Sources */,
 				5B23405321ED964F00206ACB /* LeanplumRequest.m in Sources */,

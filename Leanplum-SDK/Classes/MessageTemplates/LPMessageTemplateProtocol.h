@@ -8,6 +8,7 @@
 
 #import "Leanplum.h"
 #import "LPMessageTemplateConstants.h"
+#import "LPApplication+Extensions.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

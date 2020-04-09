@@ -1,5 +1,5 @@
 //
-//  LPPushAsktoAskMessageTemplate.h
+//  LPPrePushMessageTemplate.h
 //  LeanplumSDK-iOS
 //
 //  Created by Mayank Sanganeria on 2/6/20.

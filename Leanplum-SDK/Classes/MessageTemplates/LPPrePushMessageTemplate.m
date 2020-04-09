@@ -1,5 +1,5 @@
 //
-//  LPPushAsktoAskMessageTemplate.m
+//  LPPrePushMessageTemplate.m
 //  LeanplumSDK-iOS
 //
 //  Created by Mayank Sanganeria on 2/6/20.
@@ -97,8 +97,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     viewController.context = self.context;
 
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    [rootViewController presentViewController:viewController animated:YES completion:nil];
+    [UIApplication presentOverVisible:viewController];
 }
 
 - (BOOL)isPushEnabled
@@ -181,13 +180,6 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
                                                     UIUserNotificationTypeSound categories:nil];
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
             [[UIApplication sharedApplication] registerForRemoteNotifications];
-#pragma clang diagnostic pop
-    } else {
-        // iOS 7 and below.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
-         UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge];
 #pragma clang diagnostic pop
     }
 }

@@ -24,8 +24,7 @@
             viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
             viewController.context = context;
 
-            UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-            [rootViewController presentViewController:viewController animated:YES completion:nil];
+            [UIApplication presentOverVisible:viewController];
 
             return YES;
         } @catch (NSException *exception) {
