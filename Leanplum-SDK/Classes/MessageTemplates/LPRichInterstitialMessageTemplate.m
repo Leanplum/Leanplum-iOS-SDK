@@ -48,7 +48,6 @@
                  [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
                  [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
                  [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
-                 [LPActionArg argNamed:LPMT_ARG_HTML_Y_OFFSET withString:@"0px"],
                  [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
                  [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                  [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]

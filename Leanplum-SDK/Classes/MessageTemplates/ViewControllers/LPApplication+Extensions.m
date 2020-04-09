@@ -15,17 +15,28 @@
 
 +(void)presentOverVisible:(UIViewController *) viewController
 {
-    [self dismissExisitingViewControllers];
+    [self dismissExisitingViewController];
 
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    [rootViewController presentViewController:viewController animated:YES completion:nil];
+    UIViewController *presentedViewController = rootViewController.presentedViewController;
+
+    while (presentedViewController) {
+        presentedViewController = presentedViewController.presentedViewController;
+    }
+
+    if (presentedViewController) {
+        [presentedViewController presentViewController:viewController animated:true completion:nil];
+    } else {
+        [rootViewController presentViewController:viewController animated:nil completion:nil];
+    }
 }
 
-+(void)dismissExisitingViewControllers
++(void)dismissExisitingViewController
 {
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     UIViewController *presentedViewController = rootViewController.presentedViewController;
 
+    // if its one of ours, dismiss it since we will present new one
     if ([presentedViewController isKindOfClass:[LPPopupViewController class]] ||
         [presentedViewController isKindOfClass:[LPInterstitialViewController class]] ||
         [presentedViewController isKindOfClass:[LPWebInterstitialViewController class]]) {

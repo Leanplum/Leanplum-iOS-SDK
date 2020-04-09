@@ -11,7 +11,7 @@
         <!--Interstitial View Controller-->
         <scene sceneID="3PJ-gg-10J">
             <objects>
-                <viewController id="WhM-GX-UAe" customClass="LPInterstitialViewController" sceneMemberID="viewController">
+                <viewController modalTransitionStyle="crossDissolve" id="WhM-GX-UAe" customClass="LPInterstitialViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="rJ6-Wt-cep">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

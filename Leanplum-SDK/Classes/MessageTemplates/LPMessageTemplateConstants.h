@@ -54,7 +54,6 @@
 #define LPMT_ARG_HTML_HEIGHT @"HTML Height"
 #define LPMT_ARG_HTML_WIDTH @"HTML Width"
 #define LPMT_ARG_HTML_ALIGN @"HTML Align"
-#define LPMT_ARG_HTML_Y_OFFSET @"HTML Y Offset"
 #define LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE @"Tap Outside to Close"
 #define LPMT_ARG_HTML_ALIGN_TOP @"Top"
 #define LPMT_ARG_HTML_ALIGN_BOTTOM @"Bottom"

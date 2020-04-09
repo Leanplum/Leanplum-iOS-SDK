@@ -122,7 +122,6 @@
 - (void)addBannerConstraints
 {
     NSString *alignArgument = [self.context stringNamed:LPMT_ARG_HTML_ALIGN];
-    NSString *offsetArgument = [self.context stringNamed:LPMT_ARG_HTML_Y_OFFSET];
     NSString *widthArgument = [self.context stringNamed:LPMT_ARG_HTML_WIDTH];
     NSString *heightArgument = [self.context stringNamed:LPMT_ARG_HTML_HEIGHT];
 
@@ -134,10 +133,6 @@
         width = [self valueFromHtmlString:widthArgument percentRange:width];
     }
 
-    CGFloat offset = 0;
-    if (offsetArgument && [offsetArgument length] > 0) {
-
-    }
 // use safeAreaLayoutGuide if we are targeting iOS 11 and above, otherwise fallback to layoutGuide.
 #if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
     if (@available(iOS 11, *)) {
