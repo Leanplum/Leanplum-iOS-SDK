@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface LPHitView : UIView
 
 @property (strong, nonatomic) void (^callback)(void);
@@ -18,5 +16,3 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
 @end
-
-NS_ASSUME_NONNULL_END
