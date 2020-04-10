@@ -742,6 +742,8 @@ BOOL inForeground = NO;
         return;
     }
     
+    [LPFileManager clearCacheIfSDKUpdated];
+    
     [[LPCountAggregator sharedAggregator] incrementCount:@"start_with_user_id"];
     
     LP_TRY

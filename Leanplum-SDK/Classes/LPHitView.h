@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-NS_ASSUME_NONNULL_BEGIN
-
 @interface LPHitView : UIView
 
 @property (weak, nonatomic, nullable) UIView *touchDelegate;
@@ -17,5 +15,3 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent * _Nullable )event;
 
 @end
-
-NS_ASSUME_NONNULL_END
