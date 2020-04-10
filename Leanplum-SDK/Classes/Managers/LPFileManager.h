@@ -81,5 +81,5 @@
  * Adds an attribute to a file at filepath to exclude it from iCloud and iTunes backup.
  */
 + (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *__nonnull) filePathString;
-
++ (void)clearCacheIfSDKUpdated;
 @end

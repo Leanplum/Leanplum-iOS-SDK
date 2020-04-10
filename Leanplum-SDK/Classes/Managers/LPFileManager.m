@@ -856,4 +856,27 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
     LP_END_TRY
 }
 
++ (void)clearCacheIfSDKUpdated {
+    NSString *savedSdkVersionKey = @"savedSdkVersion";
+    NSString *savedSdkVersion = [[NSUserDefaults standardUserDefaults] valueForKey:savedSdkVersionKey];
+    if(![[LPConstantsState sharedState].sdkVersion isEqualToString:savedSdkVersion]) {
+        [[NSUserDefaults standardUserDefaults] setValue:[LPConstantsState sharedState].sdkVersion forKey:savedSdkVersionKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        NSString *cachesDir = [[self cachesDirectory] stringByAppendingPathComponent:@"Leanplum_Resources"];
+        
+        NSFileManager *fileManager = [[NSFileManager alloc] init];
+        NSDirectoryEnumerator *enumerator = [fileManager enumeratorAtPath:cachesDir];
+        NSString *file;
+
+        while (file = [enumerator nextObject]) {
+            NSError *error = nil;
+            BOOL result = [fileManager removeItemAtPath:[cachesDir stringByAppendingPathComponent:file] error:&error];
+
+            if (!result && error) {
+                NSLog(@"Cleaning cache error: %@, for file %@", error, file);
+            }
+        }
+    }
+}
+
 @end
