@@ -25,6 +25,9 @@
 
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
+#import "LPMessageTemplateUtilities.h"
+
+static BOOL recordSnapshots = NO;
 
 @interface Leanplum(UnitTest)
 
@@ -36,6 +39,7 @@
               fromMessageId:(NSString *)sourceMessage
        withContextualValues:(LPContextualValues *)contextualValues;
 
++ (void)triggerAction:(LPActionContext *)context;
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
 @end
@@ -44,5 +48,15 @@
 
 - (void)maybePerformNotificationActions:(NSDictionary *)userInfo action:(NSString *)action
                                  active:(BOOL)active;
+
+@end
+
+@interface LPActionContext(UnitTest)
+
++ (LPActionContext *)actionContextWithName:(NSString *)name
+                                      args:(NSDictionary *)args
+                                 messageId:(NSString *)messageId;
+
+-(NSString *)htmlStringContentsOfFile:(NSString *)file;
 
 @end

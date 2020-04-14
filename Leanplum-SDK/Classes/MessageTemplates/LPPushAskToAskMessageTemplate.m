@@ -1,18 +1,18 @@
 //
-//  LPPrePushMessageTemplate.m
+//  LPPushAskToAskMessageTemplate.m
 //  LeanplumSDK-iOS
 //
 //  Created by Mayank Sanganeria on 2/6/20.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPPrePushMessageTemplate.h"
+#import "LPPushAskToAskMessageTemplate.h"
 #import "LPPopupViewController.h"
 
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
-@implementation LPPrePushMessageTemplate
+@implementation LPPushAskToAskMessageTemplate
 
 @synthesize context;
 
@@ -59,7 +59,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         @try {
             // TODO: move push notifications check outside of templates
             
-            LPPrePushMessageTemplate *template = [[LPPrePushMessageTemplate alloc] init];
+            LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
             template.context = context;
 
             if ([Leanplum isPreLeanplumInstall]) {
@@ -97,7 +97,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     viewController.context = self.context;
 
-    [UIApplication presentOverVisible:viewController];
+    [LPMessageTemplateUtilities presentOverVisible:viewController];
 }
 
 - (BOOL)isPushEnabled

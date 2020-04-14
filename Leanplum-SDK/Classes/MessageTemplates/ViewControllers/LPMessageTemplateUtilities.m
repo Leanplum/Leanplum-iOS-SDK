@@ -1,17 +1,17 @@
 //
-//  LPApplication+Extensions.m
+//  LPMessageTemplateUtilities.m
 //  LeanplumSDK-iOS
 //
 //  Created by Milos Jakovljevic on 09/04/2020.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "LPApplication+Extensions.h"
+#import "LPMessageTemplateUtilities.h"
 #import "LPPopupViewController.h"
 #import "LPInterstitialViewController.h"
 #import "LPWebInterstitialViewController.h"
 
-@implementation UIApplication (Extensions)
+@implementation LPMessageTemplateUtilities
 
 +(void)presentOverVisible:(UIViewController *) viewController
 {
@@ -21,7 +21,7 @@
     }];
 }
 
-+(void)dismissExisitingViewController:(void (^ __nullable)(void))completion
++(void)dismissExisitingViewController:(void (^ __nullable)(void)) completion
 {
     UIViewController *topViewController = [self visibleViewController];
 
@@ -33,7 +33,7 @@
     }
 }
 
-+(UIViewController *)visibleViewController
++(UIViewController *) visibleViewController
 {
     UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
 

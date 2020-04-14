@@ -28,7 +28,7 @@
             viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
             viewController.context = context;
 
-            [UIApplication presentOverVisible:viewController];
+            [LPMessageTemplateUtilities presentOverVisible:viewController];
 
             return YES;
         } @catch (NSException *exception) {
@@ -43,8 +43,7 @@
                  [LPActionArg argNamed:LPMT_ARG_URL_OPEN withString:LPMT_DEFAULT_OPEN_URL],
                  [LPActionArg argNamed:LPMT_ARG_URL_TRACK withString:LPMT_DEFAULT_TRACK_URL],
                  [LPActionArg argNamed:LPMT_ARG_URL_ACTION withString:LPMT_DEFAULT_ACTION_URL],
-                 [LPActionArg argNamed:LPMT_ARG_URL_TRACK_ACTION
-                            withString:LPMT_DEFAULT_TRACK_ACTION_URL],
+                 [LPActionArg argNamed:LPMT_ARG_URL_TRACK_ACTION withString:LPMT_DEFAULT_TRACK_ACTION_URL],
                  [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
                  [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
                  [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],

@@ -1,5 +1,5 @@
 //
-//  LPPrePushMessageTemplate.h
+//  LPPushAskToAskMessageTemplate.h
 //  LeanplumSDK-iOS
 //
 //  Created by Mayank Sanganeria on 2/6/20.
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPPrePushMessageTemplate : NSObject <LPMessageTemplateProtocol>
+@interface LPPushAskToAskMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
 - (void)enableSystemPush;
 - (void)refreshPushPermissions;

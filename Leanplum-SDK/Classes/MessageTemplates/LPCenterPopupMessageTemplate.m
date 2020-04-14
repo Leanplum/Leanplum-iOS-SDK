@@ -28,7 +28,7 @@
             viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
             viewController.context = context;
 
-            [UIApplication presentOverVisible:viewController];
+            [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;
         }
         @catch (NSException *exception) {

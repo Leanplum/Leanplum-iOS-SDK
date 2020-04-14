@@ -7,7 +7,7 @@
 //
 
 #import "LPRegisterForPushMessageTemplate.h"
-#import "LPPrePushMessageTemplate.h"
+#import "LPPushAskToAskMessageTemplate.h"
 
 @implementation LPRegisterForPushMessageTemplate
 
@@ -21,7 +21,7 @@
              withResponder:^BOOL(LPActionContext *context) {
 
         // TODO: when push check is moved away from templates, refactor to call it.
-        LPPrePushMessageTemplate* template = [[LPPrePushMessageTemplate alloc] init];
+        LPPushAskToAskMessageTemplate* template = [[LPPushAskToAskMessageTemplate alloc] init];
         template.context = context;
 
         [template enableSystemPush];

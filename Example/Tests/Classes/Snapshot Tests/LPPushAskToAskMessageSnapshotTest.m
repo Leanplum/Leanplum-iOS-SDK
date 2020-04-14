@@ -8,23 +8,9 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPPushAsktoAskMessageTemplate.h>
+#import <Leanplum/LPPushAskToAskMessageTemplate.h>
 #import <OCMock.h>
-
-@interface LPPushAsktoAskMessageTemplate()
-
-@property  (nonatomic, strong) UIView *popupGroup;
-- (void)setupPopupView;
-
-@end
-
-@interface LPActionContext(UnitTest)
-
-+ (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary *)args
-                                 messageId:(NSString *)messageId;
-
-@end
+#import "Leanplum+Extensions.h"
 
 @interface LPPushAskToAskMessageSnapshotTest : FBSnapshotTestCase
 
@@ -34,7 +20,7 @@
 
 - (void)setUp {
     [super setUp];
-    //self.recordMode = YES;
+    self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
@@ -42,8 +28,6 @@
 }
 
 - (void)testView {
-    LPPushAsktoAskMessageTemplate *template = [[LPPushAsktoAskMessageTemplate alloc] init];
-
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_PUSH_ASK_TO_ASK args:@{
         LPMT_ARG_TITLE_TEXT:APP_NAME,
         LPMT_ARG_TITLE_COLOR:[UIColor blackColor],
@@ -74,9 +58,22 @@
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_WIDTH]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_WIDTH));
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT));
 
-    template.contexts = [@[contextMock] mutableCopy];
-    [template setupPopupView];
-    FBSnapshotVerifyView(template.popupGroup, nil);
+    [UIView performWithoutAnimation:^{
+        NSInvocation *invocation = [[LPInternalState sharedState].actionResponders objectForKey:context.actionName];
+        [invocation setArgument:(void *)&context atIndex:2];
+        [invocation invoke];
+    }];
+    
+    XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 1.0), dispatch_get_main_queue(), ^{
+        UIViewController *topViewController = [LPMessageTemplateUtilities visibleViewController];
+        
+        FBSnapshotVerifyView(topViewController.view, nil);
+        [topViewController dismissViewControllerAnimated:NO completion:^{
+            [expects fulfill];
+        }];
+    });
+    [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }
 
 @end

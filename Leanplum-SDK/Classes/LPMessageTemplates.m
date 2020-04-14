@@ -31,7 +31,7 @@
 #import <StoreKit/StoreKit.h>
 #import "LPCountAggregator.h"
 #import "LPOpenUrlMessageTemplate.h"
-#import "LPPrePushMessageTemplate.h"
+#import "LPPushAsktoAskMessageTemplate.h"
 #import "LPRegisterForPushMessageTemplate.h"
 #import "LPCenterPopupMessageTemplate.h"
 #import "LPInterstitialMessageTemplate.h"
@@ -92,7 +92,7 @@
     [LPRegisterForPushMessageTemplate defineAction];
     [LPAppRatingMessageTemplate defineAction];
     [LPIconChangeMessageTemplate defineAction];
-    [LPPrePushMessageTemplate defineAction];
+    [LPPushAskToAskMessageTemplate defineAction];
     [LPAlertMessageTemplate defineAction];
 }
 
@@ -101,12 +101,12 @@
 // refreshPushPermissions is called by [Leanplum start].
 - (void)refreshPushPermissions
 {
-    [[[LPPrePushMessageTemplate alloc] init] refreshPushPermissions];
+    [[[LPPushAskToAskMessageTemplate alloc] init] refreshPushPermissions];
 }
 
 - (void)disableAskToAsk
 {
-    [[[LPPrePushMessageTemplate alloc] init] hasDisabledAskToAsk];
+    [[[LPPushAskToAskMessageTemplate alloc] init] hasDisabledAskToAsk];
 }
 
 @end

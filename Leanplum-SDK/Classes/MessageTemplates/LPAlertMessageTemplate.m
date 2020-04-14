@@ -36,7 +36,7 @@
             }];
             [alertViewController addAction:dismiss];
 
-            [UIApplication presentOverVisible:alertViewController];
+            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
             return YES;
         }
         @catch (NSException *exception) {
@@ -75,7 +75,7 @@
             }];
             [alertViewController addAction:accept];
 
-            [UIApplication presentOverVisible:alertViewController];
+            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
             return YES;
         }
         @catch (NSException *exception) {

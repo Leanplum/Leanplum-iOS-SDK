@@ -31,16 +31,16 @@
     NSString* actionName = [self.context actionName];
     // configure and load web interstitial message
     if ([actionName isEqualToString:LPMT_WEB_INTERSTITIAL_NAME]) {
+        [self configureFullscreen];
         [self loadURL];
-        [self configureFullscreenTemplate];
     } else if ([actionName isEqualToString:LPMT_HTML_NAME]) {
         CGFloat height = [[self.context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
-        BOOL fullscreen = height < 1;
+        BOOL isBanner = height > 0;
 
-        if (fullscreen) {
-            [self configureFullscreenTemplate];
-        } else {
+        if (isBanner) {
             [self configureBannerTemplate];
+        } else {
+            [self configureFullscreenTemplate];
         }
 
         [self loadTemplate];
@@ -65,20 +65,19 @@
     }
 }
 
-- (void)configureBannerTemplate
+/// Fullscreen web interstitial configuration
+- (void)configureFullscreen
 {
-    self.webView.scrollView.scrollEnabled = NO;
-    self.webView.scrollView.bounces = NO;
-
     self.view.backgroundColor = [UIColor clearColor];
     [self.view setOpaque:NO];
 
     self.webView.backgroundColor = [UIColor clearColor];
     [self.webView setOpaque:NO];
 
-    [self addBannerConstraints];
+    [self addFullscreenConstraints];
 }
 
+/// Fullscreen web template interstitial configuration
 - (void)configureFullscreenTemplate
 {
     self.webView.scrollView.scrollEnabled = NO;
@@ -91,6 +90,21 @@
     [self.webView setOpaque:NO];
 
     [self addTemplateConstraints];
+}
+
+/// Banner template configuration
+- (void)configureBannerTemplate
+{
+    self.webView.scrollView.scrollEnabled = NO;
+    self.webView.scrollView.bounces = NO;
+
+    self.view.backgroundColor = [UIColor clearColor];
+    [self.view setOpaque:NO];
+
+    self.webView.backgroundColor = [UIColor clearColor];
+    [self.webView setOpaque:NO];
+
+    [self addBannerConstraints];
 }
 
 - (void)loadTemplate
@@ -108,6 +122,15 @@
     NSString *url = [self.context stringNamed:LPMT_ARG_URL];
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     [self.webView loadRequest:request];
+}
+
+- (void)addFullscreenConstraints
+{
+    [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:0] setActive:YES];
+    [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0] setActive:YES];
+    [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:0] setActive:YES];
+    [[self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:0] setActive:YES];
 }
 
 - (void)addTemplateConstraints
@@ -194,7 +217,6 @@
         }
 
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_OPEN]].location != NSNotFound) {
-//            [self showWebview:webView];
             decisionHandler(WKNavigationActionPolicyCancel);
             return;
         }
