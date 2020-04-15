@@ -11,8 +11,6 @@
 
 @implementation LPRegisterForPushMessageTemplate
 
-@synthesize context;
-
 +(void)defineAction
 {
     [Leanplum defineAction:LPMT_REGISTER_FOR_PUSH

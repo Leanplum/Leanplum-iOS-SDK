@@ -10,8 +10,6 @@
 
 @implementation LPRichInterstitialMessageTemplate
 
-@synthesize context;
-
 + (void)defineAction
 {
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {

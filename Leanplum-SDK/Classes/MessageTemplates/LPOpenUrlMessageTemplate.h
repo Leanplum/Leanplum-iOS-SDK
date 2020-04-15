@@ -11,7 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPOpenUrlMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
-
 @end
 
 NS_ASSUME_NONNULL_END

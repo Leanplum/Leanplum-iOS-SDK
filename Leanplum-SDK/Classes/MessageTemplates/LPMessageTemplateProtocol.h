@@ -14,10 +14,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol LPMessageTemplateProtocol
 
-@property (nonatomic, strong) LPActionContext *context;
-
 + (void)defineAction;
 
+@optional
+@property (nonatomic, strong) LPActionContext *context;
 @end
 
 NS_ASSUME_NONNULL_END

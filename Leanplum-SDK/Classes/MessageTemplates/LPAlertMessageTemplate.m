@@ -10,8 +10,6 @@
 
 @implementation LPAlertMessageTemplate
 
-@synthesize context;
-
 + (void)defineAction
 {
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {

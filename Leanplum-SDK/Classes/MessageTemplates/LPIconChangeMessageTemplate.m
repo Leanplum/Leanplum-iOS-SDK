@@ -10,8 +10,6 @@
 
 @implementation LPIconChangeMessageTemplate
 
-@synthesize context;
-
 +(void)defineAction
 {
     [Leanplum defineAction:LPMT_ICON_CHANGE_NAME
@@ -23,7 +21,6 @@
              withResponder:^BOOL(LPActionContext *context) {
         @try {
             LPIconChangeMessageTemplate *template = [[LPIconChangeMessageTemplate alloc] init];
-            template.context = context;
             if ([template hasAlternateIcon]) {
                 NSString *filename = [context stringNamed:LPMT_ARG_APP_ICON];
                 [template setAlternateIconWithFilename:filename];

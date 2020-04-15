@@ -10,8 +10,6 @@
 
 @implementation LPWebInterstitialMessageTemplate
 
-@synthesize context = _context;
-
 + (void)defineAction
 {
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {

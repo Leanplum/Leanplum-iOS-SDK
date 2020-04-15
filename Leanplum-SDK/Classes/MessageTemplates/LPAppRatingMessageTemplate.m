@@ -10,8 +10,6 @@
 
 @implementation LPAppRatingMessageTemplate
 
-@synthesize context;
-
 +(void)defineAction
 {
     [Leanplum defineAction:LPMT_APP_RATING_NAME
@@ -19,7 +17,6 @@
              withResponder:^BOOL(LPActionContext *context) {
         @try {
             LPAppRatingMessageTemplate *appRatingMessageTemplate = [[LPAppRatingMessageTemplate alloc] init];
-            appRatingMessageTemplate.context = context;
 
             [appRatingMessageTemplate appStorePrompt];
 

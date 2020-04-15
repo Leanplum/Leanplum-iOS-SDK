@@ -10,8 +10,6 @@
 
 @implementation LPConfirmMessageTemplate
 
-@synthesize context;
-
 + (void)defineAction
 {
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
