@@ -10,6 +10,7 @@
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
 #import <Leanplum/LPAlertMessageTemplate.h>
 #import "Leanplum+Extensions.h"
+#import "LeanplumHelper.h"
 
 @interface LPAlertMessageSnapshotTest : FBSnapshotTestCase
 
@@ -18,14 +19,14 @@
 @implementation LPAlertMessageSnapshotTest
 
 - (void)setUp {
-    // Put setup code here. This method is called before the invocation of each test method in the class.
     [super setUp];
+    [UIView setAnimationsEnabled:NO];
     self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
+    [LeanplumHelper dismissPresentedViewControllers];
 }
 
 - (void)testView {
@@ -35,20 +36,23 @@
         LPMT_ARG_DISMISS_TEXT:LPMT_DEFAULT_OK_BUTTON_TEXT,
     } messageId:0];
     
-    [UIView performWithoutAnimation:^{
-        NSInvocation *invocation = [[LPInternalState sharedState].actionResponders objectForKey:context.actionName];
-        [invocation setArgument:(void *)&context atIndex:2];
-        [invocation invoke];
+    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
+                                                                                 message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+
+    UIAlertAction *dismiss = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction *action) {
+        [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     }];
+    [alertViewController addAction:dismiss];
+
+    [LPMessageTemplateUtilities presentOverVisible:alertViewController];
     
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 1.0), dispatch_get_main_queue(), ^{
-        UIViewController *topViewController = [LPMessageTemplateUtilities visibleViewController];
-        
-        FBSnapshotVerifyView(topViewController.view, nil);
-        [topViewController dismissViewControllerAnimated:NO completion:^{
-            [expects fulfill];
-        }];
+        FBSnapshotVerifyView(alertViewController.view, nil);
+        [expects fulfill];
     });
     [self waitForExpectationsWithTimeout:5.0 handler:nil];
 }

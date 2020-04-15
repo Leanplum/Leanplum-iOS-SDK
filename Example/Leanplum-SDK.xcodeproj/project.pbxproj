@@ -481,13 +481,13 @@
 		A86C8CF22405E23E003F5E4E /* Snapshot Tests */ = {
 			isa = PBXGroup;
 			children = (
-				A82457992411CB600044B1EB /* LPHtmlMessageSnapshotTest.m */,
-				A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */,
 				A86C8CFE240844C7003F5E4E /* LPAlertMessageSnapshotTest.m */,
-				A86C8CFC240844C7003F5E4E /* LPCenterPopupMessageSnapshotTest.m */,
 				A86C8CFB240844C6003F5E4E /* LPConfirmMessageSnapshotTest.m */,
+				A86C8CFC240844C7003F5E4E /* LPCenterPopupMessageSnapshotTest.m */,
+				A82457992411CB600044B1EB /* LPHtmlMessageSnapshotTest.m */,
 				A86C8CFD240844C7003F5E4E /* LPInterstitialMessageSnapshotTest.m */,
 				A86C8CFA240844C6003F5E4E /* LPPushAskToAskMessageSnapshotTest.m */,
+				A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */,
 			);
 			path = "Snapshot Tests";
 			sourceTree = "<group>";

@@ -11,6 +11,7 @@
 #import <Leanplum/LPInterstitialMessageTemplate.h>
 #import <OCMock.h>
 #import "Leanplum+Extensions.h"
+#import "LeanplumHelper.h"
 
 @interface LPInterstitialMessageSnapshotTest : FBSnapshotTestCase
 
@@ -20,11 +21,13 @@
 
 - (void)setUp {
     [super setUp];
+    [UIView setAnimationsEnabled:NO];
     self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
     [super tearDown];
+    [LeanplumHelper dismissPresentedViewControllers];
 }
 
 - (void)testView {
@@ -48,22 +51,18 @@
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR]).andReturn([UIColor whiteColor]);
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]).andReturn([UIColor blackColor]);
     
-    [UIView performWithoutAnimation:^{
-        NSInvocation *invocation = [[LPInternalState sharedState].actionResponders objectForKey:context.actionName];
-        [invocation setArgument:(void *)&context atIndex:2];
-        [invocation invoke];
-    }];
-    
+     LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
+     viewController.modalPresentationStyle = UIModalPresentationFullScreen;
+     viewController.context = context;
+
+    [LPMessageTemplateUtilities presentOverVisible:viewController];
+
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 1.0), dispatch_get_main_queue(), ^{
-        UIViewController *topViewController = [LPMessageTemplateUtilities visibleViewController];
-        
-        FBSnapshotVerifyView(topViewController.view, nil);
-        [topViewController dismissViewControllerAnimated:NO completion:^{
-            [expects fulfill];
-        }];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 5.0), dispatch_get_main_queue(), ^{
+        FBSnapshotVerifyView(viewController.view, nil);
+        [expects fulfill];
     });
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 @end

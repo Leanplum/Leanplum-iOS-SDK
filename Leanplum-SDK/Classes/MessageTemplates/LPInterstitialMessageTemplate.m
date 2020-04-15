@@ -7,7 +7,6 @@
 //
 
 #import "LPInterstitialMessageTemplate.h"
-#import "LPInterstitialViewController.h"
 
 @implementation LPInterstitialMessageTemplate
 
@@ -22,10 +21,7 @@
         }
 
         @try {
-            NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Interstitial" bundle:bundle];
-
-            LPInterstitialViewController *viewController = (LPInterstitialViewController *) [storyboard instantiateInitialViewController];
+            LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
             viewController.modalPresentationStyle = UIModalPresentationFullScreen;
             viewController.context = context;
 

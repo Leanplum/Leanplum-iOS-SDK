@@ -7,7 +7,6 @@
 //
 
 #import "LPCenterPopupMessageTemplate.h"
-#import "LPPopupViewController.h"
 
 @implementation LPCenterPopupMessageTemplate
 
@@ -21,10 +20,7 @@
         }
 
         @try {
-            NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Popup" bundle:bundle];
-
-            LPPopupViewController *viewController = (LPPopupViewController *) ([storyboard instantiateInitialViewController]);
+            LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
             viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
             viewController.context = context;
 

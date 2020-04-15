@@ -15,6 +15,14 @@
 
 @implementation LPInterstitialViewController
 
++(LPInterstitialViewController * _Nullable)instantiateFromStoryboard
+{
+    NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Interstitial" bundle:bundle];
+
+    return [storyboard instantiateInitialViewController];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

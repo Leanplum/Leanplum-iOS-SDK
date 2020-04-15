@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LPMessageTemplateProtocol.h"
 #import "Leanplum.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,6 +16,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) LPActionContext *context;
 
 @property (weak, nonatomic) IBOutlet UIButton *dismissButton;
+
++(LPWebInterstitialViewController * _Nullable)instantiateFromStoryboard;
 
 @end
 

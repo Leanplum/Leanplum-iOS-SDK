@@ -7,7 +7,6 @@
 //
 
 #import "LPPushAskToAskMessageTemplate.h"
-#import "LPPopupViewController.h"
 
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
@@ -90,10 +89,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 -(void)showPrePushMessage
 {
-    NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Popup" bundle:bundle];
-
-    LPPopupViewController *viewController = (LPPopupViewController *) ([storyboard instantiateInitialViewController]);
+    LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     viewController.context = self.context;
 

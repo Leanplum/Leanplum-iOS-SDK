@@ -18,6 +18,14 @@
 
 @implementation LPWebInterstitialViewController
 
++(LPWebInterstitialViewController *)instantiateFromStoryboard
+{
+    NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:bundle];
+
+    return [storyboard instantiateInitialViewController];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

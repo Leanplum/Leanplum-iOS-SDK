@@ -17,7 +17,7 @@
 {
     [self dismissExisitingViewController:^{
         UIViewController *topViewController = [self visibleViewController];
-        [topViewController presentViewController:viewController animated:true completion:nil];
+        [topViewController presentViewController:viewController animated:YES completion:nil];
     }];
 }
 
@@ -27,7 +27,7 @@
 
     // dismiss on html view controller for now
     if ([topViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
-        [topViewController dismissViewControllerAnimated:false completion:completion];
+        [topViewController dismissViewControllerAnimated:NO completion:completion];
     } else {
         completion();
     }

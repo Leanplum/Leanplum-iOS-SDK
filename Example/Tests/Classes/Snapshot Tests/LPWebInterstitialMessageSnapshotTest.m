@@ -11,6 +11,7 @@
 #import <Leanplum/LPWebInterstitialMessageTemplate.h>
 #import <OCMock.h>
 #import "Leanplum+Extensions.h"
+#import "LeanplumHelper.h"
 
 @interface LPWebInterstitialMessageSnapshotTest : FBSnapshotTestCase <WKNavigationDelegate>
 
@@ -20,11 +21,13 @@
 
 - (void)setUp {
     [super setUp];
+    [UIView setAnimationsEnabled:NO];
     self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
     [super tearDown];
+    [LeanplumHelper dismissPresentedViewControllers];
 }
 
 // commenting out until we can get this to run on CI
@@ -41,23 +44,18 @@
     OCMStub([contextMock boolNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(LPMT_DEFAULT_HAS_DISMISS_BUTTON);
     OCMStub([contextMock stringNamed:LPMT_ARG_URL]).andReturn(@"https://www.example.com");
     
-    [UIView performWithoutAnimation:^{
-        NSInvocation *invocation = [[LPInternalState sharedState].actionResponders objectForKey:context.actionName];
-        [invocation setArgument:(void *)&context atIndex:2];
-        [invocation invoke];
-    }];
-    
+    LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
+    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.context = context;
+
+    [LPMessageTemplateUtilities presentOverVisible:viewController];
+
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 5.0), dispatch_get_main_queue(), ^{
-        UIViewController *topViewController = [LPMessageTemplateUtilities visibleViewController];
-        
-        FBSnapshotVerifyView(topViewController.view, nil);
-        [topViewController dismissViewControllerAnimated:YES completion:^{
-            [expects fulfill];
-        }];
-
+        FBSnapshotVerifyView(viewController.view, nil);
+        [expects fulfill];
     });
-    [self waitForExpectationsWithTimeout:20.0 handler:nil];
+    [self waitForExpectationsWithTimeout:10.0 handler:nil];
 }
 
 @end

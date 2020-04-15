@@ -159,4 +159,9 @@ static BOOL swizzled = NO;
     }
 }
 
++ (void)dismissPresentedViewControllers
+{
+    [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:false completion:nil];
+}
+
 @end

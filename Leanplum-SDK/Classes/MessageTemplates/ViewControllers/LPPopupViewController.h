@@ -23,6 +23,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *messageLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
++(LPPopupViewController * _Nullable)instantiateFromStoryboard;
+
 @end
 
 NS_ASSUME_NONNULL_END

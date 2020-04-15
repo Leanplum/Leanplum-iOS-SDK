@@ -7,7 +7,6 @@
 //
 
 #import "LPWebInterstitialMessageTemplate.h"
-#import "LPWebInterstitialViewController.h"
 
 @implementation LPWebInterstitialMessageTemplate
 
@@ -17,10 +16,7 @@
 {
     BOOL (^webMessageResponder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
-            NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
-            UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:bundle];
-
-            LPWebInterstitialViewController *viewController = (LPWebInterstitialViewController *) ([storyboard instantiateInitialViewController]);
+            LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
             viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
             viewController.context = context;
 

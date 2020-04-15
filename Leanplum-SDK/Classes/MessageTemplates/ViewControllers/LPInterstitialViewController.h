@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "LPMessageTemplateProtocol.h"
 #import "Leanplum.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -21,6 +20,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *acceptButton;
 @property (weak, nonatomic) IBOutlet UIButton *dismissButton;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
+
++(LPInterstitialViewController * _Nullable)instantiateFromStoryboard;
 
 @end
 

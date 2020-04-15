@@ -18,6 +18,14 @@
 
 @implementation LPPopupViewController
 
++(LPPopupViewController *)instantiateFromStoryboard
+{
+    NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Popup" bundle:bundle];
+
+    return [storyboard instantiateInitialViewController];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];

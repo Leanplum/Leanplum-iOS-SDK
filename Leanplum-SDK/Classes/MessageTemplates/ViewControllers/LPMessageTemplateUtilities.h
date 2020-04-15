@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LPPopupViewController.h"
+#import "LPInterstitialViewController.h"
+#import "LPWebInterstitialViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

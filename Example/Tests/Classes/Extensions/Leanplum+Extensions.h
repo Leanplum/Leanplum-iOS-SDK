@@ -27,8 +27,6 @@
 #import "LeanplumInternal.h"
 #import "LPMessageTemplateUtilities.h"
 
-static BOOL recordSnapshots = NO;
-
 @interface Leanplum(UnitTest)
 
 + (void)reset;
