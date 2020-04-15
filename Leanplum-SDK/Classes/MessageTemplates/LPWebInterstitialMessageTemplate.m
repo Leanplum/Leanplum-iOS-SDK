@@ -14,14 +14,12 @@
 
 + (void)defineAction
 {
-    BOOL (^webMessageResponder)(LPActionContext *) = ^(LPActionContext *context) {
+    BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
-            LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
-            viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-            viewController.context = context;
-
+            LPWebInterstitialMessageTemplate *template = [[LPWebInterstitialMessageTemplate alloc] init];
+            LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
+            
             [LPMessageTemplateUtilities presentOverVisible:viewController];
-
             return YES;
         } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
@@ -35,7 +33,15 @@
                  [LPActionArg argNamed:LPMT_ARG_URL_CLOSE withString:LPMT_DEFAULT_CLOSE_URL],
                  [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON
                               withBool:LPMT_DEFAULT_HAS_DISMISS_BUTTON]]
-             withResponder:webMessageResponder];
+             withResponder:responder];
+}
+
+- (LPWebInterstitialViewController *)viewControllerWith:(LPActionContext *)context
+{
+    LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
+    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.context = context;
+    return viewController;
 }
 
 @end

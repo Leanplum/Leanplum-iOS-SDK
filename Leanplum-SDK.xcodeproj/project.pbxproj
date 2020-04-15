@@ -11,6 +11,8 @@
 		0710DB272444FF0600A68BEF /* LPMessageTemplateUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = 0710DB252444FF0600A68BEF /* LPMessageTemplateUtilities.m */; };
 		075D06562437892F0088239A /* Popup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075D06552437892F0088239A /* Popup.storyboard */; };
 		075D065C243797760088239A /* WebInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075D065B243797760088239A /* WebInterstitial.storyboard */; };
+		0791EA8A24479626006F0DD7 /* LPConfirmMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = 0791EA8824479626006F0DD7 /* LPConfirmMessageTemplate.h */; };
+		0791EA8B24479626006F0DD7 /* LPConfirmMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0791EA8924479626006F0DD7 /* LPConfirmMessageTemplate.m */; };
 		07A97FFF23466CD8008AEC06 /* LPOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */; };
 		07A9800023466CD8008AEC06 /* LPOperationQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */; };
 		07C17DA4243B84F8003E17BF /* LPMessageTemplateProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 07C17DA3243B84F8003E17BF /* LPMessageTemplateProtocol.h */; };
@@ -179,6 +181,8 @@
 		0710DB252444FF0600A68BEF /* LPMessageTemplateUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LPMessageTemplateUtilities.m; path = ViewControllers/LPMessageTemplateUtilities.m; sourceTree = "<group>"; };
 		075D06552437892F0088239A /* Popup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Popup.storyboard; sourceTree = "<group>"; };
 		075D065B243797760088239A /* WebInterstitial.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WebInterstitial.storyboard; sourceTree = "<group>"; };
+		0791EA8824479626006F0DD7 /* LPConfirmMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPConfirmMessageTemplate.h; sourceTree = "<group>"; };
+		0791EA8924479626006F0DD7 /* LPConfirmMessageTemplate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPConfirmMessageTemplate.m; sourceTree = "<group>"; };
 		07A97FFD23466CD8008AEC06 /* LPOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPOperationQueue.m; sourceTree = "<group>"; };
 		07A97FFE23466CD8008AEC06 /* LPOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPOperationQueue.h; sourceTree = "<group>"; };
 		07C17DA3243B84F8003E17BF /* LPMessageTemplateProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageTemplateProtocol.h; sourceTree = "<group>"; };
@@ -801,11 +805,12 @@
 		A8D39E7E23DFA0D500B0C51E /* MessageTemplates */ = {
 			isa = PBXGroup;
 			children = (
-				0790A2AF2440EDD700ADCBE4 /* Views */,
 				07C17DC7243B9F65003E17BF /* LPAlertMessageTemplate.h */,
 				07C17DC8243B9F65003E17BF /* LPAlertMessageTemplate.m */,
 				A8484E4123EE170600FCDD58 /* LPAppRatingMessageTemplate.h */,
 				A8484E4223EE170600FCDD58 /* LPAppRatingMessageTemplate.m */,
+				0791EA8824479626006F0DD7 /* LPConfirmMessageTemplate.h */,
+				0791EA8924479626006F0DD7 /* LPConfirmMessageTemplate.m */,
 				07C17DB7243B9C89003E17BF /* LPCenterPopupMessageTemplate.h */,
 				07C17DB8243B9C89003E17BF /* LPCenterPopupMessageTemplate.m */,
 				A8484E4523EE177A00FCDD58 /* LPIconChangeMessageTemplate.h */,
@@ -814,6 +819,8 @@
 				07C17DBC243B9D19003E17BF /* LPInterstitialMessageTemplate.m */,
 				A8D39E8023DFA0D500B0C51E /* LPMessageTemplateConstants.h */,
 				07C17DA3243B84F8003E17BF /* LPMessageTemplateProtocol.h */,
+				0710DB242444FF0600A68BEF /* LPMessageTemplateUtilities.h */,
+				0710DB252444FF0600A68BEF /* LPMessageTemplateUtilities.m */,
 				A8F5D58B23F48CFA00313C98 /* LPOpenUrlMessageTemplate.h */,
 				A8F5D58C23F48CFA00313C98 /* LPOpenUrlMessageTemplate.m */,
 				07C17DA6243B916B003E17BF /* LPPushAsktoAskMessageTemplate.h */,
@@ -824,9 +831,8 @@
 				07C17DC4243B9E20003E17BF /* LPRichInterstitialMessageTemplate.m */,
 				07C17DBF243B9DB7003E17BF /* LPWebInterstitialMessageTemplate.h */,
 				07C17DC0243B9DB7003E17BF /* LPWebInterstitialMessageTemplate.m */,
-				0710DB242444FF0600A68BEF /* LPMessageTemplateUtilities.h */,
-				0710DB252444FF0600A68BEF /* LPMessageTemplateUtilities.m */,
 				07C17DAA243B9218003E17BF /* ViewControllers */,
+				0790A2AF2440EDD700ADCBE4 /* Views */,
 			);
 			path = MessageTemplates;
 			sourceTree = "<group>";
@@ -871,6 +877,7 @@
 				5B23409921ED964F00206ACB /* LPEventCallbackManager.h in Headers */,
 				5B23408521ED964F00206ACB /* LPVarCache.h in Headers */,
 				5B2340DB21ED965000206ACB /* LPDatabase.h in Headers */,
+				0791EA8A24479626006F0DD7 /* LPConfirmMessageTemplate.h in Headers */,
 				5B23406921ED964F00206ACB /* LPNetworkEngine.h in Headers */,
 				5B23403121ED964F00206ACB /* LPActionContext.h in Headers */,
 				5B2340D921ED965000206ACB /* LPKeychainWrapper.h in Headers */,
@@ -1051,6 +1058,7 @@
 				07C17DB3243B9218003E17BF /* LPWebInterstitialViewController.m in Sources */,
 				5B23408D21ED964F00206ACB /* LPUIAlert.m in Sources */,
 				5B2340B321ED964F00206ACB /* LeanplumCompatibility.m in Sources */,
+				0791EA8B24479626006F0DD7 /* LPConfirmMessageTemplate.m in Sources */,
 				5B23409B21ED964F00206ACB /* LPEventCallback.m in Sources */,
 				5B23409121ED964F00206ACB /* LPActionContext.m in Sources */,
 				5B2340E921ED965000206ACB /* Leanplum_AsyncSocket.m in Sources */,

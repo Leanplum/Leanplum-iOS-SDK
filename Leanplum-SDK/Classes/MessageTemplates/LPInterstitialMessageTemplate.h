@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPInterstitialMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
+- (LPInterstitialViewController *)viewControllerWith:(LPActionContext *) context;
+
 @end
 
 NS_ASSUME_NONNULL_END

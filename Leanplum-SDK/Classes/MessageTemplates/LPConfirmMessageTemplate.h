@@ -1,8 +1,8 @@
 //
-//  LPAlertMessageTemplate.h
+//  LPConfirmMessageTemplate.h
 //  LeanplumSDK-iOS
 //
-//  Created by Milos Jakovljevic on 06/04/2020.
+//  Created by Milos Jakovljevic on 15/04/2020.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPAlertMessageTemplate : NSObject <LPMessageTemplateProtocol>
+@interface LPConfirmMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
 - (UIAlertController *)viewControllerWith:(LPActionContext *) context;
 

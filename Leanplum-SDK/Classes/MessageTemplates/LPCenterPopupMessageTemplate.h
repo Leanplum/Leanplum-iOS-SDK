@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPCenterPopupMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
+- (LPPopupViewController *)viewControllerWith:(LPActionContext *) context;
+
 @end
 
 NS_ASSUME_NONNULL_END

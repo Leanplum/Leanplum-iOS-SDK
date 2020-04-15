@@ -14,7 +14,19 @@
 
 + (void)defineAction
 {
-    // Alert
+    BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
+        @try {
+            LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
+            UIAlertController *alertViewController = [template viewControllerWith:context];
+
+            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
+            return YES;
+        } @catch (NSException *exception) {
+            LOG_LP_MESSAGE_EXCEPTION;
+            return NO;
+        }
+    };
+
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
              withArguments:@[
@@ -23,66 +35,22 @@
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
              ]
-             withResponder:^BOOL(LPActionContext *context) {
-        @try {
-            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
-                                                                                         message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
-                                                                                  preferredStyle:UIAlertControllerStyleAlert];
+             withResponder:responder];
+}
 
-            UIAlertAction *dismiss = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
-                                                              style:UIAlertActionStyleDefault
-                                                            handler:^(UIAlertAction *action) {
-                [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
-            }];
-            [alertViewController addAction:dismiss];
+- (UIAlertController *)viewControllerWith:(LPActionContext *)context
+{
+    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
+                                                                                 message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
 
-            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
-            return YES;
-        }
-        @catch (NSException *exception) {
-            LOG_LP_MESSAGE_EXCEPTION;
-            return NO;
-        }
+    UIAlertAction *dismiss = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
+                                                      style:UIAlertActionStyleDefault
+                                                    handler:^(UIAlertAction *action) {
+        [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     }];
-
-    // Confirm
-    [Leanplum defineAction:LPMT_CONFIRM_NAME
-                    ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
-             withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
-                 [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_CONFIRM_MESSAGE],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_TEXT withString:LPMT_DEFAULT_YES_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_CANCEL_TEXT withString:LPMT_DEFAULT_NO_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
-                 [LPActionArg argNamed:LPMT_ARG_CANCEL_ACTION withAction:nil],
-             ]
-             withResponder:^BOOL(LPActionContext *context) {
-        @try {
-            UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
-                                                                                         message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
-                                                                                  preferredStyle:UIAlertControllerStyleAlert];
-
-            UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil)
-                                                             style:UIAlertActionStyleCancel
-                                                           handler:^(UIAlertAction *action) {
-                [context runActionNamed:LPMT_ARG_CANCEL_ACTION];
-            }];
-            [alertViewController addAction:cancel];
-            UIAlertAction *accept = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil)
-                                                             style:UIAlertActionStyleDefault
-                                                           handler:^(UIAlertAction *action) {
-                [context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
-            }];
-            [alertViewController addAction:accept];
-
-            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
-            return YES;
-        }
-        @catch (NSException *exception) {
-            LOG_LP_MESSAGE_EXCEPTION;
-            return NO;
-        }
-    }];
+    [alertViewController addAction:dismiss];
+    return alertViewController;
 }
 
 @end

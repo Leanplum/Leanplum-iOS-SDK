@@ -54,10 +54,9 @@
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]).andReturn([UIColor blackColor]);
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_WIDTH]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_WIDTH));
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT));
-    
-    LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    viewController.context = context;
+
+    LPCenterPopupMessageTemplate *template = [[LPCenterPopupMessageTemplate alloc] init];
+    LPPopupViewController *viewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
     

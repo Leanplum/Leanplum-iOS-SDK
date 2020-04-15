@@ -82,6 +82,14 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
     }];
 }
 
+- (LPPopupViewController *)viewControllerWith:(LPActionContext *)context
+{
+    LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
+    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.context = context;
+    return viewController;
+}
+
 -(void)showPushMessage
 {
     [self enableSystemPush];
@@ -89,9 +97,7 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
 -(void)showPrePushMessage
 {
-    LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    viewController.context = self.context;
+    LPPopupViewController *viewController = [self viewControllerWith:self.context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 }

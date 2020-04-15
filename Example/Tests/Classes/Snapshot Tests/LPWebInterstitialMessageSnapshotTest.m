@@ -43,10 +43,9 @@
     OCMStub([contextMock stringNamed:LPMT_ARG_MESSAGE_TEXT]).andReturn(LPMT_DEFAULT_CLOSE_URL);
     OCMStub([contextMock boolNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(LPMT_DEFAULT_HAS_DISMISS_BUTTON);
     OCMStub([contextMock stringNamed:LPMT_ARG_URL]).andReturn(@"https://www.example.com");
-    
-    LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    viewController.context = context;
+
+    LPWebInterstitialMessageTemplate *template = [[LPWebInterstitialMessageTemplate alloc] init];
+    LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 

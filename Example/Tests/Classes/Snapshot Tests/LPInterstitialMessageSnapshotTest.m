@@ -8,8 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPInterstitialMessageTemplate.h>
 #import <OCMock.h>
+#import "LPInterstitialMessageTemplate.h"
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
@@ -22,7 +22,7 @@
 - (void)setUp {
     [super setUp];
     [UIView setAnimationsEnabled:NO];
-    self.recordMode = recordSnapshots;
+    self.recordMode = NO;
 }
 
 - (void)tearDown {
@@ -51,9 +51,8 @@
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR]).andReturn([UIColor whiteColor]);
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]).andReturn([UIColor blackColor]);
     
-     LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
-     viewController.modalPresentationStyle = UIModalPresentationFullScreen;
-     viewController.context = context;
+    LPInterstitialMessageTemplate *template = [[LPInterstitialMessageTemplate alloc] init];
+    LPInterstitialViewController *viewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 

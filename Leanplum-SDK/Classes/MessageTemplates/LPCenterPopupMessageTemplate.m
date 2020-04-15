@@ -14,15 +14,14 @@
 
 + (void)defineAction
 {
-    BOOL (^messageResponder)(LPActionContext *) = ^(LPActionContext *context) {
+    BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         if ([context hasMissingFiles]) {
             return NO;
         }
 
         @try {
-            LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
-            viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-            viewController.context = context;
+            LPCenterPopupMessageTemplate *template = [[LPCenterPopupMessageTemplate alloc] init];
+            LPPopupViewController *viewController = [template viewControllerWith:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;
@@ -48,7 +47,15 @@
                  [LPActionArg argNamed:LPMT_ARG_LAYOUT_WIDTH withNumber:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH)],
                  [LPActionArg argNamed:LPMT_ARG_LAYOUT_HEIGHT withNumber:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT)]
              ]
-             withResponder:messageResponder];
+             withResponder:responder];
+}
+
+- (LPPopupViewController *)viewControllerWith:(LPActionContext *)context
+{
+    LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
+    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.context = context;
+    return viewController;
 }
 
 @end

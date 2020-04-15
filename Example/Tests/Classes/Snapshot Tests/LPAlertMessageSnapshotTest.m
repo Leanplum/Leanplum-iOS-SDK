@@ -35,17 +35,9 @@
         LPMT_ARG_MESSAGE:LPMT_DEFAULT_ALERT_MESSAGE,
         LPMT_ARG_DISMISS_TEXT:LPMT_DEFAULT_OK_BUTTON_TEXT,
     } messageId:0];
-    
-    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
-                                                                                 message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
 
-    UIAlertAction *dismiss = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_DISMISS_TEXT], nil)
-                                                      style:UIAlertActionStyleDefault
-                                                    handler:^(UIAlertAction *action) {
-        [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
-    }];
-    [alertViewController addAction:dismiss];
+    LPAlertMessageTemplate* template = [[LPAlertMessageTemplate alloc] init];
+    UIAlertController *alertViewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:alertViewController];
     

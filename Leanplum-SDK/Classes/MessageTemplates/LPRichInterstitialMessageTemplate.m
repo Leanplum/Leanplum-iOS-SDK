@@ -14,18 +14,16 @@
 
 + (void)defineAction
 {
-    BOOL (^htmlMessageResponder)(LPActionContext *) = ^(LPActionContext *context) {
+    BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         if ([context hasMissingFiles]) {
             return NO;
         }
 
         @try {
-            LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
-            viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-            viewController.context = context;
+            LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
+            LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
-
             return YES;
         } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
@@ -46,7 +44,15 @@
                  [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
                  [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
                  [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
-             withResponder:htmlMessageResponder];
+             withResponder:responder];
+}
+
+- (LPWebInterstitialViewController *)viewControllerWith:(LPActionContext *)context
+{
+    LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
+    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.context = context;
+    return viewController;
 }
 
 @end

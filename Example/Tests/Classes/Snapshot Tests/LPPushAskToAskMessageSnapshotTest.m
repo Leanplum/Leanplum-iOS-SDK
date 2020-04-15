@@ -8,7 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPPushAskToAskMessageTemplate.h>
+#import "LPPushAskToAskMessageTemplate.h"
 #import <OCMock.h>
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
@@ -62,9 +62,8 @@
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_WIDTH]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_WIDTH));
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT));
 
-    LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    viewController.context = context;
+    LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
+    LPPopupViewController *viewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
     

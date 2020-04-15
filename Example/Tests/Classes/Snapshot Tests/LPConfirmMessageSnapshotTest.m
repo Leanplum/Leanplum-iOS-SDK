@@ -8,9 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPActionContext.h>
-#import <Leanplum/LPMessageTemplates.h>
-#import <Leanplum/LPMessageTemplateConstants.h>
+#import "LPConfirmMessageTemplate.h"
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
@@ -39,25 +37,12 @@
         LPMT_ARG_ACCEPT_TEXT: LPMT_DEFAULT_YES_BUTTON_TEXT,
         LPMT_ARG_CANCEL_TEXT: LPMT_DEFAULT_NO_BUTTON_TEXT,
     } messageId:0];
-    
-    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
-                                                                                 message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
 
-    UIAlertAction *cancel = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_CANCEL_TEXT], nil)
-                                                     style:UIAlertActionStyleCancel
-                                                   handler:^(UIAlertAction *action) {
-        [context runActionNamed:LPMT_ARG_CANCEL_ACTION];
-    }];
-    [alertViewController addAction:cancel];
-    UIAlertAction *accept = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil)
-                                                     style:UIAlertActionStyleDefault
-                                                   handler:^(UIAlertAction *action) {
-        [context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
-    }];
-    [alertViewController addAction:accept];
+    LPConfirmMessageTemplate *template = [[LPConfirmMessageTemplate alloc] init];
+    UIAlertController *alertViewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:alertViewController];
+
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 1.0), dispatch_get_main_queue(), ^{
         FBSnapshotVerifyView(alertViewController.view, nil);

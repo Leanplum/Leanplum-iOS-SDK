@@ -1,5 +1,5 @@
 //
-//  LPAlertMessageSnapshotTest.m
+//  LPRichMessageSnapshotTest.m
 //  Leanplum-SDK_Tests
 //
 //  Created by Mayank Sanganeria on 2/25/20.
@@ -9,19 +9,20 @@
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
 #import <OCMock.h>
+#import "LPRichInterstitialMessageTemplate.h"
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
-@interface LPHtmlMessageSnapshotTest : FBSnapshotTestCase
+@interface LPRichMessageSnapshotTest : FBSnapshotTestCase
 
 @end
 
-@implementation LPHtmlMessageSnapshotTest
+@implementation LPRichMessageSnapshotTest
 
 - (void)setUp {
     [super setUp];
     [UIView setAnimationsEnabled:NO];
-    self.recordMode = recordSnapshots;
+    self.recordMode = NO;
 }
 
 - (void)tearDown {
@@ -61,9 +62,8 @@
     OCMStub([contextMock boolNamed:LPMT_HAS_DISMISS_BUTTON]).andReturn(NO);
     OCMStub([contextMock htmlStringContentsOfFile:[OCMArg any]]).andReturn([self htmlTemplateString]);
 
-    LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
-    viewController.context = context;
+    LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
+    LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 

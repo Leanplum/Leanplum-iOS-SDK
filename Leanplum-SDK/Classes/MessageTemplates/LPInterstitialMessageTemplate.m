@@ -15,17 +15,16 @@
 
 + (void)defineAction
 {
-    BOOL (^messageResponder)(LPActionContext *) = ^(LPActionContext *context) {
+    BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         if ([context hasMissingFiles]) {
             return NO;
         }
 
         @try {
-            LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
-            viewController.modalPresentationStyle = UIModalPresentationFullScreen;
-            viewController.context = context;
+            LPInterstitialMessageTemplate *template = [[LPInterstitialMessageTemplate alloc] init];
+            LPInterstitialViewController *viewController = [template viewControllerWith:context];
 
-           [LPMessageTemplateUtilities presentOverVisible:viewController];
+            [LPMessageTemplateUtilities presentOverVisible:viewController];
 
             return YES;
         } @catch (NSException *exception) {
@@ -48,7 +47,15 @@
                  [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR withColor:UIColor.blueColor],
                  [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil]
              ]
-             withResponder:messageResponder];
+             withResponder:responder];
+}
+
+-(LPInterstitialViewController *)viewControllerWith:(LPActionContext *)context
+{
+    LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
+    viewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    viewController.context = context;
+    return viewController;
 }
 
 @end

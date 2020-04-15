@@ -38,6 +38,7 @@
 #import "LPWebInterstitialMessageTemplate.h"
 #import "LPRichInterstitialMessageTemplate.h"
 #import "LPAlertMessageTemplate.h"
+#import "LPConfirmMessageTemplate.h"
 #import "LPAppRatingMessageTemplate.h"
 #import "LPIconChangeMessageTemplate.h"
 
@@ -94,6 +95,7 @@
     [LPIconChangeMessageTemplate defineAction];
     [LPPushAskToAskMessageTemplate defineAction];
     [LPAlertMessageTemplate defineAction];
+    [LPConfirmMessageTemplate defineAction];
 }
 
 // If notification were enabled by Leanplum's "Push Ask to Ask" or "Register For Push",
