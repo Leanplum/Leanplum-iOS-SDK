@@ -19,7 +19,7 @@
 
         @try {
             LPCenterPopupMessageTemplate *template = [[LPCenterPopupMessageTemplate alloc] init];
-            LPPopupViewController *viewController = [template viewControllerWith:context];
+            LPPopupViewController *viewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;
@@ -48,7 +48,7 @@
              withResponder:responder];
 }
 
-- (LPPopupViewController *)viewControllerWith:(LPActionContext *)context
+- (UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;

@@ -19,7 +19,7 @@
 
         @try {
             LPInterstitialMessageTemplate *template = [[LPInterstitialMessageTemplate alloc] init];
-            LPInterstitialViewController *viewController = [template viewControllerWith:context];
+            UIViewController *viewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
 
@@ -47,7 +47,7 @@
              withResponder:responder];
 }
 
--(LPInterstitialViewController *)viewControllerWith:(LPActionContext *)context
+-(UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationFullScreen;

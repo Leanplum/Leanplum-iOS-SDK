@@ -12,8 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPRichInterstitialMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
-- (LPWebInterstitialViewController *)viewControllerWith:(LPActionContext *) context;
-
 @end
 
 NS_ASSUME_NONNULL_END

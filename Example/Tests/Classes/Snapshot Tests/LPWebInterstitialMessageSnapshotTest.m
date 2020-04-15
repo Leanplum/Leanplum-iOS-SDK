@@ -31,7 +31,7 @@
 }
 
 // commenting out until we can get this to run on CI
-- (void)testView {
+- (void)testViewController {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_WEB_INTERSTITIAL_NAME args:@{
         LPMT_ARG_URL:LPMT_DEFAULT_URL,
         LPMT_ARG_URL_CLOSE:LPMT_DEFAULT_CLOSE_URL,
@@ -45,7 +45,7 @@
     OCMStub([contextMock stringNamed:LPMT_ARG_URL]).andReturn(@"https://www.example.com");
 
     LPWebInterstitialMessageTemplate *template = [[LPWebInterstitialMessageTemplate alloc] init];
-    LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
+    UIViewController *viewController = [template viewControllerWithContext:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 

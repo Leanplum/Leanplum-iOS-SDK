@@ -29,7 +29,7 @@
     [LeanplumHelper dismissPresentedViewControllers];
 }
 
-- (void)testView {
+- (void)testViewController {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_ALERT_NAME args:@{
         LPMT_ARG_TITLE:APP_NAME,
         LPMT_ARG_MESSAGE:LPMT_DEFAULT_ALERT_MESSAGE,
@@ -37,16 +37,8 @@
     } messageId:0];
 
     LPAlertMessageTemplate* template = [[LPAlertMessageTemplate alloc] init];
-    UIAlertController *alertViewController = [template viewControllerWith:context];
-
-    [LPMessageTemplateUtilities presentOverVisible:alertViewController];
-    
-    XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 1.0), dispatch_get_main_queue(), ^{
-        FBSnapshotVerifyView(alertViewController.view, nil);
-        [expects fulfill];
-    });
-    [self waitForExpectationsWithTimeout:5.0 handler:nil];
+    UIViewController *viewController = [template viewControllerWithContext:context];
+    FBSnapshotVerifyView(viewController.view, nil);
 }
 
 @end

@@ -12,8 +12,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPPushAskToAskMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
-- (LPPopupViewController *)viewControllerWith:(LPActionContext *) context;
-
 - (void)enableSystemPush;
 - (void)refreshPushPermissions;
 - (BOOL)hasDisabledAskToAsk;

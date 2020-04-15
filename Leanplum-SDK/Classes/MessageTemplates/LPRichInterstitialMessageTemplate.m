@@ -19,7 +19,7 @@
 
         @try {
             LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
-            LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
+            UIViewController *viewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;
@@ -45,7 +45,7 @@
              withResponder:responder];
 }
 
-- (LPWebInterstitialViewController *)viewControllerWith:(LPActionContext *)context
+- (UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;

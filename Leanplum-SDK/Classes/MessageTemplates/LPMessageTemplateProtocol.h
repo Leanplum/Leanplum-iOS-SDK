@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @optional
 @property (nonatomic, strong) LPActionContext *context;
+- (UIViewController *)viewControllerWithContext:(LPActionContext *) context;
 @end
 
 NS_ASSUME_NONNULL_END

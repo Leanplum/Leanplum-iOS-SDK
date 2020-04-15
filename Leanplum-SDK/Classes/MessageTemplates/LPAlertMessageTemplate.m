@@ -15,7 +15,7 @@
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
             LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
-            UIAlertController *alertViewController = [template viewControllerWith:context];
+            UIAlertController *alertViewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:alertViewController];
             return YES;
@@ -36,7 +36,7 @@
              withResponder:responder];
 }
 
-- (UIAlertController *)viewControllerWith:(LPActionContext *)context
+- (UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_TITLE], nil)
                                                                                  message:NSLocalizedString([context stringNamed:LPMT_ARG_MESSAGE], nil)

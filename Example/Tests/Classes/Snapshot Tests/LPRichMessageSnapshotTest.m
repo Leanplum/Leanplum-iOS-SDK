@@ -22,7 +22,7 @@
 - (void)setUp {
     [super setUp];
     [UIView setAnimationsEnabled:NO];
-    self.recordMode = NO;
+    self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
@@ -31,7 +31,7 @@
 }
 
 // commenting out until we can get this to run on CI
-- (void)testView {
+- (void)testViewController {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_HTML_NAME args:@{
         LPMT_ARG_LAYOUT_WIDTH:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH),
         LPMT_ARG_LAYOUT_HEIGHT:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT),
@@ -63,7 +63,7 @@
     OCMStub([contextMock htmlStringContentsOfFile:[OCMArg any]]).andReturn([self htmlTemplateString]);
 
     LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
-    LPWebInterstitialViewController *viewController = [template viewControllerWith:context];
+    UIViewController *viewController = [template viewControllerWithContext:context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 
