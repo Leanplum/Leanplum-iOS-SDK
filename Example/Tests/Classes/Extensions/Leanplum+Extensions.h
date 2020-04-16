@@ -25,7 +25,6 @@
 
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
-#import "LPMessageTemplateUtilities.h"
 
 @interface Leanplum(UnitTest)
 
@@ -37,7 +36,6 @@
               fromMessageId:(NSString *)sourceMessage
        withContextualValues:(LPContextualValues *)contextualValues;
 
-+ (void)triggerAction:(LPActionContext *)context;
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
 @end

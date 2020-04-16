@@ -1,5 +1,5 @@
 //
-//  LPRichMessageSnapshotTest.m
+//  LPRichInterstitialMessageSnapshotTest.m.m
 //  Leanplum-SDK_Tests
 //
 //  Created by Mayank Sanganeria on 2/25/20.
@@ -13,11 +13,11 @@
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
-@interface LPRichMessageSnapshotTest : FBSnapshotTestCase
+@interface LPRichInterstitialMessageSnapshotTest : FBSnapshotTestCase
 
 @end
 
-@implementation LPRichMessageSnapshotTest
+@implementation LPRichInterstitialMessageSnapshotTest
 
 - (void)setUp {
     [super setUp];
