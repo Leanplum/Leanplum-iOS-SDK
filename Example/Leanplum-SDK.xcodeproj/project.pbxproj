@@ -99,6 +99,7 @@
 		9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */; };
 		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		9EF00D3A2448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */; };
 		A824579A2411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */; };
 		A824579B2411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A82457992411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m */; };
 		A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A84527FC215C3035001FA20D /* LPRequestTest.m */; };
@@ -209,6 +210,8 @@
 		9CB691DD1F15FFF5002D83D8 /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
 		9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
+		9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplateTest.m; sourceTree = "<group>"; };
+		9EF00D3B2448EEF30094CA89 /* LPOpenUrlMessageTemplate+Extenstion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPOpenUrlMessageTemplate+Extenstion.h"; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialMessageSnapshotTest.m; sourceTree = "<group>"; };
 		A82457992411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRichInterstitialMessageSnapshotTest.m; sourceTree = "<group>"; };
@@ -284,6 +287,7 @@
 				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
 				65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */,
+				9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -301,6 +305,7 @@
 				07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */,
 				07E5C8791F052B7800A4B092 /* LPNetworkOperation+Category.m */,
 				07E5C87A1F052B7800A4B092 /* LPVarCache+Extensions.h */,
+				9EF00D3B2448EEF30094CA89 /* LPOpenUrlMessageTemplate+Extenstion.h */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -805,6 +810,7 @@
 				07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */,
 				A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */,
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
+				9EF00D3A2448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m in Sources */,
 				A824579B2411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
