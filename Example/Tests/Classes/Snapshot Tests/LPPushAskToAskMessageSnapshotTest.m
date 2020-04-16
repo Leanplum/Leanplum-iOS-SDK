@@ -8,23 +8,10 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPPushAsktoAskMessageTemplate.h>
+#import "LPPushAskToAskMessageTemplate.h"
 #import <OCMock.h>
-
-@interface LPPushAsktoAskMessageTemplate()
-
-@property  (nonatomic, strong) UIView *popupGroup;
-- (void)setupPopupView;
-
-@end
-
-@interface LPActionContext(UnitTest)
-
-+ (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary *)args
-                                 messageId:(NSString *)messageId;
-
-@end
+#import "Leanplum+Extensions.h"
+#import "LeanplumHelper.h"
 
 @interface LPPushAskToAskMessageSnapshotTest : FBSnapshotTestCase
 
@@ -34,16 +21,16 @@
 
 - (void)setUp {
     [super setUp];
-    //self.recordMode = YES;
+    [UIView setAnimationsEnabled:NO];
+    self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
     [super tearDown];
+    [LeanplumHelper dismissPresentedViewControllers];
 }
 
-- (void)testView {
-    LPPushAsktoAskMessageTemplate *template = [[LPPushAsktoAskMessageTemplate alloc] init];
-
+- (void)testViewController {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_PUSH_ASK_TO_ASK args:@{
         LPMT_ARG_TITLE_TEXT:APP_NAME,
         LPMT_ARG_TITLE_COLOR:[UIColor blackColor],
@@ -59,6 +46,7 @@
         LPMT_ARG_LAYOUT_WIDTH:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH),
         LPMT_ARG_LAYOUT_HEIGHT:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT)
     } messageId:0];
+
     id contextMock = OCMPartialMock(context);
     OCMStub([contextMock stringNamed:LPMT_ARG_TITLE_TEXT]).andReturn(APP_NAME);
     OCMStub([contextMock colorNamed:LPMT_ARG_TITLE_COLOR]).andReturn([UIColor blackColor]);
@@ -74,9 +62,10 @@
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_WIDTH]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_WIDTH));
     OCMStub([contextMock numberNamed:LPMT_ARG_LAYOUT_HEIGHT]).andReturn(@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT));
 
-    template.contexts = [@[contextMock] mutableCopy];
-    [template setupPopupView];
-    FBSnapshotVerifyView(template.popupGroup, nil);
+    LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
+    UIViewController *viewController = [template viewControllerWithContext:context];
+
+    FBSnapshotVerifyView(viewController.view, nil);
 }
 
 @end

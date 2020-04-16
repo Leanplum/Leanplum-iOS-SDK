@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5cc-MC-AF7">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Popup View Controller-->
+        <scene sceneID="xqj-Im-5EI">
+            <objects>
+                <viewController modalTransitionStyle="crossDissolve" modalPresentationStyle="overCurrentContext" id="5cc-MC-AF7" customClass="LPPopupViewController" sceneMemberID="viewController">
+                    <view key="view" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ypY-OD-uFZ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WMO-0p-OCC">
+                                <rect key="frame" x="57" y="323" width="300" height="250"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="8Pq-qc-xcM">
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="250"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uuW-hM-CIw">
+                                        <rect key="frame" x="280" y="-10" width="30" height="30"/>
+                                        <state key="normal" image="close"/>
+                                        <connections>
+                                            <action selector="didTapDismissButton:" destination="5cc-MC-AF7" eventType="touchUpInside" id="fwR-eB-lSO"/>
+                                        </connections>
+                                    </button>
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="aHI-yk-Bti">
+                                        <rect key="frame" x="8" y="212" width="284" height="30"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Toc-S2-CxU">
+                                                <rect key="frame" x="0.0" y="0.0" width="139.5" height="30"/>
+                                                <state key="normal" title="Cancel"/>
+                                                <connections>
+                                                    <action selector="didTapCancelButton:" destination="5cc-MC-AF7" eventType="touchUpInside" id="Qyc-m3-DAy"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="awH-VX-oho">
+                                                <rect key="frame" x="144.5" y="0.0" width="139.5" height="30"/>
+                                                <state key="normal" title="Accept"/>
+                                                <connections>
+                                                    <action selector="didTapAcceptButton:" destination="5cc-MC-AF7" eventType="touchUpInside" id="7vl-Li-h4J"/>
+                                                </connections>
+                                            </button>
+                                        </subviews>
+                                    </stackView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0rH-TF-2CS">
+                                        <rect key="frame" x="8" y="15" width="284" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="Message" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPT-Pn-urX">
+                                        <rect key="frame" x="8" y="43.5" width="284" height="160.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <constraints>
+                                    <constraint firstItem="aHI-yk-Bti" firstAttribute="top" secondItem="bPT-Pn-urX" secondAttribute="bottom" constant="8" id="2d7-MW-EEr"/>
+                                    <constraint firstItem="aHI-yk-Bti" firstAttribute="leading" secondItem="WMO-0p-OCC" secondAttribute="leading" constant="8" id="4VM-S8-YZx"/>
+                                    <constraint firstAttribute="bottom" secondItem="8Pq-qc-xcM" secondAttribute="bottom" id="4Y8-tW-WPa"/>
+                                    <constraint firstItem="0rH-TF-2CS" firstAttribute="leading" secondItem="WMO-0p-OCC" secondAttribute="leading" constant="8" id="5T7-pB-hI1"/>
+                                    <constraint firstItem="uuW-hM-CIw" firstAttribute="top" secondItem="WMO-0p-OCC" secondAttribute="top" constant="-10" id="6lv-gS-s5N"/>
+                                    <constraint firstAttribute="trailing" secondItem="bPT-Pn-urX" secondAttribute="trailing" constant="8" id="7RN-U4-GiX"/>
+                                    <constraint firstAttribute="trailing" secondItem="uuW-hM-CIw" secondAttribute="trailing" constant="-10" id="8HK-yl-JaI"/>
+                                    <constraint firstAttribute="trailing" secondItem="8Pq-qc-xcM" secondAttribute="trailing" id="De8-1B-y17"/>
+                                    <constraint firstItem="0rH-TF-2CS" firstAttribute="top" secondItem="WMO-0p-OCC" secondAttribute="top" constant="15" id="Ks0-W7-WZY"/>
+                                    <constraint firstAttribute="trailing" secondItem="0rH-TF-2CS" secondAttribute="trailing" constant="8" id="Xie-Jb-kKn"/>
+                                    <constraint firstAttribute="bottom" secondItem="aHI-yk-Bti" secondAttribute="bottom" constant="8" id="Xxr-RO-uaI"/>
+                                    <constraint firstItem="bPT-Pn-urX" firstAttribute="leading" secondItem="WMO-0p-OCC" secondAttribute="leading" constant="8" id="YAq-Is-RoX"/>
+                                    <constraint firstItem="8Pq-qc-xcM" firstAttribute="top" secondItem="WMO-0p-OCC" secondAttribute="top" id="lUy-mS-ymY"/>
+                                    <constraint firstItem="8Pq-qc-xcM" firstAttribute="leading" secondItem="WMO-0p-OCC" secondAttribute="leading" id="nqa-7Z-Uol"/>
+                                    <constraint firstAttribute="width" constant="300" id="rnS-pr-0OB"/>
+                                    <constraint firstAttribute="height" constant="250" id="vkO-ZO-LSG"/>
+                                    <constraint firstAttribute="trailing" secondItem="aHI-yk-Bti" secondAttribute="trailing" constant="8" id="wUL-qu-5j1"/>
+                                    <constraint firstItem="bPT-Pn-urX" firstAttribute="top" secondItem="0rH-TF-2CS" secondAttribute="bottom" constant="8" id="yss-Hw-dAX"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstItem="WMO-0p-OCC" firstAttribute="centerX" secondItem="ypY-OD-uFZ" secondAttribute="centerX" id="TJO-fM-CIB"/>
+                            <constraint firstItem="WMO-0p-OCC" firstAttribute="centerY" secondItem="ypY-OD-uFZ" secondAttribute="centerY" id="ote-EH-M6H"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="pyq-Jz-JaO"/>
+                    </view>
+                    <connections>
+                        <outlet property="acceptButton" destination="awH-VX-oho" id="9bS-Ec-Kll"/>
+                        <outlet property="backgroundImageView" destination="8Pq-qc-xcM" id="en7-Nj-OFn"/>
+                        <outlet property="cancelButton" destination="Toc-S2-CxU" id="Pwr-sz-MwZ"/>
+                        <outlet property="containerView" destination="WMO-0p-OCC" id="JBc-fr-ocp"/>
+                        <outlet property="dismissButton" destination="uuW-hM-CIw" id="V2q-rA-0Cw"/>
+                        <outlet property="heightConstraint" destination="vkO-ZO-LSG" id="i4n-dS-zTp"/>
+                        <outlet property="messageLabel" destination="bPT-Pn-urX" id="qzd-Pd-biS"/>
+                        <outlet property="titleLabel" destination="0rH-TF-2CS" id="MPP-hB-yee"/>
+                        <outlet property="widthConstraint" destination="rnS-pr-0OB" id="XQ6-EU-XzK"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aNV-6k-w6G" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-326.08695652173918" y="134.59821428571428"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="close" width="30" height="30"/>
+    </resources>
+</document>

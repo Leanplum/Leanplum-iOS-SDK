@@ -10,26 +10,28 @@
 
 @implementation LPIconChangeMessageTemplate
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts {
-    if ([self hasAlternateIcon]) {
-        [Leanplum defineAction:LPMT_ICON_CHANGE_NAME
-                        ofKind:kLeanplumActionKindAction
-                 withArguments:@[
-                     [LPActionArg argNamed:LPMT_ARG_APP_ICON
-                                  withFile:LPMT_DEFAULT_APP_ICON]
-                 ]
-                 withResponder:^BOOL(LPActionContext *context) {
-            @try {
++(void)defineAction
+{
+    [Leanplum defineAction:LPMT_ICON_CHANGE_NAME
+                    ofKind:kLeanplumActionKindAction
+             withArguments:@[
+                 [LPActionArg argNamed:LPMT_ARG_APP_ICON
+                              withFile:LPMT_DEFAULT_APP_ICON]
+             ]
+             withResponder:^BOOL(LPActionContext *context) {
+        @try {
+            LPIconChangeMessageTemplate *template = [[LPIconChangeMessageTemplate alloc] init];
+            if ([template hasAlternateIcon]) {
                 NSString *filename = [context stringNamed:LPMT_ARG_APP_ICON];
-                [self setAlternateIconWithFilename:filename];
+                [template setAlternateIconWithFilename:filename];
                 return YES;
             }
-            @catch (NSException *exception) {
-                LOG_LP_MESSAGE_EXCEPTION;
-            }
             return NO;
-        }];
-    }
+        } @catch (NSException *exception) {
+            LOG_LP_MESSAGE_EXCEPTION;
+        }
+        return NO;
+    }];
 }
 
 - (BOOL)hasAlternateIcon
@@ -67,11 +69,6 @@
                 (iconName == nil && currentIconName == nil)) {
                 return;
             }
-        } else {
-            // Fallback on earlier versions
-        }
-
-        if (@available(iOS 10.3, *)) {
             [app setAlternateIconName:iconName completionHandler:^(NSError * _Nullable error) {
                 if (!error) {
                     return;
@@ -88,8 +85,6 @@
                     }];
                 });
             }];
-        } else {
-            // Fallback on earlier versions
         }
     }
 }

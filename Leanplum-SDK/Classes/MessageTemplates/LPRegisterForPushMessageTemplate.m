@@ -7,17 +7,22 @@
 //
 
 #import "LPRegisterForPushMessageTemplate.h"
+#import "LPPushAskToAskMessageTemplate.h"
 
 @implementation LPRegisterForPushMessageTemplate
 
--(void)defineActionWithContexts:(NSMutableArray *)contexts {
-    [super defineActionWithContexts:contexts];
-    
++(void)defineAction
+{
     [Leanplum defineAction:LPMT_REGISTER_FOR_PUSH
                     ofKind:kLeanplumActionKindAction
              withArguments:@[]
              withResponder:^BOOL(LPActionContext *context) {
-        [self enableSystemPush];
+
+        // TODO: when push check is moved away from templates, refactor to call it.
+        LPPushAskToAskMessageTemplate* template = [[LPPushAskToAskMessageTemplate alloc] init];
+        template.context = context;
+
+        [template enableSystemPush];
         return YES;
     }];
 }

@@ -8,21 +8,10 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPConfirmMessageTemplate.h>
+#import "LPConfirmMessageTemplate.h"
+#import "Leanplum+Extensions.h"
+#import "LeanplumHelper.h"
 
-@interface LPConfirmMessageTemplate()
-
--(UIViewController *)viewControllerWithContext:(LPActionContext *)context;
-
-@end
-
-@interface LPActionContext(UnitTest)
-
-+ (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary *)args
-                                 messageId:(NSString *)messageId;
-
-@end
 
 @interface LPConfirmMessageSnapshotTest : FBSnapshotTestCase
 
@@ -32,15 +21,16 @@
 
 - (void)setUp {
     [super setUp];
-//    self.recordMode = YES;
+    [UIView setAnimationsEnabled:NO];
+    self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
     [super tearDown];
+    [LeanplumHelper dismissPresentedViewControllers];
 }
 
-- (void)testView {
-    LPConfirmMessageTemplate *template = [[LPConfirmMessageTemplate alloc] init];
+- (void)testViewController {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_CONFIRM_NAME args:@{
         LPMT_ARG_TITLE: APP_NAME,
         LPMT_ARG_MESSAGE: LPMT_DEFAULT_CONFIRM_MESSAGE,
@@ -48,7 +38,9 @@
         LPMT_ARG_CANCEL_TEXT: LPMT_DEFAULT_NO_BUTTON_TEXT,
     } messageId:0];
 
-    UIViewController* viewController = [template viewControllerWithContext:context];
+    LPConfirmMessageTemplate *template = [[LPConfirmMessageTemplate alloc] init];
+    UIViewController *viewController = [template viewControllerWithContext:context];
+
     FBSnapshotVerifyView(viewController.view, nil);
 }
 
