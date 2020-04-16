@@ -68,11 +68,11 @@
     [LPMessageTemplateUtilities presentOverVisible:viewController];
 
     XCTestExpectation *expects = [self expectationWithDescription:@"wait_for_load"];
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 5.0), dispatch_get_main_queue(), ^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 10.0), dispatch_get_main_queue(), ^{
         FBSnapshotVerifyView(viewController.view, nil);
         [expects fulfill];
     });
-    [self waitForExpectationsWithTimeout:10.0 handler:nil];
+    [self waitForExpectationsWithTimeout:15.0 handler:nil];
 }
 
 -(NSString *)htmlTemplateString {
