@@ -144,8 +144,16 @@
 - (void)addTemplateConstraints
 {
     [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:0] setActive:YES];
-    [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0] setActive:YES];
+    CGFloat top = 0;
+    CGFloat bottom = 0;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
+    if (@available(iOS 11, *)) {
+#endif
+        top = UIApplication.sharedApplication.delegate.window.safeAreaInsets.top > 20 ? -UIApplication.sharedApplication.delegate.window.safeAreaInsets.top : 0;
+        bottom = UIApplication.sharedApplication.delegate.window.safeAreaInsets.bottom;
+    }
+    [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:top] setActive:YES];
+    [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:bottom] setActive:YES];
     [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:0] setActive:YES];
     [[self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:0] setActive:YES];
 }
