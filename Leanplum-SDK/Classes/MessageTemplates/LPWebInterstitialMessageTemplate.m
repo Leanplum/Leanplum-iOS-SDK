@@ -15,7 +15,7 @@
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
             LPWebInterstitialMessageTemplate *template = [[LPWebInterstitialMessageTemplate alloc] init];
-            LPWebInterstitialViewController *viewController = [template viewControllerWithContext:context];
+            UIViewController *viewController = [template viewControllerWithContext:context];
             
             [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;

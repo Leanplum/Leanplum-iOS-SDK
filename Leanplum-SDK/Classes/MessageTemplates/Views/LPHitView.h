@@ -10,8 +10,8 @@
 
 @interface LPHitView : UIView
 
-@property (weak, nonatomic, nullable) UIView *touchDelegate;
+@property (weak, nonatomic) UIView *touchDelegate;
 
-- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent * _Nullable )event;
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
 @end
