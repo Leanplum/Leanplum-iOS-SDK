@@ -268,8 +268,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                 NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
                 NSString *prunedKey = [key stringByReplacingOccurrencesOfString:@"__file__"
                                                                      withString:@""];
-                vars[prunedKey] = [[NSString stringWithFormat:@"file://%@", filePath]
-                                   stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding];
+                vars[prunedKey] = [self asciiEncodedFileURL:filePath];
                 [vars removeObjectForKey:key];
             }
         }
@@ -314,6 +313,13 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return tmpURL;
     LP_END_TRY
     return nil;
+}
+
+-(NSString *)asciiEncodedFileURL:(NSString *)filePath {
+    NSMutableCharacterSet *allowed = [NSMutableCharacterSet illegalCharacterSet];
+    [allowed formUnionWithCharacterSet:[NSMutableCharacterSet controlCharacterSet]];
+    [allowed invert];
+    return [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEncodingWithAllowedCharacters:allowed];
 }
 
 -(NSString *)htmlStringContentsOfFile:(NSString *)file {
