@@ -15,7 +15,7 @@
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
             LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
-            UIAlertController *alertViewController = [template viewControllerWithContext:context];
+            UIViewController *alertViewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:alertViewController];
             return YES;
