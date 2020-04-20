@@ -50,7 +50,7 @@
 }
 
 - (NSString *)urlEncodedStringFromString:(NSString *)urlString {
-    NSString *unreserved = @":-._~/?&=";
+    NSString *unreserved = @":-._~/?&=#";
     NSMutableCharacterSet *allowed = [NSMutableCharacterSet
                                       alphanumericCharacterSet];
     [allowed addCharactersInString:unreserved];

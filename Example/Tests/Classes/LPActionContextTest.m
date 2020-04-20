@@ -21,7 +21,7 @@
                                       args:(NSDictionary *)args
                                  messageId:(NSString *)messageId;
 - (void)setProperArgs;
-
+-(NSString *)asciiEncodedFileURL:(NSString *)filePath;
 @end
 
 @interface LPActionContextTest : XCTestCase
@@ -95,6 +95,16 @@
     [context setProperArgs];
     
     XCTAssertEqualObjects([context args], @{});
+}
+
+- (void)test_asciiEncodedFileURL {
+    LPActionContext *context = [LPActionContext
+                                actionContextWithName:@"action"
+                                args:@{}
+                                messageId:@"1"];
+    NSString *filePath = @"/Users/mayank/Library/Developer/CoreSimulator/Devices/24394C0B-8820-4369-B3AA-9BF26F62A798/data/Containers/Data/Application/29AF4C33-1C94-46DF-A8A5-4B4CD5A3A364/Library/Caches/Leanplum_Resources/lp_public_sf_ui_font.css";
+    NSString *encodedUrl = [context asciiEncodedFileURL:filePath];
+    XCTAssert([encodedUrl isEqualToString:@"file:///Users/mayank/Library/Developer/CoreSimulator/Devices/24394C0B-8820-4369-B3AA-9BF26F62A798/data/Containers/Data/Application/29AF4C33-1C94-46DF-A8A5-4B4CD5A3A364/Library/Caches/Leanplum_Resources/lp_public_sf_ui_font.css"]);
 }
 
 @end

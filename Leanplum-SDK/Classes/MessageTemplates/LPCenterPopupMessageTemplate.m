@@ -19,7 +19,7 @@
 
         @try {
             LPCenterPopupMessageTemplate *template = [[LPCenterPopupMessageTemplate alloc] init];
-            LPPopupViewController *viewController = [template viewControllerWithContext:context];
+            UIViewController *viewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;

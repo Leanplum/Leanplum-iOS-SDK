@@ -308,11 +308,10 @@
  */
 - (NSString *)urlEncodedString:(NSString *)string
 {
-    CFStringRef encodedCFString = CFURLCreateStringByAddingPercentEscapes
-            (kCFAllocatorDefault, (__bridge CFStringRef) string, nil,
-             CFSTR("?!@#$^&%*+,:;='\"`<>()[]{}/\\| "), kCFStringEncodingUTF8);
-    NSString *encodedString = [[NSString alloc] initWithString:
-                               (__bridge_transfer NSString*) encodedCFString];
+    NSMutableCharacterSet *allowed = [[NSMutableCharacterSet alloc] init];
+    [allowed addCharactersInString:@"?!@#$^&%*+,:;='\"`<>()[]{}/\\| "];
+    [allowed invert];
+    NSString *encodedString = [string stringByAddingPercentEncodingWithAllowedCharacters:allowed];
     if (!encodedString) {
         encodedString = @"";
     }
