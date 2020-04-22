@@ -13,6 +13,8 @@
 @interface LPWebInterstitialViewController ()
 
 @property (nonatomic, strong) WKWebView *webView;
+@property(nonatomic) UIDeviceOrientation orientation;
+@property (nonatomic, assign) BOOL isBanner;
 
 @end
 
@@ -43,9 +45,9 @@
         [self loadURL];
     } else if ([actionName isEqualToString:LPMT_HTML_NAME]) {
         CGFloat height = [[self.context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
-        BOOL isBanner = height > 0;
+        self.isBanner = height > 0;
 
-        if (isBanner) {
+        if (self.isBanner) {
             [self configureBannerTemplate];
         } else {
             [self configureFullscreenTemplate];
@@ -71,6 +73,17 @@
         UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapOutside)];
         [self.view addGestureRecognizer:gestureRecognizer];
     }
+    
+    _orientation = UIDevice.currentDevice.orientation;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(orientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
 }
 
 /// Fullscreen web interstitial configuration
@@ -143,11 +156,29 @@
 
 - (void)addTemplateConstraints
 {
+    [self updateTemplateConstraints];
+}
+
+- (void)updateTemplateConstraints
+{
+    [self.view removeConstraints:[self.view constraints]];
     [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
-    [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:0] setActive:YES];
-    [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:0] setActive:YES];
-    [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:0] setActive:YES];
-    [[self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:0] setActive:YES];
+    CGFloat top = 0;
+    CGFloat bottom = 0;
+    CGFloat left = 0;
+    CGFloat right = 0;
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
+    if (@available(iOS 11, *)) {
+#endif
+        top = -UIApplication.sharedApplication.delegate.window.safeAreaInsets.top;
+        bottom = UIApplication.sharedApplication.delegate.window.safeAreaInsets.bottom;
+        left = -UIApplication.sharedApplication.delegate.window.safeAreaInsets.left;
+        right = UIApplication.sharedApplication.delegate.window.safeAreaInsets.right;
+    }
+    [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:top] setActive:YES];
+    [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:bottom] setActive:YES];
+    [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:left] setActive:YES];
+    [[self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:right] setActive:YES];
 }
 
 - (void)addBannerConstraints
@@ -337,6 +368,25 @@
     NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
     NSArray *components = [htmlString componentsSeparatedByCharactersInSet:letterSet];
     return [[components componentsJoinedByString:@""] floatValue];
+}
+
+#pragma mark Orientation
+- (void)orientationDidChange:(NSNotification *)notification
+{
+    UIDevice *device = notification.object;
+    // Bug with iOS, calls orientation did change even without change,
+    // Check if the orientation is not changed than before.
+    if (_orientation != device.orientation) {
+        _orientation = device.orientation;
+        [self updateLayout];
+    }
+}
+
+- (void)updateLayout
+{
+    if ([self.context.actionName isEqualToString:LPMT_HTML_NAME] && !self.isBanner) {
+        [self updateTemplateConstraints];
+    }
 }
 
 @end
