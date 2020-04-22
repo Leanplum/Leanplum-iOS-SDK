@@ -81,6 +81,11 @@
                                                object:nil];
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+}
+
 /// Fullscreen web interstitial configuration
 - (void)configureFullscreen
 {
