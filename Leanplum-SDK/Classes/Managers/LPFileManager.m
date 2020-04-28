@@ -37,10 +37,10 @@
 #import "LPCountAggregator.h"
 #import "LPFileTransferManager.h"
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, LeanplumFileTraversalOperation) {
     kLeanplumFileOperationGet = 0,
     kLeanplumFileOperationDelete = 1,
-} LeanplumFileTraversalOperation;
+};
 
 NSString *appBundlePath;
 BOOL initializing = NO;
