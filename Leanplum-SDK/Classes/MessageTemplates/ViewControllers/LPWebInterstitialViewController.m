@@ -163,18 +163,19 @@
 {
     [self.view removeConstraints:[self.view constraints]];
     [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
+
     CGFloat top = 0;
     CGFloat bottom = 0;
     CGFloat left = 0;
     CGFloat right = 0;
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
+
     if (@available(iOS 11, *)) {
-#endif
-        top = -UIApplication.sharedApplication.delegate.window.safeAreaInsets.top;
-        bottom = UIApplication.sharedApplication.delegate.window.safeAreaInsets.bottom;
-        left = -UIApplication.sharedApplication.delegate.window.safeAreaInsets.left;
-        right = UIApplication.sharedApplication.delegate.window.safeAreaInsets.right;
+        top = -UIApplication.sharedApplication.keyWindow.safeAreaInsets.top;
+        bottom = UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom;
+        left = -UIApplication.sharedApplication.keyWindow.safeAreaInsets.left;
+        right = UIApplication.sharedApplication.keyWindow.safeAreaInsets.right;
     }
+
     [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:top] setActive:YES];
     [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:bottom] setActive:YES];
     [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:left] setActive:YES];
@@ -195,10 +196,8 @@
         width = [self valueFromHtmlString:widthArgument percentRange:width];
     }
 
-// use safeAreaLayoutGuide if we are targeting iOS 11 and above, otherwise fallback to layoutGuide.
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
+    // use safeAreaLayoutGuide if we are targeting iOS 11 and above, otherwise fallback to layoutGuide.
     if (@available(iOS 11, *)) {
-#endif
         if (alignBottom) {
             // align bottom
             [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:0] setActive:YES];
@@ -206,7 +205,6 @@
             // align top
             [[self.webView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:0] setActive:YES];
         }
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_11_0
     } else {
         if (alignBottom) {
             // align bottom
@@ -216,7 +214,6 @@
             [[self.webView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor constant:0] setActive:YES];
         }
     }
-#endif
 
     // height constraint
     [[self.webView.heightAnchor constraintEqualToConstant:height] setActive:YES];
