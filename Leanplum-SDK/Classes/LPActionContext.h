@@ -26,6 +26,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(ActionContext)
 @interface LPActionContext : NSObject
 
 - (NSString *)actionName;

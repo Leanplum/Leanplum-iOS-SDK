@@ -28,6 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - LPInboxMessage interface
 
+NS_SWIFT_NAME(InboxMessage)
 @interface LPInboxMessage : NSObject <NSCoding>
 
 #pragma mark - LPInboxMessage methods
@@ -100,6 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void (^LeanplumInboxChangedBlock)(void);
 typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 
+NS_SWIFT_NAME(LeanplumInbox)
 @interface LPInbox : NSObject
 
 #pragma mark - LPInbox methods

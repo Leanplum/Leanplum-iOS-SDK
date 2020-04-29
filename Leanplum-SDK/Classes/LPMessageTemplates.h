@@ -34,6 +34,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+NS_SWIFT_NAME(MessageTemplates)
 @interface LPMessageTemplatesClass : NSObject <UIAlertViewDelegate, WKNavigationDelegate>
 
 + (LPMessageTemplatesClass *)sharedTemplates;

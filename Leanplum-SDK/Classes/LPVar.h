@@ -49,6 +49,7 @@ typedef void (^LeanplumVariablesChangedBlock)(void);
  * A variable is any part of your application that can change from an experiment.
  * Check out {@link Macros the macros} for defining variables more easily.
  */
+NS_SWIFT_NAME(Var)
 @interface LPVar : NSObject
 /**
  * @{
