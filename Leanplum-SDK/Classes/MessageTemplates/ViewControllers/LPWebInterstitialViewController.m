@@ -89,12 +89,6 @@
 /// Fullscreen web interstitial configuration
 - (void)configureFullscreen
 {
-    self.view.backgroundColor = [UIColor clearColor];
-    [self.view setOpaque:NO];
-
-    self.webView.backgroundColor = [UIColor clearColor];
-    [self.webView setOpaque:NO];
-
     [self addFullscreenConstraints];
 }
 
