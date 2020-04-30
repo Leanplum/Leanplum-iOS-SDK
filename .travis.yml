@@ -14,10 +14,11 @@ before_install:
 before_deploy:
   - ./Tools/verifyTag.sh
   - ./Tools/build.sh
+  - ./Tools/triggerLocation.sh
 
 after_deploy:
   - ./Tools/triggerRondo.sh
-  - ./Tools/triggerRN.sh
+  - version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi; # trigger ReactNative if not beta release
 
 deploy:
   - provider: releases
