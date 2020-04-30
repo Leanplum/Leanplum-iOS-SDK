@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - LPInboxMessage interface
 
-NS_SWIFT_NAME(InboxMessage)
+NS_SWIFT_NAME(LeanplumInbox.Message)
 @interface LPInboxMessage : NSObject <NSCoding>
 
 #pragma mark - LPInboxMessage methods
