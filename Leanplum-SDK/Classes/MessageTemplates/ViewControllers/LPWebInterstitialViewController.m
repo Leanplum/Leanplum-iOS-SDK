@@ -178,6 +178,11 @@
 
 - (void)addBannerConstraints
 {
+    [self updateBannerConstraints];
+}
+
+- (void)updateBannerConstraints
+{
     NSString *alignArgument = [self.context stringNamed:LPMT_ARG_HTML_ALIGN];
     NSString *widthArgument = [self.context stringNamed:LPMT_ARG_HTML_WIDTH];
     NSString *heightArgument = [self.context stringNamed:LPMT_ARG_HTML_HEIGHT];
@@ -368,10 +373,12 @@
 
 - (void)updateLayout
 {
-    if ([self.context.actionName isEqualToString:LPMT_HTML_NAME] && !self.isBanner) {
-        [self updateTemplateConstraints];
-    } else if (self.isBanner) {
-        [self addBannerConstraints];
+    if ([self.context.actionName isEqualToString:LPMT_HTML_NAME]) {
+        if (self.isBanner) {
+            [self updateBannerConstraints];
+        } else {
+            [self updateTemplateConstraints];
+        }
     }
 }
 
