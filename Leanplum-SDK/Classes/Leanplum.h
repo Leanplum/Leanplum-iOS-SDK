@@ -82,6 +82,8 @@
 #import "LPNetworkEngine.h"
 #import "LPAES.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
 static void __attribute__((constructor)) initialize_##name() { \
 @autoreleasepool { \
@@ -189,10 +191,10 @@ typedef void (^LeanplumPushSetupBlock)(void);
  * This is a bit-field. To choose both kinds, use
  * kLeanplumActionKindMessage | kLeanplumActionKindAction
  */
-typedef enum {
+typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
     kLeanplumActionKindMessage = 0b1,
     kLeanplumActionKindAction = 0b10,
-} LeanplumActionKind;
+};
 
 #define LP_PURCHASE_EVENT @"Purchase"
 
@@ -329,8 +331,8 @@ typedef enum {
  * @param patternsToExcludeOrNil Exclude paths matching at least one of these patterns.
  *     Supply nil to indicate no exclusion patterns.
  */
-+ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
-                excluding:(NSArray *)patternsToExcludeOrNil __attribute__((deprecated));
++ (void)syncResourcePaths:(NSArray * _Nullable)patternsToIncludeOrNil
+                excluding:(NSArray * _Nullable)patternsToExcludeOrNil __attribute__((deprecated));
 
 /**
  * Syncs resources between Leanplum and the current app.
@@ -346,8 +348,8 @@ typedef enum {
  *     index the app's resources. If async is set, resources may not be available immediately
  *     when the app starts.
  */
-+ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
-                excluding:(NSArray *)patternsToExcludeOrNil
++ (void)syncResourcePaths:(NSArray * _Nullable)patternsToIncludeOrNil
+                excluding:(NSArray * _Nullable)patternsToExcludeOrNil
                     async:(BOOL)async;
 /**@}*/
 
@@ -435,10 +437,10 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
 + (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
          withOptions:(NSDictionary *)options;
 + (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
-       withResponder:(LeanplumActionBlock)responder;
+       withResponder:(LeanplumActionBlock _Nullable)responder;
 + (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
          withOptions:(NSDictionary *)options
-       withResponder:(LeanplumActionBlock)responder;
+       withResponder:(LeanplumActionBlock _Nullable)responder;
 /**@}*/
 
 /**
@@ -567,7 +569,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * @param info Anything else you want to log with the state. For example, if the state
  * is watchVideo, info could be the video ID.
  */
-+ (void)advanceTo:(NSString *)state withInfo:(NSString *)info;
++ (void)advanceTo:(NSString *)state withInfo:(NSString * _Nullable)info;
 
 /**
  * Advances to a particular state in your application. The string can be
@@ -578,7 +580,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * @param state The name of the state.
  * @param params A dictionary with custom parameters.
  */
-+ (void)advanceTo:(NSString *)state withParameters:(NSDictionary *)params;
++ (void)advanceTo:(NSString *)state withParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Advances to a particular state in your application. The string can be
@@ -591,7 +593,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * is watchVideo, info could be the video ID.
  * @param params A dictionary with custom parameters.
  */
-+ (void)advanceTo:(NSString *)state withInfo:(NSString *)info andParameters:(NSDictionary *)params;
++ (void)advanceTo:(NSString *)state withInfo:(NSString * _Nullable)info andParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Pauses the current state.
@@ -636,7 +638,7 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  * trackInAppPurchases to automatically track IAPs.
  */
 + (void)trackPurchase:(NSString *)event withValue:(double)value
-      andCurrencyCode:(NSString *)currencyCode andParameters:(NSDictionary *)params;
+      andCurrencyCode:(NSString * _Nullable)currencyCode andParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Automatically tracks InApp purchase and does server side receipt validation.
@@ -657,16 +659,16 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  */
 + (void)track:(NSString *)event;
 + (void)track:(NSString *)event withValue:(double)value;
-+ (void)track:(NSString *)event withInfo:(NSString *)info;
-+ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info;
++ (void)track:(NSString *)event withInfo:(NSString * _Nullable)info;
++ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString * _Nullable)info;
 
 // See above for the explanation of params.
-+ (void)track:(NSString *)event withParameters:(NSDictionary *)params;
-+ (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary *)params;
-+ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString *)info andParameters:(NSDictionary *)params;
++ (void)track:(NSString *)event withParameters:(NSDictionary * _Nullable)params;
++ (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary * _Nullable)params;
++ (void)track:(NSString *)event withValue:(double)value andInfo:(NSString * _Nullable)info andParameters:(NSDictionary * _Nullable)params;
 /**@}*/
 
-+ (void)trackGeofence:(LPGeofenceEventType)event withInfo:(NSString *)info;
++ (void)trackGeofence:(LPGeofenceEventType)event withInfo:(NSString * _Nullable)info;
 
 /**
  * @{
@@ -739,7 +741,7 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 /**
  * Get the push setup block.
  */
-+ (LeanplumPushSetupBlock)pushSetupBlock;
++ (LeanplumPushSetupBlock _Nullable)pushSetupBlock;
 
 /**
  * Returns YES if the app existed on the device more than a day previous to a version built with
@@ -751,13 +753,13 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  * Returns the deviceId in the current Leanplum session. This should only be called after
  * [Leanplum start].
  */
-+ (NSString *)deviceId;
++ (NSString * _Nullable)deviceId;
 
 /**
  * Returns the userId in the current Leanplum session. This should only be called after
  * [Leanplum start].
  */
-+ (NSString *)userId;
++ (NSString * _Nullable)userId;
 
 /**
  * Returns an instance to the singleton LPInbox object.
@@ -773,11 +775,11 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
 /**
  * Types of location accuracy. Higher value implies better accuracy.
  */
-typedef enum {
+typedef NS_ENUM(NSUInteger, LPLocationAccuracyType) {
     LPLocationAccuracyIP = 0,
     LPLocationAccuracyCELL = 1,
     LPLocationAccuracyGPS = 2
-} LPLocationAccuracyType;
+};
 
 /**
  * Set location manually. Calls setDeviceLocationWithLatitude:longitude:type: with cell type.
@@ -801,9 +803,9 @@ typedef enum {
  */
 + (void)setDeviceLocationWithLatitude:(double)latitude
                             longitude:(double)longitude
-                                 city:(NSString *)city
-                               region:(NSString *)region
-                              country:(NSString *)country
+                                 city:(NSString * _Nullable)city
+                               region:(NSString * _Nullable)region
+                              country:(NSString * _Nullable)country
                                  type:(LPLocationAccuracyType)type;
 
 /**
@@ -812,3 +814,5 @@ typedef enum {
 + (void)disableLocationCollection;
 
 @end
+
+NS_ASSUME_NONNULL_END

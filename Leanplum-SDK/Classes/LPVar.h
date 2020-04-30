@@ -24,6 +24,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^LeanplumVariablesChangedBlock)(void);
 
 @class LPVar;
@@ -61,8 +63,8 @@ typedef void (^LeanplumVariablesChangedBlock)(void);
 + (LPVar *)define:(NSString *)name withShort:(short)defaultValue;
 + (LPVar *)define:(NSString *)name withChar:(char)defaultValue;
 + (LPVar *)define:(NSString *)name withBool:(BOOL)defaultValue;
-+ (LPVar *)define:(NSString *)name withString:(NSString *)defaultValue;
-+ (LPVar *)define:(NSString *)name withNumber:(NSNumber *)defaultValue;
++ (LPVar *)define:(NSString *)name withString:(NSString * _Nullable)defaultValue;
++ (LPVar *)define:(NSString *)name withNumber:(NSNumber * _Nullable)defaultValue;
 + (LPVar *)define:(NSString *)name withInteger:(NSInteger)defaultValue;
 + (LPVar *)define:(NSString *)name withLong:(long)defaultValue;
 + (LPVar *)define:(NSString *)name withLongLong:(long long)defaultValue;
@@ -72,10 +74,10 @@ typedef void (^LeanplumVariablesChangedBlock)(void);
 + (LPVar *)define:(NSString *)name withUnsignedLong:(unsigned long)defaultValue;
 + (LPVar *)define:(NSString *)name withUnsignedLongLong:(unsigned long long)defaultValue;
 + (LPVar *)define:(NSString *)name withUnsignedShort:(unsigned short)defaultValue;
-+ (LPVar *)define:(NSString *)name withFile:(NSString *)defaultFilename;
-+ (LPVar *)define:(NSString *)name withDictionary:(NSDictionary *)defaultValue;
-+ (LPVar *)define:(NSString *)name withArray:(NSArray *)defaultValue;
-+ (LPVar *)define:(NSString *)name withColor:(UIColor *)defaultValue;
++ (LPVar *)define:(NSString *)name withFile:(NSString * _Nullable)defaultFilename;
++ (LPVar *)define:(NSString *)name withDictionary:(NSDictionary * _Nullable)defaultValue;
++ (LPVar *)define:(NSString *)name withArray:(NSArray * _Nullable)defaultValue;
++ (LPVar *)define:(NSString *)name withColor:(UIColor * _Nullable)defaultValue;
 /**@}*/
 
 /**
@@ -91,7 +93,7 @@ typedef void (^LeanplumVariablesChangedBlock)(void);
 /**
  * Returns the default value of a variable.
  */
-- (id)defaultValue;
+- (id _Nullable)defaultValue;
 
 /**
  * Returns the kind of the variable.
@@ -129,10 +131,10 @@ typedef void (^LeanplumVariablesChangedBlock)(void);
 - (id)objectForKeyPathComponents:(NSArray *)pathComponents;
 - (NSUInteger)count;
 
-- (NSNumber *)numberValue;
-- (NSString *)stringValue;
-- (NSString *)fileValue;
-- (UIImage *)imageValue;
+- (NSNumber * _Nullable)numberValue;
+- (NSString * _Nullable)stringValue;
+- (NSString * _Nullable)fileValue;
+- (UIImage * _Nullable)imageValue;
 - (int)intValue;
 - (double)doubleValue;
 - (CGFloat)cgFloatValue;
@@ -149,6 +151,8 @@ typedef void (^LeanplumVariablesChangedBlock)(void);
 - (NSUInteger)unsignedIntegerValue;
 - (unsigned long)unsignedLongValue;
 - (unsigned long long)unsignedLongLongValue;
-- (UIColor *)colorValue;
+- (UIColor * _Nullable)colorValue;
 /**@}*/
 @end
+
+NS_ASSUME_NONNULL_END

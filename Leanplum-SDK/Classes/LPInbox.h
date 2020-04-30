@@ -24,6 +24,8 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 #pragma mark - LPInboxMessage interface
 
 @interface LPInboxMessage : NSObject <NSCoding>
@@ -49,29 +51,29 @@
  * Returns the image path of the inbox message. Can be nil.
  * Use with [UIImage contentsOfFile:].
  */
-- (NSString *)imageFilePath;
+- (NSString * _Nullable)imageFilePath;
 
 /**
  * Returns the image URL of the inbox message.
  * You can safely use this with prefetching enabled.
  * It will return the file URL path instead if the image is in cache.
  */
-- (NSURL *)imageURL;
+- (NSURL * _Nullable)imageURL;
 
 /**
  * Returns the data of the inbox message. Advanced use only.
  */
-- (NSDictionary *)data;
+- (NSDictionary * _Nullable)data;
 
 /**
  * Returns the delivery timestamp of the inbox message.
  */
-- (NSDate *)deliveryTimestamp;
+- (NSDate * _Nullable)deliveryTimestamp;
 
 /**
  * Return the expiration timestamp of the inbox message.
  */
-- (NSDate *)expirationTimestamp;
+- (NSDate * _Nullable)expirationTimestamp;
 
 /**
  * Returns YES if the inbox message is read.
@@ -136,7 +138,7 @@ typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 /**
  * Returns the inbox messages associated with the given messageId identifier.
  */
-- (LPInboxMessage *)messageForId:(NSString *)messageId;
+- (LPInboxMessage * _Nullable)messageForId:(NSString *)messageId;
 
 /**
  * Call this method if you don't want Inbox images to be prefetched.
@@ -186,8 +188,10 @@ typedef void (^LeanplumNewsfeedChangedBlock)(void);
 - (NSArray *)allMessages;
 - (NSArray *)unreadMessages;
 - (void)onChanged:(LeanplumNewsfeedChangedBlock)block;
-- (LPNewsfeedMessage *)messageForId:(NSString *)messageId;
+- (LPNewsfeedMessage * _Nullable)messageForId:(NSString *)messageId;
 - (void)addNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
 - (void)removeNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
 
 @end
+
+NS_ASSUME_NONNULL_END

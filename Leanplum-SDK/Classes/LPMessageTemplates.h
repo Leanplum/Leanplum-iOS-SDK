@@ -32,6 +32,8 @@
 #import <WebKit/WebKit.h>
 #import "Leanplum.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPMessageTemplatesClass : NSObject <UIAlertViewDelegate, WKNavigationDelegate>
 
 + (LPMessageTemplatesClass *)sharedTemplates;
@@ -40,3 +42,5 @@
 - (void)refreshPushPermissions;
 
 @end
+
+NS_ASSUME_NONNULL_END
