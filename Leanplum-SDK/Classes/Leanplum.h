@@ -559,7 +559,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * A state is a section of your app that the user is currently in.
  * @param state The name of the state.
  */
-+ (void)advanceTo:(NSString *)state;
++ (void)advanceTo:(NSString * _Nullable)state;
 
 /**
  * Advances to a particular state in your application. The string can be
@@ -569,7 +569,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * @param info Anything else you want to log with the state. For example, if the state
  * is watchVideo, info could be the video ID.
  */
-+ (void)advanceTo:(NSString *)state withInfo:(NSString * _Nullable)info;
++ (void)advanceTo:(NSString * _Nullable)state withInfo:(NSString * _Nullable)info;
 
 /**
  * Advances to a particular state in your application. The string can be
@@ -580,7 +580,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * @param state The name of the state.
  * @param params A dictionary with custom parameters.
  */
-+ (void)advanceTo:(NSString *)state withParameters:(NSDictionary * _Nullable)params;
++ (void)advanceTo:(NSString * _Nullable)state withParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Advances to a particular state in your application. The string can be
@@ -593,7 +593,7 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * is watchVideo, info could be the video ID.
  * @param params A dictionary with custom parameters.
  */
-+ (void)advanceTo:(NSString *)state withInfo:(NSString * _Nullable)info andParameters:(NSDictionary * _Nullable)params;
++ (void)advanceTo:(NSString * _Nullable)state withInfo:(NSString * _Nullable)info andParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Pauses the current state.
