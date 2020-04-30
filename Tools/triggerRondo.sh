@@ -1,15 +1,15 @@
 #!/bin/bash
 version=`cat sdk-version.txt`
 body="{
-\"request\": {
-\"branch\" : \"master\",
-\"message\" : \"Building and uploading $version\",
+\"request\":{
+\"branch\":\"master\",
+\"message\": \"Building and uploading $version\",
  \"config\": {
    \"env\": {
      \"LEANPLUM_SDK_VERSION\": \"$version\"
    }
   }
-}}'"
+}}"
 
 curl -s -X POST \
    -H "Content-Type: application/json" \
