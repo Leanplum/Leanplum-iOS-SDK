@@ -17,6 +17,7 @@ before_deploy:
 
 after_deploy:
   - ./Tools/triggerRondo.sh
+  - ./Tools/triggerRN.sh
 
 deploy:
   - provider: releases
