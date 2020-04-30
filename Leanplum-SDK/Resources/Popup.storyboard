@@ -41,6 +41,7 @@
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="awH-VX-oho">
                                                 <rect key="frame" x="144.5" y="0.0" width="139.5" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                                 <state key="normal" title="Accept"/>
                                                 <connections>
                                                     <action selector="didTapAcceptButton:" destination="5cc-MC-AF7" eventType="touchUpInside" id="7vl-Li-h4J"/>
@@ -49,13 +50,13 @@
                                         </subviews>
                                     </stackView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0rH-TF-2CS">
-                                        <rect key="frame" x="8" y="15" width="284" height="20.5"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <rect key="frame" x="8" y="32" width="284" height="24"/>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="Message" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bPT-Pn-urX">
-                                        <rect key="frame" x="8" y="43.5" width="284" height="160.5"/>
+                                        <rect key="frame" x="8" y="64" width="284" height="140"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -71,7 +72,7 @@
                                     <constraint firstAttribute="trailing" secondItem="bPT-Pn-urX" secondAttribute="trailing" constant="8" id="7RN-U4-GiX"/>
                                     <constraint firstAttribute="trailing" secondItem="uuW-hM-CIw" secondAttribute="trailing" constant="-10" id="8HK-yl-JaI"/>
                                     <constraint firstAttribute="trailing" secondItem="8Pq-qc-xcM" secondAttribute="trailing" id="De8-1B-y17"/>
-                                    <constraint firstItem="0rH-TF-2CS" firstAttribute="top" secondItem="WMO-0p-OCC" secondAttribute="top" constant="15" id="Ks0-W7-WZY"/>
+                                    <constraint firstItem="0rH-TF-2CS" firstAttribute="top" secondItem="WMO-0p-OCC" secondAttribute="top" constant="32" id="Ks0-W7-WZY"/>
                                     <constraint firstAttribute="trailing" secondItem="0rH-TF-2CS" secondAttribute="trailing" constant="8" id="Xie-Jb-kKn"/>
                                     <constraint firstAttribute="bottom" secondItem="aHI-yk-Bti" secondAttribute="bottom" constant="8" id="Xxr-RO-uaI"/>
                                     <constraint firstItem="bPT-Pn-urX" firstAttribute="leading" secondItem="WMO-0p-OCC" secondAttribute="leading" constant="8" id="YAq-Is-RoX"/>
