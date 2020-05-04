@@ -33,14 +33,22 @@ NS_SWIFT_NAME(ActionArg)
  * @{
  * Defines a Leanplum Action Argument
  */
-+ (LPActionArg *)argNamed:(NSString *)name withNumber:(NSNumber *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withString:(NSString *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withBool:(BOOL)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withFile:(NSString *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withDict:(NSDictionary *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withArray:(NSArray *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withAction:(NSString *)defaultValue;
-+ (LPActionArg *)argNamed:(NSString *)name withColor:(UIColor *)defaultValue;
++ (LPActionArg *)argNamed:(NSString *)name withNumber:(NSNumber *)defaultValue
+NS_SWIFT_NAME(init(name:number:));
++ (LPActionArg *)argNamed:(NSString *)name withString:(NSString *)defaultValue
+NS_SWIFT_NAME(init(name:string:));
++ (LPActionArg *)argNamed:(NSString *)name withBool:(BOOL)defaultValue
+NS_SWIFT_NAME(init(name:boolean:));
++ (LPActionArg *)argNamed:(NSString *)name withFile:(nullable NSString *)defaultValue
+NS_SWIFT_NAME(init(name:file:));
++ (LPActionArg *)argNamed:(NSString *)name withDict:(NSDictionary *)defaultValue
+NS_SWIFT_NAME(init(name:dictionary:));
++ (LPActionArg *)argNamed:(NSString *)name withArray:(NSArray *)defaultValue
+NS_SWIFT_NAME(init(name:array:));
++ (LPActionArg *)argNamed:(NSString *)name withAction:(nullable NSString *)defaultValue
+NS_SWIFT_NAME(init(name:action:));
++ (LPActionArg *)argNamed:(NSString *)name withColor:(UIColor *)defaultValue
+NS_SWIFT_NAME(init(name:color:));
 /**@}*/
 
 @property (readonly, strong) NSString *name;

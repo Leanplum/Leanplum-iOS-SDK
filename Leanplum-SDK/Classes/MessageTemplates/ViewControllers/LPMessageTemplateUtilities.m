@@ -21,7 +21,7 @@
     }];
 }
 
-+(void)dismissExisitingViewController:(void (^ __nullable)(void)) completion
++(void)dismissExisitingViewController:(nullable void (^)(void)) completion
 {
     UIViewController *topViewController = [self visibleViewController];
 

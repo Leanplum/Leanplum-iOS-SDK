@@ -35,8 +35,8 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 + (void)showWithTitle:(NSString *)title
               message:(NSString *)message
     cancelButtonTitle:(NSString *)cancelButtonTitle
-    otherButtonTitles:(NSArray *)otherButtonTitles
-                block:(LeanplumUIAlertCompletionBlock)block;
+    otherButtonTitles:(nullable NSArray *)otherButtonTitles
+                block:(nullable LeanplumUIAlertCompletionBlock)block;
 
 @end
 

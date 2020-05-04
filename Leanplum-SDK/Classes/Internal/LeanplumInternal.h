@@ -31,6 +31,8 @@
 #import "LPInternalState.h"
 #import "LPCountAggregator.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class LeanplumSocket;
 @class LPRegisterDevice;
 
@@ -150,3 +152,4 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 
 @end
 
+NS_ASSUME_NONNULL_END

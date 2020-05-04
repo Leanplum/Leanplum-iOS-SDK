@@ -1622,7 +1622,7 @@ BOOL inForeground = NO;
 
     LP_TRY
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
-    [[LPVarCache sharedCache] registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
+    [[LPVarCache sharedCache] registerActionDefinition:name ofKind:(int) kind withArguments:args andOptions:options];
     if (responder) {
         [Leanplum onAction:name invoke:responder];
     }

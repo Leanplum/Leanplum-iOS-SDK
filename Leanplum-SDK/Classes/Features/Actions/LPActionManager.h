@@ -61,11 +61,11 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock _Nullable)completionHandler;
+              fetchCompletionHandler:(nullable LeanplumFetchCompletionBlock)completionHandler;
 - (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
-                 withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
+                 withCompletionHandler:(nullable void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
 - (void)willPresentNotification:(UNNotification *)notification
-          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
+          withCompletionHandler:(nullable void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
@@ -81,8 +81,8 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
 - (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-                          withAction:(NSString *)action
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+                          withAction:(nullable NSString *)action
+              fetchCompletionHandler:(nullable LeanplumFetchCompletionBlock)completionHandler;
 
 #pragma mark - Messages
 
