@@ -200,6 +200,8 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
 
 @interface Leanplum : NSObject
 
+- (instancetype)init NS_UNAVAILABLE;
+
 /**
  * Optional. Sets the API server. The API path is of the form http[s]://hostname/servletName
  * @param hostName The name of the API host, such as api.leanplum.com
@@ -334,8 +336,8 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
  * @param patternsToExcludeOrNil Exclude paths matching at least one of these patterns.
  *     Supply nil to indicate no exclusion patterns.
  */
-+ (void)syncResourcePaths:(nullable NSArray *)patternsToIncludeOrNil
-                excluding:(nullable NSArray *)patternsToExcludeOrNil __attribute__((deprecated));
++ (void)syncResourcePaths:(nullable NSArray<NSString *> *)patternsToIncludeOrNil
+                excluding:(nullable NSArray<NSString *> *)patternsToExcludeOrNil __attribute__((deprecated));
 
 /**
  * Syncs resources between Leanplum and the current app.
@@ -351,8 +353,8 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
  *     index the app's resources. If async is set, resources may not be available immediately
  *     when the app starts.
  */
-+ (void)syncResourcePaths:(nullable NSArray *)patternsToIncludeOrNil
-                excluding:(nullable NSArray *)patternsToExcludeOrNil
++ (void)syncResourcePaths:(nullable NSArray<NSString *> *)patternsToIncludeOrNil
+                excluding:(nullable NSArray<NSString *> *)patternsToExcludeOrNil
                     async:(BOOL)async;
 /**@}*/
 
@@ -363,18 +365,26 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
  * of the variables used in your app.
  */
 + (void)start;
+
 + (void)startWithResponseHandler:(LeanplumStartBlock)response
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
-+ (void)startWithUserAttributes:(NSDictionary *)attributes
+
++ (void)startWithUserAttributes:(NSDictionary<NSString *, id> *)attributes
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
+
 + (void)startWithUserId:(NSString *)userId
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
-+ (void)startWithUserId:(NSString *)userId responseHandler:(LeanplumStartBlock)response
+
++ (void)startWithUserId:(NSString *)userId
+        responseHandler:(LeanplumStartBlock)response
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
-+ (void)startWithUserId:(NSString *)userId userAttributes:(NSDictionary *)attributes
+
++ (void)startWithUserId:(NSString *)userId
+         userAttributes:(NSDictionary<NSString *, id> *)attributes
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
+
 + (void)startWithUserId:(nullable NSString *)userId
-         userAttributes:(nullable NSDictionary *)attributes
+         userAttributes:(nullable NSDictionary<NSString *, id> *)attributes
         responseHandler:(nullable LeanplumStartBlock)startResponse
 NS_SWIFT_NAME(start(userId:attributes:completion:));
 /**@}*/
@@ -443,14 +453,29 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  * @{
  * Defines new action and message types to be performed at points set up on the Leanplum dashboard.
  */
-+ (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args;
-+ (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
-         withOptions:(NSDictionary *)options;
-+ (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
-       withResponder:(nullable LeanplumActionBlock)responder;
-+ (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
++ (void)defineAction:(NSString *)name
+              ofKind:(LeanplumActionKind)kind
+       withArguments:(NSArray *)args
+NS_SWIFT_NAME(defineAction(name:kind:args:));
+
++ (void)defineAction:(NSString *)name
+              ofKind:(LeanplumActionKind)kind
+       withArguments:(NSArray *)args
          withOptions:(NSDictionary *)options
-       withResponder:(nullable LeanplumActionBlock)responder;
+NS_SWIFT_NAME(defineAction(name:kind:args:options:));
+
++ (void)defineAction:(NSString *)name
+              ofKind:(LeanplumActionKind)kind
+       withArguments:(NSArray *)args
+       withResponder:(nullable LeanplumActionBlock)responder
+NS_SWIFT_NAME(defineAction(name:kind:args:completion:));
+
++ (void)defineAction:(NSString *)name
+              ofKind:(LeanplumActionKind)kind
+       withArguments:(NSArray *)args
+         withOptions:(NSDictionary *)options
+       withResponder:(nullable LeanplumActionBlock)responder
+NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 /**@}*/
 
 /**
@@ -597,7 +622,7 @@ NS_SWIFT_NAME(advance(state:info:));
  * @param params A dictionary with custom parameters.
  */
 + (void)advanceTo:(nullable NSString *)state
-   withParameters:(nullable NSDictionary *)params
+   withParameters:(nullable NSDictionary<NSString *, id> *)params
 NS_SWIFT_NAME(advance(state:params:));
 
 /**
@@ -613,7 +638,7 @@ NS_SWIFT_NAME(advance(state:params:));
  */
 + (void)advanceTo:(nullable NSString *)state
          withInfo:(nullable NSString *)info
-    andParameters:(nullable NSDictionary *)params
+    andParameters:(nullable NSDictionary<NSString *, id> *)params
 NS_SWIFT_NAME(advance(state:info:params:));
 
 /**
@@ -621,14 +646,12 @@ NS_SWIFT_NAME(advance(state:info:params:));
  * You can use this if your game has a "pause" mode. You shouldn't call it
  * when someone switches out of your app because that's done automatically.
  */
-+ (void)pauseState
-NS_SWIFT_NAME(pause());
++ (void)pauseState;
 
 /**
  * Resumes the current state.
  */
-+ (void)resumeState
-NS_SWIFT_NAME(resume());
++ (void)resumeState;
 
 /**
  * Automatically tracks all of the screens in the app as states.
@@ -665,7 +688,7 @@ NS_SWIFT_NAME(trackAppScreens(mode:));
 + (void)trackPurchase:(NSString *)event
             withValue:(double)value
       andCurrencyCode:(nullable NSString *)currencyCode
-        andParameters:(nullable NSDictionary *)params
+        andParameters:(nullable NSDictionary<NSString *, id> *)params
 NS_SWIFT_NAME(track(event:value:currencyCode:params:));
 
 
@@ -689,26 +712,39 @@ NS_SWIFT_NAME(track(transaction:));
  */
 + (void)track:(NSString *)event
 NS_SWIFT_NAME(track(event:));
-+ (void)track:(NSString *)event withValue:(double)value
-NS_SWIFT_NAME(track(event:value:));
-+ (void)track:(NSString *)event withInfo:(nullable NSString *)info
-NS_SWIFT_NAME(track(event:info:));
-+ (void)track:(NSString *)event withValue:(double)value andInfo:(nullable NSString *)info
-NS_SWIFT_NAME(track(event:value:info:));
 
-// See above for the explanation of params.
-+ (void)track:(NSString *)event withParameters:(nullable NSDictionary *)params
-NS_SWIFT_NAME(track(event:params:));
-+ (void)track:(NSString *)event withValue:(double)value andParameters:(nullable NSDictionary *)params
-NS_SWIFT_NAME(track(event:value:params:));
++ (void)track:(NSString *)event
+    withValue:(double)value
+NS_SWIFT_NAME(track(event:value:));
+
++ (void)track:(NSString *)event
+     withInfo:(nullable NSString *)info
+NS_SWIFT_NAME(track(event:info:));
+
 + (void)track:(NSString *)event
     withValue:(double)value
       andInfo:(nullable NSString *)info
-andParameters:(nullable NSDictionary *)params
+NS_SWIFT_NAME(track(event:value:info:));
+
+// See above for the explanation of params.
++ (void)track:(NSString *)event withParameters:(nullable NSDictionary<NSString *, id> *)params
+NS_SWIFT_NAME(track(event:params:));
+
++ (void)track:(NSString *)event
+    withValue:(double)value
+andParameters:(nullable NSDictionary<NSString *, id> *)params
+NS_SWIFT_NAME(track(event:value:params:));
+
++ (void)track:(NSString *)event
+    withValue:(double)value
+      andInfo:(nullable NSString *)info
+andParameters:(nullable NSDictionary<NSString *, id> *)params
 NS_SWIFT_NAME(track(event:value:info:params:));
 /**@}*/
 
-+ (void)trackGeofence:(LPGeofenceEventType)event withInfo:(nullable NSString *)info;
++ (void)trackGeofence:(LPGeofenceEventType)event
+             withInfo:(nullable NSString *)info
+NS_SWIFT_NAME(track(type:info:));
 
 /**
  * @{
@@ -728,27 +764,28 @@ NS_SWIFT_NAME(track(event:value:info:params:));
 /**
  * Gets a list of content assignments for the current user.
  */
-+ (NSDictionary *)variantDebugInfo;
++ (NSDictionary<NSString *, id> *)variantDebugInfo;
 
 
 /**
  * Gets a list of variants that are currently active for this user.
  * Each variant is a dictionary containing an id.
  */
-+ (NSArray *)variants;
++ (NSArray<NSDictionary<NSString *, id> *> *)variants;
 
 /**
  * Returns metadata for all active in-app messages.
  * Recommended only for debugging purposes and advanced use cases.
  */
-+ (NSDictionary *)messageMetadata;
++ (NSDictionary<NSString *, id> *)messageMetadata;
 
 /**
  * Forces content to update from the server. If variables have changed, the
  * appropriate callbacks will fire. Use sparingly as if the app is updated,
  * you'll have to deal with potentially inconsistent state or user experience.
  */
-+ (void)forceContentUpdate;
++ (void)forceContentUpdate
+NS_SWIFT_UNAVAILABLE("use forceContentUpdate(completion:)");
 
 /**
  * Forces content to update from the server. If variables have changed, the
@@ -757,7 +794,7 @@ NS_SWIFT_NAME(track(event:value:info:params:));
  * The provided callback will always fire regardless
  * of whether the variables have changed.
  */
-+ (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block;
++ (void)forceContentUpdate:(nullable LeanplumVariablesChangedBlock)block;
 
 /**
  * This should be your first statement in a unit test. This prevents

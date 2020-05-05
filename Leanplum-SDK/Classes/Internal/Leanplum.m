@@ -2467,7 +2467,7 @@ andParameters:(NSDictionary *)params
 
 + (void)forceContentUpdate
 {
-    [self forceContentUpdate:nil];
+    [self forceContentUpdate:^{}];
 }
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
@@ -2848,9 +2848,13 @@ void LPLog(LPLogType type, NSString *format, ...) {
               "always set location manually, then call disableLocationCollection:.");
     }
 
-    [self setUserLocationAttributeWithLatitude:latitude longitude:longitude
-                                          city:city region:region country:country
-                                          type:type responseHandler:nil];
+    [self setUserLocationAttributeWithLatitude:latitude
+                                     longitude:longitude
+                                          city:city
+                                        region:region
+                                       country:country
+                                          type:type
+                               responseHandler:nil];
     LP_END_TRY
 }
 

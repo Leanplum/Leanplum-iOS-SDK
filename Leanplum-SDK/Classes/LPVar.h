@@ -155,7 +155,7 @@ NS_SWIFT_NAME(init(name:color:));
 - (id)objectForKey:(nullable NSString *)key;
 - (id)objectAtIndex:(NSUInteger )index;
 - (id)objectForKeyPath:(nullable id)firstComponent, ... NS_REQUIRES_NIL_TERMINATION;
-- (id)objectForKeyPathComponents:(nullable NSArray *)pathComponents;
+- (id)objectForKeyPathComponents:(nullable NSArray<NSString *> *)pathComponents;
 - (NSUInteger)count;
 
 - (nullable NSNumber *)numberValue;

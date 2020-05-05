@@ -31,6 +31,8 @@ NS_ASSUME_NONNULL_BEGIN
 NS_SWIFT_NAME(LeanplumInbox.Message)
 @interface LPInboxMessage : NSObject <NSCoding>
 
+- (instancetype)init NS_UNAVAILABLE;
+
 #pragma mark - LPInboxMessage methods
 
 /**
@@ -103,6 +105,8 @@ typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 
 NS_SWIFT_NAME(LeanplumInbox)
 @interface LPInbox : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark - LPInbox methods
 

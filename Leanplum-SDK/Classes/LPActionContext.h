@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 NS_SWIFT_NAME(ActionContext)
 @interface LPActionContext : NSObject
 
+- (instancetype)init NS_UNAVAILABLE;
+
 - (NSString *)actionName
 NS_SWIFT_NAME(action());
 
@@ -37,16 +39,22 @@ NS_SWIFT_NAME(string(name:));
 
 - (nullable NSString *)fileNamed:(NSString *)name
 NS_SWIFT_NAME(file(name:));
+
 - (nullable NSNumber *)numberNamed:(NSString *)name
 NS_SWIFT_NAME(number(name:));
+
 - (BOOL)boolNamed:(NSString *)name
 NS_SWIFT_NAME(boolean(name:));
+
 - (nullable NSDictionary *)dictionaryNamed:(NSString *)name
 NS_SWIFT_NAME(dictionary(name:));
+
 - (nullable NSArray *)arrayNamed:(NSString *)name
 NS_SWIFT_NAME(array(name:));
+
 - (nullable UIColor *)colorNamed:(NSString *)name
 NS_SWIFT_NAME(color(name:));
+
 - (nullable NSURL *)htmlWithTemplateNamed:(NSString *)templateName
 NS_SWIFT_NAME(htmlTemplate(name:));
 
@@ -66,7 +74,9 @@ NS_SWIFT_NAME(runTrackedAction(name:));
 /**
  * Tracks an event in the context of the current message.
  */
-- (void)track:(NSString *)event withValue:(double)value andParameters:(nullable NSDictionary *)params
+- (void)track:(NSString *)event
+    withValue:(double)value
+andParameters:(nullable NSDictionary<NSString *, id> *)params
 NS_SWIFT_NAME(track(event:value:params:));
 
 /**
@@ -76,7 +86,7 @@ NS_SWIFT_NAME(track(event:value:params:));
 - (void)trackMessageEvent:(NSString *)event
                 withValue:(double)value
                   andInfo:(nullable NSString *)info
-            andParameters:(nullable NSDictionary *)params
+            andParameters:(nullable NSDictionary<NSString *, id> *)params
 NS_SWIFT_NAME(trackMessage(event:value:info:params:));
 
 /**

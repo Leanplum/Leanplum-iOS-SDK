@@ -42,14 +42,14 @@ typedef void (^LeanplumStartIssuedBlock)(void);
 typedef void (^LeanplumEventsChangedBlock)(void);
 typedef void (^LeanplumHandledBlock)(BOOL success);
 
-typedef enum {
+typedef NS_ENUM(NSUInteger, LPLogType) {
     LPError,
     LPWarning,
     LPInfo,
     LPVerbose,
     LPInternal,
     LPDebug
-} LPLogType;
+} NS_SWIFT_NAME(Leanplum.LogType);
 
 + (void)throwError:(NSString *)reason;
 
@@ -58,16 +58,18 @@ typedef enum {
 + (void)pause;
 + (void)resume;
 
-+ (void)track:(NSString *)event
++ (void)track:(nullable NSString *)event
     withValue:(double)value
-      andArgs:(NSDictionary *)args
-andParameters:(NSDictionary *)params;
+      andArgs:(nullable NSDictionary<NSString *, id> *)args
+andParameters:(nullable NSDictionary<NSString *, id> *)params
+NS_SWIFT_NAME(track(event:value:args:params:));
 
-+ (void)track:(NSString *)event
++ (void)track:(nullable NSString *)event
     withValue:(double)value
-      andInfo:(NSString *)info
-      andArgs:(NSDictionary *)args
-andParameters:(NSDictionary *)params;
+      andInfo:(nullable NSString *)info
+      andArgs:(nullable NSDictionary<NSString *, id> *)args
+andParameters:(nullable NSDictionary<NSString *, id> *)params
+NS_SWIFT_NAME(track(event:value:info:args:params:));
 
 + (void)setUserLocationAttributeWithLatitude:(double)latitude
                                    longitude:(double)longitude
@@ -75,16 +77,17 @@ andParameters:(NSDictionary *)params;
                                       region:(NSString *)region
                                      country:(NSString *)country
                                         type:(LPLocationAccuracyType)type
-                             responseHandler:(LeanplumSetLocationBlock)response;
+                             responseHandler:(nullable LeanplumSetLocationBlock)response;
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId;
 + (void)triggerAction:(LPActionContext *)context;
-+ (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
-+ (void)maybePerformActions:(NSArray *)whenConditions
-              withEventName:(NSString *)eventName
++ (void)triggerAction:(LPActionContext *)context
+         handledBlock:(nullable LeanplumHandledBlock)handledBlock;
++ (void)maybePerformActions:(NSArray<NSString *> *)whenConditions
+              withEventName:(nullable NSString *)eventName
                  withFilter:(LeanplumActionFilter)filter
-              fromMessageId:(NSString *)sourceMessage
-       withContextualValues:(LPContextualValues *)contextualValues;
+              fromMessageId:(nullable NSString *)sourceMessage
+       withContextualValues:(nullable LPContextualValues *)contextualValues;
 
 + (NSInvocation *)createInvocationWithResponder:(id)responder selector:(SEL)selector;
 + (void)addInvocation:(NSInvocation *)invocation toSet:(NSMutableSet *)responders;

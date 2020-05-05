@@ -601,11 +601,6 @@ static NSObject *updatingLock;
 
 @implementation LPNewsfeedMessage
 
-- (id)init
-{
-    return [super init];
-}
-
 @end
 
 @implementation LPNewsfeed

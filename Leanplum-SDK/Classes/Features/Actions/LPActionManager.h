@@ -44,16 +44,18 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
     kLeanplumActionFilterForeground = 0b1,
     kLeanplumActionFilterBackground = 0b10,
     kLeanplumActionFilterAll = 0b11
-};
+} NS_SWIFT_NAME(ActionManager.ActionFilter);
 
 #define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
+NS_SWIFT_NAME(ActionManager)
 @interface LPActionManager : NSObject {
     
 }
 
-+ (LPActionManager*) sharedManager;
++ (LPActionManager*) sharedManager
+NS_SWIFT_NAME(shared());
 
 #pragma mark - Push Notifications
 

@@ -24,43 +24,53 @@
 
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @class LPVar;
 
 typedef void (^CacheUpdateBlock)(void);
 typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 
+NS_SWIFT_NAME(VarCache)
 @interface LPVarCache : NSObject
 
-+(instancetype)sharedCache;
+- (instancetype)init NS_UNAVAILABLE;
+
++(instancetype)sharedCache
+NS_SWIFT_NAME(shared());
 
 // Location initialization
 - (void)registerRegionInitBlock:(RegionInitBlock)block;
 
 // Handling variables.
-- (LPVar *)define:(NSString *)name with:(NSObject *)defaultValue kind:(NSString *)kind;
-- (NSArray *)getNameComponents:(NSString *)name;
+- (LPVar *)define:(NSString *)name
+             with:(nullable NSObject *)defaultValue
+             kind:(nullable NSString *)kind
+NS_SWIFT_NAME(define(name:value:kind:));
+
+- (NSArray<NSString *> *)getNameComponents:(NSString *)name;
 - (void)loadDiffs;
 - (void)saveDiffs;
-// Returns YES if the file was registered.
+
 - (void)registerVariable:(LPVar *)var;
-- (LPVar *)getVariable:(NSString *)name;
+- (nullable LPVar *)getVariable:(NSString *)name;
 
 // Handling values.
-- (id)getValueFromComponentArray:(NSArray *) components fromDict:(NSDictionary *)values;
-- (id)getMergedValueFromComponentArray:(NSArray *) components;
-- (NSDictionary *)diffs;
-- (NSDictionary *)messageDiffs;
-- (NSArray *)updateRulesDiffs;
-- (NSArray *)eventRulesDiffs;
+- (nullable id)getValueFromComponentArray:(NSArray<NSString *> *) components fromDict:(NSDictionary<NSString *, id> *)values;
+- (nullable id)getMergedValueFromComponentArray:(NSArray<NSString *> *) components;
+- (nullable NSDictionary<NSString *, id> *)diffs;
+- (nullable NSDictionary<NSString *, id> *)messageDiffs;
+- (nullable NSArray<NSString *> *)updateRulesDiffs;
+- (nullable NSArray<NSString *> *)eventRulesDiffs;
 - (BOOL)hasReceivedDiffs;
-- (void)applyVariableDiffs:(NSDictionary *)diffs_
-                  messages:(NSDictionary *)messages_
-               updateRules:(NSArray *)updateRules_
-                eventRules:(NSArray *)eventRules_
-                  variants:(NSArray *)variants_
-                   regions:(NSDictionary *)regions_
-          variantDebugInfo:(NSDictionary *)variantDebugInfo_;
-- (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs;
+- (void)applyVariableDiffs:(nullable NSDictionary<NSString *, id> *)diffs_
+                  messages:(nullable NSDictionary<NSString *, id> *)messages_
+               updateRules:(nullable NSArray<NSString *> *)updateRules_
+                eventRules:(nullable NSArray<NSString *> *)eventRules_
+                  variants:(nullable NSArray<NSString *> *)variants_
+                   regions:(nullable NSDictionary<NSString *, id> *)regions_
+          variantDebugInfo:(nullable NSDictionary<NSString *, id> *)variantDebugInfo_;
+- (void)applyUpdateRuleDiffs:(nullable NSArray<NSString *> *)updateRuleDiffs;
 - (void)onUpdate:(CacheUpdateBlock)block;
 - (void)onInterfaceUpdate:(CacheUpdateBlock)block;
 - (void)onEventsUpdate:(CacheUpdateBlock)block;
@@ -68,36 +78,38 @@ typedef void (^RegionInitBlock)(NSDictionary *, NSSet *, NSSet *);
 - (BOOL)silent;
 - (id)mergeHelper:(id)vars withDiffs:(id)diff;
 - (int)contentVersion;
-- (NSArray *)variants;
-- (NSDictionary *)regions;
-- (NSDictionary *)defaultKinds;
+- (nullable NSArray<NSString *> *)variants;
+- (nullable NSDictionary<NSString *, id> *)regions;
+- (nullable NSDictionary<NSString *, id> *)defaultKinds;
 
-- (NSDictionary *)variantDebugInfo;
-- (void)setVariantDebugInfo:(NSDictionary *)variantDebugInfo;
+- (nullable NSDictionary<NSString *, id> *)variantDebugInfo;
+- (void)setVariantDebugInfo:(nullable NSDictionary<NSString *, id> *)variantDebugInfo;
 
 - (void)clearUserContent;
 
 // Handling actions.
-- (NSDictionary *)actionDefinitions;
-- (NSDictionary *)messages;
+- (nullable NSDictionary<NSString *, id> *)actionDefinitions;
+- (nullable NSDictionary<NSString *, id> *)messages;
 - (void)registerActionDefinition:(NSString *)name
                           ofKind:(int)kind
-                   withArguments:(NSArray *)args
-                      andOptions:(NSDictionary *)options;
+                   withArguments:(nullable NSArray<NSString *> *)args
+                      andOptions:(nullable NSDictionary<NSString *, id> *)options;
 
 // Development mode.
-- (void)setDevModeValuesFromServer:(NSDictionary *)values
-                    fileAttributes:(NSDictionary *)fileAttributes
-                 actionDefinitions:(NSDictionary *)actionDefinitions;
+- (void)setDevModeValuesFromServer:(nullable NSDictionary<NSString *, id> *)values
+                    fileAttributes:(nullable NSDictionary<NSString *, id> *)fileAttributes
+                 actionDefinitions:(nullable NSDictionary<NSString *, id> *)actionDefinitions;
 - (BOOL)sendVariablesIfChanged;
 - (BOOL)sendActionsIfChanged;
 
 // Handling files.
 - (void)registerFile:(NSString *)stringValue withDefaultValue:(NSString *)defaultValue;
 - (void)maybeUploadNewFiles;
-- (NSDictionary *)fileAttributes;
+- (nullable NSDictionary<NSString *, id> *)fileAttributes;
 
-- (NSMutableDictionary *)userAttributes;
+- (nullable NSMutableDictionary<NSString *, id> *)userAttributes;
 - (void)saveUserAttributes;
 
 @end
+
+NS_ASSUME_NONNULL_END
