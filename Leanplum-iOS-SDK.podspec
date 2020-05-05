@@ -29,4 +29,5 @@ Analytics.
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
   s.source_files = 'Leanplum-SDK/Classes/**/*'
   s.module_name = 'Leanplum'
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end
