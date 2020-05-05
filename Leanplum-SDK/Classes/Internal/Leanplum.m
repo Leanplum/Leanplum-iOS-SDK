@@ -2467,7 +2467,7 @@ andParameters:(NSDictionary *)params
 
 + (void)forceContentUpdate
 {
-    [self forceContentUpdate:^{}];
+    [self forceContentUpdate:nil];
 }
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
