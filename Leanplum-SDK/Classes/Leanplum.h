@@ -668,8 +668,8 @@ NS_SWIFT_NAME(trackAppScreens());
  * the end of the state.
  */
 typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
-    LPTrackScreenModeDefault = 0,
-    LPTrackScreenModeStripViewController
+    LPTrackScreenModeDefault NS_SWIFT_NAME(defaultMode) = 0,
+    LPTrackScreenModeStripViewController NS_SWIFT_NAME(stripMode)
 } NS_SWIFT_NAME(Leanplum.TrackScreenMode);
 
 /**
