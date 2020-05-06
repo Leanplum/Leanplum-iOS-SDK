@@ -776,7 +776,7 @@ BOOL inForeground = NO;
             [Leanplum resume];
             return;
         }
-        [self throwError:@"Already called start."];
+        NSLog(@"Leanplum: Error: Already called start.");
     }
 
     [LPMessageTemplatesClass sharedTemplates];
