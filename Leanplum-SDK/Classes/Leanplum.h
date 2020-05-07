@@ -45,7 +45,6 @@
 #import "LPEventCallbackManager.h"
 #import "LPAppIconManager.h"
 #import "Leanplum_AsyncSocket.h"
-#import "LPUIEditorWrapper.h"
 #import "LPRevenueManager.h"
 #import "LPContextualValues.h"
 #import "LPFeatureFlagManager.h"

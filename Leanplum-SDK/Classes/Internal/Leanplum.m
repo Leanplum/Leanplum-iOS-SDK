@@ -44,7 +44,6 @@
 #import "LPUIAlert.h"
 #import "LPUtils.h"
 #import "LPAppIconManager.h"
-#import "LPUIEditorWrapper.h"
 #import "LPCountAggregator.h"
 #import "LPRequestFactory.h"
 #import "LPFileTransferManager.h"
@@ -1985,7 +1984,6 @@ BOOL inForeground = NO;
     
     BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
     [[LPInternalState sharedState] setStripViewControllerFromState:stripViewControllerFromState];
-    [LPUIEditorWrapper enableAutomaticScreenTracking];
     LP_END_TRY
 }
 
