@@ -9,7 +9,7 @@ body="{
      \"LEANPLUM_SDK_VERSION\": \"$version\"
    }
   }
-}}'"
+}}"
 
 curl -s -X POST \
    -H "Content-Type: application/json" \
