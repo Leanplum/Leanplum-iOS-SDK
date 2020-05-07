@@ -292,21 +292,6 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-+ (void)allowInterfaceEditing
-{
-    [self throwError:@"Leanplum UI Editor has moved to separate Pod."
-     "Please remove this method call and include this "
-     "line in your Podfile: pod 'Leanplum-iOS-UIEditor'"];
-}
-
-+ (BOOL)interfaceEditingEnabled
-{
-    [self throwError:@"Leanplum UI Editor has moved to separate Pod."
-     "Please remove this method call and include this "
-     "line in your Podfile: pod 'Leanplum-iOS-UIEditor'"];
-    return NO;
-}
-
 + (void)setDeviceId:(NSString *)deviceId
 {
     if ([LPUtils isBlank:deviceId]) {
@@ -325,23 +310,12 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-+ (void)syncResources
-{
-    [self syncResourcesAsync:NO];
-}
-
 + (void)syncResourcesAsync:(BOOL)async
 {
     LP_TRY
     [LPFileManager initAsync:async];
     LP_END_TRY
     [[LPCountAggregator sharedAggregator] incrementCount:@"sync_resources"];
-}
-
-+ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
-                excluding:(NSArray *)patternsToExcludeOrNil
-{
-    [self syncResourcePaths:patternsToIncludeOrNil excluding:patternsToExcludeOrNil async:NO];
 }
 
 + (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
@@ -594,11 +568,6 @@ BOOL inForeground = NO;
     } else {
         triggerBlock();
     }
-}
-
-+ (void)setDeveloperEmail:(NSString *)email __deprecated
-{
-    registrationEmail = email;
 }
 
 + (void)onHasStartedAndRegisteredAsDeveloper
@@ -2707,14 +2676,6 @@ void leanplumExceptionHandler(NSException *exception)
 {
     LP_TRY
     return [LPInbox sharedState];
-    LP_END_TRY
-    return nil;
-}
-
-+ (LPNewsfeed *)newsfeed
-{
-    LP_TRY
-    return [LPNewsfeed sharedState];
     LP_END_TRY
     return nil;
 }

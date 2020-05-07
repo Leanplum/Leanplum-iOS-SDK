@@ -80,8 +80,6 @@
 		5B23407721ED964F00206ACB /* LPFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FC221ED964F00206ACB /* LPFileManager.m */; };
 		5B23407921ED964F00206ACB /* LPCountAggregator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FC321ED964F00206ACB /* LPCountAggregator.m */; };
 		5B23407B21ED964F00206ACB /* LPInbox.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FC621ED964F00206ACB /* LPInbox.m */; };
-		5B23407D21ED964F00206ACB /* LPUIEditorWrapper.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FC821ED964F00206ACB /* LPUIEditorWrapper.h */; };
-		5B23407F21ED964F00206ACB /* LPUIEditorWrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FC921ED964F00206ACB /* LPUIEditorWrapper.m */; };
 		5B23408121ED964F00206ACB /* LPVarCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233FCB21ED964F00206ACB /* LPVarCache.m */; };
 		5B23408321ED964F00206ACB /* LPVar-Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FCC21ED964F00206ACB /* LPVar-Internal.h */; };
 		5B23408521ED964F00206ACB /* LPVarCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 5B233FCD21ED964F00206ACB /* LPVarCache.h */; };
@@ -259,8 +257,6 @@
 		5B233FC221ED964F00206ACB /* LPFileManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFileManager.m; sourceTree = "<group>"; };
 		5B233FC321ED964F00206ACB /* LPCountAggregator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregator.m; sourceTree = "<group>"; };
 		5B233FC621ED964F00206ACB /* LPInbox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInbox.m; sourceTree = "<group>"; };
-		5B233FC821ED964F00206ACB /* LPUIEditorWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPUIEditorWrapper.h; sourceTree = "<group>"; };
-		5B233FC921ED964F00206ACB /* LPUIEditorWrapper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUIEditorWrapper.m; sourceTree = "<group>"; };
 		5B233FCB21ED964F00206ACB /* LPVarCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPVarCache.m; sourceTree = "<group>"; };
 		5B233FCC21ED964F00206ACB /* LPVar-Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPVar-Internal.h"; sourceTree = "<group>"; };
 		5B233FCD21ED964F00206ACB /* LPVarCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPVarCache.h; sourceTree = "<group>"; };
@@ -547,7 +543,6 @@
 			isa = PBXGroup;
 			children = (
 				5B233FC521ED964F00206ACB /* Inbox */,
-				5B233FC721ED964F00206ACB /* UIEditor */,
 				5B233FCA21ED964F00206ACB /* Variables */,
 				5B233FCF21ED964F00206ACB /* Actions */,
 				5B233FD721ED964F00206ACB /* Events */,
@@ -561,15 +556,6 @@
 				5B233FC621ED964F00206ACB /* LPInbox.m */,
 			);
 			path = Inbox;
-			sourceTree = "<group>";
-		};
-		5B233FC721ED964F00206ACB /* UIEditor */ = {
-			isa = PBXGroup;
-			children = (
-				5B233FC821ED964F00206ACB /* LPUIEditorWrapper.h */,
-				5B233FC921ED964F00206ACB /* LPUIEditorWrapper.m */,
-			);
-			path = UIEditor;
 			sourceTree = "<group>";
 		};
 		5B233FCA21ED964F00206ACB /* Variables */ = {
@@ -885,7 +871,6 @@
 				07C17DBD243B9D19003E17BF /* LPInterstitialMessageTemplate.h in Headers */,
 				5B2340B521ED964F00206ACB /* LPConstants.h in Headers */,
 				5B23403321ED964F00206ACB /* LeanplumCompatibility.h in Headers */,
-				5B23407D21ED964F00206ACB /* LPUIEditorWrapper.h in Headers */,
 				5B2340AF21ED964F00206ACB /* LPFeatureFlags.h in Headers */,
 				07A9800023466CD8008AEC06 /* LPOperationQueue.h in Headers */,
 				5B23403B21ED964F00206ACB /* LPAppIconManager.h in Headers */,
@@ -1093,7 +1078,6 @@
 				5B23404D21ED964F00206ACB /* LPRequestFactory.m in Sources */,
 				5B23407521ED964F00206ACB /* LPRegisterDevice.m in Sources */,
 				A8D39E9923E23FBE00B0C51E /* LPMessageTemplates.m in Sources */,
-				5B23407F21ED964F00206ACB /* LPUIEditorWrapper.m in Sources */,
 				07C17DCA243B9F65003E17BF /* LPAlertMessageTemplate.m in Sources */,
 				5B23408F21ED964F00206ACB /* LPActionManager.m in Sources */,
 				5B2340CB21ED964F00206ACB /* LPAES.m in Sources */,

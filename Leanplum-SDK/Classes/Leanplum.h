@@ -38,19 +38,14 @@
 #import "Leanplum_SocketIO.h"
 #import "LeanplumSocket.h"
 #import "LPRequesting.h"
-//#import "LPActionManager.h"
 #import "LeanplumCompatibility.h"
 #import "LPUIAlert.h"
-//#import "LPRequest.h"
 #import "LPSwizzle.h"
-//#import "LeanplumInternal.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
 #import "LPAppIconManager.h"
 #import "Leanplum_AsyncSocket.h"
 #import "LPUIEditorWrapper.h"
-//#import "LPVar-Internal.h"
-//#import "LPRegisterDevice.h"
 #import "LPRevenueManager.h"
 #import "LPContextualValues.h"
 #import "LPFeatureFlagManager.h"
@@ -62,21 +57,13 @@
 #import "LPVarCache.h"
 #import "LPDatabase.h"
 #import "NSString+MD5Addition.h"
-//#import "Leanplum_Reachability.h"
-//#import "LPAPIConfig.h"
-//#import "LPActionContext-Internal.h"
-//#import "LPInternalState.h"
 #import "FileMD5Hash.h"
 #import "LPJSON.h"
 #import "LPNetworkProtocol.h"
-//#import "LPRequestFactory.h"
-//#import "LPRequestSender.h"
 #import "LPExceptionHandler.h"
-//#import "LPFileTransferManager.h"
 #import "LPMessageTemplates.h"
 #import "LPFeatureFlags.h"
 #import "UIDevice+IdentifierAddition.h"
-//#import "LeanplumRequest.h"
 #import "NSTimer+Blocks.h"
 #import "LPEventCallback.h"
 #import "LPNetworkEngine.h"
@@ -274,21 +261,6 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
 + (void)setExtensionContext:(NSExtensionContext *)context;
 
 /**
- * @{
- * Call this before start to allow your interfaces to change on the fly.
- * Needed in development mode to enable the interface editor, as well as in production to allow
- * changes to be applied.
- */
-+ (void)allowInterfaceEditing __attribute__((deprecated("Use LeanplumUIEditor pod instead.")));
-
-/**
- * Check if interface editing is enabled.
- */
-+ (BOOL)interfaceEditingEnabled __attribute__((deprecated("Use LeanplumUIEditor pod instead.")));
-
-/**@}*/
-
-/**
  * Sets a custom device ID. For example, you may want to pass the advertising ID to do attribution.
  * By default, the device ID is the identifier for vendor.
  */
@@ -303,14 +275,6 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
 + (void)setAppVersion:(NSString *)appVersion;
 
 /**
- * @{
- * Syncs resources between Leanplum and the current app.
- * You should only call this once, and before {@link start}.
- * Deprecated. Use {@link syncResourcesAsync:} instead.
- */
-+ (void)syncResources __attribute__((deprecated));
-
-/**
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
  * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
@@ -318,21 +282,6 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
  *     when the app starts.
  */
 + (void)syncResourcesAsync:(BOOL)async;
-
-/**
- * Syncs resources between Leanplum and the current app.
- * You should only call this once, and before {@link start}.
- * Deprecated. Use {@link syncResourcePaths:excluding:async} instead.
- * @param async Whether the call should be asynchronous. Resource syncing can take 1-2 seconds to
- *     index the app's resources. If async is set, resources may not be available immediately
- *     when the app starts.
- * @param patternsToIncludeOrNil Limit paths to only those matching at least one pattern in this
- *     list. Supply nil to indicate no inclusion patterns. Paths are relative to the app's bundle.
- * @param patternsToExcludeOrNil Exclude paths matching at least one of these patterns.
- *     Supply nil to indicate no exclusion patterns.
- */
-+ (void)syncResourcePaths:(NSArray * _Nullable)patternsToIncludeOrNil
-                excluding:(NSArray * _Nullable)patternsToExcludeOrNil __attribute__((deprecated));
 
 /**
  * Syncs resources between Leanplum and the current app.
@@ -765,12 +714,6 @@ typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
  * Returns an instance to the singleton LPInbox object.
  */
 + (LPInbox *)inbox;
-
-/**
- * Returns an instance to the singleton LPNewsfeed object.
- * Deprecated. Use {@link inbox} instead.
- */
-+ (LPNewsfeed *)newsfeed __attribute__((deprecated("Use inbox instead.")));
 
 /**
  * Types of location accuracy. Higher value implies better accuracy.
