@@ -30,4 +30,5 @@ Analytics.
   s.source_files = 'Leanplum-SDK/Classes/**/*'
   s.resources = ['Leanplum-SDK/Resources/**/*']
   s.module_name = 'Leanplum'
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end
