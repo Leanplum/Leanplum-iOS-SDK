@@ -30,28 +30,20 @@
 #import <QuartzCore/QuartzCore.h>
 #import <StoreKit/StoreKit.h>
 #import "LPCountAggregator.h"
-#import "LPAlertMessageTemplate.h"
-#import "LPConfirmMessageTemplate.h"
+#import "LPOpenUrlMessageTemplate.h"
+#import "LPPushAsktoAskMessageTemplate.h"
+#import "LPRegisterForPushMessageTemplate.h"
+#import "LPCenterPopupMessageTemplate.h"
 #import "LPInterstitialMessageTemplate.h"
 #import "LPWebInterstitialMessageTemplate.h"
-#import "LPOpenUrlMessageTemplate.h"
-#import "LPPushAskToAskMessageTemplate.h"
-#import "LPRegisterForPushMessageTemplate.h"
-#import "LPHitView.h"
-#import "LPCenterPopupMessageTemplate.h"
-#import "LPHtmlMessageTemplate.h"
+#import "LPRichInterstitialMessageTemplate.h"
+#import "LPAlertMessageTemplate.h"
+#import "LPConfirmMessageTemplate.h"
 #import "LPAppRatingMessageTemplate.h"
 #import "LPIconChangeMessageTemplate.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
-
-
-@interface LPMessageTemplatesClass()
-
-@property (nonatomic, strong) NSMutableArray *contexts;
-
-@end
 
 @implementation LPMessageTemplatesClass
 
@@ -73,7 +65,6 @@
 - (id)init
 {
     if (self = [super init]) {
-        _contexts = [NSMutableArray array];
         [self defineActions];
     }
     return self;
@@ -94,18 +85,17 @@
 // Please give us suggestions for other types of messages!
 - (void)defineActions
 {
-
-    [[[LPAlertMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPConfirmMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPWebInterstitialMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPOpenUrlMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPPushAsktoAskMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPRegisterForPushMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPCenterPopupMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPHtmlMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPAppRatingMessageTemplate alloc] init] defineActionWithContexts:_contexts];
-    [[[LPIconChangeMessageTemplate alloc] init] defineActionWithContexts:_contexts];
+    [LPCenterPopupMessageTemplate defineAction];
+    [LPInterstitialMessageTemplate defineAction];
+    [LPWebInterstitialMessageTemplate defineAction];
+    [LPRichInterstitialMessageTemplate defineAction];
+    [LPOpenUrlMessageTemplate defineAction];
+    [LPRegisterForPushMessageTemplate defineAction];
+    [LPAppRatingMessageTemplate defineAction];
+    [LPIconChangeMessageTemplate defineAction];
+    [LPPushAskToAskMessageTemplate defineAction];
+    [LPAlertMessageTemplate defineAction];
+    [LPConfirmMessageTemplate defineAction];
 }
 
 // If notification were enabled by Leanplum's "Push Ask to Ask" or "Register For Push",
@@ -113,12 +103,12 @@
 // refreshPushPermissions is called by [Leanplum start].
 - (void)refreshPushPermissions
 {
-    [[[LPPushAsktoAskMessageTemplate alloc] init] refreshPushPermissions];
+    [[[LPPushAskToAskMessageTemplate alloc] init] refreshPushPermissions];
 }
 
 - (void)disableAskToAsk
 {
-    [[[LPPushAsktoAskMessageTemplate alloc] init] hasDisabledAskToAsk];
+    [[[LPPushAskToAskMessageTemplate alloc] init] hasDisabledAskToAsk];
 }
 
 @end

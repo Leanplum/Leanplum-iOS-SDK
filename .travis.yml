@@ -8,12 +8,17 @@ xcode_destination: platform=iOS Simulator,OS=13.3,name=iPhone 11
 cache: cocoapods
 podfile: Example/Podfile
 before_install:
-- gem install cocoapods # Since Travis is not always on latest version
-- pod install --project-directory=Example
+  - gem install cocoapods # Since Travis is not always on latest version
+  - pod install --project-directory=Example
 
 before_deploy:
-- ./Tools/verifyTag.sh
-- ./Tools/build.sh
+  - ./Tools/verifyTag.sh
+  - ./Tools/build.sh
+  - ./Tools/triggerLocation.sh
+
+after_deploy:
+  - ./Tools/triggerRondo.sh
+  - version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi; # trigger ReactNative if not beta release
 
 deploy:
   - provider: releases

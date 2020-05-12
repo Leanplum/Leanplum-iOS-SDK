@@ -35,66 +35,36 @@
     otherButtonTitles:(NSArray *)otherButtonTitles
                 block:(LeanplumUIAlertCompletionBlock)block
 {
-    if (NSClassFromString(@"UIAlertController")) {
-        UIAlertController *alert =
-            [UIAlertController alertControllerWithTitle:title
-                                                message:message
-                                         preferredStyle:UIAlertControllerStyleAlert];
-        UIAlertAction *action = [UIAlertAction actionWithTitle:cancelButtonTitle
-                                                         style:[otherButtonTitles count] ? UIAlertActionStyleCancel : UIAlertActionStyleDefault
-                                                       handler:^(UIAlertAction *action) {
-                                                           if (block) {
-                                                               block(0);
-                                                           }
-                                                       }];
-        [alert addAction:action];
-        
-        int currentIndex = 0;
-        for (NSString *buttonTitle in otherButtonTitles) {
-            int buttonIndex = ++currentIndex;
-            UIAlertAction *action = [UIAlertAction actionWithTitle:buttonTitle
-                                                             style:UIAlertActionStyleDefault
-                                                           handler:^(UIAlertAction *action) {
-                                                               if (block) {
-                                                                   block(buttonIndex);
-                                                               }
-                                                           }];
-            [alert addAction:action];
-        }
-
-        [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alert
-                                                                                     animated:YES
-                                                                                   completion:nil];
-    } else
-    {
-        LPUIAlertView *alertView = [[LPUIAlertView alloc] initWithTitle:title
-                                                                message:message
-                                                               delegate:nil
-                                                      cancelButtonTitle:cancelButtonTitle
-                                                      otherButtonTitles:nil];
-        alertView.delegate = alertView;
-        for (NSString *buttonTitle in otherButtonTitles) {
-            [alertView addButtonWithTitle:buttonTitle];
-        }
+    UIAlertController *alert =
+    [UIAlertController alertControllerWithTitle:title
+                                        message:message
+                                 preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *action = [UIAlertAction actionWithTitle:cancelButtonTitle
+                                                     style:[otherButtonTitles count] ? UIAlertActionStyleCancel : UIAlertActionStyleDefault
+                                                   handler:^(UIAlertAction *action) {
         if (block) {
-            alertView->block = block;
+            block(0);
         }
-        [alertView show];
+    }];
+    [alert addAction:action];
+
+    int currentIndex = 0;
+    for (NSString *buttonTitle in otherButtonTitles) {
+        int buttonIndex = ++currentIndex;
+        UIAlertAction *action = [UIAlertAction actionWithTitle:buttonTitle
+                                                         style:UIAlertActionStyleDefault
+                                                       handler:^(UIAlertAction *action) {
+            if (block) {
+                block(buttonIndex);
+            }
+        }];
+        [alert addAction:action];
     }
+
+    [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:alert
+                                                                                 animated:YES
+                                                                               completion:nil];
     [[LPCountAggregator sharedAggregator] incrementCount:@"show_With_title"];
-}
-
-@end
-
-@implementation LPUIAlertView
-
-- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
-{
-    LeanplumUIAlertCompletionBlock completion = ((LPUIAlertView*) alertView)->block;
-    if (completion)
-    {
-        completion(buttonIndex);
-    }
 }
 
 @end

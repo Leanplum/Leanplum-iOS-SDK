@@ -22,12 +22,13 @@ Analytics.
   s.social_media_url = 'https://twitter.com/leanplum'
   s.requires_arc = true
   s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '8.0'
+  s.ios.deployment_target = '9.0'
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.library = 'sqlite3'
   s.documentation_url = 'https://www.leanplum.com/docs#/docs'
   s.source_files = 'Leanplum-SDK/Classes/**/*'
+  s.resources = ['Leanplum-SDK/Resources/**/*']
   s.module_name = 'Leanplum'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end

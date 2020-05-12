@@ -24,18 +24,20 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPActionContext : NSObject
 
 - (NSString *)actionName;
 
-- (NSString *)stringNamed:(NSString *)name;
-- (NSString *)fileNamed:(NSString *)name;
-- (NSNumber *)numberNamed:(NSString *)name;
+- (NSString * _Nullable)stringNamed:(NSString *)name;
+- (NSString * _Nullable)fileNamed:(NSString *)name;
+- (NSNumber * _Nullable)numberNamed:(NSString *)name;
 - (BOOL)boolNamed:(NSString *)name;
-- (NSDictionary *)dictionaryNamed:(NSString *)name;
-- (NSArray *)arrayNamed:(NSString *)name;
-- (UIColor *)colorNamed:(NSString *)name;
-- (NSURL *)htmlWithTemplateNamed:(NSString *)templateName;
+- (NSDictionary * _Nullable)dictionaryNamed:(NSString *)name;
+- (NSArray * _Nullable)arrayNamed:(NSString *)name;
+- (UIColor * _Nullable)colorNamed:(NSString *)name;
+- (NSURL * _Nullable)htmlWithTemplateNamed:(NSString *)templateName;
 
 /**
  * Runs the action given by the "name" key.
@@ -51,7 +53,7 @@
 /**
  * Tracks an event in the context of the current message.
  */
-- (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary *)params;
+- (void)track:(NSString *)event withValue:(double)value andParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Tracks an event in the conext of the current message, with any parent actions prepended to the
@@ -59,8 +61,8 @@
  */
 - (void)trackMessageEvent:(NSString *)event
                 withValue:(double)value
-                  andInfo:(NSString *)info
-            andParameters:(NSDictionary *)params;
+                  andInfo:(NSString * _Nullable)info
+            andParameters:(NSDictionary * _Nullable)params;
 
 /**
  * Prevents the currently active message from appearing again in the future.
@@ -73,3 +75,5 @@
 - (BOOL)hasMissingFiles;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wBl-qO-Io0">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Web Interstitial View Controller-->
+        <scene sceneID="bul-uQ-sQx">
+            <objects>
+                <viewController modalTransitionStyle="crossDissolve" id="wBl-qO-Io0" customClass="LPWebInterstitialViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Oqo-dm-daA" customClass="LPHitView">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W6g-AT-1ZG">
+                                <rect key="frame" x="360" y="44" width="44" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Oux-ud-wmp"/>
+                                    <constraint firstAttribute="width" constant="44" id="eNj-EK-cTo"/>
+                                </constraints>
+                                <state key="normal" image="close"/>
+                                <connections>
+                                    <action selector="didTapDismissButton:" destination="wBl-qO-Io0" eventType="touchUpInside" id="Oxq-Of-lPt"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="W6g-AT-1ZG" firstAttribute="top" secondItem="Koz-5a-zza" secondAttribute="top" id="3HN-Xq-aj1"/>
+                            <constraint firstItem="Koz-5a-zza" firstAttribute="trailing" secondItem="W6g-AT-1ZG" secondAttribute="trailing" constant="10" id="7Pf-Iv-hJz"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Koz-5a-zza"/>
+                    </view>
+                    <connections>
+                        <outlet property="dismissButton" destination="W6g-AT-1ZG" id="ZEX-yk-7V1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CRm-Vr-bBN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="101" y="145"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="close" width="30" height="30"/>
+    </resources>
+</document>

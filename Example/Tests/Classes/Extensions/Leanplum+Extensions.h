@@ -46,3 +46,13 @@
                                  active:(BOOL)active;
 
 @end
+
+@interface LPActionContext(UnitTest)
+
++ (LPActionContext *)actionContextWithName:(NSString *)name
+                                      args:(NSDictionary *)args
+                                 messageId:(NSString *)messageId;
+
+-(NSString *)htmlStringContentsOfFile:(NSString *)file;
+
+@end

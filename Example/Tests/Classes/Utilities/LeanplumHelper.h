@@ -25,6 +25,8 @@
 
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
+#import "LPMessageTemplates.h"
+#import "LPMessageTemplateConstants.h"
 #import "LPVarCache.h"
 
 extern NSString *APPLICATION_ID;
@@ -36,6 +38,8 @@ extern NSString *API_HOST;
 
 /// default dispatch time
 extern NSInteger DISPATCH_WAIT_TIME;
+
+static BOOL recordSnapshots = NO;
 
 @interface LeanplumHelper : NSObject
 
@@ -63,5 +67,7 @@ extern NSInteger DISPATCH_WAIT_TIME;
 
 /// retrieve data from a file
 + (NSData *)retrieve_data_from_file:(NSString *)file ofType:(NSString *)type;
+
++ (void)dismissPresentedViewControllers;
 
 @end

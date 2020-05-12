@@ -8,23 +8,10 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import <Leanplum/LPInterstitialMessageTemplate.h>
 #import <OCMock.h>
-
-@interface LPInterstitialMessageTemplate()
-
-@property  (nonatomic, strong) UIView *popupGroup;
-- (void)setupPopupView;
-
-@end
-
-@interface LPActionContext(UnitTest)
-
-+ (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary *)args
-                                 messageId:(NSString *)messageId;
-
-@end
+#import "LPInterstitialMessageTemplate.h"
+#import "Leanplum+Extensions.h"
+#import "LeanplumHelper.h"
 
 @interface LPInterstitialMessageSnapshotTest : FBSnapshotTestCase
 
@@ -34,15 +21,16 @@
 
 - (void)setUp {
     [super setUp];
-    //self.recordMode = YES;
+    [UIView setAnimationsEnabled:NO];
+    self.recordMode = recordSnapshots;
 }
 
 - (void)tearDown {
     [super tearDown];
+    [LeanplumHelper dismissPresentedViewControllers];
 }
 
-- (void)testView {
-    LPInterstitialMessageTemplate *template = [[LPInterstitialMessageTemplate alloc] init];
+- (void)testViewController {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_INTERSTITIAL_NAME args:@{
         LPMT_ARG_TITLE_TEXT:APP_NAME,
         LPMT_ARG_TITLE_COLOR:[UIColor blackColor],
@@ -62,10 +50,11 @@
     OCMStub([contextMock stringNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT]).andReturn(LPMT_DEFAULT_OK_BUTTON_TEXT);
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR]).andReturn([UIColor whiteColor]);
     OCMStub([contextMock colorNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR]).andReturn([UIColor blackColor]);
+    
+    LPInterstitialMessageTemplate *template = [[LPInterstitialMessageTemplate alloc] init];
+    UIViewController *viewController = [template viewControllerWithContext:context];
 
-    template.contexts = [@[contextMock] mutableCopy];
-    [template setupPopupView];
-    FBSnapshotVerifyView(template.popupGroup, nil);
+    FBSnapshotVerifyView(viewController.view, nil);
 }
 
 @end
