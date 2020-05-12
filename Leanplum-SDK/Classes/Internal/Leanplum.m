@@ -1064,7 +1064,7 @@ BOOL inForeground = NO;
                     LP_TRY
                     if ([[UIApplication sharedApplication]
                             respondsToSelector:@selector(currentUserNotificationSettings)]) {
-                        [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:
+                        [[LPPushNotificationsManager sharedManager].handler sendUserNotificationSettingsIfChanged:
                                                              [[UIApplication sharedApplication]
                                                                  currentUserNotificationSettings]];
                     }
@@ -1672,7 +1672,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
+        [[LPPushNotificationsManager sharedManager].handler didRegisterForRemoteNotificationsWithDeviceToken:token];
     }
     else
     {
@@ -1686,7 +1686,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
+        [[LPPushNotificationsManager sharedManager].handler didFailToRegisterForRemoteNotificationsWithError:error];
     }
     else
     {
@@ -1700,7 +1700,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
+        [[LPPushNotificationsManager sharedManager].handler didRegisterUserNotificationSettings:notificationSettings];
     }
     else
     {
@@ -1805,7 +1805,7 @@ BOOL inForeground = NO;
         return;
     }
     LP_TRY
-    [[LPActionManager sharedManager] setShouldHandleNotification:block];
+    [[LPPushNotificationsManager sharedManager] setShouldHandleNotification:block];
     LP_END_TRY
 }
 

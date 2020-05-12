@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPPushAskToAskMessageTemplate : NSObject <LPMessageTemplateProtocol>
 
 - (void)enableSystemPush;
-- (void)refreshPushPermissions;
-- (BOOL)hasDisabledAskToAsk;
 
 @end
 
