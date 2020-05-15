@@ -8,6 +8,7 @@
 #import "LPLocalNotificationsManager.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsConstants.h"
+#import "LPNotificationsHelper.h"
 
 @implementation LPLocalNotificationsManager
 
@@ -69,7 +70,7 @@
         // Otherwise, discard the scheduled one.
         NSArray *notifications = [app scheduledLocalNotifications];
         for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [[LPPushNotificationsManager sharedManager].handler messageIdFromUserInfo:[notification userInfo]];
+            NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:[notification userInfo]];
             if ([messageId isEqualToString:context.messageId]) {
                 NSComparisonResult comparison = [notification.fireDate compare:eta];
                 if (comparison == NSOrderedAscending) {
@@ -157,7 +158,7 @@
         NSArray *notifications = [app scheduledLocalNotifications];
         BOOL didCancel = NO;
         for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [[LPPushNotificationsManager sharedManager].handler messageIdFromUserInfo:[notification userInfo]];
+            NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:[notification userInfo]];
             if ([messageId isEqualToString:context.messageId]) {
                 [app cancelLocalNotification:notification];
                 if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {

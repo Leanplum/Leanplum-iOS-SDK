@@ -92,11 +92,6 @@ andParameters:(NSDictionary *)params;
 + (void)onEventsChanged:(LeanplumEventsChangedBlock)block;
 + (void)synchronizeDefaults;
 
-/**
- * Returns a push token using app ID, device ID, and user ID.
- */
-+ (NSString *)pushTokenKey;
-
 void LPLog(LPLogType type, NSString* format, ...);
 
 @end

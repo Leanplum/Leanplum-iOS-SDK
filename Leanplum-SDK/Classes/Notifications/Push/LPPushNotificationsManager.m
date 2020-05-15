@@ -8,7 +8,6 @@
 #import "LPPushNotificationsManager.h"
 #import "LeanplumInternal.h"
 #import <objc/runtime.h>
-//#import <objc/message.h>//TODO:Dejan check and remove this
 
 @implementation NSObject (LeanplumExtension)
 
@@ -57,7 +56,7 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     LPLog(LPDebug, @"Called swizzled didReceiveRemoteNotification");
     [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
                                     withAction:nil
-                        fetchCompletionHandler:nil];//TODO:Dejan fix warning
+                        fetchCompletionHandler:nil];
     LP_END_TRY
 
     // Call overridden method.
@@ -117,8 +116,7 @@ API_AVAILABLE(ios(10.0))
                didReceiveNotificationResponse:response
                         withCompletionHandler:completionHandler];
     }
-//    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:response withAction:nil fetchCompletionHandler:completionHandler];//TODO:Dejan refactore this
-    [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response withCompletionHandler:completionHandler];//TODO:Dejan move logic in handler
+    [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response withCompletionHandler:completionHandler];
 }
 
 -(void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
@@ -146,13 +144,7 @@ API_AVAILABLE(ios(10.0))
 - (void)leanplum_application:(UIApplication *)application
  didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
-//    NSDictionary *userInfo = [localNotification userInfo];
-
     LP_TRY
-//    [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
-//                                                       withAction:nil
-//                                           fetchCompletionHandler:nil];
-    //TODO:Dejan ask
     [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
     LP_END_TRY
 
@@ -356,8 +348,9 @@ API_AVAILABLE(ios(10.0))
                                                                                        [appDelegate class],
                                                                                        applicationDidReceiveRemoteNotificationSelector);
         
+        __typeof__(self) weakSelf = self;
         void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
-            self.swizzledApplicationDidReceiveRemoteNotification =//TODO:Dejan maybe use weak self
+            weakSelf.swizzledApplicationDidReceiveRemoteNotification =
             [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
                    withSelector:@selector(leanplum_application:
                                           didReceiveRemoteNotification:)
@@ -370,7 +363,7 @@ API_AVAILABLE(ios(10.0))
                                                                                                         [appDelegate class],
                                                                                                         applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector);
         void (^swizzleApplicationDidReceiveRemoteNotificationFetchCompletionHandler)(void) = ^{
-            self.swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
+            weakSelf.swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler =
             [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector
                    withSelector:@selector(leanplum_application:
                                           didReceiveRemoteNotification:
@@ -384,7 +377,7 @@ API_AVAILABLE(ios(10.0))
         class_getInstanceMethod([appDelegate class],
                                 userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector);
         void (^swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler)(void) = ^{
-            self.swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
+            weakSelf.swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler =
             [LPSwizzle hookInto:userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector
                    withSelector:@selector(leanplum_userNotificationCenter:
                                           didReceiveNotificationResponse:
@@ -398,7 +391,7 @@ API_AVAILABLE(ios(10.0))
         Method userNotificationCenterWillPresentNotificationWithCompletionHandlerMethod = class_getInstanceMethod([appDelegate class],
                                                                                                                   userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector);
         void (^swizzleUserNotificationWillPresentNotificationWithCompletionHandler)(void) = ^{
-            self.swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = [LPSwizzle
+            weakSelf.swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = [LPSwizzle
                                                                                           hookInto:userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector
                                                                                           withSelector:@selector(leanplum_userNotificationCenter:willPresentNotification:withCompletionHandler:)
                                                                                           forObject:[appDelegate class]];
@@ -430,7 +423,6 @@ API_AVAILABLE(ios(10.0))
         }
         
         // Detect local notifications while app is running.
-        //TODO:Dejan check if need to move logic for local notifications
         self.swizzledApplicationDidReceiveLocalNotification =
         [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
                withSelector:@selector(leanplum_application:didReceiveLocalNotification:)

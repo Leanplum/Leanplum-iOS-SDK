@@ -7,6 +7,8 @@
 
 #import "LPLocalNotificationsHandler.h"
 #import "LeanplumInternal.h"
+#import "LPNotificationsHelper.h"
+
 @implementation LPLocalNotificationsHandler
 
 - (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
@@ -14,9 +16,7 @@
     NSDictionary *userInfo = [localNotification userInfo];
     
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                            withAction:nil
-                fetchCompletionHandler:nil];//TODO:Dejan fix warning
+    [[LPNotificationsHelper shared] didReceiveNotification:userInfo];
     LP_END_TRY
 }
 

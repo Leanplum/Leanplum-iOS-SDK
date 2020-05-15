@@ -9,10 +9,10 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LeanplumRequest.h"
-//#import "LPConstants.h"//TODO:Dejan check/remove
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
 #import "LPAPIConfig.h"
+#import "LPNotificationsHelper.h"
 
 @interface LPPushNotificationsHandler()
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
@@ -31,7 +31,18 @@
     return self;
 }
 
--(void)didReceiveRemoteNotification:(NSDictionary *)userInfo withAction:(NSString *__nullable)action fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    [self didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
+}
+
+- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
+              fetchCompletionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler
+{
+    [self didReceiveRemoteNotification:userInfo withAction:nil fetchCompletionHandler:completionHandler];
+}
+
+-(void)didReceiveRemoteNotification:(NSDictionary *)userInfo withAction:(NSString *__nullable)action fetchCompletionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler
 {
     [self.countAggregator incrementCount:@"did_receive_remote_notification"];
     
@@ -55,20 +66,9 @@
         }
     }
     // Call the completion handler only for Leanplum notifications.
-    NSString *messageId = [self messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
     if (messageId && completionHandler) {
         completionHandler(UIBackgroundFetchResultNoData);
-    }
-}
-
-- (void)leanplum_disableAskToAsk//TODO:Dejan move down
-{
-    Class userMessageTemplatesClass = NSClassFromString(@"LPMessageTemplates");
-    if (userMessageTemplatesClass &&
-        [[userMessageTemplatesClass sharedTemplates] respondsToSelector:@selector(disableAskToAsk)]) {
-        [[userMessageTemplatesClass sharedTemplates] disableAskToAsk];
-    } else {
-        [[LPMessageTemplatesClass sharedTemplates] disableAskToAsk];
     }
 }
 
@@ -89,7 +89,7 @@
     
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.
-    NSString *tokenKey = [Leanplum pushTokenKey]; //TODO:Dejan move logic here
+    NSString *tokenKey = [self pushTokenKey];
     NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
     if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
         
@@ -110,7 +110,7 @@
 {
     LP_TRY
     [self leanplum_disableAskToAsk];
-    NSString *tokenKey = [Leanplum pushTokenKey]; //TODO:Dejan maybe move logic here
+    NSString *tokenKey = [self pushTokenKey];
     if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
@@ -146,7 +146,7 @@
     if (![existingSettings isEqualToDictionary:settings]) {
         [[NSUserDefaults standardUserDefaults] setObject:settings forKey:settingsKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *tokenKey = [Leanplum pushTokenKey];
+        NSString *tokenKey = [self pushTokenKey];
         NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
         NSMutableDictionary *params = [@{
                 LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
@@ -166,6 +166,23 @@
     }
 }
 
+- (NSString *)pushTokenKey
+{
+    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
+            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
+}
+
+- (void)leanplum_disableAskToAsk
+{
+    Class userMessageTemplatesClass = NSClassFromString(@"LPMessageTemplates");
+    if (userMessageTemplatesClass &&
+        [[userMessageTemplatesClass sharedTemplates] respondsToSelector:@selector(disableAskToAsk)]) {
+        [[userMessageTemplatesClass sharedTemplates] disableAskToAsk];
+    } else {
+        [[LPMessageTemplatesClass sharedTemplates] disableAskToAsk];
+    }
+}
+
 - (NSString *)leanplum_createUserNotificationSettingsKey
 {
     return [NSString stringWithFormat:
@@ -178,12 +195,12 @@
 // Handles the notification.
 // Makes sure the data is loaded, and then displays the notification.
 - (void)handleNotification:(NSDictionary *)userInfo
-                withAction:(NSString *)action
+                withAction:(NSString *__nullable)action
                  appActive:(BOOL)active
-         completionHandler:(LeanplumFetchCompletionBlock)completionHandler
+         completionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler
 {
     // Don't handle non-Leanplum notifications.
-    NSString *messageId = [self messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
@@ -223,7 +240,7 @@
     }
 
     LPLog(LPInfo, @"Handling push notification");
-    NSString *messageId = [self messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
     if (action == nil) {
         actionName = LP_VALUE_DEFAULT_PUSH_ACTION;
@@ -356,7 +373,8 @@
     LP_END_TRY
 }
 
-- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler
+- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
+                 withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0))
 {
     NSDictionary *userInfo = response.notification.request.content.userInfo;
     LPInternalState *state = [LPInternalState sharedState];
@@ -383,7 +401,7 @@
 - (void)handleNotificationResponse:(NSDictionary *)userInfo
                  completionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
-    NSString *messageId = [self messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
@@ -419,7 +437,7 @@
                 withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0))
 
 {
-    NSString *messageId = [self messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
@@ -447,22 +465,6 @@
             completionHandler(UNNotificationPresentationOptionNone);
         }
     }
-}
-
-
-- (NSString *)messageIdFromUserInfo:(NSDictionary *)userInfo
-{
-    NSString *messageId = [userInfo[LP_KEY_PUSH_MESSAGE_ID] description];
-    if (messageId == nil) {
-        messageId = [userInfo[LP_KEY_PUSH_MUTE_IN_APP] description];
-        if (messageId == nil) {
-            messageId = [userInfo[LP_KEY_PUSH_NO_ACTION] description];
-            if (messageId == nil) {
-                messageId = [userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] description];
-            }
-        }
-    }
-    return messageId;
 }
 
 - (BOOL)areActionsEmbedded:(NSDictionary *)userInfo

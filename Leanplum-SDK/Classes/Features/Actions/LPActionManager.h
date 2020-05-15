@@ -46,7 +46,6 @@ typedef enum {
     kLeanplumActionFilterAll = 0b11
 } LeanplumActionFilter;
 
-//#define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"//TODO:Dejan check refactor
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
 @interface LPActionManager : NSObject {
@@ -55,35 +54,8 @@ typedef enum {
 
 + (LPActionManager*) sharedManager;
 
-#pragma mark - Push Notifications
-//@property (nonatomic, strong) LPPushNotificationsManager *pushNotificationsManager;
-//TODO:Dejan remove this methods
-//- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
-//- (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;//TODO:Dejan refactor
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
-- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
-                 withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
-//- (void)willPresentNotification:(UNNotification *)notification
-//          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
-
-//- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
-//- (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
-#pragma clang diagnostic pop
-
 + (void)getForegroundRegionNames:(NSMutableSet **)foregroundRegionNames
         andBackgroundRegionNames:(NSMutableSet **)backgroundRegionNames;
-
-//- (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block;//TODO:Dejan remove
-
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-                          withAction:(NSString *)action
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 
 #pragma mark - Messages
 

@@ -36,7 +36,6 @@
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
-#import "LPNotificationsConstants.h"
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -120,44 +119,6 @@ static dispatch_once_t leanplum_onceToken;
     self.displayedTrackedTime = [NSDate date];
     return NO;
 }
-
-#pragma mark - Push Notifications AppDelegate
-
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-{
-    [self didReceiveRemoteNotification:userInfo fetchCompletionHandler:nil];
-}
-
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-{
-    [self didReceiveRemoteNotification:userInfo withAction:nil fetchCompletionHandler:completionHandler];
-}
-
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-                          withAction:(NSString *)action
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-{
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo withAction:action fetchCompletionHandler:completionHandler];//TODO:Dejan check to move this whole method in handler
-}
-
-#pragma mark - Push Notifications UNNotificationFramework
-
-- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
-{
-    [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
-}
-
-- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
-{
-    [[LPPushNotificationsManager sharedManager].handler didRegisterForRemoteNotificationsWithDeviceToken:token];
-}
-
-- (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
-{
-    [[LPPushNotificationsManager sharedManager].handler didFailToRegisterForRemoteNotificationsWithError:error];
-}
-
-
 
 #pragma mark - Delivery
 
