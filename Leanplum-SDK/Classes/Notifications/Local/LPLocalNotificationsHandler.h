@@ -10,7 +10,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LPLocalNotificationsHandler : NSObject
-
+- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
 @end
 
 NS_ASSUME_NONNULL_END

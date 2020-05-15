@@ -9,12 +9,11 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LeanplumRequest.h"
-#import "LPConstants.h"
+//#import "LPConstants.h"//TODO:Dejan check/remove
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
 #import "LPAPIConfig.h"
 
-#define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"
 @interface LPPushNotificationsHandler()
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 @property (nonatomic, strong) NSString *notificationHandled;
@@ -27,7 +26,7 @@
 {
     if(self = [super init])
     {
-        self.countAggregator = [LPCountAggregator sharedAggregator];
+        _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
 }

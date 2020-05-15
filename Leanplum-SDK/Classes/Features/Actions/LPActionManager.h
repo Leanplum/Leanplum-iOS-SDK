@@ -28,6 +28,7 @@
 #import "LPContextualValues.h"
 #import <UserNotifications/UserNotifications.h>
 #import "LPPushNotificationsManager.h"
+#import "LPLocalNotificationsManager.h"
 
 struct LeanplumMessageMatchResult {
     BOOL matchedTrigger;
@@ -45,7 +46,7 @@ typedef enum {
     kLeanplumActionFilterAll = 0b11
 } LeanplumActionFilter;
 
-#define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"//TODO:Dejan check refactor
+//#define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"//TODO:Dejan check refactor
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
 @interface LPActionManager : NSObject {

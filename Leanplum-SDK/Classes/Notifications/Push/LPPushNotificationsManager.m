@@ -8,12 +8,10 @@
 #import "LPPushNotificationsManager.h"
 #import "LeanplumInternal.h"
 #import <objc/runtime.h>
-//#import <objc/message.h>
-
-static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
-static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
+//#import <objc/message.h>//TODO:Dejan check and remove this
 
 @implementation NSObject (LeanplumExtension)
+
 - (void)leanplum_application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
 {
     LPLog(LPDebug, @"Called swizzled didRegisterForRemoteNotificationsWithDeviceToken");
@@ -119,8 +117,8 @@ API_AVAILABLE(ios(10.0))
                didReceiveNotificationResponse:response
                         withCompletionHandler:completionHandler];
     }
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:response withAction:nil fetchCompletionHandler:completionHandler];//TODO:Dejan refactore this
-//    [[LPActionManager sharedManager] didReceiveNotificationResponse:response withCompletionHandler:completionHandler];//TODO:Dejan move logic in handler
+//    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:response withAction:nil fetchCompletionHandler:completionHandler];//TODO:Dejan refactore this
+    [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response withCompletionHandler:completionHandler];//TODO:Dejan move logic in handler
 }
 
 -(void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
@@ -143,7 +141,31 @@ API_AVAILABLE(ios(10.0))
     [[LPPushNotificationsManager sharedManager].handler willPresentNotification:notification withCompletionHandler:completionHandler];
 }
 
+#pragma clang diagnostic pop
+
+- (void)leanplum_application:(UIApplication *)application
+ didReceiveLocalNotification:(UILocalNotification *)localNotification
+{
+//    NSDictionary *userInfo = [localNotification userInfo];
+
+    LP_TRY
+//    [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
+//                                                       withAction:nil
+//                                           fetchCompletionHandler:nil];
+    //TODO:Dejan ask
+    [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
+    LP_END_TRY
+
+    if ([[LPPushNotificationsManager sharedManager] swizzledApplicationDidReceiveLocalNotification] &&
+        [self respondsToSelector:@selector(leanplum_application:didReceiveLocalNotification:)]) {
+        [self performSelector:@selector(leanplum_application:didReceiveLocalNotification:)
+                   withObject:application withObject:localNotification];
+    }
+}
+
+
 @end
+
 
 @implementation LPPushNotificationsManager
 
@@ -160,19 +182,18 @@ API_AVAILABLE(ios(10.0))
 - (instancetype)init
 {
     if (self = [super init]) {
-        self.handler = [[LPPushNotificationsHandler alloc] init];
-        self.swizzledApplicationDidRegisterRemoteNotifications = NO;
-        self.swizzledApplicationDidRegisterUserNotificationSettings = NO;
-        self.swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = NO;
-        self.swizzledApplicationDidReceiveRemoteNotification = NO;
-        self.swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = NO;
-        self.swizzledApplicationDidReceiveLocalNotification = NO;
-        self.swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = NO;
-        self.swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = NO;
+        _handler = [[LPPushNotificationsHandler alloc] init];
+        _swizzledApplicationDidRegisterRemoteNotifications = NO;
+        _swizzledApplicationDidRegisterUserNotificationSettings = NO;
+        _swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = NO;
+        _swizzledApplicationDidReceiveRemoteNotification = NO;
+        _swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = NO;
+        _swizzledApplicationDidReceiveLocalNotification = NO;
+        _swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = NO;
+        _swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = NO;
     }
     return self;
 }
-
 
 #pragma mark Enable Push
 -(void)enableSystemPush
@@ -410,10 +431,10 @@ API_AVAILABLE(ios(10.0))
         
         // Detect local notifications while app is running.
         //TODO:Dejan check if need to move logic for local notifications
-//        self.swizzledApplicationDidReceiveLocalNotification =
-//        [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
-//               withSelector:@selector(leanplum_application:didReceiveLocalNotification:)
-//                  forObject:[appDelegate class]];
+        self.swizzledApplicationDidReceiveLocalNotification =
+        [LPSwizzle hookInto:@selector(application:didReceiveLocalNotification:)
+               withSelector:@selector(leanplum_application:didReceiveLocalNotification:)
+                  forObject:[appDelegate class]];
     }
     else
     {

@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 - (void)willPresentNotification:(UNNotification *)notification
           withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
+- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler;
 - (void)handleNotification:(NSDictionary *)userInfo
        withAction:(NSString *)action
         appActive:(BOOL)active
@@ -30,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
-
+#pragma clang diagnostic pop
 
 - (NSString *)messageIdFromUserInfo:(NSDictionary *)userInfo;//TODO:Dejan consider making this method private
 @end

@@ -1714,7 +1714,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
+        [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];//TODO:Dejan refactor
     }
     else
     {
