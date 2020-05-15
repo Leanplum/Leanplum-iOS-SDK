@@ -298,6 +298,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##MEDIAQUERY##*/" withString:@""];
     }
     
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"/*##BANNER_MEDIAQUERY##" withString:@""];
+    htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##BANNER_MEDIAQUERY##*/" withString:@""];
+    
+    
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##Vars##"
                                                        withString:jsonString];
 

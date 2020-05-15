@@ -17,7 +17,13 @@
 {
     [self dismissExisitingViewController:^{
         UIViewController *topViewController = [self visibleViewController];
-        [topViewController presentViewController:viewController animated:YES completion:nil];
+        // if topViewController is getting dismissed, get view controller that presented it and let it present our new view controller,
+        // otherwise we can assume that our topViewController will be in view hierarchy when presenting new view controller
+        if (topViewController.beingDismissed) {
+            [[topViewController presentingViewController] presentViewController:viewController animated:YES completion:nil];
+        } else {
+            [topViewController presentViewController:viewController animated:YES completion:nil];
+        }
     }];
 }
 
@@ -25,7 +31,7 @@
 {
     UIViewController *topViewController = [self visibleViewController];
 
-    // dismiss on html view controller for now
+    // dismiss html view controller for now
     if ([topViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
         [topViewController dismissViewControllerAnimated:NO completion:completion];
     } else {

@@ -89,12 +89,6 @@
 /// Fullscreen web interstitial configuration
 - (void)configureFullscreen
 {
-    self.view.backgroundColor = [UIColor clearColor];
-    [self.view setOpaque:NO];
-
-    self.webView.backgroundColor = [UIColor clearColor];
-    [self.webView setOpaque:NO];
-
     [self addFullscreenConstraints];
 }
 
@@ -184,6 +178,11 @@
 
 - (void)addBannerConstraints
 {
+    [self updateBannerConstraints];
+}
+
+- (void)updateBannerConstraints
+{
     NSString *alignArgument = [self.context stringNamed:LPMT_ARG_HTML_ALIGN];
     NSString *widthArgument = [self.context stringNamed:LPMT_ARG_HTML_WIDTH];
     NSString *heightArgument = [self.context stringNamed:LPMT_ARG_HTML_HEIGHT];
@@ -196,38 +195,31 @@
         width = [self valueFromHtmlString:widthArgument percentRange:width];
     }
 
-    // use safeAreaLayoutGuide if we are targeting iOS 11 and above, otherwise fallback to layoutGuide.
+    [self.view removeConstraints:[self.view constraints]];
+    [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
+    
+    CGFloat top = 0;
+    CGFloat left = 0;
+    CGFloat right = 0;
+    CGFloat bottom = 0;
+
     if (@available(iOS 11, *)) {
-        if (alignBottom) {
-            // align bottom
-            [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.bottomAnchor constant:0] setActive:YES];
-        } else {
-            // align top
-            [[self.webView.topAnchor constraintEqualToAnchor:self.view.safeAreaLayoutGuide.topAnchor constant:0] setActive:YES];
-        }
-    } else {
-        if (alignBottom) {
-            // align bottom
-            [[self.webView.bottomAnchor constraintEqualToAnchor:self.bottomLayoutGuide.topAnchor constant:0] setActive:YES];
-        } else {
-            // align top
-            [[self.webView.topAnchor constraintEqualToAnchor:self.topLayoutGuide.bottomAnchor constant:0] setActive:YES];
-        }
+        top = UIApplication.sharedApplication.keyWindow.safeAreaInsets.top;
+        bottom = -UIApplication.sharedApplication.keyWindow.safeAreaInsets.bottom;
+        left = -UIApplication.sharedApplication.keyWindow.safeAreaInsets.left;
+        right = UIApplication.sharedApplication.keyWindow.safeAreaInsets.right;
     }
+
+    if (alignBottom) {
+        [[self.webView.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor constant:bottom] setActive:YES];
+    } else {
+        [[self.webView.topAnchor constraintEqualToAnchor:self.view.topAnchor constant:top] setActive:YES];
+    }
+    [[self.webView.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor constant:left] setActive:YES];
+    [[self.webView.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor constant:right] setActive:YES];
 
     // height constraint
     [[self.webView.heightAnchor constraintEqualToConstant:height] setActive:YES];
-
-    if (width != self.view.frame.size.width) {
-        // constrain width to constant if its not 100%
-        [[self.webView.widthAnchor constraintEqualToConstant:width] setActive:YES];
-        [[self.webView.centerXAnchor constraintEqualToAnchor:self.view.centerXAnchor] setActive:YES];
-    } else {
-        // constrain width to full screen width
-        [[self.webView.widthAnchor constraintEqualToAnchor:self.view.widthAnchor multiplier:1] setActive:YES];
-    }
-
-    [self.webView setTranslatesAutoresizingMaskIntoConstraints:NO];
 }
 
 - (void)webView:(WKWebView *)webView decidePolicyForNavigationAction:(WKNavigationAction *)navigationAction decisionHandler:(void (^)(WKNavigationActionPolicy))decisionHandler
@@ -381,8 +373,12 @@
 
 - (void)updateLayout
 {
-    if ([self.context.actionName isEqualToString:LPMT_HTML_NAME] && !self.isBanner) {
-        [self updateTemplateConstraints];
+    if ([self.context.actionName isEqualToString:LPMT_HTML_NAME]) {
+        if (self.isBanner) {
+            [self updateBannerConstraints];
+        } else {
+            [self updateTemplateConstraints];
+        }
     }
 }
 
