@@ -414,7 +414,10 @@ static NSDictionary *_requestHheaders;
 
             NSMutableDictionary *args = [self createArgsDictionary];
             args[LP_PARAM_UUID] = uuid;
-            
+
+            // remove keys that are empty
+            [args removeObjectForKey:@""];
+
             [LPEventDataManager addEvent:args];
 
             [LPEventCallbackManager addEventCallbackAt:count
