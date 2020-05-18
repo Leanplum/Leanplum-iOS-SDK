@@ -32,7 +32,7 @@
 typedef NS_ENUM(NSUInteger, LPGeofenceEventType) {
     LPEnterRegion,
     LPExitRegion
-};
+} NS_SWIFT_NAME(Leanplum.GeofenceEventType);
 
 
 + (NSString *)getEventNameFromGeofenceType:(LPGeofenceEventType)event;

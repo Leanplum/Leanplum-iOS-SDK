@@ -24,14 +24,18 @@
 
 #include <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPCountAggregator : NSObject
 
-@property (nonatomic, strong) NSSet<NSString *> * _Nullable enabledCounters;
+@property (nonatomic, strong, nullable) NSSet<NSString *> * enabledCounters;
 
-+ (_Nonnull instancetype)sharedAggregator;
++ (instancetype)sharedAggregator;
 
-- (void)incrementCount:(nonnull NSString *)name;
-- (void)incrementCount:(nonnull NSString *)name by:(int) incrementCount;
+- (void)incrementCount:(NSString *)name;
+- (void)incrementCount:(NSString *)name by:(int) incrementCount;
 - (void)sendAllCounts;
 
 @end
+
+NS_ASSUME_NONNULL_END

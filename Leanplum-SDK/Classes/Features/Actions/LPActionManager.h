@@ -28,6 +28,8 @@
 #import "LPContextualValues.h"
 #import <UserNotifications/UserNotifications.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 struct LeanplumMessageMatchResult {
     BOOL matchedTrigger;
     BOOL matchedUnlessTrigger;
@@ -38,20 +40,22 @@ typedef struct LeanplumMessageMatchResult LeanplumMessageMatchResult;
 
 LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, BOOL matchedUnlessTrigger, BOOL matchedLimit, BOOL matchedActivePeriod);
 
-typedef enum {
+typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
     kLeanplumActionFilterForeground = 0b1,
     kLeanplumActionFilterBackground = 0b10,
     kLeanplumActionFilterAll = 0b11
-} LeanplumActionFilter;
+} NS_SWIFT_NAME(ActionManager.ActionFilter);
 
 #define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
+NS_SWIFT_NAME(ActionManager)
 @interface LPActionManager : NSObject {
     
 }
 
-+ (LPActionManager*) sharedManager;
++ (LPActionManager*) sharedManager
+NS_SWIFT_NAME(shared());
 
 #pragma mark - Push Notifications
 
@@ -59,11 +63,11 @@ typedef enum {
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+              fetchCompletionHandler:(nullable LeanplumFetchCompletionBlock)completionHandler;
 - (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
-                 withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
+                 withCompletionHandler:(nullable void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
 - (void)willPresentNotification:(UNNotification *)notification
-          withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
+          withCompletionHandler:(nullable void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
@@ -73,14 +77,14 @@ typedef enum {
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
 
-+ (void)getForegroundRegionNames:(NSMutableSet **)foregroundRegionNames
-        andBackgroundRegionNames:(NSMutableSet **)backgroundRegionNames;
++ (void)getForegroundRegionNames:(NSMutableSet * _Nullable * _Nullable)foregroundRegionNames
+        andBackgroundRegionNames:(NSMutableSet * _Nullable * _Nullable)backgroundRegionNames;
 
 - (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-                          withAction:(NSString *)action
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+                          withAction:(nullable NSString *)action
+              fetchCompletionHandler:(nullable LeanplumFetchCompletionBlock)completionHandler;
 
 #pragma mark - Messages
 
@@ -102,3 +106,5 @@ typedef enum {
 + (void)reset;
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -25,61 +25,65 @@
 #import "Leanplum.h"
 #import <Foundation/Foundation.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NSBundle (LeanplumExtension)
 
-+ (NSBundle *__nullable)leanplum_mainBundle;
++ (nullable NSBundle *)leanplum_mainBundle;
 
 @end
 
 @interface LPBundle : NSBundle
 
-- (__nullable instancetype)initWithPath:(NSString *__nonnull)path NS_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithPath:(nullable NSString *)path NS_DESIGNATED_INITIALIZER;
 
 @end
 
 @interface LPFileManager : NSObject
 
-+ (NSString *__nullable)appBundlePath;
-+ (NSString *__nullable)documentsDirectory;
-+ (NSString *__nullable)cachesDirectory;
-+ (NSString *__nullable)documentsPathRelativeToFolder:(NSString *__nonnull)folder;
-+ (NSString *__nullable)documentsPath;
-+ (NSString *__nullable)bundlePathRelativeToFolder:(NSString *__nonnull)folder;
-+ (NSString *__nullable)bundlePath;
++ (nullable NSString *)appBundlePath;
++ (nullable NSString *)documentsDirectory;
++ (nullable NSString *)cachesDirectory;
++ (nullable NSString *)documentsPathRelativeToFolder:(NSString *)folder;
++ (nullable NSString *)documentsPath;
++ (nullable NSString *)bundlePathRelativeToFolder:(NSString *)folder;
++ (nullable NSString *)bundlePath;
 
-+ (NSString *__nullable)fileRelativeToAppBundle:(NSString *__nonnull)path;
-+ (NSString *__nullable)fileRelativeToDocuments:(NSString *__nonnull)path
-                       createMissingDirectories:(BOOL)createMissingDirectories;
-+ (NSString *__nullable)fileRelativeToLPBundle:(NSString *__nonnull)path;
-+ (BOOL)isNewerLocally:(NSDictionary *__nonnull)localAttributes
-            orRemotely:(NSDictionary *__nonnull)serverAttributes;
++ (nullable NSString *)fileRelativeToAppBundle:(NSString *)path;
++ (nullable NSString *)fileRelativeToDocuments:(NSString *)path
+                      createMissingDirectories:(BOOL)createMissingDirectories;
++ (nullable NSString *)fileRelativeToLPBundle:(NSString *)path;
++ (BOOL)isNewerLocally:(NSDictionary *)localAttributes
+            orRemotely:(NSDictionary *)serverAttributes;
 
-+ (BOOL)fileExists:(NSString *__nonnull)name;
-+ (BOOL)shouldDownloadFile:(NSString *__nullable)value
-              defaultValue:(NSString *__nullable)defaultValue;
-+ (BOOL)maybeDownloadFile:(NSString *__nullable)value
-             defaultValue:(NSString *__nullable)defaultValue
-               onComplete:(void (^__nullable)(void))complete;
-+ (NSString *__nullable)fileValue:(NSString *__nonnull)stringValue
-                 withDefaultValue:(NSString *__nullable)defaultValue;
++ (BOOL)fileExists:(NSString *)name;
++ (BOOL)shouldDownloadFile:(nullable NSString *)value
+              defaultValue:(nullable NSString *)defaultValue;
++ (BOOL)maybeDownloadFile:(nullable NSString *)value
+             defaultValue:(nullable NSString *)defaultValue
+               onComplete:(nullable void (^)(void))complete;
++ (nullable NSString *)fileValue:(NSString *)stringValue
+                 withDefaultValue:(nullable NSString *)defaultValue;
 
 + (void)initAsync:(BOOL)async;
-+ (void)initWithInclusions:(NSArray *__nullable)inclusions
-             andExclusions:(NSArray *__nullable)exclusions
++ (void)initWithInclusions:(nullable NSArray *)inclusions
+             andExclusions:(nullable NSArray *)exclusions
                      async:(BOOL)async;
 
 + (BOOL)hasInited;
 + (BOOL)initializing;
-+ (void)setResourceSyncingReady:(__nonnull LeanplumVariablesChangedBlock)block;
++ (void)setResourceSyncingReady:(LeanplumVariablesChangedBlock)block;
 
 // Finds all files in absDir and adds them to the files array.
-+ (void)traverse:(NSString *__nonnull)absoluteDir
-         current:(NSString *__nonnull)relativeDir
-           files:(NSMutableArray *__nonnull)files;
++ (void)traverse:(NSString *)absoluteDir
+         current:(NSString *)relativeDir
+           files:(NSMutableArray *)files;
 
 /**
  * Adds an attribute to a file at filepath to exclude it from iCloud and iTunes backup.
  */
-+ (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *__nonnull) filePathString;
++ (BOOL)addSkipBackupAttributeToItemAtPath:(NSString *) filePathString;
 + (void)clearCacheIfSDKUpdated;
 @end
+
+NS_ASSUME_NONNULL_END

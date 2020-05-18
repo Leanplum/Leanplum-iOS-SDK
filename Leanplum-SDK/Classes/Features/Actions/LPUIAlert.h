@@ -26,6 +26,8 @@
 #import "LPConstants.h"
 #import <UIKit/UIKit.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 
 @interface LPUIAlert : NSObject
@@ -33,7 +35,9 @@ typedef void (^LeanplumUIAlertCompletionBlock) (NSInteger buttonIndex);
 + (void)showWithTitle:(NSString *)title
               message:(NSString *)message
     cancelButtonTitle:(NSString *)cancelButtonTitle
-    otherButtonTitles:(NSArray *)otherButtonTitles
-                block:(LeanplumUIAlertCompletionBlock)block;
+    otherButtonTitles:(nullable NSArray *)otherButtonTitles
+                block:(nullable LeanplumUIAlertCompletionBlock)block;
 
 @end
+
+NS_ASSUME_NONNULL_END

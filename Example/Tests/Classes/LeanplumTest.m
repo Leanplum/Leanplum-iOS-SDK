@@ -1944,7 +1944,7 @@
     NSString *messageBody = @"testMessageBody";
     NSString *recipientUserID = @"recipientUserID";
 
-    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
 
     OCMStub([actionContextMock messageId]).andReturn(messageID);
@@ -1978,7 +1978,7 @@
     NSString *messageBody = @"testMessageBody";
     NSString *recipientUserID = @"recipientUserID";
 
-    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
 
     OCMStub([actionContextMock messageId]).andReturn(messageID);
@@ -1997,7 +1997,7 @@
     NSString *messageBody = @"testMessageBody";
     NSString *recipientUserID = @"recipientUserID";
 
-    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
 
     OCMStub([actionContextMock messageId]).andReturn(messageID);
@@ -2016,7 +2016,7 @@
     NSString *messageBody = @"testMessageBody";
     NSString *recipientUserID = @"recipientUserID";
 
-    LPActionContext *actionContext = [[LPActionContext alloc] init];
+    LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
 
     OCMStub([actionContextMock messageId]).andReturn(messageID);
