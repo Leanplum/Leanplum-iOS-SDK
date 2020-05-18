@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (weak, nonatomic) IBOutlet UIButton *dismissButton;
 
-+(LPWebInterstitialViewController * _Nullable)instantiateFromStoryboard;
++(nullable LPWebInterstitialViewController *)instantiateFromStoryboard;
 
 @end
 

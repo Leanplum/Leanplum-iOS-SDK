@@ -16,7 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPMessageTemplateUtilities: NSObject
 
 +(void)presentOverVisible:(UIViewController *) viewController;
-+(void)dismissExisitingViewController:(void (^ __nullable)(void)) completion;
++(void)dismissExisitingViewController:(nullable void (^)(void)) completion;
 +(UIViewController *) visibleViewController;
 
 @end

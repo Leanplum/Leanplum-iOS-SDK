@@ -1623,7 +1623,7 @@ BOOL inForeground = NO;
 
     LP_TRY
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
-    [[LPVarCache sharedCache] registerActionDefinition:name ofKind:kind withArguments:args andOptions:options];
+    [[LPVarCache sharedCache] registerActionDefinition:name ofKind:(int) kind withArguments:args andOptions:options];
     if (responder) {
         [Leanplum onAction:name invoke:responder];
     }
@@ -2850,9 +2850,13 @@ void LPLog(LPLogType type, NSString *format, ...) {
               "always set location manually, then call disableLocationCollection:.");
     }
 
-    [self setUserLocationAttributeWithLatitude:latitude longitude:longitude
-                                          city:city region:region country:country
-                                          type:type responseHandler:nil];
+    [self setUserLocationAttributeWithLatitude:latitude
+                                     longitude:longitude
+                                          city:city
+                                        region:region
+                                       country:country
+                                          type:type
+                               responseHandler:nil];
     LP_END_TRY
 }
 

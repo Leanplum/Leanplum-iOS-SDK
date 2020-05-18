@@ -159,11 +159,11 @@ static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
         if (notificationCenter) {
             selector = NSSelectorFromString(@"requestAuthorizationWithOptions:completionHandler:");
             IMP method = [notificationCenter methodForSelector:selector];
-            void (*func)(id, SEL, unsigned long long, void (^)(BOOL, NSError *__nullable)) =
+            void (*func)(id, SEL, unsigned long long, void (^)(BOOL, NSError *)) =
             (void *) method;
             func(notificationCenter, selector,
                  0b111, /* badges, sounds, alerts */
-                 ^(BOOL granted, NSError *__nullable error) {
+                 ^(BOOL granted, NSError * error) {
                      if (error) {
                          NSLog(@"Leanplum: Failed to request authorization for user "
                                "notifications: %@", error);

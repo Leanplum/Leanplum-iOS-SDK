@@ -11,8 +11,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPVar ()
 
-- (instancetype)initWithName:(NSString *)name withComponents:(NSArray *)components
-            withDefaultValue:(NSObject *)defaultValue withKind:(NSString *)kind;
+- (instancetype)initWithName:(NSString *)name
+              withComponents:(NSArray *)components
+            withDefaultValue:(NSObject *)defaultValue
+                    withKind:(NSString *)kind;
 
 @property (readonly) BOOL isInternal;
 @property (readonly, strong) NSString *name;
@@ -26,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, strong) NSMutableArray *fileReadyBlocks;
 @property (readonly, strong) NSMutableArray *valueChangedBlocks;
 @property (readonly) BOOL fileIsPending;
-@property (nonatomic, unsafe_unretained) id <LPVarDelegate> delegate;
+@property (nonatomic, unsafe_unretained, nullable) id <LPVarDelegate> delegate;
 @property (readonly) BOOL hasChanged;
 
 - (void) update;
