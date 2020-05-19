@@ -14,14 +14,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPActionContext ()
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary * _Nullable)args
-                                 messageId:(NSString *)messageId;
+                                      args:(nullable NSDictionary *)args
+                                 messageId:(nullable NSString *)messageId;
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary * _Nullable)args
-                                 messageId:(NSString *)messageId
-                         originalMessageId:(NSString *)originalMessageId
-                                  priority:(NSNumber *)priority;
+                                      args:(nullable NSDictionary *)args
+                                 messageId:(nullable NSString *)messageId
+                         originalMessageId:(nullable NSString *)originalMessageId
+                                  priority:(nullable NSNumber *)priority;
 
 @property (readonly, strong) NSString *name;
 @property (readonly, strong) NSString *messageId;

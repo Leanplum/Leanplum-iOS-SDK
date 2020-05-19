@@ -37,13 +37,14 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nrx-xe-2sn">
-                                <rect key="frame" x="20" y="56" width="374" height="24"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <rect key="frame" x="20" y="76" width="374" height="24"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SaE-q6-k6e">
-                                <rect key="frame" x="182.5" y="832" width="49" height="30"/>
+                                <rect key="frame" x="181.5" y="832" width="51" height="30"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                 <state key="normal" title="Accept"/>
                                 <connections>
                                     <action selector="didTapAcceptButton:" destination="WhM-GX-UAe" eventType="touchUpInside" id="CzT-L4-edj"/>
@@ -64,7 +65,7 @@
                             <constraint firstItem="DeP-Hm-r0a" firstAttribute="top" secondItem="UpV-cP-Khl" secondAttribute="top" id="kv6-Xo-5MA"/>
                             <constraint firstItem="94z-H6-Bl5" firstAttribute="leading" secondItem="UpV-cP-Khl" secondAttribute="leading" constant="20" id="uIq-9b-lWT"/>
                             <constraint firstItem="UaP-jx-TxP" firstAttribute="top" secondItem="rJ6-Wt-cep" secondAttribute="top" id="uOg-tC-U5s"/>
-                            <constraint firstItem="nrx-xe-2sn" firstAttribute="top" secondItem="UpV-cP-Khl" secondAttribute="top" constant="12" id="uxK-Ef-r0J"/>
+                            <constraint firstItem="nrx-xe-2sn" firstAttribute="top" secondItem="UpV-cP-Khl" secondAttribute="top" constant="32" id="uxK-Ef-r0J"/>
                             <constraint firstItem="UpV-cP-Khl" firstAttribute="trailing" secondItem="DeP-Hm-r0a" secondAttribute="trailing" constant="10" id="v6b-kU-Wp4"/>
                             <constraint firstItem="UaP-jx-TxP" firstAttribute="leading" secondItem="rJ6-Wt-cep" secondAttribute="leading" id="yFc-Od-d5Y"/>
                         </constraints>

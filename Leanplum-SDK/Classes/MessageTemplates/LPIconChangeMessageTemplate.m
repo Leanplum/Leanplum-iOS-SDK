@@ -69,7 +69,7 @@
                 (iconName == nil && currentIconName == nil)) {
                 return;
             }
-            [app setAlternateIconName:iconName completionHandler:^(NSError * _Nullable error) {
+            [app setAlternateIconName:iconName completionHandler:^(NSError * error) {
                 if (!error) {
                     return;
                 }

@@ -26,8 +26,9 @@ Analytics.
   s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
   s.weak_frameworks = 'AdSupport', 'StoreKit'
   s.library = 'sqlite3'
-  s.documentation_url = 'https://www.leanplum.com/docs#/docs'
+  s.documentation_url = 'https://docs.leanplum.com/'
   s.source_files = 'Leanplum-SDK/Classes/**/*'
   s.resources = ['Leanplum-SDK/Resources/**/*']
   s.module_name = 'Leanplum'
+  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
 end
