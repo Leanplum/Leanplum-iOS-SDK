@@ -301,7 +301,7 @@
     }];
     
     XCTestExpectation *responseExpectation2 = [self expectationWithDescription:@"response2"];
-    [[Leanplum inbox] onForceContentUpdate:^void(BOOL success){
+    [[Leanplum inbox] onForceContentUpdate:^void(BOOL success) {
         XCTAssertTrue(success);
         [responseExpectation2 fulfill];
     }];
@@ -316,18 +316,23 @@
         return [request.URL.host isEqualToString:API_HOST];;
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain
-                                             code:NSURLErrorBadServerResponse userInfo:nil];
+                                             code:NSURLErrorBadServerResponse
+                                         userInfo:@{@"FCU": @"Inbox"}];
         return [HTTPStubsResponse responseWithError:error];
     }];
+
+    NSLog(@"XXX: Before");
     
     XCTestExpectation *responseExpectation3 = [self expectationWithDescription:@"response3"];
-    [[Leanplum inbox] onForceContentUpdate:^void(BOOL success){
+    [[Leanplum inbox] onForceContentUpdate:^(BOOL success) {
+        NSLog(@"XXX: FCU FAIL");
         XCTAssertFalse(success);
         [responseExpectation3 fulfill];
     }];
     
     [Leanplum forceContentUpdate:nil];
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
+
     [HTTPStubs removeStub:stub];
     [[Leanplum inbox] reset];
 }

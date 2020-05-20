@@ -352,17 +352,15 @@ static dispatch_once_t leanplum_onceToken;
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
             id<LPRequesting> request = [LeanplumRequest
-                                    post:LP_METHOD_GET_VARS
-                                    params:@{
-                                             LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-                                             LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                             }];
+                                        post:LP_METHOD_GET_VARS
+                                        params:@{
+                                            LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                            LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                                        }];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
                 NSDictionary *messages = response[LP_KEY_MESSAGES];
-                NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
-                NSArray *eventRules = response[LP_KEY_EVENT_RULES];
                 NSArray *variants = response[LP_KEY_VARIANTS];
                 NSDictionary *regions = response[LP_KEY_REGIONS];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
@@ -372,20 +370,12 @@ static dispatch_once_t leanplum_onceToken;
                 if ([messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs]) {
                     messages = nil;
                 }
-                if ([updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
-                    updateRules = nil;
-                }
-                if ([eventRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
-                    eventRules = nil;
-                }
                 if ([regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
                     regions = nil;
                 }
-                if (values || messages || updateRules || eventRules || regions) {
+                if (values || messages || regions) {
                     [[LPVarCache sharedCache] applyVariableDiffs:values
                                           messages:messages
-                                       updateRules:updateRules
-                                        eventRules:eventRules
                                           variants:variants
                                            regions:regions
                                   variantDebugInfo:nil];

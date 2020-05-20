@@ -187,8 +187,11 @@ static dispatch_once_t leanplum_onceToken;
                            block:nil];
     } else if ([packet.name isEqualToString:@"applyVars"]) {
         NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
-        [[LPVarCache sharedCache] applyVariableDiffs:packetData messages:nil updateRules:nil eventRules:nil
-                              variants:nil regions:nil variantDebugInfo:nil];
+        [[LPVarCache sharedCache] applyVariableDiffs:packetData
+                                            messages:nil
+                                            variants:nil
+                                             regions:nil
+                                    variantDebugInfo:nil];
     }
     LP_END_TRY
 }

@@ -39,7 +39,6 @@
 		5B233E6821ED93F800206ACB /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233E6721ED93F800206ACB /* main.m */; };
 		5B233E7621ED944E00206ACB /* LPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233E6D21ED944D00206ACB /* LPAppDelegate.m */; };
 		5B233E7721ED944E00206ACB /* LPViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5B233E6E21ED944D00206ACB /* LPViewController.m */; };
-		5B233E7821ED944E00206ACB /* Leanplum-SDK-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5B233E7021ED944E00206ACB /* Leanplum-SDK-Info.plist */; };
 		5B233E7921ED944E00206ACB /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5B233E7221ED944E00206ACB /* InfoPlist.strings */; };
 		5B233E7A21ED944E00206ACB /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5B233E7421ED944E00206ACB /* Images.xcassets */; };
 		5B233E7C21ED94FF00206ACB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5B233E7B21ED94FF00206ACB /* Main.storyboard */; };
@@ -963,7 +962,7 @@
 		5B233C2721ED902900206ACB /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = Leanplum;
 				TargetAttributes = {
 					5B233C2F21ED902900206ACB = {
@@ -1011,7 +1010,6 @@
 			files = (
 				5B233E7A21ED944E00206ACB /* Images.xcassets in Resources */,
 				5B233E7921ED944E00206ACB /* InfoPlist.strings in Resources */,
-				5B233E7821ED944E00206ACB /* Leanplum-SDK-Info.plist in Resources */,
 				5B233E7C21ED94FF00206ACB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1238,7 +1236,7 @@
 		5B233C4521ED902900206ACB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
@@ -1263,7 +1261,7 @@
 		5B233C4621ED902900206ACB /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;

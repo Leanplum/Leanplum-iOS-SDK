@@ -30,7 +30,6 @@
 #import "LPVar.h"
 #import "LPMessageArchiveData.h"
 #import "LPEnumConstants.h"
-
 #import "Leanplum_WebSocket.h"
 #import "LPNetworkOperation.h"
 #import "LPUtils.h"
@@ -161,7 +160,6 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
  * @{
  */
 typedef void (^LeanplumStartBlock)(BOOL success);
-typedef void (^LeanplumInterfaceChangedBlock)(void);
 typedef void (^LeanplumSetLocationBlock)(BOOL success);
 // Returns whether the action was handled.
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
@@ -365,13 +363,6 @@ NS_SWIFT_NAME(start(userId:attributes:completion:));
 + (void)onVariablesChanged:(LeanplumVariablesChangedBlock)block;
 
 /**
- * Block to call when the interface receive new values from the server.
- * This will be called on start, and also later on if the user is in an experiment
- * that can update in realtime.
- */
-+ (void)onInterfaceChanged:(LeanplumInterfaceChangedBlock)block;
-
-/**
  * Block to call when no more file downloads are pending (either when
  * no files needed to be downloaded or all downloads have been completed).
  */
@@ -499,12 +490,10 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
  */
 + (void)addStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
-+ (void)addInterfaceChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 + (void)removeStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
-+ (void)removeInterfaceChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 /**@}*/

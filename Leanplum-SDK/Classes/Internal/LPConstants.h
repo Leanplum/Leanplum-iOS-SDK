@@ -25,19 +25,16 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#define IOS_6_SUPPORTED defined(_ARM_ARCH_7) || defined(__i386__) || defined(__LP64__)
-
-#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-#define IS_SUPPORTED_IOS_VERSION (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"4.3"))
-#define RETURN_IF_NOT_SUPPORTED_IOS_VERSION if (!(IS_SUPPORTED_IOS_VERSION)) return;
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
 ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
+
+#define SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 #define RETURN_IF_TEST_MODE if ([LPConstantsState sharedState].isTestMode) return
 
 #define IS_JAILBROKEN ([[[NSBundle mainBundle] infoDictionary] objectForKey: @"SignerIdentity"] != nil)
 
-#define IS_NOOP ((!IS_SUPPORTED_IOS_VERSION) || IS_JAILBROKEN || [LPConstantsState sharedState].isTestMode || [LPConstantsState sharedState].isInPermanentFailureState)
+#define IS_NOOP (IS_JAILBROKEN || [LPConstantsState sharedState].isTestMode || [LPConstantsState sharedState].isInPermanentFailureState)
 #define RETURN_IF_NOOP if (IS_NOOP) return
 
 #define LEANPLUM_SDK_VERSION @"2.8.0"
@@ -67,12 +64,6 @@
 #define LP_REQUEST_DEVELOPMENT_MAX_DELAY 5.0
 #define LP_REQUEST_PRODUCTION_DELAY 60.0
 #define LP_REQUEST_RESUME_DELAY 1.0
-
-#ifdef UI_USER_INTERFACE_IDIOM
-#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
-#else
-#define IS_IPAD (false)
-#endif
 
 #define MACRO_NAME(x) #x
 #define MACRO_VALUE(x) MACRO_NAME(x)
@@ -134,8 +125,6 @@ OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_COUNT_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_ITEM_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_VARIABLES_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_MESSAGES_KEY;
-OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_UPDATE_RULES_KEY;
-OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_EVENT_RULES_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_TOKEN_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_MESSAGE_TRIGGER_OCCURRENCES_KEY;
 OBJC_EXPORT NSString *LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY;
@@ -213,8 +202,6 @@ OBJC_EXPORT NSString *LP_PARAM_CURRENCY_CODE;
 
 OBJC_EXPORT NSString *LP_KEY_VARS;
 OBJC_EXPORT NSString *LP_KEY_MESSAGES;
-OBJC_EXPORT NSString *LP_KEY_UPDATE_RULES;
-OBJC_EXPORT NSString *LP_KEY_EVENT_RULES;
 OBJC_EXPORT NSString *LP_KEY_VARS_FROM_CODE;
 OBJC_EXPORT NSString *LP_KEY_USER_INFO;
 OBJC_EXPORT NSString *LP_KEY_STACK_TRACE;
