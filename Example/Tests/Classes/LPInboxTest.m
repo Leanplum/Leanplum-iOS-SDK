@@ -317,15 +317,14 @@
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain
                                              code:NSURLErrorBadServerResponse
-                                         userInfo:@{@"FCU": @"Inbox"}];
+                                         userInfo:nil];
         return [HTTPStubsResponse responseWithError:error];
     }];
 
-    NSLog(@"XXX: Before");
-    
     XCTestExpectation *responseExpectation3 = [self expectationWithDescription:@"response3"];
+    responseExpectation3.assertForOverFulfill = NO;
+
     [[Leanplum inbox] onForceContentUpdate:^(BOOL success) {
-        NSLog(@"XXX: FCU FAIL");
         XCTAssertFalse(success);
         [responseExpectation3 fulfill];
     }];
