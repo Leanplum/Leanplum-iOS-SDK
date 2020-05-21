@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5B233E5521ED93F600206ACB"
+               BlueprintIdentifier = "50641CC7EB637ED9B0832A3B"
                BuildableName = "Leanplum-iOS-Example.app"
                BlueprintName = "Leanplum-iOS-Example"
                ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
@@ -30,7 +30,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5B233E5521ED93F600206ACB"
+            BlueprintIdentifier = "50641CC7EB637ED9B0832A3B"
             BuildableName = "Leanplum-iOS-Example.app"
             BlueprintName = "Leanplum-iOS-Example"
             ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
@@ -53,7 +53,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5B233E5521ED93F600206ACB"
+            BlueprintIdentifier = "50641CC7EB637ED9B0832A3B"
             BuildableName = "Leanplum-iOS-Example.app"
             BlueprintName = "Leanplum-iOS-Example"
             ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
@@ -70,7 +70,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5B233E5521ED93F600206ACB"
+            BlueprintIdentifier = "50641CC7EB637ED9B0832A3B"
             BuildableName = "Leanplum-iOS-Example.app"
             BlueprintName = "Leanplum-iOS-Example"
             ReferencedContainer = "container:Leanplum-SDK.xcodeproj">

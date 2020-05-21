@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5B233C2F21ED902900206ACB"
-               BuildableName = "LeanplumSDK.framework"
+               BlueprintIdentifier = "B7C05B6BE1C0A0EE6E2299A8"
+               BuildableName = "Leanplum.framework"
                BlueprintName = "LeanplumSDK-iOS"
                ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
             </BuildableReference>
@@ -30,23 +30,13 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5B233C2F21ED902900206ACB"
-            BuildableName = "LeanplumSDK.framework"
+            BlueprintIdentifier = "B7C05B6BE1C0A0EE6E2299A8"
+            BuildableName = "Leanplum.framework"
             BlueprintName = "LeanplumSDK-iOS"
             ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5B233C3821ED902900206ACB"
-               BuildableName = "LeanplumSDKTests.xctest"
-               BlueprintName = "LeanplumSDKTests"
-               ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
@@ -62,8 +52,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5B233C2F21ED902900206ACB"
-            BuildableName = "LeanplumSDK.framework"
+            BlueprintIdentifier = "B7C05B6BE1C0A0EE6E2299A8"
+            BuildableName = "Leanplum.framework"
             BlueprintName = "LeanplumSDK-iOS"
             ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
          </BuildableReference>
@@ -75,15 +65,16 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <MacroExpansion>
+      <BuildableProductRunnable
+         runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5B233C2F21ED902900206ACB"
-            BuildableName = "LeanplumSDK.framework"
+            BlueprintIdentifier = "B7C05B6BE1C0A0EE6E2299A8"
+            BuildableName = "Leanplum.framework"
             BlueprintName = "LeanplumSDK-iOS"
             ReferencedContainer = "container:Leanplum-SDK.xcodeproj">
          </BuildableReference>
-      </MacroExpansion>
+      </BuildableProductRunnable>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
