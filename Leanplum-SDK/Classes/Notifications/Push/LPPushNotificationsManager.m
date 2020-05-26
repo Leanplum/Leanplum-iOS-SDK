@@ -2,11 +2,13 @@
 //  LPPushNotificationsManager.m
 //  Leanplum-iOS-Location
 //
-//  Created by Dejan . Krstevski on 5.05.20.
+//  Created by Dejan Krstevski on 5.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import "LPPushNotificationsManager.h"
 #import "LeanplumInternal.h"
+#import "LPAPIConfig.h"
 #import <objc/runtime.h>
 
 @implementation NSObject (LeanplumExtension)
@@ -291,6 +293,39 @@ API_AVAILABLE(ios(10.0))
 - (BOOL)hasDisabledAskToAsk
 {
     return [[NSUserDefaults standardUserDefaults] boolForKey:DEFAULTS_ASKED_TO_PUSH];
+}
+
+- (NSString *)leanplum_createUserNotificationSettingsKey
+{
+    return [NSString stringWithFormat:
+            LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY,
+            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
+}
+
+- (NSString *)pushToken
+{
+    return [[NSUserDefaults standardUserDefaults] stringForKey:[self pushTokenKey]];
+}
+
+- (NSString *)pushTokenKey
+{
+    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
+            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
+}
+
+- (void)updatePushToken:(NSString *)newToken
+{
+    [[NSUserDefaults standardUserDefaults] setObject:newToken forKey:[self pushTokenKey]];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)removePushToken
+{
+    NSString *tokenKey = [self pushTokenKey];
+    if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+    }
 }
 
 #pragma mark Swizzle Methods

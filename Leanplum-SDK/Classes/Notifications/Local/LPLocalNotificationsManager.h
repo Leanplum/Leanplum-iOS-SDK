@@ -2,7 +2,8 @@
 //  LPLocalNotificationsManager.h
 //  Leanplum-iOS-Location
 //
-//  Created by Dejan . Krstevski on 12.05.20.
+//  Created by Dejan Krstevski on 12.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>

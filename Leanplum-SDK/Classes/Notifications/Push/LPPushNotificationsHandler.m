@@ -2,7 +2,8 @@
 //  LPPushNotificationsHandler.m
 //  Leanplum-iOS-Location
 //
-//  Created by Dejan . Krstevski on 5.05.20.
+//  Created by Dejan Krstevski on 5.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import "LPPushNotificationsHandler.h"
@@ -11,8 +12,7 @@
 #import "LeanplumRequest.h"
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
-#import "LPAPIConfig.h"
-#import "LPNotificationsHelper.h"
+#import "LPNotificationsManager.h"
 
 @interface LPPushNotificationsHandler()
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
@@ -66,7 +66,7 @@
         }
     }
     // Call the completion handler only for Leanplum notifications.
-    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     if (messageId && completionHandler) {
         completionHandler(UIBackgroundFetchResultNoData);
     }
@@ -82,19 +82,17 @@
     }
 
     // Format push token.
-    NSString *formattedToken = [self hexadecimalStringFromData:token];
+    NSString *formattedToken = [[LPNotificationsManager shared] hexadecimalStringFromData:token];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
     
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.
-    NSString *tokenKey = [self pushTokenKey];
-    NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
+    NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
     if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
         
-        [[NSUserDefaults standardUserDefaults] setObject:formattedToken forKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [[LPPushNotificationsManager sharedManager] updatePushToken:formattedToken];
         
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
@@ -110,11 +108,7 @@
 {
     LP_TRY
     [self leanplum_disableAskToAsk];
-    NSString *tokenKey = [self pushTokenKey];
-    if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
-    }
+    [[LPPushNotificationsManager sharedManager] removePushToken];
     LP_END_TRY
 }
 
@@ -130,7 +124,7 @@
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
     // Send settings.
-    NSString *settingsKey = [self leanplum_createUserNotificationSettingsKey];
+    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
     NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
     NSNumber *types = @([notificationSettings types]);
     NSMutableArray *categories = [NSMutableArray array];
@@ -146,8 +140,7 @@
     if (![existingSettings isEqualToDictionary:settings]) {
         [[NSUserDefaults standardUserDefaults] setObject:settings forKey:settingsKey];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        NSString *tokenKey = [self pushTokenKey];
-        NSString *existingToken = [[NSUserDefaults standardUserDefaults] stringForKey:tokenKey];
+        NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
         NSMutableDictionary *params = [@{
                 LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
                 LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
@@ -166,12 +159,6 @@
     }
 }
 
-- (NSString *)pushTokenKey
-{
-    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
-            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
-}
-
 - (void)leanplum_disableAskToAsk
 {
     Class userMessageTemplatesClass = NSClassFromString(@"LPMessageTemplates");
@@ -181,13 +168,6 @@
     } else {
         [[LPMessageTemplatesClass sharedTemplates] disableAskToAsk];
     }
-}
-
-- (NSString *)leanplum_createUserNotificationSettingsKey
-{
-    return [NSString stringWithFormat:
-            LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY,
-            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
 }
 
 #pragma mark - Push Notifications - Handlers
@@ -200,7 +180,7 @@
          completionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler
 {
     // Don't handle non-Leanplum notifications.
-    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
@@ -240,7 +220,7 @@
     }
 
     LPLog(LPInfo, @"Handling push notification");
-    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
     if (action == nil) {
         actionName = LP_VALUE_DEFAULT_PUSH_ACTION;
@@ -401,7 +381,7 @@
 - (void)handleNotificationResponse:(NSDictionary *)userInfo
                  completionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
-    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
@@ -437,7 +417,7 @@
                 withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0))
 
 {
-    NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:userInfo];
+    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     if (messageId == nil) {
         return;
     }
@@ -483,22 +463,6 @@
     self.notificationHandled = [LPJSON stringFromJSON:userInfo];
     self.notificationHandledTime = [NSDate date];
     return NO;
-}
-
-#pragma mark - Helper methods
-- (NSString *)hexadecimalStringFromData:(NSData *)data
-{
-    NSUInteger dataLength = data.length;
-    if (dataLength == 0) {
-        return nil;
-    }
-
-    const unsigned char *dataBuffer = data.bytes;
-    NSMutableString *hexString  = [NSMutableString stringWithCapacity:(dataLength * 2)];
-    for (int i = 0; i < dataLength; ++i) {
-        [hexString appendFormat:@"%02x", dataBuffer[i]];
-    }
-    return [hexString copy];
 }
 
 @end

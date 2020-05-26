@@ -902,8 +902,7 @@ BOOL inForeground = NO;
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
     
     // Push token.
-    NSString *pushTokenKey = [[LPPushNotificationsManager sharedManager].handler pushTokenKey];
-    NSString *pushToken = [[NSUserDefaults standardUserDefaults] stringForKey:pushTokenKey];
+    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }

@@ -2,7 +2,8 @@
 //  LPPushNotificationsManager.h
 //  Leanplum-iOS-Location
 //
-//  Created by Dejan . Krstevski on 5.05.20.
+//  Created by Dejan Krstevski on 5.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -31,6 +32,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)disableAskToAsk;
 - (BOOL)hasDisabledAskToAsk;
 - (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block;
+- (NSString *)leanplum_createUserNotificationSettingsKey;
+- (NSString *)pushToken;
+- (void)updatePushToken:(NSString *)newToken;
+- (void)removePushToken;
 
 @end
 

@@ -2,7 +2,8 @@
 //  LPNotificationsConstants.h
 //  Leanplum-iOS-SDK
 //
-//  Created by Dejan . Krstevski on 13.05.20.
+//  Created by Dejan Krstevski on 13.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #ifndef LPNotificationsConstants_h

@@ -93,7 +93,7 @@ static dispatch_once_t leanplum_onceToken;
     return self;
 }
 
-+ (void) load {
++ (void) load { //TODO:Dejan check this (talked with Milos)
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];

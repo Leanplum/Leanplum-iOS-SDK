@@ -2,7 +2,8 @@
 //  LPPushNotificationsHandler.h
 //  Leanplum-iOS-Location
 //
-//  Created by Dejan . Krstevski on 5.05.20.
+//  Created by Dejan Krstevski on 5.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -36,11 +37,6 @@ withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0))
 - (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
-
-/**
-* Returns a push token using app ID, device ID, and user ID.
-*/
-- (NSString *)pushTokenKey;
 
 @end
 

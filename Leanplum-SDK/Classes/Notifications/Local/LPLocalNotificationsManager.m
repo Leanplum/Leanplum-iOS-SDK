@@ -2,13 +2,14 @@
 //  LPLocalNotificationsManager.m
 //  Leanplum-iOS-Location
 //
-//  Created by Dejan . Krstevski on 12.05.20.
+//  Created by Dejan Krstevski on 12.05.20.
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #import "LPLocalNotificationsManager.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsConstants.h"
-#import "LPNotificationsHelper.h"
+#import "LPNotificationsManager.h"
 
 @implementation LPLocalNotificationsManager
 
@@ -70,7 +71,7 @@
         // Otherwise, discard the scheduled one.
         NSArray *notifications = [app scheduledLocalNotifications];
         for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:[notification userInfo]];
+            NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[notification userInfo]];
             if ([messageId isEqualToString:context.messageId]) {
                 NSComparisonResult comparison = [notification.fireDate compare:eta];
                 if (comparison == NSOrderedAscending) {
@@ -158,7 +159,7 @@
         NSArray *notifications = [app scheduledLocalNotifications];
         BOOL didCancel = NO;
         for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [[LPNotificationsHelper shared] messageIdFromUserInfo:[notification userInfo]];
+            NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[notification userInfo]];
             if ([messageId isEqualToString:context.messageId]) {
                 [app cancelLocalNotification:notification];
                 if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
