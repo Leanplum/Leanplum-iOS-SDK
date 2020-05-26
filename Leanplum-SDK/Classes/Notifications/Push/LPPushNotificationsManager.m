@@ -198,7 +198,7 @@ API_AVAILABLE(ios(10.0))
     //    [[UIApplication sharedApplication] openURL:appSettings];
 
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:DEFAULTS_LEANPLUM_ENABLED_PUSH];
-
+    [Leanplum synchronizeDefaults];
     // When system asks user for push notification we should also disable our dialog, because
     // if users accept/declines we don't want to show dialog anymore since system will block default one.
     [self disableAskToAsk];
@@ -316,7 +316,7 @@ API_AVAILABLE(ios(10.0))
 - (void)updatePushToken:(NSString *)newToken
 {
     [[NSUserDefaults standardUserDefaults] setObject:newToken forKey:[self pushTokenKey]];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [Leanplum synchronizeDefaults];
 }
 
 - (void)removePushToken
@@ -324,7 +324,7 @@ API_AVAILABLE(ios(10.0))
     NSString *tokenKey = [self pushTokenKey];
     if ([[NSUserDefaults standardUserDefaults] stringForKey:tokenKey]) {
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:tokenKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+        [Leanplum synchronizeDefaults];
     }
 }
 

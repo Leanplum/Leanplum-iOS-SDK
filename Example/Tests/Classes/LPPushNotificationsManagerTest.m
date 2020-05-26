@@ -108,4 +108,28 @@
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 
+- (void)test_update_and_remove_push_token
+{
+    LPPushNotificationsManager *manager = [LPPushNotificationsManager sharedManager];
+    
+    NSString *token = @"test_token";
+    [manager updatePushToken:token];
+    XCTAssertEqual(token, [manager pushToken]);
+    
+    [manager removePushToken];
+    XCTAssertNil([manager pushToken]);
+}
+
+- (void)test_disable_ask_to_ask
+{
+    //clean user defaults for key DEFAULTS_ASKED_TO_PUSH
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey: DEFAULTS_ASKED_TO_PUSH];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    LPPushNotificationsManager *manager = [LPPushNotificationsManager sharedManager];
+    XCTAssertFalse([manager hasDisabledAskToAsk]);
+    [manager disableAskToAsk];
+    XCTAssertTrue([manager hasDisabledAskToAsk]);
+}
+
 @end
