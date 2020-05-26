@@ -25,6 +25,8 @@
 #import <Foundation/Foundation.h>
 #import "LPNetworkProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPEventCallback : NSObject
 
 @property (nonatomic, strong) LPNetworkResponseBlock responseBlock;
@@ -45,3 +47,5 @@
 - (void)invokeError:(NSError *)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

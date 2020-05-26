@@ -25,6 +25,8 @@
 #import <Foundation/Foundation.h>
 #import "LPNetworkProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface LPEventCallbackManager : NSObject
 
 /**
@@ -62,3 +64,5 @@
 + (void)invokeErrorCallbacksWithError:(NSError *)error;
 
 @end
+
+NS_ASSUME_NONNULL_END

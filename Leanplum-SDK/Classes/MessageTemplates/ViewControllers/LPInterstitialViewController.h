@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UIButton *dismissButton;
 @property (weak, nonatomic) IBOutlet UIImageView *backgroundImageView;
 
-+(LPInterstitialViewController * _Nullable)instantiateFromStoryboard;
++(nullable LPInterstitialViewController *)instantiateFromStoryboard;
 
 @end
 

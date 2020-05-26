@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:LeanplumSDK.xcodeproj">
+      location = "self:Leanplum-SDK.xcodeproj">
    </FileRef>
 </Workspace>

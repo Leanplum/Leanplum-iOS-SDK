@@ -30,6 +30,8 @@
 #import "LPPushNotificationsManager.h"
 #import "LPLocalNotificationsManager.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 struct LeanplumMessageMatchResult {
     BOOL matchedTrigger;
     BOOL matchedUnlessTrigger;
@@ -40,19 +42,21 @@ typedef struct LeanplumMessageMatchResult LeanplumMessageMatchResult;
 
 LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, BOOL matchedUnlessTrigger, BOOL matchedLimit, BOOL matchedActivePeriod);
 
-typedef enum {
+typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
     kLeanplumActionFilterForeground = 0b1,
     kLeanplumActionFilterBackground = 0b10,
     kLeanplumActionFilterAll = 0b11
-} LeanplumActionFilter;
+} NS_SWIFT_NAME(ActionManager.ActionFilter);
 
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
+NS_SWIFT_NAME(ActionManager)
 @interface LPActionManager : NSObject {
     
 }
 
-+ (LPActionManager*) sharedManager;
++ (LPActionManager*) sharedManager
+NS_SWIFT_NAME(shared());
 
 + (void)getForegroundRegionNames:(NSMutableSet **)foregroundRegionNames
         andBackgroundRegionNames:(NSMutableSet **)backgroundRegionNames;
@@ -77,3 +81,5 @@ typedef enum {
 + (void)reset;
 
 @end
+
+NS_ASSUME_NONNULL_END

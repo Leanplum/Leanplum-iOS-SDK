@@ -11,25 +11,37 @@ before_install:
   - gem install cocoapods # Since Travis is not always on latest version
   - pod install --project-directory=Example
 
+before_script:
+  - >
+      if [ -z "$TRAVIS_TAG" ] 
+        then 
+          echo "No tag, so not triggering Location" 
+        else
+          ./Tools/triggerLocation.sh
+        fi
+
 before_deploy:
   - ./Tools/verifyTag.sh
   - ./Tools/build.sh
-  - ./Tools/triggerLocation.sh
 
 after_deploy:
-  - ./Tools/triggerRondo.sh
-  - version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi; # trigger ReactNative if not beta release
+  - >
+    if ! [ "$AFTER_DEPLOY_RUN" ]; then
+      export AFTER_DEPLOY_RUN=1;
+      ./Tools/triggerRondo.sh;
+      version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi; 
+    fi
 
 deploy:
+  - provider: script
+    skip_cleanup: true
+    script: ./Tools/push.sh
+    on:
+      tags: true
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file: Leanplum.framework.zip
     draft: true
-    on:
-      tags: true
-  - provider: script
-    skip_cleanup: true
-    script: ./Tools/push.sh
     on:
       tags: true

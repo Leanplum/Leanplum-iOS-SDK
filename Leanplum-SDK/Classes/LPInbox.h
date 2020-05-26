@@ -28,7 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - LPInboxMessage interface
 
+NS_SWIFT_NAME(LeanplumInbox.Message)
 @interface LPInboxMessage : NSObject <NSCoding>
+
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark - LPInboxMessage methods
 
@@ -51,29 +54,29 @@ NS_ASSUME_NONNULL_BEGIN
  * Returns the image path of the inbox message. Can be nil.
  * Use with [UIImage contentsOfFile:].
  */
-- (NSString * _Nullable)imageFilePath;
+- (nullable NSString *)imageFilePath;
 
 /**
  * Returns the image URL of the inbox message.
  * You can safely use this with prefetching enabled.
  * It will return the file URL path instead if the image is in cache.
  */
-- (NSURL * _Nullable)imageURL;
+- (nullable NSURL *)imageURL;
 
 /**
  * Returns the data of the inbox message. Advanced use only.
  */
-- (NSDictionary * _Nullable)data;
+- (nullable NSDictionary *)data;
 
 /**
  * Returns the delivery timestamp of the inbox message.
  */
-- (NSDate * _Nullable)deliveryTimestamp;
+- (nullable NSDate *)deliveryTimestamp;
 
 /**
  * Return the expiration timestamp of the inbox message.
  */
-- (NSDate * _Nullable)expirationTimestamp;
+- (nullable NSDate *)expirationTimestamp;
 
 /**
  * Returns YES if the inbox message is read.
@@ -100,7 +103,10 @@ NS_ASSUME_NONNULL_BEGIN
 typedef void (^LeanplumInboxChangedBlock)(void);
 typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
 
+NS_SWIFT_NAME(LeanplumInbox)
 @interface LPInbox : NSObject
+
+- (instancetype)init NS_UNAVAILABLE;
 
 #pragma mark - LPInbox methods
 
@@ -119,26 +125,27 @@ typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
  * chronological order, i.e. the id of the oldest message is the first one, and the most
  * recent one is the last one in the array.
  */
-- (NSArray *)messagesIds;
+- (NSArray<NSString *> *)messagesIds;
 
 /**
  * Returns an array containing all of the inbox messages (as LPInboxMessage objects)
  * on the device, sorted in ascending chronological order, i.e. the oldest message is the 
  * first one, and the most recent one is the last one in the array.
  */
-- (NSArray *)allMessages;
+- (NSArray<LPInboxMessage *> *)allMessages;
 
 /**
  * Returns an array containing all of the unread inbox messages on the device, sorted
  * in ascending chronological order, i.e. the oldest message is the first one, and the
  * most recent one is the last one in the array.
  */
-- (NSArray *)unreadMessages;
+- (NSArray<LPInboxMessage *> *)unreadMessages;
 
 /**
  * Returns the inbox messages associated with the given messageId identifier.
  */
-- (LPInboxMessage * _Nullable)messageForId:(NSString *)messageId;
+- (nullable LPInboxMessage *)messageForId:(NSString *)messageId
+NS_SWIFT_NAME(message(id:));
 
 /**
  * Call this method if you don't want Inbox images to be prefetched.
@@ -151,7 +158,8 @@ typedef void (^LeanplumInboxSyncedBlock)(BOOL success);
  * This will be called on start, and also later on if the user is in an experiment
  * that can update in realtime.
  */
-- (void)onChanged:(LeanplumInboxChangedBlock)block;
+- (void)onChanged:(LeanplumInboxChangedBlock)block
+NS_SWIFT_NAME(onInboxChanged(completion:));
 
 /**
  * Block to call when forceContentUpdate was called.
@@ -188,7 +196,7 @@ typedef void (^LeanplumNewsfeedChangedBlock)(void);
 - (NSArray *)allMessages;
 - (NSArray *)unreadMessages;
 - (void)onChanged:(LeanplumNewsfeedChangedBlock)block;
-- (LPNewsfeedMessage * _Nullable)messageForId:(NSString *)messageId;
+- (nullable LPNewsfeedMessage *)messageForId:(NSString *)messageId;
 - (void)addNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
 - (void)removeNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
 
