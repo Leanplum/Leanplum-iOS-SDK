@@ -68,6 +68,9 @@
 #define MACRO_NAME(x) #x
 #define MACRO_VALUE(x) MACRO_NAME(x)
 
+NS_ASSUME_NONNULL_BEGIN
+
+NS_SWIFT_NAME(Leanplum.Constants)
 @interface LPConstantsState : NSObject {
     NSString *_apiHostName;
     NSString *_apiServlet;
@@ -306,3 +309,5 @@ leanplumInternalError(e); }
 
 void leanplumIncrementUserCodeBlock(int delta);
 void leanplumInternalError(NSException *e);
+
+NS_ASSUME_NONNULL_END
