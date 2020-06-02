@@ -309,20 +309,12 @@
                 if ([messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs]) {
                     messages = nil;
                 }
-                if ([updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
-                    updateRules = nil;
-                }
-                if ([eventRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs]) {
-                    eventRules = nil;
-                }
                 if ([regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
                     regions = nil;
                 }
-                if (values || messages || updateRules || eventRules || regions) {
+                if (values || messages || regions) {
                     [[LPVarCache sharedCache] applyVariableDiffs:values
                                           messages:messages
-                                       updateRules:updateRules
-                                        eventRules:eventRules
                                           variants:variants
                                            regions:regions
                                   variantDebugInfo:nil];
