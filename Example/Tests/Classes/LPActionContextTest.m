@@ -34,7 +34,11 @@
     [super setUp];
     
     // initialize the var cache to be empty and have a dummy action
-    [[LPVarCache sharedCache] applyVariableDiffs:nil messages:nil updateRules:nil eventRules:nil variants:nil regions:nil variantDebugInfo:nil];
+    [[LPVarCache sharedCache] applyVariableDiffs:nil
+                                        messages:nil
+                                        variants:nil
+                                         regions:nil
+                                variantDebugInfo:nil];
     [[LPVarCache sharedCache] registerActionDefinition:@"action" ofKind:0 withArguments:@[] andOptions:@{}];
 }
 
@@ -53,7 +57,11 @@
     NSMutableDictionary *message = [[NSMutableDictionary alloc] init];
     message[LP_KEY_VARS] = @{@"key1": @"value1"};
     NSDictionary *messages = @{@"1": message};
-    [[LPVarCache sharedCache] applyVariableDiffs:nil messages:messages updateRules:nil eventRules:nil variants:nil regions:nil variantDebugInfo:nil];
+    [[LPVarCache sharedCache] applyVariableDiffs:nil
+                                        messages:messages
+                                        variants:nil
+                                         regions:nil
+                                variantDebugInfo:nil];
     
     // set args from the message in the cache
     [context setProperArgs];
@@ -72,7 +80,11 @@
     NSMutableDictionary *message = [[NSMutableDictionary alloc] init];
     message[LP_KEY_VARS] = nil;
     NSDictionary *messages = @{@"1": message};
-    [[LPVarCache sharedCache] applyVariableDiffs:nil messages:messages updateRules:nil eventRules:nil variants:nil regions:nil variantDebugInfo:nil];
+    [[LPVarCache sharedCache] applyVariableDiffs:nil
+                                        messages:messages
+                                        variants:nil
+                                         regions:nil
+                                variantDebugInfo:nil];
     
     // set nil args from the message in the cache
     [context setProperArgs];
@@ -89,7 +101,11 @@
     
     // apply diffs with no message to increase content version
     NSDictionary *messages = @{};
-    [[LPVarCache sharedCache] applyVariableDiffs:nil messages:messages updateRules:nil eventRules:nil variants:nil regions:nil variantDebugInfo:nil];
+    [[LPVarCache sharedCache] applyVariableDiffs:nil
+                                        messages:messages
+                                        variants:nil
+                                         regions:nil
+                                variantDebugInfo:nil];
     
     // no message in cache, args should not be set
     [context setProperArgs];

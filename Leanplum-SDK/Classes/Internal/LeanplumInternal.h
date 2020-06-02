@@ -94,7 +94,6 @@ NS_SWIFT_NAME(track(event:value:info:args:params:));
 + (void)removeResponder:(id)responder withSelector:(SEL)selector fromSet:(NSMutableSet *)responders;
 
 + (void)onStartIssued:(LeanplumStartIssuedBlock)block;
-+ (void)onEventsChanged:(LeanplumEventsChangedBlock)block;
 + (void)synchronizeDefaults;
 
 void LPLog(LPLogType type, NSString* format, ...);

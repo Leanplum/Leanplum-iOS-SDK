@@ -37,20 +37,19 @@
 #import "NSTimer+Blocks.h"
 #import "LPActionManager.h"
 #import "LPMessageTemplates.h"
-#include <sys/sysctl.h>
 #import "LPRevenueManager.h"
 #import "LPSwizzle.h"
 #import "LPInbox.h"
 #import "LPUIAlert.h"
 #import "LPUtils.h"
 #import "LPAppIconManager.h"
-#import "LPUIEditorWrapper.h"
 #import "LPCountAggregator.h"
 #import "LPRequestFactory.h"
 #import "LPFileTransferManager.h"
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
+#include <sys/sysctl.h>
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -292,21 +291,6 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-+ (void)allowInterfaceEditing
-{
-    [self throwError:@"Leanplum UI Editor has moved to separate Pod."
-     "Please remove this method call and include this "
-     "line in your Podfile: pod 'Leanplum-iOS-UIEditor'"];
-}
-
-+ (BOOL)interfaceEditingEnabled
-{
-    [self throwError:@"Leanplum UI Editor has moved to separate Pod."
-     "Please remove this method call and include this "
-     "line in your Podfile: pod 'Leanplum-iOS-UIEditor'"];
-    return NO;
-}
-
 + (void)setDeviceId:(NSString *)deviceId
 {
     if ([LPUtils isBlank:deviceId]) {
@@ -325,23 +309,12 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
-+ (void)syncResources
-{
-    [self syncResourcesAsync:NO];
-}
-
 + (void)syncResourcesAsync:(BOOL)async
 {
     LP_TRY
     [LPFileManager initAsync:async];
     LP_END_TRY
     [[LPCountAggregator sharedAggregator] incrementCount:@"sync_resources"];
-}
-
-+ (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
-                excluding:(NSArray *)patternsToExcludeOrNil
-{
-    [self syncResourcePaths:patternsToIncludeOrNil excluding:patternsToExcludeOrNil async:NO];
 }
 
 + (void)syncResourcePaths:(NSArray *)patternsToIncludeOrNil
@@ -455,35 +428,6 @@ BOOL inForeground = NO;
     LP_END_USER_CODE
 }
 
-+ (void)triggerInterfaceChanged
-{
-    LP_BEGIN_USER_CODE
-    for (NSInvocation *invocation in [LPInternalState sharedState]
-             .interfaceChangedResponders.copy) {
-        [invocation invoke];
-    }
-
-    for (LeanplumInterfaceChangedBlock block in [LPInternalState sharedState]
-             .interfaceChangedBlocks.copy) {
-        block();
-    }
-    LP_END_USER_CODE
-}
-
-+ (void)triggerEventsChanged
-{
-    LP_BEGIN_USER_CODE
-    for (NSInvocation *invocation in [LPInternalState sharedState].eventsChangedResponders.copy) {
-        [invocation invoke];
-    }
-
-    for (LeanplumEventsChangedBlock block in [LPInternalState sharedState]
-             .eventsChangedBlocks.copy) {
-        block();
-    }
-    LP_END_USER_CODE
-}
-
 + (void)triggerVariablesChangedAndNoDownloadsPending
 {
     LP_BEGIN_USER_CODE
@@ -590,11 +534,6 @@ BOOL inForeground = NO;
     }
 }
 
-+ (void)setDeveloperEmail:(NSString *)email __deprecated
-{
-    registrationEmail = email;
-}
-
 + (void)onHasStartedAndRegisteredAsDeveloper
 {
     if ([LPFileManager initializing]) {
@@ -682,11 +621,7 @@ BOOL inForeground = NO;
     [state.actionBlocks removeAllObjects];
     [state.actionResponders removeAllObjects];
     [state.variablesChangedBlocks removeAllObjects];
-    [state.interfaceChangedBlocks removeAllObjects];
-    [state.eventsChangedBlocks removeAllObjects];
     [state.variablesChangedResponders removeAllObjects];
-    [state.interfaceChangedResponders removeAllObjects];
-    [state.eventsChangedResponders removeAllObjects];
     [state.noDownloadsBlocks removeAllObjects];
     [state.onceNoDownloadsBlocks removeAllObjects];
     [state.noDownloadsResponders removeAllObjects];
@@ -749,13 +684,14 @@ BOOL inForeground = NO;
     if (IS_NOOP) {
         state.hasStarted = YES;
         state.startSuccessful = YES;
-        [[LPVarCache sharedCache] applyVariableDiffs:@{} messages:@{} updateRules:@[] eventRules:@[]
-                              variants:@[] regions:@{} variantDebugInfo:@{}];
+        [[LPVarCache sharedCache] applyVariableDiffs:@{}
+                                            messages:@{}
+                                            variants:@[]
+                                             regions:@{}
+                                    variantDebugInfo:@{}];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self triggerStartResponse:YES];
             [self triggerVariablesChanged];
-            [self triggerInterfaceChanged];
-            [self triggerEventsChanged];
             [self triggerVariablesChangedAndNoDownloadsPending];
             [[self inbox] updateMessages:[[NSMutableDictionary alloc] init] unreadCount:0];
         });
@@ -800,12 +736,6 @@ BOOL inForeground = NO;
         if (LeanplumRequest.numPendingDownloads == 0) {
             [self triggerVariablesChangedAndNoDownloadsPending];
         }
-    }];
-    [[LPVarCache sharedCache] onInterfaceUpdate:^{
-        [self triggerInterfaceChanged];
-    }];
-    [[LPVarCache sharedCache] onEventsUpdate:^{
-        [self triggerEventsChanged];
     }];
     [LeanplumRequest onNoPendingDownloads:^{
         [self triggerVariablesChangedAndNoDownloadsPending];
@@ -918,8 +848,6 @@ BOOL inForeground = NO;
         NSDictionary *values = response[LP_KEY_VARS];
         NSString *token = response[LP_KEY_TOKEN];
         NSDictionary *messages = response[LP_KEY_MESSAGES];
-        NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
-        NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
@@ -934,12 +862,10 @@ BOOL inForeground = NO;
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
         [[LPVarCache sharedCache] applyVariableDiffs:values
-                              messages:messages
-                           updateRules:updateRules
-                            eventRules:eventRules
-                              variants:variants
-                               regions:regions
-                      variantDebugInfo:variantDebugInfo];
+                                            messages:messages
+                                            variants:variants
+                                             regions:regions
+                                    variantDebugInfo:variantDebugInfo];
 
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
@@ -1371,35 +1297,6 @@ BOOL inForeground = NO;
     }
 }
 
-+ (void)onInterfaceChanged:(LeanplumInterfaceChangedBlock)block
-{
-    if (!block) {
-        [self throwError:@"[Leanplum onStartResponse:] Nil block parameter provided."];
-        return;
-    }
-
-    LP_TRY
-    if (![LPInternalState sharedState].interfaceChangedBlocks) {
-        [LPInternalState sharedState].interfaceChangedBlocks = [NSMutableArray array];
-    }
-    [[LPInternalState sharedState].interfaceChangedBlocks addObject:[block copy]];
-    LP_END_TRY
-    if ([[LPVarCache sharedCache] hasReceivedDiffs]) {
-        block();
-    }
-}
-
-+ (void)onEventsChanged:(LeanplumEventsChangedBlock)block
-{
-    if (![LPInternalState sharedState].eventsChangedBlocks) {
-        [LPInternalState sharedState].eventsChangedBlocks = [NSMutableArray array];
-    }
-    [[LPInternalState sharedState].eventsChangedBlocks addObject:[block copy]];
-    if ([[LPVarCache sharedCache] hasReceivedDiffs]) {
-        block();
-    }
-}
-
 + (void)addVariablesChangedResponder:(id)responder withSelector:(SEL)selector
 {
     if (!responder) {
@@ -1423,63 +1320,12 @@ BOOL inForeground = NO;
     }
 }
 
-+ (void)addInterfaceChangedResponder:(id)responder withSelector:(SEL)selector
-{
-    if (!responder) {
-        [self throwError:@"[Leanplum addVariablesChangedResponder:withSelector:] Nil block "
-         @"parameter provided."];
-        return;
-    }
-    if (!selector) {
-        [self throwError:@"[Leanplum addVariablesChangedResponder:withSelector:] Nil selector "
-         @"parameter provided."];
-        return;
-    }
-
-    if (![LPInternalState sharedState].interfaceChangedResponders) {
-        [LPInternalState sharedState].interfaceChangedResponders = [NSMutableSet set];
-    }
-    NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
-    [self addInvocation:invocation toSet:[LPInternalState sharedState].interfaceChangedResponders];
-    if ([[LPVarCache sharedCache] hasReceivedDiffs] && invocation) {
-        [invocation invoke];
-    }
-}
-
-+ (void)addEventsChangedResponder:(id)responder withSelector:(SEL)selector
-{
-    if (![LPInternalState sharedState].eventsChangedResponders) {
-        [LPInternalState sharedState].eventsChangedResponders = [NSMutableSet set];
-    }
-
-    NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
-    [self addInvocation:invocation toSet:[LPInternalState sharedState].eventsChangedResponders];
-    if ([[LPVarCache sharedCache] hasReceivedDiffs] && invocation) {
-        [invocation invoke];
-    }
-}
-
 + (void)removeVariablesChangedResponder:(id)responder withSelector:(SEL)selector
 {
     [self removeResponder:responder
              withSelector:selector
                   fromSet:[LPInternalState sharedState].variablesChangedResponders];
 }
-
-+ (void)removeInterfaceChangedResponder:(id)responder withSelector:(SEL)selector
-{
-    [self removeResponder:responder
-             withSelector:selector
-                  fromSet:[LPInternalState sharedState].interfaceChangedResponders];
-}
-
-+ (void)removeEventsChangedResponder:(id)responder withSelector:(SEL)selector
-{
-    [self removeResponder:responder
-             withSelector:selector
-                  fromSet:[LPInternalState sharedState].eventsChangedResponders];
-}
-
 + (void)onVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block
 {
     if (!block) {
@@ -2002,15 +1848,10 @@ BOOL inForeground = NO;
 + (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode;
 {
     RETURN_IF_NOOP;
+
     LP_TRY
-    if (![LPInternalState sharedState].isInterfaceEditingEnabled) {
-        LPLog(LPWarning, @"LeanplumUIEditor module is required to track all screens. "
-                         @"Call allowInterfaceEditing before this method.");
-    }
-    
     BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
     [[LPInternalState sharedState] setStripViewControllerFromState:stripViewControllerFromState];
-    [LPUIEditorWrapper enableAutomaticScreenTracking];
     LP_END_TRY
 }
 
@@ -2492,8 +2333,6 @@ andParameters:(NSDictionary *)params
         LP_TRY
         NSDictionary *values = response[LP_KEY_VARS];
         NSDictionary *messages = response[LP_KEY_MESSAGES];
-        NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
-        NSArray *eventRules = response[LP_KEY_EVENT_RULES];
         NSArray *variants = response[LP_KEY_VARIANTS];
         NSDictionary *regions = response[LP_KEY_REGIONS];
         NSDictionary *variantDebugInfo = [self parseVariantDebugInfoFromResponse:response];
@@ -2503,14 +2342,10 @@ andParameters:(NSDictionary *)params
 
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
-            ![updateRules isEqualToArray:[LPVarCache sharedCache].updateRulesDiffs] ||
-            ![eventRules isEqualToArray:[LPVarCache sharedCache].eventRulesDiffs] ||
             ![variants isEqualToArray:[LPVarCache sharedCache].variants] ||
             ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
             [[LPVarCache sharedCache] applyVariableDiffs:values
                                   messages:messages
-                               updateRules:updateRules
-                                eventRules:eventRules
                                   variants:variants
                                    regions:regions
                           variantDebugInfo:variantDebugInfo];
@@ -2702,14 +2537,6 @@ void leanplumExceptionHandler(NSException *exception)
 {
     LP_TRY
     return [LPInbox sharedState];
-    LP_END_TRY
-    return nil;
-}
-
-+ (LPNewsfeed *)newsfeed
-{
-    LP_TRY
-    return [LPNewsfeed sharedState];
     LP_END_TRY
     return nil;
 }

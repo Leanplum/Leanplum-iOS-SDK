@@ -80,31 +80,10 @@
 #define LPMT_ICON_FILE_PREFIX @"__iOSAppIcon-"
 #define LPMT_ICON_PRIMARY_NAME @"PrimaryIcon"
 
-#define LPMT_POPUP_ANIMATION_LENGTH 0.35
-
-#define LPMT_ACCEPT_BUTTON_WIDTH 50
-#define LPMT_ACCEPT_BUTTON_HEIGHT 15
-#define LPMT_ACCEPT_BUTTON_MARGIN 10
-#define LPMT_TWO_BUTTON_PADDING 13
-
 #define LPMT_DEFAULT_CENTER_POPUP_WIDTH 300
 #define LPMT_DEFAULT_CENTER_POPUP_HEIGHT 250
-#define LPMT_DEFAULT_HTML_HEIGHT 0
-#define LPMT_DEFAULT_HTML_ALIGN LPMT_ARG_LAYOUT_ALIGN_TOP
-
-#define LPMT_TITLE_LABEL_HEIGHT 30
-
-#define LPMT_DISMISS_BUTTON_SIZE 32
 
 #define LIGHT_GRAY (246.0/255.0)
-
-#ifdef __IPHONE_6_0
-# define ALIGN_CENTER NSTextAlignmentCenter
-#else
-# define ALIGN_CENTER UITextAlignmentCenter
-#endif
-
-#define LP_SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 #define LOG_LP_MESSAGE_EXCEPTION NSLog(@"Leanplum: Error in message template %@: %@\n%@", \
 context.actionName, exception, [exception callStackSymbols])

@@ -1,5 +1,5 @@
 //
-//  NewsfeedTest.m
+//  LPInboxTest.m
 //  Leanplum-SDK
 //
 //  Created by Milos Jakovljevic on 10/26/16.
@@ -34,11 +34,11 @@
 #import "LPActionManager.h"
 #import "LPConstants.h"
 
-@interface NewsfeedTest : XCTestCase
+@interface LPInboxTest : XCTestCase
 
 @end
 
-@implementation NewsfeedTest
+@implementation LPInboxTest
 
 + (void)setUp
 {
@@ -54,117 +54,6 @@
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
 }
-
-/**
- * Tests newsfeed class.
- */
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-- (void)test_newsfeed
-{
-    // This stub have to be removed when start command is successfully executed.
-    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
-                                           ^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse *(NSURLRequest *request) {
-        NSString *response_file = OHPathForFile(@"simple_start_response.json",
-                                                self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file
-                                                statusCode:200
-                                    headers:@{@"Content-Type":@"application/json"}];
-    }];
-
-    XCTAssertTrue([LeanplumHelper start_development_test]);
-
-    // Remove stub after start is successful, so we don't capture requests from other methods.
-    [HTTPStubs removeStub:startStub];
-
-    // Stub to return newsfeed json.
-    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest *request) {
-        NSString *response_file = OHPathForFile(@"newsfeed_response.json",
-                                                self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file
-                                                statusCode:200
-                         headers:@{@"Content-Type":@"application/json"}];
-    }];
-
-    // Vaidate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
-                                        NSDictionary  *params) {
-        XCTAssertEqualObjects(apiMethod, @"getNewsfeedMessages");
-        return YES;
-    }];
-
-    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [[Leanplum newsfeed] onChanged:^{
-        // We need to have 2 unread messages.
-        XCTAssertEqual(2, [[Leanplum newsfeed] unreadCount]);
-        XCTAssertEqual(2, [[Leanplum newsfeed] count]);
-        NSArray *messages = [[Leanplum newsfeed] unreadMessages];
-
-        LPNewsfeedMessage *message1 = messages[0];
-        LPNewsfeedMessage *message2 = messages[1];
-
-        // Validate message data.
-        XCTAssertEqualObjects(message1.messageId, @"5231495977893888##1");
-        XCTAssertEqualObjects(message1.title, @"This is a test inbox message");
-        XCTAssertEqualObjects(message1.subtitle, @"This is a subtitle");
-        XCTAssertEqualObjects(message1.imageURL.absoluteString, @"https://test.png");
-        XCTAssertTrue([message1.data[@"Group"][@"number"] intValue] == 7);
-        XCTAssertTrue([message1.data[@"Group"][@"text"] isEqual:@"Sample text"]);
-        XCTAssertTrue([message1.data[@"Group"][@"bool"] boolValue]);
-        XCTAssertTrue([message1.data[@"test"] isEqual:@"test string"]);
-        XCTAssertEqualObjects(message1.deliveryTimestamp.description,
-                              @"2016-10-26 13:04:17 +0000");
-        XCTAssertNil(message1.expirationTimestamp);
-        XCTAssertFalse(message1.isRead);
-
-        XCTAssertEqualObjects(message2.messageId, @"4682943996362752##2");
-        XCTAssertEqualObjects(message2.title, @"This is a second test message");
-        XCTAssertEqualObjects(message2.subtitle, @"This is a second test message subtitle");
-        XCTAssertEqualObjects(message2.deliveryTimestamp.description,
-                              @"2016-10-26 13:04:44 +0000");
-        XCTAssertTrue(message2.data.count == 0);
-        XCTAssertTrue(message2.imageURL.absoluteString.length == 0);
-        XCTAssertNil(message2.expirationTimestamp);
-        XCTAssertFalse(message2.isRead);
-
-        dispatch_semaphore_signal(semaphor);
-    }];
-    [[Leanplum inbox] downloadMessages];
-
-    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
-    XCTAssertTrue(timedOut == 0);
-
-    // Remove since we don't want to get callback after message is read.
-    [Leanplum inbox].inboxChangedBlocks = [NSMutableArray new];
-
-    NSArray *messages = [[Leanplum newsfeed] unreadMessages];
-
-    LPNewsfeedMessage *message1 = messages[0];
-    LPNewsfeedMessage *message2 = messages[1];
-
-    // Read message and validate.
-    [message1 read];
-    XCTAssertTrue([message1 isRead]);
-    XCTAssertEqual(1, [[Leanplum newsfeed] unreadCount]);
-
-    // Read message and validate.
-    [message2 read];
-    XCTAssertTrue([message2 isRead]);
-    XCTAssertEqual(0, [[Leanplum newsfeed] unreadCount]);
-
-    XCTAssertEqual(2, [[Leanplum newsfeed] count]);
-
-    // Get message by id.
-    LPNewsfeedMessage *messageById = [[Leanplum newsfeed] messageForId:message1.messageId];
-
-    XCTAssertNotNil(messageById);
-    XCTAssertEqualObjects(message1, messageById);
-}
-#pragma GCC diagnostic pop
 
 /**
  * Tests inbox class. Mimics Newsfeed. Make sure both tests are identical.
@@ -412,7 +301,7 @@
     }];
     
     XCTestExpectation *responseExpectation2 = [self expectationWithDescription:@"response2"];
-    [[Leanplum inbox] onForceContentUpdate:^void(BOOL success){
+    [[Leanplum inbox] onForceContentUpdate:^void(BOOL success) {
         XCTAssertTrue(success);
         [responseExpectation2 fulfill];
     }];
@@ -427,18 +316,22 @@
         return [request.URL.host isEqualToString:API_HOST];;
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSError *error = [NSError errorWithDomain:NSURLErrorDomain
-                                             code:NSURLErrorBadServerResponse userInfo:nil];
+                                             code:NSURLErrorBadServerResponse
+                                         userInfo:nil];
         return [HTTPStubsResponse responseWithError:error];
     }];
-    
+
     XCTestExpectation *responseExpectation3 = [self expectationWithDescription:@"response3"];
-    [[Leanplum inbox] onForceContentUpdate:^void(BOOL success){
+    responseExpectation3.assertForOverFulfill = NO;
+
+    [[Leanplum inbox] onForceContentUpdate:^(BOOL success) {
         XCTAssertFalse(success);
         [responseExpectation3 fulfill];
     }];
     
     [Leanplum forceContentUpdate:nil];
-    [self waitForExpectationsWithTimeout:2 handler:nil];
+    [self waitForExpectationsWithTimeout:5 handler:nil];
+
     [HTTPStubs removeStub:stub];
     [[Leanplum inbox] reset];
 }

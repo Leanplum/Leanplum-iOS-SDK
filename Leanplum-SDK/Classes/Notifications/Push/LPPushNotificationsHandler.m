@@ -300,8 +300,6 @@
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
                 NSDictionary *messages = response[LP_KEY_MESSAGES];
-                NSArray *updateRules = response[LP_KEY_UPDATE_RULES];
-                NSArray *eventRules = response[LP_KEY_EVENT_RULES];
                 NSArray *variants = response[LP_KEY_VARIANTS];
                 NSDictionary *regions = response[LP_KEY_REGIONS];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
