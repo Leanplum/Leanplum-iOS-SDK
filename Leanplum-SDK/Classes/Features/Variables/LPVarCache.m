@@ -49,8 +49,6 @@
 @property (strong, nonatomic) NSMutableDictionary<NSString *, id> *actionDefinitions;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *diffs;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *messageDiffs;
-@property (strong, nonatomic) NSMutableArray<NSString *> *updateRulesDiffs;
-@property (strong, nonatomic) NSArray<NSString *> *eventRulesDiffs;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeValuesFromServer;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeFileAttributesFromServer;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeActionDefinitionsFromServer;
@@ -59,8 +57,6 @@
 @property (strong, nonatomic) NSMutableDictionary<NSString *, id> *userAttributes;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *regions;
 @property (strong, nonatomic) CacheUpdateBlock updateBlock;
-@property (strong, nonatomic) CacheUpdateBlock interfaceUpdateBlock;
-@property (strong, nonatomic) CacheUpdateBlock eventsUpdateBlock;
 @property (assign, nonatomic) BOOL hasReceivedDiffs;
 @property (strong, nonatomic) NSMutableDictionary<NSString *, id> *messages;
 @property (strong, nonatomic) id merged;
@@ -103,8 +99,6 @@ static dispatch_once_t leanplum_onceToken;
     self.fileAttributes = [NSMutableDictionary dictionary];
     self.valuesFromClient = [NSMutableDictionary dictionary];
     self.diffs = [NSMutableDictionary dictionary];
-    self.updateRulesDiffs = [NSMutableArray array];
-    self.eventRulesDiffs = [NSArray array];
     self.defaultKinds = [NSMutableDictionary dictionary];
     self.actionDefinitions = [NSMutableDictionary dictionary];
     self.hasReceivedDiffs = NO;
@@ -375,8 +369,6 @@ static dispatch_once_t leanplum_onceToken;
         NSData *encryptedDiffs = [[NSUserDefaults standardUserDefaults] dataForKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
         NSDictionary *diffs;
         NSDictionary *messages;
-        NSArray *updateRules;
-        NSArray *eventRules;
         NSArray *variants;
         NSDictionary *variantDebugInfo;
         NSDictionary *regions;
@@ -389,8 +381,6 @@ static dispatch_once_t leanplum_onceToken;
             NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:diffsData];
             diffs = (NSDictionary *) [archiver decodeObjectForKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
             messages = (NSDictionary *) [archiver decodeObjectForKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
-            updateRules = (NSArray *)[archiver decodeObjectForKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
-            eventRules = (NSArray *)[archiver decodeObjectForKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
             regions = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_REGIONS];
             variants = (NSArray *)[archiver decodeObjectForKey:LP_KEY_VARIANTS];
             variantDebugInfo = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
@@ -411,8 +401,6 @@ static dispatch_once_t leanplum_onceToken;
 
         [self applyVariableDiffs:diffs
                         messages:messages
-                     updateRules:updateRules
-                      eventRules:eventRules
                         variants:variants
                          regions:regions
                 variantDebugInfo:variantDebugInfo];
@@ -436,8 +424,6 @@ static dispatch_once_t leanplum_onceToken;
         NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
         [archiver encodeObject:self.diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
         [archiver encodeObject:self.messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
-        [archiver encodeObject:self.updateRulesDiffs forKey:LEANPLUM_DEFAULTS_UPDATE_RULES_KEY];
-        [archiver encodeObject:self.eventRulesDiffs forKey:LEANPLUM_DEFAULTS_EVENT_RULES_KEY];
         [archiver encodeObject:self.variants forKey:LP_KEY_VARIANTS];
         [archiver encodeObject:self.variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
         [archiver encodeObject:self.regions forKey:LP_KEY_REGIONS];
@@ -462,8 +448,6 @@ static dispatch_once_t leanplum_onceToken;
 
 - (void)applyVariableDiffs:(NSDictionary *)diffs_
                   messages:(NSDictionary *)messages_
-               updateRules:(NSArray *)updateRules_
-                eventRules:(NSArray *)eventRules_
                   variants:(NSArray *)variants_
                    regions:(NSDictionary *)regions_
           variantDebugInfo:(NSDictionary *)variantDebugInfo_
@@ -528,19 +512,6 @@ static dispatch_once_t leanplum_onceToken;
             }
         }
 
-        BOOL interfaceUpdated = NO;
-        if (updateRules_) {
-            interfaceUpdated = ![updateRules_ isEqual:self.updateRulesDiffs];
-            self.updateRulesDiffs = [updateRules_ mutableCopy];
-            [self downloadUpdateRulesImages];
-        }
-        
-        BOOL eventsUpdated = NO;
-        if (eventRules_ && ![eventRules_ isKindOfClass:NSNull.class]) {
-            eventsUpdated = ![eventRules_ isEqual:self.eventRulesDiffs];
-            self.eventRulesDiffs = eventRules_;
-        }
-
         if (variants_) {
             self.variants = variants_;
         }
@@ -558,48 +529,9 @@ static dispatch_once_t leanplum_onceToken;
             if (self.updateBlock) {
                 self.updateBlock();
             }
-            
-            if (interfaceUpdated && self.interfaceUpdateBlock) {
-                self.interfaceUpdateBlock();
-            }
-            
-            if (eventsUpdated && self.eventsUpdateBlock) {
-                self.eventsUpdateBlock();
-            }
         }
     }
     [self.countAggregator incrementCount:@"apply_variable_diffs"];
-}
-
-- (void)applyUpdateRuleDiffs:(NSArray *)updateRuleDiffs
-{
-    self.updateRulesDiffs = [updateRuleDiffs mutableCopy];
-    [self downloadUpdateRulesImages];
-    if (self.interfaceUpdateBlock) {
-        self.interfaceUpdateBlock();
-    }
-    [self saveDiffs];
-}
-
-- (void)downloadUpdateRulesImages
-{
-    for (NSDictionary *updateRule in self.updateRulesDiffs) {
-        NSArray *changes = updateRule[@"changes"];
-        if (changes != nil) {
-            for (NSDictionary *change in changes) {
-                NSString *key = change[@"key"];
-                if (key &&
-                    [[key lowercaseString] rangeOfString:@"image"].location == key.length - 5) {
-                    id name = change[@"value"];
-                    if ([name isKindOfClass:[NSString class]]) {
-                        [LPFileManager maybeDownloadFile:name
-                                            defaultValue:nil
-                                              onComplete:^{}];
-                    }
-                }
-            }
-        }
-    }
 }
 
 - (BOOL)areActionDefinitionsEqual:(NSDictionary *)a other:(NSDictionary *)b
@@ -744,20 +676,6 @@ static dispatch_once_t leanplum_onceToken;
     [self.countAggregator incrementCount:@"on_update_varcache"];
 }
 
-- (void)onInterfaceUpdate:(CacheUpdateBlock)block
-{
-    self.interfaceUpdateBlock = block;
-    
-    [self.countAggregator incrementCount:@"on_interface_update"];
-}
-
-- (void)onEventsUpdate:(CacheUpdateBlock)block
-{
-    self.eventsUpdateBlock = block;
-    
-    [self.countAggregator incrementCount:@"on_events_update"];
-}
-
 - (NSMutableDictionary *)userAttributes
 {
     if (!_userAttributes) {
@@ -857,8 +775,6 @@ static dispatch_once_t leanplum_onceToken;
     self.actionDefinitions = nil;
     self.diffs = nil;
     self.messageDiffs = nil;
-    self.updateRulesDiffs = nil;
-    self.eventRulesDiffs = nil;
     self.devModeValuesFromServer = nil;
     self.devModeFileAttributesFromServer = nil;
     self.devModeActionDefinitionsFromServer = nil;
@@ -866,8 +782,6 @@ static dispatch_once_t leanplum_onceToken;
     self.variantDebugInfo = nil;
     self.userAttributes = nil;
     self.updateBlock = nil;
-    self.interfaceUpdateBlock = nil;
-    self.eventsUpdateBlock = nil;
     self.hasReceivedDiffs = NO;
     self.messages = nil;
     self.merged = nil;

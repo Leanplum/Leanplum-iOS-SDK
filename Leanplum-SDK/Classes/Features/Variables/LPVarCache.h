@@ -60,20 +60,13 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (nullable id)getMergedValueFromComponentArray:(NSArray<NSString *> *) components;
 - (nullable NSDictionary<NSString *, id> *)diffs;
 - (nullable NSDictionary<NSString *, id> *)messageDiffs;
-- (nullable NSArray<NSString *> *)updateRulesDiffs;
-- (nullable NSArray<NSString *> *)eventRulesDiffs;
 - (BOOL)hasReceivedDiffs;
 - (void)applyVariableDiffs:(nullable NSDictionary<NSString *, id> *)diffs_
                   messages:(nullable NSDictionary<NSString *, id> *)messages_
-               updateRules:(nullable NSArray<NSString *> *)updateRules_
-                eventRules:(nullable NSArray<NSString *> *)eventRules_
                   variants:(nullable NSArray<NSString *> *)variants_
                    regions:(nullable NSDictionary<NSString *, id> *)regions_
           variantDebugInfo:(nullable NSDictionary<NSString *, id> *)variantDebugInfo_;
-- (void)applyUpdateRuleDiffs:(nullable NSArray<NSString *> *)updateRuleDiffs;
 - (void)onUpdate:(CacheUpdateBlock)block;
-- (void)onInterfaceUpdate:(CacheUpdateBlock)block;
-- (void)onEventsUpdate:(CacheUpdateBlock)block;
 - (void)setSilent:(BOOL)silent;
 - (BOOL)silent;
 - (id)mergeHelper:(id)vars withDiffs:(id)diff;

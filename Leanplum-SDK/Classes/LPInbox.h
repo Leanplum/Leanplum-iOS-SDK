@@ -180,26 +180,4 @@ NS_SWIFT_NAME(onInboxChanged(completion:));
 
 @end
 
-#pragma mark - LPNewsfeed for backwards compatibility
-@interface LPNewsfeedMessage : LPInboxMessage
-
-@end
-
-typedef void (^LeanplumNewsfeedChangedBlock)(void);
-
-@interface LPNewsfeed : NSObject
-
-+ (LPNewsfeed *)sharedState;
-- (NSUInteger)count;
-- (NSUInteger)unreadCount;
-- (NSArray *)messagesIds;
-- (NSArray *)allMessages;
-- (NSArray *)unreadMessages;
-- (void)onChanged:(LeanplumNewsfeedChangedBlock)block;
-- (nullable LPNewsfeedMessage *)messageForId:(NSString *)messageId;
-- (void)addNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
-- (void)removeNewsfeedChangedResponder:(id)responder withSelector:(SEL)selector __attribute__((deprecated));
-
-@end
-
 NS_ASSUME_NONNULL_END

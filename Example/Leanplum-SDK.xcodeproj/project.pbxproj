@@ -22,7 +22,7 @@
 		07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87E1F052B7800A4B092 /* LeanplumTest.m */; };
 		07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87F1F052B7800A4B092 /* LPJSONTest.m */; };
 		07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8801F052B7800A4B092 /* MessagesTest.m */; };
-		07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8821F052B7800A4B092 /* NewsfeedTest.m */; };
+		07E5C8BA1F052B7800A4B092 /* LPInboxTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8821F052B7800A4B092 /* LPInboxTest.m */; };
 		07E5C8BD1F052B7800A4B092 /* LeanplumHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8881F052B7800A4B092 /* LeanplumHelper.m */; };
 		07E5C8BE1F052B7800A4B092 /* LPUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8891F052B7800A4B092 /* LPUtilsTest.m */; };
 		07E5C8BF1F052B7800A4B092 /* GoldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07E5C88C1F052B7800A4B092 /* GoldIcon.png */; };
@@ -149,7 +149,7 @@
 		07E5C87E1F052B7800A4B092 /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
 		07E5C87F1F052B7800A4B092 /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
 		07E5C8801F052B7800A4B092 /* MessagesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesTest.m; sourceTree = "<group>"; };
-		07E5C8821F052B7800A4B092 /* NewsfeedTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsfeedTest.m; sourceTree = "<group>"; };
+		07E5C8821F052B7800A4B092 /* LPInboxTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInboxTest.m; sourceTree = "<group>"; };
 		07E5C8871F052B7800A4B092 /* LeanplumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumHelper.h; sourceTree = "<group>"; };
 		07E5C8881F052B7800A4B092 /* LeanplumHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumHelper.m; sourceTree = "<group>"; };
 		07E5C8891F052B7800A4B092 /* LPUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUtilsTest.m; sourceTree = "<group>"; };
@@ -287,7 +287,7 @@
 				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
 				07E5C87F1F052B7800A4B092 /* LPJSONTest.m */,
 				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
-				07E5C8821F052B7800A4B092 /* NewsfeedTest.m */,
+				07E5C8821F052B7800A4B092 /* LPInboxTest.m */,
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
 				65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */,
 				9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */,
@@ -583,7 +583,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = LP;
-				LastUpgradeCheck = 1010;
+				LastUpgradeCheck = 1140;
 				ORGANIZATIONNAME = Leanplum;
 				TargetAttributes = {
 					6003F589195388D20070C39A = {
@@ -597,10 +597,9 @@
 			};
 			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "Leanplum-SDK" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 			);
@@ -816,7 +815,7 @@
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
 				9EF00D3A2448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m in Sources */,
 				A824579B2411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m in Sources */,
-				07E5C8BA1F052B7800A4B092 /* NewsfeedTest.m in Sources */,
+				07E5C8BA1F052B7800A4B092 /* LPInboxTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
 				653192A121517D4F00D7DDDC /* LPFeatureFlagManagerTest.m in Sources */,
 				07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */,
@@ -869,6 +868,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -922,6 +922,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
