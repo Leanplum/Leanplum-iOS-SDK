@@ -389,7 +389,7 @@ API_AVAILABLE(ios(10.0))
                                                                                        [appDelegate class],
                                                                                        applicationDidReceiveRemoteNotificationSelector);
         
-        __typeof__(self) weakSelf = self;
+        __weak __typeof__(self) weakSelf = self;
         void (^swizzleApplicationDidReceiveRemoteNotification)(void) = ^{
             weakSelf.swizzledApplicationDidReceiveRemoteNotification =
             [LPSwizzle hookInto:applicationDidReceiveRemoteNotificationSelector
