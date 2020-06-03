@@ -96,11 +96,6 @@ NS_SWIFT_NAME(track(event:value:info:args:params:));
 + (void)onStartIssued:(LeanplumStartIssuedBlock)block;
 + (void)synchronizeDefaults;
 
-/**
- * Returns a push token using app ID, device ID, and user ID.
- */
-+ (NSString *)pushTokenKey;
-
 void LPLog(LPLogType type, NSString* format, ...);
 
 @end

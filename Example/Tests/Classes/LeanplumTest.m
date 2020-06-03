@@ -1639,7 +1639,7 @@
         XCTAssertEqualObjects(values[file_argument_name], [file_argument defaultValue]);
         XCTAssertEqualObjects(values[number_argument_name], [number_argument defaultValue]);
         XCTAssertEqualObjects(values[string_argument_name], [string_argument defaultValue]);
-        
+
         return YES;
     }];
 
@@ -1686,8 +1686,10 @@
         return YES;
     }];
     // Perform action with notification.
-    [[LPActionManager sharedManager] maybePerformNotificationActions:userInfo
-                                                              action:nil active:NO];
+    [[LPPushNotificationsManager sharedManager].handler
+     maybePerformNotificationActions:userInfo
+     action:nil
+     active:NO];
 
     // Wait for action to be received before finishing.
     [self waitForExpectationsWithTimeout:10 handler:nil];

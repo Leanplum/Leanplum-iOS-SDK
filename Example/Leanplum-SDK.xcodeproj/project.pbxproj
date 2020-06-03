@@ -99,6 +99,9 @@
 		9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */; };
 		9CD04D941F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
 		9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */; };
+		9E53F6DF2474363D0097955F /* LPNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F6DE2474363D0097955F /* LPNotificationsManagerTest.m */; };
+		9E53F6E1247438440097955F /* LPPushNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F6E0247438440097955F /* LPPushNotificationsManagerTest.m */; };
+		9E53F6E32474387B0097955F /* LPPushNotificationsHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F6E22474387B0097955F /* LPPushNotificationsHandlerTest.m */; };
 		9EF00D3A2448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */; };
 		A824579A2411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A82457982411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m */; };
 		A824579B2411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A82457992411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m */; };
@@ -211,6 +214,9 @@
 		9CB691DD1F15FFF5002D83D8 /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
 		9CB691E01F1601BA002D83D8 /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		9CD04D931F8EB6190033AB4A /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
+		9E53F6DE2474363D0097955F /* LPNotificationsManagerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNotificationsManagerTest.m; sourceTree = "<group>"; };
+		9E53F6E0247438440097955F /* LPPushNotificationsManagerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsManagerTest.m; sourceTree = "<group>"; };
+		9E53F6E22474387B0097955F /* LPPushNotificationsHandlerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsHandlerTest.m; sourceTree = "<group>"; };
 		9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplateTest.m; sourceTree = "<group>"; };
 		9EF00D3B2448EEF30094CA89 /* LPOpenUrlMessageTemplate+Extenstion.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPOpenUrlMessageTemplate+Extenstion.h"; sourceTree = "<group>"; };
 		A54ACCFCB36AE8C874708A7F /* libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-SDK_Example-Leanplum-SDK_Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -291,6 +297,9 @@
 				07E5C8891F052B7800A4B092 /* LPUtilsTest.m */,
 				65D4AB48224CA963009BA5F3 /* LPActionContextTest.m */,
 				9EF00D392448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m */,
+				9E53F6DE2474363D0097955F /* LPNotificationsManagerTest.m */,
+				9E53F6E0247438440097955F /* LPPushNotificationsManagerTest.m */,
+				9E53F6E22474387B0097955F /* LPPushNotificationsHandlerTest.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -805,6 +814,7 @@
 				A86C8D02240844C7003F5E4E /* LPConfirmMessageSnapshotTest.m in Sources */,
 				07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */,
 				07E5C8B61F052B7800A4B092 /* LeanplumTest.m in Sources */,
+				9E53F6E1247438440097955F /* LPPushNotificationsManagerTest.m in Sources */,
 				A824579A2411CB600044B1EB /* LPWebInterstitialMessageSnapshotTest.m in Sources */,
 				A86C8D04240844C7003F5E4E /* LPCenterPopupMessageSnapshotTest.m in Sources */,
 				65E189C6216BDB82005E6B93 /* LPRequestFactoryTest.m in Sources */,
@@ -815,10 +825,12 @@
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
 				9EF00D3A2448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m in Sources */,
 				A824579B2411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m in Sources */,
+				9E53F6DF2474363D0097955F /* LPNotificationsManagerTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* LPInboxTest.m in Sources */,
 				07E5C8AB1F052B7800A4B092 /* LPActionManagerTest.m in Sources */,
 				653192A121517D4F00D7DDDC /* LPFeatureFlagManagerTest.m in Sources */,
 				07E5C8B71F052B7800A4B092 /* LPJSONTest.m in Sources */,
+				9E53F6E32474387B0097955F /* LPPushNotificationsHandlerTest.m in Sources */,
 				07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */,
 				9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */,
 				07E5C8BE1F052B7800A4B092 /* LPUtilsTest.m in Sources */,

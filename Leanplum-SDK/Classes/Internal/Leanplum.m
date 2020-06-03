@@ -345,12 +345,6 @@ BOOL inForeground = NO;
     });
 }
 
-+ (NSString *)pushTokenKey
-{
-    return [NSString stringWithFormat: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY,
-            [LPAPIConfig sharedConfig].appId, [LPAPIConfig sharedConfig].userId, [LPAPIConfig sharedConfig].deviceId];
-}
-
 + (void)start
 {
     [self startWithUserId:nil userAttributes:nil responseHandler:nil];
@@ -838,8 +832,7 @@ BOOL inForeground = NO;
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
     
     // Push token.
-    NSString *pushTokenKey = [Leanplum pushTokenKey];
-    NSString *pushToken = [[NSUserDefaults standardUserDefaults] stringForKey:pushTokenKey];
+    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
@@ -991,7 +984,7 @@ BOOL inForeground = NO;
                     LP_TRY
                     if ([[UIApplication sharedApplication]
                             respondsToSelector:@selector(currentUserNotificationSettings)]) {
-                        [[LPActionManager sharedManager] sendUserNotificationSettingsIfChanged:
+                        [[LPPushNotificationsManager sharedManager].handler sendUserNotificationSettingsIfChanged:
                                                              [[UIApplication sharedApplication]
                                                                  currentUserNotificationSettings]];
                     }
@@ -1507,7 +1500,7 @@ BOOL inForeground = NO;
 {
     LP_TRY
     [LPInternalState sharedState].calledHandleNotification = YES;
-    [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
+    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
                                                        withAction:nil
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
@@ -1519,7 +1512,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
+        [[LPPushNotificationsManager sharedManager].handler didRegisterForRemoteNotificationsWithDeviceToken:token];
     }
     else
     {
@@ -1533,7 +1526,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didFailToRegisterForRemoteNotificationsWithError:error];
+        [[LPPushNotificationsManager sharedManager].handler didFailToRegisterForRemoteNotificationsWithError:error];
     }
     else
     {
@@ -1547,7 +1540,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didRegisterUserNotificationSettings:notificationSettings];
+        [[LPPushNotificationsManager sharedManager].handler didRegisterUserNotificationSettings:notificationSettings];
     }
     else
     {
@@ -1561,7 +1554,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo];
+        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo];
     }
     else
     {
@@ -1576,7 +1569,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didReceiveRemoteNotification:userInfo
+        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
                                                fetchCompletionHandler:completionHandler];
     }
     else
@@ -1592,7 +1585,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didReceiveNotificationResponse:response
+        [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response
                                                   withCompletionHandler:completionHandler];
     }
     else
@@ -1607,7 +1600,7 @@ BOOL inForeground = NO;
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPActionManager sharedManager] didReceiveLocalNotification:localNotification];
+        [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
     }
     else
     {
@@ -1623,7 +1616,7 @@ BOOL inForeground = NO;
                  completionHandler:(void (^)())completionHandler
 {
     LP_TRY
-    [[LPActionManager sharedManager] didReceiveRemoteNotification:[notification userInfo]
+    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:[notification userInfo]
                                                        withAction:identifier
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
@@ -1637,7 +1630,7 @@ BOOL inForeground = NO;
                  completionHandler:(void (^)())completionHandler
 {
     LP_TRY
-    [[LPActionManager sharedManager] didReceiveRemoteNotification:notification
+    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:notification
                                                        withAction:identifier
                                            fetchCompletionHandler:completionHandler];
     LP_END_TRY
@@ -1652,7 +1645,7 @@ BOOL inForeground = NO;
         return;
     }
     LP_TRY
-    [[LPActionManager sharedManager] setShouldHandleNotification:block];
+    [[LPPushNotificationsManager sharedManager] setShouldHandleNotification:block];
     LP_END_TRY
 }
 

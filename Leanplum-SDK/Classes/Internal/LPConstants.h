@@ -24,6 +24,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "LPNotificationsConstants.h"
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
 ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -224,12 +225,6 @@ OBJC_EXPORT NSString *LP_KEY_CITY;
 OBJC_EXPORT NSString *LP_KEY_LOCATION;
 OBJC_EXPORT NSString *LP_KEY_LOCATION_ACCURACY_TYPE;
 OBJC_EXPORT NSString *LP_KEY_TOKEN;
-OBJC_EXPORT NSString *LP_KEY_PUSH_MESSAGE_ID;
-OBJC_EXPORT NSString *LP_KEY_PUSH_MUTE_IN_APP;
-OBJC_EXPORT NSString *LP_KEY_PUSH_NO_ACTION;
-OBJC_EXPORT NSString *LP_KEY_PUSH_NO_ACTION_MUTE;
-OBJC_EXPORT NSString *LP_KEY_PUSH_ACTION;
-OBJC_EXPORT NSString *LP_KEY_PUSH_CUSTOM_ACTIONS;
 OBJC_EXPORT NSString *LP_KEY_UPLOAD_URL;
 OBJC_EXPORT NSString *LP_KEY_VARIANTS;
 OBJC_EXPORT NSString *LP_KEY_REGIONS;

@@ -27,6 +27,8 @@
 #import <Foundation/Foundation.h>
 #import "LPContextualValues.h"
 #import <UserNotifications/UserNotifications.h>
+#import "LPPushNotificationsManager.h"
+#import "LPLocalNotificationsManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -46,7 +48,6 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
     kLeanplumActionFilterAll = 0b11
 } NS_SWIFT_NAME(ActionManager.ActionFilter);
 
-#define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
 NS_SWIFT_NAME(ActionManager)
@@ -57,34 +58,8 @@ NS_SWIFT_NAME(ActionManager)
 + (LPActionManager*) sharedManager
 NS_SWIFT_NAME(shared());
 
-#pragma mark - Push Notifications
-
-- (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
-- (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(nullable LeanplumFetchCompletionBlock)completionHandler;
-- (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
-                 withCompletionHandler:(nullable void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
-- (void)willPresentNotification:(UNNotification *)notification
-          withCompletionHandler:(nullable void (^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-- (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
-
-- (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
-- (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
-#pragma clang diagnostic pop
-
-+ (void)getForegroundRegionNames:(NSMutableSet * _Nullable * _Nullable)foregroundRegionNames
-        andBackgroundRegionNames:(NSMutableSet * _Nullable * _Nullable)backgroundRegionNames;
-
-- (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block;
-
-- (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-                          withAction:(nullable NSString *)action
-              fetchCompletionHandler:(nullable LeanplumFetchCompletionBlock)completionHandler;
++ (void)getForegroundRegionNames:(NSMutableSet **)foregroundRegionNames
+        andBackgroundRegionNames:(NSMutableSet **)backgroundRegionNames;
 
 #pragma mark - Messages
 
