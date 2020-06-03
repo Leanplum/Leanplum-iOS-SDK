@@ -93,22 +93,6 @@ static dispatch_once_t leanplum_onceToken;
     return self;
 }
 
-+ (void) load
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
-        [notificationCenter addObserver:self
-                               selector:@selector(handleApplicationDidBecomeActive:)
-                                   name:UIApplicationDidFinishLaunchingNotification
-                                 object:nil];
-    });
-}
-
-+ (void)handleApplicationDidBecomeActive:(NSNotification *)notification {
-    [[LPPushNotificationsManager sharedManager] swizzleAppMethods];
-}
-
 - (BOOL)hasTrackedDisplayed:(NSDictionary *)userInfo
 {
     if ([self.displayedTracked isEqualToString:[LPJSON stringFromJSON:userInfo]] &&

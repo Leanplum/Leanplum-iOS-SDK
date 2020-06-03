@@ -25,7 +25,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 + (LPPushNotificationsManager *)sharedManager;
-- (void)swizzleAppMethods;
 - (void)enableSystemPush;
 - (BOOL)isPushEnabled;
 - (void)refreshPushPermissions;

@@ -336,6 +336,22 @@ API_AVAILABLE(ios(10.0))
 
 #pragma mark Swizzle Methods
 
++ (void) load
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        [notificationCenter addObserver:self
+                               selector:@selector(handleApplicationDidBecomeActive:)
+                                   name:UIApplicationDidFinishLaunchingNotification
+                                 object:nil];
+    });
+}
+
++ (void)handleApplicationDidBecomeActive:(NSNotification *)notification {
+    [[LPPushNotificationsManager sharedManager] swizzleAppMethods];
+}
+
 - (void)swizzleAppMethods
 {
     BOOL swizzlingEnabled = [LPUtils isSwizzlingEnabled];
