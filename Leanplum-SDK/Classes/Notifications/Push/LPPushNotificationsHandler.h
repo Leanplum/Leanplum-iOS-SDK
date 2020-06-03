@@ -6,7 +6,7 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "Leanplum.h"
 
 NS_ASSUME_NONNULL_BEGIN
