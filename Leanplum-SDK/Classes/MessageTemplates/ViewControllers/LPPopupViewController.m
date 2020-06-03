@@ -97,9 +97,8 @@
 {
     if([[self.context actionName] isEqualToString:LPMT_PUSH_ASK_TO_ASK]) {
         self.pushAskToAskCompletionBlock();
-    } else {
-        [self.context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
     }
+    [self.context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
     [self dismiss:YES];
 }
 
