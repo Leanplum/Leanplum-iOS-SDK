@@ -53,9 +53,7 @@
             return NO;
         }
 
-        @try {
-            // TODO: move push notifications check outside of templates
-            
+        @try {            
             LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
             template.context = context;
 
@@ -85,6 +83,9 @@
     LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     viewController.context = context;
+    viewController.pushAskToAskCompletionBlock = ^{
+        [self enableSystemPush];
+    };
     return viewController;
 }
 

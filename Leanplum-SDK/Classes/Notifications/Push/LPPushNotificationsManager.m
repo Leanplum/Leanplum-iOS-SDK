@@ -209,42 +209,48 @@ API_AVAILABLE(ios(10.0))
         block();
         return;
     }
-    // Otherwise use boilerplate code from docs.
-    id notificationCenterClass = NSClassFromString(@"UNUserNotificationCenter");
-    if (notificationCenterClass) {
-        // iOS 10.
-        SEL selector = NSSelectorFromString(@"currentNotificationCenter");
-        id notificationCenter =
-        ((id (*)(id, SEL)) [notificationCenterClass methodForSelector:selector])
-        (notificationCenterClass, selector);
-        if (notificationCenter) {
-            selector = NSSelectorFromString(@"requestAuthorizationWithOptions:completionHandler:");
-            IMP method = [notificationCenter methodForSelector:selector];
-            void (*func)(id, SEL, unsigned long long, void (^)(BOOL, NSError *__nullable)) =
-            (void *) method;
-            func(notificationCenter, selector,
-                 0b111, /* badges, sounds, alerts */
-                 ^(BOOL granted, NSError *__nullable error) {
-                     if (error) {
-                         NSLog(@"Leanplum: Failed to request authorization for user "
-                               "notifications: %@", error);
-                     }
-                 });
+    
+    // iOS 10.0, tvOS 10.0, macOS 10.14
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 100000 || __TV_OS_VERSION_MAX_ALLOWED >= 100000 || __MAC_OS_X_VERSION_MAX_ALLOWED >= 101400
+        if (@available(iOS 10, tvOS 10, macOS 10.14, *))
+        {
+            UNUserNotificationCenter *notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
+            UNAuthorizationOptions options = UNAuthorizationOptionAlert | UNAuthorizationOptionBadge | UNAuthorizationOptionSound;
+            [notificationCenter requestAuthorizationWithOptions:options completionHandler:^(BOOL granted, NSError * _Nullable error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    if (granted) {
+                        [[UIApplication sharedApplication] registerForRemoteNotifications];
+                    } else {
+                        NSLog(@"Leanplum: Failed to request authorization for user notifications: %@", error ? error : @"nil");
+                    }
+                });
+            }];
+            
+            return;
         }
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    } else if ([[UIApplication sharedApplication] respondsToSelector:
-                @selector(registerUserNotificationSettings:)]) {
-            // iOS 8-9.
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings
-                                                    settingsForTypes:UIUserNotificationTypeAlert |
-                                                    UIUserNotificationTypeBadge |
-                                                    UIUserNotificationTypeSound categories:nil];
+#endif
+        
+        // iOS 8.0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+        if (@available(iOS 8.0, *))
+        {
+            UIUserNotificationType notificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
             [[UIApplication sharedApplication] registerForRemoteNotifications];
+            
+            return;
+        }
+#endif
+        
+        // iOS 3.0
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 30000
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        UIRemoteNotificationType remoteNotificationTypes = UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound;
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:remoteNotificationTypes];
 #pragma clang diagnostic pop
-    }
+#endif
 }
 
 - (BOOL)isPushEnabled
