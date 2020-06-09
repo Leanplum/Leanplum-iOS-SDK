@@ -386,7 +386,7 @@
         }
     };
 
-    if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
+    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [Leanplum onStartIssued:^() {
             if ([self areActionsEmbedded:userInfo]) {
                 onContent();
