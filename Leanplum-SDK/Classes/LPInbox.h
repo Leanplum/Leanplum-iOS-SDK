@@ -71,7 +71,7 @@ NS_SWIFT_NAME(LeanplumInbox.Message)
 /**
  * Returns the delivery timestamp of the inbox message.
  */
-@property (strong, nonatomic, readonly, nonnull) NSDate *deliveryTimestamp;
+@property (strong, nonatomic, readonly, nullable) NSDate *deliveryTimestamp;
 
 /**
  * Return the expiration timestamp of the inbox message.
