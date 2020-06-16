@@ -58,8 +58,8 @@ NS_SWIFT_NAME(ActionManager)
 + (LPActionManager*) sharedManager
 NS_SWIFT_NAME(shared());
 
-+ (void)getForegroundRegionNames:(NSMutableSet **)foregroundRegionNames
-        andBackgroundRegionNames:(NSMutableSet **)backgroundRegionNames;
++ (void)getForegroundRegionNames:(NSMutableSet * _Nonnull * _Nullable)foregroundRegionNames
+        andBackgroundRegionNames:(NSMutableSet * _Nonnull * _Nullable)backgroundRegionNames;
 
 #pragma mark - Messages
 
