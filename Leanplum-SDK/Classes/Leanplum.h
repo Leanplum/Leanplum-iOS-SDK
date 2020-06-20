@@ -313,24 +313,24 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
 + (void)start;
 
 + (void)startWithResponseHandler:(LeanplumStartBlock)response
-NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
+NS_SWIFT_NAME(start(completion:));
 
 + (void)startWithUserAttributes:(NSDictionary<NSString *, id> *)attributes
-NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
+NS_SWIFT_NAME(start(attributes:));
 
 + (void)startWithUserId:(NSString *)userId
-NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
+NS_SWIFT_NAME(start(userId:));
 
 + (void)startWithUserId:(NSString *)userId
-        responseHandler:(LeanplumStartBlock)response
-NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
+        responseHandler:(nullable LeanplumStartBlock)response
+NS_SWIFT_NAME(start(userId:completion:));
 
 + (void)startWithUserId:(NSString *)userId
          userAttributes:(NSDictionary<NSString *, id> *)attributes
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
 
-+ (void)startWithUserId:(nullable NSString *)userId
-         userAttributes:(nullable NSDictionary<NSString *, id> *)attributes
++ (void)startWithUserId:(NSString *)userId
+         userAttributes:(NSDictionary<NSString *, id> *)attributes
         responseHandler:(nullable LeanplumStartBlock)startResponse
 NS_SWIFT_NAME(start(userId:attributes:completion:));
 /**@}*/
