@@ -1,0 +1,1 @@
+../MessageTemplates/LPMessageTemplateProtocol.h

@@ -1,0 +1,1 @@
+../Managers/LPRegisterDevice.h

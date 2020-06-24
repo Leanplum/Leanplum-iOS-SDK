@@ -9,7 +9,8 @@ let package = Package(
     targets: [
         .target(
         	name: "Leanplum", 
-        	path: "Leanplum-SDK/Classes",
-        	publicHeadersPath: ".")
+        	path: "Leanplum-SDK/Classes"
+        )
     ]
 )
+  

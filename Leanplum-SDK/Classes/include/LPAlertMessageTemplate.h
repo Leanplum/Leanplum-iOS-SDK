@@ -1,0 +1,1 @@
+../MessageTemplates/LPAlertMessageTemplate.h
