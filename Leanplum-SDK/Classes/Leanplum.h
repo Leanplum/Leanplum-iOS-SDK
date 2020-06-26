@@ -329,8 +329,8 @@ NS_SWIFT_NAME(start(userId:completion:));
          userAttributes:(NSDictionary<NSString *, id> *)attributes
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
 
-+ (void)startWithUserId:(NSString *)userId
-         userAttributes:(NSDictionary<NSString *, id> *)attributes
++ (void)startWithUserId:(nullable NSString *)userId
+         userAttributes:(nullable NSDictionary<NSString *, id> *)attributes
         responseHandler:(nullable LeanplumStartBlock)startResponse
 NS_SWIFT_NAME(start(userId:attributes:completion:));
 /**@}*/
@@ -647,41 +647,40 @@ NS_SWIFT_NAME(track(transaction:));
  * any value of your choosing, and will show up in the dashboard.
  * To track a purchase, use LP_PURCHASE_EVENT.
  */
-+ (void)track:(NSString *)event
-NS_SWIFT_NAME(track(event:));
++ (void)track:(NSString *)event;
 
 + (void)track:(NSString *)event
     withValue:(double)value
-NS_SWIFT_NAME(track(event:value:));
+NS_SWIFT_NAME(track(_:value:));
 
 + (void)track:(NSString *)event
      withInfo:(nullable NSString *)info
-NS_SWIFT_NAME(track(event:info:));
+NS_SWIFT_NAME(track(_:info:));
 
 + (void)track:(NSString *)event
     withValue:(double)value
       andInfo:(nullable NSString *)info
-NS_SWIFT_NAME(track(event:value:info:));
+NS_SWIFT_NAME(track(_:value:info:));
 
 // See above for the explanation of params.
 + (void)track:(NSString *)event withParameters:(nullable NSDictionary<NSString *, id> *)params
-NS_SWIFT_NAME(track(event:params:));
+NS_SWIFT_NAME(track(_:params:));
 
 + (void)track:(NSString *)event
     withValue:(double)value
 andParameters:(nullable NSDictionary<NSString *, id> *)params
-NS_SWIFT_NAME(track(event:value:params:));
+NS_SWIFT_NAME(track(_:value:params:));
 
 + (void)track:(NSString *)event
     withValue:(double)value
       andInfo:(nullable NSString *)info
 andParameters:(nullable NSDictionary<NSString *, id> *)params
-NS_SWIFT_NAME(track(event:value:info:params:));
+NS_SWIFT_NAME(track(_:value:info:params:));
 /**@}*/
 
 + (void)trackGeofence:(LPGeofenceEventType)event
              withInfo:(nullable NSString *)info
-NS_SWIFT_NAME(track(type:info:));
+NS_SWIFT_NAME(track(_:info:));
 
 /**
  * @{
