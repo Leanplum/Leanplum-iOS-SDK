@@ -329,8 +329,8 @@ NS_SWIFT_NAME(start(userId:completion:));
          userAttributes:(NSDictionary<NSString *, id> *)attributes
 NS_SWIFT_UNAVAILABLE("Use start(userId:attributes:completion:");
 
-+ (void)startWithUserId:(NSString *)userId
-         userAttributes:(NSDictionary<NSString *, id> *)attributes
++ (void)startWithUserId:(nullable NSString *)userId
+         userAttributes:(nullable NSDictionary<NSString *, id> *)attributes
         responseHandler:(nullable LeanplumStartBlock)startResponse
 NS_SWIFT_NAME(start(userId:attributes:completion:));
 /**@}*/
