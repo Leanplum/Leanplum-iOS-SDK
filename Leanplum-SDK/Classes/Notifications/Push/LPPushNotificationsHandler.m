@@ -44,10 +44,18 @@
 
 -(void)didReceiveRemoteNotification:(NSDictionary *)userInfo withAction:(NSString *__nullable)action fetchCompletionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler
 {
+    if (@available(iOS 10, *)) {
+        if ([UNUserNotificationCenter currentNotificationCenter].delegate != nil) {
+            if (UIApplication.sharedApplication.applicationState != UIApplicationStateBackground) {
+                return;
+            }
+        }
+    }
+    
     [self.countAggregator incrementCount:@"did_receive_remote_notification"];
     
     // If app was inactive, then handle notification because the user tapped it.
-    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
         [self handleNotification:userInfo
                       withAction:action
                        appActive:NO
@@ -184,19 +192,29 @@
     if (messageId == nil) {
         return;
     }
-
+    
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
+        
+        if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+            return;
+        }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-            if (appState != UIApplicationStateBackground) {
-                [self maybePerformNotificationActions:userInfo action:action active:active];
-            }
+            [self maybePerformNotificationActions:userInfo action:action active:active];
         }
     };
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive && !self.appWasActivatedByReceivingPushNotification) {
+        [self setAppWasActivatedByReceivingPushNotification:NO];
+        onContent();
+        return;
+    }
+    [self setAppWasActivatedByReceivingPushNotification:NO];
+    
+    NSLog(@"Push RECEIVED");
 
     [Leanplum onStartIssued:^() {
         if ([self areActionsEmbedded:userInfo]) {
@@ -214,11 +232,17 @@
                                  action:(NSString *)action
                                  active:(BOOL)active
 {
+    // Do not perform the action if the app is in background
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+        return;
+    }
+
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
         return;
     }
-
+    
+    NSLog(@"Push OPENED");
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
@@ -375,16 +399,28 @@
     if (messageId == nil) {
         return;
     }
-
+    
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            [self maybePerformNotificationActions:userInfo action:nil active:NO];
+            BOOL active = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+            [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive || self.appWasActivatedByReceivingPushNotification) {
+//        [self setAppWasActivatedByReceivingPushNotification:NO];
+        onContent();
+        return;
+    }
+    [self setAppWasActivatedByReceivingPushNotification:NO];
+    
+    NSLog(@"Push RECEIVED");
+
+    
 
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [Leanplum onStartIssued:^() {
@@ -398,6 +434,13 @@
         if (messageId && completionHandler) {
             completionHandler(UIBackgroundFetchResultNoData);
         }
+    }
+}
+
+- (void)handleWillPresentNotification:(NSDictionary *)userInfo
+{
+    if(@available(iOS 10, *)) {
+        [self handleWillPresentNotification:userInfo withCompletionHandler:nil];
     }
 }
 
@@ -418,9 +461,12 @@
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            [self maybePerformNotificationActions:userInfo action:nil active:YES];
+            BOOL active = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+            [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
+    
+    NSLog(@"Push RECEIVED");
 
     if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
         [Leanplum onStartIssued:^() {
