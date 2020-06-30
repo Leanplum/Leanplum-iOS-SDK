@@ -51,6 +51,12 @@
 #import "LPOperationQueue.h"
 #include <sys/sysctl.h>
 
+NSString *const kAppKeysFileName = @"LeanplumKeys-Info";
+NSString *const kAppKeysFileType = @"plist";
+NSString *const kAppIdKey = @"APP_ID";
+NSString *const kDevKey = @"DEV_KEY";
+NSString *const kProdKey = @"PROD_KEY";
+
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
@@ -238,6 +244,27 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
++ (NSDictionary *) getDefaultAppKeysPlist
+{
+    NSString *plistFilePath = [[NSBundle mainBundle] pathForResource:kAppKeysFileName ofType:kAppKeysFileType];
+    if (plistFilePath == nil) {
+        [self throwError:[NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] Could not locate App Keys configuration file: '%@.%@'.", kAppKeysFileName, kAppKeysFileType]];
+    }
+    
+    NSDictionary *appKeysDictionary = [NSDictionary dictionaryWithContentsOfFile:plistFilePath];
+    if (appKeysDictionary == nil) {
+        [self throwError:[NSString stringWithFormat:@"[Leanplum setAppForDevelopmentUsingPlist] The configuration file is not a dictionary: '%@.%@'.", kAppKeysFileName, kAppKeysFileType]];
+    }
+    
+    return appKeysDictionary;
+}
+
++ (void)setAppForDevelopmentUsingPlist
+{
+    NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
+    [self setAppId:appKeysDictionary[kAppIdKey] withDevelopmentKey:appKeysDictionary[kDevKey]];
+}
+
 + (void)setAppId:(NSString *)appId withDevelopmentKey:(NSString *)accessKey
 {
     if ([LPUtils isNullOrEmpty:appId]) {
@@ -263,6 +290,12 @@ BOOL inForeground = NO;
     LP_TRY
     [LPInternalState sharedState].appVersion = appVersion;
     LP_END_TRY
+}
+
++ (void)setAppForProductionUsingPlist
+{
+    NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
+    [self setAppId:appKeysDictionary[kAppIdKey] withProductionKey:appKeysDictionary[kProdKey]];
 }
 
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey

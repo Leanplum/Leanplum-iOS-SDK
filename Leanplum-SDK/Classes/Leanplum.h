@@ -257,6 +257,16 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
 /**@}*/
 
 /**
+ * Set the appId and Development key from the plist.
+*/
++ (void)setAppForDevelopmentUsingPlist;
+
+/**
+ * Set the appId and Production key from the plist.
+*/
++ (void)setAppForProductionUsingPlist;
+
+/**
  * Apps running as extensions need to call this before start.
  * @param context The current extensionContext. You can get this from UIViewController.
  */

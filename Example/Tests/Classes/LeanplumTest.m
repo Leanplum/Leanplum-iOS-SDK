@@ -40,6 +40,7 @@
 #import "LPRegisterDevice.h"
 #import "Leanplum.h"
 #import "LPOperationQueue.h"
+#import "LPAPIConfig.h"
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -83,6 +84,23 @@
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
 }
+
+- (void) test_set_development_from_plist
+{
+    [Leanplum setAppForDevelopmentUsingPlist];
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], @"app_10awCNlqIasdiwdhqwbdqkjwbdbdjkqZJIWtLLalop7");
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], @"dev_aBC5HMpLGqhbov12345jgTuf8AHfr2Jar6rrnNxyz02");
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+- (void) test_set_production_from_plist
+{
+    [Leanplum setAppForProductionUsingPlist];
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], @"app_10awCNlqIasdiwdhqwbdqkjwbdbdjkqZJIWtLLalop7");
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], @"prod_QWEYBLrRrrOYaFZv67890g1JyZ2Llixe5s077a4b10");
+    XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
 
 /**
  * Tests a simple development start.
