@@ -242,6 +242,14 @@
         return;
     }
     
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
+        if (userInfo[LP_KEY_PUSH_NO_ACTION] ||
+            userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
+            //TODO:Dejan
+            return;
+        }
+    }
+    
     NSLog(@"Push OPENED");
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
