@@ -128,26 +128,31 @@ build_ios_dylib() {
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_TREAT_WARNINGS_AS_ERRORS=1 \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK-iOS dynamic (device/armv7s) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_TREAT_WARNINGS_AS_ERRORS=1 \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK-iOS dynamic (device/arm64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_TREAT_WARNINGS_AS_ERRORS=1 \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK-iOS dynamic (simulator/i386) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='i386' VALID_ARCHS='i386' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X86_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_TREAT_WARNINGS_AS_ERRORS=1 \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   run "Building Leanplum-SDK-iOS dynamic (simulator/x86_64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${SIM_SDK}" \
     "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_TREAT_WARNINGS_AS_ERRORS=1 \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
 
   run "Combining builds to universal fat library ..." \
