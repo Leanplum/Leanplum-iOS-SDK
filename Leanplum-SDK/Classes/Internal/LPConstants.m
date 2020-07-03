@@ -146,7 +146,6 @@ NSString *LP_PARAM_LIMIT_TRACKING = @"limitTracking";
 NSString *LP_PARAM_NAME = @"name";
 NSString *LP_PARAM_MESSAGE = @"message";
 NSString *LP_PARAM_MESSAGE_ID = @"messageId";
-NSString *LP_PARAM_BACKGROUND = @"background";
 NSString *LP_PARAM_INBOX_MESSAGES = @"newsfeedMessages";
 NSString *LP_PARAM_INBOX_MESSAGE_ID = @"newsfeedMessageId";
 NSString *LP_PARAM_RICH_PUSH_ENABLED = @"richPushEnabled";
