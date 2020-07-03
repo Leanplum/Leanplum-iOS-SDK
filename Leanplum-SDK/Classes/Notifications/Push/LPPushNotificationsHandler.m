@@ -218,7 +218,14 @@
     if ([self isDuplicateNotification:userInfo]) {
         return;
     }
-
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
+        if (userInfo[LP_KEY_PUSH_NO_ACTION] ||
+            userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
+            return;
+        }
+    }
+    
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
