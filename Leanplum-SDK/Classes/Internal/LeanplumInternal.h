@@ -48,6 +48,7 @@ extern NSString *const kAppKeysFileType;
 extern NSString *const kAppIdKey;
 extern NSString *const kDevKey;
 extern NSString *const kProdKey;
+extern NSString *const kEnvKey;
 
 @interface Leanplum ()
 
@@ -70,6 +71,9 @@ typedef NS_ENUM(NSUInteger, LPLogType) {
 
 + (void)pause;
 + (void)resume;
+
++ (BOOL)setAppUsingPlist:(NSDictionary *)appKeysDictionary forEnvironment:(NSString *)env;
++ (NSDictionary *) getDefaultAppKeysPlist;
 
 + (void)track:(nullable NSString *)event
     withValue:(double)value
