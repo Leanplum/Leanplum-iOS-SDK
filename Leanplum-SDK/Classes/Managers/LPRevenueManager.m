@@ -137,10 +137,12 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
         NSURL *receiptURL = [[NSBundle mainBundle] appStoreReceiptURL];
         receipt = [NSData dataWithContentsOfURL:receiptURL];
     } else {
+#if !TARGET_OS_MACCATALYST
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
         receipt = transaction.transactionReceipt;
 #pragma GCC diagnostic pop
+#endif
     }
 
     NSString *receiptBase64String = [LPUtils base64EncodedStringFromData:receipt];

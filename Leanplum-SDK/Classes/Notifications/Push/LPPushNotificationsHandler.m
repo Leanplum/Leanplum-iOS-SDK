@@ -240,7 +240,6 @@
     if (UIApplication.sharedApplication.applicationState == UIApplicationStateActive) {
         if (userInfo[LP_KEY_PUSH_NO_ACTION] ||
             userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
-            //TODO:Dejan
             return;
         }
     }
@@ -401,7 +400,7 @@
     if (messageId == nil) {
         return;
     }
-    
+
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
@@ -463,7 +462,7 @@
             [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
-    
+
     if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
         [Leanplum onStartIssued:^() {
             if ([self areActionsEmbedded:userInfo]) {
