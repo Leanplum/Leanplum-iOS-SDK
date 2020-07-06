@@ -198,9 +198,6 @@
             completionHandler(UIBackgroundFetchResultNewData);
         }
         
-        if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
-            return;
-        }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
             [self maybePerformNotificationActions:userInfo action:action active:active];
@@ -213,8 +210,6 @@
         return;
     }
     [self setAppWasActivatedByReceivingPushNotification:NO];
-    
-    NSLog(@"Push RECEIVED");
 
     [Leanplum onStartIssued:^() {
         if ([self areActionsEmbedded:userInfo]) {
@@ -250,7 +245,6 @@
         }
     }
     
-    NSLog(@"Push OPENED");
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
@@ -426,10 +420,6 @@
     }
     [self setAppWasActivatedByReceivingPushNotification:NO];
     
-    NSLog(@"Push RECEIVED");
-
-    
-
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [Leanplum onStartIssued:^() {
             if ([self areActionsEmbedded:userInfo]) {
@@ -474,8 +464,6 @@
         }
     };
     
-    NSLog(@"Push RECEIVED");
-
     if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
         [Leanplum onStartIssued:^() {
             if ([self areActionsEmbedded:userInfo]) {
