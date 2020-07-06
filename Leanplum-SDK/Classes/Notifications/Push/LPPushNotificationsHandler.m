@@ -413,7 +413,7 @@
     };
     
     if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive || self.appWasActivatedByReceivingPushNotification) {
-//        [self setAppWasActivatedByReceivingPushNotification:NO];
+        [self setAppWasActivatedByReceivingPushNotification:NO];
         onContent();
         return;
     }
