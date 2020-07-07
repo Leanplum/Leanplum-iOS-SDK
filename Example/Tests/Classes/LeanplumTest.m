@@ -42,6 +42,8 @@
 #import "LPOperationQueue.h"
 #import "LPAPIConfig.h"
 
+#import <OCMock/OCMArg.h>
+
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
  * and validate whether sdk properly parses the response and calls appropriate methods
@@ -64,10 +66,6 @@
 
 @end
 
-static NSString *_appId;
-static NSString *_devKey;
-static NSString *_prodKey;
-
 @implementation LeanplumTest
 
 + (void)setUp
@@ -76,11 +74,6 @@ static NSString *_prodKey;
     // Called only once to setup method swizzling.
     [LeanplumHelper setup_method_swizzling];
     [Leanplum_Reachability online:YES];
-    
-    // Keys from Leanplum-Info.plist file
-    _appId = @"app_10awCNlqIasdiwdhqwbdqkjwbdbdjkqZJIWtLLalop7";
-    _prodKey = @"prod_QWEYBLrRrrOYaFZv67890g1JyZ2Llixe5s077a4b10";
-    _devKey = @"dev_aBC5HMpLGqhbov12345jgTuf8AHfr2Jar6rrnNxyz02";
 }
 
 - (void)setUp {
@@ -110,8 +103,8 @@ static NSString *_prodKey;
     // Force reload
     [Leanplum load];
 
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _prodKey);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -127,8 +120,8 @@ static NSString *_prodKey;
     // Force reload
     [Leanplum load];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _devKey);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -137,10 +130,10 @@ static NSString *_prodKey;
  */
 - (void) test_set_app_environment_dev
 {
-    [Leanplum setAppEnvironment:@"development"];
+    [Leanplum setAppEnvironment:kEnvDevelopment];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _devKey);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -149,10 +142,10 @@ static NSString *_prodKey;
  */
 - (void) test_set_app_environment_prod
 {
-    [Leanplum setAppEnvironment:@"production"];
+    [Leanplum setAppEnvironment:kEnvProduction];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _prodKey);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -161,8 +154,9 @@ static NSString *_prodKey;
  */
 - (void) test_set_app_environment_incorrect
 {
-    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:YES];
+    [LeanplumHelper mockThrowErrorToThrow];
     XCTAssertThrows([Leanplum setAppEnvironment:@"staging"], @"Incorrect environment.");
+    XCTAssertTrue([LeanplumHelper.lastErrorMessage containsString:@"Incorrect env parameter."]);
 }
 
 /**
@@ -170,11 +164,14 @@ static NSString *_prodKey;
  */
 - (void) test_set_app_environment_after_start
 {
-    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:YES];
-    [Leanplum load];
-    [Leanplum start];
+    [LeanplumHelper mockThrowErrorToThrow];
     
-    XCTAssertThrows([Leanplum setAppEnvironment:@"production"], @"Already called start.");
+    [Leanplum load];
+    // Set Leanplum start was executed.
+    [[LPInternalState sharedState] setCalledStart:YES];
+    
+    XCTAssertThrows([Leanplum setAppEnvironment:kEnvProduction], @"Already called start.");
+    XCTAssertTrue([LeanplumHelper.lastErrorMessage containsString:@"Leanplum already started. Call this method before [Leanplum start]."]);
 }
 
 /**
@@ -199,13 +196,13 @@ static NSString *_prodKey;
 {
     [Leanplum load];
     #if DEBUG
-        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _devKey);
+        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
         XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     #else
-        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _prodKey);
+        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
         XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     #endif
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
 }
 
 /**
@@ -214,8 +211,8 @@ static NSString *_prodKey;
 - (void) test_set_development_from_plist
 {
     [Leanplum setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:kEnvDevelopment];
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _devKey);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -225,8 +222,8 @@ static NSString *_prodKey;
 - (void) test_set_production_from_plist
 {
     [Leanplum setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:kEnvProduction];
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], _appId);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], _prodKey);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 

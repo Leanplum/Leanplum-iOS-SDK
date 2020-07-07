@@ -27,6 +27,7 @@
 #import <XCTest/XCTest.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
+#import <OCMock/OCMock.h>
 #import "LeanplumHelper.h"
 #import "LeanplumRequest+Categories.h"
 #import "LPVarCache+Extensions.h"
@@ -38,6 +39,7 @@
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
 
+// Keys also used in Leanplum-Info.plist file
 NSString *APPLICATION_ID = @"app_nLiaLr3lXvCjXhsztS1Gw8j281cPLO6sZetTDxYnaSk";
 NSString *DEVELOPMENT_KEY = @"dev_2bbeWLmVJyNrqI8F21Kn9nqyUPRkVCUoLddBkHEyzmk";
 NSString *PRODUCTION_KEY = @"prod_XYpURdwPAaxJyYLclXNfACe9Y8hs084dBx2pB8wOnqU";
@@ -47,6 +49,17 @@ NSString *API_HOST = @"api.leanplum.com";
 NSInteger DISPATCH_WAIT_TIME = 4;
 
 @implementation LeanplumHelper
+
+static NSString *_lastErrorMessage = nil;
+
++ (NSString *)lastErrorMessage {
+  return _lastErrorMessage;
+}
+
++ (void)setLastErrorMessage:(NSString *)lastErrorMessage {
+    NSLog(@"Exception: %@", lastErrorMessage);
+    _lastErrorMessage = lastErrorMessage;
+}
 
 static BOOL swizzled = NO;
 
@@ -162,6 +175,18 @@ static BOOL swizzled = NO;
 + (void)dismissPresentedViewControllers
 {
     [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:false completion:nil];
+}
+
++ (void) throwError:(NSString *) err
+{
+    [LeanplumHelper setLastErrorMessage:err];
+    @throw([NSException exceptionWithName:err reason:nil userInfo:nil]);
+}
+
++ (void) mockThrowErrorToThrow
+{
+    id mockLeanplumClass = OCMClassMock([Leanplum class]);
+    [OCMStub(ClassMethod([mockLeanplumClass throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
 }
 
 @end
