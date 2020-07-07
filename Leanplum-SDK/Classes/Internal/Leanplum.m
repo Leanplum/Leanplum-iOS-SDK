@@ -89,8 +89,6 @@ static LeanplumPushSetupBlock pushSetupBlock;
 
 void leanplumExceptionHandler(NSException *exception);
 
-BOOL inForeground = NO;
-
 @implementation Leanplum
 
 +(void)load
@@ -880,13 +878,6 @@ BOOL inForeground = NO;
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    BOOL startedInBackground = NO;
-    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
-        !_extensionContext) {
-        params[LP_PARAM_BACKGROUND] = @(YES);
-        startedInBackground = YES;
-    }
-
     if (attributes != nil) {
         params[LP_PARAM_USER_ATTRIBUTES] = attributes ?
                 [LPJSON stringFromJSON:attributes] : @"";
@@ -1006,15 +997,12 @@ BOOL inForeground = NO;
         // Upload alternative app icons.
         [LPAppIconManager uploadAppIconsOnDevMode];
 
-        if (!startedInBackground) {
-            inForeground = YES;
-            [self maybePerformActions:@[@"start", @"resume"]
-                        withEventName:nil
-                           withFilter:kLeanplumActionFilterAll
-                        fromMessageId:nil
-                 withContextualValues:nil];
-            [self recordAttributeChanges];
-        }
+        [self maybePerformActions:@[@"start", @"resume"]
+                    withEventName:nil
+                       withFilter:kLeanplumActionFilterAll
+                    fromMessageId:nil
+             withContextualValues:nil];
+        [self recordAttributeChanges];
         LP_END_TRY
     }];
     [request onError:^(NSError *err) {
@@ -1061,21 +1049,11 @@ BOOL inForeground = NO;
                                                                  currentUserNotificationSettings]];
                     }
                     [Leanplum resume];
-                    if (startedInBackground && !inForeground) {
-                        inForeground = YES;
-                        [self maybePerformActions:@[@"start", @"resume"]
-                                    withEventName:nil
-                                       withFilter:kLeanplumActionFilterAll
-                                    fromMessageId:nil
-                             withContextualValues:nil];
-                        [self recordAttributeChanges];
-                    } else {
-                        [self maybePerformActions:@[@"resume"]
-                                    withEventName:nil
-                                       withFilter:kLeanplumActionFilterAll
-                                    fromMessageId:nil
-                             withContextualValues:nil];
-                    }
+                    [self maybePerformActions:@[@"resume"]
+                                withEventName:nil
+                                   withFilter:kLeanplumActionFilterAll
+                                fromMessageId:nil
+                         withContextualValues:nil];
                     LP_END_TRY
                 }];
 
