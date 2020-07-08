@@ -133,7 +133,11 @@ static BOOL swizzled = NO;
 }
 
 + (NSString *)retrieve_string_from_file:(NSString *)file ofType:(NSString *)type {
+#ifdef SWIFTPM_MODULE_BUNDLE
+    NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
+#else
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+#endif
     NSString *path = [bundle pathForResource:file ofType:type];
     NSString *content = [NSString stringWithContentsOfFile:path
                                                   encoding:NSUTF8StringEncoding
@@ -143,7 +147,11 @@ static BOOL swizzled = NO;
 }
 
 + (NSData *)retrieve_data_from_file:(NSString *)file ofType:(NSString *)type {
+#ifdef SWIFTPM_MODULE_BUNDLE
+    NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
+#else
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+#endif
     NSString *path = [bundle pathForResource:file ofType:type];
 
     return [[NSFileManager defaultManager] contentsAtPath:path];

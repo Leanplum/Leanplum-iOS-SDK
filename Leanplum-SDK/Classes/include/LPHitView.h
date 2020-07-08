@@ -1,0 +1,1 @@
+../MessageTemplates/Views/LPHitView.h
