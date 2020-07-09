@@ -24,12 +24,22 @@
 
 #import "LPAppDelegate.h"
 #import <UserNotifications/UserNotifications.h>
-
+#import "LPMessageTemplateUtilities.h"
+#import "LPViewController.h"
 @implementation LPAppDelegate
 
 - (BOOL)application:(UIApplication *)application
         didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [LPMessageTemplateUtilities swizzleMethods];
+    NSArray<Class> *arr = @[[LPViewController class]];
+    [Leanplum deferMessagesForViewControllers: arr];
+    
+    [Leanplum setAppId:@"app_KPtE0tJZkZAnmAqw1s4OZjbqAGWrabnAPvnFEYraHSU" withDevelopmentKey:@"dev_cd4TFEOZrBkGCqlnmNc13HzN6wQBqnELUEEyQ0RphdY"];
+    [Leanplum setVerboseLoggingInDevelopmentMode:YES];
+    [Leanplum start];
+    
+    
     // Override point for customization after application launch.
     [[UIApplication sharedApplication] registerForRemoteNotifications];
 #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 100000
