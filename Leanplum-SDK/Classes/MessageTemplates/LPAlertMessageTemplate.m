@@ -17,8 +17,8 @@
             LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
             UIViewController *alertViewController = [template viewControllerWithContext:context];
 
-            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
-            return YES;
+            return [LPMessageTemplateUtilities presentOverVisible:alertViewController forContext:context];
+            //return YES;
         } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
             return NO;
