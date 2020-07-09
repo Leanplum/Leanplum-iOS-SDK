@@ -51,6 +51,8 @@
 #import "LPOperationQueue.h"
 #include <sys/sysctl.h>
 
+#import "LPMessageTemplateUtilities.h"
+
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
@@ -1447,6 +1449,15 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
+}
+
++ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
+{
+    if (controllers == nil || controllers.count == 0) {
+      return;
+    }
+
+    [LPMessageTemplateUtilities setDeferedVc: controllers];
 }
 
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block

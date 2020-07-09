@@ -417,6 +417,8 @@ NS_SWIFT_NAME(defineAction(name:kind:args:completion:));
 NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 /**@}*/
 
++ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers;
+
 /**
  * Block to call when an action is received, such as to show a message to the user.
  */

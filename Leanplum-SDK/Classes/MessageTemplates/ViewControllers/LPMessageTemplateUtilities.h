@@ -16,9 +16,14 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPMessageTemplateUtilities: NSObject
 
 +(void)presentOverVisible:(UIViewController *) viewController;
++(BOOL)presentOverVisible:(UIViewController *) viewController forContext:(LPActionContext *)context;
 +(void)dismissExisitingViewController:(nullable void (^)(void)) completion;
 +(UIViewController *) visibleViewController;
 
++ (BOOL)shouldDeferMessage:(Class)vcClass;
++ (void)setDeferedVc:(NSArray<Class> *)controllers;
++ (void)swizzleMethods;
++ (void)runDeferredMessages:(id)vc;
 @end
 
 NS_ASSUME_NONNULL_END
