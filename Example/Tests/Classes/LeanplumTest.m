@@ -40,6 +40,9 @@
 #import "LPRegisterDevice.h"
 #import "Leanplum.h"
 #import "LPOperationQueue.h"
+#import "LPAPIConfig.h"
+
+#import <OCMock/OCMArg.h>
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -75,6 +78,10 @@
 
 - (void)setUp {
     [super setUp];
+    
+    // Clear the set keys, required for plist testing
+    [[LPAPIConfig sharedConfig] setAppId:nil withAccessKey:nil];
+    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
 }
 
 - (void)tearDown {
@@ -82,6 +89,142 @@
     // Clean up after every test.
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
+}
+
+/**
+ * Tests setting the environment in the plist to production.
+ */
+- (void) test_leanplum_load_plist_env_key_prod
+{
+    id mockLeanplum = OCMClassMock([Leanplum class]);
+    NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithDictionary:[Leanplum getDefaultAppKeysPlist] copyItems:YES];
+    plistDict[kEnvKey] = kEnvProduction;
+    [[[mockLeanplum stub] andReturn:plistDict] getDefaultAppKeysPlist];
+    // Force reload
+    [Leanplum load];
+
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+    XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+/**
+ * Tests setting the environment in the plist to development.
+ */
+- (void) test_leanplum_load_plist_env_key_dev
+{
+    id mockLeanplum = OCMClassMock([Leanplum class]);
+    NSMutableDictionary *plistDict = [[NSMutableDictionary alloc] initWithDictionary:[Leanplum getDefaultAppKeysPlist] copyItems:YES];
+    plistDict[kEnvKey] = kEnvDevelopment;
+    [[[mockLeanplum stub] andReturn:plistDict] getDefaultAppKeysPlist];
+    // Force reload
+    [Leanplum load];
+    
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+/**
+ * Tests setting explicitly the environment to development.
+ */
+- (void) test_set_app_environment_dev
+{
+    [Leanplum setAppEnvironment:kEnvDevelopment];
+    
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+/**
+ * Tests setting explicitly the environment to production.
+ */
+- (void) test_set_app_environment_prod
+{
+    [Leanplum setAppEnvironment:kEnvProduction];
+    
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+    XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+/**
+ * Tests environment cannot be set with incorrect value.
+ */
+- (void) test_set_app_environment_incorrect
+{
+    [LeanplumHelper mockThrowErrorToThrow];
+    XCTAssertThrows([Leanplum setAppEnvironment:@"staging"], @"Incorrect environment.");
+    XCTAssertTrue([LeanplumHelper.lastErrorMessage containsString:@"Incorrect env parameter."]);
+}
+
+/**
+ * Tests environment cannot be set after Leanplum has started.
+ */
+- (void) test_set_app_environment_after_start
+{
+    [LeanplumHelper mockThrowErrorToThrow];
+    
+    [Leanplum load];
+    // Set Leanplum start was executed.
+    [[LPInternalState sharedState] setCalledStart:YES];
+    
+    XCTAssertThrows([Leanplum setAppEnvironment:kEnvProduction], @"Already called start.");
+    XCTAssertTrue([LeanplumHelper.lastErrorMessage containsString:@"Leanplum already started. Call this method before [Leanplum start]."]);
+}
+
+/**
+ * Tests app keys remain unset if plist is nil.
+ */
+- (void) test_leanplum_load_plist_with_nil
+{
+    id mockLeanplum = OCMClassMock([Leanplum class]);
+    [[[mockLeanplum stub] andReturn:nil] getDefaultAppKeysPlist];
+    // Force reload
+    [Leanplum load];
+    
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], nil);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], nil);
+    XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+/**
+ * Tests setting the app keys with Leanplum load method using plist.
+ */
+- (void) test_leanplum_load_plist
+{
+    [Leanplum load];
+    #if DEBUG
+        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+        XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    #else
+        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+        XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    #endif
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+}
+
+/**
+ * Tests setting the app for development using plist.
+ */
+- (void) test_set_development_from_plist
+{
+    [Leanplum setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:kEnvDevelopment];
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+    XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+}
+
+/**
+ * Tests setting the app for production using plist.
+ */
+- (void) test_set_production_from_plist
+{
+    [Leanplum setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:kEnvProduction];
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+    XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
 /**

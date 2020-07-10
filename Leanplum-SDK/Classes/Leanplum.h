@@ -182,6 +182,16 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
 
 #define LP_PURCHASE_EVENT @"Purchase"
 
+/**
+ * Leanplum Environment value for development, used in Leanplum-Info.plist
+ */
+extern NSString *const kEnvDevelopment;
+
+/**
+ * Leanplum Environment value for production, used in Leanplum-Info.plist
+ */
+extern NSString *const kEnvProduction;
+
 @interface Leanplum : NSObject
 
 - (instancetype)init NS_UNAVAILABLE;
@@ -255,6 +265,12 @@ NS_SWIFT_NAME(setAppId(_:developmentKey:));
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey
 NS_SWIFT_NAME(setAppId(_:productionKey:));
 /**@}*/
+
+/**
+ * Sets the corresponding key based on the environment. Call only if initialising using plist.
+ * @param env "development" or "production" - kEnvDevelopment or kEnvProduction
+ */
++ (void)setAppEnvironment:(NSString *)env;
 
 /**
  * Apps running as extensions need to call this before start.
