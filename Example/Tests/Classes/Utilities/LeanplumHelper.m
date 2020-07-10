@@ -183,10 +183,21 @@ static BOOL swizzled = NO;
     @throw([NSException exceptionWithName:err reason:nil userInfo:nil]);
 }
 
++ (void) handleException:(NSException *) ex
+{
+    [LeanplumHelper setLastErrorMessage:[ex name]];
+    @throw(ex);
+}
+
 + (void) mockThrowErrorToThrow
 {
     id mockLeanplumClass = OCMClassMock([Leanplum class]);
     [OCMStub(ClassMethod([mockLeanplumClass throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
+
+    // Cannot mock leanplumInternalError(NSException *e) since it is a function
+    // Mocking [LPUtils handleException:e] which is used inside leanplumInternalError first
+    id mockLPUtilsClass = OCMClassMock([LPUtils class]);
+    [OCMStub(ClassMethod([mockLPUtilsClass handleException:[OCMArg any]])) andCall:@selector(handleException:) onObject:self];
 }
 
 @end
