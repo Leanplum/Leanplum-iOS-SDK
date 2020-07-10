@@ -117,6 +117,7 @@
 		A8F4479E2449769000F6978A /* LPNetworkOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F4479D2449769000F6978A /* LPNetworkOperationTest.m */; };
 		B449EB2A21F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */; };
 		B449EB2B21F27B0B005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */; };
+		E773031E24AB871E00EDF983 /* Leanplum-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E773031D24AB871E00EDF983 /* Leanplum-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -241,6 +242,7 @@
 		B5CCCA371D74B64D005ADEE1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B5CCCA391D74B64D005ADEE1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D2BDBCD86C8BEA8BF5B15B99 /* Pods-Leanplum-SDK_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		E773031D24AB871E00EDF983 /* Leanplum-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Leanplum-Info.plist"; sourceTree = "<group>"; };
 		ED67DCDB70EA6598AF12284A /* Pods-Leanplum-SDK_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-SDK_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example.release.xcconfig"; sourceTree = "<group>"; };
 		F5CF859C9DD307380E6F9A30 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -476,6 +478,7 @@
 		6003F5B6195388D20070C39A /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E773031D24AB871E00EDF983 /* Leanplum-Info.plist */,
 				6003F5B7195388D20070C39A /* Tests-Info.plist */,
 				6003F5B8195388D20070C39A /* InfoPlist.strings */,
 				606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */,
@@ -646,6 +649,7 @@
 				07E5C8F01F052DD000A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
 				07E5C8EB1F052DCC00A4B092 /* test.file in Resources */,
+				E773031E24AB871E00EDF983 /* Leanplum-Info.plist in Resources */,
 				07E5C8E81F052DC700A4B092 /* malformed_track_event_response.json in Resources */,
 				07E5C8F31F052DD000A4B092 /* sample_action_notification.json in Resources */,
 				07E5C8E51F052DC400A4B092 /* track_event_response.json in Resources */,

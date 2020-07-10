@@ -51,6 +51,16 @@
 #import "LPOperationQueue.h"
 #include <sys/sysctl.h>
 
+NSString *const kAppKeysFileName = @"Leanplum-Info";
+NSString *const kAppKeysFileType = @"plist";
+
+NSString *const kAppIdKey = @"APP_ID";
+NSString *const kDevKey = @"DEV_KEY";
+NSString *const kProdKey = @"PROD_KEY";
+NSString *const kEnvKey = @"ENV";
+NSString *const kEnvDevelopment = @"development";
+NSString *const kEnvProduction = @"production";
+
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
@@ -80,6 +90,24 @@ static LeanplumPushSetupBlock pushSetupBlock;
 void leanplumExceptionHandler(NSException *exception);
 
 @implementation Leanplum
+
++(void)load
+{
+    NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
+    if (appKeysDictionary == nil) {
+        return;
+    }
+    NSString *env = appKeysDictionary[kEnvKey];
+    if ([self setAppUsingPlist:appKeysDictionary forEnvironment:env]) {
+        return;
+    }
+
+#if DEBUG
+    [self setAppUsingPlist:appKeysDictionary forEnvironment:kEnvDevelopment];
+#else
+    [self setAppUsingPlist:appKeysDictionary forEnvironment:kEnvProduction];
+#endif
+}
 
 + (void)throwError:(NSString *)reason
 {
@@ -234,6 +262,50 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     [LPRevenueManager sharedManager].eventName = event;
     LP_END_TRY
+}
+
++ (NSDictionary *) getDefaultAppKeysPlist
+{
+    NSString *plistFilePath = [[NSBundle mainBundle] pathForResource:kAppKeysFileName ofType:kAppKeysFileType];
+    NSString *ignoreMessage = @"Ignore if not using Leanplum with plist configuration.";
+    if (plistFilePath == nil) {
+        NSLog(@"%@", [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] Could not locate configuration file: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
+        return nil;
+    }
+    
+    NSDictionary *appKeysDictionary = [NSDictionary dictionaryWithContentsOfFile:plistFilePath];
+    if (appKeysDictionary == nil) {
+        NSLog(@"%@", [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] The configuration file is not a dictionary: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
+    }
+    
+    return appKeysDictionary;
+}
+
++ (BOOL)setAppUsingPlist:(NSDictionary *)appKeysDictionary forEnvironment:(NSString *)env {
+    if ([[env lowercaseString] isEqualToString:kEnvDevelopment]) {
+        [self setAppId:appKeysDictionary[kAppIdKey] withDevelopmentKey:appKeysDictionary[kDevKey]];
+        NSLog(@"%@", [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvDevelopment, kAppKeysFileName, kAppKeysFileType]);
+        return YES;
+    } else if ([[env lowercaseString] isEqualToString:kEnvProduction]) {
+        [self setAppId:appKeysDictionary[kAppIdKey] withProductionKey:appKeysDictionary[kProdKey]];
+        NSLog(@"%@", [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvProduction, kAppKeysFileName, kAppKeysFileType]);
+        return YES;
+    }
+    return NO;
+}
+
++ (void)setAppEnvironment:(NSString *)env
+{
+    if (![[env lowercaseString] isEqualToString:kEnvProduction] && ![[env lowercaseString] isEqualToString:kEnvDevelopment]) {
+        [self throwError:@"[Leanplum setAppEnvironment:] Incorrect env parameter. Use \"development\" or \"production\"."];
+        return;
+    }
+    if ([LPInternalState sharedState].calledStart) {
+        [self throwError:@"[Leanplum setAppEnvironment:] Leanplum already started. Call this method before [Leanplum start]."];
+        return;
+    }
+
+    [self setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:env];
 }
 
 + (void)setAppId:(NSString *)appId withDevelopmentKey:(NSString *)accessKey
