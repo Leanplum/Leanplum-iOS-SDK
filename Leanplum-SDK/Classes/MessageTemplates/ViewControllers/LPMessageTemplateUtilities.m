@@ -17,10 +17,10 @@
 #import "LPInternalState.h"
 
 @implementation UIViewController (LeanplumExtension)
-void leanplum_viewDidLoad(id self, SEL _cmd);
-void leanplum_viewDidLoad(id self, SEL _cmd)
+void leanplum_viewDidAppear(id self, SEL _cmd, BOOL animated);
+void leanplum_viewDidAppear(id self, SEL _cmd, BOOL animated)
 {
-    ((void(*)(id, SEL))LP_GET_ORIGINAL_IMP(@selector(viewDidLoad)))(self, _cmd);
+    ((void(*)(id, SEL, BOOL))LP_GET_ORIGINAL_IMP(@selector(viewDidAppear:)))(self, _cmd, animated);
     LP_TRY
     [LPMessageTemplateUtilities runDeferredMessages:self];
     LP_END_TRY
@@ -97,7 +97,7 @@ static BOOL isPresenting;
 
 +(void)runDeferredMessages:(id)vc
 {
-    if (deferedContexts.count == 0 || isPresenting) {
+    if ([deferedContexts count] == 0 || isPresenting) {
         return;
     }
     
@@ -120,9 +120,9 @@ static BOOL isPresenting;
 
 + (void)swizzleMethods
 {
-    [LPSwizzle swizzleInstanceMethod:@selector(viewDidLoad)
-                 forClass:[UIViewController class]
-    withReplacementMethod:(IMP) leanplum_viewDidLoad];
+    [LPSwizzle swizzleInstanceMethod:@selector(viewDidAppear:)
+                                forClass:[UIViewController class]
+                   withReplacementMethod:(IMP) leanplum_viewDidAppear];
 }
 
 +(void)dismissExisitingViewController:(nullable void (^)(void)) completion
