@@ -179,7 +179,7 @@ static NSObject *updatingLock;
     return nil;
 }
 
-- (void)read
+- (void)markAsRead
 {
     if (![self isRead]) {
         [self setIsRead:YES];
@@ -196,6 +196,11 @@ static NSObject *updatingLock;
         [[LPRequestSender sharedInstance] send:request];
         LP_END_TRY
     }
+}
+
+- (void)read
+{
+    [self markAsRead];
     
     LP_TRY
     [[self context] runTrackedActionNamed:LP_VALUE_DEFAULT_PUSH_ACTION];
