@@ -9,7 +9,6 @@
 #import "LPPushNotificationsHandler.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
-#import "LeanplumRequest.h"
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsManager.h"
@@ -103,9 +102,9 @@
         [[LPPushNotificationsManager sharedManager] updatePushToken:formattedToken];
         
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
+                                        init];
         
-        id<LPRequesting> request = [reqFactory
+        LPRequest *request = [reqFactory
                                     setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
         [[LPRequestSender sharedInstance] send:request];
     }
@@ -159,8 +158,8 @@
         [Leanplum onStartResponse:^(BOOL success) {
             LP_END_USER_CODE
             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory setDeviceAttributesWithParams:params];
+                                            init];
+            LPRequest *request = [reqFactory setDeviceAttributesWithParams:params];
             [[LPRequestSender sharedInstance] send:request];
             LP_BEGIN_USER_CODE
         }];
@@ -318,12 +317,11 @@
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            id<LPRequesting> request = [LeanplumRequest
-                                    post:LP_METHOD_GET_VARS
-                                    params:@{
-                                             LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-                                             LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                             }];
+            LPRequestFactory *requestFactory = [[LPRequestFactory alloc] init];
+            LPRequest *request = [requestFactory getVarsWithParams:@{
+                                                                     LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                                                     LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                                                                    }];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];

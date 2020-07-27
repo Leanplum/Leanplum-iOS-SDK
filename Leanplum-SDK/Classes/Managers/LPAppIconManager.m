@@ -65,8 +65,8 @@
                                            iconName:key];
     }];
     LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory uploadFileWithParams:@{@"data":
+                                    init];
+    LPRequest *request = [reqFactory uploadFileWithParams:@{@"data":
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         LPLog(LPVerbose, @"App icons uploaded.");

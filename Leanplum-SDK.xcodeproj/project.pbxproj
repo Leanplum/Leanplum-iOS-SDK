@@ -119,6 +119,7 @@
 		9E53F71C247D34C80097955F /* LPNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F70D247D34C80097955F /* LPNotificationsManager.m */; };
 		9E53F71D247D34C80097955F /* LPNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F70D247D34C80097955F /* LPNotificationsManager.m */; };
 		9E53F71E247D34C80097955F /* LPNotificationsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E53F70E247D34C80097955F /* LPNotificationsConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9EE5FF9F24CEC57300153AF8 /* LPNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */; };
 		A0997BC1F68082938784DE20 /* NSTimer+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = 69CD8EF6F74200A4C9A7EC2C /* NSTimer+Blocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A110EDF01425A4789CC5FC1A /* LPEventDataManager.h in Headers */ = {isa = PBXBuildFile; fileRef = C135ED022E215F3C08278A5F /* LPEventDataManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A456BBE6B7B8BBDCE6E015A7 /* LPAppRatingMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = D54CB698E3D746A326FA3CA8 /* LPAppRatingMessageTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -284,6 +285,7 @@
 		9E53F70D247D34C80097955F /* LPNotificationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNotificationsManager.m; sourceTree = "<group>"; };
 		9E53F70E247D34C80097955F /* LPNotificationsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPNotificationsConstants.h; sourceTree = "<group>"; };
 		9E9DB3E0D7DB2F1091343C0C /* LPActionArg.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPActionArg.m; sourceTree = "<group>"; };
+		9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPNetworkConstants.h; sourceTree = "<group>"; };
 		A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPActionContext-Internal.h"; sourceTree = "<group>"; };
 		A0F9F2FC5CCC4CB57626B434 /* LPNetworkEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNetworkEngine.m; sourceTree = "<group>"; };
 		A34F75D8A2B33CC1F9646411 /* LPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPViewController.h; sourceTree = "<group>"; };
@@ -623,6 +625,7 @@
 				23AE73CB1BC80918AEE2FDBB /* LPRequestSender.m */,
 				E0FA8ED9EA9E69B401D4F519 /* LPResponse.h */,
 				030EF3A9DB711E2B21577DDE /* LPResponse.m */,
+				9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -868,6 +871,7 @@
 				9E53F718247D34C80097955F /* LPPushNotificationsHandler.h in Headers */,
 				9E53F70F247D34C80097955F /* LPNotificationsManager.h in Headers */,
 				9E53F71B247D34C80097955F /* LPPushNotificationsManager.h in Headers */,
+				9EE5FF9F24CEC57300153AF8 /* LPNetworkConstants.h in Headers */,
 				236B1A492A40608B65F7F1D6 /* Leanplum_Reachability.h in Headers */,
 				C722BB509AEC55EC813B93BF /* Leanplum_SocketIO.h in Headers */,
 				697DB798E738EEF4B845BFD4 /* Leanplum_WebSocket.h in Headers */,

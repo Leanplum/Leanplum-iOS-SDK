@@ -26,7 +26,6 @@
 #import "LeanplumInternal.h"
 #import "LPCountAggregator.h"
 #import "LPRequest.h"
-#import "LeanplumRequest.h"
 #import "LPResponse.h"
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
@@ -34,12 +33,7 @@
 #import "LPAPIConfig.h"
 #import "LPUtils.h"
 #import "LPOperationQueue.h"
-
-@interface LeanplumRequest(LPRequestSender)
-
-- (void)sendNow:(BOOL)async;
-
-@end
+#import "LPNetworkConstants.h"
 
 @interface LPRequestSender()
 
@@ -82,149 +76,124 @@
     return self;
 }
 
-- (void)send:(id<LPRequesting>)request
+- (void)send:(LPRequest *)request
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest send];
-    } else {
-        [self sendEventually:request sync:NO];
-        if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-            NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
-            NSTimeInterval delay;
-            if (!self.lastSentTime || currentTime - self.lastSentTime > LP_REQUEST_DEVELOPMENT_MAX_DELAY) {
-                delay = LP_REQUEST_DEVELOPMENT_MIN_DELAY;
-            } else {
-                delay = (self.lastSentTime + LP_REQUEST_DEVELOPMENT_MAX_DELAY) - currentTime;
-            }
-            [self performSelector:@selector(sendIfConnected:) withObject:request afterDelay:delay];
+
+    [self sendEventually:request sync:NO];
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        NSTimeInterval currentTime = [NSDate timeIntervalSinceReferenceDate];
+        NSTimeInterval delay;
+        if (!self.lastSentTime || currentTime - self.lastSentTime > LP_REQUEST_DEVELOPMENT_MAX_DELAY) {
+            delay = LP_REQUEST_DEVELOPMENT_MIN_DELAY;
+        } else {
+            delay = (self.lastSentTime + LP_REQUEST_DEVELOPMENT_MAX_DELAY) - currentTime;
         }
+        [self performSelector:@selector(sendIfConnected:) withObject:request afterDelay:delay];
     }
     [self.countAggregator incrementCount:@"send_request_lp"];
 }
 
-- (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync
+- (void)sendNow:(LPRequest *)request sync:(BOOL)sync
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendNow];
-    } else {
-        RETURN_IF_TEST_MODE;
+    RETURN_IF_TEST_MODE;
 
-        if (![LPAPIConfig sharedConfig].appId) {
-            NSLog(@"Leanplum: Cannot send request. appId is not set");
-            return;
-        }
-        if (![LPAPIConfig sharedConfig].accessKey) {
-            NSLog(@"Leanplum: Cannot send request. accessKey is not set");
-            return;
-        }
-
-        [self sendEventually:request sync:sync];
-        [self sendRequests:sync];
+    if (![LPAPIConfig sharedConfig].appId) {
+        NSLog(@"Leanplum: Cannot send request. appId is not set");
+        return;
     }
+    if (![LPAPIConfig sharedConfig].accessKey) {
+        NSLog(@"Leanplum: Cannot send request. accessKey is not set");
+        return;
+    }
+
+    [self sendEventually:request sync:sync];
+    [self sendRequests:sync];
+    
     [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
-- (void)sendEventually:(id<LPRequesting>)request sync:(BOOL)sync
+- (void)sendEventually:(LPRequest *)request sync:(BOOL)sync
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendEventually:sync];
-    } else {
-        RETURN_IF_TEST_MODE;
-        if (!request.sent) {
-            request.sent = YES;
+    RETURN_IF_TEST_MODE;
+    if (!request.sent) {
+        request.sent = YES;
 
-            void (^operationBlock)(void) = ^void() {
-                LP_TRY
-                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
-                NSInteger count = [LPEventDataManager count];
-                if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
-                    uuid = [self generateUUID];
-                }
-
-                NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
-                args[LP_PARAM_UUID] = uuid;
-                [LPEventDataManager addEvent:args];
-
-                [LPEventCallbackManager addEventCallbackAt:count
-                                                 onSuccess:request.responseBlock
-                                                   onError:request.errorBlock];
-                LP_END_TRY
-            };
-
-            if (sync) {
-                operationBlock();
-            } else {
-                [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
+        void (^operationBlock)(void) = ^void() {
+            LP_TRY
+            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+            NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+            NSInteger count = [LPEventDataManager count];
+            if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
+                uuid = [self generateUUID];
             }
+
+            NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
+            args[LP_PARAM_UUID] = uuid;
+            [LPEventDataManager addEvent:args];
+
+            [LPEventCallbackManager addEventCallbackAt:count
+                                             onSuccess:request.responseBlock
+                                               onError:request.errorBlock];
+            LP_END_TRY
+        };
+
+        if (sync) {
+            operationBlock();
+        } else {
+            [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
         }
     }
+    
     [self.countAggregator incrementCount:@"send_eventually_lp"];
 }
 
-- (void)sendIfConnected:(id<LPRequesting>)request
+- (void)sendIfConnected:(LPRequest *)request
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendIfConnected];
-    } else {
-        LP_TRY
-        [self sendIfConnected:request sync:NO];
-        LP_END_TRY
-    }
+    LP_TRY
+    [self sendIfConnected:request sync:NO];
+    LP_END_TRY
+    
     [self.countAggregator incrementCount:@"send_if_connected_lp"];
 }
 
-- (void)sendIfConnected:(id<LPRequesting>)request sync:(BOOL)sync
+- (void)sendIfConnected:(LPRequest *)request sync:(BOOL)sync
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendIfConnectedSync:sync];
-    } else {
-        if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
-            if (sync) {
-                [self sendNowSync:request];
-            } else {
-                [self sendNow:request];
-            }
+    if ([[Leanplum_Reachability reachabilityForInternetConnection] isReachable]) {
+        if (sync) {
+            [self sendNowSync:request];
         } else {
-            [self sendEventually:request sync:sync];
-            if (request.errorBlock) {
-                request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
-                                                   userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
-            }
+            [self sendNow:request];
+        }
+    } else {
+        [self sendEventually:request sync:sync];
+        if (request.errorBlock) {
+            request.errorBlock([NSError errorWithDomain:@"Leanplum" code:1
+                                               userInfo:@{NSLocalizedDescriptionKey: @"Device is offline"}]);
         }
     }
+    
     [self.countAggregator incrementCount:@"send_if_connected_sync_lp"];
 }
 
-- (void)sendNow:(id<LPRequesting>)request
+- (void)sendNow:(LPRequest *)request
 {
     [self sendNow:request sync:NO];
 }
 
-- (void)sendNowSync:(id<LPRequesting>)request
+- (void)sendNowSync:(LPRequest *)request
 {
     [self sendNow:request sync:YES];
 }
 
 // Wait 1 second for potential other API calls, and then sends the call synchronously
 // if no other call has been sent within 1 minute.
-- (void)sendIfDelayed:(id<LPRequesting>)request
+- (void)sendIfDelayed:(LPRequest *)request
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendIfDelayed];
-    } else {
-        [self sendEventually:request sync:NO];
-        [self performSelector:@selector(sendIfDelayedHelper:)
-                   withObject:request
-                   afterDelay:LP_REQUEST_RESUME_DELAY];
+    [self sendEventually:request sync:NO];
+    [self performSelector:@selector(sendIfDelayedHelper:)
+               withObject:request
+               afterDelay:LP_REQUEST_RESUME_DELAY];
 
-    }
 }
 
 // Sends the call synchronously if no other call has been sent within 1 minute.
@@ -242,50 +211,41 @@
     LP_END_TRY
 }
 
-- (void)sendNow:(id<LPRequesting>)request withData:(NSData *)data forKey:(NSString *)key
+- (void)sendNow:(LPRequest *)request withData:(NSData *)data forKey:(NSString *)key
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendDataNow:data forKey:key];
-    } else {
-        [self sendNow:request withDatas:@{key: data}];
-    }
+    [self sendNow:request withDatas:@{key: data}];
     
     [self.countAggregator incrementCount:@"send_now_with_data_lp"];
 }
 
-- (void)sendNow:(id<LPRequesting>)request withDatas:(NSDictionary *)datas
+- (void)sendNow:(LPRequest *)request withDatas:(NSDictionary *)datas
 {
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldLeanplumRequest = request;
-        [oldLeanplumRequest sendDatasNow:datas];
-    } else {
-        NSMutableDictionary *dict = [self createArgsDictionaryForRequest:request];
-        [self attachApiKeys:dict];
-        id<LPNetworkOperationProtocol> op =
-        [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
-                                params:dict
-                            httpMethod:@"POST"
-                                   ssl:[LPConstantsState sharedState].apiSSL
-                        timeoutSeconds:60];
+    NSMutableDictionary *dict = [self createArgsDictionaryForRequest:request];
+    [self attachApiKeys:dict];
+    id<LPNetworkOperationProtocol> op =
+    [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+                            params:dict
+                        httpMethod:@"POST"
+                               ssl:[LPConstantsState sharedState].apiSSL
+                    timeoutSeconds:60];
 
-        [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-            [op addData:obj forKey:key];
-        }];
+    [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        [op addData:obj forKey:key];
+    }];
 
-        [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-            if (request.responseBlock != nil) {
-                request.responseBlock(operation, json);
-            }
-        } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-            LP_TRY
-            if (request.errorBlock != nil) {
-                request.errorBlock(err);
-            }
-            LP_END_TRY
-        }];
-        [self.engine enqueueOperation: op];
-    }
+    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+        if (request.responseBlock != nil) {
+            request.responseBlock(operation, json);
+        }
+    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
+        LP_TRY
+        if (request.errorBlock != nil) {
+            request.errorBlock(err);
+        }
+        LP_END_TRY
+    }];
+    [self.engine enqueueOperation: op];
+    
     [self.countAggregator incrementCount:@"send_now_with_datas_lp"];
 }
 
@@ -355,7 +315,7 @@
                                                    LP_PARAM_DATA: requestData,
                                                    LP_PARAM_SDK_VERSION: constants.sdkVersion,
                                                    LP_PARAM_CLIENT: constants.client,
-                                                   LP_PARAM_ACTION: LP_METHOD_MULTI,
+                                                   LP_PARAM_ACTION: LP_API_METHOD_MULTI,
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
         [self attachApiKeys:multiRequestArgs];
