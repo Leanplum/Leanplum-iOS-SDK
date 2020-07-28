@@ -22,7 +22,7 @@
 
 @property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
 
-- (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync;
+- (void)sendNow:(LPRequest *)request sync:(BOOL)sync;
 - (void)sendRequests:(BOOL)sync;
 
 @end

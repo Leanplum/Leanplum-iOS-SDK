@@ -2,7 +2,8 @@
 //  LPNetworkConstants.h
 //  LeanplumSDK-iOS
 //
-//  Created by Dejan Krstevski on 27.07.20.
+//  Created by Dejan Krstevski
+//  Copyright © 2020 Leanplum. All rights reserved.
 //
 
 #ifndef LPNetworkConstants_h

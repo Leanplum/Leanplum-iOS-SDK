@@ -25,6 +25,8 @@
 
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
+#import <Leanplum/LPRequestFactory.h>
+#import <Leanplum/LPPushNotificationsHandler.h>
 
 @interface Leanplum(UnitTest)
 
@@ -54,5 +56,14 @@
                                  messageId:(NSString *)messageId;
 
 -(NSString *)htmlStringContentsOfFile:(NSString *)file;
+
+@end
+
+@interface LPRequestFactory(UnitTest)
+
+@property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
+
+- (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
+- (nullable LPRequest *)createPostForApiMethod:(nonnull NSString *)apiMethod params:(nullable NSDictionary *)params;
 
 @end

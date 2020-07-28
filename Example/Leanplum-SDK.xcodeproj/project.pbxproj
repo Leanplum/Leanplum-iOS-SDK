@@ -15,7 +15,7 @@
 		07E5C8AD1F052B7800A4B092 /* LPEventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86D1F052B7800A4B092 /* LPEventDataManagerTest.m */; };
 		07E5C8AE1F052B7800A4B092 /* ExceptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C86E1F052B7800A4B092 /* ExceptionsTest.m */; };
 		07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */; };
-		07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */; };
+		07E5C8B01F052B7800A4B092 /* LPRequestSender+Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8741F052B7800A4B092 /* LPRequestSender+Categories.m */; };
 		07E5C8B11F052B7800A4B092 /* LPNetworkEngine+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */; };
 		07E5C8B21F052B7800A4B092 /* LPNetworkOperation+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C8791F052B7800A4B092 /* LPNetworkOperation+Category.m */; };
 		07E5C8B31F052B7800A4B092 /* LPFileManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E5C87B1F052B7800A4B092 /* LPFileManagerTest.m */; };
@@ -112,7 +112,6 @@
 		A86C8D04240844C7003F5E4E /* LPCenterPopupMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CFC240844C7003F5E4E /* LPCenterPopupMessageSnapshotTest.m */; };
 		A86C8D06240844C7003F5E4E /* LPInterstitialMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CFD240844C7003F5E4E /* LPInterstitialMessageSnapshotTest.m */; };
 		A86C8D08240844C7003F5E4E /* LPAlertMessageSnapshotTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A86C8CFE240844C7003F5E4E /* LPAlertMessageSnapshotTest.m */; };
-		A8CB8A36227276A400E1001D /* LeanplumRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */; };
 		A8EEA1AB20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */; };
 		A8F4479E2449769000F6978A /* LPNetworkOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = A8F4479D2449769000F6978A /* LPNetworkOperationTest.m */; };
@@ -143,8 +142,8 @@
 		07E5C8701F052B7800A4B092 /* Leanplum+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Leanplum+Extensions.h"; sourceTree = "<group>"; };
 		07E5C8711F052B7800A4B092 /* LeanplumReachability+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumReachability+Category.h"; sourceTree = "<group>"; };
 		07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumReachability+Category.m"; sourceTree = "<group>"; };
-		07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumRequest+Categories.h"; sourceTree = "<group>"; };
-		07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumRequest+Categories.m"; sourceTree = "<group>"; };
+		07E5C8731F052B7800A4B092 /* LPRequestSender+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPRequestSender+Categories.h"; sourceTree = "<group>"; };
+		07E5C8741F052B7800A4B092 /* LPRequestSender+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPRequestSender+Categories.m"; sourceTree = "<group>"; };
 		07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkEngine+Category.h"; sourceTree = "<group>"; };
 		07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkEngine+Category.m"; sourceTree = "<group>"; };
 		07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkOperation+Category.h"; sourceTree = "<group>"; };
@@ -231,7 +230,6 @@
 		A86C8CFC240844C7003F5E4E /* LPCenterPopupMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCenterPopupMessageSnapshotTest.m; sourceTree = "<group>"; };
 		A86C8CFD240844C7003F5E4E /* LPInterstitialMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInterstitialMessageSnapshotTest.m; sourceTree = "<group>"; };
 		A86C8CFE240844C7003F5E4E /* LPAlertMessageSnapshotTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAlertMessageSnapshotTest.m; sourceTree = "<group>"; };
-		A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LeanplumRequestTest.m; sourceTree = "<group>"; };
 		A8EEA1AA20E44B0A00FF9A4D /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
 		A8F4479D2449769000F6978A /* LPNetworkOperationTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNetworkOperationTest.m; sourceTree = "<group>"; };
 		B449EB2921F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDifferentDelay.json; sourceTree = "<group>"; };
@@ -294,7 +292,6 @@
 				65E53E962148786C00A05040 /* LPCountAggregatorTest.m */,
 				653192A021517D4F00D7DDDC /* LPFeatureFlagManagerTest.m */,
 				07E5C87B1F052B7800A4B092 /* LPFileManagerTest.m */,
-				A8CB8A35227276A400E1001D /* LeanplumRequestTest.m */,
 				07E5C87E1F052B7800A4B092 /* LeanplumTest.m */,
 				07E5C87F1F052B7800A4B092 /* LPJSONTest.m */,
 				07E5C8801F052B7800A4B092 /* MessagesTest.m */,
@@ -315,8 +312,8 @@
 				07E5C8701F052B7800A4B092 /* Leanplum+Extensions.h */,
 				07E5C8711F052B7800A4B092 /* LeanplumReachability+Category.h */,
 				07E5C8721F052B7800A4B092 /* LeanplumReachability+Category.m */,
-				07E5C8731F052B7800A4B092 /* LeanplumRequest+Categories.h */,
-				07E5C8741F052B7800A4B092 /* LeanplumRequest+Categories.m */,
+				07E5C8731F052B7800A4B092 /* LPRequestSender+Categories.h */,
+				07E5C8741F052B7800A4B092 /* LPRequestSender+Categories.m */,
 				07E5C8761F052B7800A4B092 /* LPNetworkEngine+Category.h */,
 				07E5C8771F052B7800A4B092 /* LPNetworkEngine+Category.m */,
 				07E5C8781F052B7800A4B092 /* LPNetworkOperation+Category.h */,
@@ -810,7 +807,6 @@
 				A86C8D06240844C7003F5E4E /* LPInterstitialMessageSnapshotTest.m in Sources */,
 				65D4AB49224CA963009BA5F3 /* LPActionContextTest.m in Sources */,
 				07E5C8B31F052B7800A4B092 /* LPFileManagerTest.m in Sources */,
-				A8CB8A36227276A400E1001D /* LeanplumRequestTest.m in Sources */,
 				A86C8D08240844C7003F5E4E /* LPAlertMessageSnapshotTest.m in Sources */,
 				07E5C8B81F052B7800A4B092 /* MessagesTest.m in Sources */,
 				A86C8D00240844C7003F5E4E /* LPPushAskToAskMessageSnapshotTest.m in Sources */,
@@ -842,7 +838,7 @@
 				07E5C8AF1F052B7800A4B092 /* LeanplumReachability+Category.m in Sources */,
 				9CB691E11F1601BA002D83D8 /* LPEventCallbackManagerTest.m in Sources */,
 				07E5C8BE1F052B7800A4B092 /* LPUtilsTest.m in Sources */,
-				07E5C8B01F052B7800A4B092 /* LeanplumRequest+Categories.m in Sources */,
+				07E5C8B01F052B7800A4B092 /* LPRequestSender+Categories.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

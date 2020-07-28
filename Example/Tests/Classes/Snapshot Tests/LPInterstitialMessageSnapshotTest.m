@@ -9,8 +9,8 @@
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
 #import <OCMock.h>
-#import "LPInterstitialMessageTemplate.h"
 #import "Leanplum+Extensions.h"
+#import "LPInterstitialMessageTemplate.h"
 #import "LeanplumHelper.h"
 
 @interface LPInterstitialMessageSnapshotTest : FBSnapshotTestCase

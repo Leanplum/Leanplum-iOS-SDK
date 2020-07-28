@@ -1,5 +1,5 @@
 //
-//  LeanplumRequest+Extensions.h
+//  LPRequestSender+Extensions.h
 //  Leanplum-SDK
 //
 //  Created by Milos Jakovljevic on 10/17/16.
@@ -23,9 +23,9 @@
 //  under the License.
 
 
-#import "LeanplumRequest.h"
+#import "LPRequestSender.h"
 
-@interface LeanplumRequest(MethodSwizzling)
+@interface LPRequestSender(MethodSwizzling)
 
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *))callback;
 + (void)validate_onResponse:(LPNetworkResponseBlock)response;
