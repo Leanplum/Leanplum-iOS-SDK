@@ -30,6 +30,7 @@
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequest+Extension.h"
 #import "LPRequestSender+Categories.h"
 #import "LeanplumReachability+Category.h"
 #import "LPActionManager.h"
@@ -945,7 +946,7 @@
     }];
     NSString *messageIdOne = @"4982955628167168";
     NSString *messageIdSecond = @"5571264209354752";
-    [LPRequestSender validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         NSDictionary *outputDict = json[@"messages"];
         XCTAssertNotNil(outputDict);
         XCTAssertEqual([[outputDict allKeys] count], 2, @"Wrong array size.");
@@ -2228,7 +2229,7 @@
 
     XCTAssertTrue([[LPVarCache sharedCache] variants].count == 0);
 
-    [LPRequestSender validate_onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary* json) {
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary* json) {
         // Check if response contains variants.
         XCTAssertNotNil(json[@"variants"]);
     }];

@@ -29,6 +29,8 @@
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import <OCMock/OCMock.h>
 #import "Leanplum+Extensions.h"
+#import "LPRequestFactory+Extension.h"
+#import "LPRequest+Extension.h"
 #import "LeanplumHelper.h"
 #import "LPRequestSender+Categories.h"
 #import "LPVarCache+Extensions.h"
@@ -65,6 +67,8 @@ static BOOL swizzled = NO;
 
 + (void)setup_method_swizzling {
     if (!swizzled) {
+        [LPRequestFactory swizzle_methods];
+        [LPRequest swizzle_methods];
         [LPRequestSender swizzle_methods];
         [Leanplum_Reachability swizzle_methods];
         [LPNetworkOperation swizzle_methods];

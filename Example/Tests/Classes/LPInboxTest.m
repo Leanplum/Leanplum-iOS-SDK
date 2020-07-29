@@ -28,9 +28,11 @@
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import <OCMock/OCMock.h>
 #import "LeanplumHelper.h"
+#import "Leanplum+Extensions.h"
+#import "LPRequestFactory+Extension.h"
+#import "LPRequest+Extension.h"
 #import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
-#import "Leanplum+Extensions.h"
 #import "LPFileManager.h"
 #import "LPActionManager.h"
 #import "LPInbox.h"
@@ -200,7 +202,7 @@
 
     // Check image has been downloaded after getNewsfeedMessages.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LPRequestSender validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"downloadFile"]) {
@@ -250,7 +252,7 @@
     // Check disableImagePrefetching by utilizing the fact that
     // downloadFile will be called before onChanged.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LPRequestSender validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"DidNotDownload"]) {
@@ -388,6 +390,8 @@
         dispatch_semaphore_signal(semaphor);
     }];
     
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    
     LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
     id mock = OCMPartialMock(msg.context);
     
@@ -406,6 +410,8 @@
         // Wait for callback
         dispatch_semaphore_signal(semaphor);
     }];
+    
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     
     LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
     id mock = OCMPartialMock(msg.context);

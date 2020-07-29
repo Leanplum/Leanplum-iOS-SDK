@@ -27,8 +27,12 @@
 
 @interface LPRequestSender(MethodSwizzling)
 
+@property (assign) BOOL (^requestCallback)(NSString *method, NSString *apiMethod, NSDictionary *params);
+
+- (void)setRequestCallback:(BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback;
+- (BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback;
+
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *))callback;
-+ (void)validate_onResponse:(LPNetworkResponseBlock)response;
 + (void)swizzle_methods;
 + (void)reset;
 

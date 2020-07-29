@@ -25,33 +25,30 @@
 
 #import "LPRequestSender+Categories.h"
 #import "LPSwizzle.h"
+#import <objc/runtime.h>
 
 @implementation LPRequestSender(MethodSwizzling)
+@dynamic requestCallback;
 
-static BOOL (^requestCallback)(NSString *method, NSString *apiMethod, NSDictionary *params);
-static LPNetworkResponseBlock responseCallback;
+- (void)setRequestCallback:(BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback
+{
+    objc_setAssociatedObject(self, @selector(requestCallback), requestCallback, OBJC_ASSOCIATION_COPY);
+}
+
+- (BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
 
 + (void)swizzle_methods
 {
     NSError *error;
-    bool success = [LPSwizzle swizzleMethod:@selector(sendNow)
-                                 withMethod:@selector(swizzle_sendNow)
+    bool success = [LPSwizzle swizzleMethod:@selector(sendNow:)
+                                 withMethod:@selector(swizzle_sendNow:)
                                       error:&error
                                       class:[LPRequestSender class]];
-    success &= [LPSwizzle swizzleMethod:@selector(sendEventually:)
-                             withMethod:@selector(swizzle_sendEventually:)
-                                  error:&error
-                                  class:[LPRequestSender class]];
-    success &= [LPSwizzle swizzleClassMethod:@selector(get:params:)
-                             withClassMethod:@selector(swizzle_get:params:)
-                                       error:&error
-                                       class:[LPRequestSender class]];
-    success &= [LPSwizzle swizzleClassMethod:@selector(post:params:)
-                             withClassMethod:@selector(swizzle_post:params:)
-                                       error:&error
-                                       class:[LPRequestSender class]];
-    success &= [LPSwizzle swizzleMethod:@selector(onResponse:)
-                             withMethod:@selector(swizzle_onResponse:)
+    success &= [LPSwizzle swizzleMethod:@selector(sendEventually:sync:)
+                             withMethod:@selector(swizzle_sendEventually:sync:)
                                   error:&error
                                   class:[LPRequestSender class]];
     if (!success || error) {
@@ -59,17 +56,14 @@ static LPNetworkResponseBlock responseCallback;
     }
 }
 
-- (void)swizzle_sendNow
+- (void)swizzle_sendNow:(LPRequest *)request
 {
-    SEL selector = NSSelectorFromString(@"sendNowSync");
-    IMP imp = [self methodForSelector:selector];
-    void (*func) (id, SEL) = (void*)imp;
-    func(self, selector);
+    [self swizzle_sendNow:request];
 }
 
-- (void)swizzle_sendEventually:(BOOL) sync
+- (void)swizzle_sendEventually:(LPRequest *)request sync:(BOOL)sync
 {
-    [self swizzle_sendEventually:YES];
+    [self swizzle_sendEventually:request sync:sync];
 }
 
 - (void)swizzle_download
@@ -77,54 +71,13 @@ static LPNetworkResponseBlock responseCallback;
 
 }
 
-- (void)swizzle_onResponse:(LPNetworkResponseBlock) response_
-{
-    [self swizzle_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        if (responseCallback) {
-            responseCallback(operation, json);
-            responseCallback = nil;
-        }
-        response_(operation, json);
-    }];
-}
-
-+ (LPRequest *)swizzle_get:(NSString *) apiMethod_ params:(NSDictionary *) params_
-{
-    if (requestCallback != nil)
-    {
-        BOOL success = requestCallback(@"get", apiMethod_, params_);
-        if (success) {
-            requestCallback = nil;
-        }
-    }
-    return [self swizzle_get:apiMethod_ params:params_];
-}
-
-+ (LPRequestSender *)swizzle_post:(NSString *) apiMethod_ params:(NSDictionary *) params_
-{
-    if (requestCallback != nil)
-    {
-        BOOL success = requestCallback(@"post", apiMethod_, params_);
-        if (success) {
-            requestCallback = nil;
-        }
-    }
-    return [self swizzle_post:apiMethod_ params:params_];
-}
-
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *)) callback
 {
-    requestCallback = callback;
-}
-
-+ (void)validate_onResponse:(LPNetworkResponseBlock)callback
-{
-    responseCallback = callback;
+    [LPRequestSender sharedInstance].requestCallback = callback;
 }
 
 + (void)reset {
-    requestCallback = nil;
-    responseCallback = nil;
+    [LPRequestSender sharedInstance].requestCallback = nil;
 }
 
 @end

@@ -86,7 +86,7 @@
                                             NSDictionary *params) {
         XCTAssertTrue(NO);
         return YES;
-    }];//TOODO:Dejan
+    }];
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
 
     // Test push token is sent if the token changes.
