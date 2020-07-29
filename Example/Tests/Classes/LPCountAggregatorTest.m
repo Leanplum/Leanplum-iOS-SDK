@@ -144,7 +144,10 @@
     [countAggregator sendAllCounts];
 
     id lpRequestMockVerified = [[lpRequestMock verify] ignoringNonObjectArgs];
-    [[LPRequestSender sharedInstance] sendEventually:lpRequestMockVerified sync:[OCMArg any]];
+    
+    id lpRequestSenderMock = OCMClassMock([LPRequestSender class]);
+    OCMStub([lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]]);
+    [lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]];
 }
 
 @end
