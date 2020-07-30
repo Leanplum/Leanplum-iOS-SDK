@@ -130,9 +130,6 @@
             NSMutableDictionary *args = [self createArgsDictionaryForRequest:request];
             args[LP_PARAM_UUID] = uuid;
             
-            // remove keys that are empty
-            [args removeObjectForKey:@""];
-            
             [LPEventDataManager addEvent:args];
 
             [LPEventCallbackManager addEventCallbackAt:count
@@ -286,6 +283,10 @@
         args[LP_PARAM_TOKEN] = [LPAPIConfig sharedConfig].token;
     }
     [args addEntriesFromDictionary:request.params];
+    
+    // remove keys that are empty
+    [args removeObjectForKey:@""];
+    
     return args;
 }
 
