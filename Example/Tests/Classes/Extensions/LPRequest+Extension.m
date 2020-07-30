@@ -39,4 +39,10 @@ static LPNetworkResponseBlock responseCallback;
 {
     responseCallback = callback;
 }
+
++ (void)reset
+{
+    responseCallback = nil;
+}
+
 @end

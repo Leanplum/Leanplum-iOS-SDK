@@ -635,40 +635,48 @@
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
-
+    
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
     XCTestExpectation *request_expectation =
         [self expectationWithDescription:@"request_expectation"];
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
-                                        NSDictionary *params) {
-        // Check api method first.
-        if (![apiMethod isEqual:@"start"]) {
-            return NO;
-        }
-        XCTAssertEqualObjects(apiMethod, @"start");
+                                                NSDictionary *params) {
+                // Check api method first.
+                if (![apiMethod isEqual:@"start"]) {
+                    return NO;
+                }
+                XCTAssertEqualObjects(apiMethod, @"start");
 
-        // Check if request has all params.
-        XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
-        XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
-        XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
-        XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
-        NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
-                      [deviceModel isEqualToString:@"iPhone Simulator"]);
-        XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
-        XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
-        XCTAssertNotNil(params[@"locale"]);
-        XCTAssertNotNil(params[@"timezone"]);
-        XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
-        XCTAssertNotNil(params[@"userAttributes"]);
+                // Check if request has all params.
+                XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
+                XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
+                XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
+                XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
+                NSString* deviceModel = params[@"deviceModel"];
+                XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                              [deviceModel isEqualToString:@"iPhone Simulator"]);
+                XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
+                XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
+                XCTAssertNotNil(params[@"locale"]);
+                XCTAssertNotNil(params[@"timezone"]);
+                XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
+                XCTAssertNotNil(params[@"userAttributes"]);
 
-        [request_expectation fulfill];
-        return YES;
-    }];
+                [request_expectation fulfill];
+                return YES;
+            }];
 
     NSString *userId = @"test_user";
-
     [LeanplumHelper setup_development_test];
     [Leanplum startWithUserId:userId];
+    
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+    
     XCTAssertEqual(userId, [Leanplum userId]);
     [self waitForExpectationsWithTimeout:2 handler:nil];
 

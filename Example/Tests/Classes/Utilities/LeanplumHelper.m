@@ -139,6 +139,7 @@ static BOOL swizzled = NO;
     [[LPAPIConfig sharedConfig] setDeviceId:nil];
     [[LPAPIConfig sharedConfig] setUserId:nil];
     [[LPAPIConfig sharedConfig] setToken:nil];
+    [LPRequest reset];
     [LPRequestSender reset];
     [LeanplumHelper reset_user_defaults];
     [[LPOperationQueue serialQueue] cancelAllOperations];
