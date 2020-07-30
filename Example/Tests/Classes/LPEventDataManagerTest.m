@@ -142,8 +142,7 @@
     // Determine whether the requests are sent in order using the timestamp.
     NSDate *date = [NSDate date];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    LPRequestFactory *requestFactory = [[LPRequestFactory alloc] init];
-    LPRequest *request = [requestFactory createPostForApiMethod:@"test1" params:nil];
+    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"test1" params:nil];
     [[LPRequestSender sharedInstance] sendNow:request];
     [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
         // Make sure the call is for test2.
@@ -158,7 +157,7 @@
         return YES;
     }];
     [NSThread sleepForTimeInterval:0.1];
-    LPRequest *request2 = [requestFactory createPostForApiMethod:@"test2" params:nil];
+    LPRequest *request2 = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
     [[LPRequestSender sharedInstance] sendNow:request2];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
@@ -188,8 +187,7 @@
     NSArray *events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 0);
     
-    LPRequestFactory *requestFactory = [[LPRequestFactory alloc] init];
-    LPRequest *request = [requestFactory createPostForApiMethod:@"sample3" params:nil];
+    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"sample3" params:nil];
     [[LPRequestSender sharedInstance] sendNow:request];
     [NSThread sleepForTimeInterval:0.2];
     events = [LPEventDataManager eventsWithLimit:10000];
@@ -219,8 +217,7 @@
     // UUID should be the same.
     [Leanplum track:@"sample"];
     [Leanplum track:@"sample2"];
-    LPRequestFactory *requestFactory = [[LPRequestFactory alloc] init];
-    LPRequest *request = [requestFactory createPostForApiMethod:@"sample3" params:nil];
+    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"sample3" params:nil];
     [[LPRequestSender sharedInstance] sendNow:request];
 
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
@@ -253,7 +250,7 @@
                                              headers:@{@"Content-Type":@"application/json"}];
     }];
     
-    LPRequest *request2 = [requestFactory createPostForApiMethod:@"sample4" params:nil];
+    LPRequest *request2 = [LPRequestFactory createPostForApiMethod:@"sample4" params:nil];
     [[LPRequestSender sharedInstance] sendNow:request2];
     [NSThread sleepForTimeInterval:0.1];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
@@ -280,7 +277,7 @@
         dispatch_semaphore_signal(semaphore);
         return YES;
     }];
-    LPRequest *request3 = [requestFactory createPostForApiMethod:@"test2" params:nil];
+    LPRequest *request3 = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
     [[LPRequestSender sharedInstance] sendNow:request3];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
@@ -323,8 +320,7 @@
     // Queue up the events and test if the callback is in the correct index.
     XCTestExpectation *responseExpectation =
     [self expectationWithDescription:@"responseExpectation"];
-    LPRequestFactory *requestFactory = [[LPRequestFactory alloc] init];
-    LPRequest *request = [requestFactory createPostForApiMethod:@"test2" params:nil];
+    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         // Make sure the response is the first one.
         XCTAssertTrue([json[@"index"] intValue] == 1);

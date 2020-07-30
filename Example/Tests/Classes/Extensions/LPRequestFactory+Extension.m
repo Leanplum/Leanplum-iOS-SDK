@@ -14,12 +14,12 @@
 + (void)swizzle_methods
 {
     NSError *error;
-    bool success = [LPSwizzle swizzleMethod:@selector(createGetForApiMethod:params:)
-                             withMethod:@selector(swizzle_createGetForApiMethod:params:)
+    bool success = [LPSwizzle swizzleClassMethod:@selector(createGetForApiMethod:params:)
+                    withClassMethod:@selector(swizzle_createGetForApiMethod:params:)
                                        error:&error
                                        class:[LPRequestFactory class]];
-    success &= [LPSwizzle swizzleMethod:@selector(createPostForApiMethod:params:)
-                             withMethod:@selector(swizzle_createPostForApiMethod:params:)
+    success &= [LPSwizzle swizzleClassMethod:@selector(createPostForApiMethod:params:)
+                             withClassMethod:@selector(swizzle_createPostForApiMethod:params:)
                                        error:&error
                                        class:[LPRequestFactory class]];
     if (!success || error) {
@@ -27,7 +27,7 @@
     }
 }
 
-- (LPRequest *)swizzle_createGetForApiMethod:(NSString *) apiMethod_ params:(NSDictionary *) params_
++ (LPRequest *)swizzle_createGetForApiMethod:(NSString *) apiMethod_ params:(NSDictionary *) params_
 {
     if ([LPRequestSender sharedInstance].requestCallback != nil)
     {
@@ -39,7 +39,7 @@
     return [self swizzle_createGetForApiMethod:apiMethod_ params:params_];
 }
 
-- (LPRequest *)swizzle_createPostForApiMethod:(NSString *) apiMethod_ params:(NSDictionary *) params_
++ (LPRequest *)swizzle_createPostForApiMethod:(NSString *) apiMethod_ params:(NSDictionary *) params_
 {
     if ([LPRequestSender sharedInstance].requestCallback != nil)
     {

@@ -56,9 +56,7 @@
 
 - (void)registerDevice:(NSString *)email
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    init];
-    LPRequest *request = [reqFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
+    LPRequest *request = [LPRequestFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         BOOL isSuccess = [LPResponse isResponseSuccess:response];

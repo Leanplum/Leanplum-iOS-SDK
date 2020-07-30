@@ -60,10 +60,6 @@
 @end
 
 @interface LPRequestFactory(UnitTest)
-
-@property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
-
-- (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
-- (nullable LPRequest *)createPostForApiMethod:(nonnull NSString *)apiMethod params:(nullable NSDictionary *)params;
-
++ (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
++ (nullable LPRequest *)createPostForApiMethod:(nonnull NSString *)apiMethod params:(nullable NSDictionary *)params;
 @end

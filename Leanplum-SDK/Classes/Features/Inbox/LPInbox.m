@@ -190,9 +190,7 @@ static NSObject *updatingLock;
         RETURN_IF_NOOP;
         LP_TRY
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        init];
-        LPRequest *request = [reqFactory markNewsfeedMessageAsReadWithParams:params];
+        LPRequest *request = [LPRequestFactory markNewsfeedMessageAsReadWithParams:params];
         [[LPRequestSender sharedInstance] send:request];
         LP_END_TRY
     }
@@ -376,9 +374,7 @@ static NSObject *updatingLock;
     [[LPInbox sharedState] updateMessages:_messages unreadCount:unreadCount];
     
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    init];
-    LPRequest *request = [reqFactory deleteNewsfeedMessageWithParams:params];
+    LPRequest *request = [LPRequestFactory deleteNewsfeedMessageWithParams:params];
     [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
@@ -423,9 +419,7 @@ static NSObject *updatingLock;
 {
     RETURN_IF_NOOP;
     LP_TRY
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    init];
-    LPRequest *request = [reqFactory getNewsfeedMessagesWithParams:nil];
+    LPRequest *request = [LPRequestFactory getNewsfeedMessagesWithParams:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];

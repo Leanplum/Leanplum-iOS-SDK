@@ -83,9 +83,7 @@
 
 - (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    init];
-    LPRequest *request = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+    LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
     
     NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
 
@@ -234,9 +232,7 @@
 
 - (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    init];
-    LPRequest *request = [reqFactory downloadFileWithParams:nil];
+    LPRequest *request = [LPRequestFactory downloadFileWithParams:nil];
 
     NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
     dict[LP_KEY_FILENAME] = path;

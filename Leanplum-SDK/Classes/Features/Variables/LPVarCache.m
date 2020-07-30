@@ -600,9 +600,7 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                             init];
-             LPRequest *request = [reqFactory setVarsWithParams:args];
+             LPRequest *request = [LPRequestFactory setVarsWithParams:args];
              [[LPRequestSender sharedInstance] send:request];
              return YES;
          } @catch (NSException *e) {
@@ -637,8 +635,7 @@ static dispatch_once_t leanplum_onceToken;
             NSString *variationPath = [LPFileManager fileRelativeToAppBundle:name];
             if ((totalSize > MAX_UPLOAD_BATCH_SIZES &&
                  filenames.count > 0) || filenames.count >= MAX_UPLOAD_BATCH_FILES) {
-                LPRequestFactory *reqFactory = [[LPRequestFactory alloc] init];
-                LPRequest *request = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+                LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
                 [[LPRequestSender sharedInstance] send:request];
                 filenames = [NSMutableArray array];
                 fileData = [NSMutableArray array];

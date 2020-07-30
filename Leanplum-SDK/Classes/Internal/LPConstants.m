@@ -286,9 +286,7 @@ void leanplumInternalError(NSException *e)
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            init];
-            LPRequest *request = [reqFactory logWithParams:@{
+            LPRequest *request = [LPRequestFactory logWithParams:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",

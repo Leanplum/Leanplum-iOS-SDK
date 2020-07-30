@@ -264,8 +264,7 @@
     }];
     [[Leanplum inbox] downloadMessages];
     [[Leanplum inbox] onChanged:^{
-        LPRequestFactory *requestFactory = [[LPRequestFactory alloc] init];
-        [requestFactory createGetForApiMethod:@"DidNotDownload" params:nil];
+        [LPRequestFactory createGetForApiMethod:@"DidNotDownload" params:nil];
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
