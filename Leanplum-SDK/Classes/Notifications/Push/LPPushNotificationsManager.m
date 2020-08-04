@@ -350,6 +350,17 @@ API_AVAILABLE(ios(10.0))
 
 + (void)handleApplicationDidBecomeActive:(NSNotification *)notification {
     [[LPPushNotificationsManager sharedManager] swizzleAppMethods];
+    NSDictionary *userInfo = notification.userInfo[@"UIApplicationLaunchOptionsRemoteNotificationKey"];
+    if (userInfo != nil) {
+        [[LPPushNotificationsManager sharedManager].handler setAppWasActivatedByReceivingPushNotification:YES];
+        if (@available(iOS 10, *)) {
+            if ([UNUserNotificationCenter currentNotificationCenter].delegate != nil) {
+                [[LPPushNotificationsManager sharedManager].handler handleWillPresentNotification:userInfo];
+                return;
+            }
+        }
+        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo];
+    }
 }
 
 - (void)swizzleAppMethods

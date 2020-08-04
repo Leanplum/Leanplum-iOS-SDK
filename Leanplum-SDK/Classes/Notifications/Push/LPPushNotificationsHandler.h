@@ -14,6 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPPushNotificationsHandler : NSObject
 
 @property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
+@property (nonatomic, assign) BOOL appWasActivatedByReceivingPushNotification;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
@@ -23,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
               fetchCompletionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler;
 - (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 - (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
+- (void)handleWillPresentNotification:(NSDictionary *)userInfo;
 - (void)willPresentNotification:(UNNotification *)notification
           withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler API_AVAILABLE(ios(10.0));
 - (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
