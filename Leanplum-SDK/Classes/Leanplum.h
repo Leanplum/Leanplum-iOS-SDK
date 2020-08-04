@@ -66,6 +66,7 @@
 #import "LPEventCallback.h"
 #import "LPNetworkEngine.h"
 #import "LPAES.h"
+#import "LPLogManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -240,6 +241,11 @@ NS_SWIFT_NAME(setApiHostName(_:servletName:ssl:));
  * Sets whether to enable verbose logging in development mode. Default: NO.
  */
 + (void)setVerboseLoggingInDevelopmentMode:(BOOL)enabled;
+
+/**
+* Sets log level through the Leanplum SDK
+*/
++ (void)setLogLevel:(LPLogLevel)level;
 
 /**
  * Sets a custom event name for in-app purchase tracking. Default: Purchase.

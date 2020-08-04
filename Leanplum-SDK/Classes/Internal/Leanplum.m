@@ -183,6 +183,13 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
++ (void)setLogLevel:(LPLogLevel)level
+{
+    LP_TRY
+    [[LPLogManager sharedManager] setLogLevel:level];
+    LP_END_TRY
+}
+
 + (void)setNetworkTimeoutSeconds:(int)seconds
 {
     if (seconds < 0) {
