@@ -11,10 +11,16 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSUInteger, LPLogLevel) {
-    Debug,
+    Error = 0,
     Info,
-    Error
+    Debug
 } NS_SWIFT_NAME(Leanplum.LogLevel);
+
+typedef NS_ENUM(NSUInteger, LPLogTypeNew) {
+    LPErrorNew,
+    LPInfoNew,
+    LPDebugNew
+} NS_SWIFT_NAME(Leanplum.LogTypeNew);
 
 @interface LPLogManager : NSObject
 @property (nonatomic, assign) LPLogLevel logLevel;
@@ -22,4 +28,4 @@ typedef NS_ENUM(NSUInteger, LPLogLevel) {
 @end
 
 NS_ASSUME_NONNULL_END
-void LPLogNew(LPLogLevel level, NSString * _Nullable format, ...);
+void LPLogNew(LPLogTypeNew type, NSString * _Nullable format, ...);

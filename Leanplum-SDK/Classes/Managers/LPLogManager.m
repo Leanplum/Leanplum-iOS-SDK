@@ -7,7 +7,9 @@
 //
 
 #import "LPLogManager.h"
-
+@interface LPLogManager()
+@property (nonatomic, retain) NSDateFormatter *dateFormatter;
+@end
 @implementation LPLogManager
 
 + (LPLogManager *)sharedManager
@@ -24,36 +26,40 @@
 {
     if (self = [super init]) {
         _logLevel = Info;
+        _dateFormatter = [[NSDateFormatter alloc] init];
+        [_dateFormatter setDateFormat:@"dd.MM.yyyy HH:mm:ss"];
     }
     return self;
 }
 
 @end
 
-void LPLogNew(LPLogLevel level , NSString *format, ...) {
-    if (level == Debug && [LPLogManager sharedManager].logLevel != Debug) {
-        return;
-    }
-    
+void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
+    LPLogLevel level = [[LPLogManager sharedManager] logLevel];
     NSString *logType = @"";
-    switch (level) {
-        case Debug:
+    switch (type) {
+        case LPDebugNew:
+            if (level < Debug) {
+                return;
+            }
             logType = @"DEBUG";
             break;
-        case Info:
+        case LPInfoNew:
+            if (level < Info) {
+                return;
+            }
             logType = @"INFO";
             break;
-        case Error:
+        case LPErrorNew:
+            if (level < Error) {
+                return;
+            }
             logType = @"ERROR";
             break;
         default:
             logType = @"INFO";
             break;
     }
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setTimeStyle:NSDateFormatterLongStyle];
-    [formatter setDateStyle:NSDateFormatterLongStyle];
-    [formatter setLocale:[NSLocale currentLocale]];
-    NSDate *todaysDate = [NSDate date];
-    printf("[%s] [LEANPLUM] [%s]: %s\n", [[formatter stringFromDate:todaysDate] UTF8String], [logType UTF8String], [format UTF8String]);
+    
+    printf("[%s] [LEANPLUM] [%s]: %s\n", [[[LPLogManager sharedManager].dateFormatter stringFromDate:[NSDate date]] UTF8String], [logType UTF8String], [format UTF8String]);
 }
