@@ -268,45 +268,5 @@ void leanplumIncrementUserCodeBlock(int delta)
 
 void leanplumInternalError(NSException *e)
 {
-    [LPUtils handleException:e];
-    if ([e.name isEqualToString:@"Leanplum Error"]) {
-        @throw e;
-    }
-    
-    for (id symbol in [e callStackSymbols]) {
-        NSString *description = [symbol description];
-        if ([description rangeOfString:@"+[Leanplum trigger"].location != NSNotFound
-            || [description rangeOfString:@"+[Leanplum throw"].location != NSNotFound
-            || [description rangeOfString:@"-[LPVar trigger"].location != NSNotFound
-            || [description rangeOfString:@"+[Leanplum setApiHostName"].location != NSNotFound) {
-            @throw e;
-        }
-    }
-    NSString *versionName = [[[NSBundle mainBundle] infoDictionary]
-                             objectForKey:@"CFBundleVersion"];
-    if (!versionName) {
-        versionName = @"";
-    }
-    int userCodeBlocks = [[[[NSThread currentThread] threadDictionary]
-                           objectForKey:LP_USER_CODE_BLOCKS] intValue];
-    if (userCodeBlocks <= 0) {
-        @try {
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory logWithParams:@{
-                                     LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
-                                     LP_PARAM_MESSAGE: [e description],
-                                     @"stackTrace": [[e callStackSymbols] description] ?: @"",
-                                     LP_PARAM_VERSION_NAME: versionName
-                                     }];
-            [[LPRequestSender sharedInstance] send:request];
-        } @catch (NSException *e) {
-            // This empty try/catch is needed to prevent crash <-> loop.
-        }
-        NSLog(@"Leanplum: INTERNAL ERROR: %@\n%@", e, [e callStackSymbols]);
-    } else {
-        NSLog(@"Leanplum: Caught exception in callback code: %@\n%@", e, [e callStackSymbols]);
-        LP_END_USER_CODE
-        @throw e;
-    }
+    [LPLogManager logInternalError:e];
 }
