@@ -186,7 +186,7 @@ void leanplumExceptionHandler(NSException *exception);
 + (void)setLogLevel:(LPLogLevel)level
 {
     LP_TRY
-    [[LPLogManager sharedManager] setLogLevel:level];
+    [LPLogManager setLogLevel:level];
     LP_END_TRY
 }
 

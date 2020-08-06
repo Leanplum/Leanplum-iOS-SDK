@@ -25,7 +25,8 @@ typedef NS_ENUM(NSUInteger, LPLogTypeNew) {
 
 @interface LPLogManager : NSObject
 @property (nonatomic, assign) LPLogLevel logLevel;
-+ (LPLogManager *)sharedManager;
++ (void)setLogLevel:(LPLogLevel)level;
++ (LPLogLevel)logLevel;
 + (void)logInternalError:(NSException *)e;
 @end
 

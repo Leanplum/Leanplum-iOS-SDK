@@ -14,29 +14,23 @@
 
 
 @interface LPLogManager()
-@property (nonatomic, retain) NSDateFormatter *dateFormatter;
 + (void)maybeSendLog:(NSString *)message;
 @end
 @implementation LPLogManager
+static LPLogLevel logLevel = Info;
 
-+ (LPLogManager *)sharedManager
++(void)setLogLevel:(LPLogLevel)level
 {
-    static LPLogManager *_sharedManager = nil;
-    static dispatch_once_t logManagerToken;
-    dispatch_once(&logManagerToken, ^{
-        _sharedManager = [[self alloc] init];
-    });
-    return _sharedManager;
+    @synchronized (self) {
+        logLevel = level;
+    }
 }
 
-- (instancetype)init
++(LPLogLevel)logLevel
 {
-    if (self = [super init]) {
-        _logLevel = Info;
-        _dateFormatter = [[NSDateFormatter alloc] init];
-        [_dateFormatter setDateFormat:@"dd.MM.yyyy HH:mm:ss"];
+    @synchronized (self) {
+        return logLevel;
     }
-    return self;
 }
 
 + (void)maybeSendLog:(NSString *)message {
@@ -117,16 +111,15 @@
 @end
 
 void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
-    LPLogLevel level = [[LPLogManager sharedManager] logLevel];
+    LPLogLevel level = [LPLogManager logLevel];
     NSString *message = nil;
     NSString *leanplumString = @"LEANPLUM";
-    NSString *dateString = [[LPLogManager sharedManager].dateFormatter stringFromDate:[NSDate date]];
     NSString *logType = nil;
     
     switch (type) {
         case LPDebugNew:
             logType = @"DEBUG";
-            message = [NSString stringWithFormat:@"[%@] [%@] [%@]: %@", dateString, leanplumString, logType, format];
+            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
             [LPLogManager maybeSendLog:message];
             if (level < Debug) {
                 return;
@@ -134,7 +127,7 @@ void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
             break;
         case LPInfoNew:
             logType = @"INFO";
-            message = [NSString stringWithFormat:@"[%@] [%@] [%@]: %@", dateString, leanplumString, logType, format];
+            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
             [LPLogManager maybeSendLog:message];
             if (level < Info) {
                 return;
@@ -142,7 +135,7 @@ void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
             break;
         case LPErrorNew:
             logType = @"ERROR";
-            message = [NSString stringWithFormat:@"[%@] [%@] [%@]: %@", dateString, leanplumString, logType, format];
+            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
             [LPLogManager maybeSendLog:message];
             if (level < Error) {
                 return;
@@ -150,5 +143,5 @@ void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
             break;
     }
     
-    printf("%s\n", [message UTF8String]);
+    NSLog(@"%@", message);
 }
