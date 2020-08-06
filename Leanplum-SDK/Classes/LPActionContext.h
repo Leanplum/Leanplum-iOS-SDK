@@ -31,10 +31,18 @@ NS_SWIFT_NAME(ActionContext)
 
 - (instancetype)init NS_UNAVAILABLE;
 
+/**
+ * The id of the message in the context if present
+ */
+@property (readonly, strong) NSString *messageId;
+
+/**
+ * Copy of the Context arguments
+ */
+@property (readonly, strong, nullable) NSDictionary *args;
+
 - (NSString *)actionName
 NS_SWIFT_NAME(action());
-
-- (NSString *)messageId;
 
 - (nullable NSString *)stringNamed:(NSString *)name
 NS_SWIFT_NAME(string(name:));
@@ -100,12 +108,6 @@ NS_SWIFT_NAME(trackMessage(event:value:info:params:));
  * Checks if the action context has any missing files that still need to be downloaded.
  */
 - (BOOL)hasMissingFiles;
-
-/**
- * Returns a copy of the Context arguments
- */
-- (NSDictionary *)getArgs
-NS_SWIFT_NAME(args());
 
 @end
 

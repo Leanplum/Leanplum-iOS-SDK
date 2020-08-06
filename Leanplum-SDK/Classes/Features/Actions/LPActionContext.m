@@ -181,15 +181,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return _name;
 }
 
-- (NSString *)messageId
-{
-    return _messageId;
-}
-
-- (NSDictionary *)getArgs
+- (NSDictionary *)args
 {
     [self setProperArgs];
-    return [NSDictionary dictionaryWithDictionary:_args];
+    return [_args copy];
 }
 
 - (void)setProperArgs
