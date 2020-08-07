@@ -64,7 +64,7 @@
                                      withIconBundle:obj
                                            iconName:key];
     }];
-    LPRequest *request = [LPRequestFactory uploadFileWithParams:@{@"data":
+    LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA:
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         LPLog(LPVerbose, @"App icons uploaded.");
