@@ -20,6 +20,39 @@
 @property (nonatomic, strong) NSDate *notificationHandledTime;
 @end
 
+@interface UIUserNotificationSettings (LPUtil)
+@property (readonly, nonatomic) NSDictionary *dictionary;
++(NSDictionary *)toRequestParams:(NSDictionary *)settings;
+@end
+
+@implementation UIUserNotificationSettings (LPUtil)
+
+- (NSDictionary *)dictionary
+{
+    NSNumber *types = @([self types]);
+    NSMutableArray *categories = [NSMutableArray array];
+    for (UIMutableUserNotificationCategory *category in [self categories]) {
+        if ([category identifier]) {
+            // Skip categories that have no identifier.
+            [categories addObject:[category identifier]];
+        }
+    }
+    NSArray *sortedCategories = [categories sortedArrayUsingSelector:@selector(compare:)];
+    NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+                               LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
+    return settings;
+}
+
++ (NSDictionary *)toRequestParams:(NSDictionary *)settings
+{
+    NSDictionary *params = [@{
+            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
+            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
+                  [LPJSON stringFromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]] ?: @""} mutableCopy];
+    return params;
+}
+@end
+
 @implementation LPPushNotificationsHandler
 
 -(instancetype)init
@@ -87,6 +120,7 @@
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
     
+    NSMutableDictionary* deviceAttributeParams = [[NSMutableDictionary alloc] init];
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.
     NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
@@ -94,11 +128,21 @@
         
         [[LPPushNotificationsManager sharedManager] updatePushToken:formattedToken];
         
+        deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken;
+    }
+    // Get the push types if changed
+    NSDictionary* settings = [[UIApplication sharedApplication].currentUserNotificationSettings dictionary];
+    if ([self updateUserNotificationSettings:settings]) {
+        [deviceAttributeParams addEntriesFromDictionary:[UIUserNotificationSettings toRequestParams:settings]];
+    }
+    
+    // If there are changes to the push token and/or the push types, send a request
+    if (deviceAttributeParams.count > 0) {
         LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
                                         initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
         
         id<LPRequesting> request = [reqFactory
-                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+                                    setDeviceAttributesWithParams:deviceAttributeParams];
         [[LPRequestSender sharedInstance] send:request];
     }
     LP_END_TRY
@@ -120,31 +164,28 @@
     LP_END_TRY
 }
 
+#pragma mark - Notification Settings
+- (BOOL)updateUserNotificationSettings:(NSDictionary *)newSettings
+{
+    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
+    NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
+    if (![existingSettings isEqualToDictionary:newSettings]) {
+        [[NSUserDefaults standardUserDefaults] setObject:newSettings forKey:settingsKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }
+    
+    return NO;
+}
+
 #pragma mark - Push Notifications
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
+    NSDictionary* settings = [notificationSettings dictionary];
     // Send settings.
-    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
-    NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
-    NSNumber *types = @([notificationSettings types]);
-    NSMutableArray *categories = [NSMutableArray array];
-    for (UIMutableUserNotificationCategory *category in [notificationSettings categories]) {
-        if ([category identifier]) {
-            // Skip categories that have no identifier.
-            [categories addObject:[category identifier]];
-        }
-    }
-    NSArray *sortedCategories = [categories sortedArrayUsingSelector:@selector(compare:)];
-    NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                               LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
-    if (![existingSettings isEqualToDictionary:settings]) {
-        [[NSUserDefaults standardUserDefaults] setObject:settings forKey:settingsKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    if ([self updateUserNotificationSettings:settings]) {
         NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
-        NSMutableDictionary *params = [@{
-                LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
-                      [LPJSON stringFromJSON:sortedCategories] ?: @""} mutableCopy];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[UIUserNotificationSettings toRequestParams:settings]];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
         }
