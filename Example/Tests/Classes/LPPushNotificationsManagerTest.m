@@ -40,13 +40,19 @@
 {
     [super setUp];
     // Automatically sets up AppId and AccessKey for development mode.
-    [LeanplumHelper setup_development_test];
+    //[LeanplumHelper setup_development_test];
+}
+
++ (void)tearDown
+{
+    [super tearDown];
+    [LeanplumHelper clean_up];
 }
 
 - (void)tearDown
 {
     [super tearDown];
-    [LeanplumHelper clean_up];
+    //[LeanplumHelper clean_up];
 }
 
 - (void)test_push_token
@@ -99,12 +105,140 @@
     [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
-        XCTAssertTrue([params[@"iosPushToken"] isEqual:formattedToken]);
+        XCTAssertTrue([params[LP_PARAM_DEVICE_PUSH_TOKEN] isEqual:formattedToken]);
         [expectUpdatedToken fulfill];
         return YES;
     }];
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+    [self waitForExpectationsWithTimeout:2 handler:nil];
+}
+
+- (void)removePushTypes
+{
+    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:settingsKey];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
+- (void)mockUserNotificationSettings
+{
+    id mockApplication = OCMClassMock([UIApplication class]);
+    OCMStub([mockApplication sharedApplication]).andReturn(mockApplication);
+    UIMutableUserNotificationCategory *cat = [[UIMutableUserNotificationCategory alloc] init];
+    cat.identifier = @"testCategory";
+    UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert categories:[NSSet setWithObject:cat]];
+    OCMStub([mockApplication currentUserNotificationSettings]).andReturn(settings);
+}
+
+/**
+ * Test iOS Push Types are sent when notifications are registered successfully
+ */
+- (void)test_push_types
+{
+    // Partial mock Action Manager.
+    LPPushNotificationsManager *manager = [LPPushNotificationsManager sharedManager];
+    id pushNotificationsManagerMock = OCMPartialMock(manager);
+    OCMStub([LPPushNotificationsManager sharedManager]).andReturn(pushNotificationsManagerMock);
+    OCMStub([pushNotificationsManagerMock respondsToSelector:
+             @selector(leanplum_application:didRegisterForRemoteNotificationsWithDeviceToken:)]).andReturn(NO);
+
+    // Remove Push Token.
+    [manager removePushToken];
+    
+    [self removePushTypes];
+    
+    [self mockUserNotificationSettings];
+
+    // TODO: separate token logic to be reused
+    UIApplication *app = [UIApplication sharedApplication];
+    XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
+    NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *formattedToken = [[LPNotificationsManager shared] hexadecimalStringFromData:token];
+    formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                       stringByReplacingOccurrencesOfString:@">" withString:@""]
+                      stringByReplacingOccurrencesOfString:@" " withString:@""];
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
+        XCTAssertTrue([params[LP_PARAM_DEVICE_PUSH_TOKEN] isEqual:formattedToken]);
+        XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] isEqual:@(UIUserNotificationTypeAlert)]);
+        XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] isEqual:[LPJSON stringFromJSON:@[@"testCategory"]?: @""]]);
+        [expectNewToken fulfill];
+        return YES;
+    }];
+    
+    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    
+    // TODO: test categories will be sent even if token is the same
+    // Test push token will not be sent with the same token.
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        XCTAssertTrue(NO);
+        return YES;
+    }];
+    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    
+    [self waitForExpectationsWithTimeout:2 handler:nil];
+}
+
+- (void)test_push_types_foreground
+{
+    [self removePushTypes];
+    
+    LPPushNotificationsManager *manager = [LPPushNotificationsManager sharedManager];
+    id pushNotificationsManagerMock = OCMPartialMock(manager);
+    OCMStub([LPPushNotificationsManager sharedManager]).andReturn(pushNotificationsManagerMock);
+
+    __block int methodCalled = 0;
+    OCMStub([[pushNotificationsManagerMock handler] sendUserNotificationSettingsIfChanged:[OCMArg any]])
+    .andDo(^(NSInvocation *invocation)
+    {
+        methodCalled +=1;
+    }).andForwardToRealObject();
+    
+    // Call start to attach the observer for App Resume/Foreground
+    // Note that multiple start calls will attach multiple observers
+    if (!Leanplum.hasStarted){
+        XCTAssertTrue([LeanplumHelper start_production_test]);
+    }
+
+    // Mock Application Notification Settings
+    [self mockUserNotificationSettings];
+    
+    XCTestExpectation *expectPushTypesSet = [self expectationWithDescription:@"expectPushTypesSet"];
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        if ([apiMethod isEqual:@"setDeviceAttributes"]) {
+            OCMVerify([[pushNotificationsManagerMock handler] sendUserNotificationSettingsIfChanged:[OCMArg any]]);
+            XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] isEqual:@(UIUserNotificationTypeAlert)]);
+            XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] isEqual:[LPJSON stringFromJSON:@[@"testCategory"]?: @""]]);
+            [expectPushTypesSet fulfill];
+        }
+        return YES;
+    }];
+    
+    // Triggers sendUserNotificationSettingsIfChanged and resumeSession
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillEnterForegroundNotification
+          object:nil];
+    
+    // Verify no request is made if the settings are the same
+    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                            NSDictionary *params) {
+        if ([apiMethod isEqual:@"setDeviceAttributes"]) {
+            XCTAssertTrue(NO);
+        }
+        return YES;
+    }];
+    
+    // Triggers sendUserNotificationSettingsIfChanged and resumeSession
+    [[NSNotificationCenter defaultCenter] postNotificationName:UIApplicationWillEnterForegroundNotification
+          object:nil];
+    
+    OCMVerify([[pushNotificationsManagerMock handler] sendUserNotificationSettingsIfChanged:[OCMArg any]]);
+    
+    XCTAssertTrue(methodCalled == 2);
+    [pushNotificationsManagerMock stopMocking];
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
 
