@@ -1,9 +1,9 @@
 //
-//  LPRequesting.h
-//  Leanplum
+//  LPRequestSender+Extensions.h
+//  Leanplum-SDK
 //
-//  Created by Mayank Sanganeria on 6/30/18.
-//  Copyright (c) 2018 Leanplum, Inc. All rights reserved.
+//  Created by Milos Jakovljevic on 10/17/16.
+//  Copyright © 2016 Leanplum. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,22 +22,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#ifndef LPRequesting_h
-#define LPRequesting_h
 
-#import "LPNetworkProtocol.h"
+#import "LPRequestSender.h"
 
-@protocol LPRequesting<NSObject>
+@interface LPRequestSender(MethodSwizzling)
 
-@property (nonatomic, strong) NSString *apiMethod;
-@property (nonatomic, strong) NSDictionary *params;
-@property (atomic) BOOL sent;
-@property (nonatomic, copy) LPNetworkResponseBlock responseBlock;
-@property (nonatomic, copy) LPNetworkErrorBlock errorBlock;
+@property (assign) BOOL (^requestCallback)(NSString *method, NSString *apiMethod, NSDictionary *params);
 
-- (void)onResponse:(LPNetworkResponseBlock)response;
-- (void)onError:(LPNetworkErrorBlock)error;
+- (void)setRequestCallback:(BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback;
+- (BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback;
+
++ (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *))callback;
++ (void)swizzle_methods;
++ (void)reset;
 
 @end
-
-#endif /* LPRequesting_h */

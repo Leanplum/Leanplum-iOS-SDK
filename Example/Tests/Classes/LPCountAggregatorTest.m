@@ -27,7 +27,9 @@
 #import <OCMock/OCMock.h>
 #import "LPCountAggregator.h"
 #import "LPConstants.h"
-#import "LeanplumRequest.h"
+#import "LPRequest.h"
+#import <Leanplum/LPRequestSender.h>
+#import <Leanplum/LPNetworkConstants.h>
 
 /**
  * Expose private class methods
@@ -135,13 +137,17 @@
     countAggregator.enabledCounters = [NSSet setWithObjects:testString, nil];
     [countAggregator incrementCount:testString];
     
-    id leanplumRequestMock = OCMClassMock([LeanplumRequest class]);
-    
-    OCMStub([leanplumRequestMock post:LP_METHOD_LOG params:[OCMArg any]]).andReturn(leanplumRequestMock);
-    
+    id lpRequestMock = OCMClassMock([LPRequest class]);
+
+    OCMStub([lpRequestMock post:LP_API_METHOD_LOG params:[OCMArg any]]).andReturn(lpRequestMock);
+
     [countAggregator sendAllCounts];
 
-    [[[leanplumRequestMock verify] ignoringNonObjectArgs] sendEventually:[OCMArg any]];
+    id lpRequestMockVerified = [[lpRequestMock verify] ignoringNonObjectArgs];
+    
+    id lpRequestSenderMock = OCMClassMock([LPRequestSender class]);
+    OCMStub([lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]]);
+    [lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]];
 }
 
 @end

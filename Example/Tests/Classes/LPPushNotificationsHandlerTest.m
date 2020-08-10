@@ -11,9 +11,9 @@
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequestSender+Categories.h"
+#import "LPNetworkEngine+Category.h"
 #import "LPUIAlert.h"
 #import "LPOperationQueue.h"
 #import "LPPushNotificationsManager.h"
@@ -55,7 +55,7 @@
 - (void)test_require_message_content
 {
     // Vaidate request.
-    [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"getVars");
         XCTAssertEqual(params[@"includeMessageId"], @"messageId");
