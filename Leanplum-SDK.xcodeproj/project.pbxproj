@@ -119,6 +119,7 @@
 		9E53F71C247D34C80097955F /* LPNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F70D247D34C80097955F /* LPNotificationsManager.m */; };
 		9E53F71D247D34C80097955F /* LPNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F70D247D34C80097955F /* LPNotificationsManager.m */; };
 		9E53F71E247D34C80097955F /* LPNotificationsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E53F70E247D34C80097955F /* LPNotificationsConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9EE5FF9F24CEC57300153AF8 /* LPNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */; };
 		9EEE92B424D95765003F0720 /* LPLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE92B224D95765003F0720 /* LPLogManager.m */; };
 		9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EEE92B324D95765003F0720 /* LPLogManager.h */; };
 		A0997BC1F68082938784DE20 /* NSTimer+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = 69CD8EF6F74200A4C9A7EC2C /* NSTimer+Blocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -286,6 +287,7 @@
 		9E53F70D247D34C80097955F /* LPNotificationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNotificationsManager.m; sourceTree = "<group>"; };
 		9E53F70E247D34C80097955F /* LPNotificationsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPNotificationsConstants.h; sourceTree = "<group>"; };
 		9E9DB3E0D7DB2F1091343C0C /* LPActionArg.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPActionArg.m; sourceTree = "<group>"; };
+		9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPNetworkConstants.h; sourceTree = "<group>"; };
 		9EEE92B224D95765003F0720 /* LPLogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLogManager.m; sourceTree = "<group>"; };
 		9EEE92B324D95765003F0720 /* LPLogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLogManager.h; sourceTree = "<group>"; };
 		A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPActionContext-Internal.h"; sourceTree = "<group>"; };
@@ -627,6 +629,7 @@
 				23AE73CB1BC80918AEE2FDBB /* LPRequestSender.m */,
 				E0FA8ED9EA9E69B401D4F519 /* LPResponse.h */,
 				030EF3A9DB711E2B21577DDE /* LPResponse.m */,
+				9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -875,6 +878,7 @@
 				9E53F718247D34C80097955F /* LPPushNotificationsHandler.h in Headers */,
 				9E53F70F247D34C80097955F /* LPNotificationsManager.h in Headers */,
 				9E53F71B247D34C80097955F /* LPPushNotificationsManager.h in Headers */,
+				9EE5FF9F24CEC57300153AF8 /* LPNetworkConstants.h in Headers */,
 				236B1A492A40608B65F7F1D6 /* Leanplum_Reachability.h in Headers */,
 				C722BB509AEC55EC813B93BF /* Leanplum_SocketIO.h in Headers */,
 				697DB798E738EEF4B845BFD4 /* Leanplum_WebSocket.h in Headers */,

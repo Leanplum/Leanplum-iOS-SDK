@@ -36,7 +36,6 @@
 #import "LPResponse.h"
 #import "Leanplum_SocketIO.h"
 #import "LeanplumSocket.h"
-#import "LPRequesting.h"
 #import "LeanplumCompatibility.h"
 #import "LPUIAlert.h"
 #import "LPSwizzle.h"
