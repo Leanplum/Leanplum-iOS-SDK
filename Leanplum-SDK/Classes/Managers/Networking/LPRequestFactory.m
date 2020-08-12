@@ -24,217 +24,185 @@
 
 #import "LPRequestFactory.h"
 #import "LPRequest.h"
-#import "LeanplumRequest.h"
 #import "LPCountAggregator.h"
-
-NSString *LP_API_METHOD_START = @"start";
-NSString *LP_API_METHOD_GET_VARS = @"getVars";
-NSString *LP_API_METHOD_SET_VARS = @"setVars";
-NSString *LP_API_METHOD_STOP = @"stop";
-NSString *LP_API_METHOD_RESTART = @"restart";
-NSString *LP_API_METHOD_TRACK = @"track";
-NSString *LP_API_METHOD_TRACK_GEOFENCE = @"trackGeofence";
-NSString *LP_API_METHOD_ADVANCE = @"advance";
-NSString *LP_API_METHOD_PAUSE_SESSION = @"pauseSession";
-NSString *LP_API_METHOD_PAUSE_STATE = @"pauseState";
-NSString *LP_API_METHOD_RESUME_SESSION = @"resumeSession";
-NSString *LP_API_METHOD_RESUME_STATE = @"resumeState";
-NSString *LP_API_METHOD_MULTI = @"multi";
-NSString *LP_API_METHOD_REGISTER_FOR_DEVELOPMENT = @"registerDevice";
-NSString *LP_API_METHOD_SET_USER_ATTRIBUTES = @"setUserAttributes";
-NSString *LP_API_METHOD_SET_DEVICE_ATTRIBUTES = @"setDeviceAttributes";
-NSString *LP_API_METHOD_SET_TRAFFIC_SOURCE_INFO = @"setTrafficSourceInfo";
-NSString *LP_API_METHOD_UPLOAD_FILE = @"uploadFile";
-NSString *LP_API_METHOD_DOWNLOAD_FILE = @"downloadFile";
-NSString *LP_API_METHOD_HEARTBEAT = @"heartbeat";
-NSString *LP_API_METHOD_SAVE_VIEW_CONTROLLER_VERSION = @"saveInterface";
-NSString *LP_API_METHOD_SAVE_VIEW_CONTROLLER_IMAGE = @"saveInterfaceImage";
-NSString *LP_API_METHOD_GET_VIEW_CONTROLLER_VERSIONS_LIST = @"getViewControllerVersionsList";
-NSString *LP_API_METHOD_LOG = @"log";
-NSString *LP_API_METHOD_GET_INBOX_MESSAGES = @"getNewsfeedMessages";
-NSString *LP_API_METHOD_MARK_INBOX_MESSAGE_AS_READ = @"markNewsfeedMessageAsRead";
-NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
-
-@interface LPRequestFactory()
-
-@property (nonatomic, strong) LPFeatureFlagManager *featureFlagManager;
-@property (nonatomic, strong) LPCountAggregator *countAggregator;
-
-@end
+#import "LPNetworkConstants.h"
 
 @implementation LPRequestFactory
 
--(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager {
-    self = [super init];
-    if (self) {
-        _featureFlagManager = featureFlagManager;
-        _countAggregator = [LPCountAggregator sharedAggregator];
-    }
-    return self;
-}
-
 #pragma mark Public methods
 
-- (id<LPRequesting>)startWithParams:(NSDictionary *)params
++ (LPRequest *)startWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"start_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_START params:params];
-}
-- (id<LPRequesting>)getVarsWithParams:(NSDictionary *)params;
-{
-    [self.countAggregator incrementCount:@"get_vars_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_GET_VARS params:params];
-}
-- (id<LPRequesting>)setVarsWithParams:(NSDictionary *)params;
-{
-    [self.countAggregator incrementCount:@"set_vars_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_SET_VARS params:params];
-}
-- (id<LPRequesting>)stopWithParams:(NSDictionary *)params;
-{
-    [self.countAggregator incrementCount:@"stop_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_STOP params:params];
-}
-- (id<LPRequesting>)restartWithParams:(NSDictionary *)params;
-{
-    [self.countAggregator incrementCount:@"restart_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_RESTART params:params];
-}
-- (id<LPRequesting>)trackWithParams:(NSDictionary *)params;
-{
-    [self.countAggregator incrementCount:@"track_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_TRACK params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"start_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_START params:params];
 }
 
-- (id<LPRequesting>)trackGeofenceWithParams:(NSDictionary *)params;
++ (LPRequest *)getVarsWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"track_geofence_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_TRACK_GEOFENCE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_vars_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_GET_VARS params:params];
 }
-- (id<LPRequesting>)advanceWithParams:(NSDictionary *)params;
+
++ (LPRequest *)setVarsWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"advance_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_ADVANCE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"set_vars_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_SET_VARS params:params];
 }
-- (id<LPRequesting>)pauseSessionWithParams:(NSDictionary *)params;
+
++ (LPRequest *)stopWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"pause_session_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_PAUSE_SESSION params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"stop_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_STOP params:params];
 }
-- (id<LPRequesting>)pauseStateWithParams:(NSDictionary *)params;
+
++ (LPRequest *)restartWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"pause_state_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_PAUSE_STATE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"restart_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_RESTART params:params];
 }
-- (id<LPRequesting>)resumeSessionWithParams:(NSDictionary *)params;
+
++ (LPRequest *)trackWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"resume_session_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_RESUME_SESSION params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"track_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_TRACK params:params];
 }
-- (id<LPRequesting>)resumeStateWithParams:(NSDictionary *)params;
+
++ (LPRequest *)trackGeofenceWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"resume_state_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_RESUME_STATE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"track_geofence_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_TRACK_GEOFENCE params:params];
 }
-- (id<LPRequesting>)multiWithParams:(NSDictionary *)params;
+
++ (LPRequest *)advanceWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"multi_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_MULTI params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"advance_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_ADVANCE params:params];
 }
-- (id<LPRequesting>)registerDeviceWithParams:(NSDictionary *)params;
+
++ (LPRequest *)pauseSessionWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"register_device_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_REGISTER_FOR_DEVELOPMENT params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"pause_session_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_PAUSE_SESSION params:params];
 }
-- (id<LPRequesting>)setUserAttributesWithParams:(NSDictionary *)params;
+
++ (LPRequest *)pauseStateWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"set_user_attributes_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_SET_USER_ATTRIBUTES params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"pause_state_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_PAUSE_STATE params:params];
 }
-- (id<LPRequesting>)setDeviceAttributesWithParams:(NSDictionary *)params;
+
++ (LPRequest *)resumeSessionWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"set_device_attributes_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_SET_DEVICE_ATTRIBUTES params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"resume_session_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_RESUME_SESSION params:params];
 }
-- (id<LPRequesting>)setTrafficSourceInfoWithParams:(NSDictionary *)params;
+
++ (LPRequest *)resumeStateWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"set_traffic_source_info_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_SET_TRAFFIC_SOURCE_INFO params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"resume_state_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_RESUME_STATE params:params];
 }
-- (id<LPRequesting>)uploadFileWithParams:(NSDictionary *)params;
+
++ (LPRequest *)multiWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"upload_file_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_UPLOAD_FILE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"multi_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_MULTI params:params];
 }
-- (id<LPRequesting>)downloadFileWithParams:(NSDictionary *)params;
+
++ (LPRequest *)registerDeviceWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"download_file_with_params"];
-    return [self createGetForApiMethod:LP_API_METHOD_DOWNLOAD_FILE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"register_device_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_REGISTER_FOR_DEVELOPMENT params:params];
 }
-- (id<LPRequesting>)heartbeatWithParams:(NSDictionary *)params;
+
++ (LPRequest *)setUserAttributesWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"heartbeat_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_HEARTBEAT params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"set_user_attributes_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_SET_USER_ATTRIBUTES params:params];
 }
-- (id<LPRequesting>)saveInterfaceWithParams:(NSDictionary *)params;
+
++ (LPRequest *)setDeviceAttributesWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"save_interface_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_VERSION params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"set_device_attributes_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_SET_DEVICE_ATTRIBUTES params:params];
 }
-- (id<LPRequesting>)saveInterfaceImageWithParams:(NSDictionary *)params;
+
++ (LPRequest *)setTrafficSourceInfoWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"save_interface_image_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_IMAGE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"set_traffic_source_info_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_SET_TRAFFIC_SOURCE_INFO params:params];
 }
-- (id<LPRequesting>)getViewControllerVersionsListWithParams:(NSDictionary *)params;
+
++ (LPRequest *)uploadFileWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"get_view_controller_versions_list_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_GET_VIEW_CONTROLLER_VERSIONS_LIST params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"upload_file_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_UPLOAD_FILE params:params];
 }
-- (id<LPRequesting>)logWithParams:(NSDictionary *)params;
+
++ (LPRequest *)downloadFileWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"log_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_LOG params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"download_file_with_params"];
+    return [LPRequestFactory createGetForApiMethod:LP_API_METHOD_DOWNLOAD_FILE params:params];
 }
-- (id<LPRequesting>)getNewsfeedMessagesWithParams:(NSDictionary *)params;
+
++ (LPRequest *)heartbeatWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"get_newsfeed_messages_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_GET_INBOX_MESSAGES params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"heartbeat_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_HEARTBEAT params:params];
 }
-- (id<LPRequesting>)markNewsfeedMessageAsReadWithParams:(NSDictionary *)params;
+
++ (LPRequest *)saveInterfaceWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"mark_newsfeed_messages_as_read_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_MARK_INBOX_MESSAGE_AS_READ params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"save_interface_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_VERSION params:params];
 }
-- (id<LPRequesting>)deleteNewsfeedMessageWithParams:(NSDictionary *)params;
+
++ (LPRequest *)saveInterfaceImageWithParams:(NSDictionary *)params
 {
-    [self.countAggregator incrementCount:@"delete_newsfeed_message_with_params"];
-    return [self createPostForApiMethod:LP_API_METHOD_DELETE_INBOX_MESSAGE params:params];
+    [[LPCountAggregator sharedAggregator] incrementCount:@"save_interface_image_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_SAVE_VIEW_CONTROLLER_IMAGE params:params];
+}
+
++ (LPRequest *)getViewControllerVersionsListWithParams:(NSDictionary *)params
+{
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_view_controller_versions_list_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_GET_VIEW_CONTROLLER_VERSIONS_LIST params:params];
+}
+
++ (LPRequest *)logWithParams:(NSDictionary *)params
+{
+    [[LPCountAggregator sharedAggregator] incrementCount:@"log_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_LOG params:params];
+}
+
++ (LPRequest *)getNewsfeedMessagesWithParams:(NSDictionary *)params;
+{
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_newsfeed_messages_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_GET_INBOX_MESSAGES params:params];
+}
+
++ (LPRequest *)markNewsfeedMessageAsReadWithParams:(NSDictionary *)params
+{
+    [[LPCountAggregator sharedAggregator] incrementCount:@"mark_newsfeed_messages_as_read_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_MARK_INBOX_MESSAGE_AS_READ params:params];
+}
+
++ (LPRequest *)deleteNewsfeedMessageWithParams:(NSDictionary *)params
+{
+    [[LPCountAggregator sharedAggregator] incrementCount:@"delete_newsfeed_message_with_params"];
+    return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_DELETE_INBOX_MESSAGE params:params];
 }
 
 #pragma mark Private methods
 
-- (id<LPRequesting>)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
-    [self.countAggregator incrementCount:@"create_get_for_api_method"];
-    
-    if ([self shouldReturnLPRequestClass]) {
-        return [LPRequest get:apiMethod params:params];
-    }
-    return [LeanplumRequest get:apiMethod params:params];
++ (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"create_get_for_api_method"];
+    return [LPRequest get:apiMethod params:params];
 }
 
-- (id<LPRequesting>)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
-    [self.countAggregator incrementCount:@"create_post_for_api_method"];
-    
-    if ([self shouldReturnLPRequestClass]) {
-        return [LPRequest post:apiMethod params:params];
-    }
-    return [LeanplumRequest post:apiMethod params:params];
-}
-
--(BOOL)shouldReturnLPRequestClass {
-    [self.countAggregator incrementCount:@"should_return_lprequest_class"];
-    return [self.featureFlagManager isFeatureFlagEnabled:LP_FEATURE_FLAG_REQUEST_REFACTOR];
++ (LPRequest *)createPostForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
+    [[LPCountAggregator sharedAggregator] incrementCount:@"create_post_for_api_method"];
+    return [LPRequest post:apiMethod params:params];
 }
 
 @end

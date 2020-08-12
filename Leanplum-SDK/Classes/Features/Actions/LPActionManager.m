@@ -30,7 +30,6 @@
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LPUIAlert.h"
-#import "LeanplumRequest.h"
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"

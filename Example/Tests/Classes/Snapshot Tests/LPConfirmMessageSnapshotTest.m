@@ -8,8 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
-#import "LPConfirmMessageTemplate.h"
 #import "Leanplum+Extensions.h"
+#import "LPConfirmMessageTemplate.h"
 #import "LeanplumHelper.h"
 
 

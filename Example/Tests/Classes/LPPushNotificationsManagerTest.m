@@ -11,9 +11,9 @@
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequestSender+Categories.h"
+#import "LPNetworkEngine+Category.h"
 #import "LPUIAlert.h"
 #import "LPOperationQueue.h"
 #import "LPPushNotificationsManager.h"
@@ -97,7 +97,7 @@
     UIApplication *app = [UIApplication sharedApplication];
     XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
     NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertTrue([params[@"iosPushToken"] isEqual:[self formatToken:token]]);
@@ -108,7 +108,7 @@
     [self waitForExpectationsWithTimeout:2 handler:nil];
 
     // Test push token will not be sent with the same token.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue(NO);
         return YES;
@@ -118,7 +118,7 @@
     // Test push token is sent if the token changes.
     token = [@"sample2" dataUsingEncoding:NSUTF8StringEncoding];
     XCTestExpectation *expectUpdatedToken = [self expectationWithDescription:@"expectUpdatedToken"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertTrue([params[LP_PARAM_DEVICE_PUSH_TOKEN] isEqual:[self formatToken:token]]);

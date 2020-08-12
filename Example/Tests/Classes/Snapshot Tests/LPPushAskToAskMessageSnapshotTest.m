@@ -8,9 +8,9 @@
 
 #import <XCTest/XCTest.h>
 #import <FBSnapshotTestCase/FBSnapshotTestCase.h>
+#import "Leanplum+Extensions.h"
 #import "LPPushAskToAskMessageTemplate.h"
 #import <OCMock.h>
-#import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
 @interface LPPushAskToAskMessageSnapshotTest : FBSnapshotTestCase

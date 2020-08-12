@@ -26,7 +26,6 @@
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPActionManager.h"
 #import "FileMD5Hash.h"
 #import "LPKeychainWrapper.h"
@@ -601,9 +600,7 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
-             LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                             initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-             id<LPRequesting> request = [reqFactory setVarsWithParams:args];
+             LPRequest *request = [LPRequestFactory setVarsWithParams:args];
              [[LPRequestSender sharedInstance] send:request];
              return YES;
          } @catch (NSException *e) {
@@ -638,9 +635,8 @@ static dispatch_once_t leanplum_onceToken;
             NSString *variationPath = [LPFileManager fileRelativeToAppBundle:name];
             if ((totalSize > MAX_UPLOAD_BATCH_SIZES &&
                  filenames.count > 0) || filenames.count >= MAX_UPLOAD_BATCH_FILES) {
-                [[LeanplumRequest post:LP_METHOD_UPLOAD_FILE
-                                params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}]
-                 sendFilesNow:filenames];
+                LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+                [[LPRequestSender sharedInstance] send:request];
                 filenames = [NSMutableArray array];
                 fileData = [NSMutableArray array];
                 totalSize = 0;

@@ -8,9 +8,9 @@
 
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
+#import "Leanplum+Extensions.h"
 #import "LPWebInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
-#import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
 /*

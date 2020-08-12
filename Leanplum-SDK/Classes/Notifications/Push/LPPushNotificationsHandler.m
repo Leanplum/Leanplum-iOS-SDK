@@ -9,7 +9,6 @@
 #import "LPPushNotificationsHandler.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
-#import "LeanplumRequest.h"
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsManager.h"
@@ -133,9 +132,7 @@
     // We no longer send in start's response because saved push token will be send in start too.
     NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
     if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
-        
         [[LPPushNotificationsManager sharedManager] updatePushToken:formattedToken];
-        
         deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken;
     }
     // Get the push types if changed
@@ -146,11 +143,7 @@
     
     // If there are changes to the push token and/or the push types, send a request
     if (deviceAttributeParams.count > 0) {
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        
-        id<LPRequesting> request = [reqFactory
-                                    setDeviceAttributesWithParams:deviceAttributeParams];
+        LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:deviceAttributeParams];
         [[LPRequestSender sharedInstance] send:request];
     }
     LP_END_TRY
@@ -199,9 +192,7 @@
         }
         [Leanplum onStartResponse:^(BOOL success) {
             LP_END_USER_CODE
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory setDeviceAttributesWithParams:params];
+            LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
             [[LPRequestSender sharedInstance] send:request];
             LP_BEGIN_USER_CODE
         }];
@@ -359,12 +350,10 @@
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            id<LPRequesting> request = [LeanplumRequest
-                                    post:LP_METHOD_GET_VARS
-                                    params:@{
-                                             LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-                                             LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                             }];
+            LPRequest *request = [LPRequestFactory getVarsWithParams:@{
+                                                                     LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                                                     LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                                                                    }];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
