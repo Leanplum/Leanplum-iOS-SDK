@@ -43,6 +43,8 @@ static BOOL recordSnapshots = NO;
 
 @interface LeanplumHelper : NSObject
 
+@property (class) NSString *lastErrorMessage;
+
 /// called before starting any test, to swizzle methods
 + (void)setup_method_swizzling;
 
@@ -69,5 +71,7 @@ static BOOL recordSnapshots = NO;
 + (NSData *)retrieve_data_from_file:(NSString *)file ofType:(NSString *)type;
 
 + (void)dismissPresentedViewControllers;
+
++ (void)mockThrowErrorToThrow;
 
 @end
