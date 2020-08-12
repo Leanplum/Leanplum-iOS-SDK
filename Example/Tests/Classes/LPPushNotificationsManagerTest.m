@@ -147,7 +147,7 @@
     UIApplication *app = [UIApplication sharedApplication];
     XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
     NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertTrue([params[LP_PARAM_DEVICE_PUSH_TOKEN] isEqual:[self formatToken:token]]);
@@ -161,7 +161,7 @@
     
     [self mockUserNotificationSettings:UIUserNotificationTypeBadge withCategoryId:@"testCategory2"];
     // Test categories will be sent even if token is the same
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertNil(params[LP_PARAM_DEVICE_PUSH_TOKEN]);
@@ -192,7 +192,7 @@
     [self mockUserNotificationSettings:UIUserNotificationTypeAlert withCategoryId:@"testCategory"];
     
     XCTestExpectation *expectPushTypesSet = [self expectationWithDescription:@"expectPushTypesSet"];
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         if ([apiMethod isEqual:@"setDeviceAttributes"]) {
             // Use the mock object to verify
@@ -209,7 +209,7 @@
           object:nil];
     
     // Verify no request is made if the settings are the same
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         if ([apiMethod isEqual:@"setDeviceAttributes"]) {
             XCTAssertTrue(NO);
