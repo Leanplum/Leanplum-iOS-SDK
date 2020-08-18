@@ -56,15 +56,6 @@ typedef void (^LeanplumStartIssuedBlock)(void);
 typedef void (^LeanplumEventsChangedBlock)(void);
 typedef void (^LeanplumHandledBlock)(BOOL success);
 
-typedef NS_ENUM(NSUInteger, LPLogType) {
-    LPError,
-    LPWarning,
-    LPInfo,
-    LPVerbose,
-    LPInternal,
-    LPDebug
-} NS_SWIFT_NAME(Leanplum.LogType);
-
 + (void)throwError:(NSString *)reason;
 
 + (void)onHasStartedAndRegisteredAsDeveloper;

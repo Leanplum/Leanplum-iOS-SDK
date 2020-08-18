@@ -118,7 +118,7 @@
             if (responseError) {
                 errorMessage = [NSString stringWithFormat:@"API error: %@", errorMessage];
             }
-            NSLog(@"Leanplum: %@", errorMessage);
+            LPLog(LPError, errorMessage);
 
             LPEventCallback *callback = callbackMap[@(i)];
             if (callback) {

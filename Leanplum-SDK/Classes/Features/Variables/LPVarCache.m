@@ -404,7 +404,7 @@ static dispatch_once_t leanplum_onceToken;
                          regions:regions
                 variantDebugInfo:variantDebugInfo];
     } @catch (NSException *exception) {
-        NSLog(@"Leanplum: Could not load variable diffs: %@", exception);
+        LPLog(LPError, @"Could not load variable diffs: %@", exception);
     }
     [self userAttributes];
     
@@ -497,9 +497,9 @@ static dispatch_once_t leanplum_onceToken;
             if (!self.regionInitBlock) {
                     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
                         if ([regions_ count] > 0) {
-                            NSLog(@"Leanplum: Regions have been defined in dashboard, but the app is not built to handle them.");
-                            NSLog(@"Leanplum: Add LeanplumLocation.framework or LeanplumBeacon.framework to Build Settings -> Link Binary With Libraries.");
-                            NSLog(@"Leanplum: Disregard warning if there are no plans to utilize iBeacon or Geofencing within the app");
+                            LPLog(LPInfo, @"Regions have been defined in dashboard, but the app is not built to handle them.");
+                            LPLog(LPInfo, @"Add LeanplumLocation.framework or LeanplumBeacon.framework to Build Settings -> Link Binary With Libraries.");
+                            LPLog(LPInfo, @"Disregard warning if there are no plans to utilize iBeacon or Geofencing within the app");
                         }
                     }
             } else {
@@ -583,7 +583,7 @@ static dispatch_once_t leanplum_onceToken;
          if ([self.fileAttributes count] > MAX_FILES_SUPPORTED) {
              limitedValues = [self.valuesFromClient mutableCopy];
              [(NSMutableDictionary *)limitedValues removeObjectForKey:LP_VALUE_RESOURCES_VARIABLE];
-             NSLog(@"Leanplum: ERROR: You are trying to sync %lu files, which is more than "
+             LPLog(LPError, @"You are trying to sync %lu files, which is more than "
                    @"we support (%d). If you are calling [Leanplum syncResources], try adding "
                    @"regex filters to limit the number of files you are syncing.",
                    (unsigned long) self.fileAttributes.count, MAX_FILES_SUPPORTED);
@@ -689,7 +689,7 @@ static dispatch_once_t leanplum_onceToken;
                 }
             }
         } @catch (NSException *exception) {
-            NSLog(@"Leanplum: Could not load user attributes: %@", exception);
+            LPLog(LPError, @"Could not load user attributes: %@", exception);
         }
     }
     if (!_userAttributes) {

@@ -76,12 +76,12 @@
 
                 // Common failure is when setAlternateIconName: is called right upon start.
                 // Try again after 1 second.
-                NSLog(@"Fail to change app icon: %@. Trying again.", error);
+                LPLog(LPError, @"Fail to change app icon: %@. Trying again.", error);
                 dispatch_time_t dispatchTime = dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC);
                 dispatch_after(dispatchTime, dispatch_get_main_queue(), ^{
                     [[UIApplication sharedApplication] setAlternateIconName:iconName
                                                           completionHandler:^(NSError *error) {
-                        NSLog(@"Fail to change app icon: %@", error);
+                        LPLog(LPError, @"Fail to change app icon: %@", error);
                     }];
                 });
             }];

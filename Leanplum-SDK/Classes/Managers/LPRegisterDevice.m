@@ -50,7 +50,7 @@
 
 - (void)showError:(NSString *)message
 {
-    NSLog(@"Leanplum: Device registration error: %@", message);
+    LPLog(LPError, @"Device registration error: %@", message);
     self.callback(NO);
 }
 

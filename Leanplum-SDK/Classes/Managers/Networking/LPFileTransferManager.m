@@ -112,7 +112,7 @@
     }
     [self maybeSendNextUpload];
 
-    NSLog(@"Leanplum: Uploading files...");
+    LPLog(LPInfo, @"Uploading files...");
 }
 
 - (void)printUploadProgress
@@ -135,7 +135,7 @@
                                 [self getSizeAsString:sentBytes], [self getSizeAsString:totalBytes]];
     if (![self.fileUploadProgressString isEqualToString:progressString]) {
         self.fileUploadProgressString = progressString;
-        NSLog(@"Leanplum: %@", progressString);
+        LPLog(LPInfo, @"%@", progressString);
     }
 }
 
@@ -200,7 +200,7 @@
             }
         }
         [self printUploadProgress];
-        NSLog(@"Leanplum: %@", err);
+        LPLog(LPError, err);
         [self maybeSendNextUpload];
         LP_END_TRY
     }];
@@ -242,7 +242,7 @@
         return;
     }
     self.pendingDownloads++;
-    NSLog(@"Leanplum: Downloading resource %@", path);
+    LPLog(LPInfo, @"Downloading resource %@", path);
     self.fileTransferStatus[path] = @(YES);
 
     [[LPRequestSender sharedInstance] attachApiKeys:dict];
@@ -277,7 +277,7 @@
         LP_END_TRY
     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
         LP_TRY
-        NSLog(@"Leanplum: %@", err);
+        LPLog(LPError, err);
         self.pendingDownloads--;
         if (errorBlock != nil) {
             errorBlock(err);

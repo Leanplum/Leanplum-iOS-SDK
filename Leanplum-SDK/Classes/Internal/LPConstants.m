@@ -213,7 +213,6 @@ NSString *LP_VALUE_DEFAULT_PUSH_ACTION = @"Open action";
 NSString *LP_VALUE_DEFAULT_PUSH_MESSAGE = @"Push message goes here.";
 NSString *LP_VALUE_SDK_LOG = @"sdkLog";
 NSString *LP_VALUE_SDK_COUNT = @"sdkCount";
-NSString *LP_VALUE_SDK_ERROR = @"sdkError";
 NSString *LP_VALUE_SDK_START_LATENCY = @"sdkStartLatency";
 
 NSString *LP_KEYCHAIN_SERVICE_NAME = @"com.leanplum.storage";
@@ -259,9 +258,4 @@ void leanplumIncrementUserCodeBlock(int delta)
 {
     NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
     threadDict[LP_USER_CODE_BLOCKS] = @([threadDict[LP_USER_CODE_BLOCKS] intValue] + delta);
-}
-
-void leanplumInternalError(NSException *e)
-{
-    [LPLogManager logInternalError:e];
 }

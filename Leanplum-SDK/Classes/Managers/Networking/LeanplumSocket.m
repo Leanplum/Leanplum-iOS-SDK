@@ -119,7 +119,7 @@ static dispatch_once_t leanplum_onceToken;
 - (void)socketIODidConnect:(Leanplum_SocketIO *)socket
 {
     if (!_authSent) {
-        NSLog(@"Leanplum: Connected to development server");
+        LPLog(LPInfo, @"Connected to development server");
         NSDictionary *dict = @{
             LP_PARAM_APP_ID: _appId,
             LP_PARAM_DEVICE_ID: _deviceId
@@ -132,7 +132,7 @@ static dispatch_once_t leanplum_onceToken;
 
 -(void)socketIODidDisconnect:(Leanplum_SocketIO *)socketIO
 {
-    NSLog(@"Leanplum: Disconnected from development server");
+    LPLog(LPInfo, @"Disconnected from development server");
     _connected = NO;
     _authSent = NO;
 }

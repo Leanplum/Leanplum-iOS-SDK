@@ -17,10 +17,10 @@ typedef NS_ENUM(NSUInteger, LPLogLevel) {
     Debug
 } NS_SWIFT_NAME(Leanplum.LogLevel);
 
-typedef NS_ENUM(NSUInteger, LPLogTypeNew) {
-    LPErrorNew,
-    LPInfoNew,
-    LPDebugNew
+typedef NS_ENUM(NSUInteger, LPLogType) {
+    LPError,
+    LPInfo,
+    LPDebug
 } NS_SWIFT_NAME(Leanplum.LogTypeNew);
 
 @interface LPLogManager : NSObject
@@ -31,4 +31,4 @@ typedef NS_ENUM(NSUInteger, LPLogTypeNew) {
 @end
 
 NS_ASSUME_NONNULL_END
-void LPLogNew(LPLogTypeNew type, NSString * _Nullable format, ...);
+void LPLog(LPLogType type, NSString * _Nullable format, ...);

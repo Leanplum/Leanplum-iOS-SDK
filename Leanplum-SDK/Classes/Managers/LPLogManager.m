@@ -49,15 +49,13 @@ static LPLogLevel logLevel = Info;
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> request = [reqFactory logWithParams:@{
+        LPRequest *request = [LPRequestFactory logWithParams:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
                 [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
     } @catch (NSException *exception) {
-        NSLog(@"Leanplum: Unable to send log: %@", exception);
+        LPLog(LPError, @"Unable to send log: %@", exception);
     } @finally {
         [threadDict removeObjectForKey:LP_IS_LOGGING];
     }
@@ -88,21 +86,19 @@ static LPLogLevel logLevel = Info;
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory logWithParams:@{
-                                     LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
+            LPRequest *request = [LPRequestFactory logWithParams:@{
+                                     LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                      LP_PARAM_MESSAGE: [e description],
-                                     @"stackTrace": [[e callStackSymbols] description] ?: @"",
+                                     LP_KEY_STACK_TRACE: [[e callStackSymbols] description] ?: @"",
                                      LP_PARAM_VERSION_NAME: versionName
                                      }];
             [[LPRequestSender sharedInstance] send:request];
         } @catch (NSException *e) {
             // This empty try/catch is needed to prevent crash <-> loop.
         }
-        NSLog(@"Leanplum: INTERNAL ERROR: %@\n%@", e, [e callStackSymbols]);
+        LPLog(LPError, @"%@\n%@", e, [e callStackSymbols]);
     } else {
-        NSLog(@"Leanplum: Caught exception in callback code: %@\n%@", e, [e callStackSymbols]);
+        LPLog(LPError, @"Caught exception in callback code: %@\n%@", e, [e callStackSymbols]);
         LP_END_USER_CODE
         @throw e;
     }
@@ -110,14 +106,14 @@ static LPLogLevel logLevel = Info;
 
 @end
 
-void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
+void LPLog(LPLogType type , NSString *format, ...) {
     LPLogLevel level = [LPLogManager logLevel];
     NSString *message = nil;
     NSString *leanplumString = @"LEANPLUM";
     NSString *logType = nil;
     
     switch (type) {
-        case LPDebugNew:
+        case LPDebug:
             logType = @"DEBUG";
             message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
             [LPLogManager maybeSendLog:message];
@@ -125,7 +121,7 @@ void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
                 return;
             }
             break;
-        case LPInfoNew:
+        case LPInfo:
             logType = @"INFO";
             message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
             [LPLogManager maybeSendLog:message];
@@ -133,7 +129,7 @@ void LPLogNew(LPLogTypeNew type , NSString *format, ...) {
                 return;
             }
             break;
-        case LPErrorNew:
+        case LPError:
             logType = @"ERROR";
             message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
             [LPLogManager maybeSendLog:message];
