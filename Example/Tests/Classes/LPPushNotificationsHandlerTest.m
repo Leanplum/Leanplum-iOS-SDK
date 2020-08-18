@@ -11,18 +11,19 @@
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequestSender+Categories.h"
+#import "LPNetworkEngine+Category.h"
 #import "LPUIAlert.h"
 #import "LPOperationQueue.h"
 #import "LPPushNotificationsManager.h"
 #import "LPNotificationsManager.h"
 
-
 @interface LPPushNotificationsHandler (Test)
 - (void)requireMessageContent:(NSString *)messageId
           withCompletionBlock:(LeanplumVariablesChangedBlock)onCompleted;
+- (void)handleNotificationResponse:(NSDictionary *)userInfo
+                 completionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 @end
 
 @interface LPPushNotificationsHandlerTest : XCTestCase
@@ -54,7 +55,7 @@
 - (void)test_require_message_content
 {
     // Vaidate request.
-    [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         XCTAssertEqualObjects(apiMethod, @"getVars");
         XCTAssertEqual(params[@"includeMessageId"], @"messageId");
@@ -90,16 +91,27 @@
                                @"_lpx": @"test_action",
                                @"aps" : @{@"alert": @"test"}};
 
-    XCTestExpectation* expectation = [self expectationWithDescription:@"notification"];
+    XCTestExpectation* userNotificationCenterExpectation = [self expectationWithDescription:@"UNUserNotificationCenter_notification"];
+    XCTestExpectation* applicationNotificationExpectation = [self expectationWithDescription:@"UIApplication_notification"];
     
     LPPushNotificationsHandler *handler = [[LPPushNotificationsHandler alloc] init];
     
+    //test when UNUserNotificationCenter.currentNotificationCenter.delegate is set
+    if (UNUserNotificationCenter.currentNotificationCenter.delegate != nil) {
+        [handler handleNotificationResponse:userInfo completionHandler:^(LeanplumUIBackgroundFetchResult result) {
+            [userNotificationCenterExpectation fulfill];
+        }];
+    }
+    
+    //test when UNUserNotificationCenter.currentNotificationCenter.delegate is nil
+    UNUserNotificationCenter.currentNotificationCenter.delegate = nil;
     [handler didReceiveRemoteNotification:userInfo
                                withAction:@"test_action"
                    fetchCompletionHandler: ^(LeanplumUIBackgroundFetchResult result) {
-                                            [expectation fulfill];
+                                            [applicationNotificationExpectation fulfill];
         
-                    }];
+    }];
+    
     [self waitForExpectationsWithTimeout:10 handler:nil];
 }
 

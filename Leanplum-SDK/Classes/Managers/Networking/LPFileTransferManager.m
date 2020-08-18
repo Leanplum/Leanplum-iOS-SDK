@@ -25,7 +25,6 @@
 #import "LPFileTransferManager.h"
 #import "LeanplumInternal.h"
 #import "LPRequest.h"
-#import "LeanplumRequest.h"
 #import "LPRequestSender.h"
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
@@ -84,42 +83,36 @@
 
 - (void)sendFilesNow:(NSArray *)filenames fileData:(NSArray *)fileData
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldRequest = [reqFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
-        [oldRequest sendFilesNow:filenames];
-    } else {
-        NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+    LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
+    
+    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
 
-        RETURN_IF_TEST_MODE;
-        NSMutableArray *filesToUpload = [NSMutableArray array];
-        dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-        [[LPRequestSender sharedInstance] attachApiKeys:dict];
+    RETURN_IF_TEST_MODE;
+    NSMutableArray *filesToUpload = [NSMutableArray array];
+    dict[LP_PARAM_COUNT] = @(filesToUpload.count);
+    [[LPRequestSender sharedInstance] attachApiKeys:dict];
 
-        for (NSString *filename in filenames) {
-            // Set state.
-            if ([self.fileTransferStatus[filename] boolValue]) {
-                [filesToUpload addObject:@""];
-            } else {
-                [filesToUpload addObject:filename];
-                self.fileTransferStatus[filename] = @(YES);
-                NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil] objectForKey:NSFileSize];
-                self.fileUploadSize[filename] = size;
-                self.fileUploadProgress[filename] = @0.0;
-            }
+    for (NSString *filename in filenames) {
+        // Set state.
+        if ([self.fileTransferStatus[filename] boolValue]) {
+            [filesToUpload addObject:@""];
+        } else {
+            [filesToUpload addObject:filename];
+            self.fileTransferStatus[filename] = @(YES);
+            NSNumber *size = [[[NSFileManager defaultManager] attributesOfItemAtPath:filename error:nil] objectForKey:NSFileSize];
+            self.fileUploadSize[filename] = size;
+            self.fileUploadProgress[filename] = @0.0;
         }
-        if (filesToUpload.count == 0) {
-            return;
-        }
-        @synchronized (self.pendingUploads) {
-            self.pendingUploads[filesToUpload] = dict;
-        }
-        [self maybeSendNextUpload];
-
-        NSLog(@"Leanplum: Uploading files...");
     }
+    if (filesToUpload.count == 0) {
+        return;
+    }
+    @synchronized (self.pendingUploads) {
+        self.pendingUploads[filesToUpload] = dict;
+    }
+    [self maybeSendNextUpload];
+
+    NSLog(@"Leanplum: Uploading files...");
 }
 
 - (void)printUploadProgress
@@ -239,78 +232,62 @@
 
 - (void)downloadFile:(NSString *)path onResponse:(LPNetworkResponseBlock)responseBlock onError:(LPNetworkErrorBlock)errorBlock
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory downloadFileWithParams:nil];
-    if ([request isKindOfClass:[LeanplumRequest class]]) {
-        LeanplumRequest *oldRequest = request;
-        [oldRequest onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-            if (responseBlock) {
-                responseBlock(operation, json);
-            }
-        }];
-        [oldRequest onError:^(NSError *op) {
-            if (errorBlock) {
-                errorBlock(op);
-            }
-        }];
-        [oldRequest downloadFile:path];
-    } else {
-        NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
-        dict[LP_KEY_FILENAME] = path;
+    LPRequest *request = [LPRequestFactory downloadFileWithParams:nil];
 
-        RETURN_IF_TEST_MODE;
-        if ([self.fileTransferStatus[path] boolValue]) {
-            return;
-        }
-        self.pendingDownloads++;
-        NSLog(@"Leanplum: Downloading resource %@", path);
-        self.fileTransferStatus[path] = @(YES);
+    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+    dict[LP_KEY_FILENAME] = path;
 
-        [[LPRequestSender sharedInstance] attachApiKeys:dict];
-
-        // Download it directly if the argument is URL.
-        // Otherwise continue with the api request.
-        id<LPNetworkOperationProtocol> op;
-        if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
-            op = [self.engine operationWithURLString:path];
-        } else if ([self.filenameToURLs valueForKey:path]) {
-            op = [self.engine operationWithURLString:[self.filenameToURLs valueForKey:path]];
-        } else {
-            op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
-                                         params:dict
-                                     httpMethod:[LPNetworkFactory fileRequestMethod]
-                                            ssl:[LPConstantsState sharedState].apiSSL
-                                 timeoutSeconds:[LPConstantsState sharedState]
-                  .networkTimeoutSecondsForDownloads];
-        }
-
-        [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
-            LP_TRY
-            [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
-                                                                createMissingDirectories:YES] atomically:YES];
-            self.pendingDownloads--;
-            if (responseBlock != nil) {
-                responseBlock(operation, json);
-            }
-            if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
-                self.noPendingDownloadsBlock();
-            }
-            LP_END_TRY
-        } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
-            LP_TRY
-            NSLog(@"Leanplum: %@", err);
-            self.pendingDownloads--;
-            if (errorBlock != nil) {
-                errorBlock(err);
-            }
-            if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
-                self.noPendingDownloadsBlock();
-            }
-            LP_END_TRY
-        }];
-        [self.engine enqueueOperation: op];
+    RETURN_IF_TEST_MODE;
+    if ([self.fileTransferStatus[path] boolValue]) {
+        return;
     }
+    self.pendingDownloads++;
+    NSLog(@"Leanplum: Downloading resource %@", path);
+    self.fileTransferStatus[path] = @(YES);
+
+    [[LPRequestSender sharedInstance] attachApiKeys:dict];
+
+    // Download it directly if the argument is URL.
+    // Otherwise continue with the api request.
+    id<LPNetworkOperationProtocol> op;
+    if ([path hasPrefix:@"http://"] || [path hasPrefix:@"https://"]) {
+        op = [self.engine operationWithURLString:path];
+    } else if ([self.filenameToURLs valueForKey:path]) {
+        op = [self.engine operationWithURLString:[self.filenameToURLs valueForKey:path]];
+    } else {
+        op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+                                     params:dict
+                                 httpMethod:[LPNetworkFactory fileRequestMethod]
+                                        ssl:[LPConstantsState sharedState].apiSSL
+                             timeoutSeconds:[LPConstantsState sharedState]
+              .networkTimeoutSecondsForDownloads];
+    }
+
+    [op addCompletionHandler:^(id<LPNetworkOperationProtocol> operation, id json) {
+        LP_TRY
+        [[operation responseData] writeToFile:[LPFileManager fileRelativeToDocuments:path
+                                                            createMissingDirectories:YES] atomically:YES];
+        self.pendingDownloads--;
+        if (responseBlock != nil) {
+            responseBlock(operation, json);
+        }
+        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
+            self.noPendingDownloadsBlock();
+        }
+        LP_END_TRY
+    } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
+        LP_TRY
+        NSLog(@"Leanplum: %@", err);
+        self.pendingDownloads--;
+        if (errorBlock != nil) {
+            errorBlock(err);
+        }
+        if (self.pendingDownloads == 0 && self.noPendingDownloadsBlock) {
+            self.noPendingDownloadsBlock();
+        }
+        LP_END_TRY
+    }];
+    [self.engine enqueueOperation: op];
 }
 
 - (int)numPendingDownloads

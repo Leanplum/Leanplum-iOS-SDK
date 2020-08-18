@@ -28,12 +28,16 @@
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import <OCMock/OCMock.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequestFactory+Extension.h"
+#import "LPRequest+Extension.h"
+#import "LPRequestSender+Categories.h"
+#import "LPNetworkEngine+Category.h"
 #import "LPFileManager.h"
 #import "LPActionManager.h"
 #import "LPInbox.h"
+#import <Leanplum/LPRequestFactory.h>
+#import <Leanplum/LPRequestSender.h>
 
 @interface LPInboxTest : XCTestCase
 
@@ -91,7 +95,7 @@
     }];
 
     // Vaidate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                         NSDictionary  *params) {
         XCTAssertEqualObjects(apiMethod, @"getNewsfeedMessages");
         return YES;
@@ -198,8 +202,8 @@
 
     // Check image has been downloaded after getNewsfeedMessages.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"downloadFile"]) {
                 return NO;
@@ -248,8 +252,8 @@
     // Check disableImagePrefetching by utilizing the fact that
     // downloadFile will be called before onChanged.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"DidNotDownload"]) {
                 return NO;
@@ -260,7 +264,7 @@
     }];
     [[Leanplum inbox] downloadMessages];
     [[Leanplum inbox] onChanged:^{
-        [LeanplumRequest get:@"DidNotDownload" params:nil];
+        [LPRequestFactory createGetForApiMethod:@"DidNotDownload" params:nil];
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
@@ -358,7 +362,7 @@
     LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
     
     semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                         NSDictionary  *params) {
         XCTAssertEqualObjects(apiMethod, @"markNewsfeedMessageAsRead");
         dispatch_semaphore_signal(semaphor);
@@ -385,6 +389,8 @@
         dispatch_semaphore_signal(semaphor);
     }];
     
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    
     LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
     id mock = OCMPartialMock(msg.context);
     
@@ -403,6 +409,8 @@
         // Wait for callback
         dispatch_semaphore_signal(semaphor);
     }];
+    
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     
     LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
     id mock = OCMPartialMock(msg.context);
@@ -431,7 +439,7 @@
     LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
     
     semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                         NSDictionary  *params) {
         XCTAssertEqualObjects(apiMethod, @"markNewsfeedMessageAsRead");
         dispatch_semaphore_signal(semaphor);

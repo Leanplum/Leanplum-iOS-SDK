@@ -22,7 +22,7 @@
 
 @property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
 
-- (void)sendNow:(id<LPRequesting>)request sync:(BOOL)sync;
+- (void)sendNow:(LPRequest *)request sync:(BOOL)sync;
 - (void)sendRequests:(BOOL)sync;
 
 @end
@@ -46,7 +46,6 @@
 
 - (void)testCreateArgsDictionaryForRequest {
     LPRequest *request = [LPRequest post:@"test" params:@{}];
-    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     LPConstantsState *constants = [LPConstantsState sharedState];
     NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
     NSMutableDictionary *testArgs = [@{
@@ -60,7 +59,7 @@
                                    LP_PARAM_UUID: @"uuid",
                                    LP_PARAM_REQUEST_ID: request.requestId,
                                    } mutableCopy];
-    NSMutableDictionary *args = [requestSender createArgsDictionaryForRequest:request];
+    NSMutableDictionary *args = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
     args[LP_PARAM_UUID] = @"uuid";
     args[LP_PARAM_TIME] = timestamp;
     

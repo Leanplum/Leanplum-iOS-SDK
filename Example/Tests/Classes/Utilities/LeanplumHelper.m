@@ -28,10 +28,12 @@
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import <OCMock/OCMock.h>
-#import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPVarCache+Extensions.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequestFactory+Extension.h"
+#import "LPRequest+Extension.h"
+#import "LeanplumHelper.h"
+#import "LPRequestSender+Categories.h"
+#import "LPVarCache+Extensions.h"
 #import "LPActionManager.h"
 #import "LeanplumReachability+Category.h"
 #import "LPNetworkEngine+Category.h"
@@ -65,7 +67,9 @@ static BOOL swizzled = NO;
 
 + (void)setup_method_swizzling {
     if (!swizzled) {
-        [LeanplumRequest swizzle_methods];
+        [LPRequestFactory swizzle_methods];
+        [LPRequest swizzle_methods];
+        [LPRequestSender swizzle_methods];
         [Leanplum_Reachability swizzle_methods];
         [LPNetworkOperation swizzle_methods];
         swizzled = YES;
@@ -135,7 +139,8 @@ static BOOL swizzled = NO;
     [[LPAPIConfig sharedConfig] setDeviceId:nil];
     [[LPAPIConfig sharedConfig] setUserId:nil];
     [[LPAPIConfig sharedConfig] setToken:nil];
-    [LeanplumRequest reset];
+    [LPRequest reset];
+    [LPRequestSender reset];
     [LeanplumHelper reset_user_defaults];
     [[LPOperationQueue serialQueue] cancelAllOperations];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];

@@ -6,7 +6,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "LPRequesting.h"
 
 @interface LPAPIConfig : NSObject
 

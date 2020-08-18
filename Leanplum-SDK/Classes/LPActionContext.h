@@ -31,6 +31,16 @@ NS_SWIFT_NAME(ActionContext)
 
 - (instancetype)init NS_UNAVAILABLE;
 
+/**
+ * The id of the message in the context if present
+ */
+@property (readonly, strong) NSString *messageId;
+
+/**
+ * Copy of the Context arguments
+ */
+@property (readonly, strong, nullable) NSDictionary *args;
+
 - (NSString *)actionName
 NS_SWIFT_NAME(action());
 

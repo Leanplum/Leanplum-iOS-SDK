@@ -9,7 +9,6 @@
 #import "LPPushNotificationsHandler.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
-#import "LeanplumRequest.h"
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsManager.h"
@@ -18,6 +17,39 @@
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 @property (nonatomic, strong) NSString *notificationHandled;
 @property (nonatomic, strong) NSDate *notificationHandledTime;
+@end
+
+@interface UIUserNotificationSettings (LPUtil)
+@property (readonly, nonatomic) NSDictionary *dictionary;
++(NSDictionary *)toRequestParams:(NSDictionary *)settings;
+@end
+
+@implementation UIUserNotificationSettings (LPUtil)
+
+- (NSDictionary *)dictionary
+{
+    NSNumber *types = @([self types]);
+    NSMutableArray *categories = [NSMutableArray array];
+    for (UIMutableUserNotificationCategory *category in [self categories]) {
+        if ([category identifier]) {
+            // Skip categories that have no identifier.
+            [categories addObject:[category identifier]];
+        }
+    }
+    NSArray *sortedCategories = [categories sortedArrayUsingSelector:@selector(compare:)];
+    NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+                               LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
+    return settings;
+}
+
++ (NSDictionary *)toRequestParams:(NSDictionary *)settings
+{
+    NSDictionary *params = [@{
+            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
+            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
+                  [LPJSON stringFromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]] ?: @""} mutableCopy];
+    return params;
+}
 @end
 
 @implementation LPPushNotificationsHandler
@@ -44,10 +76,18 @@
 
 -(void)didReceiveRemoteNotification:(NSDictionary *)userInfo withAction:(NSString *__nullable)action fetchCompletionHandler:(LeanplumFetchCompletionBlock __nullable)completionHandler
 {
+    if (@available(iOS 10, *)) {
+        if ([UNUserNotificationCenter currentNotificationCenter].delegate != nil) {
+            if (UIApplication.sharedApplication.applicationState != UIApplicationStateBackground) {
+                return;
+            }
+        }
+    }
+    
     [self.countAggregator incrementCount:@"did_receive_remote_notification"];
     
     // If app was inactive, then handle notification because the user tapped it.
-    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
+    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
         [self handleNotification:userInfo
                       withAction:action
                        appActive:NO
@@ -87,18 +127,23 @@
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
     
+    NSMutableDictionary* deviceAttributeParams = [[NSMutableDictionary alloc] init];
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.
     NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
     if (!existingToken || ![existingToken isEqualToString:formattedToken]) {
-        
         [[LPPushNotificationsManager sharedManager] updatePushToken:formattedToken];
-        
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        
-        id<LPRequesting> request = [reqFactory
-                                    setDeviceAttributesWithParams:@{LP_PARAM_DEVICE_PUSH_TOKEN: formattedToken}];
+        deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken;
+    }
+    // Get the push types if changed
+    NSDictionary* settings = [[UIApplication sharedApplication].currentUserNotificationSettings dictionary];
+    if ([self updateUserNotificationSettings:settings]) {
+        [deviceAttributeParams addEntriesFromDictionary:[UIUserNotificationSettings toRequestParams:settings]];
+    }
+    
+    // If there are changes to the push token and/or the push types, send a request
+    if (deviceAttributeParams.count > 0) {
+        LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:deviceAttributeParams];
         [[LPRequestSender sharedInstance] send:request];
     }
     LP_END_TRY
@@ -120,39 +165,34 @@
     LP_END_TRY
 }
 
+#pragma mark - Notification Settings
+- (BOOL)updateUserNotificationSettings:(NSDictionary *)newSettings
+{
+    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
+    NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
+    if (![existingSettings isEqualToDictionary:newSettings]) {
+        [[NSUserDefaults standardUserDefaults] setObject:newSettings forKey:settingsKey];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        return YES;
+    }
+    
+    return NO;
+}
+
 #pragma mark - Push Notifications
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
+    NSDictionary* settings = [notificationSettings dictionary];
     // Send settings.
-    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
-    NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
-    NSNumber *types = @([notificationSettings types]);
-    NSMutableArray *categories = [NSMutableArray array];
-    for (UIMutableUserNotificationCategory *category in [notificationSettings categories]) {
-        if ([category identifier]) {
-            // Skip categories that have no identifier.
-            [categories addObject:[category identifier]];
-        }
-    }
-    NSArray *sortedCategories = [categories sortedArrayUsingSelector:@selector(compare:)];
-    NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                               LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
-    if (![existingSettings isEqualToDictionary:settings]) {
-        [[NSUserDefaults standardUserDefaults] setObject:settings forKey:settingsKey];
-        [[NSUserDefaults standardUserDefaults] synchronize];
+    if ([self updateUserNotificationSettings:settings]) {
         NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
-        NSMutableDictionary *params = [@{
-                LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
-                      [LPJSON stringFromJSON:sortedCategories] ?: @""} mutableCopy];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[UIUserNotificationSettings toRequestParams:settings]];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
         }
         [Leanplum onStartResponse:^(BOOL success) {
             LP_END_USER_CODE
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory setDeviceAttributesWithParams:params];
+            LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
             [[LPRequestSender sharedInstance] send:request];
             LP_BEGIN_USER_CODE
         }];
@@ -184,19 +224,26 @@
     if (messageId == nil) {
         return;
     }
-
+    
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
+        
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-            if (appState != UIApplicationStateBackground) {
-                [self maybePerformNotificationActions:userInfo action:action active:active];
-            }
+            [self maybePerformNotificationActions:userInfo action:action active:active];
         }
     };
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive && !self.appWasActivatedByReceivingPushNotification) {
+        [self setAppWasActivatedByReceivingPushNotification:NO];
+        onContent();
+        return;
+    }
+    [self setAppWasActivatedByReceivingPushNotification:NO];
+    
+    NSLog(@"Push RECEIVED");
 
     [Leanplum onStartIssued:^() {
         if ([self areActionsEmbedded:userInfo]) {
@@ -214,6 +261,11 @@
                                  action:(NSString *)action
                                  active:(BOOL)active
 {
+    // Do not perform the action if the app is in background
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+        return;
+    }
+
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
         return;
@@ -226,6 +278,7 @@
         }
     }
     
+    NSLog(@"Push OPENED");
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
@@ -297,12 +350,10 @@
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            id<LPRequesting> request = [LeanplumRequest
-                                    post:LP_METHOD_GET_VARS
-                                    params:@{
-                                             LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-                                             LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                             }];
+            LPRequest *request = [LPRequestFactory getVarsWithParams:@{
+                                                                     LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+                                                                     LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                                                                    }];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
@@ -389,10 +440,20 @@
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            [self maybePerformNotificationActions:userInfo action:nil active:NO];
+            BOOL active = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+            [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
-
+    
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive || self.appWasActivatedByReceivingPushNotification) {
+        [self setAppWasActivatedByReceivingPushNotification:NO];
+        onContent();
+        return;
+    }
+    [self setAppWasActivatedByReceivingPushNotification:NO];
+    
+    NSLog(@"Push RECEIVED");
+    
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [Leanplum onStartIssued:^() {
             if ([self areActionsEmbedded:userInfo]) {
@@ -405,6 +466,13 @@
         if (messageId && completionHandler) {
             completionHandler(UIBackgroundFetchResultNoData);
         }
+    }
+}
+
+- (void)handleWillPresentNotification:(NSDictionary *)userInfo
+{
+    if(@available(iOS 10, *)) {
+        [self handleWillPresentNotification:userInfo withCompletionHandler:nil];
     }
 }
 
@@ -425,9 +493,12 @@
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            [self maybePerformNotificationActions:userInfo action:nil active:YES];
+            BOOL active = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+            [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
+    
+    NSLog(@"Push RECEIVED");
 
     if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
         [Leanplum onStartIssued:^() {
