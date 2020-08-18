@@ -23,7 +23,6 @@
 //  under the License.
 
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPConstants.h"
 #import "UIDevice+IdentifierAddition.h"
 #import "LPVarCache.h"
@@ -50,6 +49,16 @@
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
 #include <sys/sysctl.h>
+
+NSString *const kAppKeysFileName = @"Leanplum-Info";
+NSString *const kAppKeysFileType = @"plist";
+
+NSString *const kAppIdKey = @"APP_ID";
+NSString *const kDevKey = @"DEV_KEY";
+NSString *const kProdKey = @"PROD_KEY";
+NSString *const kEnvKey = @"ENV";
+NSString *const kEnvDevelopment = @"development";
+NSString *const kEnvProduction = @"production";
 
 static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
@@ -79,9 +88,25 @@ static LeanplumPushSetupBlock pushSetupBlock;
 
 void leanplumExceptionHandler(NSException *exception);
 
-BOOL inForeground = NO;
-
 @implementation Leanplum
+
++(void)load
+{
+    NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
+    if (appKeysDictionary == nil) {
+        return;
+    }
+    NSString *env = appKeysDictionary[kEnvKey];
+    if ([self setAppUsingPlist:appKeysDictionary forEnvironment:env]) {
+        return;
+    }
+
+#if DEBUG
+    [self setAppUsingPlist:appKeysDictionary forEnvironment:kEnvDevelopment];
+#else
+    [self setAppUsingPlist:appKeysDictionary forEnvironment:kEnvProduction];
+#endif
+}
 
 + (void)throwError:(NSString *)reason
 {
@@ -238,6 +263,50 @@ BOOL inForeground = NO;
     LP_END_TRY
 }
 
++ (NSDictionary *) getDefaultAppKeysPlist
+{
+    NSString *plistFilePath = [[NSBundle mainBundle] pathForResource:kAppKeysFileName ofType:kAppKeysFileType];
+    NSString *ignoreMessage = @"Ignore if not using Leanplum with plist configuration.";
+    if (plistFilePath == nil) {
+        NSLog(@"%@", [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] Could not locate configuration file: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
+        return nil;
+    }
+    
+    NSDictionary *appKeysDictionary = [NSDictionary dictionaryWithContentsOfFile:plistFilePath];
+    if (appKeysDictionary == nil) {
+        NSLog(@"%@", [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] The configuration file is not a dictionary: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
+    }
+    
+    return appKeysDictionary;
+}
+
++ (BOOL)setAppUsingPlist:(NSDictionary *)appKeysDictionary forEnvironment:(NSString *)env {
+    if ([[env lowercaseString] isEqualToString:kEnvDevelopment]) {
+        [self setAppId:appKeysDictionary[kAppIdKey] withDevelopmentKey:appKeysDictionary[kDevKey]];
+        NSLog(@"%@", [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvDevelopment, kAppKeysFileName, kAppKeysFileType]);
+        return YES;
+    } else if ([[env lowercaseString] isEqualToString:kEnvProduction]) {
+        [self setAppId:appKeysDictionary[kAppIdKey] withProductionKey:appKeysDictionary[kProdKey]];
+        NSLog(@"%@", [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvProduction, kAppKeysFileName, kAppKeysFileType]);
+        return YES;
+    }
+    return NO;
+}
+
++ (void)setAppEnvironment:(NSString *)env
+{
+    if (![[env lowercaseString] isEqualToString:kEnvProduction] && ![[env lowercaseString] isEqualToString:kEnvDevelopment]) {
+        [self throwError:@"[Leanplum setAppEnvironment:] Incorrect env parameter. Use \"development\" or \"production\"."];
+        return;
+    }
+    if ([LPInternalState sharedState].calledStart) {
+        [self throwError:@"[Leanplum setAppEnvironment:] Leanplum already started. Call this method before [Leanplum start]."];
+        return;
+    }
+
+    [self setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:env];
+}
+
 + (void)setAppId:(NSString *)appId withDevelopmentKey:(NSString *)accessKey
 {
     if ([LPUtils isNullOrEmpty:appId]) {
@@ -254,7 +323,6 @@ BOOL inForeground = NO;
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = YES;
     [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
-    [LeanplumRequest initializeStaticVars];
     LP_END_TRY
 }
 
@@ -280,7 +348,6 @@ BOOL inForeground = NO;
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = NO;
     [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
-    [LeanplumRequest initializeStaticVars];
     LP_END_TRY
 }
 
@@ -733,11 +800,11 @@ BOOL inForeground = NO;
     [[LPVarCache sharedCache] onUpdate:^{
         [self triggerVariablesChanged];
 
-        if (LeanplumRequest.numPendingDownloads == 0) {
+        if ([LPFileTransferManager sharedInstance].numPendingDownloads == 0) {
             [self triggerVariablesChangedAndNoDownloadsPending];
         }
     }];
-    [LeanplumRequest onNoPendingDownloads:^{
+    [[LPFileTransferManager sharedInstance] onNoPendingDownloads:^{
         [self triggerVariablesChangedAndNoDownloadsPending];
     }];
 
@@ -808,13 +875,6 @@ BOOL inForeground = NO;
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    BOOL startedInBackground = NO;
-    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateBackground &&
-        !_extensionContext) {
-        params[LP_PARAM_BACKGROUND] = @(YES);
-        startedInBackground = YES;
-    }
-
     if (attributes != nil) {
         params[LP_PARAM_USER_ATTRIBUTES] = attributes ?
                 [LPJSON stringFromJSON:attributes] : @"";
@@ -838,9 +898,7 @@ BOOL inForeground = NO;
     }
 
     // Issue start API call.
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory startWithParams:params];
+    LPRequest *request = [LPRequestFactory startWithParams:params];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -908,7 +966,7 @@ BOOL inForeground = NO;
             NSDictionary *actionDefinitions = response[LP_PARAM_ACTION_DEFINITIONS];
             NSDictionary *fileAttributes = response[LP_PARAM_FILE_ATTRIBUTES];
 
-            [LeanplumRequest setUploadUrl:response[LP_KEY_UPLOAD_URL]];
+            [[LPFileTransferManager sharedInstance] setUploadUrl:response[LP_KEY_UPLOAD_URL]];
             [[LPVarCache sharedCache] setDevModeValuesFromServer:valuesFromCode
                                     fileAttributes:fileAttributes
                                  actionDefinitions:actionDefinitions];
@@ -921,9 +979,7 @@ BOOL inForeground = NO;
             // Report latency for 0.1% of users.
             NSTimeInterval latency = [[NSDate date] timeIntervalSinceDate:startTime];
             if (arc4random() % 1000 == 0) {
-                LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                                initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-                id<LPRequesting> request = [reqFactory logWithParams:@{
+                LPRequest *request = [LPRequestFactory logWithParams:@{
                                         LP_PARAM_TYPE: LP_VALUE_SDK_START_LATENCY,
                                         @"startLatency": [@(latency) description]
                                         }];
@@ -934,15 +990,12 @@ BOOL inForeground = NO;
         // Upload alternative app icons.
         [LPAppIconManager uploadAppIconsOnDevMode];
 
-        if (!startedInBackground) {
-            inForeground = YES;
-            [self maybePerformActions:@[@"start", @"resume"]
-                        withEventName:nil
-                           withFilter:kLeanplumActionFilterAll
-                        fromMessageId:nil
-                 withContextualValues:nil];
-            [self recordAttributeChanges];
-        }
+        [self maybePerformActions:@[@"start", @"resume"]
+                    withEventName:nil
+                       withFilter:kLeanplumActionFilterAll
+                    fromMessageId:nil
+             withContextualValues:nil];
+        [self recordAttributeChanges];
         LP_END_TRY
     }];
     [request onError:^(NSError *err) {
@@ -989,21 +1042,11 @@ BOOL inForeground = NO;
                                                                  currentUserNotificationSettings]];
                     }
                     [Leanplum resume];
-                    if (startedInBackground && !inForeground) {
-                        inForeground = YES;
-                        [self maybePerformActions:@[@"start", @"resume"]
-                                    withEventName:nil
-                                       withFilter:kLeanplumActionFilterAll
-                                    fromMessageId:nil
-                             withContextualValues:nil];
-                        [self recordAttributeChanges];
-                    } else {
-                        [self maybePerformActions:@[@"resume"]
-                                    withEventName:nil
-                                       withFilter:kLeanplumActionFilterAll
-                                    fromMessageId:nil
-                             withContextualValues:nil];
-                    }
+                    [self maybePerformActions:@[@"resume"]
+                                withEventName:nil
+                                   withFilter:kLeanplumActionFilterAll
+                                fromMessageId:nil
+                         withContextualValues:nil];
                     LP_END_TRY
                 }];
 
@@ -1017,9 +1060,7 @@ BOOL inForeground = NO;
                     LP_TRY
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-                    id<LPRequesting> request = [reqFactory stopWithParams:nil];
+                    LPRequest *request = [LPRequestFactory stopWithParams:nil];
                     [[LPRequestSender sharedInstance] sendIfConnected:request sync:exitOnSuspend];
                     LP_END_TRY
                 }];
@@ -1029,9 +1070,7 @@ BOOL inForeground = NO;
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory heartbeatWithParams:nil];
+            LPRequest *request = [LPRequestFactory heartbeatWithParams:nil];
             [[LPRequestSender sharedInstance] sendIfDelayed:request];
 
         }
@@ -1127,9 +1166,7 @@ BOOL inForeground = NO;
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
 
     // Send pause event.
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory pauseSessionWithParams:nil];
+    LPRequest *request = [LPRequestFactory pauseSessionWithParams:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
@@ -1141,9 +1178,7 @@ BOOL inForeground = NO;
 
 + (void)resume
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory resumeSessionWithParams:nil];
+    LPRequest *request = [LPRequestFactory resumeSessionWithParams:nil];
     [[LPRequestSender sharedInstance] sendIfDelayed:request];
 }
 
@@ -1340,7 +1375,7 @@ BOOL inForeground = NO;
     }
     [[LPInternalState sharedState].noDownloadsBlocks addObject:[block copy]];
     LP_END_TRY
-    if ([[LPVarCache sharedCache] hasReceivedDiffs] && LeanplumRequest.numPendingDownloads == 0) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && [LPFileTransferManager sharedInstance].numPendingDownloads == 0) {
         block();
     }
 }
@@ -1353,7 +1388,7 @@ BOOL inForeground = NO;
         return;
     }
 
-    if ([[LPVarCache sharedCache] hasReceivedDiffs] && LeanplumRequest.numPendingDownloads == 0) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && [LPFileTransferManager sharedInstance].numPendingDownloads == 0) {
         block();
     } else {
         LP_TRY
@@ -1405,8 +1440,7 @@ BOOL inForeground = NO;
     }
     NSInvocation *invocation = [self createInvocationWithResponder:responder selector:selector];
     [self addInvocation:invocation toSet:[LPInternalState sharedState].noDownloadsResponders];
-    if ([[LPVarCache sharedCache] hasReceivedDiffs]
-        && LeanplumRequest.numPendingDownloads == 0) {
+    if ([[LPVarCache sharedCache] hasReceivedDiffs] && [LPFileTransferManager sharedInstance].numPendingDownloads == 0) {
         [invocation invoke];
     }
 }
@@ -1967,9 +2001,7 @@ BOOL inForeground = NO;
     
     NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory trackGeofenceWithParams:arguments];
+    LPRequest *request = [LPRequestFactory trackGeofenceWithParams:arguments];
     [[LPRequestSender sharedInstance] sendIfConnected:request];
     LP_END_TRY
 }
@@ -1977,9 +2009,7 @@ BOOL inForeground = NO;
 + (void)trackInternal:(NSString *)event withArgs:(NSDictionary *)args
         andParameters:(NSDictionary *)params
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory trackWithParams:args];
+    LPRequest *request = [LPRequestFactory trackWithParams:args];
     [[LPRequestSender sharedInstance] send:request];
 
     // Perform event actions.
@@ -2110,9 +2140,7 @@ andParameters:(NSDictionary *)params
         attributes = @{};
     }
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory setUserAttributesWithParams:@{
+    LPRequest *request = [LPRequestFactory setUserAttributesWithParams:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
         LP_PARAM_USER_ID: [LPAPIConfig sharedConfig].userId ?: @"",
         LP_PARAM_NEW_USER_ID: userId ?: @""
@@ -2187,9 +2215,7 @@ andParameters:(NSDictionary *)params
 
 + (void)setTrafficSourceInfoInternal:(NSDictionary *)info
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory setTrafficSourceInfoWithParams:@{
+    LPRequest *request = [LPRequestFactory setTrafficSourceInfoWithParams:@{
         LP_PARAM_TRAFFIC_SOURCE: info
         }];
     [[LPRequestSender sharedInstance] send:request];
@@ -2244,9 +2270,7 @@ andParameters:(NSDictionary *)params
 + (void)advanceToInternal:(NSString *)state withArgs:(NSDictionary *)args
             andParameters:(NSDictionary *)params
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory advanceWithParams:args];
+    LPRequest *request = [LPRequestFactory advanceWithParams:args];
     [[LPRequestSender sharedInstance] send:request];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     contextualValues.parameters = params;
@@ -2273,9 +2297,7 @@ andParameters:(NSDictionary *)params
 
 + (void)pauseStateInternal
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory pauseStateWithParams:@{}];
+    LPRequest *request = [LPRequestFactory pauseStateWithParams:@{}];
     [[LPRequestSender sharedInstance] send:request];
 }
 
@@ -2295,9 +2317,7 @@ andParameters:(NSDictionary *)params
 
 + (void)resumeStateInternal
 {
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory resumeStateWithParams:@{}];
+    LPRequest *request = [LPRequestFactory resumeStateWithParams:@{}];
     [[LPRequestSender sharedInstance] send:request];
 }
 
@@ -2326,9 +2346,7 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory getVarsWithParams:params];
+    LPRequest *request = [LPRequestFactory getVarsWithParams:params];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *values = response[LP_KEY_VARS];
@@ -2603,13 +2621,11 @@ void LPLog(LPLogType type, NSString *format, ...) {
     threadDict[LP_IS_LOGGING] = @YES;
 
     @try {
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> request = [reqFactory logWithParams:@{
+        LPRequest *request = [LPRequestFactory logWithParams:@{
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
-                [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
+        [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
     } @catch (NSException *exception) {
         NSLog(@"Leanplum: Unable to send log: %@", exception);
     } @finally {
@@ -2703,9 +2719,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
         params[LP_KEY_COUNTRY] = country;
     }
 
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory setUserAttributesWithParams:params];
+    LPRequest *request = [LPRequestFactory setUserAttributesWithParams:params];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         if (response) {
             response(YES);

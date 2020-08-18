@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
 #import "LPNetworkFactory.h"
-#import "LPRequesting.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

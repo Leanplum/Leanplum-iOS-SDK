@@ -1,5 +1,5 @@
 //
-//  LeanplumRequest.m
+//  LPResponse.m
 //  Leanplum
 //
 //  Created by Andrew First on 4/30/12.
@@ -24,7 +24,6 @@
 
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest.h"
 #import "LPResponse.h"
 #import "LPConstants.h"
 #import "LPFileManager.h"

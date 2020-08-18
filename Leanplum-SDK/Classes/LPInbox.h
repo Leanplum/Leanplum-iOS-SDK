@@ -84,6 +84,11 @@ NS_SWIFT_NAME(LeanplumInbox.Message)
 @property (assign, nonatomic, readonly) BOOL isRead;
 
 /**
+ * Mark the inbox message as read without invoking its open action.
+ */
+- (void)markAsRead;
+
+/**
  * Read the inbox message, marking it as read and invoking its open action.
  */
 - (void)read;

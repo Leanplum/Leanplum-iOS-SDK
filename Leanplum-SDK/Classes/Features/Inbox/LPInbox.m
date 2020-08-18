@@ -179,7 +179,7 @@ static NSObject *updatingLock;
     return nil;
 }
 
-- (void)read
+- (void)markAsRead
 {
     if (![self isRead]) {
         [self setIsRead:YES];
@@ -190,12 +190,15 @@ static NSObject *updatingLock;
         RETURN_IF_NOOP;
         LP_TRY
         NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID: [self messageId]};
-        LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                        initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-        id<LPRequesting> request = [reqFactory markNewsfeedMessageAsReadWithParams:params];
+        LPRequest *request = [LPRequestFactory markNewsfeedMessageAsReadWithParams:params];
         [[LPRequestSender sharedInstance] send:request];
         LP_END_TRY
     }
+}
+
+- (void)read
+{
+    [self markAsRead];
     
     LP_TRY
     [[self context] runTrackedActionNamed:LP_VALUE_DEFAULT_PUSH_ACTION];
@@ -371,9 +374,7 @@ static NSObject *updatingLock;
     [[LPInbox sharedState] updateMessages:_messages unreadCount:unreadCount];
     
     NSDictionary *params = @{LP_PARAM_INBOX_MESSAGE_ID:messageId};
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory deleteNewsfeedMessageWithParams:params];
+    LPRequest *request = [LPRequestFactory deleteNewsfeedMessageWithParams:params];
     [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
@@ -418,9 +419,7 @@ static NSObject *updatingLock;
 {
     RETURN_IF_NOOP;
     LP_TRY
-    LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                    initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-    id<LPRequesting> request = [reqFactory getNewsfeedMessagesWithParams:nil];
+    LPRequest *request = [LPRequestFactory getNewsfeedMessagesWithParams:nil];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];

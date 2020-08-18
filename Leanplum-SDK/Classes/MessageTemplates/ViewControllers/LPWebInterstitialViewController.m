@@ -229,6 +229,24 @@
         NSString *url = [navigationAction request].URL.absoluteString;
         NSDictionary *queryComponents = [self queryComponentsFromUrl:url];
 
+        // Handle AppStore links
+        // Example URL: itms-apps://itunes.apple.com/us/app/id
+        NSURL *navigationUrl = [navigationAction request].URL;
+        if ([navigationUrl.scheme isEqualToString:LPMT_APP_STORE_SCHEMA])
+        {
+            UIApplication *app = [UIApplication sharedApplication];
+            if ([app canOpenURL:navigationUrl])
+            {
+                [self.webView stopLoading];
+                [app openURL:[NSURL URLWithString:url]];
+                decisionHandler(WKNavigationActionPolicyCancel);
+                return;
+            } else{
+                decisionHandler(WKNavigationActionPolicyCancel);
+                return;
+            }
+        }
+
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
             [self dismiss:YES];
             if (queryComponents[@"result"]) {

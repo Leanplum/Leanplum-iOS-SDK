@@ -24,10 +24,8 @@ NS_ASSUME_NONNULL_BEGIN
                                   priority:(nullable NSNumber *)priority;
 
 @property (readonly, strong) NSString *name;
-@property (readonly, strong) NSString *messageId;
 @property (readonly, strong) NSString *originalMessageId;
 @property (readonly, strong) NSNumber *priority;
-@property (readonly, strong, nullable) NSDictionary *args;
 @property (readonly, strong, nullable) LPActionContext *parentContext;
 @property (readonly) int contentVersion;
 @property (readonly, strong, nullable) NSString *key;

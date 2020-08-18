@@ -33,7 +33,7 @@
 #import "LPVarCache.h"
 #import "Leanplum.h"
 #import "LeanplumInternal.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
 
 @interface MessagesTest : XCTestCase

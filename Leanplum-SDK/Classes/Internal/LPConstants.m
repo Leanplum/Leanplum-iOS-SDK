@@ -94,11 +94,6 @@ NSString *LEANPLUM_DEFAULTS_UUID_KEY = @"__leanplum_uuid";
 
 NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
 
-NSString *LP_METHOD_GET_VARS = @"getVars";
-NSString *LP_METHOD_MULTI = @"multi";
-NSString *LP_METHOD_UPLOAD_FILE = @"uploadFile";
-NSString *LP_METHOD_LOG = @"log";
-
 NSString *LP_PARAM_ACTION = @"action";
 NSString *LP_PARAM_ACTION_DEFINITIONS = @"actionDefinitions";
 NSString *LP_PARAM_APP_ID = @"appId";
@@ -146,7 +141,6 @@ NSString *LP_PARAM_LIMIT_TRACKING = @"limitTracking";
 NSString *LP_PARAM_NAME = @"name";
 NSString *LP_PARAM_MESSAGE = @"message";
 NSString *LP_PARAM_MESSAGE_ID = @"messageId";
-NSString *LP_PARAM_BACKGROUND = @"background";
 NSString *LP_PARAM_INBOX_MESSAGES = @"newsfeedMessages";
 NSString *LP_PARAM_INBOX_MESSAGE_ID = @"newsfeedMessageId";
 NSString *LP_PARAM_RICH_PUSH_ENABLED = @"richPushEnabled";
@@ -292,9 +286,7 @@ void leanplumInternalError(NSException *e)
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
-            LPRequestFactory *reqFactory = [[LPRequestFactory alloc]
-                                            initWithFeatureFlagManager:[LPFeatureFlagManager sharedManager]];
-            id<LPRequesting> request = [reqFactory logWithParams:@{
+            LPRequest *request = [LPRequestFactory logWithParams:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
                                      LP_PARAM_MESSAGE: [e description],
                                      @"stackTrace": [[e callStackSymbols] description] ?: @"",
