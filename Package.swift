@@ -1,4 +1,4 @@
-// swift-tools-version:5.1
+// swift-tools-version:5.3
 import PackageDescription
 
 let package = Package(
@@ -8,8 +8,16 @@ let package = Package(
     ],
     targets: [
         .target(
-        	name: "Leanplum", 
-        	path: "Leanplum-SDK/Classes",
-        	publicHeadersPath: ".")
+            name: "Leanplum",
+            path: "Leanplum-SDK",
+            exclude: [
+                "LeanplumSDK_iOS-Info.plist",
+                "LeanplumSDK_tvOS-Info.plist"
+            ],
+            resources: [
+                .process("Resources")
+            ],
+            publicHeadersPath: "include"
+        )
     ]
 )

@@ -17,7 +17,11 @@
 
 +(LPInterstitialViewController *)instantiateFromStoryboard
 {
+#if SWIFTPM_MODULE_BUNDLE
+    NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
+#else
     NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
+#endif
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Interstitial" bundle:bundle];
 
     return [storyboard instantiateInitialViewController];
