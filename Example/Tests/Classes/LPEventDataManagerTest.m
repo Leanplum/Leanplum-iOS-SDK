@@ -194,88 +194,88 @@
     [HTTPStubs removeAllStubs];
 }
 
-- (void)test_uuid
-{
-    [LPEventDataManager deleteEventsWithLimit:10000];
-    
-    // Simulate Error.
-    id<HTTPStubsDescriptor> stubs = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
-        return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSError *error = [NSError errorWithDomain:NSURLErrorDomain
-                                             code:NSURLErrorBadServerResponse userInfo:nil];
-        return [HTTPStubsResponse responseWithError:error];
-    }];
-    
-    // UUID should be the same.
-    [Leanplum track:@"sample"];
-    [Leanplum track:@"sample2"];
-    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"sample3" params:nil];
-    [[LPRequestSender sharedInstance] sendNow:request];
-
-    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
-
-    NSArray *events = [LPEventDataManager eventsWithLimit:10000];
-    XCTAssertTrue(events.count == 3);
-    XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
-    XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
-    
-    // After sending, the last one should have a different uuid.
-    [NSThread sleepForTimeInterval:0.4];
-    [Leanplum track:@"sample4"];
-
-    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
-
-    events = [LPEventDataManager eventsWithLimit:10000];
-    XCTAssertTrue(events.count == 4);
-    XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
-    XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
-    // Third one should be different.
-    XCTAssertFalse([events[0][@"uuid"] isEqual:events[3][@"uuid"]]);
-    
-    // Delete events on success.
-    [HTTPStubs removeStub:stubs];
-    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSData *responseData = [@"Success" dataUsingEncoding:NSUTF8StringEncoding];
-        return [HTTPStubsResponse responseWithData:responseData statusCode:200
-                                             headers:@{@"Content-Type":@"application/json"}];
-    }];
-    
-    LPRequest *request2 = [LPRequestFactory createPostForApiMethod:@"sample4" params:nil];
-    [[LPRequestSender sharedInstance] sendNow:request2];
-    [NSThread sleepForTimeInterval:0.1];
-    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
-    events = [LPEventDataManager eventsWithLimit:10000];
-    XCTAssertTrue(events.count == 0);
-    
-    // UUID should be different after the 10k mark.
-    for (int i=0; i<MAX_EVENTS_PER_API_CALL+1; i++) {
-        [Leanplum track:@"s"];
-    }
-    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
-    events = [LPEventDataManager eventsWithLimit:900000];
-    XCTAssertTrue(events.count == MAX_EVENTS_PER_API_CALL+1);
-    XCTAssertFalse([events[0][@"uuid"] isEqual:events[MAX_EVENTS_PER_API_CALL][@"uuid"]]);
-    
-    // Make sure there will be 2 requests.
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    NSInteger __block requestCount = 0;
-    [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
-        requestCount++;
-        if (requestCount == 1) {
-            return NO;
-        }
-        dispatch_semaphore_signal(semaphore);
-        return YES;
-    }];
-    LPRequest *request3 = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
-    [[LPRequestSender sharedInstance] sendNow:request3];
-    long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
-    XCTAssertTrue(timedOut == 0);
-    XCTAssertTrue(requestCount == 2);
-}
+//- (void)test_uuid
+//{
+//    [LPEventDataManager deleteEventsWithLimit:10000];
+//
+//    // Simulate Error.
+//    id<HTTPStubsDescriptor> stubs = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
+//        return [request.URL.host isEqualToString:API_HOST];;
+//    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+//        NSError *error = [NSError errorWithDomain:NSURLErrorDomain
+//                                             code:NSURLErrorBadServerResponse userInfo:nil];
+//        return [HTTPStubsResponse responseWithError:error];
+//    }];
+//
+//    // UUID should be the same.
+//    [Leanplum track:@"sample"];
+//    [Leanplum track:@"sample2"];
+//    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"sample3" params:nil];
+//    [[LPRequestSender sharedInstance] sendNow:request];
+//
+//    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+//
+//    NSArray *events = [LPEventDataManager eventsWithLimit:10000];
+//    XCTAssertTrue(events.count == 3);
+//    XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
+//    XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
+//
+//    // After sending, the last one should have a different uuid.
+//    [NSThread sleepForTimeInterval:0.4];
+//    [Leanplum track:@"sample4"];
+//
+//    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+//
+//    events = [LPEventDataManager eventsWithLimit:10000];
+//    XCTAssertTrue(events.count == 4);
+//    XCTAssertTrue([events[0][@"uuid"] isEqual:events[1][@"uuid"]]);
+//    XCTAssertTrue([events[0][@"uuid"] isEqual:events[2][@"uuid"]]);
+//    // Third one should be different.
+//    XCTAssertFalse([events[0][@"uuid"] isEqual:events[3][@"uuid"]]);
+//
+//    // Delete events on success.
+//    [HTTPStubs removeStub:stubs];
+//    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+//        return [request.URL.host isEqualToString:API_HOST];;
+//    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+//        NSData *responseData = [@"Success" dataUsingEncoding:NSUTF8StringEncoding];
+//        return [HTTPStubsResponse responseWithData:responseData statusCode:200
+//                                             headers:@{@"Content-Type":@"application/json"}];
+//    }];
+//
+//    LPRequest *request2 = [LPRequestFactory createPostForApiMethod:@"sample4" params:nil];
+//    [[LPRequestSender sharedInstance] sendNow:request2];
+//    [NSThread sleepForTimeInterval:0.1];
+//    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+//    events = [LPEventDataManager eventsWithLimit:10000];
+//    XCTAssertTrue(events.count == 0);
+//
+//    // UUID should be different after the 10k mark.
+//    for (int i=0; i<MAX_EVENTS_PER_API_CALL+1; i++) {
+//        [Leanplum track:@"s"];
+//    }
+//    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
+//    events = [LPEventDataManager eventsWithLimit:900000];
+//    XCTAssertTrue(events.count == MAX_EVENTS_PER_API_CALL+1);
+//    XCTAssertFalse([events[0][@"uuid"] isEqual:events[MAX_EVENTS_PER_API_CALL][@"uuid"]]);
+//
+//    // Make sure there will be 2 requests.
+//    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+//    NSInteger __block requestCount = 0;
+//    [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
+//        requestCount++;
+//        if (requestCount == 1) {
+//            return NO;
+//        }
+//        dispatch_semaphore_signal(semaphore);
+//        return YES;
+//    }];
+//    LPRequest *request3 = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
+//    [[LPRequestSender sharedInstance] sendNow:request3];
+//    long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+//    XCTAssertTrue(timedOut == 0);
+//    XCTAssertTrue(requestCount == 2);
+//}
 
 - (void)test_response_index
 {
