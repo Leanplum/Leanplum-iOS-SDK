@@ -7,7 +7,7 @@
 //
 
 #import "LPRegisterForPushMessageTemplate.h"
-#import "LPPushAskToAskMessageTemplate.h"
+#import "LPPushMessageTemplate.h"
 
 @implementation LPRegisterForPushMessageTemplate
 
@@ -18,13 +18,34 @@
              withArguments:@[]
              withResponder:^BOOL(LPActionContext *context) {
 
-        // TODO: when push check is moved away from templates, refactor to call it.
-        LPPushAskToAskMessageTemplate* template = [[LPPushAskToAskMessageTemplate alloc] init];
-        template.context = context;
-
-        [template enableSystemPush];
+        LPRegisterForPushMessageTemplate *template = [[LPRegisterForPushMessageTemplate alloc] init];
+        
+        if ([template shouldShowPushMessage]) {
+            // Try showing the native prompt
+            // iOS can prevent showing the dialog if recently asked
+            [template showNativePushPrompt];
+            // Will count View event
+            return YES;
+        } else {
+            return NO;
+        }
+        
         return YES;
     }];
+}
+
+/**
+ * If push notifications are not enabled returns true.
+ * Does not perform other checks as Push Ask to Ask to enable re-triggering of native prompt
+ */
+-(BOOL)shouldShowPushMessage
+{
+    if ([self isPushEnabled]) {
+        NSLog(@"Leanplum: Pushes already enabled");
+        return NO;
+    } else {
+        return YES;
+    }
 }
 
 @end
