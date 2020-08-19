@@ -4,6 +4,9 @@
 #
 ####################################################################
 
+spm:
+	sh Tools/spm.sh
+
 updateVersion:
 	sed -i '' -e "s/#define LEANPLUM_SDK_VERSION @.*/#define LEANPLUM_SDK_VERSION @\"`cat sdk-version.txt`\"/g" "./Leanplum-SDK/Classes/Internal/LPConstants.h"
 

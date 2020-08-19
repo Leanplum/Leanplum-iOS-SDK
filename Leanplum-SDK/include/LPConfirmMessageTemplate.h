@@ -1,0 +1,1 @@
+../Classes/MessageTemplates/LPConfirmMessageTemplate.h

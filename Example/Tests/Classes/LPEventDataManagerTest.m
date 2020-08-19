@@ -24,6 +24,7 @@
 
 
 #import <XCTest/XCTest.h>
+#import <OCMock/OCMock.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
@@ -51,6 +52,8 @@
 @implementation LPEventDataManagerTest
 
 - (void)setUp {
+    id mockedDB = OCMClassMock([LPDatabase class]);
+    OCMStub([mockedDB sqliteFilePath]).andReturn(@":memory:");
     [super setUp];
 }
 
