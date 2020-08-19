@@ -52,9 +52,13 @@
 @implementation LPEventDataManagerTest
 
 - (void)setUp {
+    [super setUp];
     id mockedDB = OCMClassMock([LPDatabase class]);
     OCMStub([mockedDB sqliteFilePath]).andReturn(@":memory:");
-    [super setUp];
+    [LeanplumHelper setup_method_swizzling];
+    [LeanplumHelper start_production_test];
+    [LPNetworkEngine setupValidateOperation];
+    [Leanplum_Reachability online:YES];
 }
 
 - (void)tearDown {
@@ -121,17 +125,10 @@
     XCTAssertTrue(events.count == 2);
     
     [LPEventDataManager deleteEventsWithLimit:10000];
-    [LeanplumHelper clean_up];
 }
 
 - (void)test_request_synchronous
 {
-    [LeanplumHelper setup_method_swizzling];
-    [LeanplumHelper clean_up];
-    [LeanplumHelper start_production_test];
-    [LPNetworkEngine setupValidateOperation];
-    [Leanplum_Reachability online:YES];
-    
     // Simulate slow network.
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];;
@@ -173,11 +170,8 @@
 
 - (void)test_response_code
 {
-    [LeanplumHelper setup_method_swizzling];
-    [LeanplumHelper start_production_test];
+    [LeanplumHelper clean_up];
     [LPEventDataManager deleteEventsWithLimit:10000];
-    [LPNetworkEngine setupValidateOperation];
-    [Leanplum_Reachability online:YES];
     
     // Simulate error from http response code.
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
@@ -202,11 +196,7 @@
 
 - (void)test_uuid
 {
-    [LeanplumHelper setup_method_swizzling];
-    [LeanplumHelper start_production_test];
     [LPEventDataManager deleteEventsWithLimit:10000];
-    [LPNetworkEngine setupValidateOperation];
-    [Leanplum_Reachability online:YES];
     
     // Simulate Error.
     id<HTTPStubsDescriptor> stubs = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
@@ -289,11 +279,7 @@
 
 - (void)test_response_index
 {
-    [LeanplumHelper setup_method_swizzling];
-    [LeanplumHelper start_production_test];
     [LPEventDataManager deleteEventsWithLimit:10000];
-    [LPNetworkEngine setupValidateOperation];
-    [Leanplum_Reachability online:YES];
     [NSThread sleepForTimeInterval:0.1];
     
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest *request) {
