@@ -1,5 +1,5 @@
 //
-//  LeanplumRequest.h
+//  LPResponse.h
 //  Leanplum
 //
 //  Created by Andrew First on 4/30/12.

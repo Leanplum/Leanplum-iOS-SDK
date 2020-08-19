@@ -30,7 +30,7 @@
 #import "LeanplumHelper.h"
 #import "LPVarCache.h"
 #import "LPConstants.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequestSender+Categories.h"
 #import "LPJSON.h"
 
 /**
@@ -115,7 +115,7 @@
 - (void)test_uploadAppIconsOnDevMode {
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3")) {
         [LeanplumHelper start_development_test];
-        [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+        [LPRequestSender validate_request:^(NSString *method, NSString *apiMethod,
                                             NSDictionary *params){
             XCTAssertEqualObjects(apiMethod, @"uploadFile");
             NSString *data = params[@"data"];
@@ -137,7 +137,7 @@
 - (void)test_uploadAppIconsOnDevMode_prod {
     if (SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(@"10.3")) {
         [LeanplumHelper start_production_test];
-        [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+        [LPRequestSender validate_request:^(NSString *method, NSString *apiMethod,
                                             NSDictionary *params){
             XCTAssertTrue(NO);
             return YES;

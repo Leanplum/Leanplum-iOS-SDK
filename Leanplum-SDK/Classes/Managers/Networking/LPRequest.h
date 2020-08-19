@@ -24,11 +24,10 @@
 
 #import <Foundation/Foundation.h>
 #import "Leanplum.h"
-#import "LPRequesting.h"
 #import "LPNetworkFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
-@interface LPRequest : NSObject <LPRequesting>
+@interface LPRequest : NSObject
 
 @property (nonatomic, strong) NSString *apiMethod;
 @property (nonatomic, strong, nullable) NSDictionary *params;

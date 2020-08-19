@@ -26,11 +26,13 @@
 #import <XCTest/XCTest.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
+#import "Leanplum+Extensions.h"
+#import <Leanplum/LPNetworkConstants.h>
+#import <Leanplum/LPFileTransferManager.h>
 #import "LPFileManager.h"
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
+#import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
-#import "Leanplum+Extensions.h"
 #import "LPConstants.h"
 
 /**
@@ -168,7 +170,7 @@
     }];
 
     // Validate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params){
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"downloadFile");
@@ -214,17 +216,15 @@
                 atomically:YES];
     
     // Validate request.
-    [LeanplumRequest validate_request:^(NSString *method, NSString *apiMethod,
+    [LPRequestSender validate_request:^(NSString *method, NSString *apiMethod,
                                         NSDictionary *params){
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"uploadFile");
         XCTAssertNotNil([params objectForKey:@"data"]);
         return YES;
     }];
-    
-    [[LeanplumRequest post:LP_METHOD_UPLOAD_FILE
-                    params:@{LP_PARAM_DATA: [LPJSON stringFromJSON:[NSMutableArray array]]}]
-     sendFilesNow:@[filePath]];
+
+    [[LPFileTransferManager sharedInstance] sendFilesNow:@[filePath] fileData:[NSMutableArray array]];
 }
 
 - (void)test_nullability

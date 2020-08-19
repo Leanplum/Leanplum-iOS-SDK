@@ -26,13 +26,18 @@
 #import <XCTest/XCTest.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
+#import <OCMock/OCMock.h>
 #import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
+#import "LPRequestFactory+Extension.h"
+#import "LPRequest+Extension.h"
+#import "LPRequestSender+Categories.h"
+#import "LPNetworkEngine+Category.h"
 #import "LPFileManager.h"
 #import "LPActionManager.h"
-#import "LPConstants.h"
+#import "LPInbox.h"
+#import <Leanplum/LPRequestFactory.h>
+#import <Leanplum/LPRequestSender.h>
 
 @interface LPInboxTest : XCTestCase
 
@@ -52,6 +57,8 @@
     [super tearDown];
     // Clean up after every test.
     [LeanplumHelper clean_up];
+    // Clean up saved requests.
+    [LPEventDataManager deleteEventsWithLimit:[LPEventDataManager count]];
     [HTTPStubs removeAllStubs];
 }
 
@@ -88,7 +95,7 @@
     }];
 
     // Vaidate request.
-    [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                         NSDictionary  *params) {
         XCTAssertEqualObjects(apiMethod, @"getNewsfeedMessages");
         return YES;
@@ -195,8 +202,8 @@
 
     // Check image has been downloaded after getNewsfeedMessages.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"downloadFile"]) {
                 return NO;
@@ -245,8 +252,8 @@
     // Check disableImagePrefetching by utilizing the fact that
     // downloadFile will be called before onChanged.
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-    [LeanplumRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        [LeanplumRequest validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+    [LPRequest validate_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
                                             NSDictionary  *params) {
             if (![apiMethod isEqual:@"DidNotDownload"]) {
                 return NO;
@@ -257,7 +264,7 @@
     }];
     [[Leanplum inbox] downloadMessages];
     [[Leanplum inbox] onChanged:^{
-        [LeanplumRequest get:@"DidNotDownload" params:nil];
+        [LPRequestFactory createGetForApiMethod:@"DidNotDownload" params:nil];
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
@@ -334,6 +341,147 @@
 
     [HTTPStubs removeStub:stub];
     [[Leanplum inbox] reset];
+}
+
+/**
+ * Tests inbox message [markAsRead]
+ * Message is marked as read
+ * markNewsfeedMessageAsRead  API action is called
+ */
+-(void)test_markAsRead
+{
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [self loadInbox:^{
+        // Wait for callback
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    
+    XCTAssertEqual(2, [[Leanplum inbox] unreadCount]);
+    LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
+    
+    semaphor = dispatch_semaphore_create(0);
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+                                        NSDictionary  *params) {
+        XCTAssertEqualObjects(apiMethod, @"markNewsfeedMessageAsRead");
+        dispatch_semaphore_signal(semaphor);
+        return YES;
+    }];
+
+    [msg markAsRead];
+
+    XCTAssertTrue([msg isRead]);
+    XCTAssertEqual(1, [[Leanplum inbox] unreadCount]);
+    
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+}
+
+/**
+ * Tests inbox message [markAsRead] does not run the message open action
+ */
+-(void)test_markAsRead_not_run_action
+{
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [self loadInbox:^{
+        // Wait for callback
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    
+    LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
+    id mock = OCMPartialMock(msg.context);
+    
+    OCMReject([mock runTrackedActionNamed:[OCMArg any]]);
+    [msg markAsRead];
+    XCTAssertTrue([msg isRead]);
+}
+
+/**
+ * Tests inbox message [read] does run the message open action and marks it as read
+ */
+-(void)test_read_runs_action
+{
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [self loadInbox:^{
+        // Wait for callback
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    
+    LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
+    id mock = OCMPartialMock(msg.context);
+    [msg read];
+    
+    OCMVerify([mock runTrackedActionNamed:[OCMArg any]]);
+    XCTAssertTrue([msg isRead]);
+}
+
+/**
+ * Tests inbox message [read]
+ * Message is marked as read
+ * markNewsfeedMessageAsRead  API action is called
+ * Message open action is run [context runTrackedActionNamed:]
+*/
+-(void)test_read
+{
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [self loadInbox:^{
+        // Wait for callback
+        dispatch_semaphore_signal(semaphor);
+    }];
+    dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    
+    XCTAssertEqual(2, [[Leanplum inbox] unreadCount]);
+    LPInboxMessage *msg = [[Leanplum inbox] allMessages][0];
+    
+    semaphor = dispatch_semaphore_create(0);
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString  *apiMethod,
+                                        NSDictionary  *params) {
+        XCTAssertEqualObjects(apiMethod, @"markNewsfeedMessageAsRead");
+        dispatch_semaphore_signal(semaphor);
+        return YES;
+    }];
+    
+    id mock = OCMPartialMock(msg.context);
+    
+    [msg read];
+    OCMVerify([mock runTrackedActionNamed:[OCMArg any]]);
+
+    XCTAssertTrue([msg isRead]);
+    XCTAssertEqual(1, [[Leanplum inbox] unreadCount]);
+    
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+}
+
+-(void)loadInbox:(void (^)(void))finishBlock
+{
+    // Do not need to fetch images
+    // Prefetching will trigger downloadFile requests
+    [[Leanplum inbox] disableImagePrefetching];
+    // Ensure errors are thrown
+    [LeanplumHelper mockThrowErrorToThrow];
+    
+    id<HTTPStubsDescriptor> getNewsfeedMessagesStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest *request) {
+        NSString *response_file = OHPathForFile(@"newsfeed_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file
+                                                statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    [[Leanplum inbox] onChanged:^{
+        [HTTPStubs removeStub:getNewsfeedMessagesStub];
+        finishBlock();
+    }];
+
+    [LeanplumHelper setup_development_test];
+    [[Leanplum inbox] downloadMessages];
 }
 
 @end

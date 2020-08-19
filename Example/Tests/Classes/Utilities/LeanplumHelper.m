@@ -27,10 +27,13 @@
 #import <XCTest/XCTest.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
-#import "LeanplumHelper.h"
-#import "LeanplumRequest+Categories.h"
-#import "LPVarCache+Extensions.h"
+#import <OCMock/OCMock.h>
 #import "Leanplum+Extensions.h"
+#import "LPRequestFactory+Extension.h"
+#import "LPRequest+Extension.h"
+#import "LeanplumHelper.h"
+#import "LPRequestSender+Categories.h"
+#import "LPVarCache+Extensions.h"
 #import "LPActionManager.h"
 #import "LeanplumReachability+Category.h"
 #import "LPNetworkEngine+Category.h"
@@ -38,6 +41,7 @@
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
 
+// Keys also used in Leanplum-Info.plist file
 NSString *APPLICATION_ID = @"app_nLiaLr3lXvCjXhsztS1Gw8j281cPLO6sZetTDxYnaSk";
 NSString *DEVELOPMENT_KEY = @"dev_2bbeWLmVJyNrqI8F21Kn9nqyUPRkVCUoLddBkHEyzmk";
 NSString *PRODUCTION_KEY = @"prod_XYpURdwPAaxJyYLclXNfACe9Y8hs084dBx2pB8wOnqU";
@@ -48,11 +52,24 @@ NSInteger DISPATCH_WAIT_TIME = 4;
 
 @implementation LeanplumHelper
 
+static NSString *_lastErrorMessage = nil;
+
++ (NSString *)lastErrorMessage {
+  return _lastErrorMessage;
+}
+
++ (void)setLastErrorMessage:(NSString *)lastErrorMessage {
+    NSLog(@"Exception: %@", lastErrorMessage);
+    _lastErrorMessage = lastErrorMessage;
+}
+
 static BOOL swizzled = NO;
 
 + (void)setup_method_swizzling {
     if (!swizzled) {
-        [LeanplumRequest swizzle_methods];
+        [LPRequestFactory swizzle_methods];
+        [LPRequest swizzle_methods];
+        [LPRequestSender swizzle_methods];
         [Leanplum_Reachability swizzle_methods];
         [LPNetworkOperation swizzle_methods];
         swizzled = YES;
@@ -122,7 +139,8 @@ static BOOL swizzled = NO;
     [[LPAPIConfig sharedConfig] setDeviceId:nil];
     [[LPAPIConfig sharedConfig] setUserId:nil];
     [[LPAPIConfig sharedConfig] setToken:nil];
-    [LeanplumRequest reset];
+    [LPRequest reset];
+    [LPRequestSender reset];
     [LeanplumHelper reset_user_defaults];
     [[LPOperationQueue serialQueue] cancelAllOperations];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
@@ -133,7 +151,11 @@ static BOOL swizzled = NO;
 }
 
 + (NSString *)retrieve_string_from_file:(NSString *)file ofType:(NSString *)type {
+#if SWIFTPM_MODULE_BUNDLE
+    NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
+#else
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+#endif
     NSString *path = [bundle pathForResource:file ofType:type];
     NSString *content = [NSString stringWithContentsOfFile:path
                                                   encoding:NSUTF8StringEncoding
@@ -143,7 +165,11 @@ static BOOL swizzled = NO;
 }
 
 + (NSData *)retrieve_data_from_file:(NSString *)file ofType:(NSString *)type {
+#if SWIFTPM_MODULE_BUNDLE
+    NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
+#else
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+#endif
     NSString *path = [bundle pathForResource:file ofType:type];
 
     return [[NSFileManager defaultManager] contentsAtPath:path];
@@ -162,6 +188,29 @@ static BOOL swizzled = NO;
 + (void)dismissPresentedViewControllers
 {
     [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:false completion:nil];
+}
+
++ (void) throwError:(NSString *) err
+{
+    [LeanplumHelper setLastErrorMessage:err];
+    @throw([NSException exceptionWithName:err reason:nil userInfo:nil]);
+}
+
++ (void) handleException:(NSException *) ex
+{
+    [LeanplumHelper setLastErrorMessage:[ex name]];
+    @throw(ex);
+}
+
++ (void) mockThrowErrorToThrow
+{
+    id mockLeanplumClass = OCMClassMock([Leanplum class]);
+    [OCMStub(ClassMethod([mockLeanplumClass throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
+
+    // Cannot mock leanplumInternalError(NSException *e) since it is a function
+    // Mocking [LPUtils handleException:e] which is used inside leanplumInternalError first
+    id mockLPUtilsClass = OCMClassMock([LPUtils class]);
+    [OCMStub(ClassMethod([mockLPUtilsClass handleException:[OCMArg any]])) andCall:@selector(handleException:) onObject:self];
 }
 
 @end

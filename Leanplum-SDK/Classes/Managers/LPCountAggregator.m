@@ -24,7 +24,9 @@
 
 #import "LPCountAggregator.h"
 #import "LPConstants.h"
-#import "LeanplumRequest.h"
+#import "LPRequestFactory.h"
+#import "LPRequest.h"
+#import "LPRequestSender.h"
 
 @interface LPCountAggregator()
 
@@ -89,7 +91,9 @@ static dispatch_once_t leanplum_onceToken;
     for (NSString *name in counts) { // iterate over counts, creating one request per counter
         int count = [counts[name] intValue];
         NSMutableDictionary<NSString *, id> *params = [self makeParams:name withCount:count];
-        [[LeanplumRequest post:LP_METHOD_LOG params:params] sendEventually:NO];
+        LPRequest *request = [LPRequestFactory logWithParams:params];
+        [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
+        
     }
 }
 

@@ -23,42 +23,40 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import "LPRequesting.h"
+#import "LPRequest.h"
 #import "LPFeatureFlagManager.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface LPRequestFactory : NSObject
 
--(instancetype)initWithFeatureFlagManager:(LPFeatureFlagManager *)featureFlagManager;
-
-- (id<LPRequesting>)startWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)getVarsWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)setVarsWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)stopWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)restartWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)trackWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)trackGeofenceWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)advanceWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)pauseSessionWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)pauseStateWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)resumeSessionWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)resumeStateWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)multiWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)registerDeviceWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)setUserAttributesWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)setDeviceAttributesWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)setTrafficSourceInfoWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)uploadFileWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)downloadFileWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)heartbeatWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)saveInterfaceWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)saveInterfaceImageWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)getViewControllerVersionsListWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)logWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)getNewsfeedMessagesWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)markNewsfeedMessageAsReadWithParams:(nullable NSDictionary *)params;
-- (id<LPRequesting>)deleteNewsfeedMessageWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)startWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)getVarsWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)setVarsWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)stopWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)restartWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)trackWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)trackGeofenceWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)advanceWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)pauseSessionWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)pauseStateWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)resumeSessionWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)resumeStateWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)multiWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)registerDeviceWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)setUserAttributesWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)setDeviceAttributesWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)setTrafficSourceInfoWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)uploadFileWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)downloadFileWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)heartbeatWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)saveInterfaceWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)saveInterfaceImageWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)getViewControllerVersionsListWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)logWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)getNewsfeedMessagesWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)markNewsfeedMessageAsReadWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)deleteNewsfeedMessageWithParams:(nullable NSDictionary *)params;
 
 @end
 
