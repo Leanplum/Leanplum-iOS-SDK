@@ -7,12 +7,11 @@
 //
 
 #import "LPMessageTemplateProtocol.h"
+#import "LPPushMessageTemplate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPPushAskToAskMessageTemplate : NSObject <LPMessageTemplateProtocol>
-
-- (void)enableSystemPush;
+@interface LPPushAskToAskMessageTemplate : LPPushMessageTemplate <LPMessageTemplateProtocol>
 
 @end
 

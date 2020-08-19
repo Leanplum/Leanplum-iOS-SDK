@@ -7,7 +7,7 @@
 //
 
 #import "LPPushAskToAskMessageTemplate.h"
-#import "LPActionManager.h"
+#import "LPPushMessageTemplate.h"
 
 @implementation LPPushAskToAskMessageTemplate
 
@@ -56,20 +56,12 @@
         @try {            
             LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
             template.context = context;
-
-            if ([Leanplum isPreLeanplumInstall]) {
-                NSLog(@"Leanplum: 'Ask to ask' conservatively falls back to just 'ask' for pre-Leanplum installs");
-                [template showPushMessage];
-                return NO;
-            } else if ([template isPushEnabled]) {
-                NSLog(@"Leanplum: Pushes already enabled");
-                return NO;
-            } else if ([template hasDisabledAskToAsk]) {
-                NSLog(@"Leanplum: Already asked to push");
-                return NO;
-            } else {
+            
+            if ([template shouldShowPushMessage]) {
                 [template showPrePushMessage];
                 return YES;
+            } else {
+                return NO;
             }
         } @catch (NSException *exception) {
             NSLog(@"Leanplum: Error in pushAskToAsk: %@\n%@", exception, [exception callStackSymbols]);
@@ -86,14 +78,9 @@
     __strong __typeof__(self) strongSelf = self;
     viewController.pushAskToAskCompletionBlock = ^{
         __typeof__(self) weakSelf = strongSelf;
-        [weakSelf enableSystemPush];
+        [weakSelf showNativePushPrompt];
     };
     return viewController;
-}
-
--(void)showPushMessage
-{
-    [self enableSystemPush];
 }
 
 -(void)showPrePushMessage
@@ -101,21 +88,6 @@
     UIViewController *viewController = [self viewControllerWithContext:self.context];
 
     [LPMessageTemplateUtilities presentOverVisible:viewController];
-}
-
-- (BOOL)isPushEnabled
-{
-    return [[LPPushNotificationsManager sharedManager] isPushEnabled];
-}
-
-- (void)enableSystemPush
-{
-    [[LPPushNotificationsManager sharedManager] enableSystemPush];
-}
-
-- (BOOL)hasDisabledAskToAsk
-{
-    return [[LPPushNotificationsManager sharedManager] hasDisabledAskToAsk];
 }
 
 @end
