@@ -111,7 +111,6 @@
 
 - (void)test_track_save
 {
-    [LeanplumHelper start_production_test];
     [LPEventDataManager deleteEventsWithLimit:10000];
     
     [Leanplum track:@"sample"];
@@ -123,8 +122,6 @@
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 2);
-    
-    [LPEventDataManager deleteEventsWithLimit:10000];
 }
 
 - (void)test_request_synchronous
@@ -200,7 +197,6 @@
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 1);
     
-    [LPEventDataManager deleteEventsWithLimit:10000];
     [HTTPStubs removeAllStubs];
 }
 
