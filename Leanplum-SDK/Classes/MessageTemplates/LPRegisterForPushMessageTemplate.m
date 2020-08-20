@@ -21,8 +21,6 @@
         LPRegisterForPushMessageTemplate *template = [[LPRegisterForPushMessageTemplate alloc] init];
         
         if ([template shouldShowPushMessage]) {
-            // Try showing the native prompt
-            // iOS can prevent showing the dialog if recently asked
             [template showNativePushPrompt];
             // Will count View event
             return YES;
@@ -32,20 +30,6 @@
         
         return YES;
     }];
-}
-
-/**
- * If push notifications are not enabled returns true.
- * Does not perform other checks as Push Ask to Ask to enable re-triggering of native prompt
- */
--(BOOL)shouldShowPushMessage
-{
-    if ([self isPushEnabled]) {
-        NSLog(@"Leanplum: Pushes already enabled");
-        return NO;
-    } else {
-        return YES;
-    }
 }
 
 @end
