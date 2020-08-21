@@ -86,10 +86,12 @@ static LPLogLevel logLevel = Info;
                            objectForKey:LP_USER_CODE_BLOCKS] intValue];
     if (userCodeBlocks <= 0) {
         @try {
+            NSString *description = [e description];
+            NSString *stackTrace = [[e callStackSymbols] description] ?: @"";
+            NSString *message = [NSString stringWithFormat:@"%@\n%@", description, stackTrace];
             LPRequest *request = [LPRequestFactory logWithParams:@{
                                      LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
-                                     LP_PARAM_MESSAGE: [e description],
-                                     LP_KEY_STACK_TRACE: [[e callStackSymbols] description] ?: @"",
+                                     LP_PARAM_MESSAGE: message,
                                      LP_PARAM_VERSION_NAME: versionName
                                      }];
             [[LPRequestSender sharedInstance] send:request];
