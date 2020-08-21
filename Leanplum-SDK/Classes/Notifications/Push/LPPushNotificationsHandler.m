@@ -243,7 +243,7 @@
     }
     [self setAppWasActivatedByReceivingPushNotification:NO];
     
-    NSLog(@"Push RECEIVED");
+    LPLog(LPDebug, @"Push RECEIVED");
 
     [Leanplum onStartIssued:^() {
         if ([self areActionsEmbedded:userInfo]) {
@@ -278,7 +278,7 @@
         }
     }
     
-    NSLog(@"Push OPENED");
+    LPLog(LPDebug, @"Push OPENED");
     LPLog(LPInfo, @"Handling push notification");
     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
     NSString *actionName;
@@ -452,7 +452,7 @@
     }
     [self setAppWasActivatedByReceivingPushNotification:NO];
     
-    NSLog(@"Push RECEIVED");
+    LPLog(LPDebug, @"Push RECEIVED");
     
     if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [Leanplum onStartIssued:^() {
@@ -498,7 +498,7 @@
         }
     };
     
-    NSLog(@"Push RECEIVED");
+    LPLog(LPDebug, @"Push RECEIVED");
 
     if (!userInfo[LP_KEY_PUSH_MUTE_IN_APP] && !userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
         [Leanplum onStartIssued:^() {

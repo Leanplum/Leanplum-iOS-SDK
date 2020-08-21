@@ -221,7 +221,7 @@ API_AVAILABLE(ios(10.0))
                     if (granted) {
                         [[UIApplication sharedApplication] registerForRemoteNotifications];
                     } else {
-                        NSLog(@"Leanplum: Failed to request authorization for user notifications: %@", error ? error : @"nil");
+                        LPLog(LPError, @"Failed to request authorization for user notifications: %@", error ? error : @"nil");
                     }
                 });
             }];
@@ -498,7 +498,7 @@ API_AVAILABLE(ios(10.0))
     }
     else
     {
-        LPLog(LPWarning, @"Method swizzling is disabled, make sure to manually call Leanplum methods.");
+        LPLog(LPInfo, @"Method swizzling is disabled, make sure to manually call Leanplum methods.");
     }
     
     // Detect receiving notifications.

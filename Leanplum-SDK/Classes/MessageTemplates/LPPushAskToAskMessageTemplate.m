@@ -58,21 +58,21 @@
             template.context = context;
 
             if ([Leanplum isPreLeanplumInstall]) {
-                NSLog(@"Leanplum: 'Ask to ask' conservatively falls back to just 'ask' for pre-Leanplum installs");
+                LPLog(LPDebug, @"'Ask to ask' conservatively falls back to just 'ask' for pre-Leanplum installs");
                 [template showPushMessage];
                 return NO;
             } else if ([template isPushEnabled]) {
-                NSLog(@"Leanplum: Pushes already enabled");
+                LPLog(LPDebug, @"Pushes already enabled");
                 return NO;
             } else if ([template hasDisabledAskToAsk]) {
-                NSLog(@"Leanplum: Already asked to push");
+                LPLog(LPDebug, @" Already asked to push");
                 return NO;
             } else {
                 [template showPrePushMessage];
                 return YES;
             }
         } @catch (NSException *exception) {
-            NSLog(@"Leanplum: Error in pushAskToAsk: %@\n%@", exception, [exception callStackSymbols]);
+            LPLog(LPError, @"PushAskToAsk: %@\n%@", exception, [exception callStackSymbols]);
             return NO;
         }
     }];

@@ -40,7 +40,7 @@
 
     NSDictionary *alternativeIcons = [LPAppIconManager alternativeIconsBundle];
     if ([LPUtils isNullOrEmpty:alternativeIcons]) {
-        LPLog(LPWarning, @"Your project does not contain any alternate app icons. "
+        LPLog(LPInfo, @"Your project does not contain any alternate app icons. "
               "Add one or more alternate icons to the info.plist. "
               "https://support.leanplum.com/hc/en-us/articles/115001519046");
         return;
@@ -55,7 +55,7 @@
                                        iconName:LP_APP_ICON_PRIMARY_NAME];
     [alternativeIcons enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         if ([key isEqualToString:LP_APP_ICON_PRIMARY_NAME]) {
-            LPLog(LPWarning, @"%@ is reserved for primary icon."
+            LPLog(LPInfo, @"%@ is reserved for primary icon."
                   "This alternative icon will not be uploaded.", LP_APP_ICON_PRIMARY_NAME);
             return;
         }
@@ -67,7 +67,7 @@
     LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA:
                                                     [LPJSON stringFromJSON:requestParam]}];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
-        LPLog(LPVerbose, @"App icons uploaded.");
+        LPLog(LPDebug, @"App icons uploaded.");
     }];
     [request onError:^(NSError *error) {
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);

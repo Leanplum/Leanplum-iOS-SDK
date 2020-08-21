@@ -120,6 +120,8 @@
 		9E53F71D247D34C80097955F /* LPNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E53F70D247D34C80097955F /* LPNotificationsManager.m */; };
 		9E53F71E247D34C80097955F /* LPNotificationsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E53F70E247D34C80097955F /* LPNotificationsConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9EE5FF9F24CEC57300153AF8 /* LPNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */; };
+		9EEE92B424D95765003F0720 /* LPLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE92B224D95765003F0720 /* LPLogManager.m */; };
+		9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EEE92B324D95765003F0720 /* LPLogManager.h */; };
 		A0997BC1F68082938784DE20 /* NSTimer+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = 69CD8EF6F74200A4C9A7EC2C /* NSTimer+Blocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A110EDF01425A4789CC5FC1A /* LPEventDataManager.h in Headers */ = {isa = PBXBuildFile; fileRef = C135ED022E215F3C08278A5F /* LPEventDataManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A456BBE6B7B8BBDCE6E015A7 /* LPAppRatingMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = D54CB698E3D746A326FA3CA8 /* LPAppRatingMessageTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -286,6 +288,8 @@
 		9E53F70E247D34C80097955F /* LPNotificationsConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPNotificationsConstants.h; sourceTree = "<group>"; };
 		9E9DB3E0D7DB2F1091343C0C /* LPActionArg.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPActionArg.m; sourceTree = "<group>"; };
 		9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPNetworkConstants.h; sourceTree = "<group>"; };
+		9EEE92B224D95765003F0720 /* LPLogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLogManager.m; sourceTree = "<group>"; };
+		9EEE92B324D95765003F0720 /* LPLogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLogManager.h; sourceTree = "<group>"; };
 		A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPActionContext-Internal.h"; sourceTree = "<group>"; };
 		A0F9F2FC5CCC4CB57626B434 /* LPNetworkEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNetworkEngine.m; sourceTree = "<group>"; };
 		A34F75D8A2B33CC1F9646411 /* LPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPViewController.h; sourceTree = "<group>"; };
@@ -639,6 +643,8 @@
 				1D3AEC4E13D4A8B8E727A0A0 /* LPCountAggregator.m */,
 				666897C55C116E45E90D0C1D /* LPFileManager.h */,
 				0D7B5C11EE9D57EF8469D0C2 /* LPFileManager.m */,
+				9EEE92B324D95765003F0720 /* LPLogManager.h */,
+				9EEE92B224D95765003F0720 /* LPLogManager.m */,
 				B8CCB082982C75C264BBB1C7 /* LPRegisterDevice.h */,
 				D7A7FA80A49796B2E2CAA1BD /* LPRegisterDevice.m */,
 				D721C3479F2D5B3458AD3483 /* LPRevenueManager.h */,
@@ -859,6 +865,7 @@
 				AF13BAD1CD1932794C36E03D /* LPWebInterstitialViewController.h in Headers */,
 				B39D73EE1033D842008EB4DE /* Leanplum.h in Headers */,
 				5E2273EFA0ED797396DEDDC1 /* LeanplumCompatibility.h in Headers */,
+				9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */,
 				A715BC149B459806473982B4 /* LeanplumInternal.h in Headers */,
 				4263CE77DAD823E9008A4403 /* LeanplumRequest.h in Headers */,
 				A4618571D02EBF40BD408655 /* LeanplumSDK_iOS.h in Headers */,
@@ -1043,6 +1050,7 @@
 				C0809E4371528B725053B56C /* NSString+MD5Addition.m in Sources */,
 				9E53F71D247D34C80097955F /* LPNotificationsManager.m in Sources */,
 				BB155F5786EA09529510FD58 /* NSTimer+Blocks.m in Sources */,
+				9EEE92B424D95765003F0720 /* LPLogManager.m in Sources */,
 				0B46E14546E478611F5E96F9 /* UIDevice+IdentifierAddition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
