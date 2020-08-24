@@ -109,6 +109,11 @@ static LPLogLevel logLevel = Info;
 @end
 
 void LPLog(LPLogType type , NSString *format, ...) {
+    va_list vargs;
+    va_start(vargs, format);
+    NSString *formattedMessage = [[NSString alloc] initWithFormat:format arguments:vargs];
+    va_end(vargs);
+    
     LPLogLevel level = [LPLogManager logLevel];
     NSString *message = nil;
     NSString *leanplumString = @"LEANPLUM";
@@ -117,7 +122,7 @@ void LPLog(LPLogType type , NSString *format, ...) {
     switch (type) {
         case LPDebug:
             logType = @"DEBUG";
-            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
+            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, formattedMessage];
             [LPLogManager maybeSendLog:message];
             if (level < Debug) {
                 return;
@@ -125,7 +130,7 @@ void LPLog(LPLogType type , NSString *format, ...) {
             break;
         case LPInfo:
             logType = @"INFO";
-            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
+            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, formattedMessage];
             [LPLogManager maybeSendLog:message];
             if (level < Info) {
                 return;
@@ -133,7 +138,7 @@ void LPLog(LPLogType type , NSString *format, ...) {
             break;
         case LPError:
             logType = @"ERROR";
-            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, format];
+            message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, formattedMessage];
             [LPLogManager maybeSendLog:message];
             if (level < Error) {
                 return;
