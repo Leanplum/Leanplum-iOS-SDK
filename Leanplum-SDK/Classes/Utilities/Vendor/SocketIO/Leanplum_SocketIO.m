@@ -43,6 +43,7 @@
 
 #import "LPNetworkProtocol.h"
 #import "Leanplum_WebSocket.h"
+#import "LPLogManager.h"
 
 #import "LPJSON.h"
 
@@ -530,7 +531,7 @@
     NSArray *data = [responseString componentsSeparatedByString:@":"];
 
     if ([data count] < 4) {
-        NSLog(@"Leanplum: Development socket error. Missing data: %@", data);
+        LPLog(LPError, @"Development socket error. Missing data: %@", data);
         return;
     }
 
@@ -552,7 +553,7 @@
 
 - (void) requestFailed:(NSError *)error
 {
-    NSLog(@"Leanplum: ERROR: handshake failed ... %@", [error localizedDescription]);
+    LPLog(LPError, @"Handshake failed ... %@", [error localizedDescription]);
 
     _isConnecting = NO;
     _isConnected  = NO;
@@ -580,7 +581,7 @@
 
 - (void) webSocket:(Leanplum_WebSocket *)ws didFailWithError:(NSError *)error
 {
-    NSLog(@"Leanplum: ERROR: Connection failed with error ... %@", [error localizedDescription]);
+    LPLog(LPError, @"Connection failed with error ... %@", [error localizedDescription]);
 }
 
 - (void) webSocket:(Leanplum_WebSocket *)ws didReceiveMessage:(NSString*)message
@@ -593,7 +594,7 @@
 - (void) log:(NSString *)message
 {
 #ifdef DEBUG
-    NSLog(@"Leanplum: %@", message);
+    LPLog(LPDebug, message);
 #endif
 }
 

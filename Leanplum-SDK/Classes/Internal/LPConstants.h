@@ -264,7 +264,6 @@ OBJC_EXPORT NSString *LP_VALUE_DEFAULT_PUSH_ACTION;
 OBJC_EXPORT NSString *LP_VALUE_DEFAULT_PUSH_MESSAGE;
 OBJC_EXPORT NSString *LP_VALUE_SDK_LOG;
 OBJC_EXPORT NSString *LP_VALUE_SDK_COUNT;
-OBJC_EXPORT NSString *LP_VALUE_SDK_ERROR;
 OBJC_EXPORT NSString *LP_VALUE_SDK_START_LATENCY;
 
 OBJC_EXPORT NSString *LP_KEYCHAIN_SERVICE_NAME;
@@ -291,12 +290,11 @@ UIColor *leanplum_intToColor(long long value);
 #define LP_TRY @try {
 #define LP_END_TRY }\
 @catch (NSException *e) {\
-leanplumInternalError(e); }
+[LPLogManager logInternalError:e]; }
 
 #define LP_BEGIN_USER_CODE leanplumIncrementUserCodeBlock(1);
 #define LP_END_USER_CODE leanplumIncrementUserCodeBlock(-1);
 
 void leanplumIncrementUserCodeBlock(int delta);
-void leanplumInternalError(NSException *e);
 
 NS_ASSUME_NONNULL_END

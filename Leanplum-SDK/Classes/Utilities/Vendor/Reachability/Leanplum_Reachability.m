@@ -26,6 +26,9 @@
  */
 
 #import "Leanplum_Reachability.h"
+#ifdef DEBUG
+#import "LPLogManager.h"
+#endif
 
 
 NSString *const kLeanplumReachabilityChangedNotification = @"leanplum_kReachabilityChangedNotification";
@@ -392,7 +395,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
 -(void)reachabilityChanged:(SCNetworkReachabilityFlags)flags
 {
 #ifdef DEBUG
-    NSLog(@"Leanplum: Reachability: %@", reachabilityFlags(flags));
+    LPLog(LPDebug, @"Reachability: %@", reachabilityFlags(flags));
 #endif
     
     if([self isReachable])
@@ -400,7 +403,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
         if(self.reachableBlock)
         {
 #ifdef DEBUG
-            NSLog(@"Leanplum: Reachability: blocks are not called on the main thread.\n Use dispatch_async(dispatch_get_main_queue(), ^{}] to update your UI!");
+            LPLog(LPDebug, @"Reachability: blocks are not called on the main thread.\n Use dispatch_async(dispatch_get_main_queue(), ^{}] to update your UI!");
 #endif
             self.reachableBlock(self);
         }
@@ -410,7 +413,7 @@ static void TMReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkRea
         if(self.unreachableBlock)
         {
 #ifdef DEBUG
-            NSLog(@"Leanplum: Reachability: blocks are not called on the main thread.\n Use dispatch_async(dispatch_get_main_queue(), ^{}] to update your UI!");
+            LPLog(LPDebug, @"Reachability: blocks are not called on the main thread.\n Use dispatch_async(dispatch_get_main_queue(), ^{}] to update your UI!");
 #endif
             self.unreachableBlock(self);
         }

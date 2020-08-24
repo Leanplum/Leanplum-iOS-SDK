@@ -77,7 +77,7 @@
 - (NSInteger)HTTPStatusCode
 {
     if (!self.response) {
-        LPLog(LPWarning, @"No response from %@. Make sure to call in the callback",
+        LPLog(LPInfo, @"No response from %@. Make sure to call in the callback",
               self.request.URL.absoluteString);
         return 0;
     }
@@ -92,7 +92,7 @@
 - (id)responseJSON
 {
     if (!self.dataFromResponse) {
-        LPLog(LPWarning, @"No response data from %@. Make sure to call in the callback",
+        LPLog(LPInfo, @"No response data from %@. Make sure to call in the callback",
               self.request.URL.absoluteString);
         return @{};
     }
@@ -102,7 +102,7 @@
 - (NSData *)responseData
 {
     if (!self.dataFromResponse) {
-        LPLog(LPWarning, @"No response data from %@. Make sure to call in the callback",
+        LPLog(LPInfo, @"No response data from %@. Make sure to call in the callback",
               self.request.URL.absoluteString);
     }
     return self.dataFromResponse;
@@ -111,7 +111,7 @@
 - (NSString *)responseString
 {
     if (!self.dataFromResponse) {
-        LPLog(LPWarning, @"No response data from %@. Make sure to call in the callback",
+        LPLog(LPInfo, @"No response data from %@. Make sure to call in the callback",
               self.request.URL.absoluteString);
         return @"";
     }

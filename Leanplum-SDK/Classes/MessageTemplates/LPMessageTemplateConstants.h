@@ -87,5 +87,5 @@
 
 #define LIGHT_GRAY (246.0/255.0)
 
-#define LOG_LP_MESSAGE_EXCEPTION NSLog(@"Leanplum: Error in message template %@: %@\n%@", \
+#define LOG_LP_MESSAGE_EXCEPTION LPLog(LPError, @"Error in message template %@: %@\n%@", \
 context.actionName, exception, [exception callStackSymbols])
