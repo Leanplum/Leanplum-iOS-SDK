@@ -7,7 +7,7 @@
 //
 
 #import "LPRegisterForPushMessageTemplate.h"
-#import "LPPushAskToAskMessageTemplate.h"
+#import "LPPushMessageTemplate.h"
 
 @implementation LPRegisterForPushMessageTemplate
 
@@ -18,11 +18,16 @@
              withArguments:@[]
              withResponder:^BOOL(LPActionContext *context) {
 
-        // TODO: when push check is moved away from templates, refactor to call it.
-        LPPushAskToAskMessageTemplate* template = [[LPPushAskToAskMessageTemplate alloc] init];
-        template.context = context;
-
-        [template enableSystemPush];
+        LPRegisterForPushMessageTemplate *template = [[LPRegisterForPushMessageTemplate alloc] init];
+        
+        if ([template shouldShowPushMessage]) {
+            [template showNativePushPrompt];
+            // Will count View event
+            return YES;
+        } else {
+            return NO;
+        }
+        
         return YES;
     }];
 }
