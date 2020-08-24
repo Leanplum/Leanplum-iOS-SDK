@@ -7,21 +7,21 @@
 
 #import "LPPushMessageTemplate.h"
 #import "LPActionManager.h"
+#import "LPLogManager.h"
 
 @implementation LPPushMessageTemplate
 
-// TODO: Use the new logging when it is merged
 -(BOOL)shouldShowPushMessage
 {
     if ([Leanplum isPreLeanplumInstall]) {
-        NSLog(@"Leanplum: 'Ask to ask' conservatively falls back to just 'ask' for pre-Leanplum installs");
+        LPLog(LPDebug, @"'Ask to ask' conservatively falls back to just 'ask' for pre-Leanplum installs");
         [self showNativePushPrompt];
         return NO;
     } else if ([self isPushEnabled]) {
-        NSLog(@"Leanplum: Pushes already enabled");
+        LPLog(LPDebug, @"Pushes already enabled");
         return NO;
     } else if ([self hasDisabledAskToAsk]) {
-        NSLog(@"Leanplum: Already asked to push");
+        LPLog(LPDebug, @" Already asked to push");
         return NO;
     } else {
         return YES;
