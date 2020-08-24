@@ -358,7 +358,7 @@ static BOOL LPVAR_PRINTED_CALLBACK_WARNING = NO;
 - (void)warnIfNotStarted
 {
     if (!_isInternal && ![LPInternalState sharedState].hasStarted && ![LPVar printedCallbackWarning]) {
-        NSLog(@"Leanplum: WARNING: Leanplum hasn't finished retrieving values from the server. You "
+        LPLog(LPInfo, @"Leanplum hasn't finished retrieving values from the server. You "
               @"should use a callback to make sure the value for '%@' is ready. Otherwise, your "
               @"app may not use the most up-to-date value.", self.name);
         [LPVar setPrintedCallbackWarning:YES];

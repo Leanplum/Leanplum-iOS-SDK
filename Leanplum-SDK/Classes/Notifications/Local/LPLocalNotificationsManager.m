@@ -61,7 +61,7 @@
             countdown = @(5.0);
         }
         if (![countdown.class isSubclassOfClass:NSNumber.class]) {
-            LPLog(LPInternal, @"Invalid notification countdown: %@", countdown);
+            LPLog(LPDebug, @"Invalid notification countdown: %@", countdown);
             return NO;
         }
         int countdownSeconds = [countdown intValue];

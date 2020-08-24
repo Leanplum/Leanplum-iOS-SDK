@@ -117,7 +117,7 @@ void leanplumExceptionHandler(NSException *exception);
                                                          @"in development mode.", reason]
                      userInfo:nil]);
     } else {
-        NSLog(@"Leanplum: Error: %@", reason);
+        LPLog(LPError, reason);
     }
 }
 
@@ -179,6 +179,16 @@ void leanplumExceptionHandler(NSException *exception);
 {
     LP_TRY
     [LPConstantsState sharedState].verboseLoggingInDevelopmentMode = enabled;
+    if (enabled) {
+        [Leanplum setLogLevel:Debug];
+    }
+    LP_END_TRY
+}
+
++ (void)setLogLevel:(LPLogLevel)level
+{
+    LP_TRY
+    [LPLogManager setLogLevel:level];
     LP_END_TRY
 }
 
@@ -268,13 +278,13 @@ void leanplumExceptionHandler(NSException *exception);
     NSString *plistFilePath = [[NSBundle mainBundle] pathForResource:kAppKeysFileName ofType:kAppKeysFileType];
     NSString *ignoreMessage = @"Ignore if not using Leanplum with plist configuration.";
     if (plistFilePath == nil) {
-        NSLog(@"%@", [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] Could not locate configuration file: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
+        LPLog(LPDebug, [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] Could not locate configuration file: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
         return nil;
     }
     
     NSDictionary *appKeysDictionary = [NSDictionary dictionaryWithContentsOfFile:plistFilePath];
     if (appKeysDictionary == nil) {
-        NSLog(@"%@", [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] The configuration file is not a dictionary: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
+        LPLog(LPDebug, [NSString stringWithFormat:@"[Leanplum getDefaultAppKeysPlist] The configuration file is not a dictionary: '%@.%@'. %@", kAppKeysFileName, kAppKeysFileType, ignoreMessage]);
     }
     
     return appKeysDictionary;
@@ -283,11 +293,11 @@ void leanplumExceptionHandler(NSException *exception);
 + (BOOL)setAppUsingPlist:(NSDictionary *)appKeysDictionary forEnvironment:(NSString *)env {
     if ([[env lowercaseString] isEqualToString:kEnvDevelopment]) {
         [self setAppId:appKeysDictionary[kAppIdKey] withDevelopmentKey:appKeysDictionary[kDevKey]];
-        NSLog(@"%@", [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvDevelopment, kAppKeysFileName, kAppKeysFileType]);
+        LPLog(LPDebug, [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvDevelopment, kAppKeysFileName, kAppKeysFileType]);
         return YES;
     } else if ([[env lowercaseString] isEqualToString:kEnvProduction]) {
         [self setAppId:appKeysDictionary[kAppIdKey] withProductionKey:appKeysDictionary[kProdKey]];
-        NSLog(@"%@", [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvProduction, kAppKeysFileName, kAppKeysFileType]);
+        LPLog(LPDebug, [NSString stringWithFormat:@"Leanplum configured for '%@' using configuration file: '%@.%@'.", kEnvProduction, kAppKeysFileName, kAppKeysFileType]);
         return YES;
     }
     return NO;
@@ -773,7 +783,7 @@ void leanplumExceptionHandler(NSException *exception);
             [Leanplum resume];
             return;
         }
-        NSLog(@"Leanplum: Error: Already called start.");
+        LPLog(LPError, @"Already called start.");
         return;
     }
 
@@ -957,7 +967,7 @@ void leanplumExceptionHandler(NSException *exception);
                 // Check for updates.
                 NSString *latestVersion = response[LP_KEY_LATEST_VERSION];
                 if (latestVersion) {
-                    NSLog(@"Leanplum: A newer version of the SDK, %@, is available. Please go to "
+                    LPLog(LPInfo, @"A newer version of the SDK, %@, is available. Please go to "
                           @"leanplum.com to download it.", latestVersion);
                 }
             }
@@ -2131,7 +2141,7 @@ andParameters:(NSDictionary *)params
     // Some clients are calling this method with NSNumber. Handle it gracefully.
     id tempUserId = userId;
     if ([tempUserId isKindOfClass:[NSNumber class]]) {
-        LPLog(LPWarning, @"setUserId is called with NSNumber. Please use NSString.");
+        LPLog(LPInfo, @"setUserId is called with NSNumber. Please use NSString.");
         userId = [tempUserId stringValue];
     }
 
@@ -2559,80 +2569,6 @@ void leanplumExceptionHandler(NSException *exception)
     return nil;
 }
 
-void LPLog(LPLogType type, NSString *format, ...) {
-    va_list vargs;
-    va_start(vargs, format);
-    NSString *formattedMessage = [[NSString alloc] initWithFormat:format arguments:vargs];
-    va_end(vargs);
-
-    NSString *message;
-    switch (type) {
-        case LPDebug:
-#ifdef DEBUG
-            message = [NSString stringWithFormat:@"Leanplum DEBUG: %@", formattedMessage];
-            printf("%s\n", [message UTF8String]);
-#endif
-            return;
-        case LPVerbose:
-            if ([LPConstantsState sharedState].isDevelopmentModeEnabled
-                && [LPConstantsState sharedState].verboseLoggingInDevelopmentMode) {
-                message = [NSString stringWithFormat:@"Leanplum VERBOSE: %@", formattedMessage];
-                printf("%s\n", [message UTF8String]);
-                [Leanplum maybeSendLog:message];
-            }
-            return;
-        case LPError:
-            message = [NSString stringWithFormat:@"Leanplum ERROR: %@", formattedMessage];
-            printf("%s\n", [message UTF8String]);
-            [Leanplum maybeSendLog:message];
-            return;
-        case LPWarning:
-            message = [NSString stringWithFormat:@"Leanplum WARNING: %@", formattedMessage];
-            printf("%s\n", [message UTF8String]);
-            [Leanplum maybeSendLog:message];
-            return;
-        case LPInfo:
-            message = [NSString stringWithFormat:@"Leanplum INFO: %@", formattedMessage];
-            printf("%s\n", [message UTF8String]);
-            [Leanplum maybeSendLog:message];
-            return;
-        case LPInternal:
-            message = [NSString stringWithFormat:@"Leanplum INTERNAL: %@", formattedMessage];
-            [Leanplum maybeSendLog:message];
-            return;
-        default:
-            return;
-    }
-}
-
-+ (void)maybeSendLog:(NSString *)message {
-    if (![LPConstantsState sharedState].loggingEnabled) {
-        return;
-    }
-
-    NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
-    BOOL isLogging = [[[[NSThread currentThread] threadDictionary]
-                       objectForKey:LP_IS_LOGGING] boolValue];
-
-    if (isLogging) {
-        return;
-    }
-
-    threadDict[LP_IS_LOGGING] = @YES;
-
-    @try {
-        LPRequest *request = [LPRequestFactory logWithParams:@{
-                                                      LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
-                                                      LP_PARAM_MESSAGE: message
-                                                      }];
-        [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
-    } @catch (NSException *exception) {
-        NSLog(@"Leanplum: Unable to send log: %@", exception);
-    } @finally {
-        [threadDict removeObjectForKey:LP_IS_LOGGING];
-    }
-}
-
 /**
  * Returns the name of LPLocationAccuracyType.
  */
@@ -2681,7 +2617,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
     LP_TRY
     if ([LPConstantsState sharedState].isLocationCollectionEnabled &&
         NSClassFromString(@"LPLocationManager")) {
-        LPLog(LPWarning, @"Leanplum is automatically collecting device location, "
+        LPLog(LPInfo, @"Leanplum is automatically collecting device location, "
               "so there is no need to call setDeviceLocation. If you prefer to "
               "always set location manually, then call disableLocationCollection:.");
     }

@@ -58,9 +58,9 @@ static BOOL willSendErrorLog;
 
     if (result == SQLITE_OK) {
         if ([LPFileManager addSkipBackupAttributeToItemAtPath:[LPDatabase sqliteFilePath]]) {
-            NSLog(@"Leanplum: Successfully excluded database from syncing.");
+            LPLog(LPDebug, @"Successfully excluded database from syncing.");
         } else {
-            NSLog(@"Leanplum: Unable to exclude database from syncing.");
+            LPLog(LPDebug, @"Unable to exclude database from syncing.");
         }
     }
 

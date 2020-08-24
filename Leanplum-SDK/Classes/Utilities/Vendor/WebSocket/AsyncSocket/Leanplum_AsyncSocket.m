@@ -13,6 +13,7 @@
 #import <netinet/in.h>
 #import <arpa/inet.h>
 #import <netdb.h>
+#import "LPLogManager.h"
 
 #if TARGET_OS_IPHONE
 // Note: You may need to add the CFNetwork Framework to your project
@@ -877,8 +878,6 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	{
 		err = CFSocketSetAddress (theSocket4, (CFDataRef)address4);
 		if (err != kCFSocketSuccess) goto Failed;
-		
-		//NSLog(@"Leanplum: theSocket4: %hu", [self localPort:theSocket4]);
 	}
 	
 	if(port == 0 && theSocket4 && theSocket6 && address6)
@@ -896,9 +895,7 @@ static void MyCFWriteStreamCallback(CFWriteStreamRef stream, CFStreamEventType t
 	{
 		err = CFSocketSetAddress (theSocket6, (CFDataRef)address6);
 		if (err != kCFSocketSuccess) goto Failed;
-		
-		//NSLog(@"Leanplum: theSocket6: %hu", [self localPort:theSocket6]);
-	}
+    }
 
 	theFlags |= kDidPassConnectMethod;
 	return YES;
@@ -1282,7 +1279,7 @@ Failed:
 	{
 		NSError *err = [self getStreamError];
 		
-		NSLog (@"Leanplum: AsyncSocket %p couldn't create streams from accepted socket: %@", self, err);
+		LPLog(LPError, @"AsyncSocket %p couldn't create streams from accepted socket: %@", self, err);
 		
 		if (errPtr) *errPtr = err;
 		return NO;
@@ -1335,8 +1332,8 @@ Failed:
 	{
 		NSError *err = [self getStreamError];
 		
-		NSLog (@"Leanplum: AsyncSocket %p couldn't attach read stream to run-loop,", self);
-		NSLog (@"Leanplum: Error: %@", err);
+		LPLog(LPError, @"AsyncSocket %p couldn't attach read stream to run-loop,", self);
+		LPLog(LPError, err);
 		
 		if (errPtr) *errPtr = err;
 		return NO;
@@ -1356,8 +1353,8 @@ Failed:
 	{
 		NSError *err = [self getStreamError];
 		
-		NSLog (@"Leanplum: AsyncSocket %p couldn't attach write stream to run-loop,", self);
-		NSLog (@"Leanplum: Error: %@", err);
+		LPLog(LPError, @"AsyncSocket %p couldn't attach write stream to run-loop,", self);
+		LPLog(LPError, err);
 		
 		if (errPtr) *errPtr = err;
 		return NO;
@@ -1400,13 +1397,13 @@ Failed:
 	
 	if(pass && !CFReadStreamOpen (theReadStream))
 	{
-		NSLog (@"Leanplum: AsyncSocket %p couldn't open read stream,", self);
+		LPLog(LPError, @"AsyncSocket %p couldn't open read stream,", self);
 		pass = NO;
 	}
 	
 	if(pass && !CFWriteStreamOpen (theWriteStream))
 	{
-		NSLog (@"Leanplum: AsyncSocket %p couldn't open write stream,", self);
+		LPLog(LPError, @"AsyncSocket %p couldn't open write stream,", self);
 		pass = NO;
 	}
 	
@@ -1430,7 +1427,7 @@ Failed:
 		// Get the socket.
 		if (![self setSocketFromStreamsAndReturnError: &err])
 		{
-			NSLog (@"Leanplum: AsyncSocket %p couldn't get socket from streams, %@. Disconnecting.", self, err);
+			LPLog(LPError, @"AsyncSocket %p couldn't get socket from streams, %@. Disconnecting.", self, err);
 			[self closeWithError:err];
 			return;
 		}
@@ -1474,7 +1471,7 @@ Failed:
 	CFDataRef peeraddr = CFSocketCopyPeerAddress(theSocket);
 	if(peeraddr == NULL)
 	{
-		NSLog(@"Leanplum: AsyncSocket couldn't determine IP version of socket");
+		LPLog(LPError, @"AsyncSocket couldn't determine IP version of socket");
 		
 		CFRelease(theSocket);
 		
@@ -2985,7 +2982,7 @@ Failed:
 			[self doAcceptWithSocket: *((CFSocketNativeHandle *)pData)];
 			break;
 		default:
-			NSLog (@"Leanplum: AsyncSocket %p received unexpected CFSocketCallBackType %lu.", self, (unsigned long) type);
+			LPLog(LPError, @"AsyncSocket %p received unexpected CFSocketCallBackType %lu.", self, (unsigned long) type);
 			break;
 	}
 }
@@ -3016,7 +3013,7 @@ Failed:
 			[self closeWithError: [self errorFromCFStreamError:err]];
 			break;
 		default:
-			NSLog (@"Leanplum: AsyncSocket %p received unexpected CFReadStream callback, CFStreamEventType %lu.", self, type);
+			LPLog(LPError, @"AsyncSocket %p received unexpected CFReadStream callback, CFStreamEventType %lu.", self, type);
 	}
 }
 
@@ -3046,7 +3043,7 @@ Failed:
 			[self closeWithError: [self errorFromCFStreamError:err]];
 			break;
 		default:
-			NSLog (@"Leanplum: AsyncSocket %p received unexpected CFWriteStream callback, CFStreamEventType %lu.", self, type);
+			LPLog(LPError, @"AsyncSocket %p received unexpected CFWriteStream callback, CFStreamEventType %lu.", self, type);
 	}
 }
 

@@ -213,7 +213,6 @@ NSString *LP_VALUE_DEFAULT_PUSH_ACTION = @"Open action";
 NSString *LP_VALUE_DEFAULT_PUSH_MESSAGE = @"Push message goes here.";
 NSString *LP_VALUE_SDK_LOG = @"sdkLog";
 NSString *LP_VALUE_SDK_COUNT = @"sdkCount";
-NSString *LP_VALUE_SDK_ERROR = @"sdkError";
 NSString *LP_VALUE_SDK_START_LATENCY = @"sdkStartLatency";
 
 NSString *LP_KEYCHAIN_SERVICE_NAME = @"com.leanplum.storage";
@@ -259,47 +258,4 @@ void leanplumIncrementUserCodeBlock(int delta)
 {
     NSMutableDictionary *threadDict = [[NSThread currentThread] threadDictionary];
     threadDict[LP_USER_CODE_BLOCKS] = @([threadDict[LP_USER_CODE_BLOCKS] intValue] + delta);
-}
-
-void leanplumInternalError(NSException *e)
-{
-    [LPUtils handleException:e];
-    if ([e.name isEqualToString:@"Leanplum Error"]) {
-        @throw e;
-    }
-    
-    for (id symbol in [e callStackSymbols]) {
-        NSString *description = [symbol description];
-        if ([description rangeOfString:@"+[Leanplum trigger"].location != NSNotFound
-            || [description rangeOfString:@"+[Leanplum throw"].location != NSNotFound
-            || [description rangeOfString:@"-[LPVar trigger"].location != NSNotFound
-            || [description rangeOfString:@"+[Leanplum setApiHostName"].location != NSNotFound) {
-            @throw e;
-        }
-    }
-    NSString *versionName = [[[NSBundle mainBundle] infoDictionary]
-                             objectForKey:@"CFBundleVersion"];
-    if (!versionName) {
-        versionName = @"";
-    }
-    int userCodeBlocks = [[[[NSThread currentThread] threadDictionary]
-                           objectForKey:LP_USER_CODE_BLOCKS] intValue];
-    if (userCodeBlocks <= 0) {
-        @try {
-            LPRequest *request = [LPRequestFactory logWithParams:@{
-                                     LP_PARAM_TYPE: LP_VALUE_SDK_ERROR,
-                                     LP_PARAM_MESSAGE: [e description],
-                                     @"stackTrace": [[e callStackSymbols] description] ?: @"",
-                                     LP_PARAM_VERSION_NAME: versionName
-                                     }];
-            [[LPRequestSender sharedInstance] send:request];
-        } @catch (NSException *e) {
-            // This empty try/catch is needed to prevent crash <-> loop.
-        }
-        NSLog(@"Leanplum: INTERNAL ERROR: %@\n%@", e, [e callStackSymbols]);
-    } else {
-        NSLog(@"Leanplum: Caught exception in callback code: %@\n%@", e, [e callStackSymbols]);
-        LP_END_USER_CODE
-        @throw e;
-    }
 }

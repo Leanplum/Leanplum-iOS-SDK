@@ -83,7 +83,7 @@ static NSObject *updatingLock;
 
         NSArray *messageIdParts = [messageId componentsSeparatedByString:@"##"];
         if ([messageIdParts count] != 2) {
-            NSLog(@"Leanplum: Malformed inbox messageId: %@", messageId);
+            LPLog(LPInfo, @"Malformed inbox messageId: %@", messageId);
             return nil;
         }
         _context = [LPActionContext actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
@@ -145,7 +145,7 @@ static NSObject *updatingLock;
     }
 
     if (![LPConstantsState sharedState].isInboxImagePrefetchingEnabled) {
-        LPLog(LPWarning, @"Inbox Message image path is null "
+        LPLog(LPInfo, @"Inbox Message image path is null "
               "because you're calling [Leanplum disableImagePrefetching]. "
               "Consider using imageURL method or remove disableImagePrefetching.");
     }
@@ -319,7 +319,7 @@ static NSObject *updatingLock;
             }
         }
     } @catch (NSException *exception) {
-        NSLog(@"Leanplum: Could not load the Inbox data: %@", exception);
+        LPLog(LPError, @"Could not load the Inbox data: %@", exception);
     }
 }
 

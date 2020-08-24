@@ -327,7 +327,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
                                                        attributes:nil
                                                             error:&error];
             if (error != nil) {
-                NSLog(@"Leanplum: Error creating directory: %@", error);
+                LPLog(LPError, @"Error creating directory: %@", error);
             } else {
                 [directoryExistenceCache addObject:directory];
             }
@@ -462,7 +462,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
 + (void)linkItemAtPath:(NSString *)source toPath:(NSString *)dest
 {
     if (symlink([source UTF8String], [dest UTF8String])) {
-        NSLog(@"Leanplum: Error syncing file %@: Code %d", source, errno);
+        LPLog(LPError, @"Syncing file %@: Code %d", source, errno);
     }
 }
 
@@ -617,7 +617,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         if (!error) {
             [regexArray addObject:regex];
         } else {
-            NSLog(@"Leanplum: Error: %@", error);
+            LPLog(LPError, error);
             error = nil;
         }
     }
@@ -824,7 +824,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     if (error) {
-        NSLog(@"Leanplum: %@", error);
+        LPLog(LPError, error);
     }
     hasInited = YES;
     initializing = NO;
@@ -847,7 +847,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
                                       forKey:NSURLIsExcludedFromBackupKey
                                        error:&error];
         if (!success) {
-            NSLog(@"Leanplum: Error excluding %@ from backup %@", [url lastPathComponent], error);
+            LPLog(LPError, @"Excluding %@ from backup %@", [url lastPathComponent], error);
         }
         return success;
     }
@@ -872,7 +872,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
             BOOL result = [fileManager removeItemAtPath:[cachesDir stringByAppendingPathComponent:file] error:&error];
 
             if (!result && error) {
-                NSLog(@"Cleaning cache error: %@, for file %@", error, file);
+                LPLog(LPError, @"Cleaning cache error: %@, for file %@", error, file);
             }
         }
     }

@@ -98,11 +98,11 @@
     RETURN_IF_TEST_MODE;
 
     if (![LPAPIConfig sharedConfig].appId) {
-        NSLog(@"Leanplum: Cannot send request. appId is not set");
+        LPLog(LPError, @"Cannot send request. appId is not set");
         return;
     }
     if (![LPAPIConfig sharedConfig].accessKey) {
-        NSLog(@"Leanplum: Cannot send request. accessKey is not set");
+        LPLog(LPError, @"Cannot send request. accessKey is not set");
         return;
     }
 
@@ -383,7 +383,7 @@
                 || err.code == NSURLErrorDNSLookupFailed
                 || err.code == NSURLErrorNotConnectedToInternet
                 || err.code == NSURLErrorTimedOut) {
-                NSLog(@"Leanplum: %@", err);
+                LPLog(LPError, err);
             } else {
                 id errorResponse = completedOperation.responseJSON;
                 NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
@@ -398,9 +398,9 @@
                         errorMessage = @"A call to [Leanplum setAppIdForDevelopmentMode] with your production key was made, which is not permitted.";
                         constants.isInPermanentFailureState = YES;
                     }
-                    NSLog(@"Leanplum: %@", errorMessage);
+                    LPLog(LPError, errorMessage);
                 } else {
-                    NSLog(@"Leanplum: %@", err);
+                    LPLog(LPError, err);
                 }
 
                 // Delete on permanant error state.
@@ -422,7 +422,7 @@
         // Request timed out.
         if (status != 0) {
             LP_TRY
-            NSLog(@"Leanplum: Multi Request timed out");
+            LPLog(LPInfo, @"Multi Request timed out");
             [op cancel];
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];

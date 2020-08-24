@@ -56,7 +56,6 @@
         @try {            
             LPPushAskToAskMessageTemplate *template = [[LPPushAskToAskMessageTemplate alloc] init];
             template.context = context;
-            
             if ([template shouldShowPushMessage]) {
                 [template showPrePushMessage];
                 return YES;
@@ -64,7 +63,7 @@
                 return NO;
             }
         } @catch (NSException *exception) {
-            NSLog(@"Leanplum: Error in pushAskToAsk: %@\n%@", exception, [exception callStackSymbols]);
+            LPLog(LPError, @"PushAskToAsk: %@\n%@", exception, [exception callStackSymbols]);
             return NO;
         }
     }];
