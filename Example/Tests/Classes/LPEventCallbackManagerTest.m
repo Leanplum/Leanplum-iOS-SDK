@@ -58,6 +58,7 @@
 
 - (void)test_event_callback_manager
 {
+    [[LPEventCallbackManager eventCallbackMap] removeAllObjects];
     NSMutableDictionary *eventCallbackMap = [LPEventCallbackManager eventCallbackMap];
     XCTAssertNotNil(eventCallbackMap);
     XCTAssertTrue(eventCallbackMap.count == 0);

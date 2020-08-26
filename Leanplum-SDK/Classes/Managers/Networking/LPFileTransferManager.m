@@ -200,7 +200,7 @@
             }
         }
         [self printUploadProgress];
-        LPLog(LPError, err);
+        LPLog(LPError, [err localizedDescription]);
         [self maybeSendNextUpload];
         LP_END_TRY
     }];
@@ -277,7 +277,7 @@
         LP_END_TRY
     } errorHandler:^(id<LPNetworkOperationProtocol> operation, NSError *err) {
         LP_TRY
-        LPLog(LPError, err);
+        LPLog(LPError, [err localizedDescription]);
         self.pendingDownloads--;
         if (errorBlock != nil) {
             errorBlock(err);

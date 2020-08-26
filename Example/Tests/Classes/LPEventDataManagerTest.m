@@ -125,50 +125,6 @@
     XCTAssertTrue(events.count == 2);
 }
 
-- (void)test_request_synchronous
-{
-    // Simulate slow network.
-    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];;
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"action_response.json", self.class);
-        return [[HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                  headers:@{@"Content-Type":@"application/json"}]
-                requestTime:1.0 responseTime:1.0];
-    }];
-
-    // Determine whether the requests are sent in order using the timestamp.
-    NSDate *date = [NSDate date];
-    dispatch_semaphore_t semaphoreTest1 = dispatch_semaphore_create(0);
-    dispatch_semaphore_t semaphoreTest2 = dispatch_semaphore_create(0);
-    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"test1" params:nil];
-    [[LPRequestSender sharedInstance] sendNow:request];
-    [LPNetworkEngine validate_operation:^(LPNetworkOperation *operation) {
-        // Make sure the call is for test2.
-        NSDictionary *data = [LPJSON JSONFromString:operation.requestParam[@"data"]];
-        if ([data[@"data"][0][@"action"] isEqual:@"test1"]) {
-            dispatch_semaphore_signal(semaphoreTest1);
-            return NO;
-        }
-
-        NSTimeInterval operationTime = [[NSDate date] timeIntervalSinceDate:date];
-        XCTAssertTrue(operationTime > 0.7);
-        dispatch_semaphore_signal(semaphoreTest2);
-        return YES;
-    }];
-    long timedOut = dispatch_semaphore_wait(semaphoreTest1, [LeanplumHelper default_dispatch_time]);
-    XCTAssertTrue(timedOut == 0);
-    LPRequest *request2 = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
-    [[LPRequestSender sharedInstance] sendNow:request2];
-    timedOut = dispatch_semaphore_wait(semaphoreTest2, [LeanplumHelper default_dispatch_time]);
-    XCTAssertTrue(timedOut == 0);
-
-    // Clean up.
-    [[LPOperationQueue serialQueue] cancelAllOperations];
-    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
-    [HTTPStubs removeAllStubs];
-}
-
 - (void)test_response_code
 {
     [LeanplumHelper clean_up];
@@ -204,6 +160,15 @@
 - (void)test_uuid
 {
     [LPEventDataManager deleteEventsWithLimit:10000];
+
+    // Create a stub for track event response.
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"track_event_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
 
     // UUID should be the same.
     [Leanplum track:@"sample"];

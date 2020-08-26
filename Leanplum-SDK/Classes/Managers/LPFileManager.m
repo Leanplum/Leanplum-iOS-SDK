@@ -617,7 +617,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         if (!error) {
             [regexArray addObject:regex];
         } else {
-            LPLog(LPError, error);
+            LPLog(LPError, [error localizedDescription]);
             error = nil;
         }
     }
@@ -824,7 +824,7 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
         [[NSUserDefaults standardUserDefaults] synchronize];
     }
     if (error) {
-        LPLog(LPError, error);
+        LPLog(LPError, [error localizedDescription]);
     }
     hasInited = YES;
     initializing = NO;
