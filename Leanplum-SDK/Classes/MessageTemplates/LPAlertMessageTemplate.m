@@ -7,6 +7,7 @@
 //
 
 #import "LPAlertMessageTemplate.h"
+#import "LPActionResponder.h"
 
 @implementation LPAlertMessageTemplate
 
@@ -17,13 +18,15 @@
             LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
             UIViewController *alertViewController = [template viewControllerWithContext:context];
 
-            return [LPMessageTemplateUtilities presentOverVisible:alertViewController forContext:context];
-            //return YES;
+            [LPMessageTemplateUtilities presentOverVisible:alertViewController];
+            return YES;
         } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
             return NO;
         }
     };
+    
+    LPActionResponder *resp = [LPActionResponder initWithPostponableResponder:responder];
 
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
@@ -33,7 +36,7 @@
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
              ]
-             withResponder:responder];
+               withOptions:@{} withActionResponder:resp];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

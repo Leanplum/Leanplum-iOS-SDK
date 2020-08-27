@@ -67,6 +67,9 @@
 #import "LPAES.h"
 #import "LPLogManager.h"
 
+// Prevent circular reference
+@class LPActionResponder;
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
@@ -438,12 +441,20 @@ NS_SWIFT_NAME(defineAction(name:kind:args:completion:));
 NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 /**@}*/
 
+
++ (void)defineAction:(NSString *)name
+       ofKind:(LeanplumActionKind)kind
+withArguments:(NSArray *)args
+  withOptions:(NSDictionary *)options
+ withActionResponder:(LPActionResponder *)responder;
+
 + (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers;
 
 /**
  * Block to call when an action is received, such as to show a message to the user.
  */
-+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
+//+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
++ (void)onAction:(NSString *)actionName invoke:(LPActionResponder *)block;
 
 /**
  * Handles a push notification for apps that use Background Notifications.
