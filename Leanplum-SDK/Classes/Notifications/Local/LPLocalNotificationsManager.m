@@ -10,6 +10,7 @@
 #import "LeanplumInternal.h"
 #import "LPNotificationsConstants.h"
 #import "LPNotificationsManager.h"
+#import "LPActionResponder.h"
 
 @implementation LPLocalNotificationsManager
 
@@ -34,7 +35,7 @@
 
 - (void)listenForLocalNotifications
 {
-    [Leanplum onAction:LP_PUSH_NOTIFICATION_ACTION invoke:^BOOL(LPActionContext *context) {
+    [Leanplum onAction:LP_PUSH_NOTIFICATION_ACTION invoke:[LPActionResponder initWithResponder:^BOOL(LPActionContext *context) {
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
 
@@ -151,9 +152,9 @@
         }
         LP_BEGIN_USER_CODE
         return YES;
-    }];
+    }]];
 
-    [Leanplum onAction:@"__Cancel__Push Notification" invoke:^BOOL(LPActionContext *context) {
+    [Leanplum onAction:@"__Cancel__Push Notification" invoke:[LPActionResponder initWithResponder:^BOOL(LPActionContext *context) {
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
         NSArray *notifications = [app scheduledLocalNotifications];
@@ -170,7 +171,7 @@
         }
         LP_BEGIN_USER_CODE
         return didCancel;
-    }];
+    }]];
 }
 
 @end
