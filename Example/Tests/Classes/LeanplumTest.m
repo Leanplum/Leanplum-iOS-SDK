@@ -44,6 +44,8 @@
 #import "LPAPIConfig.h"
 #import <Leanplum/LPInternalState.h>
 
+#import "LPActionResponder.h"
+
 #import <OCMock/OCMArg.h>
 
 /**
@@ -1825,7 +1827,7 @@
     XCTAssertTrue(responders.count == 1);
 
     // Test action received via notification.
-    [Leanplum onAction:action_name invoke:^BOOL(LPActionContext *context) {
+    [Leanplum onAction:action_name invoke:[LPActionResponder initWithResponder:^BOOL(LPActionContext *context) {
         XCTAssertEqualObjects(action_name, [context actionName]);
         XCTAssertEqualObjects([context stringNamed:string_argument_name], @"test_string_2");
         XCTAssertEqualObjects([context numberNamed:number_argument_name], @15);
@@ -1837,7 +1839,7 @@
 
         [expects fulfill];
         return YES;
-    }];
+    }]];
     // Perform action with notification.
     [[LPPushNotificationsManager sharedManager].handler
      maybePerformNotificationActions:userInfo
