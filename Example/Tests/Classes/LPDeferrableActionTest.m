@@ -9,45 +9,45 @@
 #import <Foundation/Foundation.h>
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
-#import "Leanplum/LPActionResponder.h"
+#import "Leanplum/LPDeferrableAction.h"
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 
-@interface LPActionResponderTest : XCTestCase
+@interface LPDeferrableActionTest : XCTestCase
 
 @end
 
-@implementation LPActionResponderTest
+@implementation LPDeferrableActionTest
 
 - (void)test_init
 {
-    LPActionResponder *responder = [LPActionResponder initWithResponder:^BOOL (LPActionContext *c){
+    LPDeferrableAction *responder = [LPDeferrableAction initWithActionBlock:^BOOL (LPActionContext *c){
         return NO;
     }];
     
-    XCTAssertFalse(responder.isPostponable);
+    XCTAssertFalse(responder.isDeferrable);
 }
 
 - (void)test_init_postpone
 {
-    LPActionResponder *responder = [LPActionResponder initWithPostponableResponder:^BOOL (LPActionContext *c){
+    LPDeferrableAction *responder = [LPDeferrableAction initWithDeferrableActionBlock:^BOOL (LPActionContext *c){
         return NO;
     }];
     
-    XCTAssertTrue(responder.isPostponable);
+    XCTAssertTrue(responder.isDeferrable);
 }
 
 - (void)test_init_responder
 {
     LPActionContext *context = [LPActionContext actionContextWithName:LPMT_ALERT_NAME args:@{} messageId:0];
     
-    LPActionResponder *responder = [LPActionResponder initWithResponder:^BOOL (LPActionContext *c){
+    LPDeferrableAction *responder = [LPDeferrableAction initWithActionBlock:^BOOL (LPActionContext *c){
         return YES;
     }];
     
     XCTAssertTrue(responder.actionBlock(context));
     
-    LPActionResponder *responderPostpone = [LPActionResponder initWithPostponableResponder:^BOOL (LPActionContext *c){
+    LPDeferrableAction *responderPostpone = [LPDeferrableAction initWithDeferrableActionBlock:^BOOL (LPActionContext *c){
         return NO;
     }];
     

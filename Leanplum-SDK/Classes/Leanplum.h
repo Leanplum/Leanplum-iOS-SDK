@@ -68,7 +68,7 @@
 #import "LPLogManager.h"
 
 // Prevent circular reference
-@class LPActionResponder;
+@class LPDeferrableAction;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -446,7 +446,7 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
        ofKind:(LeanplumActionKind)kind
 withArguments:(NSArray *)args
   withOptions:(NSDictionary *)options
- withActionResponder:(LPActionResponder *)responder;
+ withActionResponder:(LPDeferrableAction *)responder;
 
 + (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers;
 
@@ -454,7 +454,7 @@ withArguments:(NSArray *)args
  * Block to call when an action is received, such as to show a message to the user.
  */
 //+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
-+ (void)onAction:(NSString *)actionName invoke:(LPActionResponder *)block;
++ (void)onAction:(NSString *)actionName invoke:(LPDeferrableAction *)block;
 
 /**
  * Handles a push notification for apps that use Background Notifications.

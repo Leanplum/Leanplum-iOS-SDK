@@ -50,7 +50,7 @@
 #import "LPOperationQueue.h"
 #include <sys/sysctl.h>
 
-#import "LPActionResponder.h"
+#import "LPDeferrableAction.h"
 
 #import "LPDeferMessageManager.h"
 
@@ -594,9 +594,9 @@ void leanplumExceptionHandler(NSException *exception);
             handled |= invocationHandled;
         }
 
-        for (LPActionResponder *block in [LPInternalState sharedState].actionBlocks
+        for (LPDeferrableAction *block in [LPInternalState sharedState].actionBlocks
                                            [context.actionName]) {
-            if (block.isPostponable) {
+            if (block.isDeferrable) {
                 if ([LPDeferMessageManager shouldDeferMessage:context]) {
                     continue;
                 }
@@ -1497,7 +1497,7 @@ void leanplumExceptionHandler(NSException *exception);
        ofKind:(LeanplumActionKind)kind
 withArguments:(NSArray *)args
   withOptions:(NSDictionary *)options
- withActionResponder:(LPActionResponder *)responder
+ withActionResponder:(LPDeferrableAction *)responder
 {
     if ([LPUtils isNullOrEmpty:name]) {
         [self throwError:@"[Leanplum defineAction:ofKind:withArguments:] Empty name parameter "
@@ -1550,7 +1550,7 @@ withArguments:(NSArray *)args
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
     [[LPVarCache sharedCache] registerActionDefinition:name ofKind:(int) kind withArguments:args andOptions:options];
     if (responder) {
-        [Leanplum onAction:name invoke:[LPActionResponder initWithResponder:responder]];
+        [Leanplum onAction:name invoke:[LPDeferrableAction initWithActionBlock:responder]];
     }
     LP_END_TRY
     
@@ -1562,7 +1562,7 @@ withArguments:(NSArray *)args
     [LPDeferMessageManager setDeferredClasses:controllers];
 }
 
-+ (void)onAction:(NSString *)actionName invoke:(LPActionResponder *)block
++ (void)onAction:(NSString *)actionName invoke:(LPDeferrableAction *)block
 {
     if ([LPUtils isNullOrEmpty:actionName]) {
         [self throwError:@"[Leanplum onAction:invoke:] Empty actionName parameter provided."];
@@ -1585,30 +1585,6 @@ withArguments:(NSArray *)args
     [blocks addObject:block];
     LP_END_TRY
 }
-
-//+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block
-//{
-//    if ([LPUtils isNullOrEmpty:actionName]) {
-//        [self throwError:@"[Leanplum onAction:invoke:] Empty actionName parameter provided."];
-//        return;
-//    }
-//    if (!block) {
-//        [self throwError:@"[Leanplum onAction:invoke::] Nil block parameter provided."];
-//        return;
-//    }
-//
-//    LP_TRY
-//    if (![LPInternalState sharedState].actionBlocks) {
-//        [LPInternalState sharedState].actionBlocks = [NSMutableDictionary dictionary];
-//    }
-//    NSMutableArray *blocks = [LPInternalState sharedState].actionBlocks[actionName];
-//    if (!blocks) {
-//        blocks = [NSMutableArray array];
-//        [LPInternalState sharedState].actionBlocks[actionName] = blocks;
-//    }
-//    [blocks addObject:[block copy]];
-//    LP_END_TRY
-//}
 
 + (void)handleNotification:(NSDictionary *)userInfo
     fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler

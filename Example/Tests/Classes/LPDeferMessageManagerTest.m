@@ -13,7 +13,7 @@
 #import "LeanplumHelper.h"
 #import "LPDeferMessageManager.h"
 #import "Leanplum/LPAlertMessageTemplate.h"
-#import "Leanplum/LPActionResponder.h"
+#import "Leanplum/LPDeferrableAction.h"
 #import "Leanplum/LPAPIConfig.h"
 
 @interface LPDeferMessageManagerTest : XCTestCase
@@ -60,8 +60,8 @@
     [LPAlertMessageTemplate defineAction];
 
     NSArray *alertBlocks = [LPInternalState sharedState].actionBlocks[LPMT_ALERT_NAME];
-    LPActionResponder *responder = alertBlocks[0];
-    XCTAssertTrue(responder.isPostponable);
+    LPDeferrableAction *responder = alertBlocks[0];
+    XCTAssertTrue(responder.isDeferrable);
     
     id templateUtils = OCMClassMock([LPMessageTemplateUtilities class]);
     id deferManager = OCMClassMock([LPDeferMessageManager class]);
@@ -94,8 +94,8 @@
     [LPAlertMessageTemplate defineAction];
 
     NSArray *alertBlocks = [LPInternalState sharedState].actionBlocks[LPMT_ALERT_NAME];
-    LPActionResponder *responder = alertBlocks[0];
-    XCTAssertTrue(responder.isPostponable);
+    LPDeferrableAction *responder = alertBlocks[0];
+    XCTAssertTrue(responder.isDeferrable);
     
     id templateUtils = OCMClassMock([LPMessageTemplateUtilities class]);
     id deferManager = OCMClassMock([LPDeferMessageManager class]);
@@ -118,7 +118,7 @@
     }];
 }
 
-- (void)test_defer2
+- (void)test_defer_and_show
 {
     // Leanplum start is needed to successfully handle message View and record impression
     [LeanplumHelper start_development_test];
@@ -129,8 +129,8 @@
     [LPAlertMessageTemplate defineAction];
 
     NSArray *alertBlocks = [LPInternalState sharedState].actionBlocks[LPMT_ALERT_NAME];
-    LPActionResponder *responder = alertBlocks[0];
-    XCTAssertTrue(responder.isPostponable);
+    LPDeferrableAction *responder = alertBlocks[0];
+    XCTAssertTrue(responder.isDeferrable);
     
     id templateUtils = OCMClassMock([LPMessageTemplateUtilities class]);
     id deferManager = OCMClassMock([LPDeferMessageManager class]);
@@ -152,13 +152,8 @@
     }];
     
     id lpMock = OCMClassMock([Leanplum class]);
-//    id lpActionManagerMock = OCMClassMock([LPActionManager class]);
-
-//    [OCMStub([lpActionManagerMock sharedManager]) andReturn:lpActionManagerMock];
-//    [OCMStub([lpActionManagerMock recordMessageImpression:OCMArg.any]) andDo:^(NSInvocation *invocation) {
-//        NSLog(@"HERE");
-//    }];
     
+    // Change the top controller to show the deferred message
     UIViewController *newTopViewController = [UIViewController new];
     [stub andReturn:newTopViewController];
     [newTopViewController viewDidAppear:NO];

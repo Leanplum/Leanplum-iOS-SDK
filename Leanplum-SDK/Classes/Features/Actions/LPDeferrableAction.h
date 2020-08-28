@@ -10,13 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPActionResponder : NSObject
+@interface LPDeferrableAction : NSObject
 @property (readonly, copy) LeanplumActionBlock actionBlock;
-@property (readonly) BOOL isPostponable;
+@property (readonly) BOOL isDeferrable;
 
-+ (LPActionResponder *)initWithResponder:(LeanplumActionBlock)responder;
++ (LPDeferrableAction *)initWithActionBlock:(LeanplumActionBlock)responder;
 
-+ (LPActionResponder *)initWithPostponableResponder:(LeanplumActionBlock)responder;
++ (LPDeferrableAction *)initWithDeferrableActionBlock:(LeanplumActionBlock)responder;
 
 @end
 

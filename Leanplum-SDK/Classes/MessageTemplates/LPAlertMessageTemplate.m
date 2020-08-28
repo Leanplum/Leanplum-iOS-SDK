@@ -7,7 +7,7 @@
 //
 
 #import "LPAlertMessageTemplate.h"
-#import "LPActionResponder.h"
+#import "LPDeferrableAction.h"
 
 @implementation LPAlertMessageTemplate
 
@@ -26,7 +26,7 @@
         }
     };
     
-    LPActionResponder *resp = [LPActionResponder initWithPostponableResponder:responder];
+    LPDeferrableAction *resp = [LPDeferrableAction initWithDeferrableActionBlock:responder];
 
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
