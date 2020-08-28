@@ -104,8 +104,6 @@ NS_SWIFT_NAME(track(event:value:info:args:params:));
 + (void)onStartIssued:(LeanplumStartIssuedBlock)block;
 + (void)synchronizeDefaults;
 
-void LPLog(LPLogType type, NSString* format, ...);
-
 @end
 
 #pragma mark - LPInbox class

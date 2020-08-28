@@ -383,7 +383,7 @@
                 || err.code == NSURLErrorDNSLookupFailed
                 || err.code == NSURLErrorNotConnectedToInternet
                 || err.code == NSURLErrorTimedOut) {
-                LPLog(LPError, err);
+                LPLog(LPError, [err localizedDescription]);
             } else {
                 id errorResponse = completedOperation.responseJSON;
                 NSString *errorMessage = [LPResponse getResponseError:[LPResponse getLastResponse:errorResponse]];
@@ -400,7 +400,7 @@
                     }
                     LPLog(LPError, errorMessage);
                 } else {
-                    LPLog(LPError, err);
+                    LPLog(LPError, [err localizedDescription]);
                 }
 
                 // Delete on permanant error state.

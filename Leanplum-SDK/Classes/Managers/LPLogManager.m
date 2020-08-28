@@ -108,7 +108,7 @@ static LPLogLevel logLevel = Info;
 
 @end
 
-void LPLog(LPLogType type , NSString *format, ...) {
+void LPLog(LPLogType type, NSString *format, ...) {
     va_list vargs;
     va_start(vargs, format);
     NSString *formattedMessage = [[NSString alloc] initWithFormat:format arguments:vargs];
