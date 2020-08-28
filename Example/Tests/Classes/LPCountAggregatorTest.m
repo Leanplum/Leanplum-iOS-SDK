@@ -30,6 +30,7 @@
 #import "LPRequest.h"
 #import <Leanplum/LPRequestSender.h>
 #import <Leanplum/LPNetworkConstants.h>
+#import "LeanplumHelper.h"
 
 /**
  * Expose private class methods
@@ -55,6 +56,7 @@
 
 - (void)tearDown {
     [super tearDown];
+    [LeanplumHelper clean_up];
 }
 
 - (void)test_incrementDisabledCount {
@@ -148,6 +150,8 @@
     id lpRequestSenderMock = OCMClassMock([LPRequestSender class]);
     OCMStub([lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]]);
     [lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]];
+    [lpRequestSenderMock stopMocking];
+    [lpRequestMock stopMocking];
 }
 
 @end
