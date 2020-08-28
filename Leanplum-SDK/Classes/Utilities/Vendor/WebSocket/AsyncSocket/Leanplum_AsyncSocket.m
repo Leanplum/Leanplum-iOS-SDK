@@ -1332,8 +1332,7 @@ Failed:
 	{
 		NSError *err = [self getStreamError];
 		
-		LPLog(LPError, @"AsyncSocket %p couldn't attach read stream to run-loop,", self);
-		LPLog(LPError, err);
+        LPLog(LPError, @"AsyncSocket %p couldn't attach read stream to run-loop, error: %@", self, err);
 		
 		if (errPtr) *errPtr = err;
 		return NO;
@@ -1353,8 +1352,7 @@ Failed:
 	{
 		NSError *err = [self getStreamError];
 		
-		LPLog(LPError, @"AsyncSocket %p couldn't attach write stream to run-loop,", self);
-		LPLog(LPError, err);
+		LPLog(LPError, @"AsyncSocket %p couldn't attach write stream to run-loop, error: %@", self, err);
 		
 		if (errPtr) *errPtr = err;
 		return NO;
