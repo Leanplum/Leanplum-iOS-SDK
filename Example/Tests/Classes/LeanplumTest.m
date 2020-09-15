@@ -928,7 +928,7 @@
 - (void) test_set_device_id
 {
     id mockLeanplum = OCMClassMock([Leanplum class]);
-    OCMReject([mockLeanplum switchDevice:[OCMArg any]]);
+    OCMReject([mockLeanplum setDeviceIdInternal:[OCMArg any]]);
     
     NSString *deviceId = @"testDeviceId";
     [Leanplum setDeviceId:deviceId];
@@ -999,7 +999,7 @@
     [Leanplum onStartResponse:^(BOOL success) {
         XCTAssertTrue(success);
         [Leanplum setDeviceId:deviceId];
-        OCMVerify([mockLeanplum switchDevice:[OCMArg any]]);
+        OCMVerify([mockLeanplum setDeviceIdInternal:[OCMArg any]]);
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);

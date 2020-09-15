@@ -40,7 +40,7 @@
 
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
-+ (void)switchDevice:(NSString *)deviceId;
++ (void)setDeviceIdInternal:(NSString *)deviceId;
 
 @end
 
