@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
 @property (nonatomic, assign) BOOL appWasActivatedByReceivingPushNotification;
+@property (nonatomic, readonly) NSDictionary *currentUserNotificationSettings;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo

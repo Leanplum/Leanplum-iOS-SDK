@@ -179,6 +179,16 @@
     return NO;
 }
 
+- (NSDictionary *)currentUserNotificationSettings
+{
+    NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
+    NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
+    if (existingSettings != nil) {
+        return [UIUserNotificationSettings toRequestParams:existingSettings];
+    }
+    return @{};
+}
+
 #pragma mark - Push Notifications
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
