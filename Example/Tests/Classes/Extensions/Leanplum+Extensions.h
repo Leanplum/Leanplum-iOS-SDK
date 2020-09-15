@@ -40,6 +40,8 @@
 
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
++ (void)switchDevice:(NSString *)deviceId;
+
 @end
 
 @interface LPPushNotificationsHandler(UnitTest)
