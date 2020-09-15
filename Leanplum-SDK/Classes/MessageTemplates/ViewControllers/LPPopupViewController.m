@@ -77,7 +77,7 @@
     self.backgroundImageView.layer.masksToBounds = YES;
 
     // if its pre push permission dialog, show cancel button
-    if ([actionName isEqualToString:LPMT_PUSH_ASK_TO_ASK]) {
+    if (self.shouldShowCancelButton) {
         [self.cancelButton setHidden:NO];
         [self.dismissButton setHidden:YES];
 
@@ -99,8 +99,8 @@
 
 - (IBAction)didTapAcceptButton:(id)sender
 {
-    if([[self.context actionName] isEqualToString:LPMT_PUSH_ASK_TO_ASK]) {
-        self.pushAskToAskCompletionBlock();
+    if(self.acceptCompletionBlock != nil) {
+        self.acceptCompletionBlock();
     }
     [self.context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
     [self dismiss:YES];
