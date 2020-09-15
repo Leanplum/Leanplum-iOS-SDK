@@ -29,6 +29,7 @@
 
 @implementation LPRequestSender(MethodSwizzling)
 @dynamic requestCallback;
+@dynamic createArgsCallback;
 
 - (void)setRequestCallback:(BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback
 {
@@ -36,6 +37,16 @@
 }
 
 - (BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setCreateArgsCallback:(void (^)(NSDictionary *))createArgsCallback
+{
+    objc_setAssociatedObject(self, @selector(createArgsCallback), createArgsCallback, OBJC_ASSOCIATION_COPY);
+}
+
+- (void (^)(NSDictionary *))createArgsCallback
 {
     return objc_getAssociatedObject(self, _cmd);
 }
@@ -49,6 +60,10 @@
                                       class:[LPRequestSender class]];
     success &= [LPSwizzle swizzleMethod:@selector(sendEventually:sync:)
                              withMethod:@selector(swizzle_sendEventually:sync:)
+                                  error:&error
+                                  class:[LPRequestSender class]];
+    success &= [LPSwizzle swizzleMethod:@selector(createArgsDictionaryForRequest:)
+                             withMethod:@selector(swizzle_createArgsDictionaryForRequest:)
                                   error:&error
                                   class:[LPRequestSender class]];
     if (!success || error) {
@@ -71,9 +86,25 @@
 
 }
 
+- (NSMutableDictionary *)swizzle_createArgsDictionaryForRequest:(LPRequest *)request
+{
+    NSMutableDictionary *args = [self swizzle_createArgsDictionaryForRequest:request];
+    if([[LPRequestSender sharedInstance] createArgsCallback] != nil) {
+        [LPRequestSender sharedInstance].createArgsCallback(args);
+        [LPRequestSender sharedInstance].createArgsCallback = nil;
+    }
+    
+    return args;
+}
+
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *)) callback
 {
     [LPRequestSender sharedInstance].requestCallback = callback;
+}
+
++ (void)validate_request_args_dictionary:(void (^)(NSDictionary *))callback
+{
+    [LPRequestSender sharedInstance].createArgsCallback = callback;
 }
 
 + (void)reset {

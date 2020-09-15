@@ -28,11 +28,16 @@
 @interface LPRequestSender(MethodSwizzling)
 
 @property (assign) BOOL (^requestCallback)(NSString *method, NSString *apiMethod, NSDictionary *params);
+@property (assign) void (^createArgsCallback)(NSDictionary *args);
 
 - (void)setRequestCallback:(BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback;
 - (BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback;
 
+- (void)setCreateArgsCallback:(void (^)(NSDictionary *))createArgsCallback;
+- (void (^)(NSDictionary *))createArgsCallback;
+
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *))callback;
++ (void)validate_request_args_dictionary:(void (^)(NSDictionary *))callback;
 + (void)swizzle_methods;
 + (void)reset;
 
