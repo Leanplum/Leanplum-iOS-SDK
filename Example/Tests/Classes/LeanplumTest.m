@@ -925,6 +925,9 @@
     XCTAssertTrue([Leanplum hasStarted]);
 }
 
+/**
+ * Tests setting the device id before Leanplum start
+ */
 - (void) test_set_device_id
 {
     id mockLeanplum = OCMClassMock([Leanplum class]);
@@ -963,6 +966,9 @@
     XCTAssertTrue([Leanplum hasStarted]);
 }
 
+/**
+ * Tests setting the device id after Leanplum has started (uses setDeviceIdInternal)
+ */
 - (void) test_set_device_id_after_start
 {
     id mockLeanplum = OCMClassMock([Leanplum class]);
