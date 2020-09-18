@@ -38,6 +38,7 @@ withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0))
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+- (BOOL)updateUserNotificationSettings:(UIUserNotificationSettings *)newNotificationSettings;
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
 

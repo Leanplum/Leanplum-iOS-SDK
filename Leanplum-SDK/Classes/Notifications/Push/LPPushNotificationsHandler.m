@@ -136,8 +136,9 @@
         deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken;
     }
     // Get the push types if changed
-    NSDictionary* settings = [[UIApplication sharedApplication].currentUserNotificationSettings dictionary];
-    if ([self updateUserNotificationSettings:settings]) {
+    UIUserNotificationSettings* notificationSettings = [[UIApplication sharedApplication] currentUserNotificationSettings];
+    if ([self updateUserNotificationSettings:notificationSettings]) {
+        NSDictionary* settings = [notificationSettings dictionary];
         [deviceAttributeParams addEntriesFromDictionary:[UIUserNotificationSettings toRequestParams:settings]];
     }
     
@@ -166,8 +167,9 @@
 }
 
 #pragma mark - Notification Settings
-- (BOOL)updateUserNotificationSettings:(NSDictionary *)newSettings
+- (BOOL)updateUserNotificationSettings:(UIUserNotificationSettings *)newNotificationSettings
 {
+    NSDictionary* newSettings = [newNotificationSettings dictionary];
     NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
     NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
     if (![existingSettings isEqualToDictionary:newSettings]) {
@@ -192,10 +194,10 @@
 #pragma mark - Push Notifications
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
-    NSDictionary* settings = [notificationSettings dictionary];
     // Send settings.
-    if ([self updateUserNotificationSettings:settings]) {
+    if ([self updateUserNotificationSettings:notificationSettings]) {
         NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
+        NSDictionary* settings = [notificationSettings dictionary];
         NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[UIUserNotificationSettings toRequestParams:settings]];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
