@@ -382,11 +382,12 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
-    [LPInternalState sharedState].deviceId = deviceId;
     // If Leanplum start has been called already, changing the deviceId results in a new device
     // Ensure the id is updated and the new device has all attributes set
-    if ([LPInternalState sharedState].hasStarted) {
+    if ([LPInternalState sharedState].hasStarted && ![[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]) {
         [self setDeviceIdInternal:deviceId];
+    } else {
+       [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
     }
     LP_END_TRY
 }
@@ -409,7 +410,10 @@ void leanplumExceptionHandler(NSException *exception);
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
 
-    [params addEntriesFromDictionary:[[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings]];
+    NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
+    if (settings) {
+        [params addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+    }
     
     // Change the LPAPIConfig after getting the push token and settings
     // The LPAPIConfig value is used in retrieving them
@@ -417,6 +421,7 @@ void leanplumExceptionHandler(NSException *exception);
     [[LPVarCache sharedCache] saveDiffs];
     // Update the token and settings now that the key is different
     [[LPPushNotificationsManager sharedManager] updatePushToken:pushToken];
+    [[[LPPushNotificationsManager sharedManager] handler] updateUserNotificationSettings:settings];
     
     LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
     [[LPRequestSender sharedInstance] send:request];
@@ -862,11 +867,7 @@ void leanplumExceptionHandler(NSException *exception);
         deviceId = nil;
     }
     if (!deviceId) {
-        if (state.deviceId) {
-            deviceId = state.deviceId;
-        } else {
-            deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        }
+        deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }

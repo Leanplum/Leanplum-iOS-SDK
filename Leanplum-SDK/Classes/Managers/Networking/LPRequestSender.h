@@ -31,6 +31,13 @@
 
 + (instancetype)sharedInstance;
 
+/**
+ * Create Request Headers for network call
+ */
++ (NSDictionary *)createHeaders;
+
++ (NSDictionary *)notificationSettingsToRequestParams:(NSDictionary *)settings;
+
 - (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request;
 - (void)attachApiKeys:(NSMutableDictionary *)dict;
 

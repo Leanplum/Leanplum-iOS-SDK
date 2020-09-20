@@ -21,7 +21,6 @@
 
 @interface UIUserNotificationSettings (LPUtil)
 @property (readonly, nonatomic) NSDictionary *dictionary;
-+(NSDictionary *)toRequestParams:(NSDictionary *)settings;
 @end
 
 @implementation UIUserNotificationSettings (LPUtil)
@@ -40,15 +39,6 @@
     NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
                                LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
     return settings;
-}
-
-+ (NSDictionary *)toRequestParams:(NSDictionary *)settings
-{
-    NSDictionary *params = [@{
-            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
-            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
-                  [LPJSON stringFromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]] ?: @""} mutableCopy];
-    return params;
 }
 @end
 
@@ -138,7 +128,7 @@
     // Get the push types if changed
     NSDictionary* settings = [[UIApplication sharedApplication].currentUserNotificationSettings dictionary];
     if ([self updateUserNotificationSettings:settings]) {
-        [deviceAttributeParams addEntriesFromDictionary:[UIUserNotificationSettings toRequestParams:settings]];
+        [deviceAttributeParams addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
     }
     
     // If there are changes to the push token and/or the push types, send a request
@@ -183,10 +173,7 @@
 {
     NSString *settingsKey = [[LPPushNotificationsManager sharedManager] leanplum_createUserNotificationSettingsKey];
     NSDictionary *existingSettings = [[NSUserDefaults standardUserDefaults] dictionaryForKey:settingsKey];
-    if (existingSettings != nil) {
-        return [UIUserNotificationSettings toRequestParams:existingSettings];
-    }
-    return @{};
+    return existingSettings;
 }
 
 #pragma mark - Push Notifications
@@ -196,7 +183,7 @@
     // Send settings.
     if ([self updateUserNotificationSettings:settings]) {
         NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[UIUserNotificationSettings toRequestParams:settings]];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
         }

@@ -66,7 +66,7 @@
     if (self) {
         if (_engine == nil) {
             if (!_requestHeaders) {
-                _requestHeaders = [LPUtils createHeaders];
+                _requestHeaders = [LPRequestSender createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];
@@ -263,6 +263,39 @@
     [userDefaults setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
     [userDefaults synchronize];
     return uuid;
+}
+
+/*
+ Must include `Accept-Encoding: gzip` in the header
+ Must include the phrase `gzip` in the `User-Agent` header
+ https://cloud.google.com/appengine/kb/
+ */
++ (NSDictionary *)createHeaders {
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
+                                 infoDict[(NSString *)kCFBundleNameKey],
+                                 infoDict[(NSString *)kCFBundleVersionKey],
+                                 [LPAPIConfig sharedConfig].appId,
+                                 LEANPLUM_CLIENT,
+                                 LEANPLUM_SDK_VERSION,
+                                 [[UIDevice currentDevice] systemName],
+                                 [[UIDevice currentDevice] systemVersion],
+                                 LEANPLUM_SUPPORTED_ENCODING,
+                                 LEANPLUM_PACKAGE_IDENTIFIER];
+    
+    NSString *languageHeader = [NSString stringWithFormat:@"%@, en-us",
+                                [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
+    
+    return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
+}
+
++ (NSDictionary *)notificationSettingsToRequestParams:(NSDictionary *)settings
+{
+    NSDictionary *params = [@{
+            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
+            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
+                  [LPJSON stringFromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]] ?: @""} mutableCopy];
+    return params;
 }
 
 - (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request

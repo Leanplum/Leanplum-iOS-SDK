@@ -71,7 +71,7 @@
 
         if (_engine == nil) {
             if (!_requestHeaders) {
-                _requestHeaders = [LPUtils createHeaders];
+                _requestHeaders = [LPRequestSender createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];

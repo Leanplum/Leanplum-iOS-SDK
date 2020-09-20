@@ -58,11 +58,6 @@
 + (void)handleException:(NSException *)exception;
 
 /**
- * Create Request Headers for network call
- */
-+ (NSDictionary *)createHeaders;
-
-/**
  * Whether swizzling flag is setup in plist file
  */
 + (BOOL)isSwizzlingEnabled;
