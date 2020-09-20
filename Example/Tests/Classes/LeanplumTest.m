@@ -1010,6 +1010,7 @@
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue([[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]);
+    XCTAssertTrue([[LPInternalState sharedState].deviceId isEqualToString:deviceId]);
 }
 
 /**

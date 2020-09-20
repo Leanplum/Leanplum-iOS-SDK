@@ -382,12 +382,11 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
+    [LPInternalState sharedState].deviceId = deviceId;
     // If Leanplum start has been called already, changing the deviceId results in a new device
     // Ensure the id is updated and the new device has all attributes set
     if ([LPInternalState sharedState].hasStarted) {
         [self setDeviceIdInternal:deviceId];
-    } else {
-        [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
     }
     LP_END_TRY
 }
@@ -416,11 +415,8 @@ void leanplumExceptionHandler(NSException *exception);
     // The LPAPIConfig value is used in retrieving them
     [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
     [[LPVarCache sharedCache] saveDiffs];
-    
     // Update the token and settings now that the key is different
     [[LPPushNotificationsManager sharedManager] updatePushToken:pushToken];
-    UIUserNotificationSettings *settings = [[UIApplication sharedApplication] currentUserNotificationSettings];
-    [[[LPPushNotificationsManager sharedManager] handler] updateUserNotificationSettings:settings];
     
     LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
     [[LPRequestSender sharedInstance] send:request];
@@ -866,7 +862,11 @@ void leanplumExceptionHandler(NSException *exception);
         deviceId = nil;
     }
     if (!deviceId) {
-        deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        if (state.deviceId) {
+            deviceId = state.deviceId;
+        } else {
+            deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        }
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }

@@ -38,8 +38,6 @@
         return;
     }
 
-    NSString *actionName = [self.context actionName];
-
     // width and height constraints
     self.widthConstraint.constant = [[self.context numberNamed:LPMT_ARG_LAYOUT_WIDTH] doubleValue];
     self.heightConstraint.constant = [[self.context numberNamed:LPMT_ARG_LAYOUT_HEIGHT] doubleValue];
