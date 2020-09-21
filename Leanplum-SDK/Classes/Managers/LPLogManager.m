@@ -77,8 +77,7 @@ static LPLogLevel logLevel = Info;
             @throw e;
         }
     }
-    NSString *versionName = [[[NSBundle mainBundle] infoDictionary]
-                             objectForKey:@"CFBundleVersion"];
+    NSString *versionName = [Leanplum appVersion];
     if (!versionName) {
         versionName = @"";
     }
