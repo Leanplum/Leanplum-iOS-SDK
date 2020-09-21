@@ -1051,6 +1051,12 @@ void leanplumExceptionHandler(NSException *exception);
         LP_END_TRY
 
         [self triggerStartResponse:NO];
+        
+        [self maybePerformActions:@[@"start", @"resume"]
+                    withEventName:nil
+                       withFilter:kLeanplumActionFilterAll
+                    fromMessageId:nil
+             withContextualValues:nil];
     }];
     [[LPRequestSender sharedInstance] sendIfConnected:request];
     [self triggerStartIssued];
