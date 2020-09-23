@@ -382,8 +382,49 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
-    [LPInternalState sharedState].deviceId = deviceId;
+    // If Leanplum start has been called already, changing the deviceId results in a new device
+    // Ensure the id is updated and the new device has all attributes set
+    if ([LPInternalState sharedState].hasStarted && ![[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]) {
+        [self setDeviceIdInternal:deviceId];
+    } else {
+       [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+    }
     LP_END_TRY
+}
+
++(void)setDeviceIdInternal:(NSString *)deviceId
+{
+    UIDevice *device = [UIDevice currentDevice];
+    NSString *versionName = [self appVersion];
+    NSMutableDictionary *params = [@{
+        LP_PARAM_VERSION_NAME: versionName,
+        LP_PARAM_DEVICE_NAME: device.name,
+        LP_PARAM_DEVICE_MODEL: [self platform],
+        LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
+        LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
+        LP_PARAM_DEVICE_ID: deviceId
+    } mutableCopy];
+    
+    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
+    if (pushToken) {
+        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+    }
+
+    NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
+    if (settings) {
+        [params addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+    }
+    
+    // Change the LPAPIConfig after getting the push token and settings
+    // The LPAPIConfig value is used in retrieving them
+    [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+    [[LPVarCache sharedCache] saveDiffs];
+    // Update the token and settings now that the key is different
+    [[LPPushNotificationsManager sharedManager] updatePushToken:pushToken];
+    [[[LPPushNotificationsManager sharedManager] handler] updateUserNotificationSettings:settings];
+    
+    LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)syncResourcesAsync:(BOOL)async
@@ -826,11 +867,7 @@ void leanplumExceptionHandler(NSException *exception);
         deviceId = nil;
     }
     if (!deviceId) {
-        if (state.deviceId) {
-            deviceId = state.deviceId;
-        } else {
-            deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        }
+        deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
@@ -847,11 +884,7 @@ void leanplumExceptionHandler(NSException *exception);
     [[LPAPIConfig sharedConfig] setUserId:userId];
 
     // Setup parameters.
-    NSString *versionName = [LPInternalState sharedState].appVersion;
-    if (!versionName) {
-        versionName = [[[NSBundle mainBundle] infoDictionary]
-                       objectForKey:@"CFBundleVersion"];
-    }
+    NSString *versionName = [self appVersion];
     UIDevice *device = [UIDevice currentDevice];
     NSLocale *currentLocale = [NSLocale currentLocale];
     NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
@@ -1018,6 +1051,12 @@ void leanplumExceptionHandler(NSException *exception);
         LP_END_TRY
 
         [self triggerStartResponse:NO];
+        
+        [self maybePerformActions:@[@"start", @"resume"]
+                    withEventName:nil
+                       withFilter:kLeanplumActionFilterAll
+                    fromMessageId:nil
+             withContextualValues:nil];
     }];
     [[LPRequestSender sharedInstance] sendIfConnected:request];
     [self triggerStartIssued];
@@ -2535,6 +2574,16 @@ void leanplumExceptionHandler(NSException *exception)
             boolForKey:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY];
     LP_END_TRY
     return NO;
+}
+
++ (NSString *)appVersion
+{
+    NSString *versionName = [LPInternalState sharedState].appVersion;
+    if (!versionName) {
+        versionName = [[[NSBundle mainBundle] infoDictionary]
+                       objectForKey:@"CFBundleVersion"];
+    }
+    return versionName;
 }
 
 + (NSString *)deviceId
