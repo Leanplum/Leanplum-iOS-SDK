@@ -73,6 +73,7 @@
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
     }];
     request.datas = requestDatas;
+    request.requestType = Immediatel;
     [[LPRequestSender sharedInstance] send:request];
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"upload_app_icons_on_dev_mode"];

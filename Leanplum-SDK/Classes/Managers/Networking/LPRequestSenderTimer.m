@@ -24,7 +24,7 @@
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
             LPRequest *request = [LPRequestFactory heartbeatWithParams:nil];
             request.requestType = Immediate;
-            [[LPRequestSender sharedInstance] send:request];//TODO: Dejan check sendIfDelayed
+            [[LPRequestSender sharedInstance] send:request];
 
         }
         LP_END_TRY

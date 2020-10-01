@@ -52,7 +52,6 @@
         _requestId = [[NSUUID UUID] UUIDString];
         _requestType = Default;
         _sendSynchronously = NO;
-        _sendWithDelay = NO;
     }
     return self;
 }

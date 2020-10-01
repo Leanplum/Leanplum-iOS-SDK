@@ -40,7 +40,6 @@ typedef NS_ENUM(NSUInteger, LPRequestType) {
 @property (nonatomic, strong) NSString *requestId;
 @property (nonatomic, assign) LPRequestType requestType;
 @property (nonatomic, assign) BOOL sendSynchronously;
-@property (nonatomic, assign) BOOL sendWithDelay;
 @property (nonatomic, strong, nullable) NSDictionary *datas;
 
 + (LPRequest *)get:(NSString *)apiMethod params:(nullable NSDictionary *)params;
