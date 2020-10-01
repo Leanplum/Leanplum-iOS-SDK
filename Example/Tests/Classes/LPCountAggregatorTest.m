@@ -148,8 +148,8 @@
     id lpRequestMockVerified = [[lpRequestMock verify] ignoringNonObjectArgs];
     
     id lpRequestSenderMock = OCMClassMock([LPRequestSender class]);
-    OCMStub([lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]]);
-    [lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]];
+    OCMStub([lpRequestSenderMock send:lpRequestMockVerified]);
+    [lpRequestSenderMock send:lpRequestMockVerified];
     [lpRequestSenderMock stopMocking];
     [lpRequestMock stopMocking];
 }

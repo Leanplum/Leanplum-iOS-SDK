@@ -24,6 +24,7 @@
 
 - (void)sendNow:(LPRequest *)request sync:(BOOL)sync;
 - (void)sendRequests:(BOOL)sync;
+- (void)saveRequest:request sync:(BOOL)sync;
 
 @end
 
@@ -44,28 +45,6 @@
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
-- (void)testCreateArgsDictionaryForRequest {
-    LPRequest *request = [LPRequest post:@"test" params:@{}];
-    LPConstantsState *constants = [LPConstantsState sharedState];
-    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
-    NSMutableDictionary *testArgs = [@{
-                                   LP_PARAM_ACTION: @"test",
-                                   LP_PARAM_DEVICE_ID: @"",
-                                   LP_PARAM_USER_ID: @"",
-                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
-                                   LP_PARAM_CLIENT: constants.client,
-                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
-                                   LP_PARAM_TIME: timestamp,
-                                   LP_PARAM_UUID: @"uuid",
-                                   LP_PARAM_REQUEST_ID: request.requestId,
-                                   } mutableCopy];
-    NSMutableDictionary *args = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
-    args[LP_PARAM_UUID] = @"uuid";
-    args[LP_PARAM_TIME] = timestamp;
-    
-    XCTAssertEqualObjects(testArgs, args);
-}
-
 - (void)testSend {
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
@@ -76,13 +55,13 @@
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
     [requestSender send:request];
 
-    [[[requestSenderMock verify] ignoringNonObjectArgs] sendEventually:request sync:[OCMArg any]];
+    [[[requestSenderMock verify] ignoringNonObjectArgs] saveRequest:request sync:[OCMArg any]];
 
     [requestSenderMock stopMocking];
     [configMock stopMocking];
 }
 
-- (void)testSendNow {
+- (void)testSendImmediateRequest {
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id requestSenderMock = OCMPartialMock(requestSender);
@@ -90,21 +69,22 @@
     OCMStub([configMock sharedConfig]).andReturn(configMock);
     OCMStub([configMock appId]).andReturn(@"appID");
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
-    [requestSender sendNow:request];
+    request.requestType = Immediate;
+    [requestSender send:request];
 
     [[[requestSenderMock verify] ignoringNonObjectArgs] sendNow:request sync:[OCMArg any]];
-    [[[requestSenderMock verify] ignoringNonObjectArgs] sendEventually:request sync:[OCMArg any]];
+    [[[requestSenderMock verify] ignoringNonObjectArgs] saveRequest:request sync:[OCMArg any]];
     [[[requestSenderMock verify] ignoringNonObjectArgs] sendRequests:[OCMArg any]];
     
     [requestSenderMock stopMocking];
     [configMock stopMocking];
 }
 
-- (void)testSendEventually {
+- (void)testSaveRequest {
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id eventDataManagerMock = OCMClassMock([LPEventDataManager class]);
-    [requestSender sendEventually:request sync:YES];
+    [requestSender saveRequest:request sync:YES];
 
     OCMVerify([eventDataManagerMock addEvent:[OCMArg isNotNil]]);
 
@@ -118,10 +98,11 @@
     id reachabilityMock = OCMClassMock([Leanplum_Reachability class]);
     OCMStub([reachabilityMock reachabilityForInternetConnection]).andReturn(reachabilityMock);
     OCMStub([reachabilityMock isReachable]).andReturn(true);
-    [requestSender sendIfConnected:request];
+    request.requestType = Immediate;
+    [requestSender send:request];
 
-    OCMVerify([requestSenderMock sendNow:request]);
-    
+    OCMVerify([requestSenderMock sendRequests:request.sendSynchronously]);
+
     [requestSenderMock stopMocking];
 }
 
@@ -132,26 +113,13 @@
     id reachabilityMock = OCMClassMock([Leanplum_Reachability class]);
     OCMStub([reachabilityMock reachabilityForInternetConnection]).andReturn(reachabilityMock);
     OCMStub([reachabilityMock isReachable]).andReturn(false);
-    [requestSender sendIfConnected:request];
+    request.requestType = Immediate;
+    [requestSender send:request];
 
-    [[[requestSenderMock verify] ignoringNonObjectArgs] sendEventually:request sync:[OCMArg any]];
-    
+    [[[requestSenderMock verify] ignoringNonObjectArgs] saveRequest:request sync:[OCMArg any]];
+
     [requestSenderMock stopMocking];
     [reachabilityMock stopMocking];
-}
-
-- (void)testSendNowWithData {
-    LPRequest *request = [LPRequest post:@"test" params:@{}];
-    LPRequestSender *requestSender = [[LPRequestSender alloc] init];
-    id requestSenderMock = OCMPartialMock(requestSender);
-
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
-    data [@"key"] = [@"value" dataUsingEncoding:NSUTF8StringEncoding];
-    [requestSender sendNow:request withData:data[@"key"] forKey:@"key"];
-
-    OCMVerify([requestSenderMock sendNow:request withDatas:data]);
-    
-    [requestSenderMock stopMocking];
 }
 
 - (void)testSendNowWithDatas {
@@ -163,7 +131,9 @@
 
     NSMutableDictionary *datas = [[NSMutableDictionary alloc] init];
     datas[@"key"] = [@"value" dataUsingEncoding:NSUTF8StringEncoding];
-    [requestSender sendNow:request withDatas:datas];
+    request.datas = datas;
+    request.requestType = Immediate;
+    [requestSender send:request];
 
     OCMVerify([requestSender.engine enqueueOperation:opMock]);
     OCMVerify([opMock addData:datas[@"key"] forKey:@"key"]);

@@ -26,6 +26,7 @@
 #import "LPNetworkOperation.h"
 #import "LeanplumInternal.h"
 #import "LPCountAggregator.h"
+#import "LPAPIConfig.h"
 
 @interface LPNetworkEngine()
 
@@ -137,6 +138,36 @@
     } else {
         LPLog(LPError, @"LPNetworkOperation is not used with LPNetworkEngine");
     }
+}
+
+/*
+ Must include `Accept-Encoding: gzip` in the header
+ Must include the phrase `gzip` in the `User-Agent` header
+ https://cloud.google.com/appengine/kb/
+ */
++ (NSDictionary *)createHeaders {
+    NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
+    NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
+                                 infoDict[(NSString *)kCFBundleNameKey],
+                                 infoDict[(NSString *)kCFBundleVersionKey],
+                                 [LPAPIConfig sharedConfig].appId,
+                                 LEANPLUM_CLIENT,
+                                 LEANPLUM_SDK_VERSION,
+                                 [[UIDevice currentDevice] systemName],
+                                 [[UIDevice currentDevice] systemVersion],
+                                 LEANPLUM_SUPPORTED_ENCODING,
+                                 LEANPLUM_PACKAGE_IDENTIFIER];
+    
+    NSString *languageHeader = [NSString stringWithFormat:@"%@, en-us",
+                                [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
+    
+    return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
+}
+
++ (void)attachApiKeys:(NSMutableDictionary *)dict
+{
+    dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
+    dict[LP_PARAM_CLIENT_KEY] = [LPAPIConfig sharedConfig].accessKey;
 }
 
 @end

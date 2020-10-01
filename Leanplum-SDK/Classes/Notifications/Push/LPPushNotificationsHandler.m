@@ -382,7 +382,8 @@
                 }
                 LP_END_TRY
              }];
-            [[LPRequestSender sharedInstance] sendIfConnected:request];
+            request.requestType = Immediate;
+            [[LPRequestSender sharedInstance] send:request];
         }
         LP_BEGIN_USER_CODE
     }];

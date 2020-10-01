@@ -1019,7 +1019,8 @@ void leanplumExceptionHandler(NSException *exception);
 
         [self triggerStartResponse:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    request.requestType = Immediate;
+    [[LPRequestSender sharedInstance] send:request];
     [self triggerStartIssued];
 
     // Pause.
@@ -1071,21 +1072,11 @@ void leanplumExceptionHandler(NSException *exception);
                     BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
                         objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
                     LPRequest *request = [LPRequestFactory stopWithParams:nil];
-                    [[LPRequestSender sharedInstance] sendIfConnected:request sync:exitOnSuspend];
+                    request.sendSynchronously = exitOnSuspend;
+                    request.requestType = Immediate;
+                    [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
                 }];
-
-    // Heartbeat.
-    [LPTimerBlocks scheduledTimerWithTimeInterval:HEARTBEAT_INTERVAL block:^() {
-        RETURN_IF_NOOP;
-        LP_TRY
-        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            LPRequest *request = [LPRequestFactory heartbeatWithParams:nil];
-            [[LPRequestSender sharedInstance] sendIfDelayed:request];
-
-        }
-        LP_END_TRY
-    } repeats:YES];
 
     // Extension close.
     if (_extensionContext) {
@@ -1183,13 +1174,15 @@ void leanplumExceptionHandler(NSException *exception);
     [request onError:^(NSError *error) {
         finishTaskHandler();
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    request.requestType = Immediate;
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)resume
 {
     LPRequest *request = [LPRequestFactory resumeSessionWithParams:nil];
-    [[LPRequestSender sharedInstance] sendIfDelayed:request];
+    request.requestType = Immediate;
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)trackCrashes
@@ -2012,7 +2005,8 @@ void leanplumExceptionHandler(NSException *exception);
     NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
     LPRequest *request = [LPRequestFactory trackGeofenceWithParams:arguments];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    request.requestType = Immediate;
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 
@@ -2395,7 +2389,8 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    request.requestType = Immediate;
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 

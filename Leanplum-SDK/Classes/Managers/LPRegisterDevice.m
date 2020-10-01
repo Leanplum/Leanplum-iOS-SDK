@@ -70,7 +70,8 @@
     [request onError:^(NSError *error) {
         [self showError:[error localizedDescription]];
     }];
-    [[LPRequestSender sharedInstance] sendNow:request];
+    request.requestType = Immediate;
+    [[LPRequestSender sharedInstance] send:request];
     
     [self.countAggregator incrementCount:@"register_device"];
 }

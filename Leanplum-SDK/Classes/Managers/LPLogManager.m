@@ -53,7 +53,7 @@ static LPLogLevel logLevel = Info;
                                                       LP_PARAM_TYPE: LP_VALUE_SDK_LOG,
                                                       LP_PARAM_MESSAGE: message
                                                       }];
-                [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
+                [[LPRequestSender sharedInstance] send:request];
     } @catch (NSException *exception) {
         LPLog(LPError, @"Unable to send log: %@", exception);
     } @finally {
