@@ -412,7 +412,7 @@ void leanplumExceptionHandler(NSException *exception);
 
     NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
     if (settings) {
-        [params addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+        [params addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
     }
     
     // Change the LPAPIConfig after getting the push token and settings

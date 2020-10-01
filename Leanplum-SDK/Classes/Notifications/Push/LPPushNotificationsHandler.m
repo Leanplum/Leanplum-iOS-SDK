@@ -128,7 +128,7 @@
     // Get the push types if changed
     NSDictionary* settings = [[UIApplication sharedApplication].currentUserNotificationSettings dictionary];
     if ([self updateUserNotificationSettings:settings]) {
-        [deviceAttributeParams addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+        [deviceAttributeParams addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
     }
     
     // If there are changes to the push token and/or the push types, send a request
@@ -183,7 +183,7 @@
     // Send settings.
     if ([self updateUserNotificationSettings:settings]) {
         NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
         }

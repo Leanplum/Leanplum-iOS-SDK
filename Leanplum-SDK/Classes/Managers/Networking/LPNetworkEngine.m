@@ -164,6 +164,15 @@
     return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
 }
 
++ (NSDictionary *)notificationSettingsToRequestParams:(NSDictionary *)settings
+{
+    NSDictionary *params = [@{
+            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
+            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
+                  [LPJSON stringFromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]] ?: @""} mutableCopy];
+    return params;
+}
+
 + (void)attachApiKeys:(NSMutableDictionary *)dict
 {
     dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
