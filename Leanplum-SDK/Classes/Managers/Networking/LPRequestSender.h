@@ -31,6 +31,8 @@
 
 + (instancetype)sharedInstance;
 
++ (NSDictionary *)notificationSettingsToRequestParams:(NSDictionary *)settings;
+
 - (void)send:(LPRequest *)request;
 
 @end

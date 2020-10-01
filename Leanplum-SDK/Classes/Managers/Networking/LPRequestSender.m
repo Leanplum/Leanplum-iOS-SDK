@@ -206,6 +206,15 @@
     return uuid;
 }
 
++ (NSDictionary *)notificationSettingsToRequestParams:(NSDictionary *)settings
+{
+    NSDictionary *params = [@{
+            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
+            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES:
+                  [LPJSON stringFromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]] ?: @""} mutableCopy];
+    return params;
+}
+
 - (void)sendRequests:(BOOL)sync
 {
     NSBlockOperation *requestOperation = [NSBlockOperation new];

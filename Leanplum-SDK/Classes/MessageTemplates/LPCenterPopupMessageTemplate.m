@@ -53,6 +53,7 @@
     LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     viewController.context = context;
+    viewController.shouldShowCancelButton = NO;
     return viewController;
 }
 

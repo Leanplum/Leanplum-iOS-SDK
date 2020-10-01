@@ -74,8 +74,9 @@
     LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
     viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
     viewController.context = context;
+    viewController.shouldShowCancelButton = YES;
     __strong __typeof__(self) strongSelf = self;
-    viewController.pushAskToAskCompletionBlock = ^{
+    viewController.acceptCompletionBlock = ^{
         __typeof__(self) weakSelf = strongSelf;
         [weakSelf showNativePushPrompt];
     };

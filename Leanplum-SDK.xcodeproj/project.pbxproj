@@ -121,7 +121,7 @@
 		9E53F71E247D34C80097955F /* LPNotificationsConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E53F70E247D34C80097955F /* LPNotificationsConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9EE5FF9F24CEC57300153AF8 /* LPNetworkConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */; };
 		9EEE92B424D95765003F0720 /* LPLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE92B224D95765003F0720 /* LPLogManager.m */; };
-		9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EEE92B324D95765003F0720 /* LPLogManager.h */; };
+		9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 9EEE92B324D95765003F0720 /* LPLogManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A0997BC1F68082938784DE20 /* NSTimer+Blocks.h in Headers */ = {isa = PBXBuildFile; fileRef = 69CD8EF6F74200A4C9A7EC2C /* NSTimer+Blocks.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A110EDF01425A4789CC5FC1A /* LPEventDataManager.h in Headers */ = {isa = PBXBuildFile; fileRef = C135ED022E215F3C08278A5F /* LPEventDataManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		A456BBE6B7B8BBDCE6E015A7 /* LPAppRatingMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = D54CB698E3D746A326FA3CA8 /* LPAppRatingMessageTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -869,7 +869,6 @@
 				AF13BAD1CD1932794C36E03D /* LPWebInterstitialViewController.h in Headers */,
 				B39D73EE1033D842008EB4DE /* Leanplum.h in Headers */,
 				5E2273EFA0ED797396DEDDC1 /* LeanplumCompatibility.h in Headers */,
-				9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */,
 				A715BC149B459806473982B4 /* LeanplumInternal.h in Headers */,
 				A4618571D02EBF40BD408655 /* LeanplumSDK_iOS.h in Headers */,
 				A7A4D30834103F3AEB3B2412 /* LeanplumSDK_tvOS.h in Headers */,
@@ -886,6 +885,7 @@
 				236B1A492A40608B65F7F1D6 /* Leanplum_Reachability.h in Headers */,
 				C722BB509AEC55EC813B93BF /* Leanplum_SocketIO.h in Headers */,
 				697DB798E738EEF4B845BFD4 /* Leanplum_WebSocket.h in Headers */,
+				9EEE92B524D95765003F0720 /* LPLogManager.h in Headers */,
 				04F29D7FC689946A581A0B80 /* NSString+MD5Addition.h in Headers */,
 				A0997BC1F68082938784DE20 /* NSTimer+Blocks.h in Headers */,
 				D339A8A38A8412183454DC73 /* UIDevice+IdentifierAddition.h in Headers */,

@@ -892,6 +892,61 @@
 }
 
 /**
+ * Tests whether actions are executed after start even if the start failed.
+ */
+- (void) test_failed_start_triggers
+{
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"simple_start_response"
+                                                     ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    
+    NSDictionary *startResponse = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:nil];
+    
+    NSDictionary *messages = startResponse[LP_KEY_MESSAGES];
+    [[LPVarCache sharedCache] applyVariableDiffs:nil
+                          messages:messages
+                          variants:nil
+                           regions:nil
+                  variantDebugInfo:nil];
+    
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *errorResponseJson = @"{\
+        ""response"": [\
+            {\
+                ""success"": false,\
+                ""error"": {\
+                    ""message"": ""At least one of deviceId or userId is required.""\
+                }\
+            }\
+        ]\
+        }";
+        NSData *data = [errorResponseJson dataUsingEncoding:NSUTF8StringEncoding];
+        return [HTTPStubsResponse responseWithData:data statusCode:404 headers:nil];
+    }];
+    
+    [LeanplumHelper setup_production_test];
+    
+    XCTestExpectation *expectStartResponse = [self expectationWithDescription:@"startResponse"];
+
+    id mockLeanplumClass = OCMClassMock([Leanplum class]);
+    
+    [Leanplum startWithResponseHandler:^(BOOL success) {
+        XCTAssertFalse(success);
+    }];
+    
+    // maybePerformActions is executed after the start responses are triggered
+    id stub = OCMStub([mockLeanplumClass maybePerformActions:OCMArg.any withEventName:OCMArg.any withFilter:kLeanplumActionFilterAll fromMessageId:OCMArg.any withContextualValues:OCMArg.any]);
+    
+    [[stub andForwardToRealObject] andDo:^(NSInvocation *invocation) {
+        [expectStartResponse fulfill];
+    }];
+    
+    [self waitForExpectationsWithTimeout:5 handler:nil];
+}
+
+/**
  * Tests whether setting user attributes and id works correctly.
  */
 - (void) test_user_attributes
@@ -923,6 +978,93 @@
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue([Leanplum hasStarted]);
+}
+
+/**
+ * Tests setting the device id before Leanplum start
+ */
+- (void) test_set_device_id
+{
+    id mockLeanplum = OCMClassMock([Leanplum class]);
+    OCMReject([mockLeanplum setDeviceIdInternal:[OCMArg any]]);
+    
+    NSString *deviceId = @"testDeviceId";
+    [Leanplum setDeviceId:deviceId];
+    
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                        NSDictionary *params) {
+        XCTAssertEqualObjects(apiMethod, @"start");
+        return YES;
+    }];
+    
+    [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
+        XCTAssertTrue([args[LP_PARAM_DEVICE_ID] isEqualToString:deviceId]);
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_production_test]);
+
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [Leanplum onStartResponse:^(BOOL success) {
+        XCTAssertTrue(success);
+        dispatch_semaphore_signal(semaphor);
+    }];
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+    XCTAssertTrue([Leanplum hasStarted]);
+}
+
+/**
+ * Tests setting the device id after Leanplum has started (uses setDeviceIdInternal)
+ */
+- (void) test_set_device_id_after_start
+{
+    id mockLeanplum = OCMClassMock([Leanplum class]);
+    NSString *deviceId = @"testDeviceId";
+    
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    XCTAssertTrue([LeanplumHelper start_production_test]);
+    
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    
+    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                        NSDictionary *params) {
+        XCTAssertEqualObjects(apiMethod, @"setDeviceAttributes");
+        return YES;
+    }];
+    
+    [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
+        XCTAssertTrue([args[LP_PARAM_DEVICE_ID] isEqualToString:deviceId]);
+        XCTAssertNotNil(args[LP_PARAM_VERSION_NAME]);
+        XCTAssertNotNil(args[LP_PARAM_DEVICE_NAME]);
+        XCTAssertNotNil(args[LP_PARAM_DEVICE_MODEL]);
+        XCTAssertNotNil(args[LP_PARAM_DEVICE_SYSTEM_NAME]);
+        XCTAssertNotNil(args[LP_PARAM_DEVICE_SYSTEM_VERSION]);
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
+    [Leanplum onStartResponse:^(BOOL success) {
+        XCTAssertTrue(success);
+        [Leanplum setDeviceId:deviceId];
+        OCMVerify([mockLeanplum setDeviceIdInternal:[OCMArg any]]);
+    }];
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+    XCTAssertTrue([[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]);
 }
 
 /**
