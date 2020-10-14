@@ -13,7 +13,6 @@
 #import "LeanplumHelper.h"
 #import "LPDeferMessageManager.h"
 #import "Leanplum/LPAlertMessageTemplate.h"
-#import "Leanplum/LPDeferrableAction.h"
 #import "Leanplum/LPAPIConfig.h"
 
 @interface LPDeferMessageManagerTest : XCTestCase
@@ -45,6 +44,14 @@
     }
 }
 
+/**
+ * Defer message for controller and Alert message
+ */
+- (void)setupDeferMessage {
+    NSArray<Class> *arr = @[[LPSampleViewController class]];
+    [Leanplum deferMessagesForViewControllers: arr];
+}
+
 - (void)tearDown
 {
     [super tearDown];
@@ -54,14 +61,8 @@
 
 - (void)test_defer
 {
-    NSArray<Class> *arr = @[[LPSampleViewController class]];
-    [Leanplum deferMessagesForViewControllers: arr];
-    
+    [self setupDeferMessage];
     [LPAlertMessageTemplate defineAction];
-
-    NSArray *alertBlocks = [LPInternalState sharedState].actionBlocks[LPMT_ALERT_NAME];
-    LPDeferrableAction *responder = alertBlocks[0];
-    XCTAssertTrue(responder.isDeferrable);
     
     id templateUtils = OCMClassMock([LPMessageTemplateUtilities class]);
     id deferManager = OCMClassMock([LPDeferMessageManager class]);
@@ -92,10 +93,6 @@
     [LeanplumHelper start_development_test];
     
     [LPAlertMessageTemplate defineAction];
-
-    NSArray *alertBlocks = [LPInternalState sharedState].actionBlocks[LPMT_ALERT_NAME];
-    LPDeferrableAction *responder = alertBlocks[0];
-    XCTAssertTrue(responder.isDeferrable);
     
     id templateUtils = OCMClassMock([LPMessageTemplateUtilities class]);
     id deferManager = OCMClassMock([LPDeferMessageManager class]);
@@ -123,14 +120,9 @@
     // Leanplum start is needed to successfully handle message View and record impression
     [LeanplumHelper start_development_test];
     
-    NSArray<Class> *arr = @[[LPSampleViewController class]];
-    [Leanplum deferMessagesForViewControllers: arr];
+    [self setupDeferMessage];
     
     [LPAlertMessageTemplate defineAction];
-
-    NSArray *alertBlocks = [LPInternalState sharedState].actionBlocks[LPMT_ALERT_NAME];
-    LPDeferrableAction *responder = alertBlocks[0];
-    XCTAssertTrue(responder.isDeferrable);
     
     id templateUtils = OCMClassMock([LPMessageTemplateUtilities class]);
     id deferManager = OCMClassMock([LPDeferMessageManager class]);

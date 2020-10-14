@@ -7,7 +7,6 @@
 //
 
 #import "LPAlertMessageTemplate.h"
-#import "LPDeferrableAction.h"
 
 @implementation LPAlertMessageTemplate
 
@@ -25,8 +24,6 @@
             return NO;
         }
     };
-    
-    LPDeferrableAction *resp = [LPDeferrableAction initWithDeferrableActionBlock:responder];
 
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
@@ -36,7 +33,7 @@
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
              ]
-               withOptions:@{} withActionResponder:resp];
+               withOptions:@{} withResponder:responder];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

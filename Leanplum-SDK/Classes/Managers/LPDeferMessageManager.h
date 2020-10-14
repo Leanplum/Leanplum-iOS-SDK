@@ -12,9 +12,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPDeferMessageManager : NSObject
 
++ (void)setDeferredActionNames:(NSArray<NSString*> *)actionNames;
 + (void)setDeferredClasses:(NSArray<Class> *)classes;
 + (BOOL)shouldDeferMessage:(LPActionContext *)context;
-+ (void)triggerDeferredMessage;
++ (NSArray<NSString*> *)defaultMessageActionNames;
 
 @end
 

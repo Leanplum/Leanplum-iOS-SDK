@@ -8,9 +8,11 @@
 #import "LPDeferMessageManager.h"
 #import "LeanplumInternal.h"
 #import "LPMessageTemplateUtilities.h"
+#import "LPMessageTemplateConstants.h"
 
 @interface LPDeferMessageManager()
 + (BOOL)shouldDeferMessageForViewController:(id)viewController;
++ (void)triggerDeferredMessage;
 @end
 
 @implementation UIViewController (LeanplumExtension)
@@ -29,35 +31,62 @@ void leanplum_viewDidAppear(id self, SEL _cmd, BOOL animated)
 @implementation LPDeferMessageManager
 
 static NSMutableArray<LPActionContext *> *deferredContexts;
+static NSArray<NSString *> *deferredActionNames;
 static NSArray<Class> *deferredClasses;
 static BOOL isPresenting;
 
++ (void)setDeferredActionNames:(NSArray<NSString *> *)actionNames
+{
+    if (actionNames == nil) {
+        actionNames = @[];
+    }
+    deferredActionNames = actionNames;
+}
+
 + (void)setDeferredClasses:(NSArray<Class> *)classes
 {
-    //if (classes == nil || classes.count == 0) {
-    //      return;
-    //}
-    
-    // Clear the deferred controller if nil or empty array is passed
-    // Do not reset - the contexts will be lost
-    if (classes == nil) {
-        classes = @[];
+    if (classes == nil || classes.count == 0) {
+        if ([deferredClasses count] > 0) {
+            // Clear the deferred controllers
+            deferredClasses = @[];
+        }
+        return;
     }
+
     deferredClasses = classes;
-        
+    
+    if ([deferredActionNames count] == 0) {
+        // Defer all built-in action names if non are provided
+        deferredActionNames = [LPDeferMessageManager defaultMessageActionNames];
+    }
+    
     [LPDeferMessageManager swizzleViewDidAppearMethod];
+}
+
++ (NSArray<NSString*> *)defaultMessageActionNames
+{
+    return @[LPMT_ALERT_NAME,
+             LPMT_CONFIRM_NAME,
+             LPMT_PUSH_ASK_TO_ASK,
+             LPMT_CENTER_POPUP_NAME,
+             LPMT_INTERSTITIAL_NAME,
+             LPMT_WEB_INTERSTITIAL_NAME,
+             LPMT_HTML_NAME,
+             LPMT_ICON_CHANGE_NAME];
 }
 
 + (BOOL)shouldDeferMessage:(LPActionContext *)context
 {
-    Class currentViewControllerClass = [[LPMessageTemplateUtilities topViewController] class];
-    if ([deferredClasses containsObject:currentViewControllerClass]) {
-        // TODO: Synchronize?
-        if (deferredContexts == nil) {
-            deferredContexts = [[NSMutableArray alloc]init];
+    if ([deferredActionNames containsObject:[context actionName]]) {
+        Class currentViewControllerClass = [[LPMessageTemplateUtilities topViewController] class];
+        if ([deferredClasses containsObject:currentViewControllerClass]) {
+            // TODO: Synchronize?
+            if (deferredContexts == nil) {
+                deferredContexts = [[NSMutableArray alloc]init];
+            }
+            [deferredContexts addObject:context];
+            return YES;
         }
-        [deferredContexts addObject:context];
-        return YES;
     }
     return NO;
 }

@@ -70,5 +70,6 @@
 @end
 
 @interface LPDeferMessageManager(UnitTest)
++ (void)triggerDeferredMessage;
 + (void)reset;
 @end

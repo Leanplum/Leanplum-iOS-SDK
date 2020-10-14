@@ -48,11 +48,8 @@
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
-#include <sys/sysctl.h>
-
-#import "LPDeferrableAction.h"
-
 #import "LPDeferMessageManager.h"
+#include <sys/sysctl.h>
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
 NSString *const kAppKeysFileType = @"plist";
@@ -594,14 +591,12 @@ void leanplumExceptionHandler(NSException *exception);
             handled |= invocationHandled;
         }
 
-        for (LPDeferrableAction *block in [LPInternalState sharedState].actionBlocks
+        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
                                            [context.actionName]) {
-            if (block.isDeferrable) {
-                if ([LPDeferMessageManager shouldDeferMessage:context]) {
-                    continue;
-                }
+            if ([LPDeferMessageManager shouldDeferMessage:context]) {
+                continue;
             }
-            handled |= block.actionBlock(context);
+            handled |= block(context);
         }
         LP_END_USER_CODE
 
@@ -1493,11 +1488,9 @@ void leanplumExceptionHandler(NSException *exception);
     [self defineAction:name ofKind:kind withArguments:args withOptions:@{} withResponder:responder];
 }
 
-+ (void)defineAction:(NSString *)name
-       ofKind:(LeanplumActionKind)kind
-withArguments:(NSArray *)args
-  withOptions:(NSDictionary *)options
- withActionResponder:(LPDeferrableAction *)responder
++ (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
+         withOptions:(NSDictionary *)options
+       withResponder:(LeanplumActionBlock)responder
 {
     if ([LPUtils isNullOrEmpty:name]) {
         [self throwError:@"[Leanplum defineAction:ofKind:withArguments:] Empty name parameter "
@@ -1525,44 +1518,18 @@ withArguments:(NSArray *)args
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
 }
-// TODO: fix defineActions
-+ (void)defineAction:(NSString *)name ofKind:(LeanplumActionKind)kind withArguments:(NSArray *)args
-         withOptions:(NSDictionary *)options
-       withResponder:(LeanplumActionBlock)responder
-{
-    if ([LPUtils isNullOrEmpty:name]) {
-        [self throwError:@"[Leanplum defineAction:ofKind:withArguments:] Empty name parameter "
-         @"provided."];
-        return;
-    }
-    if (!kind) {
-        [self throwError:@"[Leanplum defineAction:ofKind:withArguments:] Nil kind parameter "
-         @"provided."];
-        return;
-    }
-    if (!args) {
-        [self throwError:@"[Leanplum defineAction:ofKind:withArguments:] Nil args parameter "
-         @"provided."];
-        return;
-    }
-
-    LP_TRY
-    [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
-    [[LPVarCache sharedCache] registerActionDefinition:name ofKind:(int) kind withArguments:args andOptions:options];
-    if (responder) {
-        [Leanplum onAction:name invoke:[LPDeferrableAction initWithActionBlock:responder]];
-    }
-    LP_END_TRY
-    
-    [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
-}
 
 + (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
 {
     [LPDeferMessageManager setDeferredClasses:controllers];
 }
 
-+ (void)onAction:(NSString *)actionName invoke:(LPDeferrableAction *)block
++ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
+{
+    [LPDeferMessageManager setDeferredActionNames:actionNames];
+}
+
++ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block
 {
     if ([LPUtils isNullOrEmpty:actionName]) {
         [self throwError:@"[Leanplum onAction:invoke:] Empty actionName parameter provided."];
@@ -1582,7 +1549,7 @@ withArguments:(NSArray *)args
         blocks = [NSMutableArray array];
         [LPInternalState sharedState].actionBlocks[actionName] = blocks;
     }
-    [blocks addObject:block];
+    [blocks addObject:[block copy]];
     LP_END_TRY
 }
 
