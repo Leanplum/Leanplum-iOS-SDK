@@ -14,7 +14,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPPopupViewController : UIViewController
 
 @property (strong, nonatomic) LPActionContext *context;
-@property(copy) void (^pushAskToAskCompletionBlock)(void);
+@property (copy) void (^acceptCompletionBlock)(void);
+@property BOOL shouldShowCancelButton;
 
 @property (weak, nonatomic) IBOutlet UIView *containerView;
 @property (weak, nonatomic) IBOutlet UIButton *dismissButton;

@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
 @property (nonatomic, assign) BOOL appWasActivatedByReceivingPushNotification;
+@property (nonatomic, readonly) NSDictionary *currentUserNotificationSettings;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
@@ -37,6 +38,7 @@ withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0))
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
+- (BOOL)updateUserNotificationSettings:(NSDictionary *)newSettings;
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
 
