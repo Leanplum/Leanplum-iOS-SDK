@@ -801,6 +801,11 @@ NS_SWIFT_UNAVAILABLE("use forceContentUpdate(completion:)");
 + (BOOL)isPreLeanplumInstall;
 
 /**
+ * Returns the app version used by Leanplum.
+ */
++ (nullable NSString *)appVersion;
+
+/**
  * Returns the deviceId in the current Leanplum session. This should only be called after
  * [Leanplum start].
  */

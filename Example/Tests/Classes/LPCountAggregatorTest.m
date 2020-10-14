@@ -27,7 +27,6 @@
 #import <OCMock/OCMock.h>
 #import "LPCountAggregator.h"
 #import "LPConstants.h"
-#import "LPRequest.h"
 #import <Leanplum/LPRequestSender.h>
 #import <Leanplum/LPNetworkConstants.h>
 #import "LeanplumHelper.h"

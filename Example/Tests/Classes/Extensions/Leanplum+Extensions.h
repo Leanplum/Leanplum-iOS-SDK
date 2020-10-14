@@ -41,6 +41,8 @@
 
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
++ (void)setDeviceIdInternal:(NSString *)deviceId;
+
 @end
 
 @interface LPPushNotificationsHandler(UnitTest)
