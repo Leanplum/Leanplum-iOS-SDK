@@ -33,7 +33,7 @@
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
                  [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
              ]
-               withOptions:@{} withResponder:responder];
+             withResponder:responder];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

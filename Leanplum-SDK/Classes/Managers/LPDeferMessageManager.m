@@ -80,7 +80,6 @@ static BOOL isPresenting;
     if ([deferredActionNames containsObject:[context actionName]]) {
         Class currentViewControllerClass = [[LPMessageTemplateUtilities topViewController] class];
         if ([deferredClasses containsObject:currentViewControllerClass]) {
-            // TODO: Synchronize?
             if (deferredContexts == nil) {
                 deferredContexts = [[NSMutableArray alloc]init];
             }
@@ -93,12 +92,11 @@ static BOOL isPresenting;
 
 + (BOOL)shouldDeferMessageForViewController:(id)viewController
 {
-    // TODO:
     // Uncomment to NOT show other messages on top of the alert dialog/controller
     // Add the other LP controllers here depending on the desired behavior
-//    if ([viewController isMemberOfClass:[UIAlertController class]]) {
-//        return YES;
-//    }
+    //    if ([viewController isMemberOfClass:[UIAlertController class]]) {
+    //        return YES;
+    //    }
     for (Class cl in deferredClasses) {
         if ([viewController isMemberOfClass:cl]) {
             return YES;

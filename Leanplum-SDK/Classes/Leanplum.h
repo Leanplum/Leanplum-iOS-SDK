@@ -441,20 +441,24 @@ NS_SWIFT_NAME(defineAction(name:kind:args:completion:));
 NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 /**@}*/
 
-
-+ (void)defineAction:(NSString *)name
-       ofKind:(LeanplumActionKind)kind
-withArguments:(NSArray *)args
-  withOptions:(NSDictionary *)options
- withActionResponder:(LPDeferrableAction *)responder;
-
+/**
+ * Defer message display from specified view controllers.
+ * Defers all actions on those controllers unless specific action names are provided using deferMessagesWithActionNames
+ * @see deferMessagesWithActionNames:
+ * @param controllers The view controller classes not to display messages on
+ */
 + (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers;
+
+/**
+ * Defer only specific actions
+ * @param actionNames The names of the actions to defer
+ */
++ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames;
 
 /**
  * Block to call when an action is received, such as to show a message to the user.
  */
-//+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
-+ (void)onAction:(NSString *)actionName invoke:(LPDeferrableAction *)block;
++ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
 
 /**
  * Handles a push notification for apps that use Background Notifications.
