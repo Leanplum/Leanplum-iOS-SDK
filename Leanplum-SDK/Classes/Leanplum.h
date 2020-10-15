@@ -447,13 +447,15 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
  * @see deferMessagesWithActionNames:
  * @param controllers The view controller classes not to display messages on
  */
-+ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers;
++ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
+NS_SWIFT_NAME(deferMessagesForViewControllers(_:));
 
 /**
  * Defer only specific actions
  * @param actionNames The names of the actions to defer
  */
-+ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames;
++ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
+NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 
 /**
  * Block to call when an action is received, such as to show a message to the user.
