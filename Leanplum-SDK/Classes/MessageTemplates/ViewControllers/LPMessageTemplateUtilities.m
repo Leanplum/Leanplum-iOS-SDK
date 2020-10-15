@@ -66,10 +66,7 @@
         topViewController = [[((UIPageViewController *) topViewController) viewControllers] objectAtIndex:0];
     }
     
-    // TODO: Handle UISplitViewController
-    //    if ([topViewController isKindOfClass:[UISplitViewController class]]) {
-    //        topViewController = [[((UISplitViewController *) topViewController) viewControllers] objectAtIndex:0];
-    //    }
+    // UISplitViewController is not handled at the moment
     
     while (topViewController.presentedViewController) {
         topViewController = topViewController.presentedViewController;

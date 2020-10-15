@@ -13,6 +13,7 @@
 @interface LPDeferMessageManager()
 + (BOOL)shouldDeferMessageForViewController:(id)viewController;
 + (void)triggerDeferredMessage;
++ (void)setIsPresenting:(BOOL)value;
 @end
 
 @implementation UIViewController (LeanplumExtension)
@@ -24,6 +25,18 @@ void leanplum_viewDidAppear(id self, SEL _cmd, BOOL animated)
     if (![LPDeferMessageManager shouldDeferMessageForViewController: self]) {
         [LPDeferMessageManager triggerDeferredMessage];
     }
+    LP_END_TRY
+}
+
+typedef void (^LeanplumDismissControllerCompletionBlock)(void (^)(void));
+
+void leanplum_dismissViewControllerAnimated(id self, SEL _cmd, BOOL animated, LeanplumDismissControllerCompletionBlock completion);
+void leanplum_dismissViewControllerAnimated(id self, SEL _cmd, BOOL animated, LeanplumDismissControllerCompletionBlock completion)
+{
+    ((void(*)(id, SEL, BOOL, LeanplumDismissControllerCompletionBlock))LP_GET_ORIGINAL_IMP(@selector(dismissViewControllerAnimated:completion:)))(self, _cmd, animated, completion);
+    LP_TRY
+    [LPDeferMessageManager setIsPresenting:NO];
+    [LPDeferMessageManager triggerDeferredMessage];
     LP_END_TRY
 }
 @end
@@ -60,7 +73,7 @@ static BOOL isPresenting;
         deferredActionNames = [LPDeferMessageManager defaultMessageActionNames];
     }
     
-    [LPDeferMessageManager swizzleViewDidAppearMethod];
+    [LPDeferMessageManager swizzleViewControllerMethods];
 }
 
 + (NSArray<NSString*> *)defaultMessageActionNames
@@ -78,8 +91,12 @@ static BOOL isPresenting;
 + (BOOL)shouldDeferMessage:(LPActionContext *)context
 {
     if ([deferredActionNames containsObject:[context actionName]]) {
+        UIViewController *currentViewController = [LPMessageTemplateUtilities topViewController];
         Class currentViewControllerClass = [[LPMessageTemplateUtilities topViewController] class];
-        if ([deferredClasses containsObject:currentViewControllerClass]) {
+        
+        // Add the other LP controllers here depending on the desired behavior
+        if ([deferredClasses containsObject:currentViewControllerClass]
+            || [currentViewController isKindOfClass:[UIAlertController class]]) {
             if (deferredContexts == nil) {
                 deferredContexts = [[NSMutableArray alloc]init];
             }
@@ -92,11 +109,11 @@ static BOOL isPresenting;
 
 + (BOOL)shouldDeferMessageForViewController:(id)viewController
 {
-    // Uncomment to NOT show other messages on top of the alert dialog/controller
+    // Do NOT show other messages on top of the alert dialog/controller
     // Add the other LP controllers here depending on the desired behavior
-    //    if ([viewController isMemberOfClass:[UIAlertController class]]) {
-    //        return YES;
-    //    }
+    if ([viewController isKindOfClass:[UIAlertController class]]) {
+            return YES;
+    }
     for (Class cl in deferredClasses) {
         if ([viewController isMemberOfClass:cl]) {
             return YES;
@@ -115,15 +132,21 @@ static BOOL isPresenting;
     [deferredContexts removeObjectAtIndex:0];
     isPresenting = YES;
     [Leanplum triggerAction:firstContext handledBlock:^(BOOL success) {
-        isPresenting = NO;
         if (success) {
             [[LPInternalState sharedState].actionManager
              recordMessageImpression:[firstContext messageId]];
+        } else {
+            isPresenting = NO;
         }
     }];
 }
 
-+ (void)swizzleViewDidAppearMethod
++ (void)setIsPresenting:(BOOL)value
+{
+    isPresenting = value;
+}
+
++ (void)swizzleViewControllerMethods
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -131,6 +154,10 @@ static BOOL isPresenting;
         [LPSwizzle swizzleInstanceMethod:@selector(viewDidAppear:)
                                 forClass:[UIViewController class]
                    withReplacementMethod:(IMP) leanplum_viewDidAppear];
+        
+        [LPSwizzle swizzleInstanceMethod:@selector(dismissViewControllerAnimated:completion:)
+                                forClass:[UIViewController class]
+                   withReplacementMethod:(IMP) leanplum_dismissViewControllerAnimated];
         LP_END_TRY
     });
 }
@@ -139,6 +166,7 @@ static BOOL isPresenting;
 {
     deferredContexts = nil;
     deferredClasses = nil;
+    deferredActionNames = nil;
 }
 
 @end
