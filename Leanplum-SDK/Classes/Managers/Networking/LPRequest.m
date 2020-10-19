@@ -51,7 +51,6 @@
         _countAggregator = [LPCountAggregator sharedAggregator];
         _requestId = [[NSUUID UUID] UUIDString];
         _requestType = Default;
-        _sendSynchronously = NO;
     }
     return self;
 }

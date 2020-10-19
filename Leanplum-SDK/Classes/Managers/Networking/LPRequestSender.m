@@ -78,7 +78,7 @@
 
 - (void)send:(LPRequest *)request
 {
-    [self saveRequest:request sync:request.sendSynchronously];
+    [self saveRequest:request];
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled || request.requestType == Immediate) {
         if ([self validateConfigFor:request]) {
             if (request.datas != nil) {
@@ -116,16 +116,16 @@
     return true;
 }
 
-- (void)sendNow:(LPRequest *)request sync:(BOOL)sync
+- (void)sendNow:(LPRequest *)request
 {
     RETURN_IF_TEST_MODE;
 
-    [self sendRequests:sync];
+    [self sendRequests];
     
     [self.countAggregator incrementCount:@"send_now_lp"];
 }
 
-- (void)saveRequest:(LPRequest *)request sync:(BOOL)sync
+- (void)saveRequest:(LPRequest *)request
 {
     RETURN_IF_TEST_MODE;
     if (!request.sent) {
@@ -151,19 +151,10 @@
             LP_END_TRY
         };
 
-        if (sync) {
-            operationBlock();
-        } else {
-            [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
-        }
+        [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
     }
     
     [self.countAggregator incrementCount:@"send_eventually_lp"];
-}
-
-- (void)sendNow:(LPRequest *)request
-{
-    [self sendNow:request sync:request.sendSynchronously];
 }
 
 - (void)sendNow:(LPRequest *)request withDatas:(NSDictionary *)datas
@@ -206,7 +197,7 @@
     return uuid;
 }
 
-- (void)sendRequests:(BOOL)sync
+- (void)sendRequests
 {
     NSBlockOperation *requestOperation = [NSBlockOperation new];
     __weak NSBlockOperation *weakOperation = requestOperation;
@@ -239,7 +230,7 @@
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
         [LPNetworkEngine attachApiKeys:multiRequestArgs];
-        int timeout = sync ? constants.syncNetworkTimeoutSeconds : constants.networkTimeoutSeconds;
+        int timeout = constants.networkTimeoutSeconds;
 
         NSTimeInterval uiTimeoutInterval = timeout;
         timeout = 5 * timeout; // let slow operations complete
@@ -271,7 +262,7 @@
 
             // Send another request if the last request had maximum events per api call.
             if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
-                [self sendRequests:sync];
+                [self sendRequests];
             }
 
             if (!self.didUiTimeout) {
@@ -348,14 +339,8 @@
         LP_END_TRY
     };
 
-    // Send. operationBlock will run synchronously.
-    // Adding to OperationQueue puts it in the background.
-    if (sync) {
-        operationBlock();
-    } else {
-        [requestOperation addExecutionBlock:operationBlock];
-        [[LPOperationQueue serialQueue] addOperation:requestOperation];
-    }
+    [requestOperation addExecutionBlock:operationBlock];
+    [[LPOperationQueue serialQueue] addOperation:requestOperation];
 }
 
 -(void)uiDidTimeout {

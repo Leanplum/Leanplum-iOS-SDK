@@ -1108,10 +1108,7 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
-                        objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
                     LPRequest *request = [LPRequestFactory stopWithParams:nil];
-                    request.sendSynchronously = exitOnSuspend;
                     request.requestType = Immediate;
                     [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
