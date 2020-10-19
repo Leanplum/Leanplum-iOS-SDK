@@ -632,12 +632,11 @@ void leanplumExceptionHandler(NSException *exception);
             handled |= invocationHandled;
         }
 
-        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
-                                           [context.actionName]) {
-            if ([LPDeferMessageManager shouldDeferMessage:context]) {
-                continue;
+        if (![LPDeferMessageManager shouldDeferMessage:context]) {
+            for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
+                 [context.actionName]) {
+                handled |= block(context);
             }
-            handled |= block(context);
         }
         LP_END_USER_CODE
 
