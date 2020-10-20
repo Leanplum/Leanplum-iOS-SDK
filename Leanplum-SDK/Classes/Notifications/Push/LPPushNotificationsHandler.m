@@ -347,10 +347,11 @@
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            LPRequest *request = [LPRequestFactory getVarsWithParams:@{
+            LPRequest *request = [[LPRequestFactory getVarsWithParams:@{
                                                                      LP_PARAM_INCLUDE_DEFAULTS: @(NO),
                                                                      LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                                                    }];
+                                                                    }]
+                                                    andRequestType:Immediate];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
@@ -379,7 +380,6 @@
                 }
                 LP_END_TRY
              }];
-            request.requestType = Immediate;
             [[LPRequestSender sharedInstance] send:request];
         }
         LP_BEGIN_USER_CODE

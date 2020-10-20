@@ -64,8 +64,9 @@
                                      withIconBundle:obj
                                            iconName:key];
     }];
-    LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA:
-                                                    [LPJSON stringFromJSON:requestParam]}];
+    LPRequest *request = [[LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA:
+                                                    [LPJSON stringFromJSON:requestParam]}]
+                                                    andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         LPLog(LPDebug, @"App icons uploaded.");
     }];
@@ -73,7 +74,6 @@
         LPLog(LPError, @"Fail to upload app icons: %@", error.localizedDescription);
     }];
     request.datas = requestDatas;
-    request.requestType = Immediate;
     [[LPRequestSender sharedInstance] send:request];
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"upload_app_icons_on_dev_mode"];

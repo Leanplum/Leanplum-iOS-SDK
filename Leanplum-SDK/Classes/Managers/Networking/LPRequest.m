@@ -55,6 +55,12 @@
     return self;
 }
 
+- (LPRequest *)andRequestType:(LPRequestType)type
+{
+    self.requestType = type;
+    return self;
+}
+
 + (LPRequest *)get:(NSString *)apiMethod params:(NSDictionary *)params
 {
     LPLog(LPDebug, @"Will call API method %@ with arguments %@", apiMethod, params);

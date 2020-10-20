@@ -941,7 +941,7 @@ void leanplumExceptionHandler(NSException *exception);
     }
 
     // Issue start API call.
-    LPRequest *request = [LPRequestFactory startWithParams:params];
+    LPRequest *request = [[LPRequestFactory startWithParams:params] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -1058,7 +1058,6 @@ void leanplumExceptionHandler(NSException *exception);
                     fromMessageId:nil
              withContextualValues:nil];
     }];
-    request.requestType = Immediate;
     [[LPRequestSender sharedInstance] send:request];
     [self triggerStartIssued];
 
@@ -1108,8 +1107,7 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    LPRequest *request = [LPRequestFactory stopWithParams:nil];
-                    request.requestType = Immediate;
+                    LPRequest *request = [[LPRequestFactory stopWithParams:nil] andRequestType:Immediate];
                     [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
                 }];
@@ -1203,21 +1201,19 @@ void leanplumExceptionHandler(NSException *exception);
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
 
     // Send pause event.
-    LPRequest *request = [LPRequestFactory pauseSessionWithParams:nil];
+    LPRequest *request = [[LPRequestFactory pauseSessionWithParams:nil] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
     [request onError:^(NSError *error) {
         finishTaskHandler();
     }];
-    request.requestType = Immediate;
     [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)resume
 {
-    LPRequest *request = [LPRequestFactory resumeSessionWithParams:nil];
-    request.requestType = Immediate;
+    LPRequest *request = [[LPRequestFactory resumeSessionWithParams:nil] andRequestType:Immediate];
     [[LPRequestSender sharedInstance] send:request];
 }
 
@@ -2040,8 +2036,7 @@ void leanplumExceptionHandler(NSException *exception);
     
     NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
-    LPRequest *request = [LPRequestFactory trackGeofenceWithParams:arguments];
-    request.requestType = Immediate;
+    LPRequest *request = [[LPRequestFactory trackGeofenceWithParams:arguments] andRequestType:Immediate];
     [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
@@ -2386,7 +2381,7 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    LPRequest *request = [LPRequestFactory getVarsWithParams:params];
+    LPRequest *request = [[LPRequestFactory getVarsWithParams:params] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *values = response[LP_KEY_VARS];
@@ -2425,7 +2420,6 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    request.requestType = Immediate;
     [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }

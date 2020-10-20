@@ -56,7 +56,8 @@
 
 - (void)registerDevice:(NSString *)email
 {
-    LPRequest *request = [LPRequestFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }];
+    LPRequest *request = [[LPRequestFactory registerDeviceWithParams:@{ LP_PARAM_EMAIL: email }]
+                                            andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         BOOL isSuccess = [LPResponse isResponseSuccess:response];
@@ -70,7 +71,6 @@
     [request onError:^(NSError *error) {
         [self showError:[error localizedDescription]];
     }];
-    request.requestType = Immediate;
     [[LPRequestSender sharedInstance] send:request];
     
     [self.countAggregator incrementCount:@"register_device"];

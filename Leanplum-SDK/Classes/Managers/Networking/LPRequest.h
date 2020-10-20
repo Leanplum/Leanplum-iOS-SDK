@@ -44,6 +44,7 @@ typedef NS_ENUM(NSUInteger, LPRequestType) {
 + (LPRequest *)get:(NSString *)apiMethod params:(nullable NSDictionary *)params;
 + (LPRequest *)post:(NSString *)apiMethod params:(nullable NSDictionary *)params;
 
+- (LPRequest *)andRequestType:(LPRequestType)type;
 - (void)onResponse:(nullable LPNetworkResponseBlock)response;
 - (void)onError:(nullable LPNetworkErrorBlock)error;
 

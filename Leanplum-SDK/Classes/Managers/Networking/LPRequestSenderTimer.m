@@ -22,8 +22,7 @@
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            LPRequest *request = [LPRequestFactory heartbeatWithParams:nil];
-            request.requestType = Immediate;
+            LPRequest *request = [[LPRequestFactory heartbeatWithParams:nil] andRequestType:Immediate];
             [[LPRequestSender sharedInstance] send:request];
 
         }

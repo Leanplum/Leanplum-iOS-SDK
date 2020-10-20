@@ -147,8 +147,7 @@
         return YES;
     }];
 
-    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"sample3" params:nil];
-    request.requestType = Immediate;
+    LPRequest *request = [[LPRequestFactory createPostForApiMethod:@"sample3" params:nil] andRequestType:Immediate];
     [[LPRequestSender sharedInstance] send:request];
     long timedOut =dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
@@ -249,13 +248,12 @@
     // Queue up the events and test if the callback is in the correct index.
     XCTestExpectation *responseExpectation =
     [self expectationWithDescription:@"responseExpectation"];
-    LPRequest *request = [LPRequestFactory createPostForApiMethod:@"test2" params:nil];
+    LPRequest *request = [[LPRequestFactory createPostForApiMethod:@"test2" params:nil] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         // Make sure the response is the first one.
         XCTAssertTrue([json[@"index"] intValue] == 1);
         [responseExpectation fulfill];
     }];
-    request.requestType = Immediate;
     [[LPRequestSender sharedInstance] send:request];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
 
