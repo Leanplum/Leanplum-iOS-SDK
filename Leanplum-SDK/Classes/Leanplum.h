@@ -502,7 +502,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)())completionHandler;
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /**
@@ -512,7 +512,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)())completionHandler;
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /*

@@ -1709,7 +1709,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)())completionHandler
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:[notification userInfo]
@@ -1723,7 +1723,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)())completionHandler
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:notification
