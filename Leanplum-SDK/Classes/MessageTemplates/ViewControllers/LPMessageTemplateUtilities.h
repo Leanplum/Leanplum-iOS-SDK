@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(void)presentOverVisible:(UIViewController *) viewController;
 +(void)dismissExisitingViewController:(nullable void (^)(void)) completion;
 +(UIViewController *) visibleViewController;
-
++(UIViewController *) topViewController;
 @end
 
 NS_ASSUME_NONNULL_END
