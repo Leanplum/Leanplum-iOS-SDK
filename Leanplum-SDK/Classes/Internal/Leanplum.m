@@ -1545,6 +1545,11 @@ void leanplumExceptionHandler(NSException *exception);
          @"provided."];
         return;
     }
+    if (!options) {
+        [self throwError:@"[Leanplum defineAction:ofKind:withArguments:withOptions:] Nil options parameter "
+         @"provided."];
+        return;
+    }
 
     LP_TRY
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
