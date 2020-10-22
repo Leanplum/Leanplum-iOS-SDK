@@ -29,6 +29,7 @@
 
 @implementation LPRequestSender(MethodSwizzling)
 @dynamic requestCallback;
+@dynamic createArgsCallback;
 
 - (void)setRequestCallback:(BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback
 {
@@ -36,6 +37,16 @@
 }
 
 - (BOOL (^)(NSString *, NSString *, NSDictionary *))requestCallback
+{
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setCreateArgsCallback:(void (^)(NSDictionary *))createArgsCallback
+{
+    objc_setAssociatedObject(self, @selector(createArgsCallback), createArgsCallback, OBJC_ASSOCIATION_COPY);
+}
+
+- (void (^)(NSDictionary *))createArgsCallback
 {
     return objc_getAssociatedObject(self, _cmd);
 }
@@ -74,6 +85,11 @@
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *)) callback
 {
     [LPRequestSender sharedInstance].requestCallback = callback;
+}
+
++ (void)validate_request_args_dictionary:(void (^)(NSDictionary *))callback
+{
+    [LPRequestSender sharedInstance].createArgsCallback = callback;
 }
 
 + (void)reset {

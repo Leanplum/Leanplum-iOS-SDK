@@ -67,6 +67,9 @@
 #import "LPAES.h"
 #import "LPLogManager.h"
 
+// Prevent circular reference
+@class LPDeferrableAction;
+
 NS_ASSUME_NONNULL_BEGIN
 
 #define _LP_DEFINE_HELPER(name,val,type) LPVar* name; \
@@ -439,6 +442,22 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 /**@}*/
 
 /**
+ * Defer message display from specified view controllers.
+ * Defers all actions on those controllers unless specific action names are provided using deferMessagesWithActionNames
+ * @see deferMessagesWithActionNames:
+ * @param controllers The view controller classes not to display messages on
+ */
++ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
+NS_SWIFT_NAME(deferMessagesForViewControllers(_:));
+
+/**
+ * Defer only specific actions
+ * @param actionNames The names of the actions to defer
+ */
++ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
+NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
+
+/**
  * Block to call when an action is received, such as to show a message to the user.
  */
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
@@ -483,7 +502,7 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)())completionHandler;
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /**
@@ -493,7 +512,7 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)())completionHandler;
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /*
@@ -782,6 +801,11 @@ NS_SWIFT_UNAVAILABLE("use forceContentUpdate(completion:)");
  * Leanplum was installed.
  */
 + (BOOL)isPreLeanplumInstall;
+
+/**
+ * Returns the app version used by Leanplum.
+ */
++ (nullable NSString *)appVersion;
 
 /**
  * Returns the deviceId in the current Leanplum session. This should only be called after

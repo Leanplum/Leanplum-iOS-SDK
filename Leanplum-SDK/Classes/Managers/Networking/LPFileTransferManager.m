@@ -29,7 +29,6 @@
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
 #import "LPFileManager.h"
-#import "LPUtils.h"
 
 @interface LPFileTransferManager()
 
@@ -71,7 +70,7 @@
 
         if (_engine == nil) {
             if (!_requestHeaders) {
-                _requestHeaders = [LPUtils createHeaders];
+                _requestHeaders = [LPNetworkEngine createHeaders];
             }
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];
@@ -85,12 +84,12 @@
 {
     LPRequest *request = [LPRequestFactory uploadFileWithParams:@{LP_PARAM_DATA: [LPJSON stringFromJSON:fileData]}];
     
-    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+    NSMutableDictionary *dict = [request createArgsDictionary];
 
     RETURN_IF_TEST_MODE;
     NSMutableArray *filesToUpload = [NSMutableArray array];
     dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-    [[LPRequestSender sharedInstance] attachApiKeys:dict];
+    [LPNetworkEngine attachApiKeys:dict];
 
     for (NSString *filename in filenames) {
         // Set state.
@@ -234,7 +233,7 @@
 {
     LPRequest *request = [LPRequestFactory downloadFileWithParams:nil];
 
-    NSMutableDictionary *dict = [[LPRequestSender sharedInstance] createArgsDictionaryForRequest:request];
+    NSMutableDictionary *dict = [request createArgsDictionary];
     dict[LP_KEY_FILENAME] = path;
 
     RETURN_IF_TEST_MODE;
@@ -245,7 +244,7 @@
     LPLog(LPInfo, @"Downloading resource %@", path);
     self.fileTransferStatus[path] = @(YES);
 
-    [[LPRequestSender sharedInstance] attachApiKeys:dict];
+    [LPNetworkEngine attachApiKeys:dict];
 
     // Download it directly if the argument is URL.
     // Otherwise continue with the api request.

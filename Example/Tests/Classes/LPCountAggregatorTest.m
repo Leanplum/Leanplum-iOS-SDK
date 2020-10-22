@@ -27,7 +27,6 @@
 #import <OCMock/OCMock.h>
 #import "LPCountAggregator.h"
 #import "LPConstants.h"
-#import "LPRequest.h"
 #import <Leanplum/LPRequestSender.h>
 #import <Leanplum/LPNetworkConstants.h>
 #import "LeanplumHelper.h"
@@ -148,8 +147,8 @@
     id lpRequestMockVerified = [[lpRequestMock verify] ignoringNonObjectArgs];
     
     id lpRequestSenderMock = OCMClassMock([LPRequestSender class]);
-    OCMStub([lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]]);
-    [lpRequestSenderMock sendEventually:lpRequestMockVerified sync:[OCMArg any]];
+    OCMStub([lpRequestSenderMock send:lpRequestMockVerified]);
+    [lpRequestSenderMock send:lpRequestMockVerified];
     [lpRequestSenderMock stopMocking];
     [lpRequestMock stopMocking];
 }

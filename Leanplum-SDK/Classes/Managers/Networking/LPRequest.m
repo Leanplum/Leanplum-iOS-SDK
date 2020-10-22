@@ -26,9 +26,13 @@
 #import "LPRequest.h"
 #import "LPCountAggregator.h"
 #import "LPNetworkConstants.h"
+#import "LPConstants.h"
+#import "LPAPIConfig.h"
 
 @interface LPRequest()
 
+@property (nonatomic, strong) NSString *apiMethod;
+@property (nonatomic, strong, nullable) NSDictionary *params;
 @property (nonatomic, strong) NSString *httpMethod;
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
@@ -46,7 +50,14 @@
         _params = params;
         _countAggregator = [LPCountAggregator sharedAggregator];
         _requestId = [[NSUUID UUID] UUIDString];
+        _requestType = Default;
     }
+    return self;
+}
+
+- (LPRequest *)andRequestType:(LPRequestType)type
+{
+    self.requestType = type;
     return self;
 }
 
@@ -80,6 +91,31 @@
     self.errorBlock = errorBlock;
     
     [self.countAggregator incrementCount:@"on_error_lprequest"];
+}
+
+- (NSMutableDictionary *)createArgsDictionary
+{
+    LPConstantsState *constants = [LPConstantsState sharedState];
+    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    NSMutableDictionary *args = [@{
+                                   LP_PARAM_ACTION: self.apiMethod,
+                                   LP_PARAM_DEVICE_ID: [LPAPIConfig sharedConfig].deviceId ?: @"",
+                                   LP_PARAM_USER_ID: [LPAPIConfig sharedConfig].userId ?: @"",
+                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                   LP_PARAM_CLIENT: constants.client,
+                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
+                                   LP_PARAM_TIME: timestamp,
+                                   LP_PARAM_REQUEST_ID: self.requestId,
+                                   } mutableCopy];
+    if ([LPAPIConfig sharedConfig].token) {
+        args[LP_PARAM_TOKEN] = [LPAPIConfig sharedConfig].token;
+    }
+    [args addEntriesFromDictionary:self.params];
+    
+    // remove keys that are empty
+    [args removeObjectForKey:@""];
+    
+    return args;
 }
 
 @end

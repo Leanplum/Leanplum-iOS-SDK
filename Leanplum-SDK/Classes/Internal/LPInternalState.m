@@ -37,7 +37,6 @@
         _hasStartedAndRegisteredAsDeveloper = NO;
         _startSuccessful = NO;
         _actionManager = nil;
-        _deviceId = nil;
         _userAttributeChanges = [NSMutableArray array];
         _stripViewControllerFromState = NO;
         _isScreenTrackingEnabled = NO;

@@ -48,6 +48,7 @@
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
+#import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
@@ -382,8 +383,49 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
-    [LPInternalState sharedState].deviceId = deviceId;
+    // If Leanplum start has been called already, changing the deviceId results in a new device
+    // Ensure the id is updated and the new device has all attributes set
+    if ([LPInternalState sharedState].hasStarted && ![[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]) {
+        [self setDeviceIdInternal:deviceId];
+    } else {
+       [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+    }
     LP_END_TRY
+}
+
++(void)setDeviceIdInternal:(NSString *)deviceId
+{
+    UIDevice *device = [UIDevice currentDevice];
+    NSString *versionName = [self appVersion];
+    NSMutableDictionary *params = [@{
+        LP_PARAM_VERSION_NAME: versionName,
+        LP_PARAM_DEVICE_NAME: device.name,
+        LP_PARAM_DEVICE_MODEL: [self platform],
+        LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
+        LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
+        LP_PARAM_DEVICE_ID: deviceId
+    } mutableCopy];
+    
+    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
+    if (pushToken) {
+        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+    }
+
+    NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
+    if (settings) {
+        [params addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
+    }
+    
+    // Change the LPAPIConfig after getting the push token and settings
+    // The LPAPIConfig value is used in retrieving them
+    [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+    [[LPVarCache sharedCache] saveDiffs];
+    // Update the token and settings now that the key is different
+    [[LPPushNotificationsManager sharedManager] updatePushToken:pushToken];
+    [[[LPPushNotificationsManager sharedManager] handler] updateUserNotificationSettings:settings];
+    
+    LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)syncResourcesAsync:(BOOL)async
@@ -590,9 +632,11 @@ void leanplumExceptionHandler(NSException *exception);
             handled |= invocationHandled;
         }
 
-        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
-                                           [context.actionName]) {
-            handled |= block(context);
+        if (![LPDeferMessageManager shouldDeferMessage:context]) {
+            for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
+                 [context.actionName]) {
+                handled |= block(context);
+            }
         }
         LP_END_USER_CODE
 
@@ -826,11 +870,7 @@ void leanplumExceptionHandler(NSException *exception);
         deviceId = nil;
     }
     if (!deviceId) {
-        if (state.deviceId) {
-            deviceId = state.deviceId;
-        } else {
-            deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        }
+        deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
@@ -847,11 +887,7 @@ void leanplumExceptionHandler(NSException *exception);
     [[LPAPIConfig sharedConfig] setUserId:userId];
 
     // Setup parameters.
-    NSString *versionName = [LPInternalState sharedState].appVersion;
-    if (!versionName) {
-        versionName = [[[NSBundle mainBundle] infoDictionary]
-                       objectForKey:@"CFBundleVersion"];
-    }
+    NSString *versionName = [self appVersion];
     UIDevice *device = [UIDevice currentDevice];
     NSLocale *currentLocale = [NSLocale currentLocale];
     NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
@@ -908,7 +944,7 @@ void leanplumExceptionHandler(NSException *exception);
     }
 
     // Issue start API call.
-    LPRequest *request = [LPRequestFactory startWithParams:params];
+    LPRequest *request = [[LPRequestFactory startWithParams:params] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -1018,8 +1054,14 @@ void leanplumExceptionHandler(NSException *exception);
         LP_END_TRY
 
         [self triggerStartResponse:NO];
+        
+        [self maybePerformActions:@[@"start", @"resume"]
+                    withEventName:nil
+                       withFilter:kLeanplumActionFilterAll
+                    fromMessageId:nil
+             withContextualValues:nil];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
     [self triggerStartIssued];
 
     // Pause.
@@ -1068,24 +1110,10 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
-                        objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    LPRequest *request = [LPRequestFactory stopWithParams:nil];
-                    [[LPRequestSender sharedInstance] sendIfConnected:request sync:exitOnSuspend];
+                    LPRequest *request = [[LPRequestFactory stopWithParams:nil] andRequestType:Immediate];
+                    [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
                 }];
-
-    // Heartbeat.
-    [LPTimerBlocks scheduledTimerWithTimeInterval:HEARTBEAT_INTERVAL block:^() {
-        RETURN_IF_NOOP;
-        LP_TRY
-        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            LPRequest *request = [LPRequestFactory heartbeatWithParams:nil];
-            [[LPRequestSender sharedInstance] sendIfDelayed:request];
-
-        }
-        LP_END_TRY
-    } repeats:YES];
 
     // Extension close.
     if (_extensionContext) {
@@ -1176,20 +1204,20 @@ void leanplumExceptionHandler(NSException *exception);
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
 
     // Send pause event.
-    LPRequest *request = [LPRequestFactory pauseSessionWithParams:nil];
+    LPRequest *request = [[LPRequestFactory pauseSessionWithParams:nil] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
     [request onError:^(NSError *error) {
         finishTaskHandler();
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)resume
 {
-    LPRequest *request = [LPRequestFactory resumeSessionWithParams:nil];
-    [[LPRequestSender sharedInstance] sendIfDelayed:request];
+    LPRequest *request = [[LPRequestFactory resumeSessionWithParams:nil] andRequestType:Immediate];
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)trackCrashes
@@ -1503,6 +1531,11 @@ void leanplumExceptionHandler(NSException *exception);
          @"provided."];
         return;
     }
+    if (!options) {
+        [self throwError:@"[Leanplum defineAction:ofKind:withArguments:withOptions:] Nil options parameter "
+         @"provided."];
+        return;
+    }
 
     LP_TRY
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
@@ -1513,6 +1546,16 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
+}
+
++ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
+{
+    [LPDeferMessageManager setDeferredClasses:controllers];
+}
+
++ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
+{
+    [LPDeferMessageManager setDeferredActionNames:actionNames];
 }
 
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block
@@ -1657,7 +1700,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)())completionHandler
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:[notification userInfo]
@@ -1671,7 +1714,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)())completionHandler
+                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:notification
@@ -2011,8 +2054,8 @@ void leanplumExceptionHandler(NSException *exception);
     
     NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
-    LPRequest *request = [LPRequestFactory trackGeofenceWithParams:arguments];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    LPRequest *request = [[LPRequestFactory trackGeofenceWithParams:arguments] andRequestType:Immediate];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 
@@ -2356,7 +2399,7 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    LPRequest *request = [LPRequestFactory getVarsWithParams:params];
+    LPRequest *request = [[LPRequestFactory getVarsWithParams:params] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *values = response[LP_KEY_VARS];
@@ -2395,7 +2438,7 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 
@@ -2535,6 +2578,16 @@ void leanplumExceptionHandler(NSException *exception)
             boolForKey:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY];
     LP_END_TRY
     return NO;
+}
+
++ (NSString *)appVersion
+{
+    NSString *versionName = [LPInternalState sharedState].appVersion;
+    if (!versionName) {
+        versionName = [[[NSBundle mainBundle] infoDictionary]
+                       objectForKey:@"CFBundleVersion"];
+    }
+    return versionName;
 }
 
 + (NSString *)deviceId

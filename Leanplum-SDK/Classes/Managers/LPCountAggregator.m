@@ -92,8 +92,7 @@ static dispatch_once_t leanplum_onceToken;
         int count = [counts[name] intValue];
         NSMutableDictionary<NSString *, id> *params = [self makeParams:name withCount:count];
         LPRequest *request = [LPRequestFactory logWithParams:params];
-        [[LPRequestSender sharedInstance] sendEventually:request sync:NO];
-        
+        [[LPRequestSender sharedInstance] send:request];
     }
 }
 
