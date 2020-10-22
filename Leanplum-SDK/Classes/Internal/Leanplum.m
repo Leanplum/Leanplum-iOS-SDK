@@ -48,6 +48,7 @@
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
+#import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
@@ -631,9 +632,11 @@ void leanplumExceptionHandler(NSException *exception);
             handled |= invocationHandled;
         }
 
-        for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
-                                           [context.actionName]) {
-            handled |= block(context);
+        if (![LPDeferMessageManager shouldDeferMessage:context]) {
+            for (LeanplumActionBlock block in [LPInternalState sharedState].actionBlocks
+                 [context.actionName]) {
+                handled |= block(context);
+            }
         }
         LP_END_USER_CODE
 
@@ -1528,6 +1531,11 @@ void leanplumExceptionHandler(NSException *exception);
          @"provided."];
         return;
     }
+    if (!options) {
+        [self throwError:@"[Leanplum defineAction:ofKind:withArguments:withOptions:] Nil options parameter "
+         @"provided."];
+        return;
+    }
 
     LP_TRY
     [[LPInternalState sharedState].actionBlocks removeObjectForKey:name];
@@ -1538,6 +1546,16 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
     
     [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
+}
+
++ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
+{
+    [LPDeferMessageManager setDeferredClasses:controllers];
+}
+
++ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
+{
+    [LPDeferMessageManager setDeferredActionNames:actionNames];
 }
 
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block

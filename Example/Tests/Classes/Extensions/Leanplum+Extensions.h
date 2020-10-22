@@ -27,6 +27,7 @@
 #import "LeanplumInternal.h"
 #import <Leanplum/LPRequestFactory.h>
 #import <Leanplum/LPPushNotificationsHandler.h>
+#import <Leanplum/LPDeferMessageManager.h>
 
 @interface Leanplum(UnitTest)
 
@@ -64,4 +65,13 @@
 @interface LPRequestFactory(UnitTest)
 + (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
 + (nullable LPRequest *)createPostForApiMethod:(nonnull NSString *)apiMethod params:(nullable NSDictionary *)params;
+@end
+
+@interface LPLogManager(UnitTest)
++ (void)maybeSendLog:(NSString *)message;
+@end
+
+@interface LPDeferMessageManager(UnitTest)
++ (void)triggerDeferredMessage;
++ (void)reset;
 @end
