@@ -413,7 +413,7 @@ void leanplumExceptionHandler(NSException *exception);
 
     NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
     if (settings) {
-        [params addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+        [params addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
     }
     
     // Change the LPAPIConfig after getting the push token and settings
@@ -944,7 +944,7 @@ void leanplumExceptionHandler(NSException *exception);
     }
 
     // Issue start API call.
-    LPRequest *request = [LPRequestFactory startWithParams:params];
+    LPRequest *request = [[LPRequestFactory startWithParams:params] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         state.hasStarted = YES;
@@ -1061,7 +1061,7 @@ void leanplumExceptionHandler(NSException *exception);
                     fromMessageId:nil
              withContextualValues:nil];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
     [self triggerStartIssued];
 
     // Pause.
@@ -1110,24 +1110,10 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    BOOL exitOnSuspend = [[[[NSBundle mainBundle] infoDictionary]
-                        objectForKey:@"UIApplicationExitsOnSuspend"] boolValue];
-                    LPRequest *request = [LPRequestFactory stopWithParams:nil];
-                    [[LPRequestSender sharedInstance] sendIfConnected:request sync:exitOnSuspend];
+                    LPRequest *request = [[LPRequestFactory stopWithParams:nil] andRequestType:Immediate];
+                    [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
                 }];
-
-    // Heartbeat.
-    [LPTimerBlocks scheduledTimerWithTimeInterval:HEARTBEAT_INTERVAL block:^() {
-        RETURN_IF_NOOP;
-        LP_TRY
-        if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
-            LPRequest *request = [LPRequestFactory heartbeatWithParams:nil];
-            [[LPRequestSender sharedInstance] sendIfDelayed:request];
-
-        }
-        LP_END_TRY
-    } repeats:YES];
 
     // Extension close.
     if (_extensionContext) {
@@ -1218,20 +1204,20 @@ void leanplumExceptionHandler(NSException *exception);
     backgroundTask = [application beginBackgroundTaskWithExpirationHandler:finishTaskHandler];
 
     // Send pause event.
-    LPRequest *request = [LPRequestFactory pauseSessionWithParams:nil];
+    LPRequest *request = [[LPRequestFactory pauseSessionWithParams:nil] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
         finishTaskHandler();
     }];
     [request onError:^(NSError *error) {
         finishTaskHandler();
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)resume
 {
-    LPRequest *request = [LPRequestFactory resumeSessionWithParams:nil];
-    [[LPRequestSender sharedInstance] sendIfDelayed:request];
+    LPRequest *request = [[LPRequestFactory resumeSessionWithParams:nil] andRequestType:Immediate];
+    [[LPRequestSender sharedInstance] send:request];
 }
 
 + (void)trackCrashes
@@ -2068,8 +2054,8 @@ void leanplumExceptionHandler(NSException *exception);
     
     NSMutableDictionary *arguments = [self makeTrackArgs:eventName withValue:value andInfo:info andArgs:args andParameters:params];
     
-    LPRequest *request = [LPRequestFactory trackGeofenceWithParams:arguments];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    LPRequest *request = [[LPRequestFactory trackGeofenceWithParams:arguments] andRequestType:Immediate];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 
@@ -2413,7 +2399,7 @@ andParameters:(NSDictionary *)params
         params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
     }
 
-    LPRequest *request = [LPRequestFactory getVarsWithParams:params];
+    LPRequest *request = [[LPRequestFactory getVarsWithParams:params] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *values = response[LP_KEY_VARS];
@@ -2452,7 +2438,7 @@ andParameters:(NSDictionary *)params
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 

@@ -31,33 +31,6 @@
 
 + (instancetype)sharedInstance;
 
-/**
- * Create Request Headers for network call
- */
-+ (NSDictionary *)createHeaders;
-
-+ (NSDictionary *)notificationSettingsToRequestParams:(NSDictionary *)settings;
-
-- (NSMutableDictionary *)createArgsDictionaryForRequest:(LPRequest *)request;
-- (void)attachApiKeys:(NSMutableDictionary *)dict;
-
 - (void)send:(LPRequest *)request;
-- (void)sendNow:(LPRequest *)request;
-- (void)sendEventually:(LPRequest *)request sync:(BOOL)sync;
-- (void)sendIfConnected:(LPRequest *)request;
-- (void)sendIfConnected:(LPRequest *)request sync:(BOOL)sync;
-// Sends the request if another request hasn't been sent within a particular time delay.
-- (void)sendIfDelayed:(LPRequest *)request;
-
-/**
- * Sends one data. Uses sendDatasNow: internally. See this method for more information.
- */
-- (void)sendNow:(LPRequest *)request withData:(NSData *)data forKey:(NSString *)key;
-
-/**
- * Send datas where key is the name and object is the data.
- * For example, key can be "file0" and object is NSData of png.
- */
-- (void)sendNow:(LPRequest *)request withDatas:(NSDictionary *)datas;
 
 @end

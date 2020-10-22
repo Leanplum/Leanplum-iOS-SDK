@@ -62,10 +62,6 @@
                              withMethod:@selector(swizzle_sendEventually:sync:)
                                   error:&error
                                   class:[LPRequestSender class]];
-    success &= [LPSwizzle swizzleMethod:@selector(createArgsDictionaryForRequest:)
-                             withMethod:@selector(swizzle_createArgsDictionaryForRequest:)
-                                  error:&error
-                                  class:[LPRequestSender class]];
     if (!success || error) {
         NSLog(@"Failed swizzling methods for LPRequestSender: %@", error);
     }
@@ -84,17 +80,6 @@
 - (void)swizzle_download
 {
 
-}
-
-- (NSMutableDictionary *)swizzle_createArgsDictionaryForRequest:(LPRequest *)request
-{
-    NSMutableDictionary *args = [self swizzle_createArgsDictionaryForRequest:request];
-    if([[LPRequestSender sharedInstance] createArgsCallback] != nil) {
-        [LPRequestSender sharedInstance].createArgsCallback(args);
-        [LPRequestSender sharedInstance].createArgsCallback = nil;
-    }
-    
-    return args;
 }
 
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *)) callback

@@ -419,7 +419,7 @@ static NSObject *updatingLock;
 {
     RETURN_IF_NOOP;
     LP_TRY
-    LPRequest *request = [LPRequestFactory getNewsfeedMessagesWithParams:nil];
+    LPRequest *request = [[LPRequestFactory getNewsfeedMessagesWithParams:nil] andRequestType:Immediate];
     [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
         LP_TRY
         NSDictionary *messagesDict = response[LP_KEY_INBOX_MESSAGES];
@@ -472,7 +472,7 @@ static NSObject *updatingLock;
     [request onError:^(NSError *error) {
         [self triggerInboxSyncedWithStatus:NO];
     }];
-    [[LPRequestSender sharedInstance] sendIfConnected:request];
+    [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
 }
 

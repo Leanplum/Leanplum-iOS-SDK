@@ -128,7 +128,7 @@
     // Get the push types if changed
     NSDictionary* settings = [[UIApplication sharedApplication].currentUserNotificationSettings dictionary];
     if ([self updateUserNotificationSettings:settings]) {
-        [deviceAttributeParams addEntriesFromDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+        [deviceAttributeParams addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
     }
     
     // If there are changes to the push token and/or the push types, send a request
@@ -183,7 +183,7 @@
     // Send settings.
     if ([self updateUserNotificationSettings:settings]) {
         NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPRequestSender notificationSettingsToRequestParams:settings]];
+        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
         if (existingToken) {
             params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
         }
@@ -347,10 +347,11 @@
         } else {
             // Try downloading the messages again if it doesn't exist.
             // Maybe the message was created while the app was running.
-            LPRequest *request = [LPRequestFactory getVarsWithParams:@{
+            LPRequest *request = [[LPRequestFactory getVarsWithParams:@{
                                                                      LP_PARAM_INCLUDE_DEFAULTS: @(NO),
                                                                      LP_PARAM_INCLUDE_MESSAGE_ID: messageId
-                                                                    }];
+                                                                    }]
+                                                    andRequestType:Immediate];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
@@ -379,7 +380,7 @@
                 }
                 LP_END_TRY
              }];
-            [[LPRequestSender sharedInstance] sendIfConnected:request];
+            [[LPRequestSender sharedInstance] send:request];
         }
         LP_BEGIN_USER_CODE
     }];

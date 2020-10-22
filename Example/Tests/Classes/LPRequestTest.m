@@ -11,6 +11,8 @@
 
 @interface LPRequest(UnitTest)
 
+@property (nonatomic, strong) NSString *apiMethod;
+@property (nonatomic, strong, nullable) NSDictionary *params;
 @property (nonatomic, strong) NSString *httpMethod;
 
 @end
@@ -47,6 +49,28 @@
     XCTAssertEqual(getRequest.apiMethod, apiMethod);
     XCTAssertEqual(getRequest.params, params);
     XCTAssertTrue([getRequest.httpMethod isEqualToString:@"GET"]);
+}
+
+- (void)testCreateArgsDictionaryForRequest {
+    LPRequest *request = [LPRequest post:@"test" params:@{}];
+    LPConstantsState *constants = [LPConstantsState sharedState];
+    NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
+    NSMutableDictionary *testArgs = [@{
+                                   LP_PARAM_ACTION: @"test",
+                                   LP_PARAM_DEVICE_ID: @"",
+                                   LP_PARAM_USER_ID: @"",
+                                   LP_PARAM_SDK_VERSION: constants.sdkVersion,
+                                   LP_PARAM_CLIENT: constants.client,
+                                   LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
+                                   LP_PARAM_TIME: timestamp,
+                                   LP_PARAM_UUID: @"uuid",
+                                   LP_PARAM_REQUEST_ID: request.requestId,
+                                   } mutableCopy];
+    NSMutableDictionary *args = [request createArgsDictionary];
+    args[LP_PARAM_UUID] = @"uuid";
+    args[LP_PARAM_TIME] = timestamp;
+    
+    XCTAssertEqualObjects(testArgs, args);
 }
 
 @end
