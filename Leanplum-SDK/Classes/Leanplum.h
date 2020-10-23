@@ -132,27 +132,6 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 }
 /**@}*/
 
-/**
- * Use this code in development mode (or in production), to use the advertising ID.
- * It's useful in development mode so that we remember your device even if you reinstall your app.
- * Since it's a MACRO, this won't get compiled into your app in production, and will be safe
- * to submit to Apple.
- */
-#define LEANPLUM_USE_ADVERTISING_ID \
-    _Pragma("clang diagnostic push") \
-    _Pragma("clang diagnostic ignored \"-Warc-performSelector-leaks\"") \
-    id LeanplumIdentifierManager = [NSClassFromString(@"ASIdentifierManager") \
-                            performSelector:NSSelectorFromString(@"sharedManager")]; \
-    if (floor(NSFoundationVersionNumber) <= 1299 /* NSFoundationVersionNumber_iOS_9_x_Max */ || \
-        [LeanplumIdentifierManager performSelector: \
-          NSSelectorFromString(@"isAdvertisingTrackingEnabled")]) { \
-        /* < iOS10 || isAdvertisingTrackingEnabled */ \
-        [Leanplum setDeviceId:[[LeanplumIdentifierManager performSelector: \
-                                NSSelectorFromString(@"advertisingIdentifier")] \
-                               performSelector:NSSelectorFromString(@"UUIDString")]]; \
-    } \
-    _Pragma("clang diagnostic pop")
-
 @class LPActionContext;
 @class SKPaymentTransaction;
 @class NSExtensionContext;
