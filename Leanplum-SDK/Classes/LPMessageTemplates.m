@@ -31,7 +31,7 @@
 #import <StoreKit/StoreKit.h>
 #import "LPCountAggregator.h"
 #import "LPOpenUrlMessageTemplate.h"
-#import "LPPushAsktoAskMessageTemplate.h"
+#import "LPPushAskToAskMessageTemplate.h"
 #import "LPRegisterForPushMessageTemplate.h"
 #import "LPCenterPopupMessageTemplate.h"
 #import "LPInterstitialMessageTemplate.h"
