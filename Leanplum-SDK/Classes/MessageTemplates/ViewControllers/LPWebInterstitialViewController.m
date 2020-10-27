@@ -22,7 +22,7 @@
 
 +(LPWebInterstitialViewController *)instantiateFromStoryboard
 {
-#if SWIFTPM_MODULE_BUNDLE
+#ifdef SWIFTPM_MODULE_BUNDLE
     NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
 #else
     NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
