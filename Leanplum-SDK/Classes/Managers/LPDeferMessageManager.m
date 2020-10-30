@@ -84,8 +84,7 @@ static BOOL isPresenting;
              LPMT_CENTER_POPUP_NAME,
              LPMT_INTERSTITIAL_NAME,
              LPMT_WEB_INTERSTITIAL_NAME,
-             LPMT_HTML_NAME,
-             LPMT_ICON_CHANGE_NAME];
+             LPMT_HTML_NAME];
 }
 
 + (BOOL)shouldDeferMessage:(LPActionContext *)context
