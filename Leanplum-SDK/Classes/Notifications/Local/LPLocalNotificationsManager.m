@@ -181,19 +181,41 @@
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
         NSArray *notifications = [app scheduledLocalNotifications];
-        BOOL didCancel = NO;
-        for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[notification userInfo]];
-            if ([messageId isEqualToString:context.messageId]) {
-                [app cancelLocalNotification:notification];
-                if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-                    LPLog(LPInfo, @"Cancelled notification");
+        if (@available(iOS 10.0, *)) {
+            __block BOOL didCancel = NO;
+            dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+            [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
+                for (UNNotificationRequest *request in requests) {
+                    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[request.content userInfo]];
+                    if ([messageId isEqualToString:context.messageId]) {
+                        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[request.identifier]];
+                        if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+                            LPLog(LPInfo, @"Cancelled notification");
+                        }
+                        didCancel = YES;
+                    }
                 }
-                didCancel = YES;
+                dispatch_semaphore_signal(semaphor);
+            }];
+            dispatch_semaphore_wait(semaphor, DISPATCH_TIME_FOREVER);
+            LP_BEGIN_USER_CODE
+            return didCancel;
+        } else {
+            // Fallback on earlier versions
+            BOOL didCancel = NO;
+            for (UILocalNotification *notification in notifications) {
+                NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[notification userInfo]];
+                if ([messageId isEqualToString:context.messageId]) {
+                    [app cancelLocalNotification:notification];
+                    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+                        LPLog(LPInfo, @"Cancelled notification");
+                    }
+                    didCancel = YES;
+                }
             }
+            LP_BEGIN_USER_CODE
+            return didCancel;
         }
-        LP_BEGIN_USER_CODE
-        return didCancel;
     }];
 }
 
@@ -218,6 +240,7 @@
     // Otherwise, discard the scheduled one.
     if (@available(iOS 10.0, *)) {
         __block BOOL shouldDiscard = NO;
+        dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
         [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
             for (UNNotificationRequest *request in requests) {
                 NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[request.content userInfo]];
@@ -232,8 +255,9 @@
                     }
                 }
             }
-            //TODO:Dejan add semaphore
+            dispatch_semaphore_signal(semaphor);
         }];
+        dispatch_semaphore_wait(semaphor, DISPATCH_TIME_FOREVER);
         return shouldDiscard;
     } else {
         // Fallback on earlier versions
