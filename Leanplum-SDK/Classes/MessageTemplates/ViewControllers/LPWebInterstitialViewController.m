@@ -25,13 +25,7 @@
 #ifdef SWIFTPM_MODULE_BUNDLE
     NSBundle *bundle = SWIFTPM_MODULE_BUNDLE;
 #else
-    NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
-    NSURL *bundleUrl = [bundle URLForResource:@"Leanplum-iOS-SDK" withExtension:@".bundle"];
-    if (bundleUrl != nil)
-    {
-        NSBundle *lpBundle = [NSBundle bundleWithURL:bundleUrl];
-        bundle = lpBundle;
-    }
+    NSBundle *bundle = [LPUtils leanplumBundle];
 #endif
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:bundle];
 

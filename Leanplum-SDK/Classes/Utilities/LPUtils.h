@@ -62,4 +62,6 @@
  */
 + (BOOL)isSwizzlingEnabled;
 
++ (NSBundle *)leanplumBundle;
+
 @end
