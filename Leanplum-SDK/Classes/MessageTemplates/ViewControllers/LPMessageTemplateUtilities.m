@@ -19,7 +19,7 @@
         UIViewController *topViewController = [self visibleViewController];
         // if topViewController is getting dismissed, get view controller that presented it and let it present our new view controller,
         // otherwise we can assume that our topViewController will be in view hierarchy when presenting new view controller
-        if (topViewController.beingDismissed) {
+        if (topViewController.isBeingDismissed) {
             [[topViewController presentingViewController] presentViewController:viewController animated:YES completion:nil];
         } else {
             [topViewController presentViewController:viewController animated:YES completion:nil];
@@ -31,9 +31,14 @@
 {
     UIViewController *topViewController = [self visibleViewController];
     
-    // dismiss html view controller for now
+    // Dismiss the view controller if another message will be presented (without user interaction)
+    // Dismiss only html view controller for now
     if ([topViewController isKindOfClass:[LPWebInterstitialViewController class]]) {
-        [topViewController dismissViewControllerAnimated:NO completion:completion];
+        if (topViewController.isBeingDismissed) {
+            completion();
+        } else {
+            [topViewController dismissViewControllerAnimated:NO completion:completion];
+        }
     } else {
         completion();
     }
