@@ -197,7 +197,8 @@
                 }
                 dispatch_semaphore_signal(semaphor);
             }];
-            dispatch_semaphore_wait(semaphor, DISPATCH_TIME_FOREVER);
+            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
+            dispatch_semaphore_wait(semaphor, waitTime);
             LP_BEGIN_USER_CODE
             return didCancel;
         } else {
@@ -257,7 +258,8 @@
             }
             dispatch_semaphore_signal(semaphor);
         }];
-        dispatch_semaphore_wait(semaphor, DISPATCH_TIME_FOREVER);
+        dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
+        dispatch_semaphore_wait(semaphor, waitTime);
         return shouldDiscard;
     } else {
         // Fallback on earlier versions
