@@ -27,6 +27,7 @@
 #import "LPExceptionHandler.h"
 #import "LPAPIConfig.h"
 #import "LPConstants.h"
+#import "Leanplum.h"
 
 
 @implementation LPUtils
@@ -95,6 +96,19 @@
     }
 
     return swizzlingEnabled;
+}
+
++ (NSBundle *)leanplumBundle
+{
+    NSBundle *bundle = [NSBundle bundleForClass:[Leanplum class]];
+    NSURL *bundleUrl = [bundle URLForResource:@"Leanplum-iOS-SDK" withExtension:@".bundle"];
+    if (bundleUrl != nil)
+    {
+        NSBundle *lpBundle = [NSBundle bundleWithURL:bundleUrl];
+        bundle = lpBundle;
+    }
+    
+    return bundle;
 }
 
 @end
