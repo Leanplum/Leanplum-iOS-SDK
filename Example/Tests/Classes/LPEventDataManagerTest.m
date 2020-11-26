@@ -38,6 +38,7 @@
 #import "LeanplumReachability+Category.h"
 #import "LPJSON.h"
 #import "LPOperationQueue.h"
+#import "LPNetworkConstants.h"
 
 @interface LPEventDataManager(UnitTest)
 
@@ -196,13 +197,13 @@
     XCTAssertTrue(events.count == 0);
 
     // UUID should be different after the 10k mark.
-    for (int i=0; i<MAX_EVENTS_PER_API_CALL+1; i++) {
+    for (int i=0; i<LP_MAX_EVENTS_PER_API_CALL+1; i++) {
         [Leanplum track:@"s"];
     }
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     events = [LPEventDataManager eventsWithLimit:900000];
-    XCTAssertTrue(events.count == MAX_EVENTS_PER_API_CALL+1);
-    XCTAssertFalse([events[0][@"uuid"] isEqual:events[MAX_EVENTS_PER_API_CALL][@"uuid"]]);
+    XCTAssertTrue(events.count == LP_MAX_EVENTS_PER_API_CALL+1);
+    XCTAssertFalse([events[0][@"uuid"] isEqual:events[LP_MAX_EVENTS_PER_API_CALL][@"uuid"]]);
 
     // Make sure there will be 2 requests that are split because of MAX_EVENTS_PER_API_CALL.
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
