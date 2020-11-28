@@ -156,6 +156,8 @@
 		CB24750D7C2F9AFCC751D269 /* LPRequestSender.h in Headers */ = {isa = PBXBuildFile; fileRef = 633C71E88C86E1751C969974 /* LPRequestSender.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0863813CF316D1C7EF6AC7B /* LPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C023D9F43EF2A66A8A0649FB /* LPAppDelegate.m */; };
 		D08FEE6B545C7CAA000A1AFA /* LPAPIConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 82200462A25AC713B4E7D171 /* LPAPIConfig.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D251B48D2572F825000F3FB7 /* LPDeferMessageManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D251B48B2572F825000F3FB7 /* LPDeferMessageManager.m */; };
+		D251B48E2572F825000F3FB7 /* LPDeferMessageManager.h in Headers */ = {isa = PBXBuildFile; fileRef = D251B48C2572F825000F3FB7 /* LPDeferMessageManager.h */; };
 		D2725B4A7121B718F97FD0BA /* LPRequestFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 36133E96E82A8370E9E9393A /* LPRequestFactory.m */; };
 		D339A8A38A8412183454DC73 /* UIDevice+IdentifierAddition.h in Headers */ = {isa = PBXBuildFile; fileRef = 7478C5E273CD83FD1CAE2D55 /* UIDevice+IdentifierAddition.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D44D01E252144C68EC517C45 /* LPEventCallbackManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 24166C1E59231132F60F83F2 /* LPEventCallbackManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -331,6 +333,8 @@
 		D18A543F308DDFB45743F818 /* LPMessageArchiveData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPMessageArchiveData.h; sourceTree = "<group>"; };
 		D1C9EB1A3E438642C149E538 /* LPOperationQueue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPOperationQueue.m; sourceTree = "<group>"; };
 		D1D4794DCBEFA9425970C300 /* LPFeatureFlagManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPFeatureFlagManager.m; sourceTree = "<group>"; };
+		D251B48B2572F825000F3FB7 /* LPDeferMessageManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPDeferMessageManager.m; sourceTree = "<group>"; };
+		D251B48C2572F825000F3FB7 /* LPDeferMessageManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPDeferMessageManager.h; sourceTree = "<group>"; };
 		D29E041A71FBE4A597939C6E /* NSTimer+Blocks.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSTimer+Blocks.m"; sourceTree = "<group>"; };
 		D3199794A72847F5BBFFFC12 /* LPKeychainWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPKeychainWrapper.h; sourceTree = "<group>"; };
 		D512CA40DB62610C26DF2DAB /* LPInternalState.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPInternalState.m; sourceTree = "<group>"; };
@@ -639,6 +643,8 @@
 		D1BDE941CCC92643F7696358 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				D251B48C2572F825000F3FB7 /* LPDeferMessageManager.h */,
+				D251B48B2572F825000F3FB7 /* LPDeferMessageManager.m */,
 				C2B6A5CBB11B15F1D1210155 /* LPAppIconManager.h */,
 				E846E120F6FAF683C59E485D /* LPAppIconManager.m */,
 				38C13D507380765C504B16D0 /* LPCountAggregator.h */,
@@ -859,6 +865,7 @@
 				8B473962853F7E1D5F3DDC78 /* LPResponse.h in Headers */,
 				29E2700BAFB249E6CDBA28E4 /* LPRevenueManager.h in Headers */,
 				619B024D57210214484C6784 /* LPRichInterstitialMessageTemplate.h in Headers */,
+				D251B48E2572F825000F3FB7 /* LPDeferMessageManager.h in Headers */,
 				1234E2B6A68005D7BEA1F982 /* LPSwizzle.h in Headers */,
 				89FCD2B0FD3E7E658AF06414 /* LPUIAlert.h in Headers */,
 				1A5BC47A4242A8A3C50EDC47 /* LPUtils.h in Headers */,
@@ -1007,6 +1014,7 @@
 				405BA9EC69827B5116400D2A /* LPExceptionHandler.m in Sources */,
 				6DBF2FF5BE9B9BB17FF4804E /* LPFeatureFlagManager.m in Sources */,
 				01C405B6B53862C4240956B0 /* LPFileManager.m in Sources */,
+				D251B48D2572F825000F3FB7 /* LPDeferMessageManager.m in Sources */,
 				07EDB9AA720FBB439DCE5342 /* LPFileTransferManager.m in Sources */,
 				92CC3418FF6121DDF773F929 /* LPHitView.m in Sources */,
 				6ED65B32FEA16E1ACA61E23D /* LPIconChangeMessageTemplate.m in Sources */,
