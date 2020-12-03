@@ -26,7 +26,7 @@
 }
 
 - (void)testThatURLEncodingWorksForUnreservedCharacters {
-    //Test characters  @":-._~/?&=#"
+    //Test characters  @":-._~/?&=#+"
     // Note: all of them includes : . / charachers
     
     NSString *url;
@@ -71,6 +71,12 @@
     
     //test for - sign
     url = @"http://test.com/test-end";
+    template = [self createTemplateWithUrl:url];
+    encodedURL= [template urlEncodedStringFromString:[template.context stringNamed:LPMT_ARG_URL]];
+    XCTAssertEqualObjects(url, encodedURL);
+    
+    //test for + sign
+    url = @"http://test.com/test+end";
     template = [self createTemplateWithUrl:url];
     encodedURL= [template urlEncodedStringFromString:[template.context stringNamed:LPMT_ARG_URL]];
     XCTAssertEqualObjects(url, encodedURL);
