@@ -2762,6 +2762,11 @@ void leanplumExceptionHandler(NSException *exception)
     return nil;
 }
 
++ (void)setEventsUploadInterval:(LPEventsUploadInterval)uploadInterval
+{
+    [[LPRequestSenderTimer sharedInstance] setTimerInterval:uploadInterval];
+}
+
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

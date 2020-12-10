@@ -39,3 +39,4 @@ static NSString *LP_API_METHOD_LOG = @"log";
 static NSString *LP_API_METHOD_GET_INBOX_MESSAGES = @"getNewsfeedMessages";
 static NSString *LP_API_METHOD_MARK_INBOX_MESSAGE_AS_READ = @"markNewsfeedMessageAsRead";
 static NSString *LP_API_METHOD_DELETE_INBOX_MESSAGE = @"deleteNewsfeedMessage";
+static int LP_MAX_EVENTS_PER_API_CALL = 10000;

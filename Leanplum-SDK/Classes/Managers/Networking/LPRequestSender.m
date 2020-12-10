@@ -34,6 +34,8 @@
 #import "LPOperationQueue.h"
 #import "LPNetworkConstants.h"
 #import "LPRequestSenderTimer.h"
+#import "LPRequestBatchFactory.h"
+#import "LPRequestUUIDHelper.h"
 
 @interface LPRequestSender()
 
@@ -70,7 +72,7 @@
             _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
                                         customHeaderFields:_requestHeaders];
         }
-        [LPRequestSenderTimer start];
+        [[LPRequestSenderTimer sharedInstance] start];
         _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
@@ -133,11 +135,10 @@
 
         void (^operationBlock)(void) = ^void() {
             LP_TRY
-            NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-            NSString *uuid = [userDefaults objectForKey:LEANPLUM_DEFAULTS_UUID_KEY];
+            NSString *uuid = [LPRequestUUIDHelper loadUUID];
             NSInteger count = [LPEventDataManager count];
-            if (!uuid || count % MAX_EVENTS_PER_API_CALL == 0) {
-                uuid = [self generateUUID];
+            if (!uuid || count % LP_MAX_EVENTS_PER_API_CALL == 0) {
+                uuid = [LPRequestUUIDHelper generateUUID];
             }
 
             NSMutableDictionary *args = [request createArgsDictionary];
@@ -188,15 +189,6 @@
     [self.countAggregator incrementCount:@"send_now_with_datas_lp"];
 }
 
-- (NSString *)generateUUID
-{
-    NSString *uuid = [[NSUUID UUID] UUIDString];
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults setObject:uuid forKey:LEANPLUM_DEFAULTS_UUID_KEY];
-    [userDefaults synchronize];
-    return uuid;
-}
-
 - (void)sendRequests
 {
     NSBlockOperation *requestOperation = [NSBlockOperation new];
@@ -208,18 +200,18 @@
             return;
         }
 
-        [self generateUUID];
+        [LPRequestUUIDHelper generateUUID];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
         [[LPCountAggregator sharedAggregator] sendAllCounts];
         // Simulate pop all requests.
-        NSArray *requestsToSend = [LPEventDataManager eventsWithLimit:MAX_EVENTS_PER_API_CALL];
-        if (requestsToSend.count == 0) {
+        LPRequestBatch *batch = [LPRequestBatchFactory createNextBatch];
+        if ([batch isEmpty]) {
             return;
         }
 
         // Set up request operation.
-        NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:requestsToSend}];
+        NSString *requestData = [LPJSON stringFromJSON:@{LP_PARAM_DATA:batch.requestsToSend}];
         NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
         LPConstantsState *constants = [LPConstantsState sharedState];
         NSMutableDictionary *multiRequestArgs = [@{
@@ -258,16 +250,16 @@
             self.uiTimeoutTimer = nil;
 
             // Delete events on success.
-            [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+            [LPRequestBatchFactory deleteFinishedBatch:batch];
 
             // Send another request if the last request had maximum events per api call.
-            if (requestsToSend.count == MAX_EVENTS_PER_API_CALL) {
+            if ([batch isFull]) {
                 [self sendRequests];
             }
 
             if (!self.didUiTimeout) {
                 [LPEventCallbackManager invokeSuccessCallbacksOnResponses:json
-                                                                 requests:requestsToSend
+                                                                 requests:batch.requestsToSend
                                                                 operation:operation];
             }
             dispatch_semaphore_signal(semaphore);
@@ -310,7 +302,7 @@
                 }
 
                 // Delete on permanant error state.
-                [LPEventDataManager deleteEventsWithLimit:requestsToSend.count];
+                [LPRequestBatchFactory deleteFinishedBatch:batch];
             }
 
             // Invoke errors on all requests.

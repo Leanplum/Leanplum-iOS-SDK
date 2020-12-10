@@ -9,8 +9,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+/**
+ The enumeration represents time interval to periodically upload events to server.
+ Possible values are 5, 10, or 15 minutes.
+ */
+typedef enum : NSUInteger {
+    AT_MOST_5_MINUTES = 5,
+    AT_MOST_10_MINUTES = 10,
+    AT_MOST_15_MINUTES = 15
+} LPEventsUploadInterval;
+
 @interface LPRequestSenderTimer : NSObject
-+ (void)start;
+@property (assign) LPEventsUploadInterval timerInterval;
++ (instancetype)sharedInstance;
+- (void)start;
 @end
 
 NS_ASSUME_NONNULL_END

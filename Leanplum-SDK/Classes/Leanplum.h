@@ -66,6 +66,7 @@
 #import "LPNetworkEngine.h"
 #import "LPAES.h"
 #import "LPLogManager.h"
+#import "LPRequestSenderTimer.h"
 
 // Prevent circular reference
 @class LPDeferrableAction;
@@ -847,6 +848,12 @@ NS_SWIFT_NAME(setDeviceLocation(latitude:longitude:city:region:country:type:));
  */
 + (void)disableLocationCollection;
 
+/**
+ Sets the time interval to periodically upload events to server.
+ Default is 15 minutes.
+ @param uploadInterval The time between uploads.
+ */
++ (void)setEventsUploadInterval:(LPEventsUploadInterval)uploadInterval;
 @end
 
 NS_ASSUME_NONNULL_END
