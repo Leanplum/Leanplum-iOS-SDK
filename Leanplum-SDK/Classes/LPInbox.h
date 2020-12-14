@@ -174,6 +174,15 @@ NS_SWIFT_NAME(onInboxChanged(completion:));
 - (void)onForceContentUpdate:(LeanplumInboxSyncedBlock)block;
 
 /**
+ Forces downloading of inbox messages from the server. After messages are downloaded the appropriate callbacks will fire.
+ */
+- (void)downloadMessages;
+/**
+ Forces downloading of inbox messages from the server. After messages are downloaded the appropriate callbacks will fire.
+ @param completionHandler  The callback to invoke when messages are downloaded.
+ */
+- (void)downloadMessages:(nullable LeanplumInboxSyncedBlock)completionHandler;
+/**
  @{
  * Adds a responder to be executed when an event happens.
  * Uses NSInvocation instead of blocks.

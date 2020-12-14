@@ -404,11 +404,16 @@ static NSObject *updatingLock;
     LP_END_USER_CODE
 }
 
-- (void)triggerInboxSyncedWithStatus:(BOOL)success
+- (void)triggerInboxSyncedWithStatus:(BOOL)success withCompletionHandler:(nullable LeanplumInboxSyncedBlock)completionHandler
 {
     LP_BEGIN_USER_CODE
-    for (LeanplumInboxSyncedBlock block in _inboxSyncedBlocks.copy) {
-        block(success);
+    if (completionHandler != nil)
+    {
+        completionHandler(success);
+    } else {
+        for (LeanplumInboxSyncedBlock block in _inboxSyncedBlocks.copy) {
+            block(success);
+        }
     }
     LP_END_USER_CODE
 }
@@ -416,6 +421,11 @@ static NSObject *updatingLock;
 #pragma mark - LPInbox methods
 
 - (void)downloadMessages
+{
+    [self downloadMessages:nil];
+}
+
+- (void)downloadMessages:(LeanplumInboxSyncedBlock)completionHandler
 {
     RETURN_IF_NOOP;
     LP_TRY
@@ -460,17 +470,17 @@ static NSObject *updatingLock;
             [Leanplum onceVariablesChangedAndNoDownloadsPending:^{
                 LP_END_USER_CODE
                 [self updateMessages:messages unreadCount:unreadCount];
-                [self triggerInboxSyncedWithStatus:YES];
+                [self triggerInboxSyncedWithStatus:YES withCompletionHandler:completionHandler];
                 LP_BEGIN_USER_CODE
             }];
         } else {
             [self updateMessages:messages unreadCount:unreadCount];
-            [self triggerInboxSyncedWithStatus:YES];
+            [self triggerInboxSyncedWithStatus:YES withCompletionHandler:completionHandler];
         }
         LP_END_TRY
     }];
     [request onError:^(NSError *error) {
-        [self triggerInboxSyncedWithStatus:NO];
+        [self triggerInboxSyncedWithStatus:NO withCompletionHandler:completionHandler];
     }];
     [[LPRequestSender sharedInstance] send:request];
     LP_END_TRY
