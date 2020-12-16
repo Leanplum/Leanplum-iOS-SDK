@@ -2,7 +2,6 @@
 //  LPRequestBatchTest.m
 //  Leanplum-SDK_Tests
 //
-//  Created by Dejan Krstevski on 12/16/20.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
@@ -46,6 +45,8 @@
 
 - (void)testGetEventsCount
 {
+    [LPEventDataManager deleteEventsWithLimit:LP_MAX_EVENTS_PER_API_CALL];
+    
     LPRequestBatch *testBatch = [LPRequestBatchFactory createNextBatch];
     XCTAssertTrue([testBatch getEventsCount] == 0);
     
@@ -62,6 +63,8 @@
 
 - (void)testBatchIsEmpty
 {
+    [LPEventDataManager deleteEventsWithLimit:LP_MAX_EVENTS_PER_API_CALL];
+    
     LPRequestBatch *testBatch = [LPRequestBatchFactory createNextBatch];
     XCTAssertTrue([testBatch isEmpty]);
     
@@ -74,6 +77,8 @@
 
 - (void)testBatchIsFull
 {
+    [LPEventDataManager deleteEventsWithLimit:LP_MAX_EVENTS_PER_API_CALL];
+    
     LPRequestBatch *testBatch = [LPRequestBatchFactory createNextBatch];
     XCTAssertFalse([testBatch isFull]);
     

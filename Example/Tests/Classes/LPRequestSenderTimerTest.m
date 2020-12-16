@@ -2,7 +2,6 @@
 //  LPRequestSenderTimerTest.m
 //  Leanplum-SDK_Tests
 //
-//  Created by Dejan Krstevski on 12/16/20.
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
