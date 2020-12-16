@@ -484,4 +484,63 @@
     [[Leanplum inbox] downloadMessages];
 }
 
+- (void)testDownloadMessages
+{
+    // Do not need to fetch images
+    // Prefetching will trigger downloadFile requests
+    [[Leanplum inbox] disableImagePrefetching];
+    // Ensure errors are thrown
+    [LeanplumHelper mockThrowErrorToThrow];
+    
+    id<HTTPStubsDescriptor> getNewsfeedMessagesStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest *request) {
+        NSString *response_file = OHPathForFile(@"newsfeed_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file
+                                                statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [[Leanplum inbox] onChanged:^{
+        [HTTPStubs removeStub:getNewsfeedMessagesStub];
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
+    [LeanplumHelper setup_development_test];
+    [[Leanplum inbox] downloadMessages];
+    
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+}
+
+- (void)testDownloadMessagesWithCompletionHandler
+{
+    // Do not need to fetch images
+    // Prefetching will trigger downloadFile requests
+    [[Leanplum inbox] disableImagePrefetching];
+    // Ensure errors are thrown
+    [LeanplumHelper mockThrowErrorToThrow];
+    
+    id<HTTPStubsDescriptor> getNewsfeedMessagesStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest *request) {
+        NSString *response_file = OHPathForFile(@"newsfeed_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file
+                                                statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    
+    [LeanplumHelper setup_development_test];
+    [[Leanplum inbox] downloadMessages:^(BOOL success) {
+        [HTTPStubs removeStub:getNewsfeedMessagesStub];
+        dispatch_semaphore_signal(semaphor);
+    }];
+    
+    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
+    XCTAssertTrue(timedOut == 0);
+}
+
 @end
