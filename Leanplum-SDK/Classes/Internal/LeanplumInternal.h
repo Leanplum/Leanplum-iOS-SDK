@@ -137,7 +137,7 @@ typedef void (^LeanplumInboxCacheUpdateBlock)(void);
 - (void)removeMessageForId:(NSString *)messageId;
 - (void)reset;
 - (void)triggerInboxChanged;
-- (void)triggerInboxSyncedWithStatus:(BOOL)success;
+- (void)triggerInboxSyncedWithStatus:(BOOL)success withCompletionHandler:(nullable LeanplumInboxSyncedBlock)completionHandler;
 
 @end
 
