@@ -2,7 +2,7 @@
 
 <p align="center">
     <img src='https://img.shields.io/badge/branch-master-blue.svg'>
-    <img src='https://travis-ci.org/Leanplum/Leanplum-iOS-SDK.svg?branch=master' alt="Build status">
+    <img src='https://travis-ci.com/Leanplum/Leanplum-iOS-SDK.svg?branch=master' alt="Build status">
 </p>
 <p align="center">
 <img src="https://img.shields.io/badge/platform-iOS-blue.svg?style=flat" alt="Platform iOS" />
