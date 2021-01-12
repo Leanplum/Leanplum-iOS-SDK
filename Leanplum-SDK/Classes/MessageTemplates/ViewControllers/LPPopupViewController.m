@@ -25,7 +25,7 @@
 #else
     NSBundle *bundle = [LPUtils leanplumBundle];
 #endif
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Popup" bundle:bundle];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LPPopup" bundle:bundle];
 
     return [storyboard instantiateInitialViewController];
 }

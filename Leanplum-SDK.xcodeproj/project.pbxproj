@@ -74,7 +74,6 @@
 		6EBD06E4F7E21C783A44716D /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A182A05FA4B6FBE800871B6 /* LPConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6ED65B32FEA16E1ACA61E23D /* LPIconChangeMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E7D096355975197CEF7E6A /* LPIconChangeMessageTemplate.m */; };
 		78ACFA2AB35973CEB067F3EC /* LPActionContext-Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		78DC8CDFA88C4E413C820875 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43E89C61224131164B902DDD /* Assets.xcassets */; };
 		7966F3906CAA05ADDB0AAC59 /* LPInternalState.h in Headers */ = {isa = PBXBuildFile; fileRef = 517D831CB3A828CD1C501BCD /* LPInternalState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79E3FF046C50D68D43E1E0B6 /* LPContextualValues.h in Headers */ = {isa = PBXBuildFile; fileRef = FD03E4D7A758887489CCC58A /* LPContextualValues.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79F0C4BF475BE41586C42D87 /* LPInbox.h in Headers */ = {isa = PBXBuildFile; fileRef = 24781DA980124C7D965E171B /* LPInbox.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -92,7 +91,6 @@
 		89FCD2B0FD3E7E658AF06414 /* LPUIAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = 38571F1A79AD85DD91274229 /* LPUIAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B473962853F7E1D5F3DDC78 /* LPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = E0FA8ED9EA9E69B401D4F519 /* LPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8BA6D7BA30862640CF073519 /* LPEventDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 15FBA3ACC69953C82267687E /* LPEventDataManager.m */; };
-		8D3A0CF56060812C81287E21 /* Popup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF0DF10CCB0F78D2D6F90B75 /* Popup.storyboard */; };
 		8E5598588CDFEAE43B34D42B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1DF5BA1368B78D9E5E519B89 /* Main.storyboard */; };
 		8F60CFA5DDF2507642C24414 /* LPConfirmMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B20DAF5793C7A9B6C416F6 /* LPConfirmMessageTemplate.m */; };
 		8F82D8906A50058C02763B21 /* LPDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 912463C7C9552F750FF35AEE /* LPDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -132,7 +130,6 @@
 		A8E58D57C39CEB69593C3D7C /* LPEventCallbackManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F8F90BAC6BFF1ACC82FD554 /* LPEventCallbackManager.m */; };
 		A9833F68569C4579DE7BB878 /* LPAES.h in Headers */ = {isa = PBXBuildFile; fileRef = 4DCB985E8656ED2A14676311 /* LPAES.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AE18D9BF3AC06C389F6425AA /* LPPushAskToAskMessageTemplate.h in Headers */ = {isa = PBXBuildFile; fileRef = C3FEC7ED2881D8A73E28C303 /* LPPushAskToAskMessageTemplate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		AE3F9EFAA7DBE1515FBC1994 /* WebInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A709CFB25A41E2634238C136 /* WebInterstitial.storyboard */; };
 		AF13BAD1CD1932794C36E03D /* LPWebInterstitialViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = E184BBEE33979DDF6B0554F1 /* LPWebInterstitialViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AF9B07EF3976B7CB63315623 /* Leanplum_SocketIO.m in Sources */ = {isa = PBXBuildFile; fileRef = 0337B58AD3DDEA53DCE51906 /* Leanplum_SocketIO.m */; };
 		B39D73EE1033D842008EB4DE /* Leanplum.h in Headers */ = {isa = PBXBuildFile; fileRef = 4E1C9E4B55BD4222FB52A427 /* Leanplum.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -150,6 +147,12 @@
 		C563DF2824573DE4D91EDFEE /* LPConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 004B70DF819F0BDDF8F08873 /* LPConstants.m */; };
 		C56A84A441B9C5056A0F3CFB /* LPOperationQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = DED1657DCA0BEE92D31DE22D /* LPOperationQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C722BB509AEC55EC813B93BF /* Leanplum_SocketIO.h in Headers */ = {isa = PBXBuildFile; fileRef = FE8B81378775839CDC9FF7C0 /* Leanplum_SocketIO.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C935295825AC6E8A007C0946 /* LPInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C935295425AC6E8A007C0946 /* LPInterstitial.storyboard */; };
+		C935295925AC6E8A007C0946 /* LPPopup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C935295525AC6E8A007C0946 /* LPPopup.storyboard */; };
+		C935295A25AC6E8A007C0946 /* LPWebInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C935295625AC6E8A007C0946 /* LPWebInterstitial.storyboard */; };
+		C93529B325AC855A007C0946 /* lp_close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C93529B225AC855A007C0946 /* lp_close@2x.png */; };
+		C93529C225AD6AF6007C0946 /* lp_close.png in Resources */ = {isa = PBXBuildFile; fileRef = C93529C125AD6AF6007C0946 /* lp_close.png */; };
+		C93529C625AD6B00007C0946 /* lp_close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = C93529C525AD6B00007C0946 /* lp_close@3x.png */; };
 		C97707F6256F228A007AAB3A /* LPRequestBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = C97707F2256F2289007AAB3A /* LPRequestBatch.h */; };
 		C97707F7256F228A007AAB3A /* LPRequestBatchFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = C97707F3256F228A007AAB3A /* LPRequestBatchFactory.h */; };
 		C97707F8256F228A007AAB3A /* LPRequestBatchFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = C97707F4256F228A007AAB3A /* LPRequestBatchFactory.m */; };
@@ -188,7 +191,6 @@
 		FAB6F15D39FA3C66F09E0C5E /* LPJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 373EB69BF99F8C87DB593C32 /* LPJSON.m */; };
 		FE1E306EB07EBB6E4C664ECF /* LPNetworkFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 83C298C92EB08DC36EA6DFB4 /* LPNetworkFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		FE78EDF0A2EB0B3ED45D1EFD /* LPEnumConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = DE40A48CA5A380C6E4D4ED83 /* LPEnumConstants.m */; };
-		FED505030098C5567104DFBA /* Interstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD31059FBF9EC37AD536D9E7 /* Interstitial.storyboard */; };
 		FF61BD78CA68C7D3C32DB636 /* LPUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = F92FDE3C8E112E935C9ECCC9 /* LPUtils.m */; };
 /* End PBXBuildFile section */
 
@@ -233,7 +235,6 @@
 		3D0332D35311C597081F66A0 /* LPExceptionHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPExceptionHandler.m; sourceTree = "<group>"; };
 		4392232BBD074604BAED51A5 /* Leanplum-SDK-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Leanplum-SDK-Prefix.pch"; sourceTree = "<group>"; };
 		43DCD6B5AD8D77A5DBE84961 /* LeanplumSDK_tvOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "LeanplumSDK_tvOS-Info.plist"; sourceTree = "<group>"; };
-		43E89C61224131164B902DDD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4613058E2B0120CC7A73BC43 /* LPExceptionHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPExceptionHandler.h; sourceTree = "<group>"; };
 		477BD3AF9080B9C26A3F40F8 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		4B45372047062CD94AC26D48 /* LPVar.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPVar.m; sourceTree = "<group>"; };
@@ -305,7 +306,6 @@
 		A0F9F2FC5CCC4CB57626B434 /* LPNetworkEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNetworkEngine.m; sourceTree = "<group>"; };
 		A34F75D8A2B33CC1F9646411 /* LPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPViewController.h; sourceTree = "<group>"; };
 		A6C50EDC85CCDB01FB351A5E /* LPOpenUrlMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPOpenUrlMessageTemplate.h; sourceTree = "<group>"; };
-		A709CFB25A41E2634238C136 /* WebInterstitial.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = WebInterstitial.storyboard; sourceTree = "<group>"; };
 		A92C909901DE6A051D258A68 /* Leanplum_AsyncSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Leanplum_AsyncSocket.h; sourceTree = "<group>"; };
 		AC889B5231CDF21DCB080C36 /* LPActionManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPActionManager.h; sourceTree = "<group>"; };
 		AF2471DAB5F12FA36CAEDF11 /* LPWebInterstitialMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPWebInterstitialMessageTemplate.h; sourceTree = "<group>"; };
@@ -329,6 +329,12 @@
 		C2B6A5CBB11B15F1D1210155 /* LPAppIconManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPAppIconManager.h; sourceTree = "<group>"; };
 		C2CBACF77D114F87E168C2D2 /* LPFileTransferManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPFileTransferManager.m; sourceTree = "<group>"; };
 		C3FEC7ED2881D8A73E28C303 /* LPPushAskToAskMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPPushAskToAskMessageTemplate.h; sourceTree = "<group>"; };
+		C935295425AC6E8A007C0946 /* LPInterstitial.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LPInterstitial.storyboard; sourceTree = "<group>"; };
+		C935295525AC6E8A007C0946 /* LPPopup.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LPPopup.storyboard; sourceTree = "<group>"; };
+		C935295625AC6E8A007C0946 /* LPWebInterstitial.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LPWebInterstitial.storyboard; sourceTree = "<group>"; };
+		C93529B225AC855A007C0946 /* lp_close@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp_close@2x.png"; sourceTree = "<group>"; };
+		C93529C125AD6AF6007C0946 /* lp_close.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lp_close.png; sourceTree = "<group>"; };
+		C93529C525AD6B00007C0946 /* lp_close@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "lp_close@3x.png"; sourceTree = "<group>"; };
 		C97707F2256F2289007AAB3A /* LPRequestBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRequestBatch.h; sourceTree = "<group>"; };
 		C97707F3256F228A007AAB3A /* LPRequestBatchFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRequestBatchFactory.h; sourceTree = "<group>"; };
 		C97707F4256F228A007AAB3A /* LPRequestBatchFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestBatchFactory.m; sourceTree = "<group>"; };
@@ -367,7 +373,6 @@
 		E61ECC4BAD68AED6A7698623 /* LPActionContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPActionContext.h; sourceTree = "<group>"; };
 		E846E120F6FAF683C59E485D /* LPAppIconManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPAppIconManager.m; sourceTree = "<group>"; };
 		EE69CC9001AFA83B751C9727 /* LPSwizzle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPSwizzle.h; sourceTree = "<group>"; };
-		EF0DF10CCB0F78D2D6F90B75 /* Popup.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Popup.storyboard; sourceTree = "<group>"; };
 		F08CDCEDEBE05DC73F28276D /* LPFeatureFlagManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPFeatureFlagManager.h; sourceTree = "<group>"; };
 		F0EA0FCBACEECC0565D02316 /* LPInterstitialViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPInterstitialViewController.m; sourceTree = "<group>"; };
 		F29AF36696C6C9250B259339 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -375,7 +380,6 @@
 		F6AB86F61B1A2A6BC291C8BB /* LPInterstitialViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPInterstitialViewController.h; sourceTree = "<group>"; };
 		F92FDE3C8E112E935C9ECCC9 /* LPUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPUtils.m; sourceTree = "<group>"; };
 		FD03E4D7A758887489CCC58A /* LPContextualValues.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPContextualValues.h; sourceTree = "<group>"; };
-		FD31059FBF9EC37AD536D9E7 /* Interstitial.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Interstitial.storyboard; sourceTree = "<group>"; };
 		FD63245ABFABD8DDF7235840 /* LPUIAlert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPUIAlert.m; sourceTree = "<group>"; };
 		FE8B81378775839CDC9FF7C0 /* Leanplum_SocketIO.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Leanplum_SocketIO.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -489,10 +493,10 @@
 		8FF7DF237198C2B23F426137 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				43E89C61224131164B902DDD /* Assets.xcassets */,
-				FD31059FBF9EC37AD536D9E7 /* Interstitial.storyboard */,
-				EF0DF10CCB0F78D2D6F90B75 /* Popup.storyboard */,
-				A709CFB25A41E2634238C136 /* WebInterstitial.storyboard */,
+				C93529C025AD6ADC007C0946 /* Icons */,
+				C935295425AC6E8A007C0946 /* LPInterstitial.storyboard */,
+				C935295525AC6E8A007C0946 /* LPPopup.storyboard */,
+				C935295625AC6E8A007C0946 /* LPWebInterstitial.storyboard */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -656,6 +660,16 @@
 				9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		C93529C025AD6ADC007C0946 /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				C93529C125AD6AF6007C0946 /* lp_close.png */,
+				C93529B225AC855A007C0946 /* lp_close@2x.png */,
+				C93529C525AD6B00007C0946 /* lp_close@3x.png */,
+			);
+			path = Icons;
 			sourceTree = "<group>";
 		};
 		D1BDE941CCC92643F7696358 /* Managers */ = {
@@ -987,9 +1001,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C935295825AC6E8A007C0946 /* LPInterstitial.storyboard in Resources */,
+				C93529B325AC855A007C0946 /* lp_close@2x.png in Resources */,
 				57388626C13B4E669D95300A /* Images.xcassets in Resources */,
 				7F0E1D37A4C2A802BDF1938A /* InfoPlist.strings in Resources */,
+				C935295A25AC6E8A007C0946 /* LPWebInterstitial.storyboard in Resources */,
 				8E5598588CDFEAE43B34D42B /* Main.storyboard in Resources */,
+				C935295925AC6E8A007C0946 /* LPPopup.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -997,10 +1015,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				78DC8CDFA88C4E413C820875 /* Assets.xcassets in Resources */,
-				FED505030098C5567104DFBA /* Interstitial.storyboard in Resources */,
-				8D3A0CF56060812C81287E21 /* Popup.storyboard in Resources */,
-				AE3F9EFAA7DBE1515FBC1994 /* WebInterstitial.storyboard in Resources */,
+				C93529C625AD6B00007C0946 /* lp_close@3x.png in Resources */,
+				C93529C225AD6AF6007C0946 /* lp_close.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1180,6 +1196,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
@@ -1281,6 +1298,7 @@
 				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEFINES_MODULE = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";

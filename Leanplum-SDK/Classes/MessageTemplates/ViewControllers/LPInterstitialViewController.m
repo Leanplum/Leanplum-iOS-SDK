@@ -22,7 +22,7 @@
 #else
     NSBundle *bundle = [LPUtils leanplumBundle];
 #endif
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Interstitial" bundle:bundle];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LPInterstitial" bundle:bundle];
 
     return [storyboard instantiateInitialViewController];
 }

@@ -27,7 +27,7 @@
 #else
     NSBundle *bundle = [LPUtils leanplumBundle];
 #endif
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:bundle];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"LPWebInterstitial" bundle:bundle];
 
     return [storyboard instantiateInitialViewController];
 }

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5cc-MC-AF7">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="5cc-MC-AF7">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -24,7 +25,7 @@
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uuW-hM-CIw">
                                         <rect key="frame" x="280" y="-10" width="30" height="30"/>
-                                        <state key="normal" image="close"/>
+                                        <state key="normal" image="lp_close.png"/>
                                         <connections>
                                             <action selector="didTapDismissButton:" destination="5cc-MC-AF7" eventType="touchUpInside" id="fwR-eB-lSO"/>
                                         </connections>
@@ -32,14 +33,14 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="aHI-yk-Bti">
                                         <rect key="frame" x="8" y="212" width="284" height="30"/>
                                         <subviews>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Toc-S2-CxU">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Toc-S2-CxU">
                                                 <rect key="frame" x="0.0" y="0.0" width="139.5" height="30"/>
                                                 <state key="normal" title="Cancel"/>
                                                 <connections>
                                                     <action selector="didTapCancelButton:" destination="5cc-MC-AF7" eventType="touchUpInside" id="Qyc-m3-DAy"/>
                                                 </connections>
                                             </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="awH-VX-oho">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="awH-VX-oho">
                                                 <rect key="frame" x="144.5" y="0.0" width="139.5" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                                 <state key="normal" title="Accept"/>
@@ -62,7 +63,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstItem="aHI-yk-Bti" firstAttribute="top" secondItem="bPT-Pn-urX" secondAttribute="bottom" constant="8" id="2d7-MW-EEr"/>
                                     <constraint firstItem="aHI-yk-Bti" firstAttribute="leading" secondItem="WMO-0p-OCC" secondAttribute="leading" constant="8" id="4VM-S8-YZx"/>
@@ -85,12 +86,12 @@
                                 </constraints>
                             </view>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="pyq-Jz-JaO"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="WMO-0p-OCC" firstAttribute="centerX" secondItem="ypY-OD-uFZ" secondAttribute="centerX" id="TJO-fM-CIB"/>
                             <constraint firstItem="WMO-0p-OCC" firstAttribute="centerY" secondItem="ypY-OD-uFZ" secondAttribute="centerY" id="ote-EH-M6H"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="pyq-Jz-JaO"/>
                     </view>
                     <connections>
                         <outlet property="acceptButton" destination="awH-VX-oho" id="9bS-Ec-Kll"/>
@@ -110,6 +111,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="close" width="30" height="30"/>
+        <image name="lp_close.png" width="30" height="30"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>

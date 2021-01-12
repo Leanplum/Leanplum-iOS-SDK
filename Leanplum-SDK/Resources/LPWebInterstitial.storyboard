@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wBl-qO-Io0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wBl-qO-Io0">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -22,18 +23,18 @@
                                     <constraint firstAttribute="height" constant="44" id="Oux-ud-wmp"/>
                                     <constraint firstAttribute="width" constant="44" id="eNj-EK-cTo"/>
                                 </constraints>
-                                <state key="normal" image="close"/>
+                                <state key="normal" image="lp_close.png"/>
                                 <connections>
                                     <action selector="didTapDismissButton:" destination="wBl-qO-Io0" eventType="touchUpInside" id="Oxq-Of-lPt"/>
                                 </connections>
                             </button>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Koz-5a-zza"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="W6g-AT-1ZG" firstAttribute="top" secondItem="Koz-5a-zza" secondAttribute="top" id="3HN-Xq-aj1"/>
                             <constraint firstItem="Koz-5a-zza" firstAttribute="trailing" secondItem="W6g-AT-1ZG" secondAttribute="trailing" constant="10" id="7Pf-Iv-hJz"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Koz-5a-zza"/>
                     </view>
                     <connections>
                         <outlet property="dismissButton" destination="W6g-AT-1ZG" id="ZEX-yk-7V1"/>
@@ -45,6 +46,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="close" width="30" height="30"/>
+        <image name="lp_close.png" width="30" height="30"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
     </resources>
 </document>
