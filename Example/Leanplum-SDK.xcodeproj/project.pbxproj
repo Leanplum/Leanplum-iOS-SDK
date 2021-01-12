@@ -572,7 +572,7 @@
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				5678219E174A2369ECF6240C /* [CP] Embed Pods Frameworks */,
+				1084BDC48A709AF9CC2D1FD3 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -592,6 +592,7 @@
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
 				F2B12452F4D18C832FC69C05 /* [CP] Embed Pods Frameworks */,
+				5ED98D54537C2EE224304443 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -724,22 +725,40 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		5678219E174A2369ECF6240C /* [CP] Embed Pods Frameworks */ = {
+		1084BDC48A709AF9CC2D1FD3 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Leanplum-iOS-SDK/Leanplum-iOS-SDK.bundle",
 			);
-			name = "[CP] Embed Pods Frameworks";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Leanplum-iOS-SDK.bundle",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Example/Pods-Leanplum-SDK_Example-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5ED98D54537C2EE224304443 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-resources.sh",
+				"${PODS_CONFIGURATION_BUILD_DIR}/Leanplum-iOS-SDK/Leanplum-iOS-SDK.bundle",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/Leanplum-iOS-SDK.bundle",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		89D1F4D247F43804D44AD12A /* [CP] Check Pods Manifest.lock */ = {
@@ -793,14 +812,12 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-SDK_Tests/Pods-Leanplum-SDK_Tests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Leanplum-iOS-SDK/Leanplum.framework",
 				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 				"${BUILT_PRODUCTS_DIR}/OHHTTPStubs/OHHTTPStubs.framework",
 				"${BUILT_PRODUCTS_DIR}/iOSSnapshotTestCase/FBSnapshotTestCase.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Leanplum.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OCMock.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OHHTTPStubs.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
