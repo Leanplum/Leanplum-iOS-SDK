@@ -33,5 +33,4 @@ Analytics.
   s.ios.resource_bundle = {
    'Leanplum-iOS-SDK' => 'Leanplum-SDK/Resources/**/*'
   }
-  s.static_framework = true
 end
