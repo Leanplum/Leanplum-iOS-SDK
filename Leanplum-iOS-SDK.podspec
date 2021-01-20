@@ -30,7 +30,7 @@ Analytics.
   s.source_files = 'Leanplum-SDK/Classes/**/*'
   s.module_name = 'Leanplum'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
-  s.ios.resource_bundle = {
+  s.resource_bundle = {
    'Leanplum-iOS-SDK' => 'Leanplum-SDK/Resources/**/*'
   }
 end
