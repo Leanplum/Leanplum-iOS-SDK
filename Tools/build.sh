@@ -85,7 +85,7 @@ main() {
   default="${BUILD_DIR}${X8664_DIR}/${CONFIGURATION}-iphonesimulator"
   CURRENTCONFIG_X8664_SIMULATOR_DIR=${CURRENTCONFIG_X8664_SIMULATOR_DIR:-$default}
   
-  RESOURCE_BUNDLE="${BUILD_DIR}${ARMV7_DIR}/${CONFIGURATION}-iphoneos/Leanplum-iOS-SDK/Leanplum-iOS-SDK.bundle"
+  # Clean and build
   ACTION="clean build"
 
   DEVICE_SDK="iphoneos"
@@ -115,9 +115,9 @@ main() {
   build_ios_static
 
   # remove duplicate assets if any
-  find "${RELEASE_DIR}/" -name '*.car' -not -path '*/Leanplum-iOS-SDK.bundle/*' -exec rm -rf {} +
-  find "${RELEASE_DIR}/" -name '*.storyboardc' -not -path '*/Leanplum-iOS-SDK.bundle/*' -exec rm -rf {} +
-  find "${RELEASE_DIR}/" -name '_CodeSignature' -exec rm -rf {} +
+  find "${RELEASE_DIR_BASE}/" -name '*.car' -not -path '*/Leanplum-iOS-SDK.bundle/*' -exec rm -rf {} +
+  find "${RELEASE_DIR_BASE}/" -name '*.storyboardc' -not -path '*/Leanplum-iOS-SDK.bundle/*' -exec rm -rf {} +
+  find "${RELEASE_DIR_BASE}/" -name '_CodeSignature' -exec rm -rf {} +
 
   # zip all iOS frameworks
   zip_ios
@@ -198,10 +198,11 @@ build_ios_static() {
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
 
+
+  # create framework for each slice first
   mkdir -p "${RELEASE_DIR}/arm64/Leanplum.framework"
   mkdir -p "${RELEASE_DIR}/x86_64/Leanplum.framework"
 
-  echo "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/"
   cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
     "${RELEASE_DIR}/Leanplum.framework"
   cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
@@ -211,11 +212,21 @@ build_ios_static() {
 
   rm -f "${RELEASE_DIR}/Leanplum.framework/Leanplum"
   
+  # combine and copy arm64 & x86_64 slice to universal framework
   run "Combining builds to universal fat library ..." \
     lipo -create -output "${RELEASE_DIR}/Leanplum.framework/Leanplum" \
     "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a" \
     "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a"
 
+  # copy the arm64 slice to framework
+  lipo -create -output "${RELEASE_DIR}/arm64/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a" \
+
+  # copy the x86_64 slice to framework
+  lipo -create -output "${RELEASE_DIR}/x86_64/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a" \
+
+  # create xcframework from each framework slice
   run "Combining builds into xcframework" \
   xcodebuild -create-xcframework \
     -framework "${RELEASE_DIR}/arm64/Leanplum.framework" \
@@ -251,6 +262,9 @@ zip_unreal_engine() {
   cd "${RELEASE_DIR_BASE}/static"
   zip -r Leanplum.embeddedframework.zip Leanplum.framework
   mv Leanplum.embeddedframework.zip "$SDK_DIR"
+
+  zip -r Leanplum.embeddedxcframework.zip Leanplum.xcframework
+  mv Leanplum.embeddedxcframework.zip "$SDK_DIR"
   cd -
 }
 
