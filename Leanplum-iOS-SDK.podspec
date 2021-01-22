@@ -28,7 +28,9 @@ Analytics.
   s.library = 'sqlite3'
   s.documentation_url = 'https://docs.leanplum.com/'
   s.source_files = 'Leanplum-SDK/Classes/**/*'
-  s.resources = ['Leanplum-SDK/Resources/**/*']
   s.module_name = 'Leanplum'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+  s.ios.resource_bundle = {
+   'Leanplum-iOS-SDK' => 'Leanplum-SDK/Resources/**/*'
+  }
 end
