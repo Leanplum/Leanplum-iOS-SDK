@@ -198,8 +198,7 @@ build_ios_static() {
     BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
 
-
-  # create framework for each slice first
+  # create framework for each slice first  
   mkdir -p "${RELEASE_DIR}/arm64/Leanplum.framework"
   mkdir -p "${RELEASE_DIR}/x86_64/Leanplum.framework"
 
@@ -260,11 +259,18 @@ zip_unreal_engine() {
   echo "zipping for Unreal Engine release"
   pwd
   cd "${RELEASE_DIR_BASE}/static"
-  zip -r Leanplum.embeddedframework.zip Leanplum.framework
-  mv Leanplum.embeddedframework.zip "$SDK_DIR"
 
-  zip -r Leanplum.embeddedxcframework.zip Leanplum.xcframework
+  mkdir -p Leanplum.embeddedframework
+  cp -R Leanplum.framework Leanplum.embeddedframework
+  zip -r Leanplum.embeddedframework.zip Leanplum.embeddedframework
+  mv Leanplum.embeddedframework.zip "$SDK_DIR"
+  rm -rf Leanplum.embeddedframework
+
+  mkdir -p Leanplum.embeddedxcframework
+  cp -R Leanplum.xcframework Leanplum.embeddedxcframework
+  zip -r Leanplum.embeddedxcframework.zip Leanplum.embeddedxcframework
   mv Leanplum.embeddedxcframework.zip "$SDK_DIR"
+  rm -rf Leanplum.embeddedxcframework
   cd -
 }
 
