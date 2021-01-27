@@ -18,7 +18,7 @@
         return nil;
     }
 
-    if (hitView != self) {
+    if (hitView != self || _shouldAllowTapToClose) {
         return hitView;
     }
 

@@ -11,6 +11,7 @@
 @interface LPHitView : UIView
 
 @property (weak, nonatomic) UIView *touchDelegate;
+@property (assign) BOOL shouldAllowTapToClose;
 
 - (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event;
 
