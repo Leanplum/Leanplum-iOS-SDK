@@ -188,7 +188,7 @@
                 for (UNNotificationRequest *request in requests) {
                     NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[request.content userInfo]];
                     if ([messageId isEqualToString:context.messageId]) {
-                        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[request.identifier]];
+                        [UNUserNotificationCenter.currentNotificationCenter removePendingNotificationRequestsWithIdentifiers:@[request.identifier]];
                         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
                             LPLog(LPInfo, @"Cancelled notification");
                         }
