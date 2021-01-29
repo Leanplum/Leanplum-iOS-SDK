@@ -65,17 +65,18 @@
         [self.dismissButton setHidden:YES];
     }
 
-    // passthrough view to send touch events to underlaying ViewController
-    LPHitView* passthroughView = (LPHitView *) self.view;
-    if (passthroughView) {
-        passthroughView.touchDelegate = self.presentingViewController.view;
-    }
-
     // add gesture recognizer to close message if tap outside to close is set to true.
     BOOL tapOutside = [self.context boolNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE];
     if (tapOutside) {
         UITapGestureRecognizer* gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapOutside)];
         [self.view addGestureRecognizer:gestureRecognizer];
+    }
+    
+    // passthrough view to send touch events to underlaying ViewController
+    LPHitView* passthroughView = (LPHitView *) self.view;
+    if (passthroughView) {
+        passthroughView.shouldAllowTapToClose = tapOutside;
+        passthroughView.touchDelegate = self.presentingViewController.view;
     }
     
     _orientation = UIDevice.currentDevice.orientation;
