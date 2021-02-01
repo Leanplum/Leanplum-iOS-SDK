@@ -334,13 +334,18 @@ static dispatch_once_t leanplum_onceToken;
         if ([diff isKindOfClass:NSDictionary.class]) {
             for (id varSubscript in diff) {
                 // Get the index from the string key: "[0]" -> 0
-                int subscript = [[varSubscript substringWithRange:NSMakeRange(1, [varSubscript length] - 2)] intValue];
-                id var = [diff objectForKey:varSubscript];
-                while (subscript >= [merged count]) {
-                    [merged addObject:[NSNull null]];
+                if ([varSubscript isKindOfClass:NSString.class]) {
+                    NSString *varSubscriptStr = (NSString*)varSubscript;
+                    if ([varSubscriptStr length] > 2 && [varSubscriptStr hasPrefix:@"["] && [varSubscriptStr hasSuffix:@"]"]) {
+                        int subscript = [[varSubscriptStr substringWithRange:NSMakeRange(1, [varSubscriptStr length] - 2)] intValue];
+                        id var = [diff objectForKey:varSubscriptStr];
+                        while (subscript >= [merged count]) {
+                            [merged addObject:[NSNull null]];
+                        }
+                        [merged replaceObjectAtIndex:subscript
+                                          withObject:[self mergeHelper:merged[subscript] withDiffs:var]];
+                    }
                 }
-                [merged replaceObjectAtIndex:subscript
-                                  withObject:[self mergeHelper:merged[subscript] withDiffs:var]];
             }
         }
         return merged;
