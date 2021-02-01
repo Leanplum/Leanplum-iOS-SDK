@@ -318,14 +318,35 @@ static dispatch_once_t leanplum_onceToken;
         for (id var in vars) {
             [merged addObject:var];
         }
-        for (id varSubscript in diff) {
-            int subscript = [[varSubscript substringWithRange:NSMakeRange(1, [varSubscript length] - 2)] intValue];
-            id var = [diff objectForKey:varSubscript];
-            while (subscript >= [merged count]) {
-                [merged addObject:[NSNull null]];
+        
+        // Merge values from server
+        // Array values from server come as Dictionary
+        // Example:
+        // string[] items = new string[] { "Item 1", "Item 2"};
+        // args.With<string[]>("Items", items); // Action Context arg value
+        // "vars": {
+        //      "Items": {
+        //                  "[1]": "Item 222", // Modified value from server
+        //                  "[0]": "Item 111"  // Modified value from server
+        //              }
+        //  }
+        // Prevent crashing when loading variable diffs where the diff is an Array and not Dictionary
+        if ([diff isKindOfClass:NSDictionary.class]) {
+            for (id varSubscript in diff) {
+                // Get the index from the string key: "[0]" -> 0
+                if ([varSubscript isKindOfClass:NSString.class]) {
+                    NSString *varSubscriptStr = (NSString*)varSubscript;
+                    if ([varSubscriptStr length] > 2 && [varSubscriptStr hasPrefix:@"["] && [varSubscriptStr hasSuffix:@"]"]) {
+                        int subscript = [[varSubscriptStr substringWithRange:NSMakeRange(1, [varSubscriptStr length] - 2)] intValue];
+                        id var = [diff objectForKey:varSubscriptStr];
+                        while (subscript >= [merged count]) {
+                            [merged addObject:[NSNull null]];
+                        }
+                        [merged replaceObjectAtIndex:subscript
+                                          withObject:[self mergeHelper:merged[subscript] withDiffs:var]];
+                    }
+                }
             }
-            [merged replaceObjectAtIndex:subscript
-                              withObject:[self mergeHelper:merged[subscript] withDiffs:var]];
         }
         return merged;
     }
