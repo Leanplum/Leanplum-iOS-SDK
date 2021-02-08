@@ -243,7 +243,7 @@
             if ([app canOpenURL:navigationUrl])
             {
                 [self.webView stopLoading];
-                [app openURL:[NSURL URLWithString:url]];
+                [LPUtils openURL:[NSURL URLWithString:url]];
                 decisionHandler(WKNavigationActionPolicyCancel);
                 return;
             } else{

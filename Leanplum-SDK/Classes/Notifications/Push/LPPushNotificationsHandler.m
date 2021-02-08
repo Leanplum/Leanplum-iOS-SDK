@@ -19,6 +19,9 @@
 @property (nonatomic, strong) NSDate *notificationHandledTime;
 @end
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 @interface UIUserNotificationSettings (LPUtil)
 @property (readonly, nonatomic) NSDictionary *dictionary;
 @end
@@ -206,6 +209,7 @@
         [[LPMessageTemplatesClass sharedTemplates] disableAskToAsk];
     }
 }
+#pragma clang diagnostic pop
 
 #pragma mark - Push Notifications - Handlers
 
