@@ -222,7 +222,7 @@ static BOOL willSendErrorLog;
                         NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
                                                                      length:sqlite3_column_bytes(statement, i)];
                         if (@available(iOS 12.0, *)) {
-                            NSError *error = nil;//TODO:Dejan test this
+                            NSError *error = nil;
                             columnData[columnKey] = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSString class] fromData:columnBytes error:&error];
                             if (error != nil) {
                                 LPLog(LPError, error.localizedDescription);
