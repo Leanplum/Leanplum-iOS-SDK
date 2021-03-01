@@ -110,7 +110,9 @@
     if ([LPAPIConfig sharedConfig].token) {
         args[LP_PARAM_TOKEN] = [LPAPIConfig sharedConfig].token;
     }
-    [args addEntriesFromDictionary:self.params];
+    if (self.params && self.params.count > 0) {
+        [args addEntriesFromDictionary:self.params];
+    }
     
     // remove keys that are empty
     [args removeObjectForKey:@""];

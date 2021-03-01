@@ -132,9 +132,16 @@
     RETURN_IF_TEST_MODE;
     if (!request.sent) {
         request.sent = YES;
-
+        
+        NSBlockOperation *saveRequestOperation = [NSBlockOperation new];
+        __weak NSBlockOperation *weakOperation = saveRequestOperation;
+        
         void (^operationBlock)(void) = ^void() {
             LP_TRY
+            if ([weakOperation isCancelled]) {
+                return;
+            }
+            
             NSString *uuid = [LPRequestUUIDHelper loadUUID];
             NSInteger count = [LPEventDataManager count];
             if (!uuid || count % LP_MAX_EVENTS_PER_API_CALL == 0) {
@@ -152,7 +159,8 @@
             LP_END_TRY
         };
 
-        [[LPOperationQueue serialQueue] addOperationWithBlock:operationBlock];
+        [saveRequestOperation addExecutionBlock:operationBlock];
+        [[LPOperationQueue serialQueue] addOperation:saveRequestOperation];
     }
     
     [self.countAggregator incrementCount:@"send_eventually_lp"];
