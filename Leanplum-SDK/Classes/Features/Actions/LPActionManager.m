@@ -244,7 +244,7 @@ static dispatch_once_t leanplum_onceToken;
                         id triggeredValue = objects[1];
                         if ([trackedValue isKindOfClass:[NSNumber class]] && [LPUtils isBoolNumber:trackedValue] && [triggeredValue isKindOfClass:[NSString class]])
                         {
-                            result = [(NSNumber *)trackedValue boolValue] == [(NSString *)triggeredValue boolValue];
+                            result = [(NSNumber *)trackedValue boolValue] == [(NSString *)triggeredValue lowercaseString].boolValue;
                         } else {
                           result = [[trackedValue description]
                                        caseInsensitiveCompare:[triggeredValue description]] == NSOrderedSame;
