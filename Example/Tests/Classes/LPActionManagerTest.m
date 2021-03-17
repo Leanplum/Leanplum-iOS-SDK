@@ -137,6 +137,59 @@
     XCTAssertFalse(result.matchedTrigger);
 }
 
+- (void)test_matched_trigger_with_boolean_parameter
+{
+    LPActionManager *manager = [LPActionManager sharedManager];
+    
+    NSDictionary *config = @{@"whenLimits":@{@"children":@[],
+                                             @"objects":@[],
+                                             @"subjects":[NSNull null]
+                                             },
+                             @"whenTriggers":@{@"children":@[@{@"noun":@"boolParamValues",
+                                                               @"objects":@[@"boolValue", @"false"],
+                                                               @"subject":@"event",
+                                                               @"verb":@"triggersWithParameter"
+                                                               }],
+                                               @"verb":@"OR"
+                                               }
+                             };
+    
+    // track parameters
+    LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
+    
+    contextualValues.parameters = @{@"boolValue":@NO};
+    LeanplumMessageMatchResult result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"boolParamValues"
+                                                  contextualValues:contextualValues];
+    XCTAssertTrue(result.matchedTrigger);
+    
+    contextualValues.parameters = @{@"boolValue":@"false"};
+    result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"boolParamValues"
+                                                  contextualValues:contextualValues];
+    XCTAssertTrue(result.matchedTrigger);
+    
+    contextualValues.parameters = @{@"boolValue":@"true"};
+    result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"boolParamValues"
+                                                  contextualValues:contextualValues];
+    XCTAssertFalse(result.matchedTrigger);
+    
+    contextualValues.parameters = @{@"boolValue":@YES};
+    result = [manager shouldShowMessage:@""
+                                                        withConfig:config
+                                                              when:@"event"
+                                                     withEventName:@"boolParamValues"
+                                                  contextualValues:contextualValues];
+    XCTAssertFalse(result.matchedTrigger);
+}
+
 - (void)test_active_period_false
 {
     LPActionManager *manager = [LPActionManager sharedManager];

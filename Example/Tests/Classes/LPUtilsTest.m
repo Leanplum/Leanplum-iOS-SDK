@@ -79,4 +79,27 @@
     XCTAssertEqualObjects(base64String, expectedSring);
 }
 
+- (void)test_isBoolNumber {
+    NSNumber *boolNumber = [NSNumber numberWithBool:YES];
+    XCTAssertTrue([LPUtils isBoolNumber:boolNumber]);
+    
+    NSNumber *boolNumber1 = [NSNumber numberWithBool:NO];
+    XCTAssertTrue([LPUtils isBoolNumber:boolNumber1]);
+    
+    NSNumber *boolNumber2 = [NSNumber numberWithBool:0];
+    XCTAssertTrue([LPUtils isBoolNumber:boolNumber2]);
+    
+    NSNumber *boolNumber3 = [NSNumber numberWithBool:1];
+    XCTAssertTrue([LPUtils isBoolNumber:boolNumber3]);
+    
+    NSNumber *intNumber = [NSNumber numberWithInt:1];
+    XCTAssertFalse([LPUtils isBoolNumber:intNumber]);
+    
+    NSNumber *doubleNumber = [NSNumber numberWithDouble:0.0];
+    XCTAssertFalse([LPUtils isBoolNumber:doubleNumber]);
+    
+    id stringValue = @"false";
+    XCTAssertFalse([LPUtils isBoolNumber:stringValue]);
+}
+
 @end
