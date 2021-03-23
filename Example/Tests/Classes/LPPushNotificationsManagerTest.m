@@ -133,7 +133,7 @@
 /**
  * Test iOS Push Types are sent when notifications are registered successfully
  */
-- (void)test_push_types
+- (void)test_push_types_new_token
 {
     // Partial mock Action Manager.
     LPPushNotificationsManager *manager = [self mockManager];
@@ -142,11 +142,16 @@
     [manager removePushToken];
     [self removePushTypes];
     
+    if (!Leanplum.hasStarted){
+        XCTAssertTrue([LeanplumHelper start_production_test]);
+    }
+    
     [self mockUserNotificationSettings:UIUserNotificationTypeAlert withCategoryId:@"testCategory"];
 
     UIApplication *app = [UIApplication sharedApplication];
     XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
     NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
+    
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
@@ -159,19 +164,79 @@
     
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
     
-    [self mockUserNotificationSettings:UIUserNotificationTypeBadge withCategoryId:@"testCategory2"];
-    // Test categories will be sent even if token is the same
+    [self waitForExpectationsWithTimeout:2 handler:nil];
+}
+
+/**
+ * Test iOS Push Types are sent when notifications are registered successfully and token is the same
+ */
+- (void)test_push_types_same_token
+{
+    // Partial mock Action Manager.
+    LPPushNotificationsManager *manager = [self mockManager];
+    [self removePushTypes];
+    
+    [self mockUserNotificationSettings:UIUserNotificationTypeAlert withCategoryId:@"testCategory"];
+
+    UIApplication *app = [UIApplication sharedApplication];
+    
+    XCTestExpectation *expectPushTypes = [self expectationWithDescription:@"expectPushTypes"];
+    
+    if (!Leanplum.hasStarted){
+        XCTAssertTrue([LeanplumHelper start_production_test]);
+    }
+    
+    // Ensure the same token
+    NSString *pushToken = @"testToken";
+    NSData *token = [pushToken dataUsingEncoding:NSUTF8StringEncoding];
+    NSString *formattedToken = [self formatToken:token];
+    [manager updatePushToken:formattedToken];
+    
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                             NSDictionary *params) {
         XCTAssertTrue([apiMethod isEqual:@"setDeviceAttributes"]);
         XCTAssertNil(params[LP_PARAM_DEVICE_PUSH_TOKEN]);
-        XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] isEqual:@(UIUserNotificationTypeBadge)]);
-        XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] isEqual:[LPJSON stringFromJSON:@[@"testCategory2"]?: @""]]);
+        XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] isEqual:@(UIUserNotificationTypeAlert)]);
+        XCTAssertTrue([params[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] isEqual:[LPJSON stringFromJSON:@[@"testCategory"]?: @""]]);
+        [expectPushTypes fulfill];
         return YES;
     }];
+    
     [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
     
     [self waitForExpectationsWithTimeout:2 handler:nil];
+}
+
+/**
+ * Test iOS Push token /and types/ are sent after Leanplum has started
+ * This will prevent creating the request with empty userId and deviceId
+ */
+- (void)test_push_token_not_before_start
+{
+    // Partial mock Action Manager.
+    LPPushNotificationsManager *manager = [self mockManager];
+
+    // Remove Push Token.
+    [manager removePushToken];
+    
+    if (!Leanplum.hasStarted){
+        NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
+        dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+        [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
+                                                NSDictionary *params) {
+            if ([apiMethod isEqual:@"setDeviceAttributes"]) {
+                XCTAssertTrue(NO);
+                dispatch_semaphore_signal(semaphore);
+            }
+        }];
+        
+        UIApplication *app = [UIApplication sharedApplication];
+        [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+        
+        long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+        // Expect to timeout since the request should never be made, but still wait to verify it is not
+        XCTAssertTrue(timedOut > 0);
+    }
 }
 
 - (void)test_push_types_foreground
