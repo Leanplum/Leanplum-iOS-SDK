@@ -237,10 +237,22 @@ static dispatch_once_t leanplum_onceToken;
             if ([verb isEqual:@"triggersWithParameter"]) {
                 // We need to check whether the key is in the parameter
                 // or else it will create a null object that will always return YES.
-                return objects.count >= 2 &&
-                    contextualValues.parameters[objects[0]] &&
-                    [[contextualValues.parameters[objects[0]] description]
-                        caseInsensitiveCompare:[objects[1] description]] == NSOrderedSame;
+                if (objects.count >= 2) {
+                    if (contextualValues.parameters[objects[0]]) {
+                        BOOL result = NO;
+                        id trackedValue = contextualValues.parameters[objects[0]];
+                        id triggeredValue = objects[1];
+                        if ([trackedValue isKindOfClass:[NSNumber class]] && [LPUtils isBoolNumber:trackedValue] && [triggeredValue isKindOfClass:[NSString class]])
+                        {
+                            result = [(NSNumber *)trackedValue boolValue] == [(NSString *)triggeredValue lowercaseString].boolValue;
+                        } else {
+                          result = [[trackedValue description]
+                                       caseInsensitiveCompare:[triggeredValue description]] == NSOrderedSame;
+                        }
+                        return result;
+                    }
+                }
+                return NO;
             }
 
             return YES;
