@@ -226,7 +226,19 @@ static BOOL willSendErrorLog;
                     if (sqlite3_column_type(statement, i) == SQLITE_BLOB) {
                         NSData *columnBytes = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, i)
                                                                      length:sqlite3_column_bytes(statement, i)];
-                        columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
+                        if (@available(iOS 12.0, *)) {
+                            NSError *error = nil;
+                            columnData[columnKey] = [NSKeyedUnarchiver unarchivedObjectOfClass:[NSString class] fromData:columnBytes error:&error];
+                            if (error != nil) {
+                                LPLog(LPError, error.localizedDescription);
+                                return nil;
+                            }
+                        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                            columnData[columnKey] = [NSKeyedUnarchiver unarchiveObjectWithData:columnBytes];
+#pragma clang diagnostic pop
+                        }
                     } else {
                         char *columnValueUTF8 = (char *)sqlite3_column_text(statement, i);
                         if (columnValueUTF8) {

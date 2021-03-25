@@ -62,7 +62,15 @@
  */
 + (BOOL)isSwizzlingEnabled;
 
+/**
+ * Returns Leanplum bundle
+ */
 + (NSBundle *)leanplumBundle;
+
+/**
+ * Open URLs from SDK
+ */
++ (void)openURL:(NSURL*)url;
 
 /**
  * Checks if given value is a NSNumber with bool value

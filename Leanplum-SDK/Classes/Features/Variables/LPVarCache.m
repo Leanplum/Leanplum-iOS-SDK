@@ -398,15 +398,29 @@ static dispatch_once_t leanplum_onceToken;
                 return;
             }
 
-            NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:diffsData];
-            diffs = (NSDictionary *) [archiver decodeObjectForKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
-            messages = (NSDictionary *) [archiver decodeObjectForKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
-            regions = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_REGIONS];
-            variants = (NSArray *)[archiver decodeObjectForKey:LP_KEY_VARIANTS];
-            variantDebugInfo = (NSDictionary *)[archiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
-            NSString *deviceId = [archiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
-            NSString *userId = [archiver decodeObjectForKey:LP_PARAM_USER_ID];
-            BOOL loggingEnabled = [archiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
+            NSKeyedUnarchiver *unarchiver;
+            if (@available(iOS 12.0, *)) {
+                NSError *error = nil;
+                unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:diffsData error:&error];
+                if (error != nil) {
+                    LPLog(LPError, error.localizedDescription);
+                    return;
+                }
+                unarchiver.requiresSecureCoding = NO;
+            } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:diffsData];
+#pragma clang diagnostic pop
+            }
+            diffs = (NSDictionary *) [unarchiver decodeObjectForKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
+            messages = (NSDictionary *) [unarchiver decodeObjectForKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
+            regions = (NSDictionary *)[unarchiver decodeObjectForKey:LP_KEY_REGIONS];
+            variants = (NSArray *)[unarchiver decodeObjectForKey:LP_KEY_VARIANTS];
+            variantDebugInfo = (NSDictionary *)[unarchiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
+            NSString *deviceId = [unarchiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
+            NSString *userId = [unarchiver decodeObjectForKey:LP_PARAM_USER_ID];
+            BOOL loggingEnabled = [unarchiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
 
             if (deviceId) {
                 [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
@@ -441,7 +455,10 @@ static dispatch_once_t leanplum_onceToken;
     // mergeHelper:.
     @synchronized (self.diffs) {
         NSMutableData *diffsData = [[NSMutableData alloc] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
         NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
+#pragma clang diagnostic pop
         [archiver encodeObject:self.diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
         [archiver encodeObject:self.messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
         [archiver encodeObject:self.variants forKey:LP_KEY_VARIANTS];
@@ -703,9 +720,24 @@ static dispatch_once_t leanplum_onceToken;
                 if (encryptedValue) {
                     NSData *decryptedData = [LPAES decryptedDataFromData:encryptedValue];
                     if (decryptedData) {
-                        NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData
+                        NSKeyedUnarchiver *unarchiver;
+                        if (@available(iOS 12.0, *)) {
+                            NSError *error = nil;
+                            unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:decryptedData error:&error];
+                            if (error != nil) {
+                                LPLog(LPError, error.localizedDescription);
+                                //in case of error returning empty dictionary to avoid crash
+                                return [NSMutableDictionary dictionary];
+                            }
+                            unarchiver.requiresSecureCoding = NO;
+                        } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                            unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData
                                                        :decryptedData];
-                        self.userAttributes = [(NSDictionary *)[archiver decodeObjectForKey:LP_PARAM_USER_ATTRIBUTES] mutableCopy];
+#pragma clang diagnostic pop
+                        }
+                        self.userAttributes = [(NSDictionary *)[unarchiver decodeObjectForKey:LP_PARAM_USER_ATTRIBUTES] mutableCopy];
                     }
                 }
             }
@@ -723,7 +755,10 @@ static dispatch_once_t leanplum_onceToken;
 {
     RETURN_IF_NOOP;
     NSMutableData *data = [[NSMutableData alloc] init];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+#pragma clang diagnostic pop
     [archiver encodeObject:self.userAttributes forKey:LP_PARAM_USER_ATTRIBUTES];
     [archiver finishEncoding];
     

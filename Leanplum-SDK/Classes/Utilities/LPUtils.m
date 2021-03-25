@@ -111,6 +111,18 @@
     return bundle;
 }
 
++ (void)openURL:(NSURL *)url
+{
+    if (@available(iOS 10.0, *)) {
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        [[UIApplication sharedApplication] openURL:url];
+#pragma clang diagnostic pop
+    }
+}
+
 + (BOOL)isBoolNumber:(NSNumber *)value
 {
    CFTypeID boolID = CFBooleanGetTypeID();

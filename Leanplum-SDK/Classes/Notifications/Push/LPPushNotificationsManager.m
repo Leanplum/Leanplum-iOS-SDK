@@ -25,6 +25,9 @@
     }
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_application:(UIApplication *)application didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
 {
     LPLog(LPDebug, @"Called swizzled didRegisterUserNotificationSettings:notificationSettings");
@@ -98,8 +101,6 @@ didReceiveRemoteNotification:(NSDictionary *)userInfo
     state.calledHandleNotification = NO;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
 - (void)leanplum_userNotificationCenter:(UNUserNotificationCenter *)center
          didReceiveNotificationResponse:(UNNotificationResponse *)response
                   withCompletionHandler:(void (^)())completionHandler
@@ -141,8 +142,6 @@ API_AVAILABLE(ios(10.0))
     [[LPPushNotificationsManager sharedManager].handler willPresentNotification:notification withCompletionHandler:completionHandler];
 }
 
-#pragma clang diagnostic pop
-
 - (void)leanplum_application:(UIApplication *)application
  didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
@@ -157,6 +156,7 @@ API_AVAILABLE(ios(10.0))
     }
 }
 
+#pragma clang diagnostic pop
 
 @end
 
@@ -234,11 +234,13 @@ API_AVAILABLE(ios(10.0))
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
         if (@available(iOS 8.0, *))
         {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             UIUserNotificationType notificationTypes = UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound;
             UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:notificationTypes categories:nil];
             [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
             [[UIApplication sharedApplication] registerForRemoteNotifications];
-            
+#pragma clang diagnostic pop
             return;
         }
 #endif

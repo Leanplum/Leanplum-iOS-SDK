@@ -138,6 +138,9 @@
             }];
             
         } else {
+            // Fallback on earlier versions
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
             UILocalNotification *localNotif = [[UILocalNotification alloc] init];
             localNotif.fireDate = eta;
             localNotif.timeZone = [NSTimeZone defaultTimeZone];
@@ -168,6 +171,7 @@
 
             // Schedule the notification
             [app scheduleLocalNotification:localNotif];
+#pragma clang diagnostic pop
         }
         
         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -176,7 +180,8 @@
         LP_BEGIN_USER_CODE
         return YES;
     }];
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
     [Leanplum onAction:@"__Cancel__Push Notification" invoke:^BOOL(LPActionContext *context) {
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
@@ -218,8 +223,11 @@
             return didCancel;
         }
     }];
+#pragma clang diagnostic pop
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (BOOL)shouldSendNotificationForMessage:(NSString *)message contentAvailable:(BOOL)contentAvailable
 {
     // Don't send notification if the user doesn't have the permission enabled.
@@ -278,5 +286,6 @@
         return NO;
     }
 }
+#pragma clang diagnostic pop
 
 @end

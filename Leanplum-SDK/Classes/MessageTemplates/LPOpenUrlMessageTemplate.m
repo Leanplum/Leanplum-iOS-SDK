@@ -36,15 +36,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *encodedURLString = [self urlEncodedStringFromString:[self.context stringNamed:LPMT_ARG_URL]];
         NSURL *url = [NSURL URLWithString: encodedURLString];
-        if ([[UIApplication sharedApplication] respondsToSelector:@selector(openURL:options:completionHandler:)]) {
-            if (@available(iOS 10.0, *)) {
-                [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
-            } else {
-                // Fallback on earlier versions
-            }
-        } else {
-            [[UIApplication sharedApplication] openURL:url];
-        }
+        [LPUtils openURL:url];
     });
 
 }

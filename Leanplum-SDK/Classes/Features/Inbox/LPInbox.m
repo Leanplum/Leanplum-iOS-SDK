@@ -281,12 +281,27 @@ static NSObject *updatingLock;
         NSMutableDictionary *messages;
         if (encryptedData) {
             NSData *decryptedData = [LPAES decryptedDataFromData:encryptedData];
-            if (!decryptedData) {
+            if (!decryptedData || decryptedData.length == 0) {
                 return;
             }
             
-            NSKeyedUnarchiver *archiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:decryptedData];
-            messages = (NSMutableDictionary *)[archiver decodeObjectForKey:LP_PARAM_INBOX_MESSAGES];
+            NSKeyedUnarchiver *unarchiver;
+            if (@available(iOS 12.0, *)) {
+                NSError *error = nil;
+                unarchiver = [[NSKeyedUnarchiver alloc] initForReadingFromData:decryptedData error:&error];
+                if (error != nil) {
+                    LPLog(LPError, error.localizedDescription);
+                    return;;
+                }
+                unarchiver.requiresSecureCoding = NO;
+            } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+                unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:decryptedData];
+#pragma clang diagnostic pop
+            }
+        
+            messages = (NSMutableDictionary *)[unarchiver decodeObjectForKey:LP_PARAM_INBOX_MESSAGES];
             if (!messages) {
                 messages = [NSMutableDictionary dictionary];
             }
@@ -327,7 +342,17 @@ static NSObject *updatingLock;
 {
     RETURN_IF_NOOP;
     NSMutableData *data = [[NSMutableData alloc] init];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    
+    NSKeyedArchiver *archiver;
+    if (@available(iOS 12.0, *)) {
+        archiver = [[NSKeyedArchiver alloc] initRequiringSecureCoding:NO];
+    } else {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+        archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+#pragma clang diagnostic pop
+    }
+    
     [archiver encodeObject:[self messages] forKey:LP_PARAM_INBOX_MESSAGES];
     [archiver finishEncoding];
     

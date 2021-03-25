@@ -11,7 +11,8 @@
 #import "LPNotificationsManager.h"
 
 @implementation LPLocalNotificationsHandler
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 - (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
 {
     NSDictionary *userInfo = [localNotification userInfo];
@@ -20,5 +21,6 @@
     [[LPNotificationsManager shared] handleLocalNotification:userInfo];
     LP_END_TRY
 }
+#pragma clang diagnostic pop
 
 @end
