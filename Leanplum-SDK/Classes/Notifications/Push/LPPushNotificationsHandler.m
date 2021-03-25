@@ -136,8 +136,12 @@
     
     // If there are changes to the push token and/or the push types, send a request
     if (deviceAttributeParams.count > 0) {
-        LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:deviceAttributeParams];
-        [[LPRequestSender sharedInstance] send:request];
+        [Leanplum onStartResponse:^(BOOL success) {
+            LP_END_USER_CODE
+            LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:deviceAttributeParams];
+            [[LPRequestSender sharedInstance] send:request];
+            LP_BEGIN_USER_CODE
+        }];
     }
     LP_END_TRY
 }

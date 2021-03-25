@@ -123,4 +123,11 @@
     }
 }
 
++ (BOOL)isBoolNumber:(NSNumber *)value
+{
+   CFTypeID boolID = CFBooleanGetTypeID();
+   CFTypeID numID = CFGetTypeID((__bridge CFTypeRef)(value));
+   return numID == boolID;
+}
+
 @end

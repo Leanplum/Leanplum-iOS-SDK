@@ -72,4 +72,9 @@
  */
 + (void)openURL:(NSURL*)url;
 
+/**
+ * Checks if given value is a NSNumber with bool value
+ */
++ (BOOL)isBoolNumber:(NSNumber *)value;
+
 @end
