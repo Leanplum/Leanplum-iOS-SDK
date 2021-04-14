@@ -230,6 +230,10 @@
         return;
     }
     
+    if ([self isDuplicateNotification:userInfo]) {
+        return;
+    }
+    
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
@@ -266,11 +270,6 @@
                                  action:(NSString *)action
                                  active:(BOOL)active
 {
-    // Do not perform the action if the app is in background
-    if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
-        return;
-    }
-
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
         return;
