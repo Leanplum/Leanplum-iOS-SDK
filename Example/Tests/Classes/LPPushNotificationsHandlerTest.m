@@ -105,6 +105,12 @@
     
     //test when UNUserNotificationCenter.currentNotificationCenter.delegate is nil
     UNUserNotificationCenter.currentNotificationCenter.delegate = nil;
+    
+    // Requires Leanplum Start
+    // didReceiveRemoteNotification: UIApplicationState is Active -> calls handleNotification -> runs onContent on startIssued callback
+    if (!Leanplum.hasStarted){
+        XCTAssertTrue([LeanplumHelper start_production_test]);
+    }
     [handler didReceiveRemoteNotification:userInfo
                                withAction:@"test_action"
                    fetchCompletionHandler: ^(LeanplumUIBackgroundFetchResult result) {
