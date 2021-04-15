@@ -111,7 +111,14 @@
     if (!Leanplum.hasStarted){
         XCTAssertTrue([LeanplumHelper start_production_test]);
     }
-    [handler didReceiveRemoteNotification:userInfo
+    
+    // Change messageId so it is not a duplicate notification
+    NSDictionary* userInfo2 = @{
+                                @"_lpm": @"messageId_2",
+                                @"_lpx": @"test_action",
+                                @"aps" : @{@"alert": @"test"}};
+    
+    [handler didReceiveRemoteNotification:userInfo2
                                withAction:@"test_action"
                    fetchCompletionHandler: ^(LeanplumUIBackgroundFetchResult result) {
                                             [applicationNotificationExpectation fulfill];
