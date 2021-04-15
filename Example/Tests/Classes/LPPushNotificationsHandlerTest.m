@@ -105,7 +105,20 @@
     
     //test when UNUserNotificationCenter.currentNotificationCenter.delegate is nil
     UNUserNotificationCenter.currentNotificationCenter.delegate = nil;
-    [handler didReceiveRemoteNotification:userInfo
+    
+    // Requires Leanplum Start
+    // didReceiveRemoteNotification: UIApplicationState is Active -> calls handleNotification -> runs onContent on startIssued callback
+    if (!Leanplum.hasStarted){
+        XCTAssertTrue([LeanplumHelper start_production_test]);
+    }
+    
+    // Change messageId so it is not a duplicate notification
+    NSDictionary* userInfo2 = @{
+                                @"_lpm": @"messageId_2",
+                                @"_lpx": @"test_action",
+                                @"aps" : @{@"alert": @"test"}};
+    
+    [handler didReceiveRemoteNotification:userInfo2
                                withAction:@"test_action"
                    fetchCompletionHandler: ^(LeanplumUIBackgroundFetchResult result) {
                                             [applicationNotificationExpectation fulfill];
