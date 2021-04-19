@@ -189,6 +189,14 @@ extern NSString *const kEnvProduction;
 NS_SWIFT_NAME(setApiHostName(_:servletName:ssl:));
 
 /**
+ * Optional. Sets socket hostname and port
+ * @param hostName The name of the socket host
+ * @param port port of the socket
+ */
++ (void)setSocketHostName:(NSString *)hostName withPortNumber:(int)port
+NS_SWIFT_NAME(setSocketHostName(_:port:));
+
+/**
  * Optional. Adjusts the network timeouts.
  * The default timeout is 10 seconds for requests, and 15 seconds for file downloads.
  * @{
