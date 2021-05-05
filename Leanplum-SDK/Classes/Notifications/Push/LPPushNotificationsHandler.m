@@ -313,7 +313,15 @@
     };
 
     if (!active) {
-        handleNotificationBlock();
+        if ([Leanplum hasStarted]) {
+            handleNotificationBlock();
+        } else {
+            [Leanplum onStartResponse:^(BOOL success) {
+                LP_END_USER_CODE
+                handleNotificationBlock();
+                LP_BEGIN_USER_CODE
+            }];
+        }
     } else {
         if (self.shouldHandleNotification) {
             self.shouldHandleNotification(userInfo, handleNotificationBlock);
@@ -322,20 +330,22 @@
                 userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]) {
                 handleNotificationBlock();
             } else {
-                id message = userInfo[@"aps"][@"alert"];
-                if ([message isKindOfClass:NSDictionary.class]) {
-                    message = message[@"body"];
-                }
-                if (message) {
-                    [LPUIAlert showWithTitle:APP_NAME
-                                     message:message
-                           cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
-                           otherButtonTitles:@[NSLocalizedString(@"View", nil)]
-                                       block:^(NSInteger buttonIndex) {
-                                           if (buttonIndex == 1) {
-                                               handleNotificationBlock();
-                                           }
-                                       }];
+                if ([Leanplum hasStarted]) {
+                    id message = userInfo[@"aps"][@"alert"];
+                    if ([message isKindOfClass:NSDictionary.class]) {
+                        message = message[@"body"];
+                    }
+                    if (message) {
+                        [LPUIAlert showWithTitle:APP_NAME
+                                         message:message
+                               cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
+                               otherButtonTitles:@[NSLocalizedString(@"View", nil)]
+                                           block:^(NSInteger buttonIndex) {
+                                               if (buttonIndex == 1) {
+                                                   handleNotificationBlock();
+                                               }
+                                           }];
+                    }
                 }
             }
         }
