@@ -313,15 +313,11 @@
     };
 
     if (!active) {
-        if ([Leanplum hasStarted]) {
+        [Leanplum onStartResponse:^(BOOL success) {
+            LP_END_USER_CODE
             handleNotificationBlock();
-        } else {
-            [Leanplum onStartResponse:^(BOOL success) {
-                LP_END_USER_CODE
-                handleNotificationBlock();
-                LP_BEGIN_USER_CODE
-            }];
-        }
+            LP_BEGIN_USER_CODE
+        }];
     } else {
         if (self.shouldHandleNotification) {
             self.shouldHandleNotification(userInfo, handleNotificationBlock);
