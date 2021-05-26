@@ -79,8 +79,8 @@
     
     [self.countAggregator incrementCount:@"did_receive_remote_notification"];
     
-    // If app was inactive, then handle notification because the user tapped it.
-    if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateInactive) {
+    // If app was inactive or in background, then handle notification because the user tapped it.
+    if ([[UIApplication sharedApplication] applicationState] != UIApplicationStateActive) {
         [self handleNotification:userInfo
                       withAction:action
                        appActive:NO
@@ -230,10 +230,6 @@
         return;
     }
     
-    if ([self isDuplicateNotification:userInfo]) {
-        return;
-    }
-    
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
@@ -244,13 +240,6 @@
             [self maybePerformNotificationActions:userInfo action:action active:active];
         }
     };
-    
-    if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive && !self.appWasActivatedByReceivingPushNotification) {
-        [self setAppWasActivatedByReceivingPushNotification:NO];
-        onContent();
-        return;
-    }
-    [self setAppWasActivatedByReceivingPushNotification:NO];
     
     LPLog(LPDebug, @"Push RECEIVED");
 
@@ -270,6 +259,11 @@
                                  action:(NSString *)action
                                  active:(BOOL)active
 {
+    // Do not perform the action if the app is in background
+    if (UIApplication.sharedApplication.applicationState == UIApplicationStateBackground) {
+        return;
+    }
+
     // Don't handle duplicate notifications.
     if ([self isDuplicateNotification:userInfo]) {
         return;
@@ -313,11 +307,7 @@
     };
 
     if (!active) {
-        [Leanplum onStartResponse:^(BOOL success) {
-            LP_END_USER_CODE
-            handleNotificationBlock();
-            LP_BEGIN_USER_CODE
-        }];
+        handleNotificationBlock();
     } else {
         if (self.shouldHandleNotification) {
             self.shouldHandleNotification(userInfo, handleNotificationBlock);
@@ -455,13 +445,6 @@
             [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
-    
-    if (UIApplication.sharedApplication.applicationState == UIApplicationStateInactive || self.appWasActivatedByReceivingPushNotification) {
-        [self setAppWasActivatedByReceivingPushNotification:NO];
-        onContent();
-        return;
-    }
-    [self setAppWasActivatedByReceivingPushNotification:NO];
     
     LPLog(LPDebug, @"Push RECEIVED");
     

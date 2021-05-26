@@ -352,9 +352,8 @@ API_AVAILABLE(ios(10.0))
 
 + (void)handleApplicationDidBecomeActive:(NSNotification *)notification {
     [[LPPushNotificationsManager sharedManager] swizzleAppMethods];
-    NSDictionary *userInfo = notification.userInfo[@"UIApplicationLaunchOptionsRemoteNotificationKey"];
+    NSDictionary *userInfo = notification.userInfo[UIApplicationLaunchOptionsRemoteNotificationKey];
     if (userInfo != nil) {
-        [[LPPushNotificationsManager sharedManager].handler setAppWasActivatedByReceivingPushNotification:YES];
         if (@available(iOS 10, *)) {
             if ([UNUserNotificationCenter currentNotificationCenter].delegate != nil) {
                 [[LPPushNotificationsManager sharedManager].handler handleWillPresentNotification:userInfo];
@@ -502,20 +501,6 @@ API_AVAILABLE(ios(10.0))
     {
         LPLog(LPInfo, @"Method swizzling is disabled, make sure to manually call Leanplum methods.");
     }
-    
-    // Detect receiving notifications.
-    [[NSNotificationCenter defaultCenter]
-     addObserverForName:UIApplicationDidFinishLaunchingNotification object:nil queue:nil
-     usingBlock:^(NSNotification *notification) {
-         if (notification.userInfo) {
-             NSDictionary *userInfo = notification.userInfo
-             [UIApplicationLaunchOptionsRemoteNotificationKey];
-             [self.handler handleNotification:userInfo
-                                   withAction:nil
-                                    appActive:NO
-                            completionHandler:nil];
-         }
-     }];
 }
 
 // Block to run to decide whether to show the notification
@@ -523,6 +508,10 @@ API_AVAILABLE(ios(10.0))
 - (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block
 {
     self.handler.shouldHandleNotification = block;
+}
+
+- (void) dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
