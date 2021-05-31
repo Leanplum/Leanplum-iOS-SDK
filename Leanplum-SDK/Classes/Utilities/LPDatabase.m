@@ -51,10 +51,6 @@ static BOOL willSendErrorLog;
 {
     const char *sqliteFilePath = [[LPDatabase sqliteFilePath] UTF8String];
     
-    sqlite3_shutdown();
-    sqlite3_config(SQLITE_CONFIG_SERIALIZED);
-    sqlite3_initialize();
-        
     int result = sqlite3_open_v2(sqliteFilePath, &sqlite, SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX, NULL);
     if (result != SQLITE_OK) {
         [self handleSQLiteError:@"SQLite fail to open" errorResult:result query:nil];
