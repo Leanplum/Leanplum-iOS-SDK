@@ -134,12 +134,23 @@
     NSString *path = [LPFileManager documentsPath];
     NSURL* baseURL = [NSURL fileURLWithPath:path isDirectory:YES];
 
+    if (htmlURL == nil || baseURL == nil) {
+        [self dismiss:NO];
+        return;
+    }
+    
     [self.webView loadFileURL:htmlURL allowingReadAccessToURL:baseURL];
 }
 
 - (void)loadURL
 {
     NSString *url = [self.context stringNamed:LPMT_ARG_URL];
+    
+    if (url == nil) {
+        [self dismiss:NO];
+        return;
+    }
+    
     NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:url]];
     [self.webView loadRequest:request];
 }
