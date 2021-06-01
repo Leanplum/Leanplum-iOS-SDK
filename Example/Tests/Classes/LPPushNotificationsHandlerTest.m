@@ -42,8 +42,6 @@
 - (void)setUp
 {
     [super setUp];
-    // Automatically sets up AppId and AccessKey for development mode.
-    [LeanplumHelper setup_development_test];
 }
 
 - (void)tearDown
@@ -66,6 +64,8 @@
 
 - (void)test_notification_action
 {
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    
     id classMock = OCMClassMock([LPUIAlert class]);
 
     NSDictionary* userInfo = @{
@@ -105,12 +105,6 @@
     
     //test when UNUserNotificationCenter.currentNotificationCenter.delegate is nil
     UNUserNotificationCenter.currentNotificationCenter.delegate = nil;
-    
-    // Requires Leanplum Start
-    // didReceiveRemoteNotification: UIApplicationState is Active -> calls handleNotification -> runs onContent on startIssued callback
-    if (!Leanplum.hasStarted){
-        XCTAssertTrue([LeanplumHelper start_production_test]);
-    }
     
     // Change messageId so it is not a duplicate notification
     NSDictionary* userInfo2 = @{
