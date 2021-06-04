@@ -5,7 +5,8 @@
 //  Created by Mayank Sanganeria on 4/24/18.
 //
 
-#import "LPVar-Internal.h"
+#import "LPVar.h"
+#import "LeanplumInternal.h"
 #import "LPVarCache.h"
 #import "LPFileManager.h"
 

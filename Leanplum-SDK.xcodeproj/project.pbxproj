@@ -73,7 +73,6 @@
 		6E03BCD518FBE98611572C44 /* LPAlertMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = D9BBBBF3C8A968677FBA6100 /* LPAlertMessageTemplate.m */; };
 		6EBD06E4F7E21C783A44716D /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A182A05FA4B6FBE800871B6 /* LPConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6ED65B32FEA16E1ACA61E23D /* LPIconChangeMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = B2E7D096355975197CEF7E6A /* LPIconChangeMessageTemplate.m */; };
-		78ACFA2AB35973CEB067F3EC /* LPActionContext-Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		78DC8CDFA88C4E413C820875 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 43E89C61224131164B902DDD /* Assets.xcassets */; };
 		7966F3906CAA05ADDB0AAC59 /* LPInternalState.h in Headers */ = {isa = PBXBuildFile; fileRef = 517D831CB3A828CD1C501BCD /* LPInternalState.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		79E3FF046C50D68D43E1E0B6 /* LPContextualValues.h in Headers */ = {isa = PBXBuildFile; fileRef = FD03E4D7A758887489CCC58A /* LPContextualValues.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -87,7 +86,6 @@
 		82CA232EB86495333009CCFE /* LPResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 030EF3A9DB711E2B21577DDE /* LPResponse.m */; };
 		875717F047C2EC1893A0CBFE /* LPRegisterForPushMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = C07674508B1EFAF9ADF5A830 /* LPRegisterForPushMessageTemplate.m */; };
 		8790C8CFF2F4C592052EAE24 /* LPAPIConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 7D7FC4110ED391118E79EA02 /* LPAPIConfig.m */; };
-		87A7ACF2602735C115895593 /* LPVar-Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 5F23305053A1EA370E671374 /* LPVar-Internal.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88477CB497160AC86DFCF36C /* LPEventCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = BD792554F96C4E5CF61CD4CE /* LPEventCallback.m */; };
 		89FCD2B0FD3E7E658AF06414 /* LPUIAlert.h in Headers */ = {isa = PBXBuildFile; fileRef = 38571F1A79AD85DD91274229 /* LPUIAlert.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8B473962853F7E1D5F3DDC78 /* LPResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = E0FA8ED9EA9E69B401D4F519 /* LPResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -250,7 +248,6 @@
 		5D43485A383AF83A41092398 /* Leanplum_Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Leanplum_Reachability.h; sourceTree = "<group>"; };
 		5D468287B8693E998A4DA61F /* LPNetworkFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNetworkFactory.m; sourceTree = "<group>"; };
 		5DE08554B0E37BE700C20DAA /* LPNetworkProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPNetworkProtocol.h; sourceTree = "<group>"; };
-		5F23305053A1EA370E671374 /* LPVar-Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPVar-Internal.h"; sourceTree = "<group>"; };
 		60E0B01009AA1040D1A7B584 /* LPInterstitialMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPInterstitialMessageTemplate.h; sourceTree = "<group>"; };
 		633C71E88C86E1751C969974 /* LPRequestSender.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPRequestSender.h; sourceTree = "<group>"; };
 		653CC6D76D3678E0E8F7AC26 /* LPJSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPJSON.h; sourceTree = "<group>"; };
@@ -301,7 +298,6 @@
 		9EE5FF9E24CEC57300153AF8 /* LPNetworkConstants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPNetworkConstants.h; sourceTree = "<group>"; };
 		9EEE92B224D95765003F0720 /* LPLogManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLogManager.m; sourceTree = "<group>"; };
 		9EEE92B324D95765003F0720 /* LPLogManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLogManager.h; sourceTree = "<group>"; };
-		A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LPActionContext-Internal.h"; sourceTree = "<group>"; };
 		A0F9F2FC5CCC4CB57626B434 /* LPNetworkEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPNetworkEngine.m; sourceTree = "<group>"; };
 		A34F75D8A2B33CC1F9646411 /* LPViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPViewController.h; sourceTree = "<group>"; };
 		A6C50EDC85CCDB01FB351A5E /* LPOpenUrlMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPOpenUrlMessageTemplate.h; sourceTree = "<group>"; };
@@ -404,7 +400,6 @@
 		33F5CFE110A0C60F128334BE /* Variables */ = {
 			isa = PBXGroup;
 			children = (
-				5F23305053A1EA370E671374 /* LPVar-Internal.h */,
 				4B45372047062CD94AC26D48 /* LPVar.m */,
 				B9EBD80BDAD4534F16F56328 /* LPVarCache.h */,
 				CB8BE7E9A55BB285B29723E1 /* LPVarCache.m */,
@@ -611,7 +606,6 @@
 			isa = PBXGroup;
 			children = (
 				9E9DB3E0D7DB2F1091343C0C /* LPActionArg.m */,
-				A0488BE8F8B382DCE3ACE90A /* LPActionContext-Internal.h */,
 				E532731A295802587FC39DCF /* LPActionContext.m */,
 				AC889B5231CDF21DCB080C36 /* LPActionManager.h */,
 				B165CB9AABA07627BCBC16A1 /* LPActionManager.m */,
@@ -832,7 +826,6 @@
 				A9833F68569C4579DE7BB878 /* LPAES.h in Headers */,
 				D08FEE6B545C7CAA000A1AFA /* LPAPIConfig.h in Headers */,
 				B58CF405F1687F15FE8D5177 /* LPActionArg.h in Headers */,
-				78ACFA2AB35973CEB067F3EC /* LPActionContext-Internal.h in Headers */,
 				D4E45606379C4C1EDB175C04 /* LPActionContext.h in Headers */,
 				38FE424BA40ECF063A4B0D77 /* LPActionManager.h in Headers */,
 				C9770805256F96BA007AAB3A /* LPRequestUUIDHelper.h in Headers */,
@@ -890,7 +883,6 @@
 				1234E2B6A68005D7BEA1F982 /* LPSwizzle.h in Headers */,
 				89FCD2B0FD3E7E658AF06414 /* LPUIAlert.h in Headers */,
 				1A5BC47A4242A8A3C50EDC47 /* LPUtils.h in Headers */,
-				87A7ACF2602735C115895593 /* LPVar-Internal.h in Headers */,
 				074FD7741CE2769795BDB253 /* LPVar.h in Headers */,
 				EA0584546CA6014A89222AAB /* LPVarCache.h in Headers */,
 				C0238DAE4A206D6C7A943AE3 /* LPWebInterstitialMessageTemplate.h in Headers */,

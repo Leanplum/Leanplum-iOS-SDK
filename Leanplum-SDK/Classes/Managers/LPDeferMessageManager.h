@@ -6,7 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "LPActionContext-Internal.h"
+#import "LPActionContext.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -24,6 +24,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
+@class LPContextualValues;
+
 NS_ASSUME_NONNULL_BEGIN
 
 NS_SWIFT_NAME(ActionContext)
@@ -108,6 +110,32 @@ NS_SWIFT_NAME(trackMessage(event:value:info:params:));
  * Checks if the action context has any missing files that still need to be downloaded.
  */
 - (BOOL)hasMissingFiles;
+
++ (LPActionContext *)actionContextWithName:(NSString *)name
+                                      args:(nullable NSDictionary *)args
+                                 messageId:(nullable NSString *)messageId;
+
++ (LPActionContext *)actionContextWithName:(NSString *)name
+                                      args:(nullable NSDictionary *)args
+                                 messageId:(nullable NSString *)messageId
+                         originalMessageId:(nullable NSString *)originalMessageId
+                                  priority:(nullable NSNumber *)priority;
+
+@property (readonly, strong) NSString *name;
+@property (readonly, strong) NSString *originalMessageId;
+@property (readonly, strong) NSNumber *priority;
+@property (readonly, strong, nullable) LPActionContext *parentContext;
+@property (readonly) int contentVersion;
+@property (readonly, strong, nullable) NSString *key;
+@property (assign) BOOL preventRealtimeUpdating;
+@property (nonatomic, assign) BOOL isRooted;
+@property (nonatomic, assign) BOOL isPreview;
+@property (nonatomic, strong) LPContextualValues *contextualValues;
+
+- (void)maybeDownloadFiles;
+- (id)objectNamed:(NSString *)name;
+//- (void)preventRealtimeUpdating;
++ (void)sortByPriority:(NSMutableArray *)actionContexts;
 
 @end
 
