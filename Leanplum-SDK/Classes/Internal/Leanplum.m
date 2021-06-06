@@ -50,6 +50,7 @@
 #import "LPOperationQueue.h"
 #import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>
+#import "LPSecuredVars.h"
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
 NSString *const kAppKeysFileType = @"plist";
@@ -809,7 +810,9 @@ void leanplumExceptionHandler(NSException *exception);
                                             messages:@{}
                                             variants:@[]
                                              regions:@{}
-                                    variantDebugInfo:@{}];
+                                    variantDebugInfo:@{}
+                                            varsJson:@""
+                                       varsSignature:@""];
         dispatch_async(dispatch_get_main_queue(), ^{
             [self triggerStartResponse:YES];
             [self triggerVariablesChanged];
@@ -962,14 +965,17 @@ void leanplumExceptionHandler(NSException *exception);
         [LPFeatureFlagManager sharedManager].enabledFeatureFlags = enabledFeatureFlags;
         NSDictionary *filenameToURLs = [self parseFileURLsFromResponse:response];
         [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
-
+        NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
+        NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
         [[LPVarCache sharedCache] applyVariableDiffs:values
                                             messages:messages
                                             variants:variants
                                              regions:regions
-                                    variantDebugInfo:variantDebugInfo];
+                                    variantDebugInfo:variantDebugInfo
+                                            varsJson:varsJson
+                                       varsSignature:varsSignature];
 
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
@@ -2414,16 +2420,20 @@ andParameters:(NSDictionary *)params
         [[LPVarCache sharedCache] setVariantDebugInfo:variantDebugInfo];
         NSDictionary *filenameToURLs = [self parseFileURLsFromResponse:response];
         [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
-
+        NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
+        NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
+        
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
             ![variants isEqualToArray:[LPVarCache sharedCache].variants] ||
             ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
             [[LPVarCache sharedCache] applyVariableDiffs:values
-                                  messages:messages
-                                  variants:variants
-                                   regions:regions
-                          variantDebugInfo:variantDebugInfo];
+                                                messages:messages
+                                                variants:variants
+                                                 regions:regions
+                                        variantDebugInfo:variantDebugInfo
+                                                varsJson:varsJson
+                                           varsSignature:varsSignature];
 
         }
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
@@ -2769,6 +2779,11 @@ void leanplumExceptionHandler(NSException *exception)
 + (void)setEventsUploadInterval:(LPEventsUploadInterval)uploadInterval
 {
     [[LPRequestSenderTimer sharedInstance] setTimerInterval:uploadInterval];
+}
+
++ (LPSecuredVars *)securedVars
+{
+    return [[LPVarCache sharedCache] securedVars];;
 }
 
 - (void) dealloc {

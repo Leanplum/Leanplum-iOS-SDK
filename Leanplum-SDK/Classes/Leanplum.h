@@ -862,6 +862,9 @@ NS_SWIFT_NAME(setDeviceLocation(latitude:longitude:city:region:country:type:));
  @param uploadInterval The time between uploads.
  */
 + (void)setEventsUploadInterval:(LPEventsUploadInterval)uploadInterval;
+
++ (LPSecuredVars *)securedVars;
+
 @end
 
 NS_ASSUME_NONNULL_END

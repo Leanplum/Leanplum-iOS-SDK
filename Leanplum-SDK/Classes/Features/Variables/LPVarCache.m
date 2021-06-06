@@ -64,7 +64,8 @@
 @property (assign, nonatomic) BOOL hasTooManyFiles;
 @property (strong, nonatomic) RegionInitBlock regionInitBlock;
 @property (strong, nonatomic) LPCountAggregator *countAggregator;
-
+@property (strong, nonatomic) NSString *varsJson;
+@property (strong, nonatomic) NSString *varsSignature;
 @end
 
 static LPVarCache *sharedInstance = nil;
@@ -105,6 +106,8 @@ static dispatch_once_t leanplum_onceToken;
     NSError *error = NULL;
     self.varNameRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:[^\\.\\[.(\\\\]+|\\\\.)+"
                                                              options:NSRegularExpressionCaseInsensitive error:&error];
+    self.varsJson = @"";
+    self.varsSignature = @"";
 }
 
 - (void)registerRegionInitBlock:(void (^)(NSDictionary *, NSSet *, NSSet *))block
@@ -392,6 +395,8 @@ static dispatch_once_t leanplum_onceToken;
         NSArray *variants;
         NSDictionary *variantDebugInfo;
         NSDictionary *regions;
+        NSString *varsJson;
+        NSString *varsSignature;
         if (encryptedDiffs) {
             NSData *diffsData = [LPAES decryptedDataFromData:encryptedDiffs];
             if (!diffsData) {
@@ -418,6 +423,8 @@ static dispatch_once_t leanplum_onceToken;
             regions = (NSDictionary *)[unarchiver decodeObjectForKey:LP_KEY_REGIONS];
             variants = (NSArray *)[unarchiver decodeObjectForKey:LP_KEY_VARIANTS];
             variantDebugInfo = (NSDictionary *)[unarchiver decodeObjectForKey:LP_KEY_VARIANT_DEBUG_INFO];
+            varsJson = [unarchiver decodeObjectForKey:LEANPLUM_DEFAULTS_VARS_JSON_KEY];
+            varsSignature = [unarchiver decodeObjectForKey:LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY];
             NSString *deviceId = [unarchiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
             NSString *userId = [unarchiver decodeObjectForKey:LP_PARAM_USER_ID];
             BOOL loggingEnabled = [unarchiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
@@ -437,7 +444,9 @@ static dispatch_once_t leanplum_onceToken;
                         messages:messages
                         variants:variants
                          regions:regions
-                variantDebugInfo:variantDebugInfo];
+                variantDebugInfo:variantDebugInfo
+                        varsJson:varsJson
+                   varsSignature:varsSignature];
     } @catch (NSException *exception) {
         LPLog(LPError, @"Could not load variable diffs: %@", exception);
     }
@@ -468,6 +477,8 @@ static dispatch_once_t leanplum_onceToken;
         [archiver encodeObject:[LPAPIConfig sharedConfig].deviceId forKey:LP_PARAM_DEVICE_ID];
         [archiver encodeObject:[LPAPIConfig sharedConfig].userId forKey:LP_PARAM_USER_ID];
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
+        [archiver encodeObject:self.varsJson forKey:LEANPLUM_DEFAULTS_VARS_JSON_KEY];
+        [archiver encodeObject:self.varsSignature forKey:LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY];
         [archiver finishEncoding];
 
         NSData *encryptedDiffs = [LPAES encryptedDataFromData:diffsData];
@@ -488,6 +499,8 @@ static dispatch_once_t leanplum_onceToken;
                   variants:(NSArray *)variants_
                    regions:(NSDictionary *)regions_
           variantDebugInfo:(NSDictionary *)variantDebugInfo_
+                  varsJson:(NSString *)varsJson_
+             varsSignature:(NSString *)varsSignature_
 {
     @synchronized (self.vars) {
         if (diffs_ || (!self.silent && !self.hasReceivedDiffs)) {
@@ -558,6 +571,11 @@ static dispatch_once_t leanplum_onceToken;
         }
 
         self.contentVersion++;
+        
+        if (varsJson_) {
+            self.varsJson = varsJson_;
+            self.varsSignature = varsSignature_;
+        }
 
         if (!self.silent) {
             [self saveDiffs];
@@ -799,6 +817,14 @@ static dispatch_once_t leanplum_onceToken;
     _actionDefinitions[name] = definition;
 }
 
+- (LPSecuredVars *)securedVars
+{
+    if ([LPUtils isNullOrEmpty:self.varsJson] || [LPUtils isNullOrEmpty:self.varsSignature]) {
+        return nil;
+    }
+    return [[LPSecuredVars alloc] initWithJson:self.varsJson andSignature:self.varsSignature];;
+}
+
 - (void)clearUserContent
 {
     self.diffs = nil;
@@ -809,6 +835,8 @@ static dispatch_once_t leanplum_onceToken;
     self.vars = nil;
     self.userAttributes = nil;
     self.merged = nil;
+    self.varsJson = nil;
+    self.varsSignature = nil;
 
     self.devModeValuesFromServer = nil;
     self.devModeFileAttributesFromServer = nil;
@@ -840,6 +868,8 @@ static dispatch_once_t leanplum_onceToken;
     self.silent = NO;
     self.contentVersion = 0;
     self.hasTooManyFiles = NO;
+    self.varsJson = nil;
+    self.varsSignature = nil;
 }
 
 @end

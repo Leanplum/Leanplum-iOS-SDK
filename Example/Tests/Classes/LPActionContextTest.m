@@ -38,7 +38,9 @@
                                         messages:nil
                                         variants:nil
                                          regions:nil
-                                variantDebugInfo:nil];
+                                variantDebugInfo:nil
+                                        varsJson:nil
+                                   varsSignature:nil];
     [[LPVarCache sharedCache] registerActionDefinition:@"action" ofKind:0 withArguments:@[] andOptions:@{}];
 }
 
@@ -61,7 +63,9 @@
                                         messages:messages
                                         variants:nil
                                          regions:nil
-                                variantDebugInfo:nil];
+                                variantDebugInfo:nil
+                                        varsJson:nil
+                                   varsSignature:nil];
     
     // set args from the message in the cache
     [context setProperArgs];
@@ -84,7 +88,9 @@
                                         messages:messages
                                         variants:nil
                                          regions:nil
-                                variantDebugInfo:nil];
+                                variantDebugInfo:nil
+                                        varsJson:nil
+                                   varsSignature:nil];
     
     // set nil args from the message in the cache
     [context setProperArgs];
@@ -105,7 +111,9 @@
                                         messages:messages
                                         variants:nil
                                          regions:nil
-                                variantDebugInfo:nil];
+                                variantDebugInfo:nil
+                                        varsJson:nil
+                                   varsSignature:nil];
     
     // no message in cache, args should not be set
     [context setProperArgs];

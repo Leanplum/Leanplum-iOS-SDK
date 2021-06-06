@@ -1,0 +1,16 @@
+{
+  "response": [
+    {
+      "regions": {},
+      "fileAttributes": {},
+      "success": true,
+      "messages": {},
+      "vars": {
+        "intVariable": 100,
+        "stringVariable": "test_string"
+      },
+      "variants": [],
+      "token": "c2q5to0cTdiZWE2bdkKUQsTs0cQRVkfHkSGoPeqrQWc"
+    }
+  ]
+}

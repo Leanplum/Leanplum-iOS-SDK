@@ -23,6 +23,7 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
+#import "LPSecuredVars.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -65,7 +66,9 @@ NS_SWIFT_NAME(define(name:value:kind:));
                   messages:(nullable NSDictionary<NSString *, id> *)messages_
                   variants:(nullable NSArray<NSString *> *)variants_
                    regions:(nullable NSDictionary<NSString *, id> *)regions_
-          variantDebugInfo:(nullable NSDictionary<NSString *, id> *)variantDebugInfo_;
+          variantDebugInfo:(nullable NSDictionary<NSString *, id> *)variantDebugInfo_
+                  varsJson:(nullable NSString *)varsJson_
+             varsSignature:(nullable NSString *)varsSignature_;
 - (void)onUpdate:(CacheUpdateBlock)block;
 - (void)setSilent:(BOOL)silent;
 - (BOOL)silent;
@@ -102,6 +105,8 @@ NS_SWIFT_NAME(define(name:value:kind:));
 
 - (nullable NSMutableDictionary<NSString *, id> *)userAttributes;
 - (void)saveUserAttributes;
+
+- (LPSecuredVars *)securedVars;
 
 @end
 
