@@ -14,7 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPPushNotificationsHandler : NSObject
 
 @property (nonatomic, strong) LeanplumShouldHandleNotificationBlock shouldHandleNotification;
-@property (nonatomic, assign) BOOL appWasActivatedByReceivingPushNotification;
 @property (nonatomic, readonly) NSDictionary *currentUserNotificationSettings;
 
 - (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
