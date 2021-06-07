@@ -106,8 +106,6 @@ static dispatch_once_t leanplum_onceToken;
     NSError *error = NULL;
     self.varNameRegex = [NSRegularExpression regularExpressionWithPattern:@"(?:[^\\.\\[.(\\\\]+|\\\\.)+"
                                                              options:NSRegularExpressionCaseInsensitive error:&error];
-    self.varsJson = @"";
-    self.varsSignature = @"";
 }
 
 - (void)registerRegionInitBlock:(void (^)(NSDictionary *, NSSet *, NSSet *))block
