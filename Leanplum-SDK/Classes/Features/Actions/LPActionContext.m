@@ -30,6 +30,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @interface LPActionContext()
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
+@property(strong, nonatomic) NSMutableArray *actionResponders;
 
 @end
 
@@ -47,6 +48,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @synthesize preventRealtimeUpdating=_preventRealtimeUpdating;
 @synthesize contextualValues=_contextualValues;
 @synthesize countAggregator=_countAggregator;
+@synthesize actionResponders=_actionResponders;
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(NSDictionary *)args
@@ -498,6 +500,25 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_END_TRY
 }
 
+- (void)onRunActionNamed:(LeanplumActionBlock)block
+{
+    if (![self actionResponders]) {
+        self.actionResponders = [[NSMutableArray alloc] init];
+    }
+    [[self actionResponders] addObject:[block copy]];
+}
+
+- (void)triggerRunActionNamed:(NSString *)name withArgs:(NSDictionary *)args
+{
+    LPActionContext *actionContext = [LPActionContext
+                                      actionContextWithName:name
+                                      args:args messageId:_messageId];
+    
+    for (LeanplumActionBlock block in [self actionResponders]) {
+        block(actionContext);
+    }
+}
+
 - (void)runActionNamed:(NSString *)name
 {
     LP_TRY
@@ -506,6 +527,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         return;
     }
     NSDictionary *args = [self getChildArgs:name];
+    
+    [self triggerRunActionNamed:name withArgs:args];
+    
     if (!args) {
         return;
     }
