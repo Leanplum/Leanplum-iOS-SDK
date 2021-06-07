@@ -7,6 +7,7 @@
 //
 
 #import "LPAppRatingMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPAppRatingMessageTemplate
 

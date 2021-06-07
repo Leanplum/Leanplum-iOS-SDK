@@ -6,9 +6,10 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
-#import "Leanplum.h"
 #import "LPMessageTemplateConstants.h"
 #import "LPMessageTemplateUtilities.h"
+
+@class LPActionContext;
 
 NS_ASSUME_NONNULL_BEGIN
 

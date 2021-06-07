@@ -9,6 +9,7 @@
 #import "LPWebInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
 #import "LPHitView.h"
+#import "LPActionContext.h"
 
 @interface LPWebInterstitialViewController ()
 

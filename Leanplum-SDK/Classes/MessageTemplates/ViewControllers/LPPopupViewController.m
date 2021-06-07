@@ -8,6 +8,7 @@
 
 #import "LPPopupViewController.h"
 #import "LPMessageTemplateConstants.h"
+#import "LPActionContext.h"
 
 @interface LPPopupViewController ()
 

@@ -8,6 +8,7 @@
 
 #import "LPInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
+#import "LPActionContext.h"
 
 @interface LPInterstitialViewController ()
 
