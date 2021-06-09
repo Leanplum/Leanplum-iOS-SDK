@@ -863,7 +863,11 @@ NS_SWIFT_NAME(setDeviceLocation(latitude:longitude:city:region:country:type:));
  */
 + (void)setEventsUploadInterval:(LPEventsUploadInterval)uploadInterval;
 
-+ (LPSecuredVars *)securedVars;
+/**
+ Returns the last received signed variables. If signature was not provided from server the result of this method will be nil.
+ * @return @c LPSecuredVars instance containing variable's JSON and signature. If signature wasn't downloaded from server it will return nil.
+ */
++ (nullable LPSecuredVars *)securedVars;
 
 @end
 
