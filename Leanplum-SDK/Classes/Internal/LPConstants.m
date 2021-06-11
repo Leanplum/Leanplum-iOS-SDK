@@ -90,6 +90,8 @@ NSString *LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY = @"__leanplum_pre_leanplum
 NSString *LEANPLUM_DEFAULTS_SDK_VERSION = @"__leanplum_version";
 NSString *LEANPLUM_DEFAULTS_INBOX_KEY = @"__leanplum_newsfeed";
 NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
+NSString *LEANPLUM_DEFAULTS_VARS_JSON_KEY = @"__leanplum_variables_json";
+NSString *LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY = @"__leanplum_variables_signature";
 
 NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
 
@@ -150,6 +152,7 @@ NSString *LP_KEY_REASON = @"reason";
 NSString *LP_KEY_STACK_TRACE = @"stackTrace";
 NSString *LP_KEY_USER_INFO = @"userInfo";
 NSString *LP_KEY_VARS = @"vars";
+NSString *LP_KEY_VARS_SIGNATURE = @"varsSignature";
 NSString *LP_KEY_MESSAGES = @"messages";
 NSString *LP_KEY_VARS_FROM_CODE = @"varsFromCode";
 NSString *LP_KEY_IS_REGISTERED = @"isRegistered";
