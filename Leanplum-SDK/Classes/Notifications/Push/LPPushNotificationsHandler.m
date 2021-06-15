@@ -361,9 +361,13 @@
                 NSDictionary *messages = response[LP_KEY_MESSAGES];
                 NSArray *variants = response[LP_KEY_VARIANTS];
                 NSDictionary *regions = response[LP_KEY_REGIONS];
+                NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
+                NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
                     [values isEqualToDictionary:[LPVarCache sharedCache].diffs]) {
                     values = nil;
+                    varsJson = nil;
+                    varsSignature = nil;
                 }
                 if ([messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs]) {
                     messages = nil;
@@ -373,10 +377,12 @@
                 }
                 if (values || messages || regions) {
                     [[LPVarCache sharedCache] applyVariableDiffs:values
-                                          messages:messages
-                                          variants:variants
-                                           regions:regions
-                                  variantDebugInfo:nil];
+                                                        messages:messages
+                                                        variants:variants
+                                                         regions:regions
+                                                variantDebugInfo:nil
+                                                        varsJson:varsJson
+                                                   varsSignature:varsSignature];
                     if (onCompleted) {
                         onCompleted();
                     }

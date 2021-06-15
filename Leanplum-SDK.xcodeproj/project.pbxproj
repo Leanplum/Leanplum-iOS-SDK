@@ -158,6 +158,8 @@
 		C9770806256F96BA007AAB3A /* LPRequestUUIDHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = C9770804256F96BA007AAB3A /* LPRequestUUIDHelper.m */; };
 		C99A38FB2523503B006A9A8F /* LPRequestSenderTimer.h in Headers */ = {isa = PBXBuildFile; fileRef = C99A38F92523503B006A9A8F /* LPRequestSenderTimer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C99A38FC2523503B006A9A8F /* LPRequestSenderTimer.m in Sources */ = {isa = PBXBuildFile; fileRef = C99A38FA2523503B006A9A8F /* LPRequestSenderTimer.m */; };
+		C9AC3577266D4902008337F2 /* LPSecuredVars.m in Sources */ = {isa = PBXBuildFile; fileRef = C9AC3575266D4901008337F2 /* LPSecuredVars.m */; };
+		C9AC3578266D4902008337F2 /* LPSecuredVars.h in Headers */ = {isa = PBXBuildFile; fileRef = C9AC3576266D4901008337F2 /* LPSecuredVars.h */; };
 		CAB620162C4A4A0D411A7484 /* LPWebInterstitialViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = E4E7A92BCE3E37B364E01D9B /* LPWebInterstitialViewController.m */; };
 		CB24750D7C2F9AFCC751D269 /* LPRequestSender.h in Headers */ = {isa = PBXBuildFile; fileRef = 633C71E88C86E1751C969974 /* LPRequestSender.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D0863813CF316D1C7EF6AC7B /* LPAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C023D9F43EF2A66A8A0649FB /* LPAppDelegate.m */; };
@@ -337,6 +339,8 @@
 		C9770804256F96BA007AAB3A /* LPRequestUUIDHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestUUIDHelper.m; sourceTree = "<group>"; };
 		C99A38F92523503B006A9A8F /* LPRequestSenderTimer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRequestSenderTimer.h; sourceTree = "<group>"; };
 		C99A38FA2523503B006A9A8F /* LPRequestSenderTimer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTimer.m; sourceTree = "<group>"; };
+		C9AC3575266D4901008337F2 /* LPSecuredVars.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSecuredVars.m; sourceTree = "<group>"; };
+		C9AC3576266D4901008337F2 /* LPSecuredVars.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPSecuredVars.h; sourceTree = "<group>"; };
 		CB8BE7E9A55BB285B29723E1 /* LPVarCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPVarCache.m; sourceTree = "<group>"; };
 		CC36DA06E21606FFA5F98899 /* Leanplum-iOS-Example.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "Leanplum-iOS-Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDE98C78A3C86CDC560C4D6 /* LPRichInterstitialMessageTemplate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPRichInterstitialMessageTemplate.h; sourceTree = "<group>"; };
@@ -404,6 +408,8 @@
 		33F5CFE110A0C60F128334BE /* Variables */ = {
 			isa = PBXGroup;
 			children = (
+				C9AC3576266D4901008337F2 /* LPSecuredVars.h */,
+				C9AC3575266D4901008337F2 /* LPSecuredVars.m */,
 				5F23305053A1EA370E671374 /* LPVar-Internal.h */,
 				4B45372047062CD94AC26D48 /* LPVar.m */,
 				B9EBD80BDAD4534F16F56328 /* LPVarCache.h */,
@@ -894,6 +900,7 @@
 				074FD7741CE2769795BDB253 /* LPVar.h in Headers */,
 				EA0584546CA6014A89222AAB /* LPVarCache.h in Headers */,
 				C0238DAE4A206D6C7A943AE3 /* LPWebInterstitialMessageTemplate.h in Headers */,
+				C9AC3578266D4902008337F2 /* LPSecuredVars.h in Headers */,
 				AF13BAD1CD1932794C36E03D /* LPWebInterstitialViewController.h in Headers */,
 				B39D73EE1033D842008EB4DE /* Leanplum.h in Headers */,
 				5E2273EFA0ED797396DEDDC1 /* LeanplumCompatibility.h in Headers */,
@@ -1087,6 +1094,7 @@
 				C0809E4371528B725053B56C /* NSString+MD5Addition.m in Sources */,
 				9E53F71D247D34C80097955F /* LPNotificationsManager.m in Sources */,
 				BB155F5786EA09529510FD58 /* NSTimer+Blocks.m in Sources */,
+				C9AC3577266D4902008337F2 /* LPSecuredVars.m in Sources */,
 				9EEE92B424D95765003F0720 /* LPLogManager.m in Sources */,
 				0B46E14546E478611F5E96F9 /* UIDevice+IdentifierAddition.m in Sources */,
 			);

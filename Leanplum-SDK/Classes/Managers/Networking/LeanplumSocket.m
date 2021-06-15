@@ -190,7 +190,9 @@ static dispatch_once_t leanplum_onceToken;
                                             messages:nil
                                             variants:nil
                                              regions:nil
-                                    variantDebugInfo:nil];
+                                    variantDebugInfo:nil
+                                            varsJson:nil
+                                       varsSignature:nil];
     }
     LP_END_TRY
 }

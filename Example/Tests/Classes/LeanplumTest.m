@@ -904,10 +904,12 @@
     
     NSDictionary *messages = startResponse[LP_KEY_MESSAGES];
     [[LPVarCache sharedCache] applyVariableDiffs:nil
-                          messages:messages
-                          variants:nil
-                           regions:nil
-                  variantDebugInfo:nil];
+                                        messages:messages
+                                        variants:nil
+                                         regions:nil
+                                variantDebugInfo:nil
+                                        varsJson:nil
+                                   varsSignature:nil];
     
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
@@ -1461,7 +1463,7 @@
        @"myArray": @{
                @"[2]": @33
                }
-       } messages:nil variants:nil regions:nil variantDebugInfo:nil];
+       } messages:nil variants:nil regions:nil variantDebugInfo:nil varsJson:nil varsSignature:nil];
 
     
     XCTestExpectation *request_expectation =
@@ -1788,7 +1790,9 @@
                                         messages:messages
                                         variants:variants
                                          regions:nil
-                                variantDebugInfo:nil];
+                                variantDebugInfo:nil
+                                        varsJson:nil
+                                   varsSignature:nil];
 
     XCTAssertEqualObjects(variants, [Leanplum variants]);
     XCTAssertEqualObjects(messages, [Leanplum messageMetadata]);
