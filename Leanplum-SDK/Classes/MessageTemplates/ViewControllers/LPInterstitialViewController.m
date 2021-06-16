@@ -70,6 +70,7 @@
 
 - (IBAction)didTapDismissButton:(id)sender
 {
+    [self.context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     [self dismiss:YES];
 }
 
