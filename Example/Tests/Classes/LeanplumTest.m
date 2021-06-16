@@ -2405,4 +2405,23 @@
     XCTAssertTrue([[LPVarCache sharedCache] variants].count == 4);
 }
 
+- (void)test_onAction {
+    NSString *actionName = @"TestAction";
+    LPActionContext *context = [LPActionContext
+                                actionContextWithName:actionName
+                                args:nil
+                                messageId:@"1"];
+    
+    XCTestExpectation *onActionExpectation = [self expectationWithDescription:@"onActionExpectation"];
+    
+    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual([context actionName], actionName);
+        [onActionExpectation fulfill];
+        return NO;
+    }];
+    [Leanplum triggerAction:context];
+    
+    [self waitForExpectationsWithTimeout:6 handler:nil];
+}
+
 @end
