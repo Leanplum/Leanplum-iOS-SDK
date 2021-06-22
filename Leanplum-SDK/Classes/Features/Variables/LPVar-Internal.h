@@ -19,11 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly) BOOL isInternal;
 @property (readonly, strong) NSString *name;
 @property (readonly, strong) NSArray *nameComponents;
-@property (readonly, strong, nullable) NSString *stringValue;
-@property (readonly, strong, nullable) NSNumber *numberValue;
 @property (readonly) BOOL hadStarted;
-@property (readonly, strong, nullable) id value;
-@property (readonly, strong, nullable) id defaultValue;
 @property (readonly, strong) NSString *kind;
 @property (readonly, strong) NSMutableArray *fileReadyBlocks;
 @property (readonly, strong) NSMutableArray *valueChangedBlocks;

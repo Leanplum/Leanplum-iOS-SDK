@@ -52,11 +52,16 @@ NS_SWIFT_NAME(VarDelegate)
  */
 NS_SWIFT_NAME(Var)
 @interface LPVar : NSObject
+
+@property (readonly, strong, nullable) NSString *stringValue;
+@property (readonly, strong, nullable) NSNumber *numberValue;
+@property (readonly, strong, nullable) id value;
+@property (readonly, strong, nullable) id defaultValue;
+
 /**
  * @{
  * Defines a {@link LPVar}
  */
-
 - (instancetype)init NS_UNAVAILABLE;
 
 + (LPVar *)define:(NSString *)name

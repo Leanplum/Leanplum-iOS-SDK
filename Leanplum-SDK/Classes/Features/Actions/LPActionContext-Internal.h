@@ -35,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) LPContextualValues *contextualValues;
 
 - (void)maybeDownloadFiles;
-- (id)objectNamed:(NSString *)name;
 - (void)preventRealtimeUpdating;
 + (void)sortByPriority:(NSMutableArray *)actionContexts;
 
