@@ -809,6 +809,7 @@ void leanplumExceptionHandler(NSException *exception);
         [[LPVarCache sharedCache] applyVariableDiffs:@{}
                                             messages:@{}
                                             variants:@[]
+                                           localCaps:@[]
                                              regions:@{}
                                     variantDebugInfo:@{}
                                             varsJson:@""
@@ -967,11 +968,13 @@ void leanplumExceptionHandler(NSException *exception);
         [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
         NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
         NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
+        NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
         [[LPAPIConfig sharedConfig] setToken:token];
         [[LPAPIConfig sharedConfig] saveToken];
         [[LPVarCache sharedCache] applyVariableDiffs:values
                                             messages:messages
                                             variants:variants
+                                           localCaps:localCaps
                                              regions:regions
                                     variantDebugInfo:variantDebugInfo
                                             varsJson:varsJson
@@ -1899,10 +1902,21 @@ void leanplumExceptionHandler(NSException *exception);
                  recordHeldBackImpression:[actionContext messageId]
                  originalMessageId:[actionContext originalMessageId]];
             } else {
+                if ([self shouldSuppressMessage:actionContext]) {
+                    continue;
+                }
                 [self triggerAction:actionContext handledBlock:^(BOOL success) {
                     if (success) {
-                        [[LPInternalState sharedState].actionManager
-                         recordMessageImpression:[actionContext messageId]];
+                        // We do not want to count occurrences for action kind, because in multi message
+                        // campaigns the Open URL action is not a message. Also if the user has defined
+                        // actions of type Action we do not want to count them.
+                        LeanplumActionKind kind = [[LPVarCache sharedCache] getActionDefinitionType:[actionContext actionName]];
+                        if (kind == kLeanplumActionKindAction) {
+                            [[LPInternalState sharedState].actionManager recordChainedActionImpression:[actionContext messageId]];
+                        } else {
+                            [[LPInternalState sharedState].actionManager
+                             recordMessageImpression:[actionContext messageId]];
+                        }
                     }
                 }];
             }
@@ -2422,6 +2436,7 @@ andParameters:(NSDictionary *)params
         [LPFileTransferManager sharedInstance].filenameToURLs = filenameToURLs;
         NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
         NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
+        NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
         
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
@@ -2430,6 +2445,7 @@ andParameters:(NSDictionary *)params
             [[LPVarCache sharedCache] applyVariableDiffs:values
                                                 messages:messages
                                                 variants:variants
+                                               localCaps:localCaps
                                                  regions:regions
                                         variantDebugInfo:variantDebugInfo
                                                 varsJson:varsJson
@@ -2784,6 +2800,22 @@ void leanplumExceptionHandler(NSException *exception)
 + (LPSecuredVars *)securedVars
 {
     return [[LPVarCache sharedCache] securedVars];;
+}
+
+
+/**
+ * Checks if message should be suppressed based on the local IAM caps.
+ * @param context The message context to check.
+ * @return True if message should  be suppressed, false otherwise.
+*/
++ (BOOL)shouldSuppressMessage:(LPActionContext *)context
+{
+    if([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[context actionName]]) {
+        // do not suppress local push
+        return NO;
+    }
+    // checks if message caps are reached
+    return [[LPActionManager sharedManager] shouldSuppressMessages];
 }
 
 - (void) dealloc {

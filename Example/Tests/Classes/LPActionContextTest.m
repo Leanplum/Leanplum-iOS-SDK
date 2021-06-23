@@ -37,6 +37,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:nil
                                         variants:nil
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil
@@ -62,6 +63,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:nil
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil
@@ -87,6 +89,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:nil
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil
@@ -110,6 +113,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:nil
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil

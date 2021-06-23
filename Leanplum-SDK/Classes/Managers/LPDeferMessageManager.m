@@ -132,6 +132,7 @@ static BOOL isPresenting;
     isPresenting = YES;
     [Leanplum triggerAction:firstContext handledBlock:^(BOOL success) {
         if (success) {
+            //TODO:Dejan check for actionKind
             [[LPInternalState sharedState].actionManager
              recordMessageImpression:[firstContext messageId]];
         } else {

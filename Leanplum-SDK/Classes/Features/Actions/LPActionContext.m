@@ -524,6 +524,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
             [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
                 if (success) {
                     // Track when the chain message is viewed.
+                    //TODO:Dejan add check action kind probably only here
                     [[LPInternalState sharedState].actionManager
                      recordMessageImpression:[chainedActionContext messageId]];
                 }

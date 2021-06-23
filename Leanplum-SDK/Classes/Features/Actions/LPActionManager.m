@@ -65,6 +65,10 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 static LPActionManager *leanplum_sharedActionManager = nil;
 static dispatch_once_t leanplum_onceToken;
 
+static long HOUR_MILLIS;
+static long DAY_MILLIS;
+static long WEEK_MILLIS;
+
 + (LPActionManager *)sharedManager
 {
     dispatch_once(&leanplum_onceToken, ^{
@@ -88,6 +92,10 @@ static dispatch_once_t leanplum_onceToken;
         _messageImpressionOccurrences = [NSMutableDictionary dictionary];
         _messageTriggerOccurrences = [NSMutableDictionary dictionary];
         _countAggregator = [LPCountAggregator sharedAggregator];
+        
+        HOUR_MILLIS = 60 * 60 * 1000;
+        DAY_MILLIS = 24 * HOUR_MILLIS;
+        WEEK_MILLIS = 7 * DAY_MILLIS;
     }
     return self;
 }
@@ -447,7 +455,8 @@ static dispatch_once_t leanplum_onceToken;
  */
 - (void)recordMessageImpression:(NSString *)messageId
 {
-    [self recordImpression:messageId originalMessageId:nil];
+    [self trackImpressionEvent:messageId];
+    [self recordImpression:messageId];
 }
 
 /**
@@ -458,27 +467,48 @@ static dispatch_once_t leanplum_onceToken;
 - (void)recordHeldBackImpression:(NSString *)messageId
                originalMessageId:(NSString *)originalMessageId
 {
-    [self recordImpression:messageId originalMessageId:originalMessageId];
+    [self trackHeldBackEvent:originalMessageId];
+    [self recordImpression:messageId];
 }
 
 /**
- * Records the occurrence of a message and tracks the correct impression event.
- * @param messageId The ID of the message.
- * @param originalMessageId The original message ID of the held back message. Supply this
- *     only if the message is held back. Otherwise, use nil.
- */
-- (void)recordImpression:(NSString *)messageId originalMessageId:(NSString *)originalMessageId
+ * Tracks the "Open" event for an action.
+ * @param messageId The ID of the action
+*/
+
+- (void)recordChainedActionImpression:(NSString *)messageId
+{
+    [self trackImpressionEvent:messageId];
+}
+
+/**
+ * Tracks the correct held back event.
+ * @param originalMessageId The original message ID of the held back message.
+*/
+- (void)trackHeldBackEvent:(NSString *)originalMessageId
 {
     if (originalMessageId) {
         // This is a held back impression - track it with the original message id.
         [Leanplum track:LP_HELD_BACK_EVENT_NAME withValue:0.0 andInfo:nil
                 andArgs:@{LP_PARAM_MESSAGE_ID: originalMessageId} andParameters:nil];
-    } else {
+    }
+}
+
+-(void)trackImpressionEvent:(NSString *)messageId
+{
+    if (messageId) {
         // Track occurrence.
         [Leanplum track:nil withValue:0.0 andInfo:nil
                 andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
     }
+}
 
+/**
+ ** Records the occurrence of a message.
+ * @param messageId The ID of the message.
+*/
+- (void)recordImpression:(NSString *)messageId
+{
     // Record session occurrences.
     @synchronized (_sessionOccurrences) {
         int existing = [_sessionOccurrences[messageId] intValue];
@@ -496,6 +526,115 @@ static dispatch_once_t leanplum_onceToken;
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setBool:YES forKey:[NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]];
     }
+}
+
+/**
+ * Checks if message occurrences have reached limits coming from local IAM caps data.
+ * @return True to suppress messages, false otherwise.
+*/
+- (BOOL)shouldSuppressMessages
+{
+    int dayLimit = 0;
+    int weekLimit = 0;
+    int sessionLimit = 0;
+    
+    for (NSDictionary *cap in [[LPVarCache sharedCache] getLocalCaps]) {
+       if (![@"IN_APP" isEqualToString:[cap valueForKey:@"channel"]]) {
+         continue;
+       }
+        NSString *type = (NSString *)[cap valueForKey:@"type"];
+        int limit = [[cap valueForKey:@"limit"] intValue];
+        if (limit == 0) {
+         continue;
+       }
+
+       if ([@"DAY" isEqualToString:type]) {
+         dayLimit = limit;
+       } else if ([@"WEEK" isEqualToString:type]) {
+         weekLimit = limit;
+       } else if ([@"SESSION" isEqualToString:type]) {
+         sessionLimit = limit;
+       }
+     }
+
+     return (weekLimit > 0 && [self weeklyOccurrencesCount] >= weekLimit)
+         || (dayLimit > 0 && [self dailyOccurrencesCount] >= dayLimit)
+         || (sessionLimit > 0 && [self sessionOccurrencesCount] >= sessionLimit);
+}
+
+- (int)weeklyOccurrencesCount
+{
+    long long endTime = (long long)([[NSDate date] timeIntervalSince1970] * 1000.0);
+    long long startTime = endTime - WEEK_MILLIS;
+    return [self countOccurrencesFor:startTime endTime:endTime];
+}
+
+- (int)dailyOccurrencesCount
+{
+    long long endTime = (long long)([[NSDate date] timeIntervalSince1970] * 1000.0);
+    long startTime = endTime - DAY_MILLIS;
+    return [self countOccurrencesFor:startTime endTime:endTime];
+}
+
+- (int)countOccurrencesFor:(long long)startTime endTime:(long long)endTime
+{
+    NSString *prefix = [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY, @""];
+    
+    NSDictionary *all = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
+    
+    int occurrenceCount = 0;
+    for (NSString *key in [all allKeys]) {
+        if ([key hasPrefix:prefix]) {
+            NSString *value = [all valueForKey:key];
+            occurrenceCount += [self countOccurrencesFor:startTime endTime:endTime value:value];
+        }
+    }
+    
+    return 0;
+}
+
+- (int)countOccurrencesFor:(long long)startTime endTime:(long long)endTime value:(NSString *)userDefValue
+{
+    if ([LPUtils isNullOrEmpty:userDefValue] || [userDefValue isEqualToString:@"{}"]) {
+        return 0;
+    }
+    
+    NSDictionary *occurrences = [NSJSONSerialization JSONObjectWithData:[LPJSON JSONFromString:userDefValue] options:0 error:nil];
+    NSNumber *min = [occurrences valueForKey:@"min"];
+    NSNumber *max = [occurrences valueForKey:@"max"];
+    
+    if (!min || !max) {
+        return 0;
+    }
+    
+    long minId = [min longLongValue];
+    long maxId = [max longLongValue];
+    int count = 0;
+    
+    for (long long id_ = maxId; id_ >= minId; id_--) {
+        NSNumber *time = [occurrences valueForKey:[NSString stringWithFormat:@"%lld", id_]];
+        if (time) {
+            if (startTime <= [time longLongValue] && [time longLongValue] <= endTime) {
+                count++;
+            }
+        } else {
+            return count;
+        }
+    }
+    
+    return count;
+}
+
+- (int)sessionOccurrencesCount
+{
+    int count = 0;
+    for (NSString *key in [self.sessionOccurrences allKeys]) {
+        NSNumber *value = [self.sessionOccurrences valueForKey:key];
+        if (value) {
+            count = [value intValue];
+        }
+    }
+    return count;
 }
 
 @end

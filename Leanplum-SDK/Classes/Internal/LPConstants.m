@@ -92,6 +92,7 @@ NSString *LEANPLUM_DEFAULTS_INBOX_KEY = @"__leanplum_newsfeed";
 NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
 NSString *LEANPLUM_DEFAULTS_VARS_JSON_KEY = @"__leanplum_variables_json";
 NSString *LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY = @"__leanplum_variables_signature";
+NSString *LEANPLUM_DEFAULTS_LOCAL_CAPS_KEY = @"__leanplum_local_caps";
 
 NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
 
@@ -173,6 +174,7 @@ NSString *LP_KEY_TOKEN = @"token";
 NSString *LP_KEY_REGIONS = @"regions";
 NSString *LP_KEY_UPLOAD_URL = @"uploadUrl";
 NSString *LP_KEY_VARIANTS = @"variants";
+NSString *LP_KEY_LOCAL_CAPS = @"localCaps";
 NSString *LP_KEY_VARIANT_DEBUG_INFO = @"variantDebugInfo";
 NSString *LP_KEY_ENABLED_COUNTERS = @"enabledSdkCounters";
 NSString *LP_KEY_ENABLED_FEATURE_FLAGS = @"enabledFeatureFlags";

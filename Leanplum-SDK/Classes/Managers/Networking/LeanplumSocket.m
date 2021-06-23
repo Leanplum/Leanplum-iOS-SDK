@@ -189,6 +189,7 @@ static dispatch_once_t leanplum_onceToken;
         [[LPVarCache sharedCache] applyVariableDiffs:packetData
                                             messages:nil
                                             variants:nil
+                                           localCaps:nil
                                              regions:nil
                                     variantDebugInfo:nil
                                             varsJson:nil
