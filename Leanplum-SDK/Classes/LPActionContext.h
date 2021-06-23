@@ -41,6 +41,9 @@ NS_SWIFT_NAME(ActionContext)
  */
 @property (readonly, strong, nullable) NSDictionary *args;
 
+- (id)objectNamed:(NSString *)name
+NS_SWIFT_NAME(object(name:));
+
 - (NSString *)actionName
 NS_SWIFT_NAME(action());
 
