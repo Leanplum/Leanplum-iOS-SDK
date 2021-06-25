@@ -659,6 +659,7 @@
 		075AAEE326847EE0007CA1BD /* Interstitial.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Interstitial.storyboard; sourceTree = "<group>"; };
 		075AAEEC26847FE1007CA1BD /* Leanplum-iOS-SDK.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Leanplum-iOS-SDK.bundle"; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AAEEE26847FE1007CA1BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		076072BA2686154F008F1D9A /* sdk-version.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "sdk-version.txt"; path = "../sdk-version.txt"; sourceTree = "<group>"; };
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
@@ -1141,6 +1142,7 @@
 		077C53962685D98A0090D88D /* Packages */ = {
 			isa = PBXGroup;
 			children = (
+				076072BA2686154F008F1D9A /* sdk-version.txt */,
 				077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */,
 				077C53982685D9DB0090D88D /* Package.swift */,
 			);

@@ -141,7 +141,6 @@
 		075AAFB426849A74007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AAFBC26849AC1007CA1BD /* LeanplumSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LeanplumSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AAFC026849AC1007CA1BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		075AB09126849E8D007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AB09326849EBC007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "Leanplum-Info.plist"; path = "LeanplumSDKTests/Supporting Files/Leanplum-Info.plist"; sourceTree = SOURCE_ROOT; };
 		075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
@@ -292,7 +291,6 @@
 			isa = PBXGroup;
 			children = (
 				075AB09326849EBC007CA1BD /* Leanplum.framework */,
-				075AB09126849E8D007CA1BD /* Leanplum.framework */,
 				075AAFB426849A74007CA1BD /* Leanplum.framework */,
 				E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */,
 			);
