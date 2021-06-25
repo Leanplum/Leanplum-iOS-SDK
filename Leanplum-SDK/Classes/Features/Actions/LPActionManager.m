@@ -65,9 +65,9 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 static LPActionManager *leanplum_sharedActionManager = nil;
 static dispatch_once_t leanplum_onceToken;
 
-static long HOUR_MILLIS;
-static long DAY_MILLIS;
-static long WEEK_MILLIS;
+static long HOUR_SECONDS;
+static long DAY_SECONDS;
+static long WEEK_SECONDS;
 
 + (LPActionManager *)sharedManager
 {
@@ -93,9 +93,9 @@ static long WEEK_MILLIS;
         _messageTriggerOccurrences = [NSMutableDictionary dictionary];
         _countAggregator = [LPCountAggregator sharedAggregator];
         
-        HOUR_MILLIS = 60 * 60 * 1000;
-        DAY_MILLIS = 24 * HOUR_MILLIS;
-        WEEK_MILLIS = 7 * DAY_MILLIS;
+        HOUR_SECONDS = 60 * 60;
+        DAY_SECONDS = 24 * HOUR_SECONDS;
+        WEEK_SECONDS = 7 * DAY_SECONDS;
     }
     return self;
 }
@@ -570,14 +570,14 @@ static long WEEK_MILLIS;
 - (int)weeklyOccurrencesCount
 {
     long long endTime = (long long)([[NSDate date] timeIntervalSince1970]);
-    long long startTime = endTime - WEEK_MILLIS;
+    long long startTime = endTime - WEEK_SECONDS;
     return [self countOccurrencesFor:startTime endTime:endTime];
 }
 
 - (int)dailyOccurrencesCount
 {
     long long endTime = (long long)([[NSDate date] timeIntervalSince1970]);
-    long startTime = endTime - DAY_MILLIS;
+    long startTime = endTime - DAY_SECONDS;
     return [self countOccurrencesFor:startTime endTime:endTime];
 }
 
