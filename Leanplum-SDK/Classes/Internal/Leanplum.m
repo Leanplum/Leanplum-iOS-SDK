@@ -644,6 +644,7 @@ void leanplumExceptionHandler(NSException *exception);
         if (handledBlock) {
             handledBlock(handled);
             if (handled) {
+                //TODO:Dejan maybe check kind here
                 [Leanplum triggerMessageDisplayed:context];
             }
         }
@@ -1907,12 +1908,8 @@ void leanplumExceptionHandler(NSException *exception);
                 }
                 [self triggerAction:actionContext handledBlock:^(BOOL success) {
                     if (success) {
-                        // We do not want to count occurrences for action kind, because in multi message
-                        // campaigns the Open URL action is not a message. Also if the user has defined
-                        // actions of type Action we do not want to count them.
-                        LeanplumActionKind kind = [[LPVarCache sharedCache] getActionDefinitionType:[actionContext actionName]];
-                        if (kind == kLeanplumActionKindAction) {
-                            [[LPInternalState sharedState].actionManager recordChainedActionImpression:[actionContext messageId]];
+                        if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
+                            [[LPInternalState sharedState].actionManager recordLocalPushImpression:[actionContext messageId]];
                         } else {
                             [[LPInternalState sharedState].actionManager
                              recordMessageImpression:[actionContext messageId]];

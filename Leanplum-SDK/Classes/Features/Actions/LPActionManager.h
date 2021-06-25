@@ -74,6 +74,7 @@ NS_SWIFT_NAME(shared());
 - (void)recordHeldBackImpression:(NSString *)messageId
                originalMessageId:(NSString *)originalMessageId;
 - (void)recordChainedActionImpression:(NSString *)messageId;
+- (void)recordLocalPushImpression:(NSString *)messageId;
 
 - (void)muteFutureMessagesOfKind:(NSString *)messageId;
 

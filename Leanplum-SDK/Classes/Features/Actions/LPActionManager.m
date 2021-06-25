@@ -481,6 +481,11 @@ static long WEEK_MILLIS;
     [self trackImpressionEvent:messageId];
 }
 
+- (void)recordLocalPushImpression:(NSString *)messageId
+{
+    [self trackImpressionEvent:messageId];
+}
+
 /**
  * Tracks the correct held back event.
  * @param originalMessageId The original message ID of the held back message.
@@ -564,14 +569,14 @@ static long WEEK_MILLIS;
 
 - (int)weeklyOccurrencesCount
 {
-    long long endTime = (long long)([[NSDate date] timeIntervalSince1970] * 1000.0);
+    long long endTime = (long long)([[NSDate date] timeIntervalSince1970]);
     long long startTime = endTime - WEEK_MILLIS;
     return [self countOccurrencesFor:startTime endTime:endTime];
 }
 
 - (int)dailyOccurrencesCount
 {
-    long long endTime = (long long)([[NSDate date] timeIntervalSince1970] * 1000.0);
+    long long endTime = (long long)([[NSDate date] timeIntervalSince1970]);
     long startTime = endTime - DAY_MILLIS;
     return [self countOccurrencesFor:startTime endTime:endTime];
 }
@@ -585,21 +590,21 @@ static long WEEK_MILLIS;
     int occurrenceCount = 0;
     for (NSString *key in [all allKeys]) {
         if ([key hasPrefix:prefix]) {
-            NSString *value = [all valueForKey:key];
+            NSDictionary *value = [all valueForKey:key];
             occurrenceCount += [self countOccurrencesFor:startTime endTime:endTime value:value];
         }
     }
     
-    return 0;
+    return occurrenceCount;
 }
 
-- (int)countOccurrencesFor:(long long)startTime endTime:(long long)endTime value:(NSString *)userDefValue
+- (int)countOccurrencesFor:(long long)startTime endTime:(long long)endTime value:(NSDictionary *)userDefValue
 {
-    if ([LPUtils isNullOrEmpty:userDefValue] || [userDefValue isEqualToString:@"{}"]) {
+    if ([LPUtils isNullOrEmpty:userDefValue]) {//} || [userDefValue isEqualToString:@"{}"]) {
         return 0;
     }
     
-    NSDictionary *occurrences = [NSJSONSerialization JSONObjectWithData:[LPJSON JSONFromString:userDefValue] options:0 error:nil];
+    NSDictionary *occurrences = userDefValue;//[NSJSONSerialization JSONObjectWithData:[LPJSON JSONFromString:userDefValue] options:0 error:nil];
     NSNumber *min = [occurrences valueForKey:@"min"];
     NSNumber *max = [occurrences valueForKey:@"max"];
     
@@ -631,7 +636,7 @@ static long WEEK_MILLIS;
     for (NSString *key in [self.sessionOccurrences allKeys]) {
         NSNumber *value = [self.sessionOccurrences valueForKey:key];
         if (value) {
-            count = [value intValue];
+            count += [value intValue];
         }
     }
     return count;
