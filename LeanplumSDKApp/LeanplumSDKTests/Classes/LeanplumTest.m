@@ -26,9 +26,13 @@
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
 #import <OCMock/OCMock.h>
-#import <OCMock/OCMArg.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
+#import "LeanplumHelper.h"
+#import "Leanplum+Extensions.h"
+#import "LPRequest+Extension.h"
+#import "LPRequestSender+Categories.h"
+#import "LeanplumReachability+Category.h"
 #import <Leanplum/LPActionManager.h>
 #import <Leanplum/LPCountAggregator.h>
 #import <Leanplum/LPFeatureFlagManager.h>
@@ -39,11 +43,8 @@
 #import <Leanplum/LPOperationQueue.h>
 #import <Leanplum/LPAPIConfig.h>
 #import <Leanplum/LPInternalState.h>
-#import "LeanplumHelper.h"
-#import "Leanplum+Extensions.h"
-#import "LPRequest+Extension.h"
-#import "LPRequestSender+Categories.h"
-#import "LeanplumReachability+Category.h"
+
+#import <OCMock/OCMArg.h>
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend

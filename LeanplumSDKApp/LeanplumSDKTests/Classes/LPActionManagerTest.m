@@ -27,17 +27,13 @@
 #import <OCMock/OCMock.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
-#import <Leanplum/LPActionManager.h>
-#import <Leanplum/LPUIAlert.h>
-#import <Leanplum/LPOperationQueue.h>
 #import "Leanplum+Extensions.h"
+#import <Leanplum/LPActionManager.h>
 #import "LeanplumHelper.h"
 #import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
-
-@interface LPActionManager (UnitTest)
-
-@end
+#import <Leanplum/LPUIAlert.h>
+#import <Leanplum/LPOperationQueue.h>
 
 @interface LPActionManager (UnitTest)
 
