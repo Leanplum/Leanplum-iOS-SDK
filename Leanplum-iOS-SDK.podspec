@@ -7,30 +7,31 @@
 #
 
 Pod::Spec.new do |s|
-  s.name = 'Leanplum-iOS-SDK'
-  version = `cat sdk-version.txt`
-  s.version = version
-  s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
-  s.description = <<-DESC
-Leanplum’s integrated solution delivers meaningful engagement across messaging and the in-app
-experience. We offer Messaging, Automation, App Editing, Personalization, A/B Testing, and
-Analytics.
-    DESC
-  s.homepage = 'https://www.leanplum.com'
-  s.license = { :type => 'Commercial', :text => 'See https://www.leanplum.com/tos' }
-  s.author = { 'Leanplum' => 'support@leanplum.com' }
-  s.social_media_url = 'https://twitter.com/leanplum'
-  s.requires_arc = true
-  s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
-  s.ios.deployment_target = '9.0'
-  s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
-  s.weak_frameworks = 'AdSupport', 'StoreKit'
-  s.library = 'sqlite3'
-  s.documentation_url = 'https://docs.leanplum.com/'
-  s.source_files = 'Leanplum-SDK/Classes/**/*'
-  s.module_name = 'Leanplum'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
-  s.resource_bundle = {
-   'Leanplum-iOS-SDK' => 'Leanplum-SDK/Resources/**/*'
-  }
-end
+    s.name = 'Leanplum-iOS-SDK'
+    version = `cat sdk-version.txt`
+    s.version = version
+    s.summary = 'Mobile Marketing Platform. Integrated. ROI Engine.'
+    s.description = <<-DESC
+  Leanplum’s integrated solution delivers meaningful engagement across messaging and the in-app
+  experience. We offer Messaging, Automation, App Editing, Personalization, A/B Testing, and
+  Analytics.
+      DESC
+    s.homepage = 'https://www.leanplum.com'
+    s.license = { :type => 'Commercial', :text => 'See https://www.leanplum.com/tos' }
+    s.author = { 'Leanplum' => 'support@leanplum.com' }
+    s.social_media_url = 'https://twitter.com/leanplum'
+    s.requires_arc = true
+    s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s }
+    s.ios.deployment_target = '9.0'
+    s.frameworks = 'CFNetwork', 'Foundation', 'Security', 'SystemConfiguration', 'UIKit'
+    s.weak_frameworks = 'AdSupport', 'StoreKit'
+    s.library = 'sqlite3'
+    s.documentation_url = 'https://docs.leanplum.com/'
+    s.source_files = 'LeanplumSDK/LeanplumSDK/Classes/**/*'
+    s.module_name = 'Leanplum'
+    s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
+    s.resource_bundle = {
+     'Leanplum-iOS-SDK' => 'LeanplumSDK/LeanplumSDKBundle/Resources/**/*'
+    }
+  end
+  

@@ -1,0 +1,996 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		075AACEB26847BF3007CA1BD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075AACEA26847BF3007CA1BD /* AppDelegate.swift */; };
+		075AACED26847BF3007CA1BD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075AACEC26847BF3007CA1BD /* SceneDelegate.swift */; };
+		075AACEF26847BF3007CA1BD /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075AACEE26847BF3007CA1BD /* ViewController.swift */; };
+		075AACF226847BF3007CA1BD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075AACF026847BF3007CA1BD /* Main.storyboard */; };
+		075AACF426847BF4007CA1BD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 075AACF326847BF4007CA1BD /* Assets.xcassets */; };
+		075AACF726847BF4007CA1BD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075AACF526847BF4007CA1BD /* LaunchScreen.storyboard */; };
+		075AAFB526849A74007CA1BD /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075AAFB426849A74007CA1BD /* Leanplum.framework */; };
+		075AB09426849EBC007CA1BD /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075AB09326849EBC007CA1BD /* Leanplum.framework */; };
+		075AB0962684A1A4007CA1BD /* Leanplum-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */; };
+		075AB10B2684AAD9007CA1BD /* LPJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */; };
+		075AB10C2684AAD9007CA1BD /* LPPushNotificationsHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DE2684AAD8007CA1BD /* LPPushNotificationsHandlerTest.m */; };
+		075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */; };
+		075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */; };
+		075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */; };
+		075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E22684AAD8007CA1BD /* LPInboxTest.m */; };
+		075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */; };
+		075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */; };
+		075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */; };
+		075AB1142684AAD9007CA1BD /* MessagesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E62684AAD9007CA1BD /* MessagesTest.m */; };
+		075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */; };
+		075AB1162684AAD9007CA1BD /* ExceptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */; };
+		075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E92684AAD9007CA1BD /* LPRequestTest.m */; };
+		075AB1182684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */; };
+		075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EB2684AAD9007CA1BD /* LPFeatureFlagManagerTest.m */; };
+		075AB11A2684AAD9007CA1BD /* LPDeferMessageManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EC2684AAD9007CA1BD /* LPDeferMessageManagerTest.m */; };
+		075AB11B2684AAD9007CA1BD /* LPRequestBatchTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */; };
+		075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */; };
+		075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */; };
+		075AB11E2684AAD9007CA1BD /* LPCountAggregatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */; };
+		075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */; };
+		075AB1202684AAD9007CA1BD /* LPPushNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */; };
+		075AB1212684AAD9007CA1BD /* LPRequestSenderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */; };
+		075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */; };
+		075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */; };
+		075AB1242684AAD9007CA1BD /* LeanplumReachability+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0FA2684AAD9007CA1BD /* LeanplumReachability+Category.m */; };
+		075AB1252684AAD9007CA1BD /* LPNetworkEngine+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0FC2684AAD9007CA1BD /* LPNetworkEngine+Category.m */; };
+		075AB1262684AAD9007CA1BD /* LPRequest+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0FF2684AAD9007CA1BD /* LPRequest+Extension.m */; };
+		075AB1272684AAD9007CA1BD /* LPNetworkOperation+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB1012684AAD9007CA1BD /* LPNetworkOperation+Category.m */; };
+		075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB1022684AAD9007CA1BD /* LPRequestFactory+Extension.m */; };
+		075AB1292684AAD9007CA1BD /* LPRequestSender+Categories.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB1032684AAD9007CA1BD /* LPRequestSender+Categories.m */; };
+		075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB1062684AAD9007CA1BD /* LPRequestSenderTimerTest.m */; };
+		075AB12B2684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB1072684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m */; };
+		075AB12C2684AAD9007CA1BD /* LeanplumHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB1092684AAD9007CA1BD /* LeanplumHelper.m */; };
+		075AB1522684AB9D007CA1BD /* MainAppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 075AB12E2684AB9D007CA1BD /* MainAppIcon.png */; };
+		075AB1532684AB9D007CA1BD /* MainAppIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 075AB12E2684AB9D007CA1BD /* MainAppIcon.png */; };
+		075AB1542684AB9D007CA1BD /* GoldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 075AB12F2684AB9D007CA1BD /* GoldIcon.png */; };
+		075AB1552684AB9D007CA1BD /* GoldIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 075AB12F2684AB9D007CA1BD /* GoldIcon.png */; };
+		075AB1562684AB9D007CA1BD /* test.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1302684AB9D007CA1BD /* test.pdf */; };
+		075AB1572684AB9D007CA1BD /* test.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1302684AB9D007CA1BD /* test.pdf */; };
+		075AB1582684AB9D007CA1BD /* test.file in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1312684AB9D007CA1BD /* test.file */; };
+		075AB1592684AB9D007CA1BD /* test.file in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1312684AB9D007CA1BD /* test.file */; };
+		075AB15A2684AB9D007CA1BD /* complex_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1332684AB9D007CA1BD /* complex_start_response.json */; };
+		075AB15B2684AB9D007CA1BD /* complex_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1332684AB9D007CA1BD /* complex_start_response.json */; };
+		075AB15C2684AB9D007CA1BD /* variants_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1342684AB9D007CA1BD /* variants_response.json */; };
+		075AB15D2684AB9D007CA1BD /* variants_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1342684AB9D007CA1BD /* variants_response.json */; };
+		075AB15E2684AB9D007CA1BD /* action_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1352684AB9D007CA1BD /* action_response.json */; };
+		075AB15F2684AB9D007CA1BD /* action_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1352684AB9D007CA1BD /* action_response.json */; };
+		075AB1602684AB9D007CA1BD /* track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1362684AB9D007CA1BD /* track_event_response.json */; };
+		075AB1612684AB9D007CA1BD /* track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1362684AB9D007CA1BD /* track_event_response.json */; };
+		075AB1622684AB9D007CA1BD /* start_variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1372684AB9D007CA1BD /* start_variables_response.json */; };
+		075AB1632684AB9D007CA1BD /* start_variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1372684AB9D007CA1BD /* start_variables_response.json */; };
+		075AB1642684AB9D007CA1BD /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1382684AB9D007CA1BD /* start_with_variant_debug_info_response.json */; };
+		075AB1652684AB9D007CA1BD /* start_with_variant_debug_info_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1382684AB9D007CA1BD /* start_with_variant_debug_info_response.json */; };
+		075AB1662684AB9D007CA1BD /* secured_vars_no_sign_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1392684AB9D007CA1BD /* secured_vars_no_sign_response.json */; };
+		075AB1672684AB9D007CA1BD /* secured_vars_no_sign_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1392684AB9D007CA1BD /* secured_vars_no_sign_response.json */; };
+		075AB1682684AB9D007CA1BD /* malformed_track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13B2684AB9D007CA1BD /* malformed_track_event_response.json */; };
+		075AB1692684AB9D007CA1BD /* malformed_track_event_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13B2684AB9D007CA1BD /* malformed_track_event_response.json */; };
+		075AB16A2684AB9D007CA1BD /* malformed_simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13C2684AB9D007CA1BD /* malformed_simple_start_response.json */; };
+		075AB16B2684AB9D007CA1BD /* malformed_simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13C2684AB9D007CA1BD /* malformed_simple_start_response.json */; };
+		075AB16C2684AB9D007CA1BD /* state_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13D2684AB9D007CA1BD /* state_response.json */; };
+		075AB16D2684AB9D007CA1BD /* state_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13D2684AB9D007CA1BD /* state_response.json */; };
+		075AB16E2684AB9D007CA1BD /* simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13E2684AB9D007CA1BD /* simple_start_response.json */; };
+		075AB16F2684AB9D007CA1BD /* simple_start_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13E2684AB9D007CA1BD /* simple_start_response.json */; };
+		075AB1702684AB9D007CA1BD /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13F2684AB9D007CA1BD /* batch_response.json */; };
+		075AB1712684AB9D007CA1BD /* batch_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB13F2684AB9D007CA1BD /* batch_response.json */; };
+		075AB1722684AB9D007CA1BD /* newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1402684AB9D007CA1BD /* newsfeed_response.json */; };
+		075AB1732684AB9D007CA1BD /* newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1402684AB9D007CA1BD /* newsfeed_response.json */; };
+		075AB1742684AB9D007CA1BD /* registration_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1412684AB9D007CA1BD /* registration_response.json */; };
+		075AB1752684AB9D007CA1BD /* registration_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1412684AB9D007CA1BD /* registration_response.json */; };
+		075AB1762684AB9D007CA1BD /* variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1422684AB9D007CA1BD /* variables_response.json */; };
+		075AB1772684AB9D007CA1BD /* variables_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1422684AB9D007CA1BD /* variables_response.json */; };
+		075AB1782684AB9D007CA1BD /* secured_vars_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1432684AB9D007CA1BD /* secured_vars_response.json */; };
+		075AB1792684AB9D007CA1BD /* secured_vars_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1432684AB9D007CA1BD /* secured_vars_response.json */; };
+		075AB17A2684AB9D007CA1BD /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1442684AB9D007CA1BD /* variables_with_newsfeed_response.json */; };
+		075AB17B2684AB9D007CA1BD /* variables_with_newsfeed_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1442684AB9D007CA1BD /* variables_with_newsfeed_response.json */; };
+		075AB17C2684AB9D007CA1BD /* secured_vars_empty_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1452684AB9D007CA1BD /* secured_vars_empty_response.json */; };
+		075AB17D2684AB9D007CA1BD /* secured_vars_empty_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1452684AB9D007CA1BD /* secured_vars_empty_response.json */; };
+		075AB17E2684AB9D007CA1BD /* DifferentPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1472684AB9D007CA1BD /* DifferentPriorities2.json */; };
+		075AB17F2684AB9D007CA1BD /* DifferentPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1472684AB9D007CA1BD /* DifferentPriorities2.json */; };
+		075AB1802684AB9D007CA1BD /* regionData.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1482684AB9D007CA1BD /* regionData.json */; };
+		075AB1812684AB9D007CA1BD /* regionData.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1482684AB9D007CA1BD /* regionData.json */; };
+		075AB1822684AB9D007CA1BD /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1492684AB9D007CA1BD /* SingleMessage.json */; };
+		075AB1832684AB9D007CA1BD /* SingleMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1492684AB9D007CA1BD /* SingleMessage.json */; };
+		075AB1842684AB9D007CA1BD /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14A2684AB9D007CA1BD /* TiedPriorities2.json */; };
+		075AB1852684AB9D007CA1BD /* TiedPriorities2.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14A2684AB9D007CA1BD /* TiedPriorities2.json */; };
+		075AB1862684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14B2684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json */; };
+		075AB1872684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14B2684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json */; };
+		075AB1882684AB9D007CA1BD /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14C2684AB9D007CA1BD /* TiedPriorities1.json */; };
+		075AB1892684AB9D007CA1BD /* TiedPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14C2684AB9D007CA1BD /* TiedPriorities1.json */; };
+		075AB18A2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14D2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json */; };
+		075AB18B2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14D2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json */; };
+		075AB18C2684AB9D007CA1BD /* ChainedMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14E2684AB9D007CA1BD /* ChainedMessage.json */; };
+		075AB18D2684AB9D007CA1BD /* ChainedMessage.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14E2684AB9D007CA1BD /* ChainedMessage.json */; };
+		075AB18E2684AB9D007CA1BD /* NoPriorities.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14F2684AB9D007CA1BD /* NoPriorities.json */; };
+		075AB18F2684AB9D007CA1BD /* NoPriorities.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB14F2684AB9D007CA1BD /* NoPriorities.json */; };
+		075AB1902684AB9D007CA1BD /* sample_action_notification.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1502684AB9D007CA1BD /* sample_action_notification.json */; };
+		075AB1912684AB9D007CA1BD /* sample_action_notification.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1502684AB9D007CA1BD /* sample_action_notification.json */; };
+		075AB1922684AB9D007CA1BD /* DifferentPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */; };
+		075AB1932684AB9D007CA1BD /* DifferentPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */; };
+		779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		075AAFC126849AC1007CA1BD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 075AACDF26847BF3007CA1BD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 075AACE626847BF3007CA1BD;
+			remoteInfo = LeanplumSDKApp;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		075AACE726847BF3007CA1BD /* LeanplumSDKApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LeanplumSDKApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		075AACEA26847BF3007CA1BD /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		075AACEC26847BF3007CA1BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		075AACEE26847BF3007CA1BD /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		075AACF126847BF3007CA1BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		075AACF326847BF4007CA1BD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		075AACF626847BF4007CA1BD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		075AACF826847BF4007CA1BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		075AAFB426849A74007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		075AAFBC26849AC1007CA1BD /* LeanplumSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = LeanplumSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		075AAFC026849AC1007CA1BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		075AB09126849E8D007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		075AB09326849EBC007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "Leanplum-Info.plist"; path = "LeanplumSDKTests/Supporting Files/Leanplum-Info.plist"; sourceTree = SOURCE_ROOT; };
+		075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
+		075AB0DE2684AAD8007CA1BD /* LPPushNotificationsHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsHandlerTest.m; sourceTree = "<group>"; };
+		075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAppIconManagerTest.m; sourceTree = "<group>"; };
+		075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNotificationsManagerTest.m; sourceTree = "<group>"; };
+		075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
+		075AB0E22684AAD8007CA1BD /* LPInboxTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInboxTest.m; sourceTree = "<group>"; };
+		075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSecuredVarsTest.m; sourceTree = "<group>"; };
+		075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUtilsTest.m; sourceTree = "<group>"; };
+		075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventDataManagerTest.m; sourceTree = "<group>"; };
+		075AB0E62684AAD9007CA1BD /* MessagesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesTest.m; sourceTree = "<group>"; };
+		075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionManagerTest.m; sourceTree = "<group>"; };
+		075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionsTest.m; sourceTree = "<group>"; };
+		075AB0E92684AAD9007CA1BD /* LPRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
+		075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialViewControllerTest.m; sourceTree = "<group>"; };
+		075AB0EB2684AAD9007CA1BD /* LPFeatureFlagManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFeatureFlagManagerTest.m; sourceTree = "<group>"; };
+		075AB0EC2684AAD9007CA1BD /* LPDeferMessageManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPDeferMessageManagerTest.m; sourceTree = "<group>"; };
+		075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestBatchTest.m; sourceTree = "<group>"; };
+		075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestFactoryTest.m; sourceTree = "<group>"; };
+		075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
+		075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregatorTest.m; sourceTree = "<group>"; };
+		075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNetworkOperationTest.m; sourceTree = "<group>"; };
+		075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsManagerTest.m; sourceTree = "<group>"; };
+		075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTest.m; sourceTree = "<group>"; };
+		075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionContextTest.m; sourceTree = "<group>"; };
+		075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFileManagerTest.m; sourceTree = "<group>"; };
+		075AB0F72684AAD9007CA1BD /* LPRequest+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPRequest+Extension.h"; sourceTree = "<group>"; };
+		075AB0F82684AAD9007CA1BD /* LPRequestFactory+Extension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPRequestFactory+Extension.h"; sourceTree = "<group>"; };
+		075AB0F92684AAD9007CA1BD /* LPNetworkOperation+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkOperation+Category.h"; sourceTree = "<group>"; };
+		075AB0FA2684AAD9007CA1BD /* LeanplumReachability+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LeanplumReachability+Category.m"; sourceTree = "<group>"; };
+		075AB0FB2684AAD9007CA1BD /* LPOpenUrlMessageTemplate+Extenstion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPOpenUrlMessageTemplate+Extenstion.h"; sourceTree = "<group>"; };
+		075AB0FC2684AAD9007CA1BD /* LPNetworkEngine+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkEngine+Category.m"; sourceTree = "<group>"; };
+		075AB0FD2684AAD9007CA1BD /* LPRequestSender+Categories.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPRequestSender+Categories.h"; sourceTree = "<group>"; };
+		075AB0FE2684AAD9007CA1BD /* LPVarCache+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPVarCache+Extensions.h"; sourceTree = "<group>"; };
+		075AB0FF2684AAD9007CA1BD /* LPRequest+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPRequest+Extension.m"; sourceTree = "<group>"; };
+		075AB1002684AAD9007CA1BD /* Leanplum+Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Leanplum+Extensions.h"; sourceTree = "<group>"; };
+		075AB1012684AAD9007CA1BD /* LPNetworkOperation+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPNetworkOperation+Category.m"; sourceTree = "<group>"; };
+		075AB1022684AAD9007CA1BD /* LPRequestFactory+Extension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPRequestFactory+Extension.m"; sourceTree = "<group>"; };
+		075AB1032684AAD9007CA1BD /* LPRequestSender+Categories.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "LPRequestSender+Categories.m"; sourceTree = "<group>"; };
+		075AB1042684AAD9007CA1BD /* LPNetworkEngine+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LPNetworkEngine+Category.h"; sourceTree = "<group>"; };
+		075AB1052684AAD9007CA1BD /* LeanplumReachability+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "LeanplumReachability+Category.h"; sourceTree = "<group>"; };
+		075AB1062684AAD9007CA1BD /* LPRequestSenderTimerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTimerTest.m; sourceTree = "<group>"; };
+		075AB1072684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPOpenUrlMessageTemplateTest.m; sourceTree = "<group>"; };
+		075AB1092684AAD9007CA1BD /* LeanplumHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumHelper.m; sourceTree = "<group>"; };
+		075AB10A2684AAD9007CA1BD /* LeanplumHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumHelper.h; sourceTree = "<group>"; };
+		075AB12E2684AB9D007CA1BD /* MainAppIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = MainAppIcon.png; sourceTree = "<group>"; };
+		075AB12F2684AB9D007CA1BD /* GoldIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoldIcon.png; sourceTree = "<group>"; };
+		075AB1302684AB9D007CA1BD /* test.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = test.pdf; sourceTree = "<group>"; };
+		075AB1312684AB9D007CA1BD /* test.file */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = test.file; sourceTree = "<group>"; };
+		075AB1332684AB9D007CA1BD /* complex_start_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = complex_start_response.json; sourceTree = "<group>"; };
+		075AB1342684AB9D007CA1BD /* variants_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variants_response.json; sourceTree = "<group>"; };
+		075AB1352684AB9D007CA1BD /* action_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = action_response.json; sourceTree = "<group>"; };
+		075AB1362684AB9D007CA1BD /* track_event_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = track_event_response.json; sourceTree = "<group>"; };
+		075AB1372684AB9D007CA1BD /* start_variables_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_variables_response.json; sourceTree = "<group>"; };
+		075AB1382684AB9D007CA1BD /* start_with_variant_debug_info_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = start_with_variant_debug_info_response.json; sourceTree = "<group>"; };
+		075AB1392684AB9D007CA1BD /* secured_vars_no_sign_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secured_vars_no_sign_response.json; sourceTree = "<group>"; };
+		075AB13B2684AB9D007CA1BD /* malformed_track_event_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = malformed_track_event_response.json; sourceTree = "<group>"; };
+		075AB13C2684AB9D007CA1BD /* malformed_simple_start_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = malformed_simple_start_response.json; sourceTree = "<group>"; };
+		075AB13D2684AB9D007CA1BD /* state_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = state_response.json; sourceTree = "<group>"; };
+		075AB13E2684AB9D007CA1BD /* simple_start_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = simple_start_response.json; sourceTree = "<group>"; };
+		075AB13F2684AB9D007CA1BD /* batch_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = batch_response.json; sourceTree = "<group>"; };
+		075AB1402684AB9D007CA1BD /* newsfeed_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = newsfeed_response.json; sourceTree = "<group>"; };
+		075AB1412684AB9D007CA1BD /* registration_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = registration_response.json; sourceTree = "<group>"; };
+		075AB1422684AB9D007CA1BD /* variables_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables_response.json; sourceTree = "<group>"; };
+		075AB1432684AB9D007CA1BD /* secured_vars_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secured_vars_response.json; sourceTree = "<group>"; };
+		075AB1442684AB9D007CA1BD /* variables_with_newsfeed_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = variables_with_newsfeed_response.json; sourceTree = "<group>"; };
+		075AB1452684AB9D007CA1BD /* secured_vars_empty_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = secured_vars_empty_response.json; sourceTree = "<group>"; };
+		075AB1472684AB9D007CA1BD /* DifferentPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPriorities2.json; sourceTree = "<group>"; };
+		075AB1482684AB9D007CA1BD /* regionData.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = regionData.json; sourceTree = "<group>"; };
+		075AB1492684AB9D007CA1BD /* SingleMessage.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = SingleMessage.json; sourceTree = "<group>"; };
+		075AB14A2684AB9D007CA1BD /* TiedPriorities2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities2.json; sourceTree = "<group>"; };
+		075AB14B2684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDifferentDelay.json; sourceTree = "<group>"; };
+		075AB14C2684AB9D007CA1BD /* TiedPriorities1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPriorities1.json; sourceTree = "<group>"; };
+		075AB14D2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPrioritiesWithMissingValues.json; sourceTree = "<group>"; };
+		075AB14E2684AB9D007CA1BD /* ChainedMessage.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ChainedMessage.json; sourceTree = "<group>"; };
+		075AB14F2684AB9D007CA1BD /* NoPriorities.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = NoPriorities.json; sourceTree = "<group>"; };
+		075AB1502684AB9D007CA1BD /* sample_action_notification.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_action_notification.json; sourceTree = "<group>"; };
+		075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPriorities1.json; sourceTree = "<group>"; };
+		4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.debug.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
+		B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.release.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.release.xcconfig"; sourceTree = "<group>"; };
+		E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDKTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		075AACE426847BF3007CA1BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				075AAFB526849A74007CA1BD /* Leanplum.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		075AAFB926849AC1007CA1BD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				075AB09426849EBC007CA1BD /* Leanplum.framework in Frameworks */,
+				779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		075AACDE26847BF3007CA1BD = {
+			isa = PBXGroup;
+			children = (
+				075AACE926847BF3007CA1BD /* LeanplumSDKApp */,
+				075AAFBD26849AC1007CA1BD /* LeanplumSDKTests */,
+				075AACE826847BF3007CA1BD /* Products */,
+				075AAFB326849A74007CA1BD /* Frameworks */,
+				E0CB0FD8F4E44175F7CB3EEF /* Pods */,
+			);
+			sourceTree = "<group>";
+		};
+		075AACE826847BF3007CA1BD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				075AACE726847BF3007CA1BD /* LeanplumSDKApp.app */,
+				075AAFBC26849AC1007CA1BD /* LeanplumSDKTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		075AACE926847BF3007CA1BD /* LeanplumSDKApp */ = {
+			isa = PBXGroup;
+			children = (
+				075AAFB626849A82007CA1BD /* Classes */,
+				075AAFB226849A38007CA1BD /* Supporting Files */,
+			);
+			path = LeanplumSDKApp;
+			sourceTree = "<group>";
+		};
+		075AAFB226849A38007CA1BD /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */,
+				075AACF026847BF3007CA1BD /* Main.storyboard */,
+				075AACF526847BF4007CA1BD /* LaunchScreen.storyboard */,
+				075AACF326847BF4007CA1BD /* Assets.xcassets */,
+				075AACF826847BF4007CA1BD /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		075AAFB326849A74007CA1BD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				075AB09326849EBC007CA1BD /* Leanplum.framework */,
+				075AB09126849E8D007CA1BD /* Leanplum.framework */,
+				075AAFB426849A74007CA1BD /* Leanplum.framework */,
+				E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		075AAFB626849A82007CA1BD /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				075AACEA26847BF3007CA1BD /* AppDelegate.swift */,
+				075AACEC26847BF3007CA1BD /* SceneDelegate.swift */,
+				075AACEE26847BF3007CA1BD /* ViewController.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		075AAFBD26849AC1007CA1BD /* LeanplumSDKTests */ = {
+			isa = PBXGroup;
+			children = (
+				075AAFC726849AE9007CA1BD /* Classes */,
+				075AAFC826849B03007CA1BD /* Resources */,
+				075AAFC626849ACA007CA1BD /* Supporting Files */,
+			);
+			path = LeanplumSDKTests;
+			sourceTree = "<group>";
+		};
+		075AAFC626849ACA007CA1BD /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				075AAFC026849AC1007CA1BD /* Info.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		075AAFC726849AE9007CA1BD /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */,
+				075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */,
+				075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */,
+				075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */,
+				075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */,
+				075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */,
+				075AB0EC2684AAD9007CA1BD /* LPDeferMessageManagerTest.m */,
+				075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */,
+				075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */,
+				075AB0EB2684AAD9007CA1BD /* LPFeatureFlagManagerTest.m */,
+				075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */,
+				075AB0E22684AAD8007CA1BD /* LPInboxTest.m */,
+				075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */,
+				075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */,
+				075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */,
+				075AB1072684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m */,
+				075AB0DE2684AAD8007CA1BD /* LPPushNotificationsHandlerTest.m */,
+				075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */,
+				075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */,
+				075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */,
+				075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */,
+				075AB1062684AAD9007CA1BD /* LPRequestSenderTimerTest.m */,
+				075AB0E92684AAD9007CA1BD /* LPRequestTest.m */,
+				075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */,
+				075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */,
+				075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */,
+				075AB0E62684AAD9007CA1BD /* MessagesTest.m */,
+				075AB0F62684AAD9007CA1BD /* Extensions */,
+				075AB1082684AAD9007CA1BD /* Utilities */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		075AAFC826849B03007CA1BD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				075AB12D2684AB9D007CA1BD /* Files */,
+				075AB1322684AB9D007CA1BD /* Responses */,
+				075AB1462684AB9D007CA1BD /* TestData */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		075AB0F62684AAD9007CA1BD /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				075AB0F72684AAD9007CA1BD /* LPRequest+Extension.h */,
+				075AB0F82684AAD9007CA1BD /* LPRequestFactory+Extension.h */,
+				075AB0F92684AAD9007CA1BD /* LPNetworkOperation+Category.h */,
+				075AB0FA2684AAD9007CA1BD /* LeanplumReachability+Category.m */,
+				075AB0FB2684AAD9007CA1BD /* LPOpenUrlMessageTemplate+Extenstion.h */,
+				075AB0FC2684AAD9007CA1BD /* LPNetworkEngine+Category.m */,
+				075AB0FD2684AAD9007CA1BD /* LPRequestSender+Categories.h */,
+				075AB0FE2684AAD9007CA1BD /* LPVarCache+Extensions.h */,
+				075AB0FF2684AAD9007CA1BD /* LPRequest+Extension.m */,
+				075AB1002684AAD9007CA1BD /* Leanplum+Extensions.h */,
+				075AB1012684AAD9007CA1BD /* LPNetworkOperation+Category.m */,
+				075AB1022684AAD9007CA1BD /* LPRequestFactory+Extension.m */,
+				075AB1032684AAD9007CA1BD /* LPRequestSender+Categories.m */,
+				075AB1042684AAD9007CA1BD /* LPNetworkEngine+Category.h */,
+				075AB1052684AAD9007CA1BD /* LeanplumReachability+Category.h */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		075AB1082684AAD9007CA1BD /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				075AB1092684AAD9007CA1BD /* LeanplumHelper.m */,
+				075AB10A2684AAD9007CA1BD /* LeanplumHelper.h */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		075AB12D2684AB9D007CA1BD /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				075AB12E2684AB9D007CA1BD /* MainAppIcon.png */,
+				075AB12F2684AB9D007CA1BD /* GoldIcon.png */,
+				075AB1302684AB9D007CA1BD /* test.pdf */,
+				075AB1312684AB9D007CA1BD /* test.file */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		075AB1322684AB9D007CA1BD /* Responses */ = {
+			isa = PBXGroup;
+			children = (
+				075AB1332684AB9D007CA1BD /* complex_start_response.json */,
+				075AB1342684AB9D007CA1BD /* variants_response.json */,
+				075AB1352684AB9D007CA1BD /* action_response.json */,
+				075AB1362684AB9D007CA1BD /* track_event_response.json */,
+				075AB1372684AB9D007CA1BD /* start_variables_response.json */,
+				075AB1382684AB9D007CA1BD /* start_with_variant_debug_info_response.json */,
+				075AB1392684AB9D007CA1BD /* secured_vars_no_sign_response.json */,
+				075AB13A2684AB9D007CA1BD /* Malformed */,
+				075AB13D2684AB9D007CA1BD /* state_response.json */,
+				075AB13E2684AB9D007CA1BD /* simple_start_response.json */,
+				075AB13F2684AB9D007CA1BD /* batch_response.json */,
+				075AB1402684AB9D007CA1BD /* newsfeed_response.json */,
+				075AB1412684AB9D007CA1BD /* registration_response.json */,
+				075AB1422684AB9D007CA1BD /* variables_response.json */,
+				075AB1432684AB9D007CA1BD /* secured_vars_response.json */,
+				075AB1442684AB9D007CA1BD /* variables_with_newsfeed_response.json */,
+				075AB1452684AB9D007CA1BD /* secured_vars_empty_response.json */,
+			);
+			path = Responses;
+			sourceTree = "<group>";
+		};
+		075AB13A2684AB9D007CA1BD /* Malformed */ = {
+			isa = PBXGroup;
+			children = (
+				075AB13B2684AB9D007CA1BD /* malformed_track_event_response.json */,
+				075AB13C2684AB9D007CA1BD /* malformed_simple_start_response.json */,
+			);
+			path = Malformed;
+			sourceTree = "<group>";
+		};
+		075AB1462684AB9D007CA1BD /* TestData */ = {
+			isa = PBXGroup;
+			children = (
+				075AB1472684AB9D007CA1BD /* DifferentPriorities2.json */,
+				075AB1482684AB9D007CA1BD /* regionData.json */,
+				075AB1492684AB9D007CA1BD /* SingleMessage.json */,
+				075AB14A2684AB9D007CA1BD /* TiedPriorities2.json */,
+				075AB14B2684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json */,
+				075AB14C2684AB9D007CA1BD /* TiedPriorities1.json */,
+				075AB14D2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json */,
+				075AB14E2684AB9D007CA1BD /* ChainedMessage.json */,
+				075AB14F2684AB9D007CA1BD /* NoPriorities.json */,
+				075AB1502684AB9D007CA1BD /* sample_action_notification.json */,
+				075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */,
+			);
+			path = TestData;
+			sourceTree = "<group>";
+		};
+		E0CB0FD8F4E44175F7CB3EEF /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */,
+				B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */,
+			);
+			name = Pods;
+			path = ../Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		075AACE626847BF3007CA1BD /* LeanplumSDKApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 075AACFB26847BF4007CA1BD /* Build configuration list for PBXNativeTarget "LeanplumSDKApp" */;
+			buildPhases = (
+				075AACE326847BF3007CA1BD /* Sources */,
+				075AACE426847BF3007CA1BD /* Frameworks */,
+				075AACE526847BF3007CA1BD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LeanplumSDKApp;
+			productName = LeanplumSDKApp;
+			productReference = 075AACE726847BF3007CA1BD /* LeanplumSDKApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		075AAFBB26849AC1007CA1BD /* LeanplumSDKTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 075AAFC326849AC2007CA1BD /* Build configuration list for PBXNativeTarget "LeanplumSDKTests" */;
+			buildPhases = (
+				E23C0B492C2F331882BA7B41 /* [CP] Check Pods Manifest.lock */,
+				075AAFB826849AC1007CA1BD /* Sources */,
+				075AAFB926849AC1007CA1BD /* Frameworks */,
+				075AAFBA26849AC1007CA1BD /* Resources */,
+				CCAE818569231C43601E87E0 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				075AAFC226849AC1007CA1BD /* PBXTargetDependency */,
+			);
+			name = LeanplumSDKTests;
+			productName = LeanplumSDKTests;
+			productReference = 075AAFBC26849AC1007CA1BD /* LeanplumSDKTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		075AACDF26847BF3007CA1BD /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1250;
+				LastUpgradeCheck = 1250;
+				TargetAttributes = {
+					075AACE626847BF3007CA1BD = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					075AAFBB26849AC1007CA1BD = {
+						CreatedOnToolsVersion = 12.5.1;
+						TestTargetID = 075AACE626847BF3007CA1BD;
+					};
+				};
+			};
+			buildConfigurationList = 075AACE226847BF3007CA1BD /* Build configuration list for PBXProject "LeanplumSDKApp" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 075AACDE26847BF3007CA1BD;
+			productRefGroup = 075AACE826847BF3007CA1BD /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				075AACE626847BF3007CA1BD /* LeanplumSDKApp */,
+				075AAFBB26849AC1007CA1BD /* LeanplumSDKTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		075AACE526847BF3007CA1BD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				075AB18E2684AB9D007CA1BD /* NoPriorities.json in Resources */,
+				075AB15C2684AB9D007CA1BD /* variants_response.json in Resources */,
+				075AB1542684AB9D007CA1BD /* GoldIcon.png in Resources */,
+				075AB17E2684AB9D007CA1BD /* DifferentPriorities2.json in Resources */,
+				075AB1922684AB9D007CA1BD /* DifferentPriorities1.json in Resources */,
+				075AACF726847BF4007CA1BD /* LaunchScreen.storyboard in Resources */,
+				075AB1842684AB9D007CA1BD /* TiedPriorities2.json in Resources */,
+				075AB1862684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */,
+				075AB15E2684AB9D007CA1BD /* action_response.json in Resources */,
+				075AB16C2684AB9D007CA1BD /* state_response.json in Resources */,
+				075AB0962684A1A4007CA1BD /* Leanplum-Info.plist in Resources */,
+				075AB1622684AB9D007CA1BD /* start_variables_response.json in Resources */,
+				075AB1702684AB9D007CA1BD /* batch_response.json in Resources */,
+				075AB1602684AB9D007CA1BD /* track_event_response.json in Resources */,
+				075AB1642684AB9D007CA1BD /* start_with_variant_debug_info_response.json in Resources */,
+				075AACF426847BF4007CA1BD /* Assets.xcassets in Resources */,
+				075AB16E2684AB9D007CA1BD /* simple_start_response.json in Resources */,
+				075AB15A2684AB9D007CA1BD /* complex_start_response.json in Resources */,
+				075AB1762684AB9D007CA1BD /* variables_response.json in Resources */,
+				075AB1782684AB9D007CA1BD /* secured_vars_response.json in Resources */,
+				075AB1522684AB9D007CA1BD /* MainAppIcon.png in Resources */,
+				075AACF226847BF3007CA1BD /* Main.storyboard in Resources */,
+				075AB17A2684AB9D007CA1BD /* variables_with_newsfeed_response.json in Resources */,
+				075AB1662684AB9D007CA1BD /* secured_vars_no_sign_response.json in Resources */,
+				075AB1722684AB9D007CA1BD /* newsfeed_response.json in Resources */,
+				075AB1902684AB9D007CA1BD /* sample_action_notification.json in Resources */,
+				075AB1802684AB9D007CA1BD /* regionData.json in Resources */,
+				075AB1742684AB9D007CA1BD /* registration_response.json in Resources */,
+				075AB16A2684AB9D007CA1BD /* malformed_simple_start_response.json in Resources */,
+				075AB18A2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json in Resources */,
+				075AB1682684AB9D007CA1BD /* malformed_track_event_response.json in Resources */,
+				075AB1562684AB9D007CA1BD /* test.pdf in Resources */,
+				075AB17C2684AB9D007CA1BD /* secured_vars_empty_response.json in Resources */,
+				075AB1882684AB9D007CA1BD /* TiedPriorities1.json in Resources */,
+				075AB1822684AB9D007CA1BD /* SingleMessage.json in Resources */,
+				075AB18C2684AB9D007CA1BD /* ChainedMessage.json in Resources */,
+				075AB1582684AB9D007CA1BD /* test.file in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		075AAFBA26849AC1007CA1BD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				075AB18D2684AB9D007CA1BD /* ChainedMessage.json in Resources */,
+				075AB16B2684AB9D007CA1BD /* malformed_simple_start_response.json in Resources */,
+				075AB1932684AB9D007CA1BD /* DifferentPriorities1.json in Resources */,
+				075AB17B2684AB9D007CA1BD /* variables_with_newsfeed_response.json in Resources */,
+				075AB18F2684AB9D007CA1BD /* NoPriorities.json in Resources */,
+				075AB17D2684AB9D007CA1BD /* secured_vars_empty_response.json in Resources */,
+				075AB1632684AB9D007CA1BD /* start_variables_response.json in Resources */,
+				075AB15D2684AB9D007CA1BD /* variants_response.json in Resources */,
+				075AB1812684AB9D007CA1BD /* regionData.json in Resources */,
+				075AB1752684AB9D007CA1BD /* registration_response.json in Resources */,
+				075AB15F2684AB9D007CA1BD /* action_response.json in Resources */,
+				075AB16D2684AB9D007CA1BD /* state_response.json in Resources */,
+				075AB1552684AB9D007CA1BD /* GoldIcon.png in Resources */,
+				075AB1912684AB9D007CA1BD /* sample_action_notification.json in Resources */,
+				075AB1732684AB9D007CA1BD /* newsfeed_response.json in Resources */,
+				075AB1832684AB9D007CA1BD /* SingleMessage.json in Resources */,
+				075AB1532684AB9D007CA1BD /* MainAppIcon.png in Resources */,
+				075AB15B2684AB9D007CA1BD /* complex_start_response.json in Resources */,
+				075AB1852684AB9D007CA1BD /* TiedPriorities2.json in Resources */,
+				075AB1612684AB9D007CA1BD /* track_event_response.json in Resources */,
+				075AB1672684AB9D007CA1BD /* secured_vars_no_sign_response.json in Resources */,
+				075AB17F2684AB9D007CA1BD /* DifferentPriorities2.json in Resources */,
+				075AB1772684AB9D007CA1BD /* variables_response.json in Resources */,
+				075AB1572684AB9D007CA1BD /* test.pdf in Resources */,
+				075AB1792684AB9D007CA1BD /* secured_vars_response.json in Resources */,
+				075AB1892684AB9D007CA1BD /* TiedPriorities1.json in Resources */,
+				075AB18B2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json in Resources */,
+				075AB1712684AB9D007CA1BD /* batch_response.json in Resources */,
+				075AB1692684AB9D007CA1BD /* malformed_track_event_response.json in Resources */,
+				075AB1592684AB9D007CA1BD /* test.file in Resources */,
+				075AB1872684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */,
+				075AB1652684AB9D007CA1BD /* start_with_variant_debug_info_response.json in Resources */,
+				075AB16F2684AB9D007CA1BD /* simple_start_response.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		CCAE818569231C43601E87E0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E23C0B492C2F331882BA7B41 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LeanplumSDKTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		075AACE326847BF3007CA1BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				075AACEF26847BF3007CA1BD /* ViewController.swift in Sources */,
+				075AACEB26847BF3007CA1BD /* AppDelegate.swift in Sources */,
+				075AACED26847BF3007CA1BD /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		075AAFB826849AC1007CA1BD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */,
+				075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */,
+				075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */,
+				075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */,
+				075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */,
+				075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */,
+				075AB1182684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m in Sources */,
+				075AB1212684AAD9007CA1BD /* LPRequestSenderTest.m in Sources */,
+				075AB11B2684AAD9007CA1BD /* LPRequestBatchTest.m in Sources */,
+				075AB11E2684AAD9007CA1BD /* LPCountAggregatorTest.m in Sources */,
+				075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */,
+				075AB10C2684AAD9007CA1BD /* LPPushNotificationsHandlerTest.m in Sources */,
+				075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */,
+				075AB1292684AAD9007CA1BD /* LPRequestSender+Categories.m in Sources */,
+				075AB1252684AAD9007CA1BD /* LPNetworkEngine+Category.m in Sources */,
+				075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */,
+				075AB1162684AAD9007CA1BD /* ExceptionsTest.m in Sources */,
+				075AB12C2684AAD9007CA1BD /* LeanplumHelper.m in Sources */,
+				075AB1262684AAD9007CA1BD /* LPRequest+Extension.m in Sources */,
+				075AB12B2684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m in Sources */,
+				075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */,
+				075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */,
+				075AB1242684AAD9007CA1BD /* LeanplumReachability+Category.m in Sources */,
+				075AB1142684AAD9007CA1BD /* MessagesTest.m in Sources */,
+				075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */,
+				075AB11A2684AAD9007CA1BD /* LPDeferMessageManagerTest.m in Sources */,
+				075AB1272684AAD9007CA1BD /* LPNetworkOperation+Category.m in Sources */,
+				075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */,
+				075AB10B2684AAD9007CA1BD /* LPJSONTest.m in Sources */,
+				075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */,
+				075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */,
+				075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */,
+				075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */,
+				075AB1202684AAD9007CA1BD /* LPPushNotificationsManagerTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		075AAFC226849AC1007CA1BD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 075AACE626847BF3007CA1BD /* LeanplumSDKApp */;
+			targetProxy = 075AAFC126849AC1007CA1BD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		075AACF026847BF3007CA1BD /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				075AACF126847BF3007CA1BD /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		075AACF526847BF4007CA1BD /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				075AACF626847BF4007CA1BD /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		075AACF926847BF4007CA1BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		075AACFA26847BF4007CA1BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		075AACFC26847BF4007CA1BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
+				INFOPLIST_FILE = "LeanplumSDKApp/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		075AACFD26847BF4007CA1BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
+				INFOPLIST_FILE = "LeanplumSDKApp/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		075AAFC426849AC2007CA1BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
+				INFOPLIST_FILE = "LeanplumSDKTests/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LeanplumSDKApp.app/LeanplumSDKApp";
+			};
+			name = Debug;
+		};
+		075AAFC526849AC2007CA1BD /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4XLWYATZ5P;
+				INFOPLIST_FILE = "LeanplumSDKTests/Supporting Files/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LeanplumSDKApp.app/LeanplumSDKApp";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		075AACE226847BF3007CA1BD /* Build configuration list for PBXProject "LeanplumSDKApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				075AACF926847BF4007CA1BD /* Debug */,
+				075AACFA26847BF4007CA1BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		075AACFB26847BF4007CA1BD /* Build configuration list for PBXNativeTarget "LeanplumSDKApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				075AACFC26847BF4007CA1BD /* Debug */,
+				075AACFD26847BF4007CA1BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		075AAFC326849AC2007CA1BD /* Build configuration list for PBXNativeTarget "LeanplumSDKTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				075AAFC426849AC2007CA1BD /* Debug */,
+				075AAFC526849AC2007CA1BD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 075AACDF26847BF3007CA1BD /* Project object */;
+}

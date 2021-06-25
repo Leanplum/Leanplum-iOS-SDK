@@ -7,18 +7,23 @@
 set -eo pipefail; [[ $DEBUG ]] && set -x
 
 main() {
-    echo "Creating symlinks for all class headers"
+    echo "Creating symlinks for all headers & resources"
 
-    rm -rf Leanplum-SDK/include
-    mkdir Leanplum-SDK/include
+    pushd LeanplumSDK/LeanplumSDK
+    rm -rf Resources
+    ln -s ../LeanplumSDKBundle/Resources Resources
+    popd
+
+    rm -rf LeanplumSDK/LeanplumSDK/include
+    mkdir LeanplumSDK/LeanplumSDK/include
 
     # find all headers with absolute paths
-    pushd Leanplum-SDK/Classes
+    pushd LeanplumSDK/LeanplumSDK/Classes
     headers=$(find .. -name "*.h")
     popd
 
     # symlink all header files to include directory
-    ln -s $headers "Leanplum-SDK/include"
+    ln -s $headers "LeanplumSDK/LeanplumSDK/include"
 
     echo "${GREEN}Done.${NORMAL}"
 }

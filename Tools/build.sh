@@ -63,61 +63,19 @@ run() {
 #   None
 #######################################
 main() {
-  # Check for Jenkins build number, otherwise default to curent time in seconds.
-  if [[ -z "${BUILD_NUMBER+x}" ]]; then 
-    BUILD_NUMBER=$(date "+%s")
-  fi
-  export IOS_VERSION_STRING=${IOS_VERSION_STRING:-"$IOS_VERSION.$BUILD_NUMBER"}
+  # rm -rf Release
 
-  SDK_DIR=${SDK_DIR:-"$(pwd)/."}
-  RELEASE_DIR_BASE=${RELEASE_DIR_BASE:-"$SDK_DIR/Release"}
-  LEANPLUM_PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER:-"s"}
-  CONFIGURATION=${CONFIGURATION:-"Release"}
-  
-  BUILD_DIR=${BUILD_DIR:-"/tmp/AppleSDK-build"}
-  BUILD_ROOT=${BUILD_ROOT:-"/tmp/AppleSDK-build"}
-  
-  ARM64_DIR=${ARM64_DIR:-"/build-arm64"}
-  X8664_DIR=${X8664_DIR:-"/build-x86_64"}
+  # build_ios_dylib
+  # printf "\n"
+  # build_ios_static
 
-  default="${BUILD_DIR}${ARM64_DIR}/${CONFIGURATION}-iphoneos"
-  CURRENTCONFIG_ARM64_DEVICE_DIR=${CURRENTCONFIG_ARM64_DEVICE_DIR:-$default}
-  default="${BUILD_DIR}${X8664_DIR}/${CONFIGURATION}-iphonesimulator"
-  CURRENTCONFIG_X8664_SIMULATOR_DIR=${CURRENTCONFIG_X8664_SIMULATOR_DIR:-$default}
-  
-  # Clean and build
-  ACTION="clean build"
+  # # remove duplicate assets if any
+  find "Release/" -name '_CodeSignature' -exec rm -rf {} +
 
-  DEVICE_SDK="iphoneos"
-  SIM_SDK="iphonesimulator"
-
-  # Clear leftovers
-  rm -rf "$RELEASE_DIR_BASE"
-  mkdir -p "$RELEASE_DIR_BASE"
-
-  # Build Dynamic Framework
-  RELEASE_DIR="$RELEASE_DIR_BASE/dynamic"
-  mkdir -p "$RELEASE_DIR"
-
-  cd "$SDK_DIR/Example/"
-  pod install
-  cd "$SDK_DIR/Example/Pods"
-  build_ios_dylib
-
-  # Build Static Framework
-  RELEASE_DIR="$RELEASE_DIR_BASE/static"
-  mkdir -p "$RELEASE_DIR"
-  
-  export LP_STATIC=1
-  cd "$SDK_DIR/Example/"
-  pod install
-  cd "$SDK_DIR/Example/Pods"
-  build_ios_static
-
-  # remove duplicate assets if any
-  find "${RELEASE_DIR_BASE}/" -name '*.car' -not -path '*/Leanplum-iOS-SDK.bundle/*' -exec rm -rf {} +
-  find "${RELEASE_DIR_BASE}/" -name '*.storyboardc' -not -path '*/Leanplum-iOS-SDK.bundle/*' -exec rm -rf {} +
-  find "${RELEASE_DIR_BASE}/" -name '_CodeSignature' -exec rm -rf {} +
+  rm -rf Release/dynamic/LeanplumSDK-iphoneos.xcarchive
+  rm -rf Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive
+  rm -rf Release/static/LeanplumSDK-iphoneos.xcarchive
+  rm -rf Release/static/LeanplumSDK-iphonesimulator.xcarchive
 
   # zip all iOS frameworks
   zip_ios
@@ -141,37 +99,47 @@ main() {
 build_ios_dylib() {
   echo "Starting build for Leanplum-SDK (iOS) dynamic framework"
 
-  run "Building Leanplum-SDK-iOS dynamic (device/arm64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
-    "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
-    BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
-    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  
-  run "Building Leanplum-SDK-iOS dynamic (simulator/x86_64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${SIM_SDK}" \
-    "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
-    BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
-    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
+  run "Building Leanplum-SDK-iOS dynamic (simulator) target ..." \
+  xcodebuild archive \
+  -scheme Leanplum \
+  -archivePath Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive \
+  -sdk iphonesimulator \
+  SKIP_INSTALL=NO
 
-  run "Combining builds to universal fat library ..." \
-    lipo -create -output "${RELEASE_DIR}/Leanplum" \
-    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum"
+  run "Building Leanplum-SDK-iOS dynamic (device) target ..." \
+  xcodebuild archive \
+  -scheme Leanplum \
+  -archivePath Release/dynamic/LeanplumSDK-iphoneos.xcarchive \
+  -sdk iphoneos \
+  SKIP_INSTALL=NO
 
-  # Copy generated framework
-  cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
-    "${RELEASE_DIR}/Leanplum.framework"
-  rm -f "${RELEASE_DIR}/Leanplum.framework/Leanplum"
-  mv "${RELEASE_DIR}/Leanplum" "${RELEASE_DIR}/Leanplum.framework/"
-
-  # create xcframework
-  run "Combining builds into xcframework" \
+  run "Creating Leanplum-SDK-iOS dynamic xcframework ..." \
   xcodebuild -create-xcframework \
-    -framework "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework" \
-    -framework "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/Leanplum.framework" \
-    -output "${RELEASE_DIR}/Leanplum.xcframework"
+  -framework Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework \
+  -framework Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
+  -output Release/dynamic/Leanplum.xcframework
 
-  printf "%s\n" "Successfully built Leanplum-SDK (iOS) Framework."
+  # simulator build also contains arm64 slice, we are removing it to keep backward compatibility
+  # it will still be available in xcframework
+  run "Removing arm64 from simulator slice ..." \
+  lipo -remove arm64 \
+    Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
+    -output Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
+
+  cp -r Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
+    Release/dynamic/Leanplum.framework
+  rm -rf Release/dynamic/Leanplum.framework/Leanplum
+
+  run "Creating iphoneos & iphonesimulator fat dynamic library ..." \
+  lipo -create \
+    Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
+    Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
+    -output Release/dynamic/Leanplum.framework/Leanplum
+
+  run "Modifying plist to include both Simulator & iPhone ..." \
+  plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator Release/dynamic/Leanplum.framework/Info.plist
+
+  printf "%s\n" "Successfully built Leanplum-SDK dynamic framework."
 }
 
 #######################################
@@ -184,58 +152,73 @@ build_ios_dylib() {
 #   None
 #######################################
 build_ios_static() {
-  echo "Starting build for Leanplum-SDK (iOS) static framework"
+  echo "Starting build for Leanplum-SDK static framework"
 
-  run "Building Leanplum-SDK-iOS static (device/arm64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
-    "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
-    BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
-    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
-  
-  run "Building Leanplum-SDK-iOS static (simulator/x86_64) target ..." \
-    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${SIM_SDK}" \
-    "$ACTION" ARCHS='x86_64' VALID_ARCHS='x86_64' RUN_CLANG_STATIC_ANALYZER=NO \
-    BUILD_DIR="${BUILD_DIR}${X8664_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
-    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
+  run "Building Leanplum-SDK-iOS static (simulator) target ..." \
+  xcodebuild archive \
+  -scheme Leanplum-Static \
+  -archivePath Release/static/LeanplumSDK-iphonesimulator.xcarchive \
+  -sdk iphonesimulator \
+  SKIP_INSTALL=NO
 
-  # create framework for each slice first  
-  mkdir -p "${RELEASE_DIR}/arm64/Leanplum.framework"
-  mkdir -p "${RELEASE_DIR}/x86_64/Leanplum.framework"
+  run "Building Leanplum-SDK-iOS static (device) target ..." \
+  xcodebuild archive \
+  -scheme Leanplum-Static \
+  -archivePath Release/static/LeanplumSDK-iphoneos.xcarchive \
+  -sdk iphoneos \
+  SKIP_INSTALL=NO
 
-  cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
-    "${RELEASE_DIR}/Leanplum.framework"
-  cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
-    "${RELEASE_DIR}/arm64/Leanplum.framework"
-  cp -r "${BUILD_DIR}$X8664_DIR/$CONFIGURATION-iphonesimulator/Leanplum-iOS-SDK/Leanplum.framework/" \
-    "${RELEASE_DIR}/x86_64/Leanplum.framework"
+  run "Creating simulator static library from libLeanplum.a ..." \
+  lipo -create \
+    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/libLeanplum.a \
+    -output Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
 
-  rm -f "${RELEASE_DIR}/Leanplum.framework/Leanplum"
-  
-  # combine and copy arm64 & x86_64 slice to universal framework
-  run "Combining builds to universal fat library ..." \
-    lipo -create -output "${RELEASE_DIR}/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a" \
-    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a"
+  run "Creating ios static library from libLeanplum.a ..." \
+  lipo -create \
+    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/libLeanplum.a \
+    -output Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
 
-  # copy the arm64 slice to framework
-  lipo -create -output "${RELEASE_DIR}/arm64/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a" \
+  run "Copying modulemap for simulator ..." \
+  cp -r Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules \
+    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules
 
-  # copy the x86_64 slice to framework
-  lipo -create -output "${RELEASE_DIR}/x86_64/Leanplum.framework/Leanplum" \
-    "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/libLeanplum-iOS-SDK.a" \
+  run "Copying modulemap for ios ..." \
+  cp -r Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules \
+    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules
 
-  # create xcframework from each framework slice
-  run "Combining builds into xcframework" \
+  run "Copying Info.plist to static simulator framework ..." \
+  cp Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist \
+    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist
+
+  run "Copying Info.plist to static iphone framework ..." \
+  cp Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist \
+    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist
+
+  run "Creating Leanplum-SDK-iOS static xcframework ..." \
   xcodebuild -create-xcframework \
-    -framework "${RELEASE_DIR}/arm64/Leanplum.framework" \
-    -framework "${RELEASE_DIR}/x86_64/Leanplum.framework" \
-    -output "${RELEASE_DIR}/Leanplum.xcframework"
+  -framework Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework \
+  -framework Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
+  -output Release/static/Leanplum.xcframework
 
-  rm -rf "${RELEASE_DIR}/arm64"
-  rm -rf "${RELEASE_DIR}/x86_64"
+  run "Removing arm64 from simulator slice ..." \
+  lipo -remove arm64 \
+    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
+    -output Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
 
-  printf "%s\n" "Successfully built Leanplum-SDK (iOS) static Framework."
+  cp -r Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
+    Release/static/Leanplum.framework
+  rm -rf Release/static/Leanplum.framework/Leanplum
+
+  run "Creating iphoneos & iphonesimulator fat static library ..." \
+  lipo -create \
+    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
+    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
+    -output Release/static/Leanplum.framework/Leanplum
+
+  run "Modifying plist to include both Simulator & iPhone ..." \
+  plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator Release/static/Leanplum.framework/Info.plist
+
+  printf "%s\n" "Successfully built Leanplum-SDK static framework."
 }
 
 #######################################
@@ -249,27 +232,27 @@ build_ios_static() {
 #######################################
 zip_ios() {
   echo "zipping for iOS release"
-  cd "${RELEASE_DIR_BASE}"
+  cd Release/dynamic
   zip -r Leanplum.framework.zip *
-  mv Leanplum.framework.zip "$SDK_DIR"
+  mv Leanplum.framework.zip ..
   cd -
 }
 
 zip_unreal_engine() {
   echo "zipping for Unreal Engine release"
   pwd
-  cd "${RELEASE_DIR_BASE}/static"
+  cd Release/static
 
   mkdir -p Leanplum.embeddedframework
   cp -R Leanplum.framework Leanplum.embeddedframework
   zip -r Leanplum.embeddedframework.zip Leanplum.embeddedframework
-  mv Leanplum.embeddedframework.zip "$SDK_DIR"
+  mv Leanplum.embeddedframework.zip ..
   rm -rf Leanplum.embeddedframework
 
   mkdir -p Leanplum.embeddedxcframework
   cp -R Leanplum.xcframework Leanplum.embeddedxcframework
   zip -r Leanplum.embeddedxcframework.zip Leanplum.embeddedxcframework
-  mv Leanplum.embeddedxcframework.zip "$SDK_DIR"
+  mv Leanplum.embeddedxcframework.zip ..
   rm -rf Leanplum.embeddedxcframework
   cd -
 }
