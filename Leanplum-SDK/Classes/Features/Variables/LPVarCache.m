@@ -838,11 +838,11 @@ static dispatch_once_t leanplum_onceToken;
     return self.localCaps;
 }
 
-- (int)getActionDefinitionType:(NSString *)actionName
+- (NSUInteger)getActionDefinitionType:(NSString *)actionName
 {
     id actionDef = [self.actionDefinitions objectForKey:actionName];
     if ([actionDef isKindOfClass:[NSDictionary class]]) {
-        LeanplumActionKind kind = (LeanplumActionKind)[(NSDictionary *)actionDef valueForKey:@"kind"];//TODO:Dejan test
+        LeanplumActionKind kind = (LeanplumActionKind)[(NSDictionary *)actionDef valueForKey:@"kind"];
         return kind;
     }
     

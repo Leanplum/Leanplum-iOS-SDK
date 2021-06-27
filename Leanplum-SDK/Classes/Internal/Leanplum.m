@@ -644,7 +644,6 @@ void leanplumExceptionHandler(NSException *exception);
         if (handledBlock) {
             handledBlock(handled);
             if (handled) {
-                //TODO:Dejan maybe check kind here
                 [Leanplum triggerMessageDisplayed:context];
             }
         }

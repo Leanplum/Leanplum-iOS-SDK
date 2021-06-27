@@ -110,7 +110,7 @@ NS_SWIFT_NAME(define(name:value:kind:));
 
 - (LPSecuredVars *)securedVars;
 
-- (int)getActionDefinitionType:(NSString *)actionName;
+- (NSUInteger)getActionDefinitionType:(NSString *)actionName;
 
 @end
 

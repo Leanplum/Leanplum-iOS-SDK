@@ -598,13 +598,12 @@ static long WEEK_SECONDS;
     return occurrenceCount;
 }
 
-- (int)countOccurrencesFor:(long long)startTime endTime:(long long)endTime value:(NSDictionary *)userDefValue
+- (int)countOccurrencesFor:(long long)startTime endTime:(long long)endTime value:(NSDictionary *)occurrences
 {
-    if ([LPUtils isNullOrEmpty:userDefValue]) {//} || [userDefValue isEqualToString:@"{}"]) {
+    if ([LPUtils isNullOrEmpty:occurrences]) {
         return 0;
     }
     
-    NSDictionary *occurrences = userDefValue;//[NSJSONSerialization JSONObjectWithData:[LPJSON JSONFromString:userDefValue] options:0 error:nil];
     NSNumber *min = [occurrences valueForKey:@"min"];
     NSNumber *max = [occurrences valueForKey:@"max"];
     
