@@ -2437,6 +2437,7 @@ andParameters:(NSDictionary *)params
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
             ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
             ![variants isEqualToArray:[LPVarCache sharedCache].variants] ||
+            ![localCaps isEqualToArray:[[LPVarCache sharedCache] getLocalCaps]] ||
             ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
             [[LPVarCache sharedCache] applyVariableDiffs:values
                                                 messages:messages
