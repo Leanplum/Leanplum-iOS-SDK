@@ -1903,6 +1903,7 @@ void leanplumExceptionHandler(NSException *exception);
                  originalMessageId:[actionContext originalMessageId]];
             } else {
                 if ([self shouldSuppressMessage:actionContext]) {
+                    LPLog(LPDebug, @"Local IAM caps reached, suppressing messageId=%@", [actionContext messageId]);
                     continue;
                 }
                 [self triggerAction:actionContext handledBlock:^(BOOL success) {
