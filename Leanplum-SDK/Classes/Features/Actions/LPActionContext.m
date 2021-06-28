@@ -30,7 +30,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @interface LPActionContext()
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
-@property(strong, nonatomic) LeanplumActionBlock actionNamedResponder;
+@property (strong, nonatomic) LeanplumActionBlock actionNamedResponder;
 
 @end
 
