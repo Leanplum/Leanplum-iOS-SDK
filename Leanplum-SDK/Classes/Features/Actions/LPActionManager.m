@@ -544,27 +544,27 @@ static long WEEK_SECONDS;
     int sessionLimit = 0;
     
     for (NSDictionary *cap in [[LPVarCache sharedCache] getLocalCaps]) {
-       if (![@"IN_APP" isEqualToString:[cap valueForKey:@"channel"]]) {
-         continue;
-       }
+        if (![@"IN_APP" isEqualToString:[cap valueForKey:@"channel"]]) {
+            continue;
+        }
         NSString *type = (NSString *)[cap valueForKey:@"type"];
         int limit = [[cap valueForKey:@"limit"] intValue];
         if (limit == 0) {
-         continue;
-       }
-
-       if ([@"DAY" isEqualToString:type]) {
-         dayLimit = limit;
-       } else if ([@"WEEK" isEqualToString:type]) {
-         weekLimit = limit;
-       } else if ([@"SESSION" isEqualToString:type]) {
-         sessionLimit = limit;
-       }
-     }
-
-     return (weekLimit > 0 && [self weeklyOccurrencesCount] >= weekLimit)
-         || (dayLimit > 0 && [self dailyOccurrencesCount] >= dayLimit)
-         || (sessionLimit > 0 && [self sessionOccurrencesCount] >= sessionLimit);
+            continue;
+        }
+        
+        if ([@"DAY" isEqualToString:type]) {
+            dayLimit = limit;
+        } else if ([@"WEEK" isEqualToString:type]) {
+            weekLimit = limit;
+        } else if ([@"SESSION" isEqualToString:type]) {
+            sessionLimit = limit;
+        }
+    }
+    
+    return (weekLimit > 0 && [self weeklyOccurrencesCount] >= weekLimit)
+    || (dayLimit > 0 && [self dailyOccurrencesCount] >= dayLimit)
+    || (sessionLimit > 0 && [self sessionOccurrencesCount] >= sessionLimit);
 }
 
 - (int)weeklyOccurrencesCount
