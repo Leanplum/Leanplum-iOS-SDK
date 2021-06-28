@@ -30,7 +30,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @interface LPActionContext()
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
-@property(strong, nonatomic) NSMutableArray *actionResponders;
+@property(strong, nonatomic) LeanplumActionBlock actionNamedResponder;
 
 @end
 
@@ -48,7 +48,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @synthesize preventRealtimeUpdating=_preventRealtimeUpdating;
 @synthesize contextualValues=_contextualValues;
 @synthesize countAggregator=_countAggregator;
-@synthesize actionResponders=_actionResponders;
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(NSDictionary *)args
@@ -500,22 +499,26 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_END_TRY
 }
 
-- (void)onRunActionNamed:(LeanplumActionBlock)block
+- (void)setActionNamedResponder:(LeanplumActionBlock)block
 {
-    if (![self actionResponders]) {
-        self.actionResponders = [[NSMutableArray alloc] init];
+    if (block) {
+        _actionNamedResponder = [block copy];
+    } else {
+        _actionNamedResponder = nil;
     }
-    [[self actionResponders] addObject:[block copy]];
 }
 
-- (void)triggerRunActionNamed:(NSString *)name withArgs:(NSDictionary *)args
+- (void)triggerActionNamedResponder:(NSString *)name withArgs:(NSDictionary *)args
 {
-    LPActionContext *actionContext = [LPActionContext
-                                      actionContextWithName:name
-                                      args:args messageId:_messageId];
-    
-    for (LeanplumActionBlock block in [self actionResponders]) {
-        block(actionContext);
+    if ([self actionNamedResponder]) {
+        LPActionContext *actionContext = [LPActionContext
+                                          actionContextWithName:name
+                                          args:args messageId:_messageId];
+        
+        __weak LPActionContext *weakSelf = self;
+        actionContext->_parentContext = weakSelf;
+        
+        self.actionNamedResponder(actionContext);
     }
 }
 
@@ -528,7 +531,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     }
     NSDictionary *args = [self getChildArgs:name];
     
-    [self triggerRunActionNamed:name withArgs:args];
+    [self triggerActionNamedResponder:name withArgs:args];
     
     if (!args) {
         return;

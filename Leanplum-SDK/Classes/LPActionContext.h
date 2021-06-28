@@ -41,6 +41,11 @@ NS_SWIFT_NAME(ActionContext)
  */
 @property (readonly, strong, nullable) NSDictionary *args;
 
+/**
+ * The parent ActionContext if present
+ */
+@property (readonly, nonatomic, strong, nullable) LPActionContext *parentContext;
+
 - (NSString *)actionName
 NS_SWIFT_NAME(action());
 
@@ -77,7 +82,7 @@ NS_SWIFT_NAME(runAction(name:));
 /**
  * Executes a block when action is run.
  */
-- (void)onRunActionNamed:(LeanplumActionBlock)block;
+- (void)setActionNamedResponder:(LeanplumActionBlock)block;
 
 /**
  * Runs and tracks an event for the action given by the "name" key.

@@ -64,6 +64,12 @@
 
 @end
 
+@interface LPActionContext (Test)
+
+@property(strong, nonatomic) LeanplumActionBlock actionNamedResponder;
+
+@end
+
 @interface LeanplumTest : XCTestCase
 
 @end
@@ -2420,6 +2426,49 @@
         return NO;
     }];
     [Leanplum triggerAction:context];
+    
+    [self waitForExpectationsWithTimeout:6 handler:nil];
+}
+
+/**
+ * Leanplum triggerAction uses the same context instance to call all LeanplumActionBlock responders
+ * Those include the defineAction:actionResponder and the onAction:actionResponder blocks
+ */
+- (void)test_onAction_sameContext {
+    NSString *actionName = @"TestAction";
+    LPActionContext *messageContext = [LPActionContext
+                                actionContextWithName:actionName
+                                args:nil
+                                messageId:@"1"];
+    
+    __weak LPActionContext *weakContext = messageContext;
+    
+    XCTestExpectation *onActionExpectation = [self expectationWithDescription:@"onActionExpectation"];
+    
+    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual(context, weakContext);
+        
+        [context setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
+            return NO;
+        }];
+        
+        [onActionExpectation fulfill];
+        return NO;
+    }];
+    
+    XCTestExpectation *onActionExpectation2 = [self expectationWithDescription:@"onActionExpectation2"];
+    
+    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual(context, weakContext);
+        
+        // The responder is already set to the context from the previous onAction block
+        XCTAssertNotNil([context actionNamedResponder]);
+        
+        [onActionExpectation2 fulfill];
+        return NO;
+    }];
+    
+    [Leanplum triggerAction:messageContext];
     
     [self waitForExpectationsWithTimeout:6 handler:nil];
 }
