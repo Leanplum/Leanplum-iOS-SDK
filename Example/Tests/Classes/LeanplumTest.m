@@ -912,6 +912,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:nil
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil
@@ -1469,7 +1470,7 @@
        @"myArray": @{
                @"[2]": @33
                }
-       } messages:nil variants:nil regions:nil variantDebugInfo:nil varsJson:nil varsSignature:nil];
+       } messages:nil variants:nil localCaps:nil regions:nil variantDebugInfo:nil varsJson:nil varsSignature:nil];
 
     
     XCTestExpectation *request_expectation =
@@ -1795,6 +1796,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:variants
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil

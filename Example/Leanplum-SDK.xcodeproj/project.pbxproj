@@ -127,6 +127,15 @@
 		C9AC35B7266D624A008337F2 /* secured_vars_no_sign_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9AC35B5266D624A008337F2 /* secured_vars_no_sign_response.json */; };
 		C9AC35BB266D62A1008337F2 /* secured_vars_empty_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9AC35BA266D62A1008337F2 /* secured_vars_empty_response.json */; };
 		C9AC35BC266D62A1008337F2 /* secured_vars_empty_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9AC35BA266D62A1008337F2 /* secured_vars_empty_response.json */; };
+		C9B092532684FB32008B3268 /* LPLocalCapsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B092522684FB32008B3268 /* LPLocalCapsTest.m */; };
+		C9B092552684FCFF008B3268 /* local_caps_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B092542684FCFE008B3268 /* local_caps_response.json */; };
+		C9B092562684FCFF008B3268 /* local_caps_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B092542684FCFE008B3268 /* local_caps_response.json */; };
+		C9B092582684FFDC008B3268 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B092572684FFDC008B3268 /* local_caps_day_response.json */; };
+		C9B092592684FFDC008B3268 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B092572684FFDC008B3268 /* local_caps_day_response.json */; };
+		C9B0925B2684FFFA008B3268 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B0925A2684FFFA008B3268 /* local_caps_session_response.json */; };
+		C9B0925C2684FFFA008B3268 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B0925A2684FFFA008B3268 /* local_caps_session_response.json */; };
+		C9B0925E26850011008B3268 /* local_caps_week_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B0925D26850011008B3268 /* local_caps_week_response.json */; };
+		C9B0925F26850011008B3268 /* local_caps_week_response.json in Resources */ = {isa = PBXBuildFile; fileRef = C9B0925D26850011008B3268 /* local_caps_week_response.json */; };
 		C9C0C87025898CE900346291 /* LPRequestBatchTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C0C86F25898CE900346291 /* LPRequestBatchTest.m */; };
 		C9C0C87425898D0100346291 /* LPRequestSenderTimerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C9C0C87325898D0100346291 /* LPRequestSenderTimerTest.m */; };
 		E773031E24AB871E00EDF983 /* Leanplum-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E773031D24AB871E00EDF983 /* Leanplum-Info.plist */; };
@@ -260,6 +269,11 @@
 		C9AC35B0266D620C008337F2 /* secured_vars_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = secured_vars_response.json; sourceTree = "<group>"; };
 		C9AC35B5266D624A008337F2 /* secured_vars_no_sign_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = secured_vars_no_sign_response.json; sourceTree = "<group>"; };
 		C9AC35BA266D62A1008337F2 /* secured_vars_empty_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = secured_vars_empty_response.json; sourceTree = "<group>"; };
+		C9B092522684FB32008B3268 /* LPLocalCapsTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPLocalCapsTest.m; sourceTree = "<group>"; };
+		C9B092542684FCFE008B3268 /* local_caps_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local_caps_response.json; sourceTree = "<group>"; };
+		C9B092572684FFDC008B3268 /* local_caps_day_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local_caps_day_response.json; sourceTree = "<group>"; };
+		C9B0925A2684FFFA008B3268 /* local_caps_session_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local_caps_session_response.json; sourceTree = "<group>"; };
+		C9B0925D26850011008B3268 /* local_caps_week_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = local_caps_week_response.json; sourceTree = "<group>"; };
 		C9C0C86F25898CE900346291 /* LPRequestBatchTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestBatchTest.m; sourceTree = "<group>"; };
 		C9C0C87325898D0100346291 /* LPRequestSenderTimerTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTimerTest.m; sourceTree = "<group>"; };
 		D838E08C49B78EF6BAA262C1 /* Pods_Leanplum_SDK_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum_SDK_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -327,6 +341,7 @@
 				9E53F6E22474387B0097955F /* LPPushNotificationsHandlerTest.m */,
 				6A7815E224F6A89C004F3DC7 /* LPDeferMessageManagerTest.m */,
 				C9AC35AC266D6185008337F2 /* LPSecuredVarsTest.m */,
+				C9B092522684FB32008B3268 /* LPLocalCapsTest.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -403,6 +418,10 @@
 				C9AC35B0266D620C008337F2 /* secured_vars_response.json */,
 				C9AC35B5266D624A008337F2 /* secured_vars_no_sign_response.json */,
 				C9AC35BA266D62A1008337F2 /* secured_vars_empty_response.json */,
+				C9B092542684FCFE008B3268 /* local_caps_response.json */,
+				C9B092572684FFDC008B3268 /* local_caps_day_response.json */,
+				C9B0925A2684FFFA008B3268 /* local_caps_session_response.json */,
+				C9B0925D26850011008B3268 /* local_caps_week_response.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -666,6 +685,7 @@
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				07E5C8F11F052DD000A4B092 /* NoPriorities.json in Resources */,
 				07E5C8DE1F052DC400A4B092 /* newsfeed_response.json in Resources */,
+				C9B0925E26850011008B3268 /* local_caps_week_response.json in Resources */,
 				07E5C8F61F052DD000A4B092 /* TiedPriorities2.json in Resources */,
 				07E5C8DF1F052DC400A4B092 /* registration_response.json in Resources */,
 				9CD04D951F8EE7E30033AB4A /* variables_with_newsfeed_response.json in Resources */,
@@ -689,12 +709,15 @@
 				07E5C8DD1F052DC400A4B092 /* complex_start_response.json in Resources */,
 				07E5C8EE1F052DD000A4B092 /* DifferentPriorities1.json in Resources */,
 				07E5C8ED1F052DD000A4B092 /* ChainedMessage.json in Resources */,
+				C9B0925B2684FFFA008B3268 /* local_caps_session_response.json in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
+				C9B092552684FCFF008B3268 /* local_caps_response.json in Resources */,
 				07E5C8E31F052DC400A4B092 /* state_response.json in Resources */,
 				07E5C8EF1F052DD000A4B092 /* DifferentPriorities2.json in Resources */,
 				07E5C8E61F052DC400A4B092 /* variables_response.json in Resources */,
 				07E5C8E11F052DC400A4B092 /* simple_start_response.json in Resources */,
 				C9AC35BB266D62A1008337F2 /* secured_vars_empty_response.json in Resources */,
+				C9B092582684FFDC008B3268 /* local_caps_day_response.json in Resources */,
 				B449EB2A21F27AB2005C93B6 /* TiedPrioritiesDifferentDelay.json in Resources */,
 				07E5C8F41F052DD000A4B092 /* SingleMessage.json in Resources */,
 				07E5C8EC1F052DCC00A4B092 /* test.pdf in Resources */,
@@ -710,12 +733,15 @@
 				07E5C8C31F052B7800A4B092 /* action_response.json in Resources */,
 				A8EEA1AC20E44B0B00FF9A4D /* start_with_variant_debug_info_response.json in Resources */,
 				07E5C8D31F052B7800A4B092 /* DifferentPriorities2.json in Resources */,
+				C9B0925F26850011008B3268 /* local_caps_week_response.json in Resources */,
 				07E5C8D41F052B7800A4B092 /* DifferentPrioritiesWithMissingValues.json in Resources */,
 				07E5C8C71F052B7800A4B092 /* malformed_track_event_response.json in Resources */,
 				07E5C8BF1F052B7800A4B092 /* GoldIcon.png in Resources */,
+				C9B092592684FFDC008B3268 /* local_caps_day_response.json in Resources */,
 				07E5C8D21F052B7800A4B092 /* DifferentPriorities1.json in Resources */,
 				07E5C8C91F052B7800A4B092 /* registration_response.json in Resources */,
 				9CB691DE1F15FFF5002D83D8 /* batch_response.json in Resources */,
+				C9B092562684FCFF008B3268 /* local_caps_response.json in Resources */,
 				073DF05C22280C1A00CC96DF /* variants_response.json in Resources */,
 				07E5C8DA1F052B7800A4B092 /* TiedPriorities2.json in Resources */,
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
@@ -734,6 +760,7 @@
 				07E5C8CD1F052B7800A4B092 /* state_response.json in Resources */,
 				07E5C8D91F052B7800A4B092 /* TiedPriorities1.json in Resources */,
 				07E5C8C81F052B7800A4B092 /* newsfeed_response.json in Resources */,
+				C9B0925C2684FFFA008B3268 /* local_caps_session_response.json in Resources */,
 				07E5C8C61F052B7800A4B092 /* malformed_simple_start_response.json in Resources */,
 				07E5C8CC1F052B7800A4B092 /* start_variables_response.json in Resources */,
 				07E5C8C51F052B7800A4B092 /* complex_start_response.json in Resources */,
@@ -874,6 +901,7 @@
 				A84527FD215C3035001FA20D /* LPRequestTest.m in Sources */,
 				07E5C8AC1F052B7800A4B092 /* LPAppIconManagerTest.m in Sources */,
 				9EF00D3A2448DE3E0094CA89 /* LPOpenUrlMessageTemplateTest.m in Sources */,
+				C9B092532684FB32008B3268 /* LPLocalCapsTest.m in Sources */,
 				A824579B2411CB600044B1EB /* LPRichInterstitialMessageSnapshotTest.m in Sources */,
 				9E53F6DF2474363D0097955F /* LPNotificationsManagerTest.m in Sources */,
 				07E5C8BA1F052B7800A4B092 /* LPInboxTest.m in Sources */,
