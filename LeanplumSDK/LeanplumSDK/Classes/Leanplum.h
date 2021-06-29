@@ -26,7 +26,6 @@
 #import <UserNotifications/UserNotifications.h>
 #import "LPInbox.h"
 #import "LPActionArg.h"
-#import "LPActionContext.h"
 #import "LPVar.h"
 #import "LPMessageArchiveData.h"
 #import "LPEnumConstants.h"
@@ -67,9 +66,6 @@
 #import "LPAES.h"
 #import "LPLogManager.h"
 #import "LPRequestSenderTimer.h"
-
-// Prevent circular reference
-@class LPDeferrableAction;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -133,6 +129,8 @@ name = [LPVar define:[@#name stringByReplacingOccurrencesOfString:@"_" withStrin
 }
 /**@}*/
 
+// Prevent circular reference
+@class LPDeferrableAction;
 @class LPActionContext;
 @class SKPaymentTransaction;
 @class NSExtensionContext;

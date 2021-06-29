@@ -52,6 +52,7 @@
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeFileAttributesFromServer;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeActionDefinitionsFromServer;
 @property (strong, nonatomic) NSArray<NSString *> *variants;
+@property (strong, nonatomic) NSArray<NSDictionary *> *localCaps;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *variantDebugInfo;
 @property (strong, nonatomic) NSMutableDictionary<NSString *, id> *userAttributes;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *regions;
@@ -101,6 +102,7 @@ static dispatch_once_t leanplum_onceToken;
     self.diffs = [NSMutableDictionary dictionary];
     self.defaultKinds = [NSMutableDictionary dictionary];
     self.actionDefinitions = [NSMutableDictionary dictionary];
+    self.localCaps = [NSArray array];
     self.hasReceivedDiffs = NO;
     self.silent = NO;
     NSError *error = NULL;
@@ -391,6 +393,7 @@ static dispatch_once_t leanplum_onceToken;
         NSDictionary *diffs;
         NSDictionary *messages;
         NSArray *variants;
+        NSArray *localCaps;
         NSDictionary *variantDebugInfo;
         NSDictionary *regions;
         NSString *varsJson;
@@ -426,7 +429,7 @@ static dispatch_once_t leanplum_onceToken;
             NSString *deviceId = [unarchiver decodeObjectForKey:LP_PARAM_DEVICE_ID];
             NSString *userId = [unarchiver decodeObjectForKey:LP_PARAM_USER_ID];
             BOOL loggingEnabled = [unarchiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
-
+            localCaps = [unarchiver decodeObjectForKey:LEANPLUM_DEFAULTS_LOCAL_CAPS_KEY];
             if (deviceId) {
                 [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
             }
@@ -441,6 +444,7 @@ static dispatch_once_t leanplum_onceToken;
         [self applyVariableDiffs:diffs
                         messages:messages
                         variants:variants
+                       localCaps:localCaps
                          regions:regions
                 variantDebugInfo:variantDebugInfo
                         varsJson:varsJson
@@ -477,6 +481,7 @@ static dispatch_once_t leanplum_onceToken;
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
         [archiver encodeObject:self.varsJson forKey:LEANPLUM_DEFAULTS_VARS_JSON_KEY];
         [archiver encodeObject:self.varsSignature forKey:LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY];
+        [archiver encodeObject:self.localCaps forKey:LEANPLUM_DEFAULTS_LOCAL_CAPS_KEY];
         [archiver finishEncoding];
 
         NSData *encryptedDiffs = [LPAES encryptedDataFromData:diffsData];
@@ -495,6 +500,7 @@ static dispatch_once_t leanplum_onceToken;
 - (void)applyVariableDiffs:(NSDictionary *)diffs_
                   messages:(NSDictionary *)messages_
                   variants:(NSArray *)variants_
+                 localCaps:(NSArray *)localCaps_
                    regions:(NSDictionary *)regions_
           variantDebugInfo:(NSDictionary *)variantDebugInfo_
                   varsJson:(NSString *)varsJson_
@@ -562,6 +568,10 @@ static dispatch_once_t leanplum_onceToken;
 
         if (variants_) {
             self.variants = variants_;
+        }
+        
+        if (localCaps_) {
+            self.localCaps = localCaps_;
         }
 
         if (variantDebugInfo_) {
@@ -820,7 +830,23 @@ static dispatch_once_t leanplum_onceToken;
     if ([LPUtils isNullOrEmpty:self.varsJson] || [LPUtils isNullOrEmpty:self.varsSignature]) {
         return nil;
     }
-    return [[LPSecuredVars alloc] initWithJson:self.varsJson andSignature:self.varsSignature];;
+    return [[LPSecuredVars alloc] initWithJson:self.varsJson andSignature:self.varsSignature];
+}
+
+- (NSArray *)getLocalCaps
+{
+    return self.localCaps;
+}
+
+- (NSUInteger)getActionDefinitionType:(NSString *)actionName
+{
+    id actionDef = [self.actionDefinitions objectForKey:actionName];
+    if ([actionDef isKindOfClass:[NSDictionary class]]) {
+        LeanplumActionKind kind = (LeanplumActionKind)[(NSDictionary *)actionDef valueForKey:@"kind"];
+        return kind;
+    }
+    
+    return 0;
 }
 
 - (void)clearUserContent
@@ -829,6 +855,7 @@ static dispatch_once_t leanplum_onceToken;
     self.messageDiffs = nil;
     self.messages = nil;
     self.variants = nil;
+    self.localCaps = nil;
     self.variantDebugInfo = nil;
     self.vars = nil;
     self.userAttributes = nil;
@@ -857,6 +884,7 @@ static dispatch_once_t leanplum_onceToken;
     self.devModeFileAttributesFromServer = nil;
     self.devModeActionDefinitionsFromServer = nil;
     self.variants = nil;
+    self.localCaps = nil;
     self.variantDebugInfo = nil;
     self.userAttributes = nil;
     self.updateBlock = nil;

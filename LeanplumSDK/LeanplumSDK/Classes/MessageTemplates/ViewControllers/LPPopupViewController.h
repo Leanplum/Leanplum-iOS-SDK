@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Leanplum.h"
+@class LPActionContext;
 
 NS_ASSUME_NONNULL_BEGIN
 

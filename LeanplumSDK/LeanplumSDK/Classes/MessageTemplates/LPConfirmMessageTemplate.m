@@ -7,6 +7,7 @@
 //
 
 #import "LPConfirmMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPConfirmMessageTemplate
 

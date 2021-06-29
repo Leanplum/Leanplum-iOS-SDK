@@ -7,6 +7,7 @@
 //
 
 #import "LPWebInterstitialMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPWebInterstitialMessageTemplate
 

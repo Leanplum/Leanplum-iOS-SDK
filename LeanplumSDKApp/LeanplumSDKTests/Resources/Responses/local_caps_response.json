@@ -1,0 +1,33 @@
+{
+  "response": [
+    {
+      "regions": {},
+      "fileAttributes": {},
+      "success": true,
+      "messages": {},
+      "vars": {
+        "intVariable": 100,
+        "stringVariable": "test_string"
+      },
+      "variants": [],
+      "localCaps": [
+        {
+          "channel": "IN_APP",
+          "limit": 1,
+          "type": "SESSION"
+        },
+        {
+          "channel": "IN_APP",
+          "limit": 2,
+          "type": "DAY"
+        },
+        {
+          "channel": "IN_APP",
+          "limit": 3,
+          "type": "WEEK"
+        }
+      ],
+      "token": "juKUmiXERlO4kmTfEL6xEsfUMpg9WUlFrHOvp6H2w4Q"
+    }
+  ]
+}

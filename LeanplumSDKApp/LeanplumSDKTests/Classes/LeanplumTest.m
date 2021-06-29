@@ -26,13 +26,9 @@
 #import <XCTest/XCTest.h>
 #import <UIKit/UIKit.h>
 #import <OCMock/OCMock.h>
+#import <OCMock/OCMArg.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
-#import "LeanplumHelper.h"
-#import "Leanplum+Extensions.h"
-#import "LPRequest+Extension.h"
-#import "LPRequestSender+Categories.h"
-#import "LeanplumReachability+Category.h"
 #import <Leanplum/LPActionManager.h>
 #import <Leanplum/LPCountAggregator.h>
 #import <Leanplum/LPFeatureFlagManager.h>
@@ -43,8 +39,11 @@
 #import <Leanplum/LPOperationQueue.h>
 #import <Leanplum/LPAPIConfig.h>
 #import <Leanplum/LPInternalState.h>
-
-#import <OCMock/OCMArg.h>
+#import "LeanplumHelper.h"
+#import "Leanplum+Extensions.h"
+#import "LPRequest+Extension.h"
+#import "LPRequestSender+Categories.h"
+#import "LeanplumReachability+Category.h"
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -61,6 +60,12 @@
 + (NSString *)messageBodyFromContext:(LPActionContext *)context;
 
 + (void)trackGeofence:(LPGeofenceEventType *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
+
+@end
+
+@interface LPActionContext (Test)
+
+@property(strong, nonatomic) LeanplumActionBlock actionNamedResponder;
 
 @end
 
@@ -906,6 +911,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:nil
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil
@@ -1463,7 +1469,7 @@
        @"myArray": @{
                @"[2]": @33
                }
-       } messages:nil variants:nil regions:nil variantDebugInfo:nil varsJson:nil varsSignature:nil];
+       } messages:nil variants:nil localCaps:nil regions:nil variantDebugInfo:nil varsJson:nil varsSignature:nil];
 
     
     XCTestExpectation *request_expectation =
@@ -1789,6 +1795,7 @@
     [[LPVarCache sharedCache] applyVariableDiffs:nil
                                         messages:messages
                                         variants:variants
+                                       localCaps:nil
                                          regions:nil
                                 variantDebugInfo:nil
                                         varsJson:nil
@@ -2403,6 +2410,68 @@
     [self waitForExpectationsWithTimeout:10 handler:nil];
 
     XCTAssertTrue([[LPVarCache sharedCache] variants].count == 4);
+}
+
+- (void)test_onAction {
+    NSString *actionName = @"TestAction";
+    LPActionContext *context = [LPActionContext
+                                actionContextWithName:actionName
+                                args:nil
+                                messageId:@"1"];
+    
+    XCTestExpectation *onActionExpectation = [self expectationWithDescription:@"onActionExpectation"];
+    
+    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual([context actionName], actionName);
+        [onActionExpectation fulfill];
+        return NO;
+    }];
+    [Leanplum triggerAction:context];
+    
+    [self waitForExpectationsWithTimeout:6 handler:nil];
+}
+
+/**
+ * Leanplum triggerAction uses the same context instance to call all LeanplumActionBlock responders
+ * Those include the defineAction:actionResponder and the onAction:actionResponder blocks
+ */
+- (void)test_onAction_sameContext {
+    NSString *actionName = @"TestAction";
+    LPActionContext *messageContext = [LPActionContext
+                                actionContextWithName:actionName
+                                args:nil
+                                messageId:@"1"];
+    
+    __weak LPActionContext *weakContext = messageContext;
+    
+    XCTestExpectation *onActionExpectation = [self expectationWithDescription:@"onActionExpectation"];
+    
+    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual(context, weakContext);
+        
+        [context setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
+            return NO;
+        }];
+        
+        [onActionExpectation fulfill];
+        return NO;
+    }];
+    
+    XCTestExpectation *onActionExpectation2 = [self expectationWithDescription:@"onActionExpectation2"];
+    
+    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual(context, weakContext);
+        
+        // The responder is already set to the context from the previous onAction block
+        XCTAssertNotNil([context actionNamedResponder]);
+        
+        [onActionExpectation2 fulfill];
+        return NO;
+    }];
+    
+    [Leanplum triggerAction:messageContext];
+    
+    [self waitForExpectationsWithTimeout:6 handler:nil];
 }
 
 @end

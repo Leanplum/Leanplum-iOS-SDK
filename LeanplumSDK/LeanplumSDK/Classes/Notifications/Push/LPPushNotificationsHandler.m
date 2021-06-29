@@ -363,6 +363,8 @@
                 NSDictionary *regions = response[LP_KEY_REGIONS];
                 NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
                 NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
+                NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
+                
                 if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
                     [values isEqualToDictionary:[LPVarCache sharedCache].diffs]) {
                     values = nil;
@@ -379,6 +381,7 @@
                     [[LPVarCache sharedCache] applyVariableDiffs:values
                                                         messages:messages
                                                         variants:variants
+                                                       localCaps:localCaps
                                                          regions:regions
                                                 variantDebugInfo:nil
                                                         varsJson:varsJson

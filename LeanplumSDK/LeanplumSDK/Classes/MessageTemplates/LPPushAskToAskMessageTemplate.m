@@ -8,6 +8,7 @@
 
 #import "LPPushAskToAskMessageTemplate.h"
 #import "LPPushMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPPushAskToAskMessageTemplate
 

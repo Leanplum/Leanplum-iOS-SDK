@@ -8,6 +8,7 @@
 
 #import "LPInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
+#import "LPActionContext.h"
 
 @interface LPInterstitialViewController ()
 
@@ -69,6 +70,7 @@
 
 - (IBAction)didTapDismissButton:(id)sender
 {
+    [self.context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     [self dismiss:YES];
 }
 

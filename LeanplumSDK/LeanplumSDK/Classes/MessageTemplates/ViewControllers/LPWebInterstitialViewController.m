@@ -9,6 +9,7 @@
 #import "LPWebInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
 #import "LPHitView.h"
+#import "LPActionContext.h"
 
 @interface LPWebInterstitialViewController ()
 
@@ -264,6 +265,7 @@
         }
 
         if ([url rangeOfString:[context stringNamed:LPMT_ARG_URL_CLOSE]].location != NSNotFound) {
+            [self.context runActionNamed:LPMT_ARG_DISMISS_ACTION];
             [self dismiss:YES];
             if (queryComponents[@"result"]) {
                 [Leanplum track:queryComponents[@"result"]];
@@ -359,11 +361,13 @@
 
 - (IBAction)didTapDismissButton:(id)sender
 {
+    [self.context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     [self dismiss:YES];
 }
 
 - (void)didTapOutside
 {
+    [self.context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     [self dismiss:YES];
 }
 
