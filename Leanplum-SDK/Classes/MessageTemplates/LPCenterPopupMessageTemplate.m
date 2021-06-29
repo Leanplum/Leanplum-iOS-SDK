@@ -7,6 +7,7 @@
 //
 
 #import "LPCenterPopupMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPCenterPopupMessageTemplate
 

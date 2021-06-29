@@ -6,6 +6,7 @@
 //
 
 #import "LPOpenUrlMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPOpenUrlMessageTemplate
 

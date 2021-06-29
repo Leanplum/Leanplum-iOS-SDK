@@ -8,6 +8,7 @@
 
 #import "LPRegisterForPushMessageTemplate.h"
 #import "LPPushMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPRegisterForPushMessageTemplate
 

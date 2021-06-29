@@ -21,8 +21,8 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "Leanplum.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,6 +40,11 @@ NS_SWIFT_NAME(ActionContext)
  * Copy of the Context arguments
  */
 @property (readonly, strong, nullable) NSDictionary *args;
+
+/**
+ * The parent ActionContext if present
+ */
+@property (readonly, nonatomic, strong, nullable) LPActionContext *parentContext;
 
 - (id)objectNamed:(NSString *)name
 NS_SWIFT_NAME(object(name:));
@@ -76,6 +81,11 @@ NS_SWIFT_NAME(htmlTemplate(name:));
  */
 - (void)runActionNamed:(NSString *)name
 NS_SWIFT_NAME(runAction(name:));
+
+/**
+ * Executes a block when action is run.
+ */
+- (void)setActionNamedResponder:(LeanplumActionBlock)block;
 
 /**
  * Runs and tracks an event for the action given by the "name" key.

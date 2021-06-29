@@ -8,6 +8,7 @@
 
 #import "LPPopupViewController.h"
 #import "LPMessageTemplateConstants.h"
+#import "LPActionContext.h"
 
 @interface LPPopupViewController ()
 
@@ -112,6 +113,7 @@
 
 - (IBAction)didTapDismissButton:(id)sender
 {
+    [self.context runActionNamed:LPMT_ARG_DISMISS_ACTION];
     [self dismiss:YES];
 }
 

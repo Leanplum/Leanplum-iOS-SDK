@@ -7,6 +7,7 @@
 //
 
 #import "LPAlertMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPAlertMessageTemplate
 

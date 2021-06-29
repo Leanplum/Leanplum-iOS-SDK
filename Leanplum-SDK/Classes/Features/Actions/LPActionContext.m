@@ -30,6 +30,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @interface LPActionContext()
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
+@property (strong, nonatomic) LeanplumActionBlock actionNamedResponder;
 
 @end
 
@@ -498,6 +499,29 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_END_TRY
 }
 
+- (void)setActionNamedResponder:(LeanplumActionBlock)block
+{
+    if (block) {
+        _actionNamedResponder = [block copy];
+    } else {
+        _actionNamedResponder = nil;
+    }
+}
+
+- (void)triggerActionNamedResponder:(NSString *)name withArgs:(NSDictionary *)args
+{
+    if ([self actionNamedResponder]) {
+        LPActionContext *actionContext = [LPActionContext
+                                          actionContextWithName:name
+                                          args:args messageId:_messageId];
+        
+        __weak LPActionContext *weakSelf = self;
+        actionContext->_parentContext = weakSelf;
+        
+        self.actionNamedResponder(actionContext);
+    }
+}
+
 - (void)runActionNamed:(NSString *)name
 {
     LP_TRY
@@ -506,6 +530,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         return;
     }
     NSDictionary *args = [self getChildArgs:name];
+    
+    [self triggerActionNamedResponder:name withArgs:args];
+    
     if (!args) {
         return;
     }

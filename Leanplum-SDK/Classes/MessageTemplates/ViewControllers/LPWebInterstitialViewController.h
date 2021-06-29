@@ -6,8 +6,10 @@
 //  Copyright © 2020 Leanplum. All rights reserved.
 //
 
+#import <WebKit/WebKit.h>
 #import <UIKit/UIKit.h>
-#import "Leanplum.h"
+
+@class LPActionContext;
 
 NS_ASSUME_NONNULL_BEGIN
 

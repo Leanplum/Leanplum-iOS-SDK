@@ -6,6 +6,7 @@
 //
 
 #import "LeanplumInternal.h"
+#import "LPActionContext.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -26,7 +27,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, strong) NSString *name;
 @property (readonly, strong) NSString *originalMessageId;
 @property (readonly, strong) NSNumber *priority;
-@property (readonly, strong, nullable) LPActionContext *parentContext;
 @property (readonly) int contentVersion;
 @property (readonly, strong, nullable) NSString *key;
 @property (assign) BOOL preventRealtimeUpdating;

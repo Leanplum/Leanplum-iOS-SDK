@@ -7,6 +7,7 @@
 //
 
 #import "LPRichInterstitialMessageTemplate.h"
+#import "LPActionContext.h"
 
 @implementation LPRichInterstitialMessageTemplate
 

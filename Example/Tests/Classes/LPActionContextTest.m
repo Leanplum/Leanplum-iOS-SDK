@@ -135,4 +135,32 @@
     XCTAssert([encodedUrl isEqualToString:@"file:///Users/mayank/Library/Developer/CoreSimulator/Devices/24394C0B-8820-4369-B3AA-9BF26F62A798/data/Containers/Data/Application/29AF4C33-1C94-46DF-A8A5-4B4CD5A3A364/Library/Caches/Leanplum_Resources/lp_public_sf_ui_font.css"]);
 }
 
+- (void)test_setActionNamedResponder {
+    NSString *acceptAction = @"Accept action";
+    NSDictionary *args = @{
+        acceptAction: @"Test"
+    };
+    
+    LPActionContext *messageContext = [LPActionContext
+                                actionContextWithName:@"action"
+                                args:args
+                                messageId:@"1"];
+    
+    XCTestExpectation *onRunActionNamedExpectation = [self expectationWithDescription:@"onRunActionNamedExpectation"];
+    
+    __weak LPActionContext *weakMessageContext = messageContext;
+    
+    [messageContext setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
+        XCTAssertEqual([context actionName], acceptAction);
+        XCTAssertNotNil([context parentContext]);
+        XCTAssertEqual([[context parentContext] actionName], [weakMessageContext actionName]);
+        XCTAssertEqual([[context parentContext] messageId], [weakMessageContext messageId]);
+        [onRunActionNamedExpectation fulfill];
+        return YES;
+    }];
+    [messageContext runActionNamed:acceptAction];
+    
+    [self waitForExpectationsWithTimeout:6 handler:nil];
+}
+
 @end
