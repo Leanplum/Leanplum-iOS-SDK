@@ -39,6 +39,10 @@
 
 @end
 
+@interface LPActionManager (UnitTest)
+
+@end
+
 @interface LPActionManagerTest : XCTestCase
 
 @end
