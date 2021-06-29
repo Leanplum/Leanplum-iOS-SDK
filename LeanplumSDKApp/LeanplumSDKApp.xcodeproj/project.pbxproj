@@ -116,6 +116,15 @@
 		075AB1912684AB9D007CA1BD /* sample_action_notification.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1502684AB9D007CA1BD /* sample_action_notification.json */; };
 		075AB1922684AB9D007CA1BD /* DifferentPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */; };
 		075AB1932684AB9D007CA1BD /* DifferentPriorities1.json in Resources */ = {isa = PBXBuildFile; fileRef = 075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */; };
+		07828DAE268B4A5E0029A339 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAA268B4A5E0029A339 /* local_caps_day_response.json */; };
+		07828DAF268B4A5E0029A339 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAB268B4A5E0029A339 /* local_caps_session_response.json */; };
+		07828DB0268B4A5E0029A339 /* local_caps_week_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAC268B4A5E0029A339 /* local_caps_week_response.json */; };
+		07828DB1268B4A5E0029A339 /* local_caps_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAD268B4A5E0029A339 /* local_caps_response.json */; };
+		07828DB2268B4A630029A339 /* local_caps_week_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAC268B4A5E0029A339 /* local_caps_week_response.json */; };
+		07828DB3268B4A630029A339 /* local_caps_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAD268B4A5E0029A339 /* local_caps_response.json */; };
+		07828DB4268B4A630029A339 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAA268B4A5E0029A339 /* local_caps_day_response.json */; };
+		07828DB5268B4A630029A339 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAB268B4A5E0029A339 /* local_caps_session_response.json */; };
+		07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */; };
 		779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -220,6 +229,11 @@
 		075AB14F2684AB9D007CA1BD /* NoPriorities.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = NoPriorities.json; sourceTree = "<group>"; };
 		075AB1502684AB9D007CA1BD /* sample_action_notification.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = sample_action_notification.json; sourceTree = "<group>"; };
 		075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DifferentPriorities1.json; sourceTree = "<group>"; };
+		07828DAA268B4A5E0029A339 /* local_caps_day_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_day_response.json; sourceTree = "<group>"; };
+		07828DAB268B4A5E0029A339 /* local_caps_session_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_session_response.json; sourceTree = "<group>"; };
+		07828DAC268B4A5E0029A339 /* local_caps_week_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_week_response.json; sourceTree = "<group>"; };
+		07828DAD268B4A5E0029A339 /* local_caps_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_response.json; sourceTree = "<group>"; };
+		07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLocalCapsTest.m; sourceTree = "<group>"; };
 		4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.debug.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
 		B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.release.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDKTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -341,6 +355,7 @@
 				075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */,
 				075AB0E22684AAD8007CA1BD /* LPInboxTest.m */,
 				075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */,
+				07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */,
 				075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */,
 				075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */,
 				075AB1072684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m */,
@@ -416,23 +431,27 @@
 		075AB1322684AB9D007CA1BD /* Responses */ = {
 			isa = PBXGroup;
 			children = (
-				075AB1332684AB9D007CA1BD /* complex_start_response.json */,
-				075AB1342684AB9D007CA1BD /* variants_response.json */,
 				075AB1352684AB9D007CA1BD /* action_response.json */,
-				075AB1362684AB9D007CA1BD /* track_event_response.json */,
-				075AB1372684AB9D007CA1BD /* start_variables_response.json */,
-				075AB1382684AB9D007CA1BD /* start_with_variant_debug_info_response.json */,
-				075AB1392684AB9D007CA1BD /* secured_vars_no_sign_response.json */,
-				075AB13A2684AB9D007CA1BD /* Malformed */,
-				075AB13D2684AB9D007CA1BD /* state_response.json */,
-				075AB13E2684AB9D007CA1BD /* simple_start_response.json */,
 				075AB13F2684AB9D007CA1BD /* batch_response.json */,
+				075AB1332684AB9D007CA1BD /* complex_start_response.json */,
+				07828DAA268B4A5E0029A339 /* local_caps_day_response.json */,
+				07828DAD268B4A5E0029A339 /* local_caps_response.json */,
+				07828DAB268B4A5E0029A339 /* local_caps_session_response.json */,
+				07828DAC268B4A5E0029A339 /* local_caps_week_response.json */,
 				075AB1402684AB9D007CA1BD /* newsfeed_response.json */,
 				075AB1412684AB9D007CA1BD /* registration_response.json */,
-				075AB1422684AB9D007CA1BD /* variables_response.json */,
-				075AB1432684AB9D007CA1BD /* secured_vars_response.json */,
-				075AB1442684AB9D007CA1BD /* variables_with_newsfeed_response.json */,
 				075AB1452684AB9D007CA1BD /* secured_vars_empty_response.json */,
+				075AB1392684AB9D007CA1BD /* secured_vars_no_sign_response.json */,
+				075AB1432684AB9D007CA1BD /* secured_vars_response.json */,
+				075AB13E2684AB9D007CA1BD /* simple_start_response.json */,
+				075AB1372684AB9D007CA1BD /* start_variables_response.json */,
+				075AB1382684AB9D007CA1BD /* start_with_variant_debug_info_response.json */,
+				075AB13D2684AB9D007CA1BD /* state_response.json */,
+				075AB1362684AB9D007CA1BD /* track_event_response.json */,
+				075AB1422684AB9D007CA1BD /* variables_response.json */,
+				075AB1442684AB9D007CA1BD /* variables_with_newsfeed_response.json */,
+				075AB1342684AB9D007CA1BD /* variants_response.json */,
+				075AB13A2684AB9D007CA1BD /* Malformed */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -561,8 +580,12 @@
 				075AB1542684AB9D007CA1BD /* GoldIcon.png in Resources */,
 				075AB17E2684AB9D007CA1BD /* DifferentPriorities2.json in Resources */,
 				075AB1922684AB9D007CA1BD /* DifferentPriorities1.json in Resources */,
+				07828DB2268B4A630029A339 /* local_caps_week_response.json in Resources */,
+				07828DB5268B4A630029A339 /* local_caps_session_response.json in Resources */,
 				075AACF726847BF4007CA1BD /* LaunchScreen.storyboard in Resources */,
 				075AB1842684AB9D007CA1BD /* TiedPriorities2.json in Resources */,
+				07828DB4268B4A630029A339 /* local_caps_day_response.json in Resources */,
+				07828DB3268B4A630029A339 /* local_caps_response.json in Resources */,
 				075AB1862684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */,
 				075AB15E2684AB9D007CA1BD /* action_response.json in Resources */,
 				075AB16C2684AB9D007CA1BD /* state_response.json in Resources */,
@@ -603,9 +626,11 @@
 				075AB18D2684AB9D007CA1BD /* ChainedMessage.json in Resources */,
 				075AB16B2684AB9D007CA1BD /* malformed_simple_start_response.json in Resources */,
 				075AB1932684AB9D007CA1BD /* DifferentPriorities1.json in Resources */,
+				07828DAF268B4A5E0029A339 /* local_caps_session_response.json in Resources */,
 				075AB17B2684AB9D007CA1BD /* variables_with_newsfeed_response.json in Resources */,
 				075AB18F2684AB9D007CA1BD /* NoPriorities.json in Resources */,
 				075AB17D2684AB9D007CA1BD /* secured_vars_empty_response.json in Resources */,
+				07828DB0268B4A5E0029A339 /* local_caps_week_response.json in Resources */,
 				075AB1632684AB9D007CA1BD /* start_variables_response.json in Resources */,
 				075AB15D2684AB9D007CA1BD /* variants_response.json in Resources */,
 				075AB1812684AB9D007CA1BD /* regionData.json in Resources */,
@@ -614,6 +639,7 @@
 				075AB16D2684AB9D007CA1BD /* state_response.json in Resources */,
 				075AB1552684AB9D007CA1BD /* GoldIcon.png in Resources */,
 				075AB1912684AB9D007CA1BD /* sample_action_notification.json in Resources */,
+				07828DB1268B4A5E0029A339 /* local_caps_response.json in Resources */,
 				075AB1732684AB9D007CA1BD /* newsfeed_response.json in Resources */,
 				075AB1832684AB9D007CA1BD /* SingleMessage.json in Resources */,
 				075AB1532684AB9D007CA1BD /* MainAppIcon.png in Resources */,
@@ -626,6 +652,7 @@
 				075AB1572684AB9D007CA1BD /* test.pdf in Resources */,
 				075AB1792684AB9D007CA1BD /* secured_vars_response.json in Resources */,
 				075AB1892684AB9D007CA1BD /* TiedPriorities1.json in Resources */,
+				07828DAE268B4A5E0029A339 /* local_caps_day_response.json in Resources */,
 				075AB18B2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json in Resources */,
 				075AB1712684AB9D007CA1BD /* batch_response.json in Resources */,
 				075AB1692684AB9D007CA1BD /* malformed_track_event_response.json in Resources */,
@@ -700,6 +727,7 @@
 				075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */,
 				075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */,
 				075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */,
+				07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */,
 				075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */,
 				075AB1182684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m in Sources */,
 				075AB1212684AAD9007CA1BD /* LPRequestSenderTest.m in Sources */,
