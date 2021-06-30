@@ -78,12 +78,23 @@ main() {
   BUILD_ROOT=${BUILD_ROOT:-"/tmp/AppleSDK-build"}
   
   ARM64_DIR=${ARM64_DIR:-"/build-arm64"}
+  ARMV7S_DIR=${ARMV7S_DIR:-"/build-armv7s"}
   X8664_DIR=${X8664_DIR:-"/build-x86_64"}
+
+  ARMV7_DIR=${ARMV7_DIR:-"/build-armv7"}
+  X86_DIR=${X86_DIR:-"/build-x86"}
+  default="${BUILD_DIR}${ARMV7_DIR}/${CONFIGURATION}-iphoneos"
+  CURRENTCONFIG_ARMV7_DEVICE_DIR=${CURRENTCONFIG_ARMV7_DEVICE_DIR:-$default}
 
   default="${BUILD_DIR}${ARM64_DIR}/${CONFIGURATION}-iphoneos"
   CURRENTCONFIG_ARM64_DEVICE_DIR=${CURRENTCONFIG_ARM64_DEVICE_DIR:-$default}
   default="${BUILD_DIR}${X8664_DIR}/${CONFIGURATION}-iphonesimulator"
   CURRENTCONFIG_X8664_SIMULATOR_DIR=${CURRENTCONFIG_X8664_SIMULATOR_DIR:-$default}
+
+  default="${BUILD_DIR}${ARMV7S_DIR}/${CONFIGURATION}-iphoneos"
+  CURRENTCONFIG_ARMV7S_DEVICE_DIR=${CURRENTCONFIG_ARMV7S_DEVICE_DIR:-$default}
+  default="${BUILD_DIR}${X86_DIR}/${CONFIGURATION}-iphonesimulator"
+  CURRENTCONFIG_X86_DEVICE_DIR=${CURRENTCONFIG_X86_DEVICE_DIR:-$default}
   
   # Clean and build
   ACTION="clean build"
@@ -141,10 +152,27 @@ main() {
 build_ios_dylib() {
   echo "Starting build for Leanplum-SDK (iOS) dynamic framework"
 
+  run "Building Leanplum-SDK-iOS dynamic (device/armv7) target ..." \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
+    "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
+    BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
+  run "Building Leanplum-SDK-iOS dynamic (device/armv7s) target ..." \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
+    "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
+    BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
+
   run "Building Leanplum-SDK-iOS dynamic (device/arm64) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='arm64' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARM64_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
+    GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
+
+  run "Building Leanplum-SDK-iOS dynamic (simulator/i386) target ..." \
+    xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${SIM_SDK}" \
+    "$ACTION" ARCHS='i386' VALID_ARCHS='i386' RUN_CLANG_STATIC_ANALYZER=NO \
+    BUILD_DIR="${BUILD_DIR}${X86_DIR}" BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
   
   run "Building Leanplum-SDK-iOS dynamic (simulator/x86_64) target ..." \
@@ -155,11 +183,14 @@ build_ios_dylib() {
 
   run "Combining builds to universal fat library ..." \
     lipo -create -output "${RELEASE_DIR}/Leanplum" \
+    "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_ARMV7S_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
     "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_X86_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
     "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum"
 
   # Copy generated framework
-  cp -r "${BUILD_DIR}$ARM64_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
+  cp -r "${BUILD_DIR}$ARMV7_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
     "${RELEASE_DIR}/Leanplum.framework"
   rm -f "${RELEASE_DIR}/Leanplum.framework/Leanplum"
   mv "${RELEASE_DIR}/Leanplum" "${RELEASE_DIR}/Leanplum.framework/"
