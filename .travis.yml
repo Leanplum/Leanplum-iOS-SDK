@@ -12,7 +12,7 @@ before_install:
   - pod install --project-directory=Example
 
 before_script:
-  - >
+  >-
       if [ -z "$TRAVIS_TAG" ] 
         then 
           echo "No tag, so not triggering Location" 
@@ -25,9 +25,12 @@ before_deploy:
   - ./Tools/build.sh
 
 after_deploy:
-  - >
-    ./Tools/triggerRondo.sh;
-    version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi;
+  >-
+    if ! [ "$AFTER_DEPLOY_RUN" ]; then
+      export AFTER_DEPLOY_RUN=1;
+      ./Tools/triggerRondo.sh;
+      version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi; 
+    fi
 
 deploy:
   - provider: script
