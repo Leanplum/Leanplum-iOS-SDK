@@ -26,11 +26,8 @@ before_deploy:
 
 after_deploy:
   - >
-    if ! [ "$AFTER_DEPLOY_RUN" ]; then
-      export AFTER_DEPLOY_RUN=1;
-      ./Tools/triggerRondo.sh;
-      version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi; 
-    fi
+    ./Tools/triggerRondo.sh;
+    version=`cat sdk-version.txt`; if [[ $version != *"beta"* ]]; then ./Tools/triggerRN.sh; fi;
 
 deploy:
   - provider: script
