@@ -157,6 +157,7 @@ build_ios_dylib() {
     "$ACTION" ARCHS='armv7' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7_DIR}" \
     BUILD_ROOT="${BUILD_ROOT}" OTHER_CFLAGS="-fembed-bitcode" \
     GCC_PREPROCESSOR_DEFINITIONS="PACKAGE_IDENTIFIER=${LEANPLUM_PACKAGE_IDENTIFIER}"
+  
   run "Building Leanplum-SDK-iOS dynamic (device/armv7s) target ..." \
     xcodebuild -configuration "${CONFIGURATION}" -target "Leanplum-iOS-SDK" -sdk "${DEVICE_SDK}" \
     "$ACTION" ARCHS='armv7s' RUN_CLANG_STATIC_ANALYZER=NO BUILD_DIR="${BUILD_DIR}${ARMV7S_DIR}" \
@@ -189,18 +190,30 @@ build_ios_dylib() {
     "${CURRENTCONFIG_X86_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
     "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum"
 
-  # Copy generated framework
-  cp -r "${BUILD_DIR}$ARMV7_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" \
-    "${RELEASE_DIR}/Leanplum.framework"
+  # Copy generated framework and replace executable with fat library
+  cp -r "${BUILD_DIR}$ARMV7_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" "${RELEASE_DIR}/Leanplum.framework"
   rm -f "${RELEASE_DIR}/Leanplum.framework/Leanplum"
   mv "${RELEASE_DIR}/Leanplum" "${RELEASE_DIR}/Leanplum.framework/"
+
+  # Create fat framework for phoneos that will be used in xcframework
+  mkdir "${RELEASE_DIR}/phoneos/"
+  run "Combining builds to phoneos fat library ..." \
+    lipo -create -output "${RELEASE_DIR}/phoneos/Leanplum" \
+    "${CURRENTCONFIG_ARMV7_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum" \
+    "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework/Leanplum"
+  
+  cp -r "${BUILD_DIR}$ARMV7_DIR/$CONFIGURATION-iphoneos/Leanplum-iOS-SDK/Leanplum.framework/" "${RELEASE_DIR}/phoneos/Leanplum.framework"
+  rm -f "${RELEASE_DIR}/phoneos/Leanplum.framework/Leanplum"
+  mv "${RELEASE_DIR}/phoneos/Leanplum" "${RELEASE_DIR}/phoneos/Leanplum.framework/"
 
   # create xcframework
   run "Combining builds into xcframework" \
   xcodebuild -create-xcframework \
-    -framework "${CURRENTCONFIG_ARM64_DEVICE_DIR}/Leanplum-iOS-SDK/Leanplum.framework" \
+    -framework "${RELEASE_DIR}/phoneos/Leanplum.framework" \
     -framework "${CURRENTCONFIG_X8664_SIMULATOR_DIR}/Leanplum-iOS-SDK/Leanplum.framework" \
     -output "${RELEASE_DIR}/Leanplum.xcframework"
+
+  rm -rf "${RELEASE_DIR}/phoneos/"
 
   printf "%s\n" "Successfully built Leanplum-SDK (iOS) Framework."
 }
