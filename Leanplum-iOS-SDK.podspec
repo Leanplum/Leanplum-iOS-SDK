@@ -29,9 +29,8 @@ Pod::Spec.new do |s|
     s.documentation_url = 'https://docs.leanplum.com/'
     s.source_files = 'LeanplumSDK/LeanplumSDK/Classes/**/*'
     s.module_name = 'Leanplum'
-    s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
     s.resource_bundle = {
-     'Leanplum-iOS-SDK' => 'LeanplumSDK/LeanplumSDKBundle/Resources/**/*'
+      'Leanplum-iOS-SDK' => 'LeanplumSDK/LeanplumSDKBundle/Resources/**/*'
     }
   end
   
