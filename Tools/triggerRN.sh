@@ -12,6 +12,8 @@ body="{
   }
 }}"
 
+echo "triggering Rondo-ReactNative build"
+
 curl -s -X POST \
    -H "Content-Type: application/json" \
    -H "Accept: application/json" \

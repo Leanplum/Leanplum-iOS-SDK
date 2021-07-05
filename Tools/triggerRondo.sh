@@ -11,6 +11,8 @@ body="{
   }
 }}"
 
+echo "triggering Rondo-iOS build"
+
 curl -s -X POST \
    -H "Content-Type: application/json" \
    -H "Accept: application/json" \
