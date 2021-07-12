@@ -15,7 +15,7 @@
 
 @interface LPPushNotificationsHandler()
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
-@property (nonatomic, strong) NSString *notificationHandled;
+@property (nonatomic, strong) NSDictionary *notificationHandled;
 @property (nonatomic, strong) NSDate *notificationHandledTime;
 @end
 
@@ -526,12 +526,12 @@
 
 - (BOOL)isDuplicateNotification:(NSDictionary *)userInfo
 {
-    if ([self.notificationHandled isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
+    if ([self.notificationHandled isEqualToDictionary:userInfo] &&
         [[NSDate date] timeIntervalSinceDate:self.notificationHandledTime] < 10.0) {
         return YES;
     }
 
-    self.notificationHandled = [LPJSON stringFromJSON:userInfo];
+    self.notificationHandled = userInfo;
     self.notificationHandledTime = [NSDate date];
     return NO;
 }
