@@ -9,10 +9,9 @@ let package = Package(
     targets: [
         .target(
             name: "Leanplum",
-            path: "Leanplum-SDK",
+            path: "LeanplumSDK/LeanplumSDK",
             exclude: [
-                "LeanplumSDK_iOS-Info.plist",
-                "LeanplumSDK_tvOS-Info.plist"
+                "Supporting Files/Info.plist"
             ],
             resources: [
                 .process("Resources")
