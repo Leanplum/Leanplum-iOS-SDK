@@ -2,21 +2,20 @@
 import PackageDescription
 
 let package = Package(
-    name: "LeanplumiOSSDK",
+    name: "LeanplumSDK",
     products: [
-        .library(name: "LeanplumiOSSDK", targets: ["LeanplumiOSSDK"])
+        .library(name: "LeanplumSDK", targets: ["LeanplumSDK"])
     ],
     targets: [
         .target(
-            name: "LeanplumiOSSDK",
+            name: "LeanplumSDK",
             path: "LeanplumSDK/LeanplumSDK",
             exclude: [
                 "Supporting Files/Info.plist"
             ],
             resources: [
                 .process("Resources")
-            ],
-            publicHeadersPath: "include"
+            ]
         )
     ]
 )
