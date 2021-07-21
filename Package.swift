@@ -15,7 +15,8 @@ let package = Package(
             ],
             resources: [
                 .process("Resources")
-            ]
+            ],
+            publicHeadersPath: "include"
         )
     ]
 )

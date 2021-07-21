@@ -30,7 +30,7 @@ FOUNDATION_EXPORT double LeanplumSDKVersionNumber;
 //! Project version string for LeanplumSDK.
 FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 
-// In this header, you should import all the public headers of your framework using statements like #import <LeanplumSDK/PublicHeader.h>
+// In this header, you should import all the public headers of your framework using statements like #import "PublicHeader.h"
 #import "LPActionContext-Internal.h"
 #import "LPActionManager.h"
 #import "LPUIAlert.h"
@@ -118,4 +118,3 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 #import "UIDevice+IdentifierAddition.h"
 #import "Leanplum_AsyncSocket.h"
 #import "Leanplum_WebSocket.h"
-
