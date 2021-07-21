@@ -2,13 +2,13 @@
 import PackageDescription
 
 let package = Package(
-    name: "Leanplum",
+    name: "LeanplumSDK",
     products: [
-        .library(name: "Leanplum", targets: ["Leanplum"])
+        .library(name: "LeanplumSDK", targets: ["LeanplumSDK"])
     ],
     targets: [
         .target(
-            name: "Leanplum",
+            name: "LeanplumSDK",
             path: "Leanplum-SDK",
             exclude: [
                 "LeanplumSDK_iOS-Info.plist",
