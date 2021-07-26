@@ -30,7 +30,7 @@
 
 - (NSDictionary *)dictionary
 {
-    NSNumber *types = @([self types]);
+    __block NSNumber *types = @([self types]);
     NSMutableArray *categories = [NSMutableArray array];
     for (UIMutableUserNotificationCategory *category in [self categories]) {
         if ([category identifier]) {
@@ -39,8 +39,25 @@
         }
     }
     NSArray *sortedCategories = [categories sortedArrayUsingSelector:@selector(compare:)];
-    NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+    __block NSDictionary *settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
                                LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
+    
+    if (@available(iOS 10, *)) {
+        if (types.intValue == 0) {
+            dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+            [[UNUserNotificationCenter currentNotificationCenter] getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings * _Nonnull unSettings) {
+                if (unSettings.lockScreenSetting == UNNotificationSettingEnabled || unSettings.notificationCenterSetting == UNNotificationSettingEnabled) {
+                    types = @(types.intValue + 4);
+                    settings = @{LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+                                               LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories};
+                }
+                dispatch_semaphore_signal(semaphore);
+            }];
+            dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC);
+            dispatch_semaphore_wait(semaphore, waitTime);
+            return settings;
+        }
+    }
     return settings;
 }
 @end
