@@ -63,11 +63,11 @@ run() {
 #   None
 #######################################
 main() {
-  # rm -rf Release
+  rm -rf Release
 
-  # build_ios_dylib
-  # printf "\n"
-  # build_ios_static
+  build_ios_dylib
+  printf "\n"
+  build_ios_static
 
   # # remove duplicate assets if any
   find "Release/" -name '_CodeSignature' -exec rm -rf {} +
