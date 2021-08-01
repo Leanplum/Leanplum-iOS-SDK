@@ -26,6 +26,7 @@
 #import <XCTest/XCTest.h>
 #import <Leanplum/NSString+MD5Addition.h>
 #import <Leanplum/LPUtils.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPUtilsTest : XCTestCase
 
@@ -100,6 +101,11 @@
     
     id stringValue = @"false";
     XCTAssertFalse([LPUtils isBoolNumber:stringValue]);
+}
+
+-(void)test_swift {
+    LeanplumUtils *testUtils =  [LPUtils getLeanplumUtils];
+    XCTAssertTrue([[testUtils leanplumTest] isEqualToString:@"Test leanplum with number = 2"]);
 }
 
 @end

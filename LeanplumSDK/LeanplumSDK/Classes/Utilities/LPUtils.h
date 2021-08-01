@@ -23,6 +23,7 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
+@class LeanplumUtils;
 
 @interface LPUtils : NSObject
 
@@ -76,5 +77,11 @@
  * Checks if given value is a NSNumber with bool value
  */
 + (BOOL)isBoolNumber:(NSNumber *)value;
+
+
+//Swift tests
++ (NSString *)getLeanplumTestSwift;
+
++ (LeanplumUtils *)getLeanplumUtils;
 
 @end

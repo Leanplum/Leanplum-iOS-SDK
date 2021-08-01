@@ -349,6 +349,8 @@
 		075AAFAD268496B4007CA1BD /* NSTimer+Blocks.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB526847EC3007CA1BD /* NSTimer+Blocks.h */; };
 		075AAFAE268496B4007CA1BD /* NSString+MD5Addition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB926847EC3007CA1BD /* NSString+MD5Addition.h */; };
 		075AAFAF268496B4007CA1BD /* UIDevice+IdentifierAddition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADBA26847EC3007CA1BD /* UIDevice+IdentifierAddition.h */; };
+		C9FB3AD326B74789006D9DE3 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */; };
+		C9FB3AD426B74789006D9DE3 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -663,6 +665,7 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
+		C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -929,6 +932,7 @@
 				075AAD9C26847EC3007CA1BD /* LPOperationQueue.m */,
 				075AAD9B26847EC3007CA1BD /* LPSwizzle.m */,
 				075AADA126847EC3007CA1BD /* LPUtils.m */,
+				C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */,
 				075AAD9726847EC3007CA1BD /* Encryption */,
 				075AADA626847EC3007CA1BD /* Vendor */,
 			);
@@ -1317,9 +1321,11 @@
 				TargetAttributes = {
 					075AAD0726847C23007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1250;
 					};
 					075AAD1626847C6F007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1250;
 					};
 					075AAEEB26847FE1007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -1455,6 +1461,7 @@
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				075AAE0126847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
+				C9FB3AD326B74789006D9DE3 /* LeanplumUtils.swift in Sources */,
 				075AAE2826847EC4007CA1BD /* LPRevenueManager.m in Sources */,
 				075AAE3226847EC4007CA1BD /* LPAlertMessageTemplate.m in Sources */,
 				075AADFB26847EC4007CA1BD /* LPRequestSender.m in Sources */,
@@ -1541,6 +1548,7 @@
 				075AAEB226847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5D26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				075AAE0226847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
+				C9FB3AD426B74789006D9DE3 /* LeanplumUtils.swift in Sources */,
 				075AAE2926847EC4007CA1BD /* LPRevenueManager.m in Sources */,
 				075AAE3326847EC4007CA1BD /* LPAlertMessageTemplate.m in Sources */,
 				075AADFC26847EC4007CA1BD /* LPRequestSender.m in Sources */,
@@ -1707,6 +1715,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -1728,6 +1737,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1736,6 +1747,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -1757,6 +1769,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1764,6 +1777,7 @@
 		075AAD1D26847C6F007CA1BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
@@ -1772,6 +1786,11 @@
 				INFOPLIST_FILE = "LeanplumSDK/Supporting Files/Info.plist";
 				INSTALL_PATH = Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = Leanplum.framework/PrivateHeaders;
@@ -1779,6 +1798,8 @@
 				PRODUCT_NAME = Leanplum;
 				PUBLIC_HEADERS_FOLDER_PATH = Leanplum.framework/Headers;
 				SKIP_INSTALL = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1786,6 +1807,7 @@
 		075AAD1E26847C6F007CA1BD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
@@ -1794,6 +1816,11 @@
 				INFOPLIST_FILE = "LeanplumSDK/Supporting Files/Info.plist";
 				INSTALL_PATH = Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = Leanplum.framework/PrivateHeaders;
@@ -1801,6 +1828,7 @@
 				PRODUCT_NAME = Leanplum;
 				PUBLIC_HEADERS_FOLDER_PATH = Leanplum.framework/Headers;
 				SKIP_INSTALL = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

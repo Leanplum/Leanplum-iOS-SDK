@@ -28,6 +28,7 @@
 #import "LPAPIConfig.h"
 #import "LPConstants.h"
 #import "Leanplum.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 
 @implementation LPUtils
@@ -128,6 +129,17 @@
    CFTypeID boolID = CFBooleanGetTypeID();
    CFTypeID numID = CFGetTypeID((__bridge CFTypeRef)(value));
    return numID == boolID;
+}
+
++ (NSString *)getLeanplumTestSwift
+{
+    LeanplumUtils *lpUtilsSwift = [[LeanplumUtils alloc] init];
+    return [lpUtilsSwift leanplumTest];
+}
+
++ (LeanplumUtils *)getLeanplumUtils
+{
+    return [[LeanplumUtils alloc] init];
 }
 
 @end
