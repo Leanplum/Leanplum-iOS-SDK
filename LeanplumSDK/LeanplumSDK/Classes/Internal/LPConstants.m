@@ -54,7 +54,6 @@
         _canDownloadContentMidSessionInProduction = NO;
         _isTestMode = NO;
         _isInPermanentFailureState = NO;
-        _verboseLoggingInDevelopmentMode = NO;
         _networkActivityIndicatorEnabled = YES;
         _client = LEANPLUM_CLIENT;
         _sdkVersion = LEANPLUM_SDK_VERSION;

@@ -177,16 +177,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
-+ (void)setVerboseLoggingInDevelopmentMode:(BOOL)enabled
-{
-    LP_TRY
-    [LPConstantsState sharedState].verboseLoggingInDevelopmentMode = enabled;
-    if (enabled) {
-        [Leanplum setLogLevel:Debug];
-    }
-    LP_END_TRY
-}
-
 + (void)setLogLevel:(LPLogLevel)level
 {
     LP_TRY
