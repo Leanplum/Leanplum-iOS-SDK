@@ -84,7 +84,6 @@ NS_SWIFT_NAME(Leanplum.Constants)
     BOOL _canDownloadContentMidSessionInProduction;
     BOOL _isTestMode;
     BOOL _isInPermanentFailureState;
-    BOOL _verboseLoggingInDevelopmentMode;
     BOOL _networkActivityIndicatorEnabled;
     NSString *_client;
     NSString *_sdkVersion;
@@ -107,7 +106,6 @@ NS_SWIFT_NAME(Leanplum.Constants)
 @property(strong, nonatomic) NSString *apiServlet;
 @property(assign, nonatomic) BOOL isTestMode;
 @property(assign, nonatomic) BOOL isInPermanentFailureState;
-@property(assign, nonatomic) BOOL verboseLoggingInDevelopmentMode;
 @property(strong, nonatomic) NSString *client;
 @property(strong, nonatomic) NSString *sdkVersion;
 @property(assign, nonatomic) BOOL networkActivityIndicatorEnabled;

@@ -226,11 +226,6 @@ NS_SWIFT_NAME(setSocketHostName(_:port:));
 + (void)setFileHashingEnabledInDevelopmentMode:(BOOL)enabled;
 
 /**
- * Sets whether to enable verbose logging in development mode. Default: NO.
- */
-+ (void)setVerboseLoggingInDevelopmentMode:(BOOL)enabled;
-
-/**
 * Sets log level through the Leanplum SDK
 */
 + (void)setLogLevel:(LPLogLevel)level;

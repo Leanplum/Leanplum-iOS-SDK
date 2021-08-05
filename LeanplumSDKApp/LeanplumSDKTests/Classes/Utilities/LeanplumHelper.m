@@ -77,7 +77,7 @@ static BOOL swizzled = NO;
 }
 
 + (void)setup_development_test {
-    [Leanplum setVerboseLoggingInDevelopmentMode:YES];
+    [Leanplum setLogLevel:Debug];
     [Leanplum setAppId:APPLICATION_ID withDevelopmentKey:DEVELOPMENT_KEY];
 }
 
