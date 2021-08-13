@@ -349,6 +349,11 @@
 		075AAFAD268496B4007CA1BD /* NSTimer+Blocks.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB526847EC3007CA1BD /* NSTimer+Blocks.h */; };
 		075AAFAE268496B4007CA1BD /* NSString+MD5Addition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB926847EC3007CA1BD /* NSString+MD5Addition.h */; };
 		075AAFAF268496B4007CA1BD /* UIDevice+IdentifierAddition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADBA26847EC3007CA1BD /* UIDevice+IdentifierAddition.h */; };
+		C9DBE87426C6AFE70054B67F /* LPUtilsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = C9DBE87226C6AFE70054B67F /* LPUtilsPrivate.h */; };
+		C9DBE87526C6AFE70054B67F /* LPUtilsPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */; };
+		C9DBE87626C6AFE70054B67F /* LPUtilsPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */; };
+		C9DBE87A26C6B5D20054B67F /* LeanplumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */; };
+		C9DBE87B26C6B5D20054B67F /* LeanplumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */; };
 		C9FB3AD326B74789006D9DE3 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */; };
 		C9FB3AD426B74789006D9DE3 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */; };
 /* End PBXBuildFile section */
@@ -665,6 +670,10 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
+		C9DBE87226C6AFE70054B67F /* LPUtilsPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPUtilsPrivate.h; sourceTree = "<group>"; };
+		C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPUtilsPrivate.m; sourceTree = "<group>"; };
+		C9DBE87826C6B58B0054B67F /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumTest.swift; sourceTree = "<group>"; };
 		C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -718,6 +727,7 @@
 			children = (
 				075AAD2026847E60007CA1BD /* Classes */,
 				075AAD2326847E60007CA1BD /* Supporting Files */,
+				C9DBE87826C6B58B0054B67F /* module.modulemap */,
 			);
 			path = LeanplumSDK;
 			sourceTree = "<group>";
@@ -933,6 +943,9 @@
 				075AAD9B26847EC3007CA1BD /* LPSwizzle.m */,
 				075AADA126847EC3007CA1BD /* LPUtils.m */,
 				C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */,
+				C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */,
+				C9DBE87226C6AFE70054B67F /* LPUtilsPrivate.h */,
+				C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */,
 				075AAD9726847EC3007CA1BD /* Encryption */,
 				075AADA626847EC3007CA1BD /* Vendor */,
 			);
@@ -1240,6 +1253,7 @@
 				075AAE3926847EC4007CA1BD /* LPConfirmMessageTemplate.h in Headers */,
 				075AAE4726847EC4007CA1BD /* LPAlertMessageTemplate.h in Headers */,
 				075AAE9226847EC4007CA1BD /* Leanplum_AsyncSocket.h in Headers */,
+				C9DBE87426C6AFE70054B67F /* LPUtilsPrivate.h in Headers */,
 				075AAE5F26847EC4007CA1BD /* LPIconChangeMessageTemplate.h in Headers */,
 				075AAE1B26847EC4007CA1BD /* LPRequestBatchFactory.h in Headers */,
 				075AAE8F26847EC4007CA1BD /* LPOperationQueue.h in Headers */,
@@ -1403,6 +1417,7 @@
 				075AAECF26847EC4007CA1BD /* LPFeatureFlagManager.m in Sources */,
 				075AAE0C26847EC4007CA1BD /* LPResponse.m in Sources */,
 				075AAEC426847EC4007CA1BD /* LPEventDataManager.m in Sources */,
+				C9DBE87526C6AFE70054B67F /* LPUtilsPrivate.m in Sources */,
 				075AAE5326847EC4007CA1BD /* LPInterstitialViewController.m in Sources */,
 				075AAEA226847EC4007CA1BD /* UIDevice+IdentifierAddition.m in Sources */,
 				075AAEC226847EC4007CA1BD /* LPEventCallbackManager.m in Sources */,
@@ -1458,6 +1473,7 @@
 				075AAE2426847EC4007CA1BD /* LPAppIconManager.m in Sources */,
 				075AAE9D26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
 				075AAE2026847EC4007CA1BD /* LPLogManager.m in Sources */,
+				C9DBE87A26C6B5D20054B67F /* LeanplumTest.swift in Sources */,
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				075AAE0126847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
@@ -1490,6 +1506,7 @@
 				075AAED026847EC4007CA1BD /* LPFeatureFlagManager.m in Sources */,
 				075AAE0D26847EC4007CA1BD /* LPResponse.m in Sources */,
 				075AAEC526847EC4007CA1BD /* LPEventDataManager.m in Sources */,
+				C9DBE87626C6AFE70054B67F /* LPUtilsPrivate.m in Sources */,
 				075AAE5426847EC4007CA1BD /* LPInterstitialViewController.m in Sources */,
 				075AAEA326847EC4007CA1BD /* UIDevice+IdentifierAddition.m in Sources */,
 				075AAEC326847EC4007CA1BD /* LPEventCallbackManager.m in Sources */,
@@ -1545,6 +1562,7 @@
 				075AAE2526847EC4007CA1BD /* LPAppIconManager.m in Sources */,
 				075AAE9E26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
 				075AAE2126847EC4007CA1BD /* LPLogManager.m in Sources */,
+				C9DBE87B26C6B5D20054B67F /* LeanplumTest.swift in Sources */,
 				075AAEB226847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5D26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				075AAE0226847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
@@ -1650,6 +1668,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/LeanplumSDK";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1705,6 +1724,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SWIFT_INCLUDE_PATHS = "$(SRCROOT)/LeanplumSDK";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1714,6 +1734,7 @@
 		075AAD1126847C23007CA1BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
@@ -1746,6 +1767,7 @@
 		075AAD1226847C23007CA1BD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
