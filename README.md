@@ -15,9 +15,8 @@
 - Please refer to: https://www.leanplum.com/docs#/setup/ios for how to setup Leanplum SDK in your project.
 - To run the example project:
 ```bash
-cd "Example/"
 pod install
-open "Leanplum-SDK.xcworkspace"
+open "Leanplum.xcworkspace"
 ```
 ## Development Workflow
 - We use feature branches that get merged to `master`.
