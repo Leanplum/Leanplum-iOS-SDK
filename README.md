@@ -23,9 +23,6 @@ open "Leanplum.xcworkspace"
 ## Build the SDK
 To build the sdk run:
 ```bash
-cd "Example/"
-pod install
-cd -
 ./build.sh
 ```
 ## Contributing
