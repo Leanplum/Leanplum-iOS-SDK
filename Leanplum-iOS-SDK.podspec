@@ -28,7 +28,9 @@ Pod::Spec.new do |s|
     s.library = 'sqlite3'
     s.documentation_url = 'https://docs.leanplum.com/'
     s.source_files = 'LeanplumSDK/LeanplumSDK/Classes/**/*'
+    s.private_header_files = "LeanplumSDK/LeanplumSDK/Classes/Utilities/LPTestPrivate.h"
     s.module_name = 'Leanplum'
+    s.module_map = 'LeanplumSDK/LeanplumSDK/Supporting Files/Leanplum.modulemap'
     s.resource_bundle = {
       'Leanplum-iOS-SDK' => 'LeanplumSDK/LeanplumSDKBundle/Resources/**/*'
     }

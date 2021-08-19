@@ -3,4 +3,8 @@ framework module Leanplum {
 
   export *
   module * { export * }
+  
+  explicit module Private {
+    private header "LPTestPrivate.h"
+  }
 }
