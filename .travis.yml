@@ -1,3 +1,6 @@
+# Build only if commit is tagged or PR is opened/updated
+if: (tag IS present) OR (type = pull_request)
+
 language: objective-c
 osx_image: xcode12.5
 
