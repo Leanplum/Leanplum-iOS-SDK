@@ -283,6 +283,7 @@
             // Retry on 500 and other network failures.
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
+                || httpStatusCode == 429
                 || (httpStatusCode >= 500 && httpStatusCode < 600)
                 || err.code == NSURLErrorBadServerResponse
                 || err.code == NSURLErrorCannotConnectToHost
