@@ -730,6 +730,7 @@
 		075AAD0A26847C23007CA1BD /* LeanplumSDK */ = {
 			isa = PBXGroup;
 			children = (
+				C956762B26E2199700C8C2DB /* ClassesSwift */,
 				075AAD2026847E60007CA1BD /* Classes */,
 				075AAD2326847E60007CA1BD /* Supporting Files */,
 				C9DBE87826C6B58B0054B67F /* module.modulemap */,
@@ -947,8 +948,6 @@
 				075AAD9C26847EC3007CA1BD /* LPOperationQueue.m */,
 				075AAD9B26847EC3007CA1BD /* LPSwizzle.m */,
 				075AADA126847EC3007CA1BD /* LPUtils.m */,
-				C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */,
-				C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */,
 				C9DBE87226C6AFE70054B67F /* LPUtilsPrivate.h */,
 				C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */,
 				C9DBE87C26CACE820054B67F /* LPTestPrivate.h */,
@@ -1171,6 +1170,15 @@
 				077C53982685D9DB0090D88D /* Package.swift */,
 			);
 			name = Packages;
+			sourceTree = "<group>";
+		};
+		C956762B26E2199700C8C2DB /* ClassesSwift */ = {
+			isa = PBXGroup;
+			children = (
+				C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */,
+				C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */,
+			);
+			path = ClassesSwift;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
