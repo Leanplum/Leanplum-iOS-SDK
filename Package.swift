@@ -14,7 +14,7 @@ let package = Package(
                 .process("Resources")
             ],
             publicHeadersPath: "include"
-        )
+        ),
         .target(
             name: "LeanplumSDKSwift",
             path: "LeanplumSDK/LeanplumSDK/ClassesSwift",
