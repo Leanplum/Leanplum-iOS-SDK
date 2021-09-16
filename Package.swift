@@ -13,15 +13,16 @@ let package = Package(
             resources: [
                 .process("Resources")
             ],
-            publicHeadersPath: "include"
+            publicHeadersPath: "include",
+            cSettings: [
+                .headerSearchPath("include")
+            ]
         ),
         .target(
             name: "LeanplumSDKSwift",
-            path: "LeanplumSDK/LeanplumSDK/ClassesSwift",
-            resources: [
-                .process("Resources")
-            ],
-            publicHeadersPath: "include"
+            dependencies: ["LeanplumSDKObjc"],
+            path: "LeanplumSDK/LeanplumSDK/ClassesSwift"
+            
         )
     ]
 )
