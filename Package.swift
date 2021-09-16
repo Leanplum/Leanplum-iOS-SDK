@@ -11,7 +11,7 @@ let package = Package(
             name: "LeanplumSDKObjc",
             path: "LeanplumSDK/LeanplumSDK",
             exclude: [
-                "LeanplumSDK/LeanplumSDK/ClassesSwift"
+                "ClassesSwift"
             ],
             resources: [
                 .process("Resources")
