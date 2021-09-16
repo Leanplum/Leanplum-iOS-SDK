@@ -349,16 +349,16 @@
 		075AAFAD268496B4007CA1BD /* NSTimer+Blocks.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB526847EC3007CA1BD /* NSTimer+Blocks.h */; };
 		075AAFAE268496B4007CA1BD /* NSString+MD5Addition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB926847EC3007CA1BD /* NSString+MD5Addition.h */; };
 		075AAFAF268496B4007CA1BD /* UIDevice+IdentifierAddition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADBA26847EC3007CA1BD /* UIDevice+IdentifierAddition.h */; };
+		C9CA794626F3728300CD3647 /* LeanplumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CA794326F3728300CD3647 /* LeanplumTest.swift */; };
+		C9CA794726F3728300CD3647 /* LeanplumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CA794326F3728300CD3647 /* LeanplumTest.swift */; };
+		C9CA794A26F3728300CD3647 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CA794526F3728300CD3647 /* LeanplumUtils.swift */; };
+		C9CA794B26F3728300CD3647 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9CA794526F3728300CD3647 /* LeanplumUtils.swift */; };
 		C9DBE87426C6AFE70054B67F /* LPUtilsPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = C9DBE87226C6AFE70054B67F /* LPUtilsPrivate.h */; };
 		C9DBE87526C6AFE70054B67F /* LPUtilsPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */; };
 		C9DBE87626C6AFE70054B67F /* LPUtilsPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */; };
-		C9DBE87A26C6B5D20054B67F /* LeanplumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */; };
-		C9DBE87B26C6B5D20054B67F /* LeanplumTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */; };
 		C9DBE87E26CACE820054B67F /* LPTestPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = C9DBE87C26CACE820054B67F /* LPTestPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C9DBE87F26CACE820054B67F /* LPTestPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87D26CACE820054B67F /* LPTestPrivate.m */; };
 		C9DBE88026CACE820054B67F /* LPTestPrivate.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DBE87D26CACE820054B67F /* LPTestPrivate.m */; };
-		C9FB3AD326B74789006D9DE3 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */; };
-		C9FB3AD426B74789006D9DE3 /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -673,14 +673,14 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
-		C9CA793D26F3629800CD3647 /* Exports.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Exports.swift; sourceTree = "<group>"; };
+		C9CA794326F3728300CD3647 /* LeanplumTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumTest.swift; sourceTree = "<group>"; };
+		C9CA794426F3728300CD3647 /* Exports.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exports.swift; sourceTree = "<group>"; };
+		C9CA794526F3728300CD3647 /* LeanplumUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
 		C9DBE87226C6AFE70054B67F /* LPUtilsPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPUtilsPrivate.h; sourceTree = "<group>"; };
 		C9DBE87326C6AFE70054B67F /* LPUtilsPrivate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPUtilsPrivate.m; sourceTree = "<group>"; };
 		C9DBE87826C6B58B0054B67F /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumTest.swift; sourceTree = "<group>"; };
 		C9DBE87C26CACE820054B67F /* LPTestPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPTestPrivate.h; sourceTree = "<group>"; };
 		C9DBE87D26CACE820054B67F /* LPTestPrivate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LPTestPrivate.m; sourceTree = "<group>"; };
-		C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -731,7 +731,7 @@
 		075AAD0A26847C23007CA1BD /* LeanplumSDK */ = {
 			isa = PBXGroup;
 			children = (
-				C956762B26E2199700C8C2DB /* ClassesSwift */,
+				C9CA794226F3728300CD3647 /* ClassesSwift */,
 				075AAD2026847E60007CA1BD /* Classes */,
 				075AAD2326847E60007CA1BD /* Supporting Files */,
 				C9DBE87826C6B58B0054B67F /* module.modulemap */,
@@ -1173,12 +1173,12 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
-		C956762B26E2199700C8C2DB /* ClassesSwift */ = {
+		C9CA794226F3728300CD3647 /* ClassesSwift */ = {
 			isa = PBXGroup;
 			children = (
-				C9FB3AD226B74789006D9DE3 /* LeanplumUtils.swift */,
-				C9DBE87926C6B5D20054B67F /* LeanplumTest.swift */,
-				C9CA793D26F3629800CD3647 /* Exports.swift */,
+				C9CA794326F3728300CD3647 /* LeanplumTest.swift */,
+				C9CA794426F3728300CD3647 /* Exports.swift */,
+				C9CA794526F3728300CD3647 /* LeanplumUtils.swift */,
 			);
 			path = ClassesSwift;
 			sourceTree = "<group>";
@@ -1477,6 +1477,7 @@
 				075AAED826847EC4007CA1BD /* LPContextualValues.m in Sources */,
 				075AAE2A26847EC4007CA1BD /* LPRegisterDevice.m in Sources */,
 				075AAE7C26847EC4007CA1BD /* LPAES.m in Sources */,
+				C9CA794A26F3728300CD3647 /* LeanplumUtils.swift in Sources */,
 				075AAE4326847EC4007CA1BD /* LPInterstitialMessageTemplate.m in Sources */,
 				075AAE2E26847EC4007CA1BD /* LPCountAggregator.m in Sources */,
 				075AAE5A26847EC4007CA1BD /* LPAppRatingMessageTemplate.m in Sources */,
@@ -1491,12 +1492,11 @@
 				075AAE0A26847EC4007CA1BD /* LeanplumSocket.m in Sources */,
 				075AAE2426847EC4007CA1BD /* LPAppIconManager.m in Sources */,
 				075AAE9D26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
+				C9CA794626F3728300CD3647 /* LeanplumTest.swift in Sources */,
 				075AAE2026847EC4007CA1BD /* LPLogManager.m in Sources */,
-				C9DBE87A26C6B5D20054B67F /* LeanplumTest.swift in Sources */,
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				075AAE0126847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
-				C9FB3AD326B74789006D9DE3 /* LeanplumUtils.swift in Sources */,
 				075AAE2826847EC4007CA1BD /* LPRevenueManager.m in Sources */,
 				075AAE3226847EC4007CA1BD /* LPAlertMessageTemplate.m in Sources */,
 				075AADFB26847EC4007CA1BD /* LPRequestSender.m in Sources */,
@@ -1567,6 +1567,7 @@
 				075AAED926847EC4007CA1BD /* LPContextualValues.m in Sources */,
 				075AAE2B26847EC4007CA1BD /* LPRegisterDevice.m in Sources */,
 				075AAE7D26847EC4007CA1BD /* LPAES.m in Sources */,
+				C9CA794B26F3728300CD3647 /* LeanplumUtils.swift in Sources */,
 				075AAE4426847EC4007CA1BD /* LPInterstitialMessageTemplate.m in Sources */,
 				075AAE2F26847EC4007CA1BD /* LPCountAggregator.m in Sources */,
 				075AAE5B26847EC4007CA1BD /* LPAppRatingMessageTemplate.m in Sources */,
@@ -1581,12 +1582,11 @@
 				075AAE0B26847EC4007CA1BD /* LeanplumSocket.m in Sources */,
 				075AAE2526847EC4007CA1BD /* LPAppIconManager.m in Sources */,
 				075AAE9E26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
+				C9CA794726F3728300CD3647 /* LeanplumTest.swift in Sources */,
 				075AAE2126847EC4007CA1BD /* LPLogManager.m in Sources */,
-				C9DBE87B26C6B5D20054B67F /* LeanplumTest.swift in Sources */,
 				075AAEB226847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5D26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				075AAE0226847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
-				C9FB3AD426B74789006D9DE3 /* LeanplumUtils.swift in Sources */,
 				075AAE2926847EC4007CA1BD /* LPRevenueManager.m in Sources */,
 				075AAE3326847EC4007CA1BD /* LPAlertMessageTemplate.m in Sources */,
 				075AADFC26847EC4007CA1BD /* LPRequestSender.m in Sources */,

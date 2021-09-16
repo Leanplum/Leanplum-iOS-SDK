@@ -9,20 +9,19 @@ let package = Package(
     targets: [
         .target(
             name: "LeanplumSDKObjc",
-            path: "LeanplumSDK/LeanplumSDK/Classes",
+            path: "LeanplumSDK/LeanplumSDK",
+            exclude: [
+                "LeanplumSDK/LeanplumSDK/ClassesSwift"
+            ],
             resources: [
                 .process("Resources")
             ],
-            publicHeadersPath: "include",
-            cSettings: [
-                .headerSearchPath("include")
-            ]
+            publicHeadersPath: "include"
         ),
         .target(
             name: "LeanplumSDKSwift",
             dependencies: ["LeanplumSDKObjc"],
             path: "LeanplumSDK/LeanplumSDK/ClassesSwift"
-            
         )
     ]
 )
