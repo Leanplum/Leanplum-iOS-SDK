@@ -38,8 +38,6 @@
         _startSuccessful = NO;
         _actionManager = nil;
         _userAttributeChanges = [NSMutableArray array];
-        _stripViewControllerFromState = NO;
-        _isScreenTrackingEnabled = NO;
         _calledHandleNotification = NO;
     }
     return self;

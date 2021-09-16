@@ -78,13 +78,10 @@ NS_SWIFT_NAME(Leanplum.Constants)
     int _networkTimeoutSeconds;
     int _networkTimeoutSecondsForDownloads;
     int _syncNetworkTimeoutSeconds;
-    BOOL _checkForUpdatesInDevelopmentMode;
     BOOL _isDevelopmentModeEnabled;
     BOOL _loggingEnabled;
-    BOOL _canDownloadContentMidSessionInProduction;
     BOOL _isTestMode;
     BOOL _isInPermanentFailureState;
-    BOOL _networkActivityIndicatorEnabled;
     NSString *_client;
     NSString *_sdkVersion;
     // Counts how many user code blocks we're inside, to silence exceptions.
@@ -99,16 +96,13 @@ NS_SWIFT_NAME(Leanplum.Constants)
 @property(assign, nonatomic) int networkTimeoutSeconds;
 @property(assign, nonatomic) int networkTimeoutSecondsForDownloads;
 @property(assign, nonatomic) int syncNetworkTimeoutSeconds;
-@property(assign, nonatomic) BOOL checkForUpdatesInDevelopmentMode;
 @property(assign, nonatomic) BOOL isDevelopmentModeEnabled;
 @property(assign, nonatomic) BOOL loggingEnabled;
-@property(assign, nonatomic) BOOL canDownloadContentMidSessionInProduction;
 @property(strong, nonatomic) NSString *apiServlet;
 @property(assign, nonatomic) BOOL isTestMode;
 @property(assign, nonatomic) BOOL isInPermanentFailureState;
 @property(strong, nonatomic) NSString *client;
 @property(strong, nonatomic) NSString *sdkVersion;
-@property(assign, nonatomic) BOOL networkActivityIndicatorEnabled;
 @property(assign, nonatomic) BOOL isLocationCollectionEnabled;
 @property(assign, nonatomic) BOOL isInboxImagePrefetchingEnabled;
 

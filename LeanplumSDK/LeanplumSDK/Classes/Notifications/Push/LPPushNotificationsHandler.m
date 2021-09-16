@@ -354,7 +354,7 @@
                                                                      LP_PARAM_INCLUDE_DEFAULTS: @(NO),
                                                                      LP_PARAM_INCLUDE_MESSAGE_ID: messageId
                                                                     }]
-                                                    andRequestType:Immediate];
+                                  andRequestType:Immediate];
             [request onResponse:^(id<LPNetworkOperationProtocol> operation, NSDictionary *response) {
                 LP_TRY
                 NSDictionary *values = response[LP_KEY_VARS];
@@ -365,33 +365,19 @@
                 NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
                 NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
                 
-                if (![LPConstantsState sharedState].canDownloadContentMidSessionInProduction ||
-                    [values isEqualToDictionary:[LPVarCache sharedCache].diffs]) {
-                    values = nil;
-                    varsJson = nil;
-                    varsSignature = nil;
-                }
-                if ([messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs]) {
-                    messages = nil;
-                }
-                if ([regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
-                    regions = nil;
-                }
-                if (values || messages || regions) {
-                    [[LPVarCache sharedCache] applyVariableDiffs:values
-                                                        messages:messages
-                                                        variants:variants
-                                                       localCaps:localCaps
-                                                         regions:regions
-                                                variantDebugInfo:nil
-                                                        varsJson:varsJson
-                                                   varsSignature:varsSignature];
-                    if (onCompleted) {
-                        onCompleted();
-                    }
+                [[LPVarCache sharedCache] applyVariableDiffs:values
+                                                    messages:messages
+                                                    variants:variants
+                                                   localCaps:localCaps
+                                                     regions:regions
+                                            variantDebugInfo:nil
+                                                    varsJson:varsJson
+                                               varsSignature:varsSignature];
+                if (onCompleted) {
+                    onCompleted();
                 }
                 LP_END_TRY
-             }];
+            }];
             [[LPRequestSender sharedInstance] send:request];
         }
         LP_BEGIN_USER_CODE

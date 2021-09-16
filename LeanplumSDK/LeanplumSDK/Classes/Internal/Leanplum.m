@@ -170,13 +170,6 @@ void leanplumExceptionHandler(NSException *exception);
     [LPConstantsState sharedState].sdkVersion = version;
 }
 
-+ (void)setFileHashingEnabledInDevelopmentMode:(BOOL)enabled
-{
-    LP_TRY
-    [LPConstantsState sharedState].checkForUpdatesInDevelopmentMode = enabled;
-    LP_END_TRY
-}
-
 + (void)setLogLevel:(LPLogLevel)level
 {
     LP_TRY
@@ -214,20 +207,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     [LPConstantsState sharedState].networkTimeoutSeconds = seconds;
     [LPConstantsState sharedState].networkTimeoutSecondsForDownloads = downloadSeconds;
-    LP_END_TRY
-}
-
-+ (void)setNetworkActivityIndicatorEnabled:(BOOL)enabled
-{
-    LP_TRY
-    [LPConstantsState sharedState].networkActivityIndicatorEnabled = enabled;
-    LP_END_TRY
-}
-
-+ (void)setCanDownloadContentMidSessionInProductionMode:(BOOL)value
-{
-    LP_TRY
-    [LPConstantsState sharedState].canDownloadContentMidSessionInProduction = value;
     LP_END_TRY
 }
 
@@ -1938,21 +1917,6 @@ void leanplumExceptionHandler(NSException *exception);
     [[LPCountAggregator sharedAggregator] incrementCount:@"set_variant_debug_info_enabled"];
 }
 
-+ (void)trackAllAppScreens
-{
-    [Leanplum trackAllAppScreensWithMode:LPTrackScreenModeDefault];
-}
-
-+ (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode;
-{
-    RETURN_IF_NOOP;
-
-    LP_TRY
-    BOOL stripViewControllerFromState = trackScreenMode == LPTrackScreenModeStripViewController;
-    [[LPInternalState sharedState] setStripViewControllerFromState:stripViewControllerFromState];
-    LP_END_TRY
-}
-
 + (void)trackPurchase:(NSString *)event withValue:(double)value
       andCurrencyCode:(NSString *)currencyCode andParameters:(NSDictionary *)params
 {
@@ -2308,11 +2272,6 @@ andParameters:(NSDictionary *)params
         return;
     }
     LP_TRY
-    if (state &&
-        [[LPInternalState sharedState] stripViewControllerFromState] &&
-        [state hasSuffix:@"ViewController"]) {
-        state = [state substringToIndex:([state length] - [@"ViewController" length])];
-    }
     NSMutableDictionary *args = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                  state ? state : @"", LP_PARAM_STATE, nil];
     if (info) {

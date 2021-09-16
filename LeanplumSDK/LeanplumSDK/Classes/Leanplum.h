@@ -204,28 +204,6 @@ NS_SWIFT_NAME(setSocketHostName(_:port:));
 /**@}*/
 
 /**
- * Sets whether to show the network activity indicator in the status bar when making requests.
- * Default: YES.
- */
-+ (void)setNetworkActivityIndicatorEnabled:(BOOL)enabled;
-
-/**
- * Advanced: Whether new variables can be downloaded mid-session. By default, this is disabled.
- * Currently, if this is enabled, new variables can only be downloaded if a push notification is sent
- * while the app is running, and the notification's metadata hasn't be downloaded yet.
- */
-+ (void)setCanDownloadContentMidSessionInProductionMode:(BOOL)value;
-
-/**
- * Modifies the file hashing setting in development mode.
- * By default, Leanplum will hash file variables to determine if they're modified and need
- * to be uploaded to the server if we're running in the simulator.
- * Setting this to NO will reduce startup latency in development mode, but it's possible
- * that Leanplum will not always have the most up-to-date versions of your resources.
- */
-+ (void)setFileHashingEnabledInDevelopmentMode:(BOOL)enabled;
-
-/**
 * Sets log level through the Leanplum SDK
 */
 + (void)setLogLevel:(LPLogLevel)level;
@@ -612,34 +590,6 @@ NS_SWIFT_NAME(advance(state:info:params:));
 + (void)resumeState;
 
 /**
- * Automatically tracks all of the screens in the app as states.
- * You should not use this in conjunction with advanceTo as the user can only be in
- * 1 state at a time. This method requires LeanplumUIEditor module.
- */
-+ (void)trackAllAppScreens
-NS_SWIFT_NAME(trackAppScreens());
-
-/**
- * LPTrackScreenMode enum.
- * LPTrackScreenModeDefault mans that states are the full view controller type name.
- * LPTrackScreenModeStripViewController will cause the string "ViewController" to be stripped from
- * the end of the state.
- */
-typedef NS_ENUM(NSUInteger, LPTrackScreenMode) {
-    LPTrackScreenModeDefault NS_SWIFT_NAME(defaultMode) = 0,
-    LPTrackScreenModeStripViewController NS_SWIFT_NAME(stripMode)
-} NS_SWIFT_NAME(Leanplum.TrackScreenMode);
-
-/**
- * Automatically tracks all of the screens in the app as states.
- * You should not use this in conjunction with advanceTo as the user can only be in
- * 1 state at a time. This method requires LeanplumUIEditor module.
- * @param trackScreenMode Choose mode for display. Default is the view controller type name.
- */
-+ (void)trackAllAppScreensWithMode:(LPTrackScreenMode)trackScreenMode
-NS_SWIFT_NAME(trackAppScreens(mode:));
-
-/**
  * Manually track purchase event with currency code in your application. It is advised to use
  * trackInAppPurchases to automatically track IAPs.
  */
@@ -756,8 +706,10 @@ NS_SWIFT_UNAVAILABLE("use forceContentUpdate(completion:)");
 /**
  * This should be your first statement in a unit test. This prevents
  * Leanplum from communicating with the server.
+ * Deprecated. Use [Leanplum setTestModeEnabled:YES] instead.
  */
-+ (void)enableTestMode;
++ (void)enableTestMode
+__attribute__((deprecated("Use [Leanplum setTestModeEnabled:YES] instead.")));
 
 /**
  * Used to enable or disable test mode. Test mode prevents Leanplum from
