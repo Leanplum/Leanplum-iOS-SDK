@@ -16,11 +16,10 @@
 @property(strong, nonatomic) NSMutableSet *startResponders, *variablesChangedResponders, *noDownloadsResponders;
 @property(assign, nonatomic) NSUncaughtExceptionHandler *customExceptionHandler;
 @property(strong, nonatomic) LPRegisterDevice *registration;
-@property(assign, nonatomic) BOOL calledStart, hasStarted, hasStartedAndRegisteredAsDeveloper, startSuccessful, issuedStart, stripViewControllerFromState;
+@property(assign, nonatomic) BOOL calledStart, hasStarted, hasStartedAndRegisteredAsDeveloper, startSuccessful, issuedStart;
 @property(strong, nonatomic) LPActionManager *actionManager;
 @property(strong, nonatomic) NSString *appVersion;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
-@property(assign, nonatomic) BOOL isScreenTrackingEnabled;
 @property(assign, nonatomic) BOOL isVariantDebugInfoEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
 
