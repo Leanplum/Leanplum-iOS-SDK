@@ -1,0 +1,15 @@
+framework module Leanplum {
+  umbrella header "LeanplumSDK.h"
+
+  export *
+  module * { export * }
+  
+  explicit module Private {
+    private header "LPTestPrivate.h"
+  }
+}
+
+module Leanplum.Swift {
+    header "Leanplum-Swift.h"
+    requires objc
+}
