@@ -1,0 +1,6 @@
+framework module Leanplum {
+  umbrella header "Leanplum-iOS-SDK-umbrella.h"
+
+  export *
+  module * { export * }
+}

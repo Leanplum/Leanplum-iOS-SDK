@@ -10,7 +10,8 @@ main() {
     echo "Extracting xcframework binary for SPM target"
 
     unzip -q "Leanplum.framework.zip" -d "Leanplum.framework"
-    mv "Leanplum.framework/dynamic/Leanplum.xcframework" "/binary/Leanplum.xcframework"
+    mkdir -p "binary"
+    mv "Leanplum.framework/dynamic/Leanplum.xcframework" "binary/Leanplum.xcframework"
     rm -rf "Leanplum.framework"
 
     echo "${GREEN}Done.${NORMAL}"
