@@ -1,5 +1,0 @@
-module Leanplum_Private {
-    // import your private headers here
-    header "Classes/Utilities/LPUtilsPrivate.h"
-    export *
-}
