@@ -28,7 +28,11 @@
 #import "LPAPIConfig.h"
 #import "LPConstants.h"
 #import "Leanplum.h"
+#ifdef IS_STATIC
+#import "Leanplum-Swift.h"
+#else
 #import <Leanplum/Leanplum-Swift.h>
+#endif
 
 @implementation LPUtils
 

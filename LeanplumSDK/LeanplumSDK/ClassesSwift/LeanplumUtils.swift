@@ -7,6 +7,7 @@
 import Foundation
 //import Leanplum_Private
 
+//import Leanplum.Private
 import Leanplum.Private
 
 struct LPSwift {

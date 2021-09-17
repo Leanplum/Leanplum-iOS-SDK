@@ -671,8 +671,9 @@
 		075AAEEE26847FE1007CA1BD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		076072BA2686154F008F1D9A /* sdk-version.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "sdk-version.txt"; path = "../sdk-version.txt"; sourceTree = "<group>"; };
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
-		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
+		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
+		6A7149AC26F4C7EC004A34A9 /* LeanplumSDK-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDK-Bridging-Header.h"; sourceTree = "<group>"; };
 		C9CA794326F3728300CD3647 /* LeanplumTest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumTest.swift; sourceTree = "<group>"; };
 		C9CA794426F3728300CD3647 /* Exports.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Exports.swift; sourceTree = "<group>"; };
 		C9CA794526F3728300CD3647 /* LeanplumUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
@@ -767,6 +768,7 @@
 			children = (
 				075AAD2426847E60007CA1BD /* Info.plist */,
 				077C538E2685CFB90090D88D /* Leanplum.modulemap */,
+				6A7149AC26F4C7EC004A34A9 /* LeanplumSDK-Bridging-Header.h */,
 			);
 			path = "Supporting Files";
 			sourceTree = "<group>";
@@ -1807,6 +1809,10 @@
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"IS_STATIC=1",
+					"DEBUG=1",
+				);
 				INFOPLIST_FILE = "LeanplumSDK/Supporting Files/Info.plist";
 				INSTALL_PATH = Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1823,6 +1829,7 @@
 				PRODUCT_NAME = Leanplum;
 				PUBLIC_HEADERS_FOLDER_PATH = Leanplum.framework/Headers;
 				SKIP_INSTALL = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanplumSDK/Supporting Files/LeanplumSDK-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1838,6 +1845,7 @@
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
+				GCC_PREPROCESSOR_DEFINITIONS = "IS_STATIC=1";
 				INFOPLIST_FILE = "LeanplumSDK/Supporting Files/Info.plist";
 				INSTALL_PATH = Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
@@ -1854,6 +1862,7 @@
 				PRODUCT_NAME = Leanplum;
 				PUBLIC_HEADERS_FOLDER_PATH = Leanplum.framework/Headers;
 				SKIP_INSTALL = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanplumSDK/Supporting Files/LeanplumSDK-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
