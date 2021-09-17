@@ -30,7 +30,6 @@
 #import "Leanplum.h"
 #import <Leanplum/Leanplum-Swift.h>
 
-
 @implementation LPUtils
 
 + (BOOL)isNullOrEmpty:(id)obj

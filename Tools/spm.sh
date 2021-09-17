@@ -7,23 +7,11 @@
 set -eo pipefail; [[ $DEBUG ]] && set -x
 
 main() {
-    echo "Creating symlinks for all headers & resources"
+    echo "Extracting xcframework binary for SPM target"
 
-    pushd LeanplumSDK/LeanplumSDK
-    rm -rf Resources
-    ln -s ../LeanplumSDKBundle/Resources Resources
-    popd
-
-    rm -rf LeanplumSDK/LeanplumSDK/include
-    mkdir LeanplumSDK/LeanplumSDK/include
-
-    # find all headers with absolute paths
-    pushd LeanplumSDK/LeanplumSDK/Classes
-    headers=$(find .. -name "*.h")
-    popd
-
-    # symlink all header files to include directory
-    ln -s $headers "LeanplumSDK/LeanplumSDK/include"
+    unzip -q "Leanplum.framework.zip" -d "Leanplum.framework"
+    mv "Leanplum.framework/dynamic/Leanplum.xcframework" "/binary/Leanplum.xcframework"
+    rm -rf "Leanplum.framework"
 
     echo "${GREEN}Done.${NORMAL}"
 }

@@ -4,24 +4,11 @@ import PackageDescription
 let package = Package(
     name: "LeanplumSDK",
     products: [
-        .library(name: "LeanplumSDK", targets: ["LeanplumSDKObjc", "LeanplumSDKSwift"])
+        .library(name: "LeanplumSDK", targets: ["LeanplumSDK"])
     ],
     targets: [
-        .target(
-            name: "LeanplumSDKObjc",
-            path: "LeanplumSDK/LeanplumSDK",
-            exclude: [
-                "ClassesSwift"
-            ],
-            resources: [
-                .process("Resources")
-            ],
-            publicHeadersPath: "include"
-        ),
-        .target(
-            name: "LeanplumSDKSwift",
-            dependencies: ["LeanplumSDKObjc"],
-            path: "LeanplumSDK/LeanplumSDK/ClassesSwift"
-        )
-    ]
+        .binaryTarget(
+            name: "LeanplumSDK",
+            path: "binary/Leanplum.xcframework"
+    )]
 )
