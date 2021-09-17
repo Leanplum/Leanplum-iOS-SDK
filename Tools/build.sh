@@ -78,7 +78,7 @@ main() {
   rm -rf Release/static/LeanplumSDK-iphonesimulator.xcarchive
 
   # move binary for SPM
-  mv_spm
+  cp_spm
   # zip all iOS frameworks
   zip_ios
   
@@ -240,10 +240,10 @@ zip_ios() {
   cd -
 }
 
-mv_spm() {
+cp_spm() {
   echo "moving xcframework binary for SPM target"
   mkdir -p binary
-  cp -f "Release/dynamic/Leanplum.xcframework" "binary/Leanplum.xcframework"
+  cp -f -r "Release/dynamic/Leanplum.xcframework" "binary/Leanplum.xcframework"
 }
 
 zip_unreal_engine() {
