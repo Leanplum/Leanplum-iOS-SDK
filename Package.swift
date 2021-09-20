@@ -2,13 +2,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "LeanplumSDK",
+    name: "Leanplum",
     products: [
-        .library(name: "LeanplumSDK", targets: ["LeanplumSDK"])
+        .library(name: "Leanplum", targets: ["Leanplum"])
     ],
     targets: [
         .binaryTarget(
-            name: "LeanplumSDK",
-            path: "binary/Leanplum.xcframework"
+            name: "Leanplum",
+            url: "https://storage.googleapis.com/leanplum-multi/Nikola/Leanplum-poc.xcframework.zip",
+            checksum: "45a64c180522d62ab72e6ace1902a19eeff5e7a24b777107ad188c3e0a3037ff"
     )]
 )
