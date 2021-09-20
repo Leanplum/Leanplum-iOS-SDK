@@ -1447,7 +1447,6 @@
 				075AAD0426847C23007CA1BD /* Sources */,
 				075AAD0526847C23007CA1BD /* Frameworks */,
 				075AAD0626847C23007CA1BD /* Resources */,
-				07828DB8268B4F3A0029A339 /* SPM */,
 			);
 			buildRules = (
 			);
@@ -1565,27 +1564,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		07828DB8268B4F3A0029A339 /* SPM */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = SPM;
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ..\n./Tools/spm.sh\ncd -\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		075AAD0426847C23007CA1BD /* Sources */ = {

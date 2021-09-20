@@ -209,7 +209,26 @@ zip_ios() {
   cd Release/dynamic
   zip -r Leanplum.framework.zip *
   mv Leanplum.framework.zip ..
+
+  echo "zipping dynamic xcframework for SPM"
+  zip -r Leanplum.xcframework.zip *
   cd -
+}
+
+update_spm_info(){
+  echo "updating SPM checksum and url"
+  package_file=Package.swift
+  package_tmp_file=Package_tmp.swift
+  checksum=`swift package compute-checksum Release/dynamic/Leanplum.xcframework.zip`
+  awk -v value="\"$checksum\";" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
+      && mv $package_tmp_file $package_file
+  
+  version=`cat sdk-version.txt`
+  lp_framework="Leanplum.xcframework.zip"
+  github_url="https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download"
+  url="$github_url/$version/$lp_framework"
+  awk -v value="\"$url\";" '!x{x=sub(/url: .*/, "url: "value)}1' $package_file > $package_tmp_file \
+    && mv $package_tmp_file $package_file
 }
 
 zip_unreal_engine() {
