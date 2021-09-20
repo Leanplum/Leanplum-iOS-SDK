@@ -3,7 +3,7 @@
 // swift-module-flags: -target arm64-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name Leanplum
 import Foundation
 @_exported import Leanplum
-import Leanplum_Private
+import Leanplum.Private
 import Swift
 @objc @_inheritsConvenienceInitializers public class LeanplumUtils : ObjectiveC.NSObject {
   @objc public func leanplumTest() -> Swift.String

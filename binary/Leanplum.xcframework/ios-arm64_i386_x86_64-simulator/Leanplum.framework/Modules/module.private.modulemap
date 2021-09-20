@@ -1,6 +1,0 @@
-module Leanplum_Private {
-    // import your private headers here
-    header "Classes/Utilities/LPUtilsPrivate.h" // This is marked as Project in Target
-    header "Classes/Utilities/LPTestPrivate.h" // This is marked as Private in Target
-    export *
-}
