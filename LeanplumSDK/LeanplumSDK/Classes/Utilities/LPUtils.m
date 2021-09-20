@@ -28,7 +28,7 @@
 #import "LPAPIConfig.h"
 #import "LPConstants.h"
 #import "Leanplum.h"
-
+#import <Leanplum/Leanplum-Swift.h>
 
 @implementation LPUtils
 
