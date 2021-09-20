@@ -158,43 +158,17 @@ build_ios_static() {
 
   run "Building Leanplum-SDK-iOS static (simulator) target ..." \
   xcodebuild archive \
-  -scheme Leanplum-Static \
+  -scheme Static \
   -archivePath Release/static/LeanplumSDK-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
   SKIP_INSTALL=NO
 
   run "Building Leanplum-SDK-iOS static (device) target ..." \
   xcodebuild archive \
-  -scheme Leanplum-Static \
+  -scheme Static \
   -archivePath Release/static/LeanplumSDK-iphoneos.xcarchive \
   -sdk iphoneos \
   SKIP_INSTALL=NO
-
-  run "Creating simulator static library from libLeanplum.a ..." \
-  lipo -create \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/libLeanplum.a \
-    -output Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
-
-  run "Creating ios static library from libLeanplum.a ..." \
-  lipo -create \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/libLeanplum.a \
-    -output Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
-
-  run "Copying modulemap for simulator ..." \
-  cp -r Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules
-
-  run "Copying modulemap for ios ..." \
-  cp -r Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules
-
-  run "Copying Info.plist to static simulator framework ..." \
-  cp Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist
-
-  run "Copying Info.plist to static iphone framework ..." \
-  cp Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist
 
   run "Creating Leanplum-SDK-iOS static xcframework ..." \
   xcodebuild -create-xcframework \
