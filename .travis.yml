@@ -44,7 +44,9 @@ deploy:
   - provider: releases
     skip_cleanup: true
     api_key: $GITHUB_TOKEN
-    file: Release/Leanplum.framework.zip
+    file: 
+      - Release/Leanplum.framework.zip
+      - Release/dynamic/Leanplum.xcframework.zip
     draft: true
     on:
       tags: true
