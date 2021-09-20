@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "075AAD1626847C6F007CA1BD"
-               BuildableName = "libLeanplum.a"
+               BlueprintIdentifier = "6A714AEF26F8B317004A34A9"
+               BuildableName = "Leanplum.framework"
                BlueprintName = "Leanplum-Static"
                ReferencedContainer = "container:LeanplumSDK.xcodeproj">
             </BuildableReference>
@@ -50,8 +50,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "075AAD1626847C6F007CA1BD"
-            BuildableName = "libLeanplum.a"
+            BlueprintIdentifier = "6A714AEF26F8B317004A34A9"
+            BuildableName = "Leanplum.framework"
             BlueprintName = "Leanplum-Static"
             ReferencedContainer = "container:LeanplumSDK.xcodeproj">
          </BuildableReference>
