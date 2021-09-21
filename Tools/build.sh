@@ -168,32 +168,6 @@ build_ios_static() {
   -sdk iphoneos \
   SKIP_INSTALL=NO
 
-  run "Creating simulator static library from libLeanplum.a ..." \
-  lipo -create \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/libLeanplum.a \
-    -output Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
-
-  run "Creating ios static library from libLeanplum.a ..." \
-  lipo -create \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/libLeanplum.a \
-    -output Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
-
-  run "Copying modulemap for simulator ..." \
-  cp -r Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules
-
-  run "Copying modulemap for ios ..." \
-  cp -r Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Modules
-
-  run "Copying Info.plist to static simulator framework ..." \
-  cp Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist
-
-  run "Copying Info.plist to static iphone framework ..." \
-  cp Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Info.plist
-
   run "Creating Leanplum-SDK-iOS static xcframework ..." \
   xcodebuild -create-xcframework \
   -framework Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework \
@@ -235,7 +209,26 @@ zip_ios() {
   cd Release/dynamic
   zip -r Leanplum.framework.zip *
   mv Leanplum.framework.zip ..
+
+  echo "zipping dynamic xcframework for SPM"
+  zip -r Leanplum.xcframework.zip *
   cd -
+}
+
+update_spm_info(){
+  echo "updating SPM checksum and url"
+  package_file=Package.swift
+  package_tmp_file=Package_tmp.swift
+  checksum=`swift package compute-checksum Release/dynamic/Leanplum.xcframework.zip`
+  awk -v value="\"$checksum\";" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
+      && mv $package_tmp_file $package_file
+  
+  version=`cat sdk-version.txt`
+  lp_framework="Leanplum.xcframework.zip"
+  github_url="https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download"
+  url="$github_url/$version/$lp_framework"
+  awk -v value="\"$url\";" '!x{x=sub(/url: .*/, "url: "value)}1' $package_file > $package_tmp_file \
+    && mv $package_tmp_file $package_file
 }
 
 zip_unreal_engine() {

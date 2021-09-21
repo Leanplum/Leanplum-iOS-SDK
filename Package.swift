@@ -2,21 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "LeanplumSDK",
+    name: "Leanplum",
     products: [
-        .library(name: "LeanplumSDK", targets: ["LeanplumSDK"])
+        .library(name: "Leanplum", targets: ["Leanplum"])
     ],
     targets: [
-        .target(
-            name: "LeanplumSDK",
-            path: "LeanplumSDK/LeanplumSDK",
-            exclude: [
-                "Supporting Files/Info.plist"
-            ],
-            resources: [
-                .process("Resources")
-            ],
-            publicHeadersPath: "include"
+        .binaryTarget(
+            name: "Leanplum",
+            url: "github/Leanplum.xcframework.zip";
+            checksum: "checksum";
         )
     ]
 )
