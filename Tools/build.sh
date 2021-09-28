@@ -76,9 +76,12 @@ main() {
   rm -rf Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive
   rm -rf Release/static/LeanplumSDK-iphoneos.xcarchive
   rm -rf Release/static/LeanplumSDK-iphonesimulator.xcarchive
-
+  
   # zip all iOS frameworks
   zip_ios
+  
+  # update SPM checksum and url
+  update_spm_info
   
   # zip static iOS framework for Unreal Engine
   zip_unreal_engine
