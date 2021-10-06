@@ -1875,6 +1875,7 @@ void leanplumExceptionHandler(NSException *exception);
                     LPLog(LPDebug, @"Local IAM caps reached, suppressing messageId=%@", [actionContext messageId]);
                     continue;
                 }
+                // trigger ActionManager.swift actions
                 [self triggerAction:actionContext handledBlock:^(BOOL success) {
                     if (success) {
                         if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {

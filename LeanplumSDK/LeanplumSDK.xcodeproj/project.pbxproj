@@ -349,6 +349,22 @@
 		075AAFAD268496B4007CA1BD /* NSTimer+Blocks.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB526847EC3007CA1BD /* NSTimer+Blocks.h */; };
 		075AAFAE268496B4007CA1BD /* NSString+MD5Addition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADB926847EC3007CA1BD /* NSString+MD5Addition.h */; };
 		075AAFAF268496B4007CA1BD /* UIDevice+IdentifierAddition.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AADBA26847EC3007CA1BD /* UIDevice+IdentifierAddition.h */; };
+		39FEE8F826F88364004EC57D /* ActionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE8F726F88364004EC57D /* ActionManager.swift */; };
+		39FEE8F926F88364004EC57D /* ActionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE8F726F88364004EC57D /* ActionManager.swift */; };
+		39FEE8FB26F883DD004EC57D /* ActionScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE8FA26F883DD004EC57D /* ActionScheduler.swift */; };
+		39FEE8FC26F883DD004EC57D /* ActionScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE8FA26F883DD004EC57D /* ActionScheduler.swift */; };
+		39FEE90126F8842A004EC57D /* ActionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90026F8842A004EC57D /* ActionQueue.swift */; };
+		39FEE90226F8842A004EC57D /* ActionQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90026F8842A004EC57D /* ActionQueue.swift */; };
+		39FEE90426F89DE7004EC57D /* ActionManager+Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90326F89DE7004EC57D /* ActionManager+Definition.swift */; };
+		39FEE90526F89DE7004EC57D /* ActionManager+Definition.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90326F89DE7004EC57D /* ActionManager+Definition.swift */; };
+		39FEE90726F9C9FA004EC57D /* MessageDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90626F9C9FA004EC57D /* MessageDisplayDelegate.swift */; };
+		39FEE90826F9C9FA004EC57D /* MessageDisplayDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90626F9C9FA004EC57D /* MessageDisplayDelegate.swift */; };
+		39FEE90A26F9CAAD004EC57D /* MessageControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90926F9CAAD004EC57D /* MessageControllerDelegate.swift */; };
+		39FEE90B26F9CAAD004EC57D /* MessageControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90926F9CAAD004EC57D /* MessageControllerDelegate.swift */; };
+		39FEE90D26F9D0E0004EC57D /* ActionManager+Execution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90C26F9D0E0004EC57D /* ActionManager+Execution.swift */; };
+		39FEE90E26F9D0E1004EC57D /* ActionManager+Execution.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90C26F9D0E0004EC57D /* ActionManager+Execution.swift */; };
+		39FEE9102701C574004EC57D /* ActionManager+Triggering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90F2701C574004EC57D /* ActionManager+Triggering.swift */; };
+		39FEE9112701C574004EC57D /* ActionManager+Triggering.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39FEE90F2701C574004EC57D /* ActionManager+Triggering.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -663,6 +679,15 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
+		39FEE8F626F88364004EC57D /* Leanplum-Static-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Leanplum-Static-Bridging-Header.h"; sourceTree = "<group>"; };
+		39FEE8F726F88364004EC57D /* ActionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionManager.swift; sourceTree = "<group>"; };
+		39FEE8FA26F883DD004EC57D /* ActionScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionScheduler.swift; sourceTree = "<group>"; };
+		39FEE90026F8842A004EC57D /* ActionQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionQueue.swift; sourceTree = "<group>"; };
+		39FEE90326F89DE7004EC57D /* ActionManager+Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Definition.swift"; sourceTree = "<group>"; };
+		39FEE90626F9C9FA004EC57D /* MessageDisplayDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageDisplayDelegate.swift; sourceTree = "<group>"; };
+		39FEE90926F9CAAD004EC57D /* MessageControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageControllerDelegate.swift; sourceTree = "<group>"; };
+		39FEE90C26F9D0E0004EC57D /* ActionManager+Execution.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Execution.swift"; sourceTree = "<group>"; };
+		39FEE90F2701C574004EC57D /* ActionManager+Triggering.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Triggering.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -722,6 +747,7 @@
 		075AAD2026847E60007CA1BD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				39FEE8F526F88352004EC57D /* Swift */,
 				075AAD2B26847EC3007CA1BD /* Leanplum.h */,
 				075AAD2126847E60007CA1BD /* LeanplumSDK.h */,
 				075AAD9426847EC3007CA1BD /* LeanplumCompatibility.h */,
@@ -745,6 +771,7 @@
 		075AAD2326847E60007CA1BD /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				39FEE8F626F88364004EC57D /* Leanplum-Static-Bridging-Header.h */,
 				075AAD2426847E60007CA1BD /* Info.plist */,
 				077C538E2685CFB90090D88D /* Leanplum.modulemap */,
 			);
@@ -1149,6 +1176,29 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		39FEE8F526F88352004EC57D /* Swift */ = {
+			isa = PBXGroup;
+			children = (
+				39FEE912270469DB004EC57D /* Delegates */,
+				39FEE8F726F88364004EC57D /* ActionManager.swift */,
+				39FEE90326F89DE7004EC57D /* ActionManager+Definition.swift */,
+				39FEE90C26F9D0E0004EC57D /* ActionManager+Execution.swift */,
+				39FEE90F2701C574004EC57D /* ActionManager+Triggering.swift */,
+				39FEE8FA26F883DD004EC57D /* ActionScheduler.swift */,
+				39FEE90026F8842A004EC57D /* ActionQueue.swift */,
+			);
+			path = Swift;
+			sourceTree = "<group>";
+		};
+		39FEE912270469DB004EC57D /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				39FEE90626F9C9FA004EC57D /* MessageDisplayDelegate.swift */,
+				39FEE90926F9CAAD004EC57D /* MessageControllerDelegate.swift */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1317,9 +1367,11 @@
 				TargetAttributes = {
 					075AAD0726847C23007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1250;
 					};
 					075AAD1626847C6F007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1250;
 					};
 					075AAEEB26847FE1007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
@@ -1396,11 +1448,13 @@
 			files = (
 				075AAECF26847EC4007CA1BD /* LPFeatureFlagManager.m in Sources */,
 				075AAE0C26847EC4007CA1BD /* LPResponse.m in Sources */,
+				39FEE90A26F9CAAD004EC57D /* MessageControllerDelegate.swift in Sources */,
 				075AAEC426847EC4007CA1BD /* LPEventDataManager.m in Sources */,
 				075AAE5326847EC4007CA1BD /* LPInterstitialViewController.m in Sources */,
 				075AAEA226847EC4007CA1BD /* UIDevice+IdentifierAddition.m in Sources */,
 				075AAEC226847EC4007CA1BD /* LPEventCallbackManager.m in Sources */,
 				075AAE5026847EC4007CA1BD /* LPPopupViewController.m in Sources */,
+				39FEE90726F9C9FA004EC57D /* MessageDisplayDelegate.swift in Sources */,
 				075AAEBC26847EC4007CA1BD /* LPActionArg.m in Sources */,
 				075AAE9326847EC4007CA1BD /* Leanplum_AsyncSocket.m in Sources */,
 				075AAE4126847EC4007CA1BD /* LPIconChangeMessageTemplate.m in Sources */,
@@ -1408,6 +1462,7 @@
 				075AAE6D26847EC4007CA1BD /* LPLocalNotificationsHandler.m in Sources */,
 				075AAE1626847EC4007CA1BD /* LPRequest.m in Sources */,
 				075AAEAF26847EC4007CA1BD /* LPVar.m in Sources */,
+				39FEE90D26F9D0E0004EC57D /* ActionManager+Execution.swift in Sources */,
 				075AAE7326847EC4007CA1BD /* LPPushNotificationsHandler.m in Sources */,
 				075AAE5826847EC4007CA1BD /* LPRegisterForPushMessageTemplate.m in Sources */,
 				075AAE7F26847EC4007CA1BD /* LPDatabase.m in Sources */,
@@ -1419,7 +1474,9 @@
 				075AAE7026847EC4007CA1BD /* LPPushNotificationsManager.m in Sources */,
 				075AAEDE26847EC4007CA1BD /* LPConstants.m in Sources */,
 				075AAE3726847EC4007CA1BD /* LPCenterPopupMessageTemplate.m in Sources */,
+				39FEE8FB26F883DD004EC57D /* ActionScheduler.swift in Sources */,
 				075AAEB726847EC4007CA1BD /* LPActionManager.m in Sources */,
+				39FEE9102701C574004EC57D /* ActionManager+Triggering.swift in Sources */,
 				075AAE0E26847EC4007CA1BD /* LPNetworkOperation.m in Sources */,
 				075AAEA626847EC4007CA1BD /* LPKeychainWrapper.m in Sources */,
 				075AAE6226847EC4007CA1BD /* LPHitView.m in Sources */,
@@ -1445,6 +1502,7 @@
 				075AAE4826847EC4007CA1BD /* LPOpenUrlMessageTemplate.m in Sources */,
 				075AAEC026847EC4007CA1BD /* LPEventCallback.m in Sources */,
 				075AAE0826847EC4007CA1BD /* LPRequestBatchFactory.m in Sources */,
+				39FEE90126F8842A004EC57D /* ActionQueue.swift in Sources */,
 				075AADFD26847EC4007CA1BD /* LPRequestFactory.m in Sources */,
 				075AAE4C26847EC4007CA1BD /* LPWebInterstitialViewController.m in Sources */,
 				075AAED626847EC4007CA1BD /* Leanplum.m in Sources */,
@@ -1461,10 +1519,12 @@
 				075AAE8326847EC4007CA1BD /* LPOperationQueue.m in Sources */,
 				075AAEAA26847EC4007CA1BD /* LPVarCache.m in Sources */,
 				075AADFF26847EC4007CA1BD /* LPNetworkEngine.m in Sources */,
+				39FEE90426F89DE7004EC57D /* ActionManager+Definition.swift in Sources */,
 				075AAEA026847EC4007CA1BD /* NSString+MD5Addition.m in Sources */,
 				075AAE8126847EC4007CA1BD /* LPSwizzle.m in Sources */,
 				075AAE6A26847EC4007CA1BD /* LPLocalNotificationsManager.m in Sources */,
 				075AAE1C26847EC4007CA1BD /* LPNetworkFactory.m in Sources */,
+				39FEE8F826F88364004EC57D /* ActionManager.swift in Sources */,
 				075AAE0326847EC4007CA1BD /* LPFileTransferManager.m in Sources */,
 				075AAE3A26847EC4007CA1BD /* LPWebInterstitialMessageTemplate.m in Sources */,
 				075AAE8B26847EC4007CA1BD /* LPUtils.m in Sources */,
@@ -1482,11 +1542,13 @@
 			files = (
 				075AAED026847EC4007CA1BD /* LPFeatureFlagManager.m in Sources */,
 				075AAE0D26847EC4007CA1BD /* LPResponse.m in Sources */,
+				39FEE90B26F9CAAD004EC57D /* MessageControllerDelegate.swift in Sources */,
 				075AAEC526847EC4007CA1BD /* LPEventDataManager.m in Sources */,
 				075AAE5426847EC4007CA1BD /* LPInterstitialViewController.m in Sources */,
 				075AAEA326847EC4007CA1BD /* UIDevice+IdentifierAddition.m in Sources */,
 				075AAEC326847EC4007CA1BD /* LPEventCallbackManager.m in Sources */,
 				075AAE5126847EC4007CA1BD /* LPPopupViewController.m in Sources */,
+				39FEE90826F9C9FA004EC57D /* MessageDisplayDelegate.swift in Sources */,
 				075AAEBD26847EC4007CA1BD /* LPActionArg.m in Sources */,
 				075AAE9426847EC4007CA1BD /* Leanplum_AsyncSocket.m in Sources */,
 				075AAE4226847EC4007CA1BD /* LPIconChangeMessageTemplate.m in Sources */,
@@ -1494,6 +1556,7 @@
 				075AAE6E26847EC4007CA1BD /* LPLocalNotificationsHandler.m in Sources */,
 				075AAE1726847EC4007CA1BD /* LPRequest.m in Sources */,
 				075AAEB026847EC4007CA1BD /* LPVar.m in Sources */,
+				39FEE90E26F9D0E1004EC57D /* ActionManager+Execution.swift in Sources */,
 				075AAE7426847EC4007CA1BD /* LPPushNotificationsHandler.m in Sources */,
 				075AAE5926847EC4007CA1BD /* LPRegisterForPushMessageTemplate.m in Sources */,
 				075AAE8026847EC4007CA1BD /* LPDatabase.m in Sources */,
@@ -1505,7 +1568,9 @@
 				075AAE7126847EC4007CA1BD /* LPPushNotificationsManager.m in Sources */,
 				075AAEDF26847EC4007CA1BD /* LPConstants.m in Sources */,
 				075AAE3826847EC4007CA1BD /* LPCenterPopupMessageTemplate.m in Sources */,
+				39FEE8FC26F883DD004EC57D /* ActionScheduler.swift in Sources */,
 				075AAEB826847EC4007CA1BD /* LPActionManager.m in Sources */,
+				39FEE9112701C574004EC57D /* ActionManager+Triggering.swift in Sources */,
 				075AAE0F26847EC4007CA1BD /* LPNetworkOperation.m in Sources */,
 				075AAEA726847EC4007CA1BD /* LPKeychainWrapper.m in Sources */,
 				075AAE6326847EC4007CA1BD /* LPHitView.m in Sources */,
@@ -1531,6 +1596,7 @@
 				075AAE4926847EC4007CA1BD /* LPOpenUrlMessageTemplate.m in Sources */,
 				075AAEC126847EC4007CA1BD /* LPEventCallback.m in Sources */,
 				075AAE0926847EC4007CA1BD /* LPRequestBatchFactory.m in Sources */,
+				39FEE90226F8842A004EC57D /* ActionQueue.swift in Sources */,
 				075AADFE26847EC4007CA1BD /* LPRequestFactory.m in Sources */,
 				075AAE4D26847EC4007CA1BD /* LPWebInterstitialViewController.m in Sources */,
 				075AAED726847EC4007CA1BD /* Leanplum.m in Sources */,
@@ -1547,10 +1613,12 @@
 				075AAE8426847EC4007CA1BD /* LPOperationQueue.m in Sources */,
 				075AAEAB26847EC4007CA1BD /* LPVarCache.m in Sources */,
 				075AAE0026847EC4007CA1BD /* LPNetworkEngine.m in Sources */,
+				39FEE90526F89DE7004EC57D /* ActionManager+Definition.swift in Sources */,
 				075AAEA126847EC4007CA1BD /* NSString+MD5Addition.m in Sources */,
 				075AAE8226847EC4007CA1BD /* LPSwizzle.m in Sources */,
 				075AAE6B26847EC4007CA1BD /* LPLocalNotificationsManager.m in Sources */,
 				075AAE1D26847EC4007CA1BD /* LPNetworkFactory.m in Sources */,
+				39FEE8F926F88364004EC57D /* ActionManager.swift in Sources */,
 				075AAE0426847EC4007CA1BD /* LPFileTransferManager.m in Sources */,
 				075AAE3B26847EC4007CA1BD /* LPWebInterstitialMessageTemplate.m in Sources */,
 				075AAE8C26847EC4007CA1BD /* LPUtils.m in Sources */,
@@ -1707,6 +1775,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -1728,6 +1797,8 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1736,6 +1807,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -1757,6 +1829,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -1764,6 +1837,7 @@
 		075AAD1D26847C6F007CA1BD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
@@ -1772,6 +1846,11 @@
 				INFOPLIST_FILE = "LeanplumSDK/Supporting Files/Info.plist";
 				INSTALL_PATH = Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = Leanplum.framework/PrivateHeaders;
@@ -1779,6 +1858,9 @@
 				PRODUCT_NAME = Leanplum;
 				PUBLIC_HEADERS_FOLDER_PATH = Leanplum.framework/Headers;
 				SKIP_INSTALL = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanplumSDK/Supporting Files/Leanplum-Static-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -1786,6 +1868,7 @@
 		075AAD1E26847C6F007CA1BD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
 				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
@@ -1794,6 +1877,11 @@
 				INFOPLIST_FILE = "LeanplumSDK/Supporting Files/Info.plist";
 				INSTALL_PATH = Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
 				OTHER_LDFLAGS = "-ObjC";
 				PRIVATE_HEADERS_FOLDER_PATH = Leanplum.framework/PrivateHeaders;
@@ -1801,6 +1889,8 @@
 				PRODUCT_NAME = Leanplum;
 				PUBLIC_HEADERS_FOLDER_PATH = Leanplum.framework/Headers;
 				SKIP_INSTALL = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanplumSDK/Supporting Files/Leanplum-Static-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

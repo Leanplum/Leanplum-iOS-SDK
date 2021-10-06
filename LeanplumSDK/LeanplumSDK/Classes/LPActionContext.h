@@ -46,6 +46,12 @@ NS_SWIFT_NAME(ActionContext)
  */
 @property (readonly, nonatomic, strong, nullable) LPActionContext *parentContext;
 
+/// Call this to notify action manager that action should be handled
+@property (nonatomic, strong, nullable) void (^ActionBlock)(NSString* name, bool track);
+
+/// Call this to notify action mannager that messages has bee dismissed
+@property (nonatomic, strong, nullable) void (^DismissBlock)(void);
+
 - (id)objectNamed:(NSString *)name
 NS_SWIFT_NAME(object(name:));
 
