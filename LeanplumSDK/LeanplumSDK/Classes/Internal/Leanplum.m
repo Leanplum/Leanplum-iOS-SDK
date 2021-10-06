@@ -51,6 +51,7 @@
 #import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>
 #import "LPSecuredVars.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
 NSString *const kAppKeysFileType = @"plist";
@@ -1065,6 +1066,7 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
+                    [[[LPInternalState sharedState] notificationSettings] updateSettings];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     if ([[UIApplication sharedApplication]
