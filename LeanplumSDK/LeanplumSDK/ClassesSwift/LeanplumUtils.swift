@@ -39,18 +39,19 @@ public class LeanplumUtils: NSObject {
 //        return UserDefaults.standard.value(forKey: "lastPushIdKey") as? String
 //    }
 //
-    @objc public func messageIdFromUserInfo(_ userInfo: Dictionary<String, Any>) -> String? {
-        if let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] as? String {
-            return messageId
+    @objc static public func messageIdFromUserInfo(_ userInfo: Dictionary<String, Any>) -> String? {
+        if let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] {
+            return String(describing: messageId)
         }
-        if let messageId = userInfo[LP_KEY_PUSH_MUTE_IN_APP] as? String {
-            return messageId
+        if let messageId = userInfo[LP_KEY_PUSH_MUTE_IN_APP] {
+            return String(describing: messageId)
         }
-        if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION] as? String {
-            return messageId
+        
+        if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION] {
+            return String(describing: messageId)
         }
-        if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] as? String {
-            return messageId
+        if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] {
+            return String(describing: messageId)
         }
         return nil
     }
