@@ -110,13 +110,17 @@ static LPLogLevel logLevel = Info;
 void LPLog(LPLogType type, NSString *format, ...) {
     va_list vargs;
     va_start(vargs, format);
-    NSString *formattedMessage = [[NSString alloc] initWithFormat:format arguments:vargs];
+    LPLogv(type, format, vargs);
     va_end(vargs);
-    
+}
+
+
+void LPLogv(LPLogType type, NSString *format, va_list args) {
     LPLogLevel level = [LPLogManager logLevel];
     NSString *message = nil;
     NSString *leanplumString = @"LEANPLUM";
     NSString *logType = nil;
+    NSString *formattedMessage = [[NSString alloc] initWithFormat:format arguments:args];
     
     switch (type) {
         case LPDebug:

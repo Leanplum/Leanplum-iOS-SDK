@@ -120,6 +120,8 @@
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];
     
+    LPLog(LPDebug, "Registered for notifications with Push Token: %@", formattedToken);
+    
     NSMutableDictionary* deviceAttributeParams = [[NSMutableDictionary alloc] init];
     // Send push token if we don't have one and when the token changed.
     // We no longer send in start's response because saved push token will be send in start too.

@@ -51,6 +51,7 @@
 #import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>
 #import "LPSecuredVars.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
 NSString *const kAppKeysFileType = @"plist";
@@ -311,6 +312,13 @@ void leanplumExceptionHandler(NSException *exception);
 {
     LP_TRY
     [LPInternalState sharedState].appVersion = appVersion;
+    LP_END_TRY
+}
+
++ (void)setDeviceVersion:(NSString *)deviceVersion
+{
+    LP_TRY
+    [LeanplumPushNotificationsProxy shared].deviceVersion = deviceVersion;
     LP_END_TRY
 }
 

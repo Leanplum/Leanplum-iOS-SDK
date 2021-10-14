@@ -1,0 +1,196 @@
+//
+//  NSObject+Notifications.swift
+//  Leanplum-iOS-SDK
+//
+//  Created by Nikola Zagorchev on 30.09.21.
+//
+
+import Foundation
+import UIKit
+
+// LP Swizzling looks for the selector in the same class
+extension NSObject {
+    @objc func leanplum_application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        LPPushNotificationsManager.shared().handler.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
+        
+        // Call overridden method
+        let selector = #selector(self.leanplum_application(_:didRegisterForRemoteNotificationsWithDeviceToken:))
+        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidRegisterRemoteNotifications && self.responds(to: selector) {
+            self.perform(selector, with: application, with: deviceToken)
+        }
+    }
+    
+    @objc func leanplum_application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        LPPushNotificationsManager.shared().handler.didFailToRegisterForRemoteNotificationsWithError(error)
+        
+        // Call overridden method
+        let selector = #selector(self.leanplum_application(_:didFailToRegisterForRemoteNotificationsWithError:))
+        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidRegisterRemoteNotifications && self.responds(to: selector) {
+            self.perform(selector, with: application, with: error)
+        }
+    }
+    
+    @objc func leanplum_application(_ application: UIApplication,
+                                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveRemoteNotification:fetchCompletionHandler")
+        // Call notification received or perform action
+        
+//        if !LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) {
+//            // Open notification will be handled by userNotificationCenter:didReceive or
+//            // application:didFinishLaunchingWithOptions
+//            let state = UIApplication.shared.applicationState
+//            if LeanplumPushNotificationsProxy.shared.isIOSVersionGreaterThanOrEqual("10") { //, #available(iOS 10, *) {
+//                // if state is foreground, it will be already handled by notifcenter:willpresent
+//                if state == .background {
+//                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, foreground: false)
+//                }
+//            } else {
+//                if  state == .inactive {
+//                    // open
+//                    LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+//                } else if state == .active {
+//                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, foreground: true)
+//                } else {
+//                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, foreground: false)
+//                }
+//            }
+//        } else if !LeanplumPushNotificationsProxy.shared.notificationOpenedFromStart &&
+//                    UIApplication.shared.applicationState != .background &&
+//                    !LeanplumPushNotificationsProxy.shared.isIOSVersionGreaterThanOrEqual("10") {
+//            LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+//        }
+        
+        if LeanplumPushNotificationsProxy.shared.isIOSVersionGreaterThanOrEqual("10") { //, #available(iOS 10, *) {
+            // Open notification will be handled by userNotificationCenter:didReceive or
+            // application:didFinishLaunchingWithOptions
+            // Receiving of notification when app is running on foreground is handled by userNotificationCenter:willPresent
+            if !LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) {
+                let state = UIApplication.shared.applicationState
+                // TODO: Decide if to check for the application state or to update the handledNotification info
+                if state == .background {
+                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: false)
+                }
+            }
+        } else {
+            let state = UIApplication.shared.applicationState
+            // Notification was not handled by application:didFinishLaunchingWithOptions
+            if !LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) {
+            if  state == .inactive {
+                // open
+                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+            } else if state == .active {
+                // TODO: Test if state might have changed to active from inactive, when user tapped the notification on Unity or RN
+                LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: true)
+            } else {
+                LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: false)
+            }
+            // App was waken up by notification, its receiving was handled by application:didFinishLaunchingWithOptions
+            // didReceiveRemoteNotification is called again when user tapped it
+            } else if !LeanplumPushNotificationsProxy.shared.notificationOpenedFromStart && UIApplication.shared.applicationState != .background {
+                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+            }
+        }
+
+        // Call overridden method
+        typealias FetchResultCompletion = ((UIBackgroundFetchResult) -> Void)
+        var leanplumCompletionHandler:FetchResultCompletion?
+        let selector = #selector(self.leanplum_application(_:didReceiveRemoteNotification:fetchCompletionHandler:))
+        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler && self.responds(to: selector) {
+            // Prevent calling the completionHandler twice
+            leanplumCompletionHandler = nil
+            // Call method directly since the it requires 3 objects and performSelector supports only 2
+            // otherwise use Method IMP
+            self.leanplum_application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
+        } else {
+            leanplumCompletionHandler = completionHandler
+            
+            if LeanplumPushNotificationsProxy.shared.shouldFallbackToLegacyMethods {
+                LeanplumPushNotificationsProxy.shared.appDelegate?.application?(UIApplication.shared, didReceiveRemoteNotification: userInfo)
+            }
+        }
+        
+        // Call completion handler
+        leanplumCompletionHandler?(LeanplumPushNotificationsProxy.shared.pushNotificationBackgroundFetchResult)
+    }
+    
+//    @objc func leanplum_application(_ application: UIApplication,
+//                                    didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
+//        // Call overridden method
+//        let selector = #selector(self.leanplum_application(_:didReceiveRemoteNotification:))
+//        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidReceiveRemoteNotification && self.responds(to: selector) {
+//            self.perform(selector, with: application, with: userInfo)
+//        }
+//    }
+    
+    @objc @available(iOS 10.0, *)
+    func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveNotificationResponse:withCompletionHandler")
+        
+        let userInfo = response.notification.request.content.userInfo
+        // TODO: decide if not == UNNotificationDefaultActionIdentifier
+        if response.actionIdentifier != UNNotificationDismissActionIdentifier {
+            if let handledNotif = LeanplumPushNotificationsProxy.shared.notificationHandledFromStart {
+                LeanplumUtils.lpLog(type: .debug, format: "notificationHandledFromStart: %@", LeanplumUtils.getNotificationId(handledNotif))
+            } else {
+                LeanplumUtils.lpLog(type: .debug, format: "notificationHandledFromStart is NULL")
+            }
+
+            let notifWasOpenedFromStart = LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) && LeanplumPushNotificationsProxy.shared.notificationOpenedFromStart
+            
+            LeanplumUtils.lpLog(type: .debug, format: "notificationOpenedFromStart \(notifWasOpenedFromStart)")
+            if !notifWasOpenedFromStart {
+                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+            }
+        }
+        
+        // Call overridden method
+        let selector = #selector(self.leanplum_userNotificationCenter(_:didReceive:withCompletionHandler:))
+        if LeanplumPushNotificationsProxy.shared.swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler && self.responds(to: selector) {
+            // Call original method
+            self.leanplum_userNotificationCenter(center, didReceive: response, withCompletionHandler: completionHandler)
+        } else {
+            if LeanplumPushNotificationsProxy.shared.shouldFallbackToLegacyMethods {
+                // Call iOS 10 UNUserNotificationCenter completionHandler from iOS 9's fetchCompletion handler
+                self.leanplum_application(UIApplication.shared, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: { res in
+                    completionHandler()
+                })
+            } else {
+                completionHandler()
+            }
+        }
+    }
+    
+    @objc @available(iOS 10.0, *)
+    func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled willPresentNotification:withCompletionHandler")
+        // Notification is received while app is running on foreground
+        LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: notification.request.content.userInfo, isForeground: true)
+        
+        // Call overridden method
+        let selector = #selector(self.leanplum_userNotificationCenter(_:willPresent:withCompletionHandler:))
+        if LeanplumPushNotificationsProxy.shared.swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler && self.responds(to: selector) {
+            self.leanplum_userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler)
+        }
+    }
+    
+    @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
+        LPLocalNotificationsManager.shared().handler.didReceive(notification)
+        
+        // Call overridden method
+        let selector = #selector(self.leanplum_application(_:didReceive:))
+        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidReceiveLocalNotification && self.responds(to: selector) {
+            self.perform(selector, with: application, with: notification)
+        }
+    }
+    
+    @objc func leanplum_application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
+        LPPushNotificationsManager.shared().handler.didRegister(notificationSettings)
+        
+        // Call overridden method
+        let selector = #selector(self.leanplum_application(_:didRegister:))
+        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidRegisterUserNotificationSettings && self.responds(to: selector) {
+            self.perform(selector, with: application, with: notificationSettings)
+        }
+    }
+}

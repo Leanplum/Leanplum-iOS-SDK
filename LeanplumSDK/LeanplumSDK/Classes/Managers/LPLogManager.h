@@ -32,3 +32,4 @@ typedef NS_ENUM(NSUInteger, LPLogType) {
 
 NS_ASSUME_NONNULL_END
 void LPLog(LPLogType type, NSString * _Nullable format, ...);
+void LPLogv(LPLogType type, NSString * _Nullable format, va_list args);
