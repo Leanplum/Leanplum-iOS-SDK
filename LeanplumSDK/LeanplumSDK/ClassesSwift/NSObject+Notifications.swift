@@ -74,6 +74,7 @@ extension NSObject {
             }
         } else {
             let state = UIApplication.shared.applicationState
+            LeanplumUtils.lpLog(type: .debug, format: "didReceiveRemoteNotification:fetchCompletionHandler: %d", state.rawValue)
             // Notification was not handled by application:didFinishLaunchingWithOptions
             if !LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) {
             if  state == .inactive {
@@ -128,7 +129,7 @@ extension NSObject {
         LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveNotificationResponse:withCompletionHandler")
         
         let userInfo = response.notification.request.content.userInfo
-        // TODO: decide if not == UNNotificationDefaultActionIdentifier
+        // Handle UNNotificationDefaultActionIdentifier and Custom Actions
         if response.actionIdentifier != UNNotificationDismissActionIdentifier {
             if let handledNotif = LeanplumPushNotificationsProxy.shared.notificationHandledFromStart {
                 LeanplumUtils.lpLog(type: .debug, format: "notificationHandledFromStart: %@", LeanplumUtils.getNotificationId(handledNotif))
@@ -140,7 +141,7 @@ extension NSObject {
             
             LeanplumUtils.lpLog(type: .debug, format: "notificationOpenedFromStart \(notifWasOpenedFromStart)")
             if !notifWasOpenedFromStart {
-                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo, action: response.actionIdentifier)
             }
         }
         

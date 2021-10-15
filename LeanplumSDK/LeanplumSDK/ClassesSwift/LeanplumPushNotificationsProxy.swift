@@ -21,14 +21,14 @@ public class LeanplumPushNotificationsProxy: NSObject {
     lazy var userNotificationCenterDelegateClass: AnyClass? = appDelegateClass
     
     var pushNotificationBackgroundFetchResult:UIBackgroundFetchResult = .newData
-
+    
     @available(iOS 10.0, *)
     lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
     
     private(set) var swizzledApplicationDidRegisterRemoteNotifications = false
     private(set) var swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = false
     
-//    private(set) var swizzledApplicationDidReceiveRemoteNotification = false
+    //    private(set) var swizzledApplicationDidReceiveRemoteNotification = false
     private(set) var swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = false
     
     private(set) var swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = false
@@ -58,7 +58,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
             self.notificationHandledFromStart = remoteNotif
             
             LeanplumUtils.lpLog(type: .debug, format: "leanplum_applicationDidFinishLaunching: %@, state %d", LeanplumUtils.getNotificationId(remoteNotif), UIApplication.shared.applicationState.rawValue)
-
+            
             // started in background, woken up by remote notification
             if UIApplication.shared.applicationState == .background {
                 notificationOpenedFromStart = false
@@ -71,18 +71,27 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
-    func notificationOpened(userInfo: [AnyHashable : Any]) {
-        // TODO: check if notification action is not embedded and needs FCU
-        // TODO: perform action
+    func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         LeanplumUtils.lpLog(type: .debug, format: "notificationOpened: %@", LeanplumUtils.getNotificationId(userInfo))
         
-        // Opens notification with embedded action
+        let messageId = LeanplumUtils.getNotificationId(userInfo)
+        let actionName = action == LP_VALUE_DEFAULT_PUSH_ACTION ? action : "iOS options.Custom actions.\(action)"
+        
         let actionsEmbedded = userInfo[LP_KEY_PUSH_ACTION] != nil ||
         userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
+        var context:ActionContext
         if actionsEmbedded {
             let args = [LP_VALUE_DEFAULT_PUSH_ACTION : userInfo[LP_KEY_PUSH_ACTION]]
-            let context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args as [AnyHashable : Any], messageId: LeanplumUtils.getNotificationId(userInfo))
-            context.runAction(name: LP_VALUE_DEFAULT_PUSH_ACTION)
+            context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args as [AnyHashable : Any], messageId: messageId)
+            context.preventRealtimeUpdating = true
+        } else {
+            // TODO: check if the message exists or needs FCU
+            context = Leanplum.createActionContext(forMessageId: messageId)
+        }
+        context.maybeDownloadFiles()
+        // Wait for Leanplum start so action responders are registered
+        Leanplum.onStartIssued {
+            context.runTrackedAction(name: actionName)
         }
     }
     
@@ -133,27 +142,27 @@ public class LeanplumPushNotificationsProxy: NSObject {
         LPSwizzle.hook(into: applicationDidFailToRegisterForRemoteNotificationsWithError, with: leanplum_applicationDidFailToRegisterForRemoteNotificationsWithError, for: appDelegateClass)
     }
     
-//    @objc public func swizzleApplicationDidReceive(_ force:Bool = false) -> Bool {
-//        let applicationDidReceiveRemoteNotificationSelector =
-//        #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:))
-//
-//        let applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(appDelegateClass, applicationDidReceiveRemoteNotificationSelector);
-//
-//        let leanplum_applicationDidReceiveRemoteNotificationSelector =
-//        #selector(leanplum_application(_:didReceiveRemoteNotification:))
-//
-//        let swizzleApplicationDidReceiveRemoteNotification = { [weak self] in
-//            self?.swizzledApplicationDidReceiveRemoteNotification =
-//            LPSwizzle.hook(into: applicationDidReceiveRemoteNotificationSelector, with: leanplum_applicationDidReceiveRemoteNotificationSelector, for: self?.appDelegateClass)
-//        }
-//
-//        // Swizzle the method if implemented or add it if forced
-//        if applicationDidReceiveRemoteNotificationMethod != nil || force {
-//            swizzleApplicationDidReceiveRemoteNotification()
-//            return swizzledApplicationDidReceiveRemoteNotification
-//        }
-//        return false
-//    }
+    //    @objc public func swizzleApplicationDidReceive(_ force:Bool = false) -> Bool {
+    //        let applicationDidReceiveRemoteNotificationSelector =
+    //        #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:))
+    //
+    //        let applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(appDelegateClass, applicationDidReceiveRemoteNotificationSelector);
+    //
+    //        let leanplum_applicationDidReceiveRemoteNotificationSelector =
+    //        #selector(leanplum_application(_:didReceiveRemoteNotification:))
+    //
+    //        let swizzleApplicationDidReceiveRemoteNotification = { [weak self] in
+    //            self?.swizzledApplicationDidReceiveRemoteNotification =
+    //            LPSwizzle.hook(into: applicationDidReceiveRemoteNotificationSelector, with: leanplum_applicationDidReceiveRemoteNotificationSelector, for: self?.appDelegateClass)
+    //        }
+    //
+    //        // Swizzle the method if implemented or add it if forced
+    //        if applicationDidReceiveRemoteNotificationMethod != nil || force {
+    //            swizzleApplicationDidReceiveRemoteNotification()
+    //            return swizzledApplicationDidReceiveRemoteNotification
+    //        }
+    //        return false
+    //    }
     
     func hasImplementedApplicationDidReceive() -> Bool {
         let applicationDidReceiveRemoteNotificationSelector =
@@ -211,35 +220,35 @@ public class LeanplumPushNotificationsProxy: NSObject {
             LPSwizzle.hook(into: userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector, with: leanplum_userNotificationCenterWillPresentNotificationWithCompletionHandlerSelector, for: self?.userNotificationCenterDelegateClass)
         }
         
-            if UNUserNotificationCenter.current().delegate != nil {
-                // Fallback on didReceive only,
-                // application:didReceiveRemoteNotification:fetchCompletionHandler: is called after
-                // userNotificationCenter:willPresent:withCompletionHandler: by iOS
-                if userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod != nil {
-                    hasImplementedNotifCenterMethods = true
+        if UNUserNotificationCenter.current().delegate != nil {
+            // Fallback on didReceive only,
+            // application:didReceiveRemoteNotification:fetchCompletionHandler: is called after
+            // userNotificationCenter:willPresent:withCompletionHandler: by iOS
+            if userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod != nil {
+                hasImplementedNotifCenterMethods = true
+            }
+            
+            swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
+            swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
+        } else {
+            LeanplumUtils.lpLog(type: .info, format: "UNUserNotificationCenterDelegate is not set.")
+            let userNotificationCenterDelegateProtocol = objc_getProtocol("UNUserNotificationCenterDelegate")
+            if let notifProtocol = userNotificationCenterDelegateProtocol, let notifCenterDelegate = appDelegate {
+                let conformsToProtocol = {
+                    return notifCenterDelegate.conforms(to: notifProtocol)
                 }
                 
-                swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
-                swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
-            } else {
-                LeanplumUtils.lpLog(type: .info, format: "UNUserNotificationCenterDelegate is not set.")
-                  let userNotificationCenterDelegateProtocol = objc_getProtocol("UNUserNotificationCenterDelegate")
-                  if let notifProtocol = userNotificationCenterDelegateProtocol, let notifCenterDelegate = appDelegate {
-                      let conformsToProtocol = {
-                          return notifCenterDelegate.conforms(to: notifProtocol)
-                      }
-                      
-                      if !conformsToProtocol() {
-                          class_addProtocol(appDelegateClass, notifProtocol)
-                      }
-                      
-                      if conformsToProtocol(), let notifDelegate = notifCenterDelegate as? UNUserNotificationCenterDelegate {
-                          LeanplumUtils.lpLog(type: .info, format: "Setting UNUserNotificationCenterDelegate.")
-                          UNUserNotificationCenter.current().delegate = notifDelegate
-                          swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
-                          swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
-                      }
+                if !conformsToProtocol() {
+                    class_addProtocol(appDelegateClass, notifProtocol)
                 }
+                
+                if conformsToProtocol(), let notifDelegate = notifCenterDelegate as? UNUserNotificationCenterDelegate {
+                    LeanplumUtils.lpLog(type: .info, format: "Setting UNUserNotificationCenterDelegate.")
+                    UNUserNotificationCenter.current().delegate = notifDelegate
+                    swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
+                    swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
+                }
+            }
         }
     }
     
@@ -270,7 +279,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         swizzleTokenMethods()
         
         // Try to swizzle UNUserNotificationCenterDelegate methods
-//        if #available(iOS 10.0, *) {
+        //        if #available(iOS 10.0, *) {
         if isIOSVersionGreaterThanOrEqual("10"), #available(iOS 10.0, *) {
             // TODO: listen for setting of the delegate or require it to be before leanplum starts
             swizzleUNUserNotificationCenterMethods()
