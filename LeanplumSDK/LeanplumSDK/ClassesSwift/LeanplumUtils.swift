@@ -24,4 +24,29 @@ public class LeanplumUtils: NSObject {
         
         return notifId
     }
+    
+    static func areActionsEmbedded(_ userInfo:[AnyHashable:Any]) -> Bool {
+        return userInfo[LP_KEY_PUSH_ACTION] != nil ||
+        userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
+    }
+    
+    static func isMuted(_ userInfo:[AnyHashable:Any]) -> Bool {
+        return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil
+    }
+    
+    static func getNotificationText(_ userInfo:[AnyHashable:Any]) -> String? {
+        // Handle payload "aps":{ "alert": "message" } and "aps":{ "alert": { "title": "...", "body": "message" }
+        if let aps = userInfo["aps"] as? [AnyHashable : Any] {
+            if let alert = aps["alert"] as? [AnyHashable : Any] {
+                return alert["body"] as? String
+            } else {
+                return aps["alert"] as? String
+            }
+        }
+        return nil
+    }
+    
+    static func getAppName() -> String {
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+    }
 }

@@ -80,7 +80,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         let actionsEmbedded = userInfo[LP_KEY_PUSH_ACTION] != nil ||
         userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
         var context:ActionContext
-        if actionsEmbedded {
+        if LeanplumUtils.areActionsEmbedded(userInfo) {
             let args = [LP_VALUE_DEFAULT_PUSH_ACTION : userInfo[LP_KEY_PUSH_ACTION]]
             context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args as [AnyHashable : Any], messageId: messageId)
             context.preventRealtimeUpdating = true
@@ -99,11 +99,36 @@ public class LeanplumPushNotificationsProxy: NSObject {
         if isForeground {
             // TODO: check if should be muted
             LeanplumUtils.lpLog(type: .debug, format: "notificationReceived Foreground: %@", LeanplumUtils.getNotificationId(userInfo))
+            
+            if !LeanplumUtils.isMuted(userInfo) {
+                showNotificationInForeground(userInfo: userInfo)
+            }
         } else {
             LeanplumUtils.lpLog(type: .debug, format: "notificationReceived Background: %@", LeanplumUtils.getNotificationId(userInfo))
+            
+            if !LeanplumUtils.areActionsEmbedded(userInfo) {
+                
+            }
         }
         
         // TODO: check if notification action is not embedded and needs FCU / Prefetch
+    }
+    
+    func showNotificationInForeground(userInfo: [AnyHashable : Any]) {
+        // Execute custom block
+        if let block = Leanplum.pushSetupBlock() {
+            block()
+            return
+        }
+        
+        // Display the Notification as Confirm in-app message
+        if let notifMessage = LeanplumUtils.getNotificationText(userInfo) {
+            LPUIAlert.show(withTitle: LeanplumUtils.getAppName(), message: notifMessage, cancelButtonTitle: NSLocalizedString("Cancel", comment: ""), otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
+                if buttonIndex == 1 {
+                    self.notificationOpened(userInfo: userInfo)
+                }
+            }
+        }
     }
     
     func isEqualToHandledNotification(userInfo: [AnyHashable : Any]) -> Bool {
