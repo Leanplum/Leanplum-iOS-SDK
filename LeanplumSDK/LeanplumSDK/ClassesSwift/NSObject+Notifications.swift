@@ -131,17 +131,17 @@ extension NSObject {
         let userInfo = response.notification.request.content.userInfo
         // Handle UNNotificationDefaultActionIdentifier and Custom Actions
         if response.actionIdentifier != UNNotificationDismissActionIdentifier {
-            if let handledNotif = LeanplumPushNotificationsProxy.shared.notificationHandledFromStart {
-                LeanplumUtils.lpLog(type: .debug, format: "notificationHandledFromStart: %@", LeanplumUtils.getNotificationId(handledNotif))
-            } else {
-                LeanplumUtils.lpLog(type: .debug, format: "notificationHandledFromStart is NULL")
-            }
-
             let notifWasOpenedFromStart = LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) && LeanplumPushNotificationsProxy.shared.notificationOpenedFromStart
             
             LeanplumUtils.lpLog(type: .debug, format: "notificationOpenedFromStart \(notifWasOpenedFromStart)")
             if !notifWasOpenedFromStart {
-                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo, action: response.actionIdentifier)
+                // Open Notification action
+                if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
+                    LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+                } else {
+                    // Open Custom Action
+                    LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo, action: response.actionIdentifier)
+                }
             }
         }
         

@@ -76,9 +76,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         
         let messageId = LeanplumUtils.getNotificationId(userInfo)
         let actionName = action == LP_VALUE_DEFAULT_PUSH_ACTION ? action : "iOS options.Custom actions.\(action)"
-        
-        let actionsEmbedded = userInfo[LP_KEY_PUSH_ACTION] != nil ||
-        userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
+
         var context:ActionContext
         if LeanplumUtils.areActionsEmbedded(userInfo) {
             let args = [LP_VALUE_DEFAULT_PUSH_ACTION : userInfo[LP_KEY_PUSH_ACTION]]
