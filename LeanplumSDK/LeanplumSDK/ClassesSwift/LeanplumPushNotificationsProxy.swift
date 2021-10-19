@@ -15,6 +15,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
     private override init() {}
     
     @objc public var deviceVersion:String?
+    @objc public var resumedTimeInterval:Double = 0
     
     lazy var appDelegate = UIApplication.shared.delegate
     lazy var appDelegateClass: AnyClass? = object_getClass(appDelegate)

@@ -1083,6 +1083,8 @@ void leanplumExceptionHandler(NSException *exception);
                     }
 #pragma clang diagnostic pop
                     [Leanplum resume];
+                    // Used for push notifications iOS 9
+                    [LeanplumPushNotificationsProxy shared].resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
                     [self maybePerformActions:@[@"resume"]
                                 withEventName:nil
                                    withFilter:kLeanplumActionFilterAll

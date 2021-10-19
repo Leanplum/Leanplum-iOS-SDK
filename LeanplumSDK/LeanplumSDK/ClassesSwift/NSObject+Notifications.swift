@@ -35,32 +35,6 @@ extension NSObject {
                                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveRemoteNotification:fetchCompletionHandler")
         // Call notification received or perform action
-        
-//        if !LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) {
-//            // Open notification will be handled by userNotificationCenter:didReceive or
-//            // application:didFinishLaunchingWithOptions
-//            let state = UIApplication.shared.applicationState
-//            if LeanplumPushNotificationsProxy.shared.isIOSVersionGreaterThanOrEqual("10") { //, #available(iOS 10, *) {
-//                // if state is foreground, it will be already handled by notifcenter:willpresent
-//                if state == .background {
-//                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, foreground: false)
-//                }
-//            } else {
-//                if  state == .inactive {
-//                    // open
-//                    LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
-//                } else if state == .active {
-//                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, foreground: true)
-//                } else {
-//                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, foreground: false)
-//                }
-//            }
-//        } else if !LeanplumPushNotificationsProxy.shared.notificationOpenedFromStart &&
-//                    UIApplication.shared.applicationState != .background &&
-//                    !LeanplumPushNotificationsProxy.shared.isIOSVersionGreaterThanOrEqual("10") {
-//            LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
-//        }
-        
         if LeanplumPushNotificationsProxy.shared.isIOSVersionGreaterThanOrEqual("10") { //, #available(iOS 10, *) {
             // Open notification will be handled by userNotificationCenter:didReceive or
             // application:didFinishLaunchingWithOptions
@@ -73,16 +47,23 @@ extension NSObject {
                 }
             }
         } else {
+            // iOS 9
             let state = UIApplication.shared.applicationState
             LeanplumUtils.lpLog(type: .debug, format: "didReceiveRemoteNotification:fetchCompletionHandler: %d", state.rawValue)
             // Notification was not handled by application:didFinishLaunchingWithOptions
             if !LeanplumPushNotificationsProxy.shared.isEqualToHandledNotification(userInfo: userInfo) {
             if  state == .inactive {
-                // open
+                // Open
                 LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
             } else if state == .active {
-                // TODO: Test if state might have changed to active from inactive, when user tapped the notification on Unity or RN
-                LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: true)
+                // There are cases where state has changed to active from inactive, when user tapped the notification
+                // If app entered foreground right before calling this method, the app became active because notification was tapped
+                // Otherwise, notification was received while app was active/foreground
+                if LeanplumPushNotificationsProxy.shared.resumedTimeInterval + 0.300 > NSDate().timeIntervalSince1970 {
+                    LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+                } else {
+                    LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: true)
+                }
             } else {
                 LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: false)
             }
@@ -114,15 +95,6 @@ extension NSObject {
         // Call completion handler
         leanplumCompletionHandler?(LeanplumPushNotificationsProxy.shared.pushNotificationBackgroundFetchResult)
     }
-    
-//    @objc func leanplum_application(_ application: UIApplication,
-//                                    didReceiveRemoteNotification userInfo: [AnyHashable : Any]) {
-//        // Call overridden method
-//        let selector = #selector(self.leanplum_application(_:didReceiveRemoteNotification:))
-//        if LeanplumPushNotificationsProxy.shared.swizzledApplicationDidReceiveRemoteNotification && self.responds(to: selector) {
-//            self.perform(selector, with: application, with: userInfo)
-//        }
-//    }
     
     @objc @available(iOS 10.0, *)
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
