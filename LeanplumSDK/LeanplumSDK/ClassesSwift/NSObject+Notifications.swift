@@ -148,7 +148,15 @@ extension NSObject {
     }
     
     @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        LPLocalNotificationsManager.shared().handler.didReceive(notification)
+        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled application:didReceive:localNotification %d", UIApplication.shared.applicationState.rawValue)
+        
+        if let userInfo = notification.userInfo {
+            if UIApplication.shared.applicationState == .active {
+                LeanplumPushNotificationsProxy.shared.notificationReceived(userInfo: userInfo, isForeground: true)
+            } else {
+                LeanplumPushNotificationsProxy.shared.notificationOpened(userInfo: userInfo)
+            }
+        }
         
         // Call overridden method
         let selector = #selector(self.leanplum_application(_:didReceive:))
