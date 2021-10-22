@@ -1573,18 +1573,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
-+ (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-{
-    LP_TRY
-    [LPInternalState sharedState].calledHandleNotification = YES;
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                                                       withAction:nil
-                                           fetchCompletionHandler:completionHandler];
-    LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"handle_notification"];
-}
-
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
 {
     LP_TRY
@@ -1695,9 +1683,7 @@ void leanplumExceptionHandler(NSException *exception);
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:[notification userInfo]
-                                                       withAction:identifier
-                                           fetchCompletionHandler:completionHandler];
+    [[LeanplumPushNotificationsProxy shared] handleActionWithIdentifier:identifier forLocalNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop
@@ -1709,9 +1695,7 @@ void leanplumExceptionHandler(NSException *exception);
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:notification
-                                                       withAction:identifier
-                                           fetchCompletionHandler:completionHandler];
+    [[LeanplumPushNotificationsProxy shared] handleActionWithIdentifier:identifier forRemoteNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop

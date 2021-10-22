@@ -423,21 +423,6 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
  */
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
 
-/**
- * Handles a push notification for apps that use Background Notifications.
- * Without background notifications, Leanplum handles them automatically.
- * Deprecated. Leanplum calls handleNotification automatically now. If you
- * implement application:didReceiveRemoteNotification:fetchCompletionHandler:
- * in your app delegate, you should remove any calls to [Leanplum handleNotification]
- * and call the completion handler yourself.
- */
-+ (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-    __attribute__((deprecated("Leanplum calls handleNotification automatically now. If you "
-        "implement application:didReceiveRemoteNotification:fetchCompletionHandler: in your app "
-        "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
-        "completion handler yourself.")));
-
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 #pragma clang diagnostic push
