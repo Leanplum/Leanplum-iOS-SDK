@@ -756,6 +756,8 @@ void leanplumExceptionHandler(NSException *exception);
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
+    [[LeanplumPushNotificationsProxy shared] swizzleNotificationMethods];
+    
     if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
          @"methods."];
@@ -1573,6 +1575,20 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
++ (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions
+{
+    LP_TRY
+    if (![LPUtils isSwizzlingEnabled])
+    {
+        [[LeanplumPushNotificationsProxy shared] applicationDidFinishLaunchingWithLaunchOptions:launchOptions];
+    }
+    else
+    {
+        LPLog(LPDebug, @"Call to applicationDidFinishLaunchingWithOptions will be ignored due to swizzling.");
+    }
+    LP_END_TRY
+}
+
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
 {
     LP_TRY
@@ -1607,6 +1623,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
+        // TODO: Decide if we need the LeanplumUIBackgroundFetchResult as a completionHandler
         [[LeanplumPushNotificationsProxy shared] didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
     }
     else

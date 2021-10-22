@@ -423,6 +423,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
  */
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
 
++ (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 #pragma clang diagnostic push

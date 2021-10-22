@@ -54,12 +54,16 @@ public class LeanplumPushNotificationsProxy: NSObject {
         NotificationCenter.default.removeObserver(self.shared)
     }
     
-    // TODO: Decide how to handle when swizzling is disabled
     @objc func leanplum_applicationDidFinishLaunching(notification: Notification) {
-        self.swizzleNotificationMethods()
         LeanplumUtils.lpLog(type: .debug, format: "Called leanplum_applicationDidFinishLaunching: %@, state %d", notification.userInfo ?? [:], UIApplication.shared.applicationState.rawValue)
         
-        if let remoteNotif = notification.userInfo?[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
+        if let userInfo = notification.userInfo {
+            self.leanplum_applicationDidFinishLaunching(launchOptions: userInfo)
+        }
+    }
+    
+    private func leanplum_applicationDidFinishLaunching(launchOptions: [AnyHashable:Any]) {
+        if let remoteNotif = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
             self.notificationHandledFromStart = remoteNotif
             
             // started in background, woken up by remote notification
@@ -70,7 +74,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
                 notificationOpenedFromStart = true
                 notificationOpened(userInfo: remoteNotif)
             }
-        } else if let localNotif = notification.userInfo?[UIApplication.LaunchOptionsKey.localNotification] as? UILocalNotification,
+        } else if let localNotif = launchOptions[UIApplication.LaunchOptionsKey.localNotification] as? UILocalNotification,
                   let userInfo = localNotif.userInfo {
             notificationOpened(userInfo: userInfo)
         }
@@ -79,7 +83,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
     func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", LeanplumUtils.getNotificationId(userInfo))
         
-        let messageId = LeanplumUtils.getNotificationId(userInfo)
+        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+        
         let actionName = action == LP_VALUE_DEFAULT_PUSH_ACTION ? action : "iOS options.Custom actions.\(action)"
 
         var context:ActionContext
@@ -89,8 +94,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
             context.preventRealtimeUpdating = true
         } else {
             // TODO: check if the message exists or needs FCU
-            let mid = LeanplumUtils.messageIdFromUserInfo(userInfo)
-            context = Leanplum.createActionContext(forMessageId: mid!)
+            context = Leanplum.createActionContext(forMessageId: messageId)
         }
         context.maybeDownloadFiles()
         // Wait for Leanplum start so action responders are registered
@@ -100,7 +104,9 @@ public class LeanplumPushNotificationsProxy: NSObject {
     }
     
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. Id: %@", isForeground ? "Foreground" : "Background", LeanplumUtils.getNotificationId(userInfo))
+        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. MessageId: @%, Id: %@", isForeground ? "Foreground" : "Background", messageId, LeanplumUtils.getNotificationId(userInfo))
+        
         if isForeground {
             if !LeanplumUtils.isMuted(userInfo) {
                 showNotificationInForeground(userInfo: userInfo)
@@ -133,8 +139,6 @@ public class LeanplumPushNotificationsProxy: NSObject {
         if let fromStart = notificationHandledFromStart {
             let idA = LeanplumUtils.getNotificationId(fromStart)
             let idB = LeanplumUtils.getNotificationId(userInfo)
-            
-            LeanplumUtils.lpLog(type: .debug, format: "isEqual: %@, %@", idA, idB)
             return idA == idB
         }
         
@@ -147,6 +151,13 @@ public class LeanplumPushNotificationsProxy: NSObject {
     }
     
     // MARK: - Swizzle Disabled methods
+    @objc public func applicationDidFinishLaunching(launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
+        LeanplumUtils.lpLog(type: .debug, format: "Called applicationDidFinishLaunching: %@, state %d", launchOptions ?? [:], UIApplication.shared.applicationState.rawValue)
+        if let launchOptions = launchOptions {
+            self.leanplum_applicationDidFinishLaunching(launchOptions: launchOptions)
+        }
+    }
+    
     @objc public func didReceiveRemoteNotification(userInfo: [AnyHashable : Any], fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         self.leanplum_application(UIApplication.shared, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: fetchCompletionHandler)
     }

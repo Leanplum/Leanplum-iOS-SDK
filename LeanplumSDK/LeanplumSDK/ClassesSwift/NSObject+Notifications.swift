@@ -58,6 +58,9 @@ extension NSObject {
                 
                 // Call completion handler
                 leanplumCompletionHandler?(LeanplumPushNotificationsProxy.shared.pushNotificationBackgroundFetchResult)
+            } else {
+                // Call LeanplumUIBackgroundFetchResult
+                completionHandler(LeanplumPushNotificationsProxy.shared.pushNotificationBackgroundFetchResult)
             }
         }
         

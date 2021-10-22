@@ -185,7 +185,9 @@
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        [LeanplumPushNotificationsProxy addDidFinishLaunchingObserver];
+        if ([LPUtils isSwizzlingEnabled]) {
+            [LeanplumPushNotificationsProxy addDidFinishLaunchingObserver];
+        }
     });
 }
 
