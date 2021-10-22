@@ -14,21 +14,17 @@ public class LeanplumUtils: NSObject {
     }
     
     static func getNotificationId(_ userInfo: [AnyHashable:Any]) -> String {
-        var notifId = "-1"
-        let id:Int = userInfo["id"] as? Int ?? -1
-        if id == -1, let occId = userInfo["lp_occurrence_id"] as? String {
-            notifId = occId
-        } else {
-            notifId = String(id)
+        if let occId = userInfo["lp_occurrence_id"] {
+            return String(describing: occId)
         }
-        
-        return notifId
+        return "-1"
     }
     
     @objc public static func messageIdFromUserInfo(_ userInfo: [AnyHashable : Any]) -> String? {
-        let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] ?? userInfo[LP_KEY_PUSH_MUTE_IN_APP] ?? userInfo[LP_KEY_PUSH_NO_ACTION] ?? userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]
-        
-        return messageId as? String
+        if let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] ?? userInfo[LP_KEY_PUSH_MUTE_IN_APP] ?? userInfo[LP_KEY_PUSH_NO_ACTION] ?? userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] {
+            return String(describing: messageId)
+        }
+        return nil
     }
     
     static func areActionsEmbedded(_ userInfo:[AnyHashable:Any]) -> Bool {
