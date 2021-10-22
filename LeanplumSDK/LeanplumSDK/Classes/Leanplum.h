@@ -445,10 +445,12 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
++ (void)willPresentNotification:(UNNotification *)notification
+          withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
+    API_AVAILABLE(ios(10.0));
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"

@@ -1614,27 +1614,12 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-{
-    LP_TRY
-    if (![LPUtils isSwizzlingEnabled])
-    {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo];
-    }
-    else
-    {
-        LPLog(LPDebug, @"Call to didReceiveRemoteNotification will be ignored due to swizzling.");
-    }
-    LP_END_TRY
-}
-
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                                               fetchCompletionHandler:completionHandler];
+        [[LeanplumPushNotificationsProxy shared] didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
     }
     else
     {
@@ -1649,12 +1634,26 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response
-                                                  withCompletionHandler:completionHandler];
+        [[LeanplumPushNotificationsProxy shared] userNotificationCenterWithDidReceive:response withCompletionHandler:completionHandler];
     }
     else
     {
         LPLog(LPDebug, @"Call to didReceiveNotificationResponse:withCompletionHandler: will be ignored due to swizzling.");
+    }
+    LP_END_TRY
+}
+
++ (void)willPresentNotification:(UNNotification *)notification
+          withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
+{
+    LP_TRY
+    if (![LPUtils isSwizzlingEnabled])
+    {
+        [[LeanplumPushNotificationsProxy shared] userNotificationCenterWithWillPresent:notification withCompletionHandler:completionHandler];
+    }
+    else
+    {
+        LPLog(LPDebug, @"Call to willPresentNotification:withCompletionHandler: will be ignored due to swizzling.");
     }
     LP_END_TRY
 }
@@ -1681,7 +1680,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
+        [[LeanplumPushNotificationsProxy shared] applicationWithDidReceive:localNotification];
     }
     else
     {
@@ -1690,6 +1689,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
+// TODO: decide how handleAction methods
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler

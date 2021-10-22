@@ -3,7 +3,7 @@
 //  Leanplum-iOS-SDK
 //
 //  Created by Nikola Zagorchev on 29.09.21.
-//
+//  Copyright © 2021 Leanplum. All rights reserved.
 
 import Foundation
 import UIKit
@@ -29,7 +29,6 @@ public class LeanplumPushNotificationsProxy: NSObject {
     private(set) var swizzledApplicationDidRegisterRemoteNotifications = false
     private(set) var swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = false
     
-    //    private(set) var swizzledApplicationDidReceiveRemoteNotification = false
     private(set) var swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = false
     
     private(set) var swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = false
@@ -55,13 +54,13 @@ public class LeanplumPushNotificationsProxy: NSObject {
         NotificationCenter.default.removeObserver(self.shared)
     }
     
+    // TODO: Decide how to handle when swizzling is disabled
     @objc func leanplum_applicationDidFinishLaunching(notification: Notification) {
         self.swizzleNotificationMethods()
+        LeanplumUtils.lpLog(type: .debug, format: "Called leanplum_applicationDidFinishLaunching: %@, state %d", notification.userInfo ?? [:], UIApplication.shared.applicationState.rawValue)
         
         if let remoteNotif = notification.userInfo?[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable : Any] {
             self.notificationHandledFromStart = remoteNotif
-            
-            LeanplumUtils.lpLog(type: .debug, format: "leanplum_applicationDidFinishLaunching: %@, state %d", LeanplumUtils.getNotificationId(remoteNotif), UIApplication.shared.applicationState.rawValue)
             
             // started in background, woken up by remote notification
             if UIApplication.shared.applicationState == .background {
@@ -78,7 +77,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
     }
     
     func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        LeanplumUtils.lpLog(type: .debug, format: "notificationOpened: %@", LeanplumUtils.getNotificationId(userInfo))
+        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", LeanplumUtils.getNotificationId(userInfo))
         
         let messageId = LeanplumUtils.getNotificationId(userInfo)
         let actionName = action == LP_VALUE_DEFAULT_PUSH_ACTION ? action : "iOS options.Custom actions.\(action)"
@@ -90,8 +89,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
             context.preventRealtimeUpdating = true
         } else {
             // TODO: check if the message exists or needs FCU
-            let mid = messageIdFromUserInfo(userInfo)
-            context = Leanplum.createActionContext(forMessageId: mid)
+            let mid = LeanplumUtils.messageIdFromUserInfo(userInfo)
+            context = Leanplum.createActionContext(forMessageId: mid!)
         }
         context.maybeDownloadFiles()
         // Wait for Leanplum start so action responders are registered
@@ -100,31 +99,13 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
-    func messageIdFromUserInfo(_ userInfo: [AnyHashable : Any]) -> String {
-        var messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID]
-        if messageId == nil {
-            messageId = userInfo[LP_KEY_PUSH_MUTE_IN_APP]
-            if messageId == nil {
-                messageId = userInfo[LP_KEY_PUSH_NO_ACTION]
-                if messageId == nil {
-                    messageId = userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]
-                }
-            }
-        }
-        
-        return messageId as? String ?? "-1"
-    }
-    
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
+        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. Id: %@", isForeground ? "Foreground" : "Background", LeanplumUtils.getNotificationId(userInfo))
         if isForeground {
-            LeanplumUtils.lpLog(type: .debug, format: "notificationReceived Foreground: %@", LeanplumUtils.getNotificationId(userInfo))
-            
             if !LeanplumUtils.isMuted(userInfo) {
                 showNotificationInForeground(userInfo: userInfo)
             }
         } else {
-            LeanplumUtils.lpLog(type: .debug, format: "notificationReceived Background: %@", LeanplumUtils.getNotificationId(userInfo))
-            
             if !LeanplumUtils.areActionsEmbedded(userInfo) {
                 // TODO: check if notification action is not embedded and needs FCU / Prefetch
             }
@@ -163,6 +144,25 @@ public class LeanplumPushNotificationsProxy: NSObject {
     func isIOSVersionGreaterThanOrEqual(_ version:String) -> Bool {
         let currentVersion = UIDevice.current.systemVersion
         return (deviceVersion ?? currentVersion).compare(version,options: .numeric) != .orderedAscending
+    }
+    
+    // MARK: - Swizzle Disabled methods
+    @objc public func didReceiveRemoteNotification(userInfo: [AnyHashable : Any], fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        self.leanplum_application(UIApplication.shared, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: fetchCompletionHandler)
+    }
+    
+    @available(iOS 10.0, *)
+    @objc public func userNotificationCenter(didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        self.leanplum_userNotificationCenter(UNUserNotificationCenter.current(), didReceive: response, withCompletionHandler: completionHandler)
+    }
+    
+    @available(iOS 10.0, *)
+    @objc public func userNotificationCenter(willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        self.leanplum_userNotificationCenter(UNUserNotificationCenter.current(), willPresent: notification, withCompletionHandler: completionHandler)
+    }
+    
+    @objc public func application(didReceive notification: UILocalNotification) {
+        self.leanplum_application(UIApplication.shared, didReceive: notification)
     }
     
     // MARK: - swizzleTokenMethods

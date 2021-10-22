@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 20.09.21.
-//
+//  Copyright © 2021 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -23,6 +23,12 @@ public class LeanplumUtils: NSObject {
         }
         
         return notifId
+    }
+    
+    static func messageIdFromUserInfo(_ userInfo: [AnyHashable : Any]) -> String? {
+        let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] ?? userInfo[LP_KEY_PUSH_MUTE_IN_APP] ?? userInfo[LP_KEY_PUSH_NO_ACTION] ?? userInfo[LP_KEY_PUSH_NO_ACTION_MUTE]
+        
+        return messageId as? String
     }
     
     static func areActionsEmbedded(_ userInfo:[AnyHashable:Any]) -> Bool {
