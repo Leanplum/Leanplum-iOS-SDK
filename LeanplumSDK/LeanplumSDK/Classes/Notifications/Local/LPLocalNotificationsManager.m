@@ -11,6 +11,7 @@
 #import "LPNotificationsConstants.h"
 #import "LPNotificationsManager.h"
 #import <UserNotifications/UNUserNotificationCenter.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @implementation LPLocalNotificationsManager
 
@@ -22,15 +23,6 @@
         _sharedManager = [[self alloc] init];
     });
     return _sharedManager;
-}
-
-- (instancetype)init
-{
-    if(self = [super init])
-    {
-        _handler = [[LPLocalNotificationsHandler alloc] init];
-    }
-    return self;
 }
 
 - (void)listenForLocalNotifications
@@ -191,7 +183,7 @@
             dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
             [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
                 for (UNNotificationRequest *request in requests) {
-                    NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[request.content userInfo]];
+                    NSString *messageId = [LeanplumUtils messageIdFromUserInfo:[request.content userInfo]];
                     if ([messageId isEqualToString:context.messageId]) {
                         [UNUserNotificationCenter.currentNotificationCenter removePendingNotificationRequestsWithIdentifiers:@[request.identifier]];
                         if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -210,7 +202,7 @@
             // Fallback on earlier versions
             BOOL didCancel = NO;
             for (UILocalNotification *notification in notifications) {
-                NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[notification userInfo]];
+                NSString *messageId = [LeanplumUtils messageIdFromUserInfo:[notification userInfo]];
                 if ([messageId isEqualToString:context.messageId]) {
                     [app cancelLocalNotification:notification];
                     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -252,7 +244,7 @@
         dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
         [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
             for (UNNotificationRequest *request in requests) {
-                NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[request.content userInfo]];
+                NSString *messageId = [LeanplumUtils messageIdFromUserInfo:[request.content userInfo]];
                 if ([messageId isEqualToString:context.messageId]) {
                     UNCalendarNotificationTrigger *trigger = (UNCalendarNotificationTrigger *)request.trigger;
                     NSComparisonResult comparison = [trigger.nextTriggerDate compare:eta];
@@ -273,7 +265,7 @@
         // Fallback on earlier versions
         NSArray *notifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
         for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:[notification userInfo]];
+            NSString *messageId = [LeanplumUtils messageIdFromUserInfo:[notification userInfo]];
             if ([messageId isEqualToString:context.messageId]) {
                 NSComparisonResult comparison = [notification.fireDate compare:eta];
                 if (comparison == NSOrderedAscending) {

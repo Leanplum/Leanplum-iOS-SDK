@@ -98,8 +98,6 @@
 		075AAE6826847EC4007CA1BD /* LPMessageArchiveData.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8426847EC3007CA1BD /* LPMessageArchiveData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		075AAE6926847EC4007CA1BD /* LPNotificationsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8626847EC3007CA1BD /* LPNotificationsManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		075AAE6A26847EC4007CA1BD /* LPLocalNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD8826847EC3007CA1BD /* LPLocalNotificationsManager.m */; };
-		075AAE6C26847EC4007CA1BD /* LPLocalNotificationsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8926847EC3007CA1BD /* LPLocalNotificationsHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		075AAE6D26847EC4007CA1BD /* LPLocalNotificationsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD8A26847EC3007CA1BD /* LPLocalNotificationsHandler.m */; };
 		075AAE6F26847EC4007CA1BD /* LPLocalNotificationsManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8B26847EC3007CA1BD /* LPLocalNotificationsManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		075AAE7026847EC4007CA1BD /* LPPushNotificationsManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD8D26847EC3007CA1BD /* LPPushNotificationsManager.m */; };
 		075AAE7226847EC4007CA1BD /* LPPushNotificationsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8E26847EC3007CA1BD /* LPPushNotificationsHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -188,7 +186,6 @@
 		6A714AF426F8B317004A34A9 /* LPActionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADC726847EC3007CA1BD /* LPActionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF526F8B317004A34A9 /* LPWebInterstitialViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD7426847EC3007CA1BD /* LPWebInterstitialViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF626F8B317004A34A9 /* LPRequestFactory.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD4726847EC3007CA1BD /* LPRequestFactory.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6A714AF726F8B317004A34A9 /* LPLocalNotificationsHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8926847EC3007CA1BD /* LPLocalNotificationsHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF826F8B317004A34A9 /* LPMessageTemplateConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD6326847EC3007CA1BD /* LPMessageTemplateConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF926F8B317004A34A9 /* LPExceptionHandler.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADE626847EC4007CA1BD /* LPExceptionHandler.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AFA26F8B317004A34A9 /* LPActionContext-Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADCC26847EC3007CA1BD /* LPActionContext-Internal.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -284,7 +281,6 @@
 		6A714B5526F8B317004A34A9 /* Leanplum_AsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AADAB26847EC3007CA1BD /* Leanplum_AsyncSocket.m */; };
 		6A714B5626F8B317004A34A9 /* LPIconChangeMessageTemplate.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD6826847EC3007CA1BD /* LPIconChangeMessageTemplate.m */; };
 		6A714B5726F8B317004A34A9 /* LPFileManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD5826847EC3007CA1BD /* LPFileManager.m */; };
-		6A714B5826F8B317004A34A9 /* LPLocalNotificationsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD8A26847EC3007CA1BD /* LPLocalNotificationsHandler.m */; };
 		6A714B5926F8B317004A34A9 /* LPRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD4926847EC3007CA1BD /* LPRequest.m */; };
 		6A714B5A26F8B317004A34A9 /* LPVar.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AADC426847EC3007CA1BD /* LPVar.m */; };
 		6A714B5B26F8B317004A34A9 /* LPPushNotificationsHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD8F26847EC3007CA1BD /* LPPushNotificationsHandler.m */; };
@@ -423,7 +419,6 @@
 		6A714BE926F8B505004A34A9 /* LPMessageArchiveData.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8426847EC3007CA1BD /* LPMessageArchiveData.h */; };
 		6A714BEA26F8B505004A34A9 /* LPNotificationsConstants.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD9226847EC3007CA1BD /* LPNotificationsConstants.h */; };
 		6A714BEB26F8B505004A34A9 /* LPNotificationsManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8626847EC3007CA1BD /* LPNotificationsManager.h */; };
-		6A714BEC26F8B505004A34A9 /* LPLocalNotificationsHandler.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8926847EC3007CA1BD /* LPLocalNotificationsHandler.h */; };
 		6A714BED26F8B505004A34A9 /* LPLocalNotificationsManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8B26847EC3007CA1BD /* LPLocalNotificationsManager.h */; };
 		6A714BEE26F8B505004A34A9 /* LPPushNotificationsHandler.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD8E26847EC3007CA1BD /* LPPushNotificationsHandler.h */; };
 		6A714BEF26F8B505004A34A9 /* LPPushNotificationsManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 075AAD9026847EC3007CA1BD /* LPPushNotificationsManager.h */; };
@@ -540,7 +535,6 @@
 				6A714BE926F8B505004A34A9 /* LPMessageArchiveData.h in Copy Headers */,
 				6A714BEA26F8B505004A34A9 /* LPNotificationsConstants.h in Copy Headers */,
 				6A714BEB26F8B505004A34A9 /* LPNotificationsManager.h in Copy Headers */,
-				6A714BEC26F8B505004A34A9 /* LPLocalNotificationsHandler.h in Copy Headers */,
 				6A714BED26F8B505004A34A9 /* LPLocalNotificationsManager.h in Copy Headers */,
 				6A714BEE26F8B505004A34A9 /* LPPushNotificationsHandler.h in Copy Headers */,
 				6A714BEF26F8B505004A34A9 /* LPPushNotificationsManager.h in Copy Headers */,
@@ -659,8 +653,6 @@
 		075AAD8426847EC3007CA1BD /* LPMessageArchiveData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPMessageArchiveData.h; sourceTree = "<group>"; };
 		075AAD8626847EC3007CA1BD /* LPNotificationsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPNotificationsManager.h; sourceTree = "<group>"; };
 		075AAD8826847EC3007CA1BD /* LPLocalNotificationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLocalNotificationsManager.m; sourceTree = "<group>"; };
-		075AAD8926847EC3007CA1BD /* LPLocalNotificationsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLocalNotificationsHandler.h; sourceTree = "<group>"; };
-		075AAD8A26847EC3007CA1BD /* LPLocalNotificationsHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLocalNotificationsHandler.m; sourceTree = "<group>"; };
 		075AAD8B26847EC3007CA1BD /* LPLocalNotificationsManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPLocalNotificationsManager.h; sourceTree = "<group>"; };
 		075AAD8D26847EC3007CA1BD /* LPPushNotificationsManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsManager.m; sourceTree = "<group>"; };
 		075AAD8E26847EC3007CA1BD /* LPPushNotificationsHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPPushNotificationsHandler.h; sourceTree = "<group>"; };
@@ -984,8 +976,6 @@
 			isa = PBXGroup;
 			children = (
 				075AAD8826847EC3007CA1BD /* LPLocalNotificationsManager.m */,
-				075AAD8926847EC3007CA1BD /* LPLocalNotificationsHandler.h */,
-				075AAD8A26847EC3007CA1BD /* LPLocalNotificationsHandler.m */,
 				075AAD8B26847EC3007CA1BD /* LPLocalNotificationsManager.h */,
 			);
 			path = Local;
@@ -1260,7 +1250,6 @@
 				075AAEB326847EC4007CA1BD /* LPActionManager.h in Headers */,
 				075AAE5226847EC4007CA1BD /* LPWebInterstitialViewController.h in Headers */,
 				075AAE1426847EC4007CA1BD /* LPRequestFactory.h in Headers */,
-				075AAE6C26847EC4007CA1BD /* LPLocalNotificationsHandler.h in Headers */,
 				075AAE3C26847EC4007CA1BD /* LPMessageTemplateConstants.h in Headers */,
 				075AAEDC26847EC4007CA1BD /* LPExceptionHandler.h in Headers */,
 				075AAEBB26847EC4007CA1BD /* LPActionContext-Internal.h in Headers */,
@@ -1356,7 +1345,6 @@
 				6A714AF426F8B317004A34A9 /* LPActionManager.h in Headers */,
 				6A714AF526F8B317004A34A9 /* LPWebInterstitialViewController.h in Headers */,
 				6A714AF626F8B317004A34A9 /* LPRequestFactory.h in Headers */,
-				6A714AF726F8B317004A34A9 /* LPLocalNotificationsHandler.h in Headers */,
 				6A714AF826F8B317004A34A9 /* LPMessageTemplateConstants.h in Headers */,
 				6A714AF926F8B317004A34A9 /* LPExceptionHandler.h in Headers */,
 				6A714AFA26F8B317004A34A9 /* LPActionContext-Internal.h in Headers */,
@@ -1589,7 +1577,6 @@
 				075AAE9326847EC4007CA1BD /* Leanplum_AsyncSocket.m in Sources */,
 				075AAE4126847EC4007CA1BD /* LPIconChangeMessageTemplate.m in Sources */,
 				075AAE2C26847EC4007CA1BD /* LPFileManager.m in Sources */,
-				075AAE6D26847EC4007CA1BD /* LPLocalNotificationsHandler.m in Sources */,
 				075AAE1626847EC4007CA1BD /* LPRequest.m in Sources */,
 				075AAEAF26847EC4007CA1BD /* LPVar.m in Sources */,
 				075AAE7326847EC4007CA1BD /* LPPushNotificationsHandler.m in Sources */,
@@ -1685,7 +1672,6 @@
 				6A714B5526F8B317004A34A9 /* Leanplum_AsyncSocket.m in Sources */,
 				6A714B5626F8B317004A34A9 /* LPIconChangeMessageTemplate.m in Sources */,
 				6A714B5726F8B317004A34A9 /* LPFileManager.m in Sources */,
-				6A714B5826F8B317004A34A9 /* LPLocalNotificationsHandler.m in Sources */,
 				6A714B5926F8B317004A34A9 /* LPRequest.m in Sources */,
 				6A714B5A26F8B317004A34A9 /* LPVar.m in Sources */,
 				6A714B5B26F8B317004A34A9 /* LPPushNotificationsHandler.m in Sources */,
@@ -1827,7 +1813,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1883,7 +1869,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

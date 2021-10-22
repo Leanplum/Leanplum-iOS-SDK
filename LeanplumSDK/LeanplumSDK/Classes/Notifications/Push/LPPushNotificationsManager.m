@@ -28,14 +28,6 @@
 {
     if (self = [super init]) {
         _handler = [[LPPushNotificationsHandler alloc] init];
-        _swizzledApplicationDidRegisterRemoteNotifications = NO;
-        _swizzledApplicationDidRegisterUserNotificationSettings = NO;
-        _swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = NO;
-        _swizzledApplicationDidReceiveRemoteNotification = NO;
-        _swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler = NO;
-        _swizzledApplicationDidReceiveLocalNotification = NO;
-        _swizzledUserNotificationCenterDidReceiveNotificationResponseWithCompletionHandler = NO;
-        _swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler = NO;
     }
     return self;
 }
