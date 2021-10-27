@@ -24,10 +24,10 @@ public class LeanplumNotificationSettings: NSObject {
             self.getSettingsFromUserNotification { settings in
                 var tmp: [String: Any] = [:]
                 for item in settings {
-                    if item.value == nil {
-                        tmp[item.key] = NSNull()
+                    if let value = item.value {
+                        tmp[item.key] = value
                     } else {
-                        tmp[item.key] = item.value
+                        tmp[item.key] = NSNull()
                     }
                 }
                 completionHandler(tmp)
@@ -41,16 +41,16 @@ public class LeanplumNotificationSettings: NSObject {
     private func loadSettings() {
         getSettigs { [weak self] settings in
             guard let self = self else { return }
-//            if areChanged { //TODO: do we care and do we need to save them???
-//                self.updateSettings(newSettings: settings)
-//            }
-            self.currentSettings = settings
+            if self.checkIfSettingsAreChanged(newSettings: settings) { //TODO: do we care and do we need to save them???
+                self.updateSettings(newSettings: settings)
+                self.currentSettings = settings //TODO: potential issue: check case: value is nil for type??
+            }
         }
     }
     
     private func updateSettings(newSettings: Dictionary<String, Any>) {
-        
-        //TODO: persist settings
+        UserDefaults.standard.setValue(newSettings, forKey: self.leanplumUserNotificationSettingsKey())
+        //TODO: update settings to server
 //        updateSettingsToServer(settings: newSettings)
     }
     
@@ -61,10 +61,25 @@ public class LeanplumNotificationSettings: NSObject {
 //        let params: [String: Any] = [:]
 //        let request = LPRequestFactory.setDeviceAttributesWithParams(params).andRequestType(.Immediate)//TODO: check if immediate
 //        LPRequestSender.sharedInstance().send(request)
+        
+        Leanplum.onStartResponse { success in
+            if success {
+                //update here
+            }
+        }
     }
     
     private func checkIfSettingsAreChanged(newSettings: Dictionary<String, Any>) -> Bool {
-        return true
+        //TODO: compare with saved dictionary
+        if let savedSettings = UserDefaults.standard.dictionary(forKey: self.leanplumUserNotificationSettingsKey()), NSDictionary(dictionary: savedSettings).isEqual(to: NSDictionary(dictionary: currentSettings) as! [AnyHashable : Any] ) {
+            //TODO: fix !
+            return true
+        }
+        return false
+    }
+    
+    private func leanplumUserNotificationSettingsKey() -> String {
+        return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
     }
     
     @available(iOS 10.0, *)
@@ -75,10 +90,7 @@ public class LeanplumNotificationSettings: NSObject {
             UNUserNotificationCenter.current().getNotificationCategories { categories in
                 var cate: [UNNotificationCategory] = []
                 for category in categories {
-//                    category.identifier do the logic
-//                        if category.identifier != nil {
-                        cate.append(category)
-//                        }
+                    cate.append(category)
                 }
                 let sortedCategories = cate.sorted { (lhs: UNNotificationCategory, rhs: UNNotificationCategory) -> Bool in
                     return lhs.identifier.caseInsensitiveCompare(rhs.identifier) == .orderedAscending

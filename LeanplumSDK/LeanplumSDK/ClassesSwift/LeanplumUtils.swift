@@ -46,7 +46,6 @@ public class LeanplumUtils: NSObject {
         if let messageId = userInfo[LP_KEY_PUSH_MUTE_IN_APP] {
             return String(describing: messageId)
         }
-        
         if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION] {
             return String(describing: messageId)
         }
@@ -56,7 +55,7 @@ public class LeanplumUtils: NSObject {
         return nil
     }
     
-    @objc public func hexadecimalStringFromData(_ data: NSData) -> String {
+    @objc static public func hexadecimalStringFromData(_ data: NSData) -> String {
         return (data as Data).hexEncodedString()
     }
 }
@@ -77,8 +76,13 @@ extension LeanplumUtils {
                     }
                 }
             }
+        } else if #available(iOS 8.0, *) {
+            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert],
+                                                                                             categories: nil))
+            UIApplication.shared.registerForRemoteNotifications()
         } else {
-            
+            //support for versions below iOS 8
+            //TODO: ??
         }
     }
     
@@ -112,8 +116,37 @@ extension LeanplumUtils {
         return false
     }
     
-    @objc public static func pushToken() {
-        //TODO: return push token from defaults
+    @objc public func pushToken() -> String? {
+        //return push token from defaults
+        return UserDefaults.standard.string(forKey: self.pushTokenKey())
+    }
+    
+    func savePushToken(_ token: String) {
+        UserDefaults.standard.setValue(token, forKey: self.pushTokenKey())
+    }
+    
+    private func pushTokenKey() -> String {
+        return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
+    }
+    
+    func removePushToken() {
+        UserDefaults.standard.removeObject(forKey: self.pushTokenKey())
+    }
+    
+    func isPushEnabled() -> Bool {
+        if !Thread.isMainThread {
+            var output = false
+            DispatchQueue.main.sync(execute: { [self] in
+                output = isPushEnabled()
+            })
+            return output
+        }
+        
+        if UIApplication.shared.responds(to: #selector(getter: UIApplication.isRegisteredForRemoteNotifications)) {
+            return UIApplication.shared.isRegisteredForRemoteNotifications
+        }
+        
+        return false
     }
 }
 

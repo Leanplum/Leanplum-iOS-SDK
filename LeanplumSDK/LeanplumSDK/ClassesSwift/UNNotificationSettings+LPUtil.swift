@@ -22,10 +22,10 @@ extension UNNotificationSettings {
             }
         }
         if settings.authorizationStatus == .notDetermined {
-            return nil;
+            return nil
         }
         if settings.authorizationStatus == .denied {
-            return 0;
+            return 0
         }
         
         //

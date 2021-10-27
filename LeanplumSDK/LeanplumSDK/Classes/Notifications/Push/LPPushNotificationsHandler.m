@@ -12,6 +12,7 @@
 #import "LPActionContext.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsManager.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPPushNotificationsHandler()
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
@@ -116,6 +117,8 @@
 
     // Format push token.
     NSString *formattedToken = [[LPNotificationsManager shared] hexadecimalStringFromData:token];
+    //TODO: move logic
+    NSString *testFormattedToken = [LeanplumUtils hexadecimalStringFromData:token];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];

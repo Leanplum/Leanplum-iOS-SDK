@@ -197,6 +197,8 @@ API_AVAILABLE(ios(10.0))
     //    NSURL *appSettings = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
     //    [[UIApplication sharedApplication] openURL:appSettings];
 
+    
+    //TODO: move this logic in swift
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:DEFAULTS_LEANPLUM_ENABLED_PUSH];
     [Leanplum synchronizeDefaults];
     // When system asks user for push notification we should also disable our dialog, because
