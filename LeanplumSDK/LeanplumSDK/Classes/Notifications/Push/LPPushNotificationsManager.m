@@ -186,7 +186,7 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         if ([LPUtils isSwizzlingEnabled]) {
-            [LeanplumPushNotificationsProxy addDidFinishLaunchingObserver];
+            [[Leanplum notificationsManager].proxy addDidFinishLaunchingObserver];
         }
     });
 }
@@ -229,7 +229,7 @@
 }
 
 - (void) dealloc {
-    [LeanplumPushNotificationsProxy removeDidFinishLaunchingObserver];
+    [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];
 }
 
 @end

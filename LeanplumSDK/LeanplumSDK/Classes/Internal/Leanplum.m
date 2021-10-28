@@ -111,6 +111,16 @@ void leanplumExceptionHandler(NSException *exception);
 #endif
 }
 
++ (LeanplumNotificationsManager*)notificationsManager
+{
+    static LeanplumNotificationsManager *managerInstance = nil;
+    static dispatch_once_t onceLPInternalStateToken;
+    dispatch_once(&onceLPInternalStateToken, ^{
+        managerInstance = [LeanplumNotificationsManager new];
+    });
+    return managerInstance;
+}
+
 + (void)throwError:(NSString *)reason
 {
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -318,7 +328,7 @@ void leanplumExceptionHandler(NSException *exception);
 + (void)setDeviceVersion:(NSString *)deviceVersion
 {
     LP_TRY
-    [LeanplumPushNotificationsProxy shared].deviceVersion = deviceVersion;
+    [Leanplum notificationsManager].proxy.deviceVersion = deviceVersion;
     LP_END_TRY
 }
 
@@ -756,7 +766,7 @@ void leanplumExceptionHandler(NSException *exception);
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
-    [[LeanplumPushNotificationsProxy shared] swizzleNotificationMethods];
+    [[Leanplum notificationsManager].proxy swizzleNotificationMethods];
     
     if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
@@ -1086,7 +1096,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic pop
                     [Leanplum resume];
                     // Used for push notifications iOS 9
-                    [LeanplumPushNotificationsProxy shared].resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
+                    [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
                     [self maybePerformActions:@[@"resume"]
                                 withEventName:nil
                                    withFilter:kLeanplumActionFilterAll
@@ -1580,7 +1590,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LeanplumPushNotificationsProxy shared] applicationDidFinishLaunchingWithLaunchOptions:launchOptions];
+        [[Leanplum notificationsManager].proxy applicationDidFinishLaunchingWithLaunchOptions:launchOptions];
     }
     else
     {
@@ -1624,7 +1634,7 @@ void leanplumExceptionHandler(NSException *exception);
     if (![LPUtils isSwizzlingEnabled])
     {
         // TODO: Decide if we need the LeanplumUIBackgroundFetchResult as a completionHandler
-        [[LeanplumPushNotificationsProxy shared] didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
+        [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
     }
     else
     {
@@ -1639,7 +1649,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LeanplumPushNotificationsProxy shared] userNotificationCenterWithDidReceive:response withCompletionHandler:completionHandler];
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithDidReceive:response withCompletionHandler:completionHandler];
     }
     else
     {
@@ -1654,7 +1664,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LeanplumPushNotificationsProxy shared] userNotificationCenterWithWillPresent:notification withCompletionHandler:completionHandler];
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithWillPresent:notification withCompletionHandler:completionHandler];
     }
     else
     {
@@ -1685,7 +1695,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LeanplumPushNotificationsProxy shared] applicationWithDidReceive:localNotification];
+        [[Leanplum notificationsManager].proxy applicationWithDidReceive:localNotification];
     }
     else
     {
@@ -1700,7 +1710,7 @@ void leanplumExceptionHandler(NSException *exception);
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LeanplumPushNotificationsProxy shared] handleActionWithIdentifier:identifier forLocalNotification:notification];
+    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forLocalNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop
@@ -1712,7 +1722,7 @@ void leanplumExceptionHandler(NSException *exception);
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LeanplumPushNotificationsProxy shared] handleActionWithIdentifier:identifier forRemoteNotification:notification];
+    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forRemoteNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop

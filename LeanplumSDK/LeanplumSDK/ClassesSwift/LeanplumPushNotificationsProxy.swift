@@ -10,9 +10,7 @@ import UIKit
 
 public class LeanplumPushNotificationsProxy: NSObject {
     
-    @objc public static let shared = LeanplumPushNotificationsProxy()
-    
-    private override init() {}
+    internal override init() {}
     
     @objc public var deviceVersion:String?
     @objc public var resumedTimeInterval:Double = 0
@@ -20,6 +18,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
     lazy var appDelegate = UIApplication.shared.delegate
     lazy var appDelegateClass: AnyClass? = object_getClass(appDelegate)
     lazy var userNotificationCenterDelegateClass: AnyClass? = appDelegateClass
+    
+    var application: UIApplication = UIApplication.shared
     
     var pushNotificationBackgroundFetchResult:UIBackgroundFetchResult = .newData
     
@@ -46,12 +46,12 @@ public class LeanplumPushNotificationsProxy: NSObject {
     
     let userNotificationDelegateName = "UNUserNotificationCenterDelegate"
     
-    @objc static public func addDidFinishLaunchingObserver() {
-        NotificationCenter.default.addObserver(self.shared, selector: #selector(leanplum_applicationDidFinishLaunching(notification:)), name: UIApplication.didFinishLaunchingNotification, object: nil)
+    @objc public func addDidFinishLaunchingObserver() {
+        NotificationCenter.default.addObserver(self, selector: #selector(leanplum_applicationDidFinishLaunching(notification:)), name: UIApplication.didFinishLaunchingNotification, object: nil)
     }
     
-    @objc static public func removeDidFinishLaunchingObserver() {
-        NotificationCenter.default.removeObserver(self.shared)
+    @objc public func removeDidFinishLaunchingObserver() {
+        NotificationCenter.default.removeObserver(self)
     }
     
     @objc func leanplum_applicationDidFinishLaunching(notification: Notification) {
