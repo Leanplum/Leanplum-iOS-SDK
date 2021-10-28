@@ -78,7 +78,7 @@ class UIApplicationMock: UIApplication {
     override init() {
         super.init()
         proxy = LeanplumPushNotificationsProxyMock()
-        proxy.application = UIApplicationMock()
+        proxy.application = UIApplicationMock.shared
     }
     
     class func notificationsManager() -> LeanplumNotificationsManagerMock {
