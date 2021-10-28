@@ -80,6 +80,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
+    @objc(notificationOpened:action:)
     func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", LeanplumUtils.getNotificationId(userInfo))
         

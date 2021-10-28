@@ -12,17 +12,17 @@ import XCTest
 @available(iOS 13, *)
 class LeanplumPushNotificationsProxyTest: XCTestCase {
     
+    let orig = #selector(Leanplum.notificationsManager)
+    let mock = #selector(Leanplum.notificationsManagerMock)
+    
+    lazy var newMethod = class_getClassMethod(Leanplum.self, mock)!
+    lazy var origMethod = class_getClassMethod(Leanplum.self, orig)!
+    
     override func setUp() {
-        setUpNotificationsManagerMock()
+        method_exchangeImplementations(origMethod, newMethod)
     }
     
-    func setUpNotificationsManagerMock() {
-        let orig = #selector(Leanplum.notificationsManager)
-        let mock = #selector(Leanplum.notificationsManagerMock)
-        
-        let newMethod = class_getClassMethod(Leanplum.self, mock)!
-        let origMethod = class_getClassMethod(Leanplum.self, orig)!
-        
+    override func tearDown() {
         method_exchangeImplementations(origMethod, newMethod)
     }
     
