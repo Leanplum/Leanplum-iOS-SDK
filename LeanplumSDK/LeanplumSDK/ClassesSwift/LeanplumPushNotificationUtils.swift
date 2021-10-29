@@ -1,5 +1,5 @@
 //
-//  LeanplumUtils.swift
+//  LeanplumPushNotificationUtils.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 20.09.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LeanplumUtils: NSObject {
+public class LeanplumPushNotificationUtils: NSObject {
     
     @objc public static func checkIfPushNotificationIdIsInDefaults(_ pushId: String) -> Bool {
         //TODO: decode
@@ -55,13 +55,20 @@ public class LeanplumUtils: NSObject {
         return nil
     }
     
-    @objc static public func hexadecimalStringFromData(_ data: NSData) -> String {
-        return (data as Data).hexEncodedString()
+    static func getFormattedDeviceTokenFromData(_ token: Data) -> String {
+        var formattedToken = token.hexEncodedString()
+        formattedToken = formattedToken.replacingOccurrences(of: "<", with: "")
+            .replacingOccurrences(of: ">", with: "")
+            .replacingOccurrences(of: " ", with: "")
+        return formattedToken
     }
-}
-
-//Push Notifications Utils
-extension LeanplumUtils {
+    
+//   private func hexadecimalStringFromData(_ data: Data) -> String {
+//        return data.hexEncodedString()
+//    }
+    
+    
+    //Push Notifications Utils
     @objc static public func enableSystemPush() {
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
@@ -116,24 +123,24 @@ extension LeanplumUtils {
         return false
     }
     
-    @objc public func pushToken() -> String? {
+    static func pushToken() -> String? {
         //return push token from defaults
-        return UserDefaults.standard.string(forKey: self.pushTokenKey())
+        return UserDefaults.standard.string(forKey: LeanplumPushNotificationUtils.pushTokenKey())
     }
     
-    func savePushToken(_ token: String) {
-        UserDefaults.standard.setValue(token, forKey: self.pushTokenKey())
+    static func savePushToken(_ token: String) {
+        UserDefaults.standard.setValue(token, forKey: LeanplumPushNotificationUtils.pushTokenKey())
     }
     
-    private func pushTokenKey() -> String {
+    private static func pushTokenKey() -> String {
         return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
     }
     
-    func removePushToken() {
-        UserDefaults.standard.removeObject(forKey: self.pushTokenKey())
+    static func removePushToken() {
+        UserDefaults.standard.removeObject(forKey: LeanplumPushNotificationUtils.pushTokenKey())
     }
     
-    func isPushEnabled() -> Bool {
+    static func isPushEnabled() -> Bool {
         if !Thread.isMainThread {
             var output = false
             DispatchQueue.main.sync(execute: { [self] in
@@ -148,8 +155,11 @@ extension LeanplumUtils {
         
         return false
     }
+    
+//    func requireMessageContentWithMessageId(_ messageId: String, completionHandler: @escaping LeanplumVariablesChangedBlock) {
+//        
+//    }
 }
-
 
 
 

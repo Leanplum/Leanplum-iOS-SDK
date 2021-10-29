@@ -118,7 +118,7 @@
     // Format push token.
     NSString *formattedToken = [[LPNotificationsManager shared] hexadecimalStringFromData:token];
     //TODO: move logic
-    NSString *testFormattedToken = [LeanplumUtils hexadecimalStringFromData:token];
+//    NSString *testFormattedToken = [LeanplumUtils hexadecimalStringFromData:token];
     formattedToken = [[[formattedToken stringByReplacingOccurrencesOfString:@"<" withString:@""]
                        stringByReplacingOccurrencesOfString:@">" withString:@""]
                       stringByReplacingOccurrencesOfString:@" " withString:@""];

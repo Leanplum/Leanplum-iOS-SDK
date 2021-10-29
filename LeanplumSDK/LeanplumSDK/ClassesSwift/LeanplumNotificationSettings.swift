@@ -113,3 +113,42 @@ public class LeanplumNotificationSettings: NSObject {
         return settings
     }
 }
+
+//TODO: this should go into manager
+extension LeanplumPushNotificationUtils {
+    //
+    func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
+        let formattedToken = LeanplumPushNotificationUtils.getFormattedDeviceTokenFromData(deviceToken)
+        
+        let deviceAttributeParams: NSMutableDictionary = NSMutableDictionary()
+        if let existingToken = LeanplumPushNotificationUtils.pushToken() {
+            if existingToken == "" || existingToken != formattedToken {
+                LeanplumPushNotificationUtils.savePushToken(formattedToken)
+                deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
+            }
+        } else {
+            LeanplumPushNotificationUtils.savePushToken(formattedToken)
+            deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
+        }
+        
+        //TODO: move notificationSettings instance into manager
+        //TODO: add chack if they are changed from before
+        let settings = LPInternalState.shared().notificationSettings.currentSettings
+        //TODO: refactor addEntries directly in [AnyHashable: Any] avaid using NSMutableDictionary
+        deviceAttributeParams.addEntries(from: LPNetworkEngine.notificationSettings(toRequestParams: settings))
+        
+        if let deviceAttributeParams = deviceAttributeParams as? [AnyHashable: Any], deviceAttributeParams.isEmpty {
+            Leanplum.onStartResponse { success in
+                if success {
+                    let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams)
+                    LPRequestSender.sharedInstance().send(requst)
+                }
+            }
+        }
+    }
+    
+    func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
+//        [self leanplum_disableAskToAsk];
+        LeanplumPushNotificationUtils.removePushToken()
+    }
+}
