@@ -22,27 +22,6 @@
     return _sharedManager;
 }
 
--(void)handleLocalNotification:(NSDictionary *)userInfo
-{
-    [[LPPushNotificationsManager sharedManager].handler
-     didReceiveRemoteNotification:userInfo];
-}
-
-- (NSString *)messageIdFromUserInfo:(NSDictionary *)userInfo
-{
-    NSString *messageId = [userInfo[LP_KEY_PUSH_MESSAGE_ID] description];
-    if (messageId == nil) {
-        messageId = [userInfo[LP_KEY_PUSH_MUTE_IN_APP] description];
-        if (messageId == nil) {
-            messageId = [userInfo[LP_KEY_PUSH_NO_ACTION] description];
-            if (messageId == nil) {
-                messageId = [userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] description];
-            }
-        }
-    }
-    return messageId;
-}
-
 - (NSString *)hexadecimalStringFromData:(NSData *)data
 {
     NSUInteger dataLength = data.length;

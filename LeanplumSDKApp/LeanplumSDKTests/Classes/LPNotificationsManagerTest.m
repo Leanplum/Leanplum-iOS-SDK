@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <Leanplum/LPNotificationsManager.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPNotificationsManagerTest : XCTestCase
 
@@ -25,19 +26,19 @@
     NSString* messageId = nil;
 
     userInfo = @{@"_lpm": @"messageId"};
-    messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
+    messageId = [LeanplumUtils messageIdFromUserInfo:userInfo];
     XCTAssertEqual(messageId, @"messageId");
 
     userInfo = @{@"_lpu": @"messageId"};
-    messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
+    messageId = [LeanplumUtils messageIdFromUserInfo:userInfo];
     XCTAssertEqual(messageId, @"messageId");
 
     userInfo = @{@"_lpn": @"messageId"};
-    messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
+    messageId = [LeanplumUtils messageIdFromUserInfo:userInfo];
     XCTAssertEqual(messageId, @"messageId");
 
     userInfo = @{@"_lpv": @"messageId"};
-    messageId = [[LPNotificationsManager shared] messageIdFromUserInfo:userInfo];
+    messageId = [LeanplumUtils messageIdFromUserInfo:userInfo];
     XCTAssertEqual(messageId, @"messageId");
 }
 
