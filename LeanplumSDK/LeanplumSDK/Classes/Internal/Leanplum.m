@@ -111,6 +111,16 @@ void leanplumExceptionHandler(NSException *exception);
 #endif
 }
 
++ (LeanplumNotificationsManager*)notificationsManager
+{
+    static LeanplumNotificationsManager *managerInstance = nil;
+    static dispatch_once_t onceLPInternalStateToken;
+    dispatch_once(&onceLPInternalStateToken, ^{
+        managerInstance = [LeanplumNotificationsManager new];
+    });
+    return managerInstance;
+}
+
 + (void)throwError:(NSString *)reason
 {
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -312,6 +322,13 @@ void leanplumExceptionHandler(NSException *exception);
 {
     LP_TRY
     [LPInternalState sharedState].appVersion = appVersion;
+    LP_END_TRY
+}
+
++ (void)setDeviceVersion:(NSString *)deviceVersion
+{
+    LP_TRY
+    [Leanplum notificationsManager].proxy.deviceVersion = deviceVersion;
     LP_END_TRY
 }
 
@@ -749,6 +766,8 @@ void leanplumExceptionHandler(NSException *exception);
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
+    [[Leanplum notificationsManager].proxy swizzleNotificationMethods];
+    
     if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
          @"methods."];
@@ -1077,6 +1096,8 @@ void leanplumExceptionHandler(NSException *exception);
                     }
 #pragma clang diagnostic pop
                     [Leanplum resume];
+                    // Used for push notifications iOS 9
+                    [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
                     [self maybePerformActions:@[@"resume"]
                                 withEventName:nil
                                    withFilter:kLeanplumActionFilterAll
@@ -1565,16 +1586,18 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
-+ (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
++ (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions
 {
     LP_TRY
-    [LPInternalState sharedState].calledHandleNotification = YES;
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                                                       withAction:nil
-                                           fetchCompletionHandler:completionHandler];
+    if (![LPUtils isSwizzlingEnabled])
+    {
+        [[Leanplum notificationsManager].proxy applicationDidFinishLaunchingWithLaunchOptions:launchOptions];
+    }
+    else
+    {
+        LPLog(LPDebug, @"Call to applicationDidFinishLaunchingWithOptions will be ignored due to swizzling.");
+    }
     LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"handle_notification"];
 }
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
@@ -1606,27 +1629,13 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-{
-    LP_TRY
-    if (![LPUtils isSwizzlingEnabled])
-    {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo];
-    }
-    else
-    {
-        LPLog(LPDebug, @"Call to didReceiveRemoteNotification will be ignored due to swizzling.");
-    }
-    LP_END_TRY
-}
-
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                                               fetchCompletionHandler:completionHandler];
+        // TODO: Decide if we need the LeanplumUIBackgroundFetchResult as a completionHandler
+        [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
     }
     else
     {
@@ -1641,12 +1650,26 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response
-                                                  withCompletionHandler:completionHandler];
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithDidReceive:response withCompletionHandler:completionHandler];
     }
     else
     {
         LPLog(LPDebug, @"Call to didReceiveNotificationResponse:withCompletionHandler: will be ignored due to swizzling.");
+    }
+    LP_END_TRY
+}
+
++ (void)willPresentNotification:(UNNotification *)notification
+          withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
+{
+    LP_TRY
+    if (![LPUtils isSwizzlingEnabled])
+    {
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithWillPresent:notification withCompletionHandler:completionHandler];
+    }
+    else
+    {
+        LPLog(LPDebug, @"Call to willPresentNotification:withCompletionHandler: will be ignored due to swizzling.");
     }
     LP_END_TRY
 }
@@ -1673,7 +1696,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
+        [[Leanplum notificationsManager].proxy applicationWithDidReceive:localNotification];
     }
     else
     {
@@ -1682,14 +1705,13 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
+// TODO: decide how handleAction methods
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:[notification userInfo]
-                                                       withAction:identifier
-                                           fetchCompletionHandler:completionHandler];
+    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forLocalNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop
@@ -1701,9 +1723,7 @@ void leanplumExceptionHandler(NSException *exception);
                  completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:notification
-                                                       withAction:identifier
-                                           fetchCompletionHandler:completionHandler];
+    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forRemoteNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop

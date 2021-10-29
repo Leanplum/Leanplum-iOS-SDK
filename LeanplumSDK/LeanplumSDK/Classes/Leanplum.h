@@ -259,6 +259,8 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
  */
 + (void)setAppVersion:(NSString *)appVersion;
 
++ (void)setDeviceVersion:(NSString *)deviceVersion;
+
 /**
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
@@ -421,21 +423,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
  */
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
 
-/**
- * Handles a push notification for apps that use Background Notifications.
- * Without background notifications, Leanplum handles them automatically.
- * Deprecated. Leanplum calls handleNotification automatically now. If you
- * implement application:didReceiveRemoteNotification:fetchCompletionHandler:
- * in your app delegate, you should remove any calls to [Leanplum handleNotification]
- * and call the completion handler yourself.
- */
-+ (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-    __attribute__((deprecated("Leanplum calls handleNotification automatically now. If you "
-        "implement application:didReceiveRemoteNotification:fetchCompletionHandler: in your app "
-        "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
-        "completion handler yourself.")));
-
++ (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 #pragma clang diagnostic push
@@ -443,10 +431,12 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
               fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
++ (void)willPresentNotification:(UNNotification *)notification
+          withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
+    API_AVAILABLE(ios(10.0));
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"

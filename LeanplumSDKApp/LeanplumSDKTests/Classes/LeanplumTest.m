@@ -44,6 +44,7 @@
 #import "LPRequest+Extension.h"
 #import "LPRequestSender+Categories.h"
 #import "LeanplumReachability+Category.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 /**
  * Tests leanplum public methods, we seed predefined response that comes from backend
@@ -1992,10 +1993,7 @@
         return YES;
     }];
     // Perform action with notification.
-    [[LPPushNotificationsManager sharedManager].handler
-     maybePerformNotificationActions:userInfo
-     action:nil
-     active:NO];
+    [[Leanplum notificationsManager].proxy notificationOpened:userInfo action:LP_VALUE_DEFAULT_PUSH_ACTION];
 
     // Wait for action to be received before finishing.
     [self waitForExpectationsWithTimeout:10 handler:nil];

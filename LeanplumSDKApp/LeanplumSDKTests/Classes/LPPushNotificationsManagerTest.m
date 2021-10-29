@@ -94,7 +94,6 @@
     [manager removePushToken];
 
     // Test push token is sent on clean start.
-    UIApplication *app = [UIApplication sharedApplication];
     XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
     NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
@@ -104,7 +103,8 @@
         [expectNewToken fulfill];
         return YES;
     }];
-    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+
+    [[manager handler] didRegisterForRemoteNotificationsWithDeviceToken:token];
     [self waitForExpectationsWithTimeout:2 handler:nil];
 
     // Test push token will not be sent with the same token.
@@ -113,7 +113,8 @@
         XCTAssertTrue(NO);
         return YES;
     }];
-    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+
+    [[manager handler] didRegisterForRemoteNotificationsWithDeviceToken:token];
 
     // Test push token is sent if the token changes.
     token = [@"sample2" dataUsingEncoding:NSUTF8StringEncoding];
@@ -125,7 +126,8 @@
         [expectUpdatedToken fulfill];
         return YES;
     }];
-    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+
+    [[manager handler] didRegisterForRemoteNotificationsWithDeviceToken:token];
     [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
@@ -148,7 +150,6 @@
     
     [self mockUserNotificationSettings:UIUserNotificationTypeAlert withCategoryId:@"testCategory"];
 
-    UIApplication *app = [UIApplication sharedApplication];
     XCTestExpectation *expectNewToken = [self expectationWithDescription:@"expectNewToken"];
     NSData *token = [@"sample" dataUsingEncoding:NSUTF8StringEncoding];
     
@@ -162,7 +163,7 @@
         return YES;
     }];
     
-    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    [[manager handler] didRegisterForRemoteNotificationsWithDeviceToken:token];
     
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
@@ -178,8 +179,6 @@
     
     [self mockUserNotificationSettings:UIUserNotificationTypeAlert withCategoryId:@"testCategory"];
 
-    UIApplication *app = [UIApplication sharedApplication];
-    
     XCTestExpectation *expectPushTypes = [self expectationWithDescription:@"expectPushTypes"];
     
     if (!Leanplum.hasStarted){
@@ -202,7 +201,7 @@
         return YES;
     }];
     
-    [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+    [[manager handler] didRegisterForRemoteNotificationsWithDeviceToken:token];
     
     [self waitForExpectationsWithTimeout:2 handler:nil];
 }
@@ -230,8 +229,7 @@
             }
         }];
         
-        UIApplication *app = [UIApplication sharedApplication];
-        [manager leanplum_application:app didRegisterForRemoteNotificationsWithDeviceToken:token];
+        [[manager handler] didRegisterForRemoteNotificationsWithDeviceToken:token];
         
         long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
         // Expect to timeout since the request should never be made, but still wait to verify it is not

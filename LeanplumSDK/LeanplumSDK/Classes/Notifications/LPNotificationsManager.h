@@ -13,8 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPNotificationsManager : NSObject
 
 + (LPNotificationsManager *)shared;
-- (void)handleLocalNotification:(NSDictionary *)userInfo;
-- (NSString *)messageIdFromUserInfo:(NSDictionary *)userInfo;
 - (NSString *)hexadecimalStringFromData:(NSData *)data;
 
 @end
