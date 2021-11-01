@@ -78,7 +78,7 @@ extension NSObject {
                 let state = UIApplication.shared.applicationState
                 // TODO: Decide if to check for the application state or to update the handledNotification info
                 if state == .background {
-                    Leanplum.notificationsManager().proxy.notificationReceived(userInfo: userInfo, isForeground: false)
+                    Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: false)
                 }
             }
         } else {
@@ -89,23 +89,23 @@ extension NSObject {
             if !Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) {
             if  state == .inactive {
                 // Open
-                Leanplum.notificationsManager().proxy.notificationOpened(userInfo: userInfo)
+                Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
             } else if state == .active {
                 // There are cases where state has changed to active from inactive, when user tapped the notification
                 // If app entered foreground right before calling this method, the app became active because notification was tapped
                 // Otherwise, notification was received while app was active/foreground
                 if Leanplum.notificationsManager().proxy.resumedTimeInterval + 0.300 > NSDate().timeIntervalSince1970 {
-                    Leanplum.notificationsManager().proxy.notificationOpened(userInfo: userInfo)
+                    Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
                 } else {
-                    Leanplum.notificationsManager().proxy.notificationReceived(userInfo: userInfo, isForeground: true)
+                    Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: true)
                 }
             } else {
-                Leanplum.notificationsManager().proxy.notificationReceived(userInfo: userInfo, isForeground: false)
+                Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: false)
             }
             // App was waken up by notification, its receiving was handled by application:didFinishLaunchingWithOptions
             // didReceiveRemoteNotification is called again when user tapped it
             } else if !Leanplum.notificationsManager().proxy.notificationOpenedFromStart && UIApplication.shared.applicationState != .background {
-                Leanplum.notificationsManager().proxy.notificationOpened(userInfo: userInfo)
+                Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
             }
         }
     }
@@ -149,10 +149,10 @@ extension NSObject {
             if !notifWasOpenedFromStart {
                 // Open Notification action
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
-                    Leanplum.notificationsManager().proxy.notificationOpened(userInfo: userInfo)
+                    Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
                 } else {
                     // Open Custom Action
-                    Leanplum.notificationsManager().proxy.notificationOpened(userInfo: userInfo, action: response.actionIdentifier)
+                    Leanplum.notificationsManager().notificationOpened(userInfo: userInfo, action: response.actionIdentifier)
                 }
             }
         }
@@ -176,7 +176,7 @@ extension NSObject {
         }
         
         // Notification is received while app is running on foreground
-        Leanplum.notificationsManager().proxy.notificationReceived(userInfo: notification.request.content.userInfo, isForeground: true)
+        Leanplum.notificationsManager().notificationReceived(userInfo: notification.request.content.userInfo, isForeground: true)
     }
     
     @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
@@ -196,9 +196,9 @@ extension NSObject {
         }
         
         if UIApplication.shared.applicationState == .active {
-            Leanplum.notificationsManager().proxy.notificationReceived(userInfo: userInfo, isForeground: true)
+            Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: true)
         } else {
-            Leanplum.notificationsManager().proxy.notificationOpened(userInfo: userInfo)
+            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
         }
     }
     

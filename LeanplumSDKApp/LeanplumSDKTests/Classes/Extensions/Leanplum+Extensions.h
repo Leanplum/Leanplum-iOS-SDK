@@ -46,7 +46,7 @@
 
 @end
 
-@interface LeanplumPushNotificationsProxy(UnitTest)
+@interface LeanplumNotificationsManager(UnitTest)
 
 - (void)notificationOpened:(NSDictionary * _Nonnull)userInfo action:(NSString * _Nonnull)action;
 

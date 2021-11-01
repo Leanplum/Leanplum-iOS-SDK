@@ -13,10 +13,28 @@ import XCTest
 class LeanplumPushNotificationsProxyTest: XCTestCase {
     
     let orig = #selector(Leanplum.notificationsManager)
-    let mock = #selector(Leanplum.notificationsManagerMock)
+    let mock = #selector(LeanplumPushNotificationsProxyTest.notificationsManagerMock)
     
-    lazy var newMethod = class_getClassMethod(Leanplum.self, mock)!
+    lazy var newMethod = class_getClassMethod(LeanplumPushNotificationsProxyTest.self, mock)!
     lazy var origMethod = class_getClassMethod(Leanplum.self, orig)!
+    
+    var userInfo:[AnyHashable : Any] = [
+        "aps": [
+            "alert": [
+                "title": "Notification 1",
+                "body": "Notification Body 1"
+            ],
+            "sound": "default",
+            "content-available": 1,
+            "badge": 1
+        ],
+        "_lpm": 1234567890,
+        "_lpx": [
+            "URL": "http://www.leanplum.com",
+            "__name__": "Open URL"
+        ],
+        "lp_occurrence_id": "abc-123-def-456"
+    ]
     
     override func setUp() {
         method_exchangeImplementations(origMethod, newMethod)
@@ -26,38 +44,38 @@ class LeanplumPushNotificationsProxyTest: XCTestCase {
         method_exchangeImplementations(origMethod, newMethod)
     }
     
-    func test_push_open() {
-        
-        let userInfo:[AnyHashable : Any] = [
-            "aps": [
-                "alert": [
-                    "title": "Notification 1",
-                    "body": "Notification Body 1"
-                ],
-                "sound": "default",
-                "content-available": 1,
-                "badge": 1
-            ],
-            "_lpm": 1234567890,
-            "_lpx": [
-                "URL": "http://www.leanplum.com",
-                "__name__": "Open URL"
-            ],
-            "lp_occurrence_id": "abc-123-def-456"
-        ]
-        
-        let proxy = Leanplum.notificationsManager().proxy as! LeanplumPushNotificationsProxyMock
-        proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: UNNotificationDefaultActionIdentifier, and: userInfo), withCompletionHandler: {})
-        
-        XCTAssertEqual(String(describing: userInfo["lp_occurrence_id"]), String(describing: proxy.notif?["lp_occurrence_id"]))
-        XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, proxy.actionName)
-    }
-}
-
-@available(iOS 13, *)
-extension Leanplum {
     @objc static func notificationsManagerMock() ->  LeanplumNotificationsManagerMock {
         return LeanplumNotificationsManagerMock.notificationsManager()
+    }
+    
+    func updateNotifId() -> String {
+        let newId = UUID().uuidString
+        userInfo["lp_occurrence_id"] = newId
+        return newId
+    }
+    
+    func test_userNotificationCenter_didReceive() {
+        let id = updateNotifId()
+        
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: UNNotificationDefaultActionIdentifier, and: userInfo), withCompletionHandler: {})
+        
+        XCTAssertEqual(id, String(describing: manager.notif?["lp_occurrence_id"]))
+        XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
+    }
+    
+    func test_userNotificationCenter_willPresent() {
+        let id = updateNotifId()
+        let req = UNNotificationResponse.notificationRequest(with: UNNotificationDefaultActionIdentifier, and: userInfo)
+        let notif = UNNotification(coder: UNNotificationResponseTestCoder(with: req))!
+        
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.userNotificationCenter(willPresent: notif) { options in
+        
+        }
+        
+        XCTAssertEqual(id, String(describing: manager.notif?["lp_occurrence_id"]))
+        XCTAssertTrue(manager.foreground != nil && manager.foreground!)
     }
 }
 
@@ -77,7 +95,7 @@ class UIApplicationMock: UIApplication {
     
     override init() {
         super.init()
-        proxy = LeanplumPushNotificationsProxyMock()
+        //proxy = LeanplumPushNotificationsProxyMock()
         proxy.application = UIApplicationMock.shared
     }
     
@@ -85,22 +103,26 @@ class UIApplicationMock: UIApplication {
         // `dispatch_once()` call was converted to a static variable initializer
         return notificationsManagerManagerInstance
     }
-}
-
-class LeanplumPushNotificationsProxyMock: LeanplumPushNotificationsProxy {
+    
     public var notif:[AnyHashable : Any]?
     public var actionName:String?
+    public var foreground:Bool?
     
     override func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         notif = userInfo
         actionName = action
+    }
+    
+    override func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
+        notif = userInfo
+        foreground = isForeground
     }
 }
 
 @available(iOS 10, *)
 extension UNNotificationResponse {
     
-    private static func notificationRequest(with identifier:String, and parameters: [AnyHashable: Any]) -> UNNotificationRequest {
+    static func notificationRequest(with identifier:String, and parameters: [AnyHashable: Any]) -> UNNotificationRequest {
         let notificationContent = UNMutableNotificationContent()
         notificationContent.userInfo = parameters
         
