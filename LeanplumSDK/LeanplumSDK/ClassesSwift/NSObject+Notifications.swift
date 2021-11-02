@@ -69,13 +69,13 @@ extension NSObject {
             return
         }
         
+        let state = UIApplication.shared.applicationState
         // Call notification received or perform action
         if Leanplum.notificationsManager().proxy.isIOSVersionGreaterThanOrEqual("10") { //, #available(iOS 10, *) {
             // Open notification will be handled by userNotificationCenter:didReceive or
             // application:didFinishLaunchingWithOptions
             // Receiving of notification when app is running on foreground is handled by userNotificationCenter:willPresent
             if !Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) {
-                let state = UIApplication.shared.applicationState
                 // TODO: Decide if to check for the application state or to update the handledNotification info
                 if state == .background {
                     Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: false)

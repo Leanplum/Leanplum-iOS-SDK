@@ -19,8 +19,6 @@ public class LeanplumPushNotificationsProxy: NSObject {
     lazy var appDelegateClass: AnyClass? = object_getClass(appDelegate)
     lazy var userNotificationCenterDelegateClass: AnyClass? = appDelegateClass
     
-    var application: UIApplication = UIApplication.shared
-    
     var pushNotificationBackgroundFetchResult:UIBackgroundFetchResult = .newData
     
     @available(iOS 10.0, *)
