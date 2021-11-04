@@ -82,31 +82,37 @@ extension NSObject {
                 }
             }
         } else {
-            // iOS 9
-            let state = UIApplication.shared.applicationState
-            LeanplumUtils.lpLog(type: .debug, format: "didReceiveRemoteNotification:fetchCompletionHandler: %d", state.rawValue)
-            // Notification was not handled by application:didFinishLaunchingWithOptions
-            if !Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) {
-            if  state == .inactive {
-                // Open
+            leanplum_application_ios9(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
+        }
+    }
+    
+    func leanplum_application_ios9(_ application: UIApplication,
+                                     didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+                                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // iOS 9
+        let state = UIApplication.shared.applicationState
+        LeanplumUtils.lpLog(type: .debug, format: "didReceiveRemoteNotification:fetchCompletionHandler: %d", state.rawValue)
+        // Notification was not handled by application:didFinishLaunchingWithOptions
+        if !Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) {
+        if  state == .inactive {
+            // Open
+            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
+        } else if state == .active {
+            // There are cases where state has changed to active from inactive, when user tapped the notification
+            // If app entered foreground right before calling this method, the app became active because notification was tapped
+            // Otherwise, notification was received while app was active/foreground
+            if Leanplum.notificationsManager().proxy.resumedTimeInterval + 0.500 > NSDate().timeIntervalSince1970 {
                 Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
-            } else if state == .active {
-                // There are cases where state has changed to active from inactive, when user tapped the notification
-                // If app entered foreground right before calling this method, the app became active because notification was tapped
-                // Otherwise, notification was received while app was active/foreground
-                if Leanplum.notificationsManager().proxy.resumedTimeInterval + 0.300 > NSDate().timeIntervalSince1970 {
-                    Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
-                } else {
-                    Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: true)
-                }
             } else {
-                Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: false)
+                Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: true)
             }
-            // App was waken up by notification, its receiving was handled by application:didFinishLaunchingWithOptions
-            // didReceiveRemoteNotification is called again when user tapped it
-            } else if !Leanplum.notificationsManager().proxy.notificationOpenedFromStart && UIApplication.shared.applicationState != .background {
-                Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
-            }
+        } else {
+            Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: false)
+        }
+        // App was waken up by notification, its receiving was handled by application:didFinishLaunchingWithOptions
+        // didReceiveRemoteNotification is called again when user tapped it
+        } else if !Leanplum.notificationsManager().proxy.notificationOpenedFromStart && state != .background {
+            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
         }
     }
     
