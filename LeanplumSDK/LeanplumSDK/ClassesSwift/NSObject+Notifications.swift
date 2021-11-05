@@ -58,9 +58,6 @@ extension NSObject {
                 
                 // Call completion handler
                 leanplumCompletionHandler?(Leanplum.notificationsManager().proxy.pushNotificationBackgroundFetchResult)
-            } else {
-                // Call LeanplumUIBackgroundFetchResult
-                completionHandler(Leanplum.notificationsManager().proxy.pushNotificationBackgroundFetchResult)
             }
         }
         
@@ -76,7 +73,6 @@ extension NSObject {
             // application:didFinishLaunchingWithOptions
             // Receiving of notification when app is running on foreground is handled by userNotificationCenter:willPresent
             if !Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) {
-                // TODO: Decide if to check for the application state or to update the handledNotification info
                 if state == .background {
                     Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: false)
                 }

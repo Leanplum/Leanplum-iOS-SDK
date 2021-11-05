@@ -1628,7 +1628,7 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+              fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
@@ -1707,7 +1707,7 @@ void leanplumExceptionHandler(NSException *exception);
 // TODO: decide how handleAction methods
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forLocalNotification:notification];
@@ -1719,7 +1719,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forRemoteNotification:notification];
