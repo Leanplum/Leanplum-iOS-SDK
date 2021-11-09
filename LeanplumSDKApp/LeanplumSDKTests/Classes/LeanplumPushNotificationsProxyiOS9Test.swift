@@ -40,12 +40,12 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
         
         guard let isForeground = manager.foreground else {
-            XCTFail("Expected isForeground is nil. Notification Received method was not called")
+            XCTFail(NotificationTestHelper.foregroundNilError)
             return
         }
         
@@ -58,12 +58,12 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
         
         guard let isForeground = manager.foreground else {
-            XCTFail("Expected isForeground is nil. Notification Received method was not called")
+            XCTFail(NotificationTestHelper.foregroundNilError)
             return
         }
         
@@ -77,12 +77,12 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
         
         guard manager.foreground == nil else {
-            XCTFail("Notification Received method was called. Expected Notification Open to be called.")
+            XCTFail(NotificationTestHelper.foregroundNotNilError)
             return
         }
         
@@ -98,12 +98,12 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
         
         guard manager.foreground == nil else {
-            XCTFail("Notification Received method was called. Expected Notification Open to be called.")
+            XCTFail(NotificationTestHelper.foregroundNotNilError)
             return
         }
         
@@ -119,12 +119,12 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
         
         guard let isForeground = manager.foreground else {
-            XCTFail("Expected isForeground is nil. Notification Received method was not called")
+            XCTFail(NotificationTestHelper.foregroundNilError)
             return
         }
         
@@ -139,12 +139,12 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
         
         guard manager.foreground == nil else {
-            XCTFail("Notification Received method was called. Expected Notification Open to be called.")
+            XCTFail(NotificationTestHelper.foregroundNotNilError)
             return
         }
         
@@ -152,26 +152,26 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
     }
     
-    // TODO: test did receive local notif
+    /// Tests notificationOpen is called when application is started from a local notificaton
+    /// applicationDidFinishLaunching is called first and then userNotificationCenter:didReceive may be called
     @available(iOS 10, *)
     func test_local_notification_applicationDidFinishLaunching_inactive_open() {
         NotificationTestHelper.setApplicationState(.inactive)
     
         let localNotif = UILocalNotification()
         localNotif.userInfo = userInfo
-        localNotif.alertAction = "MyAction"
         
         let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.localNotification:localNotif]
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
         guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
-            XCTFail("Expected notification occurrence id is nil")
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
 
         guard manager.foreground == nil else {
-            XCTFail("Notification Received method was called. Expected Notification Open to be called.")
+            XCTFail(NotificationTestHelper.foregroundNotNilError)
             return
         }
 
@@ -184,5 +184,27 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertEqual(1, manager.methodInvocations)
         XCTAssertTrue(Leanplum.notificationsManager().proxy.notificationOpenedFromStart)
         XCTAssertTrue(Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo))
+    }
+    
+    func test_local_notification_didReceive_open() {
+        NotificationTestHelper.setApplicationState(.inactive)
+        let localNotif = UILocalNotification()
+        localNotif.userInfo = userInfo
+
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.application(didReceive: localNotif)
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+
+        guard manager.foreground == nil else {
+            XCTFail(NotificationTestHelper.foregroundNotNilError)
+            return
+        }
+
+        XCTAssertEqual(notificationId, String(describing: occId))
+        XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
     }
 }

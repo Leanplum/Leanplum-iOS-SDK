@@ -11,15 +11,20 @@ import XCTest
 
 class NotificationTestHelper {
     
-    static let origManagerMethod = class_getClassMethod(Leanplum.self, #selector(Leanplum.notificationsManager))!
-    static let mockManagerMethod = class_getClassMethod(NotificationTestHelper.self, #selector(NotificationTestHelper.notificationsManagerMock))!
+    private static let origManagerMethod = class_getClassMethod(Leanplum.self, #selector(Leanplum.notificationsManager))!
+    private static let mockManagerMethod = class_getClassMethod(NotificationTestHelper.self, #selector(NotificationTestHelper.notificationsManagerMock))!
     
-    static let origAppStateMethod = class_getInstanceMethod(UIApplication.self, #selector(getter: UIApplication.applicationState))!
-    static let mockAppStateMethod = class_getInstanceMethod(NotificationTestHelper.self, #selector(getter: NotificationTestHelper.applicationState))!
+    private static let origAppStateMethod = class_getInstanceMethod(UIApplication.self, #selector(getter: UIApplication.applicationState))!
+    private static let mockAppStateMethod = class_getInstanceMethod(NotificationTestHelper.self, #selector(getter: NotificationTestHelper.applicationState))!
     
     private static var appStateImp:IMP?
     
     static let occurrenceIdKey = "lp_occurrence_id"
+    
+    static let occurrenceIdNilError = "Notification occurrence id must not be nil."
+    static let foregroundNilError = "IsForeground must not be nil. Notification Received method was not called"
+    static let foregroundNotNilError = "Notification Received method was called. Expected Notification Open to be called instead."
+    static let actionNameNilError = "ActionName must not be nil. Verify if Notification Open method was called."
     
     var userInfo:[AnyHashable : Any] = [
         "aps": [
