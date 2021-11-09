@@ -1633,7 +1633,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        // TODO: Decide if we need the LeanplumUIBackgroundFetchResult as a completionHandler
         [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
     }
     else
@@ -1704,7 +1703,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
-// TODO: decide how handleAction methods
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
                  completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler

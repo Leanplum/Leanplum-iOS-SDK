@@ -267,7 +267,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         // Try to swizzle UNUserNotificationCenterDelegate methods
         //        if #available(iOS 10.0, *) {
         if isIOSVersionGreaterThanOrEqual("10"), #available(iOS 10.0, *) {
-            // TODO: listen for setting of the delegate or require it to be before leanplum starts
+            // Client's UNUserNotificationCenter delegate needs to be set before Leanplum starts
             swizzleUNUserNotificationCenterMethods()
             swizzleApplicationDidReceiveFetchCompletionHandler()
             if !swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler {
