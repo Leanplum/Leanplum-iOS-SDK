@@ -74,6 +74,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
             }
         } else if let localNotif = launchOptions[UIApplication.LaunchOptionsKey.localNotification] as? UILocalNotification,
                   let userInfo = localNotif.userInfo {
+            notificationHandledFromStart = userInfo
+            notificationOpenedFromStart = true
             Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
         }
     }
