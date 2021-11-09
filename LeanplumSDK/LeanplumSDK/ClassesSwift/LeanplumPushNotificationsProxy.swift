@@ -20,6 +20,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
     lazy var userNotificationCenterDelegateClass: AnyClass? = appDelegateClass
     
     var pushNotificationBackgroundFetchResult:UIBackgroundFetchResult = .newData
+    var isCustomAppDelegateUsed = false
     
     @available(iOS 10.0, *)
     lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
@@ -254,14 +255,41 @@ public class LeanplumPushNotificationsProxy: NSObject {
         LPSwizzle.hook(into: applicationDidRegisterUserNotificationSettings, with: leanplum_applicationDidRegisterUserNotificationSettings, for: appDelegateClass)
     }
     
+    @objc public func setCustomAppDelegate(_ appDel: UIApplicationDelegate) {
+        isCustomAppDelegateUsed = true
+        appDelegate = appDel
+    }
+    
+    /// Ensures the original AppDelegate is swizzled when using mParticle
+    /// or another library that proxies the AppDelegate that way
+    func ensureOriginalAppDelegate() {
+        if let appDel = appDelegate, String(describing: appDel.self).contains("AppDelegateProxy") {
+            let sel = Selector(("originalAppDelegate"))
+            let method = class_getInstanceMethod(object_getClass(appDel), sel)
+            if let m = method {
+                let imp = method_getImplementation(m)
+                typealias OriginalAppDelegateGetter = @convention(c) (AnyObject, Selector) -> UIApplicationDelegate?
+                let curriedImplementation:OriginalAppDelegateGetter = unsafeBitCast(imp, to: OriginalAppDelegateGetter.self)
+                let originalAppDelegate = curriedImplementation(appDel, sel)
+                if originalAppDelegate != nil {
+                    appDelegate = originalAppDelegate
+                }
+            }
+        }
+    }
+    
     @objc public func swizzleNotificationMethods() {
         if !LPUtils.isSwizzlingEnabled() {
             LeanplumUtils.lpLog(type: .info, format: "Method swizzling is disabled, make sure to manually call Leanplum methods.")
             return
         }
-        
         LeanplumUtils.lpLog(type: .info, format: "Method swizzling started.")
         
+        if !isCustomAppDelegateUsed {
+            ensureOriginalAppDelegate()
+        }
+        
+        // Token methods are version agnostic
         swizzleTokenMethods()
         
         // Try to swizzle UNUserNotificationCenterDelegate methods
