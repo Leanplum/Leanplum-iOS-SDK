@@ -22,12 +22,27 @@ import Foundation
         
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
         
-        let actionName = action == LP_VALUE_DEFAULT_PUSH_ACTION ? action : "iOS options.Custom actions.\(action)"
-
+        let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
+        let actionName = isDefaultAction ? action : "iOS options.Custom actions.\(action)"
+        
         var context:ActionContext
         if LeanplumUtils.areActionsEmbedded(userInfo) {
-            let args = [LP_VALUE_DEFAULT_PUSH_ACTION : userInfo[LP_KEY_PUSH_ACTION]]
-            context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args as [AnyHashable : Any], messageId: messageId)
+            var args:[AnyHashable : Any]
+            if isDefaultAction {
+                args = [action: userInfo[LP_KEY_PUSH_ACTION] ?? ""]
+            } else {
+                let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any]
+                // Arguments must be nested, so ActionContext.getChildArgs: resolves the action
+                // ActionName is split by "." into components
+                args = [
+                    "iOS options": [
+                        "Custom actions": [
+                            action: customActions?[action]
+                        ]
+                    ]
+                ]
+            }
+            context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
             context.preventRealtimeUpdating = true
         } else {
             // TODO: check if the message exists or needs FCU
