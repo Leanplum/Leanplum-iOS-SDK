@@ -2,7 +2,7 @@
 if: (tag IS present) OR (type = pull_request)
 
 language: objective-c
-osx_image: xcode13
+osx_image: xcode13.1
 
 xcode_workspace: Leanplum.xcworkspace
 xcode_scheme: LeanplumSDKApp
