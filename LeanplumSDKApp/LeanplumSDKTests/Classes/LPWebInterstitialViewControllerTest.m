@@ -88,6 +88,7 @@ typedef void (^BeforeBlock)(UIApplication *mockApplication);
         policy = dPolicy;
     };
     
+    UIApplication *application = [UIApplication sharedApplication];
     id mockApplication = OCMClassMock([UIApplication class]);
     OCMStub([mockApplication sharedApplication]).andReturn(mockApplication);
     
@@ -100,6 +101,10 @@ typedef void (^BeforeBlock)(UIApplication *mockApplication);
     if (afterBlock != nil) {
         afterBlock(mockApplication, policy);
     }
+    
+    // Restore UIApplication shared instance
+    id mockApp = OCMClassMock([UIApplication class]);
+    OCMStub([mockApp sharedApplication]).andReturn(application);
 }
 
 - (void) test_app_store_url

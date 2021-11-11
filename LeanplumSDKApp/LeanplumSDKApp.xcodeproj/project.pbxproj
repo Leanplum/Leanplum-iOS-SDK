@@ -126,6 +126,8 @@
 		07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */; };
 		6A39C48F27283EE8000D5320 /* LeanplumPushNotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* LeanplumPushNotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* LeanplumNotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* LeanplumNotificationsManagerTest.swift */; };
+		6A54E9D3273D814100DE0E61 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A54E9D2273D814100DE0E61 /* Leanplum.framework */; };
+		6A54E9D4273D814100DE0E61 /* Leanplum.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A54E9D2273D814100DE0E61 /* Leanplum.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A9D0A9627342BA300466133 /* LeanplumPushNotificationsProxyiOS9Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9527342BA300466133 /* LeanplumPushNotificationsProxyiOS9Test.swift */; };
 		6A9D0A9827342EE300466133 /* LeanplumNotificationsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9727342EE300466133 /* LeanplumNotificationsManagerMock.swift */; };
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
@@ -141,6 +143,20 @@
 			remoteInfo = LeanplumSDKApp;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6A54E9D5273D814100DE0E61 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6A54E9D4273D814100DE0E61 /* Leanplum.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		075AACE726847BF3007CA1BD /* LeanplumSDKApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LeanplumSDKApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +257,7 @@
 		6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A39C48E27283EE8000D5320 /* LeanplumPushNotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumPushNotificationsProxyTest.swift; sourceTree = "<group>"; };
 		6A54E9CC273B156600DE0E61 /* LeanplumNotificationsManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManagerTest.swift; sourceTree = "<group>"; };
+		6A54E9D2273D814100DE0E61 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A9D0A9527342BA300466133 /* LeanplumPushNotificationsProxyiOS9Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumPushNotificationsProxyiOS9Test.swift; sourceTree = "<group>"; };
 		6A9D0A9727342EE300466133 /* LeanplumNotificationsManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManagerMock.swift; sourceTree = "<group>"; };
 		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
@@ -253,6 +270,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A54E9D3273D814100DE0E61 /* Leanplum.framework in Frameworks */,
 				075AAFB526849A74007CA1BD /* Leanplum.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -313,6 +331,7 @@
 		075AAFB326849A74007CA1BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6A54E9D2273D814100DE0E61 /* Leanplum.framework */,
 				075AB09326849EBC007CA1BD /* Leanplum.framework */,
 				075AAFB426849A74007CA1BD /* Leanplum.framework */,
 				E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */,
@@ -517,6 +536,7 @@
 				075AACE326847BF3007CA1BD /* Sources */,
 				075AACE426847BF3007CA1BD /* Frameworks */,
 				075AACE526847BF3007CA1BD /* Resources */,
+				6A54E9D5273D814100DE0E61 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
