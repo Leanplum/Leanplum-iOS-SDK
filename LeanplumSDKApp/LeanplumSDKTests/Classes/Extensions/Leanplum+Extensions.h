@@ -28,7 +28,6 @@
 #import <Leanplum/LPRequestFactory.h>
 #import <Leanplum/LPPushNotificationsHandler.h>
 #import <Leanplum/LPDeferMessageManager.h>
-#import <Leanplum/Leanplum-Swift.h>
 
 @interface Leanplum(UnitTest)
 
@@ -43,12 +42,6 @@
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
 + (void)setDeviceIdInternal:(NSString *)deviceId;
-
-@end
-
-@interface LeanplumNotificationsManager(UnitTest)
-
-- (void)notificationOpened:(NSDictionary * _Nonnull)userInfo action:(NSString * _Nonnull)action;
 
 @end
 

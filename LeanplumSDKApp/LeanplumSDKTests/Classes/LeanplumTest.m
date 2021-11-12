@@ -74,6 +74,12 @@
 
 @end
 
+@interface LeanplumNotificationsManager(UnitTest)
+
+- (void)notificationOpened:(NSDictionary * _Nonnull)userInfo action:(NSString * _Nonnull)action;
+
+@end
+
 @implementation LeanplumTest
 
 + (void)setUp
