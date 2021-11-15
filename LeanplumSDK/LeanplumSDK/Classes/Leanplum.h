@@ -146,8 +146,6 @@ typedef void (^LeanplumSetLocationBlock)(BOOL success);
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
 typedef void (^LeanplumHandleNotificationBlock)(void);
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
-typedef NSUInteger LeanplumUIBackgroundFetchResult; // UIBackgroundFetchResult
-typedef void (^LeanplumFetchCompletionBlock)(LeanplumUIBackgroundFetchResult result);
 typedef void (^LeanplumPushSetupBlock)(void);
 /**@}*/
 
@@ -432,7 +430,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
+              fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
 + (void)willPresentNotification:(UNNotification *)notification
           withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
@@ -451,7 +449,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /**
@@ -461,7 +459,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /*

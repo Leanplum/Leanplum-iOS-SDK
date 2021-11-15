@@ -33,7 +33,7 @@ public class LeanplumUtils: NSObject {
     }
     
     static func isMuted(_ userInfo:[AnyHashable:Any]) -> Bool {
-        return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil
+        return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil || userInfo[LP_KEY_PUSH_NO_ACTION] != nil
     }
     
     static func getNotificationText(_ userInfo:[AnyHashable:Any]) -> String? {

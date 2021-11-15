@@ -9,98 +9,201 @@ import Foundation
 import XCTest
 @testable import Leanplum
 
-@available(iOS 13, *)
+@available(iOS 10, *)
 class LeanplumPushNotificationsProxyTest: XCTestCase {
     
-    let orig = #selector(Leanplum.notificationsManager)
-    let mock = #selector(Leanplum.notificationsManagerMock)
+    let utils = NotificationTestHelper()
+    var notificationId = ""
+    var userInfo:[AnyHashable : Any] {
+        return utils.userInfo
+    }
     
-    lazy var newMethod = class_getClassMethod(Leanplum.self, mock)!
-    lazy var origMethod = class_getClassMethod(Leanplum.self, orig)!
+    override class func setUp() {
+        NotificationTestHelper.setUp()
+    }
     
+    override class func tearDown() {
+        NotificationTestHelper.tearDown()
+    }
+
     override func setUp() {
-        method_exchangeImplementations(origMethod, newMethod)
+        notificationId = utils.updateNotifId()
     }
     
     override func tearDown() {
-        method_exchangeImplementations(origMethod, newMethod)
+        NotificationTestHelper.cleanUp()
     }
     
-    func test_push_open() {
+    // MARK: UNUserNotificationCenter Tests
+    func test_userNotificationCenter_didReceive() {
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let actionIdentifier = UNNotificationDefaultActionIdentifier
+        manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: actionIdentifier, and: userInfo), withCompletionHandler: {})
         
-        let userInfo:[AnyHashable : Any] = [
-            "aps": [
-                "alert": [
-                    "title": "Notification 1",
-                    "body": "Notification Body 1"
-                ],
-                "sound": "default",
-                "content-available": 1,
-                "badge": 1
-            ],
-            "_lpm": 1234567890,
-            "_lpx": [
-                "URL": "http://www.leanplum.com",
-                "__name__": "Open URL"
-            ],
-            "lp_occurrence_id": "abc-123-def-456"
-        ]
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
         
-        let proxy = Leanplum.notificationsManager().proxy as! LeanplumPushNotificationsProxyMock
-        proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: UNNotificationDefaultActionIdentifier, and: userInfo), withCompletionHandler: {})
+        guard let actionName = manager.actionName else {
+            XCTFail(NotificationTestHelper.actionNameNilError)
+            return
+        }
         
-        XCTAssertEqual(String(describing: userInfo["lp_occurrence_id"]), String(describing: proxy.notif?["lp_occurrence_id"]))
-        XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, proxy.actionName)
-    }
-}
-
-@available(iOS 13, *)
-extension Leanplum {
-    @objc static func notificationsManagerMock() ->  LeanplumNotificationsManagerMock {
-        return LeanplumNotificationsManagerMock.notificationsManager()
-    }
-}
-
-class UIApplicationMock: UIApplication {
-    override var applicationState: UIApplication.State {
-        return UIApplication.State.active
-    }
-}
-
-@available(iOS 13, *)
-@objc class LeanplumNotificationsManagerMock: LeanplumNotificationsManager {
-    
-    static let notificationsManagerManagerInstance: LeanplumNotificationsManagerMock = {
-        var managerInstance = LeanplumNotificationsManagerMock()
-        return managerInstance
-    }()
-    
-    override init() {
-        super.init()
-        proxy = LeanplumPushNotificationsProxyMock()
-        proxy.application = UIApplicationMock.shared
+        XCTAssertEqual(notificationId, String(describing: occId))
+        // UNNotificationDefaultActionIdentifier action executes the LP_VALUE_DEFAULT_PUSH_ACTION
+        XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, actionName)
     }
     
-    class func notificationsManager() -> LeanplumNotificationsManagerMock {
-        // `dispatch_once()` call was converted to a static variable initializer
-        return notificationsManagerManagerInstance
+    func test_userNotificationCenter_didReceive_custom_action() {
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let actionIdentifier = "MyAction"
+        manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: actionIdentifier, and: userInfo), withCompletionHandler: {})
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+        
+        guard let actionName = manager.actionName else {
+            XCTFail(NotificationTestHelper.actionNameNilError)
+            return
+        }
+        
+        XCTAssertEqual(notificationId, String(describing: occId))
+        XCTAssertEqual(actionIdentifier, actionName)
     }
-}
-
-class LeanplumPushNotificationsProxyMock: LeanplumPushNotificationsProxy {
-    public var notif:[AnyHashable : Any]?
-    public var actionName:String?
     
-    override func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        notif = userInfo
-        actionName = action
+    func test_userNotificationCenter_willPresent() {
+        let req = UNNotificationResponse.notificationRequest(with: UNNotificationDefaultActionIdentifier, and: utils.userInfo)
+        let notif = UNNotification(coder: UNNotificationResponseTestCoder(with: req))!
+        
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.userNotificationCenter(willPresent: notif) { options in }
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+        
+        XCTAssertEqual(notificationId, String(describing: occId))
+        XCTAssertTrue(manager.foreground != nil && manager.foreground!)
+    }
+    
+    func test_userNotificationCenter_willPresent_once() {
+        let req = UNNotificationResponse.notificationRequest(with: UNNotificationDefaultActionIdentifier, and: utils.userInfo)
+        let notif = UNNotification(coder: UNNotificationResponseTestCoder(with: req))!
+        
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.userNotificationCenter(willPresent: notif) { options in }
+        // didReceiveRemoteNotification is called after willPresent if push has content-available flag
+        manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { result in }
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+        
+        XCTAssertEqual(notificationId, String(describing: occId))
+        XCTAssertTrue(manager.foreground != nil && manager.foreground!)
+        // Ensure it is called only once by willPresent and not again by didReceiveRemoteNotification
+        XCTAssertEqual(1, manager.methodInvocations)
+    }
+    
+    // MARK: applicationDidFinishLaunching Tests
+    /**
+     * Tests notificationReceive(background) is called when application is woken up by remote notification.
+     * applicationDidFinishLaunching is called first and then didReceiveRemoteNotification
+     */
+    func test_notification_applicationDidFinishLaunching_background() {
+        NotificationTestHelper.setApplicationState(.background)
+        let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.remoteNotification:userInfo]
+        
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.applicationDidFinishLaunching(launchOptions: options)
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+        
+        guard let isForeground = manager.foreground else {
+            XCTFail(NotificationTestHelper.foregroundNilError)
+            return
+        }
+        
+        // Ensure correct notification
+        XCTAssertEqual(notificationId, String(describing: occId))
+        // Ensure notification received is called with background flag
+        XCTAssertFalse(isForeground)
+        
+        XCTAssertFalse(Leanplum.notificationsManager().proxy.notificationOpenedFromStart)
+        
+        // Ensure notification is handled only once
+        manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { result in }
+        
+        XCTAssertEqual(1, manager.methodInvocations)
+        XCTAssertTrue(Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo))
+    }
+    
+    /**
+     * Tests notificationOpen is called when application is started from a notificaton
+     * applicationDidFinishLaunching is called first and then userNotificationCenter:didReceive may be called
+     */
+    func test_notification_applicationDidFinishLaunching_inactive_open() {
+        NotificationTestHelper.setApplicationState(.inactive)
+        let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.remoteNotification:userInfo]
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.applicationDidFinishLaunching(launchOptions: options)
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+
+        guard manager.foreground == nil else {
+            XCTFail(NotificationTestHelper.foregroundNotNilError)
+            return
+        }
+
+        XCTAssertEqual(notificationId, String(describing: occId))
+        XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
+        
+        // Ensure notification is opened only once
+        manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: UNNotificationDefaultActionIdentifier, and: userInfo)) {
+        }
+        XCTAssertEqual(1, manager.methodInvocations)
+        XCTAssertTrue(Leanplum.notificationsManager().proxy.notificationOpenedFromStart)
+        XCTAssertTrue(Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo))
+    }
+    
+    // MARK: application:didReceiveRemoteNotification Tests
+    
+    func test_notification_applicationDidReceiveRemote_background() {
+        NotificationTestHelper.setApplicationState(.background)
+        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { res in }
+        
+        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+            XCTFail(NotificationTestHelper.occurrenceIdNilError)
+            return
+        }
+        
+        guard let isForeground = manager.foreground else {
+            XCTFail(NotificationTestHelper.foregroundNilError)
+            return
+        }
+        
+        XCTAssertEqual(notificationId, String(describing: occId))
+        XCTAssertFalse(isForeground)
     }
 }
 
+// MARK: UNNotification Mocks
 @available(iOS 10, *)
 extension UNNotificationResponse {
     
-    private static func notificationRequest(with identifier:String, and parameters: [AnyHashable: Any]) -> UNNotificationRequest {
+    static func notificationRequest(with identifier:String, and parameters: [AnyHashable: Any]) -> UNNotificationRequest {
         let notificationContent = UNMutableNotificationContent()
         notificationContent.userInfo = parameters
         

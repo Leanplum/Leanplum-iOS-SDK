@@ -74,6 +74,12 @@
 
 @end
 
+@interface LeanplumNotificationsManager(UnitTest)
+
+- (void)notificationOpened:(NSDictionary * _Nonnull)userInfo action:(NSString * _Nonnull)action;
+
+@end
+
 @implementation LeanplumTest
 
 + (void)setUp
@@ -1993,7 +1999,7 @@
         return YES;
     }];
     // Perform action with notification.
-    [[Leanplum notificationsManager].proxy notificationOpened:userInfo action:LP_VALUE_DEFAULT_PUSH_ACTION];
+    [[Leanplum notificationsManager] notificationOpened:userInfo action:LP_VALUE_DEFAULT_PUSH_ACTION];
 
     // Wait for action to be received before finishing.
     [self waitForExpectationsWithTimeout:10 handler:nil];

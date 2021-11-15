@@ -24,7 +24,7 @@
 @end
 
 @interface LPPushNotificationsManagerTest : XCTestCase
-
+@property(strong, nonatomic) UIApplication* application;
 @end
 
 @implementation LPPushNotificationsManagerTest
@@ -44,6 +44,7 @@
 - (void)tearDown
 {
     [super tearDown];
+    [self restoreUserNotificationSettings];
     [LeanplumHelper clean_up];
 }
 
@@ -75,12 +76,23 @@
 
 - (void)mockUserNotificationSettings:(UIUserNotificationType)type withCategoryId:(NSString *)categoryId
 {
+    self.application = [UIApplication sharedApplication];
     id mockApplication = OCMClassMock([UIApplication class]);
     OCMStub([mockApplication sharedApplication]).andReturn(mockApplication);
     UIMutableUserNotificationCategory *cat = [[UIMutableUserNotificationCategory alloc] init];
     cat.identifier = categoryId;
     UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:type categories:[NSSet setWithObject:cat]];
     OCMStub([mockApplication currentUserNotificationSettings]).andReturn(settings);
+}
+
+- (void)restoreUserNotificationSettings
+{
+    // Restore UIApplication shared instance, settings are also restored
+    if (self.application) {
+        id mockApplication = OCMClassMock([UIApplication class]);
+        OCMStub([mockApplication sharedApplication]).andReturn(self.application);
+        self.application = nil;
+    }
 }
 
 - (void)test_push_token
