@@ -179,27 +179,4 @@
     }
 }
 
-#pragma mark Swizzle Methods
-
-+ (void) load
-{
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        if ([LPUtils isSwizzlingEnabled]) {
-            [[Leanplum notificationsManager].proxy addDidFinishLaunchingObserver];
-        }
-    });
-}
-
-// Block to run to decide whether to show the notification
-// when it is received while the app is running.
-- (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block
-{
-    self.handler.shouldHandleNotification = block;
-}
-
-- (void) dealloc {
-    [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];
-}
-
 @end

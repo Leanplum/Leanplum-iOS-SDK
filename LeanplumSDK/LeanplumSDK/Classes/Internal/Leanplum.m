@@ -68,6 +68,10 @@ static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
 static LeanplumPushSetupBlock pushSetupBlock;
 
+@interface LeanplumNotificationsManager(Internal)
+@property (nonatomic, strong) LeanplumPushNotificationsProxy* proxy;
+@end
+
 @implementation NSExtensionContext (Leanplum)
 
 - (void)leanplum_completeRequestReturningItems:(NSArray *)items
@@ -95,6 +99,13 @@ void leanplumExceptionHandler(NSException *exception);
 
 +(void)load
 {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if ([LPUtils isSwizzlingEnabled]) {
+            [[Leanplum notificationsManager].proxy addDidFinishLaunchingObserver];
+        }
+    });
+    
     NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
     if (appKeysDictionary == nil) {
         return;
@@ -1733,7 +1744,7 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
-    [[LPPushNotificationsManager sharedManager] setShouldHandleNotification:block];
+    [Leanplum notificationsManager].shouldHandleNotificationBlock = block;
     LP_END_TRY
 }
 
@@ -2786,5 +2797,6 @@ void leanplumExceptionHandler(NSException *exception)
 
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];
 }
 @end

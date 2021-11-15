@@ -169,6 +169,42 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
+    func test_notification_foreground_custom_block() {
+        let onRunActionNamedExpectation = expectation(description: "LeanplumShouldHandleNotificationBlock")
+        
+        let shouldHandleBlock:LeanplumShouldHandleNotificationBlock = { (userInfo, handler) in
+            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo[NotificationTestHelper.occurrenceIdKey]),
+                           String(describing: userInfo[NotificationTestHelper.occurrenceIdKey]))
+            onRunActionNamedExpectation.fulfill()
+        }
+        
+        Leanplum.setShouldOpenNotificationHandler(shouldHandleBlock)
+        Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
+        
+        wait(for: [onRunActionNamedExpectation], timeout: timeout)
+    }
+    
+    func test_notification_foreground_custom_block_open() {
+        let onRunActionNamedExpectation = expectation(description: "LeanplumShouldHandleNotificationBlock -> Open Action")
+        
+        Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
+            let lpx = LeanplumNotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
+            XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
+            XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
+            onRunActionNamedExpectation.fulfill()
+            return false
+        }
+        
+        let shouldHandleBlock:LeanplumShouldHandleNotificationBlock = { (userInfo, handler) in
+            handler()
+        }
+        
+        Leanplum.setShouldOpenNotificationHandler(shouldHandleBlock)
+        Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
+        
+        wait(for: [onRunActionNamedExpectation], timeout: timeout)
+    }
+    
     /**
      * Tests mute inside app correctly mutes notifications
      */

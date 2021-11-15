@@ -10,9 +10,14 @@ import Foundation
 /// Manager responsible for handling push (remote) and local notifications
 @objc public class LeanplumNotificationsManager: NSObject {
     
-    @objc public var proxy: LeanplumPushNotificationsProxy
+    @objc
+    let proxy: LeanplumPushNotificationsProxy
     
-    @objc public override init() {
+    @objc
+    public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
+    
+    @objc
+    public override init() {
         proxy = LeanplumPushNotificationsProxy()
     }
     
@@ -71,9 +76,13 @@ import Foundation
     }
     
     func showNotificationInForeground(userInfo: [AnyHashable : Any]) {
+        let openNotificationHandler = {
+            self.notificationOpened(userInfo: userInfo)
+        }
+        
         // Execute custom block
-        if let block = Leanplum.pushSetupBlock() {
-            block()
+        if let block = shouldHandleNotificationBlock {
+            block(userInfo, openNotificationHandler)
             return
         }
         
@@ -81,7 +90,7 @@ import Foundation
         if let notifMessage = LeanplumUtils.getNotificationText(userInfo) {
             LPUIAlert.show(withTitle: LeanplumUtils.getAppName(), message: notifMessage, cancelButtonTitle: NSLocalizedString("Cancel", comment: ""), otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
                 if buttonIndex == 1 {
-                    self.notificationOpened(userInfo: userInfo)
+                    openNotificationHandler()
                 }
             }
         }
