@@ -215,22 +215,4 @@
     }];
 }
 
-- (BOOL)areActionsEmbedded:(NSDictionary *)userInfo
-{
-    return userInfo[LP_KEY_PUSH_ACTION] != nil ||
-        userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil;
-}
-
-- (BOOL)isDuplicateNotification:(NSDictionary *)userInfo
-{
-    if ([self.notificationHandled isEqualToDictionary:userInfo] &&
-        [[NSDate date] timeIntervalSinceDate:self.notificationHandledTime] < 10.0) {
-        return YES;
-    }
-
-    self.notificationHandled = userInfo;
-    self.notificationHandledTime = [NSDate date];
-    return NO;
-}
-
 @end

@@ -20,7 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)refreshPushPermissions;
 - (void)disableAskToAsk;
 - (BOOL)hasDisabledAskToAsk;
-- (void)setShouldHandleNotification:(LeanplumShouldHandleNotificationBlock)block;
 - (NSString *)leanplum_createUserNotificationSettingsKey;
 - (NSString *)pushToken;
 - (void)updatePushToken:(NSString *)newToken;

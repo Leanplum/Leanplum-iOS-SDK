@@ -68,6 +68,10 @@ static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
 static LeanplumPushSetupBlock pushSetupBlock;
 
+@interface LeanplumNotificationsManager(Internal)
+@property (nonatomic, strong) LeanplumPushNotificationsProxy* proxy;
+@end
+
 @implementation NSExtensionContext (Leanplum)
 
 - (void)leanplum_completeRequestReturningItems:(NSArray *)items
@@ -95,6 +99,13 @@ void leanplumExceptionHandler(NSException *exception);
 
 +(void)load
 {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if ([LPUtils isSwizzlingEnabled]) {
+            [[Leanplum notificationsManager].proxy addDidFinishLaunchingObserver];
+        }
+    });
+    
     NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
     if (appKeysDictionary == nil) {
         return;
@@ -1628,12 +1639,11 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+              fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        // TODO: Decide if we need the LeanplumUIBackgroundFetchResult as a completionHandler
         [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
     }
     else
@@ -1704,10 +1714,9 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
-// TODO: decide how handleAction methods
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forLocalNotification:notification];
@@ -1719,7 +1728,7 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LP_TRY
     [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forRemoteNotification:notification];
@@ -1735,7 +1744,7 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
-    [[LPPushNotificationsManager sharedManager] setShouldHandleNotification:block];
+    [Leanplum notificationsManager].shouldHandleNotificationBlock = block;
     LP_END_TRY
 }
 
@@ -2788,5 +2797,6 @@ void leanplumExceptionHandler(NSException *exception)
 
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];
 }
 @end

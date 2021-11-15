@@ -13,15 +13,16 @@ public class LeanplumPushNotificationsProxy: NSObject {
     internal override init() {}
     
     @objc public var deviceVersion:String?
+    // TimeInterval when application was resumed
+    // Used for iOS 9 notifications when state changes from inactive to active
     @objc public var resumedTimeInterval:Double = 0
     
     lazy var appDelegate = UIApplication.shared.delegate
     lazy var appDelegateClass: AnyClass? = object_getClass(appDelegate)
     lazy var userNotificationCenterDelegateClass: AnyClass? = appDelegateClass
     
-    var application: UIApplication = UIApplication.shared
-    
     var pushNotificationBackgroundFetchResult:UIBackgroundFetchResult = .newData
+    var isCustomAppDelegateUsed = false
     
     @available(iOS 10.0, *)
     lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
@@ -69,70 +70,16 @@ public class LeanplumPushNotificationsProxy: NSObject {
             // started in background, woken up by remote notification
             if UIApplication.shared.applicationState == .background {
                 notificationOpenedFromStart = false
-                notificationReceived(userInfo: remoteNotif, isForeground: false)
+                Leanplum.notificationsManager().notificationReceived(userInfo: remoteNotif, isForeground: false)
             } else {
                 notificationOpenedFromStart = true
-                notificationOpened(userInfo: remoteNotif)
+                Leanplum.notificationsManager().notificationOpened(userInfo: remoteNotif)
             }
         } else if let localNotif = launchOptions[UIApplication.LaunchOptionsKey.localNotification] as? UILocalNotification,
                   let userInfo = localNotif.userInfo {
-            notificationOpened(userInfo: userInfo)
-        }
-    }
-    
-    @objc(notificationOpened:action:)
-    func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", LeanplumUtils.getNotificationId(userInfo))
-        
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        
-        let actionName = action == LP_VALUE_DEFAULT_PUSH_ACTION ? action : "iOS options.Custom actions.\(action)"
-
-        var context:ActionContext
-        if LeanplumUtils.areActionsEmbedded(userInfo) {
-            let args = [LP_VALUE_DEFAULT_PUSH_ACTION : userInfo[LP_KEY_PUSH_ACTION]]
-            context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args as [AnyHashable : Any], messageId: messageId)
-            context.preventRealtimeUpdating = true
-        } else {
-            // TODO: check if the message exists or needs FCU
-            context = Leanplum.createActionContext(forMessageId: messageId)
-        }
-        context.maybeDownloadFiles()
-        // Wait for Leanplum start so action responders are registered
-        Leanplum.onStartIssued {
-            context.runTrackedAction(name: actionName)
-        }
-    }
-    
-    func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. MessageId: @%, Id: %@", isForeground ? "Foreground" : "Background", messageId, LeanplumUtils.getNotificationId(userInfo))
-        
-        if isForeground {
-            if !LeanplumUtils.isMuted(userInfo) {
-                showNotificationInForeground(userInfo: userInfo)
-            }
-        } else {
-            if !LeanplumUtils.areActionsEmbedded(userInfo) {
-                // TODO: check if notification action is not embedded and needs FCU / Prefetch
-            }
-        }
-    }
-    
-    func showNotificationInForeground(userInfo: [AnyHashable : Any]) {
-        // Execute custom block
-        if let block = Leanplum.pushSetupBlock() {
-            block()
-            return
-        }
-        
-        // Display the Notification as Confirm in-app message
-        if let notifMessage = LeanplumUtils.getNotificationText(userInfo) {
-            LPUIAlert.show(withTitle: LeanplumUtils.getAppName(), message: notifMessage, cancelButtonTitle: NSLocalizedString("Cancel", comment: ""), otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
-                if buttonIndex == 1 {
-                    self.notificationOpened(userInfo: userInfo)
-                }
-            }
+            notificationHandledFromStart = userInfo
+            notificationOpenedFromStart = true
+            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
         }
     }
     
@@ -178,12 +125,12 @@ public class LeanplumPushNotificationsProxy: NSObject {
     }
     
     @objc public func handleActionWithIdentifier(_ identifier:String, forRemoteNotification notification: [AnyHashable:Any]) {
-        self.notificationOpened(userInfo: notification, action: identifier)
+        Leanplum.notificationsManager().notificationOpened(userInfo: notification, action: identifier)
     }
     
     @objc public func handleActionWithIdentifier(_ identifier:String, forLocalNotification notification: UILocalNotification) {
         if let userInfo = notification.userInfo {
-            self.notificationOpened(userInfo: userInfo, action: identifier)
+            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo, action: identifier)
         }
     }
     
@@ -310,20 +257,47 @@ public class LeanplumPushNotificationsProxy: NSObject {
         LPSwizzle.hook(into: applicationDidRegisterUserNotificationSettings, with: leanplum_applicationDidRegisterUserNotificationSettings, for: appDelegateClass)
     }
     
+    @objc public func setCustomAppDelegate(_ appDel: UIApplicationDelegate) {
+        isCustomAppDelegateUsed = true
+        appDelegate = appDel
+    }
+    
+    /// Ensures the original AppDelegate is swizzled when using mParticle
+    /// or another library that proxies the AppDelegate that way
+    func ensureOriginalAppDelegate() {
+        if let appDel = appDelegate, String(describing: appDel.self).contains("AppDelegateProxy") {
+            let sel = Selector(("originalAppDelegate"))
+            let method = class_getInstanceMethod(object_getClass(appDel), sel)
+            if let m = method {
+                let imp = method_getImplementation(m)
+                typealias OriginalAppDelegateGetter = @convention(c) (AnyObject, Selector) -> UIApplicationDelegate?
+                let curriedImplementation:OriginalAppDelegateGetter = unsafeBitCast(imp, to: OriginalAppDelegateGetter.self)
+                let originalAppDelegate = curriedImplementation(appDel, sel)
+                if originalAppDelegate != nil {
+                    appDelegate = originalAppDelegate
+                }
+            }
+        }
+    }
+    
     @objc public func swizzleNotificationMethods() {
         if !LPUtils.isSwizzlingEnabled() {
             LeanplumUtils.lpLog(type: .info, format: "Method swizzling is disabled, make sure to manually call Leanplum methods.")
             return
         }
-        
         LeanplumUtils.lpLog(type: .info, format: "Method swizzling started.")
         
+        if !isCustomAppDelegateUsed {
+            ensureOriginalAppDelegate()
+        }
+        
+        // Token methods are version agnostic
         swizzleTokenMethods()
         
         // Try to swizzle UNUserNotificationCenterDelegate methods
         //        if #available(iOS 10.0, *) {
         if isIOSVersionGreaterThanOrEqual("10"), #available(iOS 10.0, *) {
-            // TODO: listen for setting of the delegate or require it to be before leanplum starts
+            // Client's UNUserNotificationCenter delegate needs to be set before Leanplum starts
             swizzleUNUserNotificationCenterMethods()
             swizzleApplicationDidReceiveFetchCompletionHandler()
             if !swizzledApplicationDidReceiveRemoteNotificationWithCompletionHandler {
