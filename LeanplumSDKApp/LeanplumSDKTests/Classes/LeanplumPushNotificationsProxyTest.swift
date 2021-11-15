@@ -111,9 +111,10 @@ class LeanplumPushNotificationsProxyTest: XCTestCase {
     }
     
     // MARK: applicationDidFinishLaunching Tests
-    
-    /// Tests notificationReceive(background) is called when application is woken up by remote notification.
-    /// applicationDidFinishLaunching is called first and then didReceiveRemoteNotification
+    /**
+     * Tests notificationReceive(background) is called when application is woken up by remote notification.
+     * applicationDidFinishLaunching is called first and then didReceiveRemoteNotification
+     */
     func test_notification_applicationDidFinishLaunching_background() {
         NotificationTestHelper.setApplicationState(.background)
         let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.remoteNotification:userInfo]
@@ -145,8 +146,10 @@ class LeanplumPushNotificationsProxyTest: XCTestCase {
         XCTAssertTrue(Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo))
     }
     
-    /// Tests notificationOpen is called when application is started from a notificaton
-    /// applicationDidFinishLaunching is called first and then userNotificationCenter:didReceive may be called
+    /**
+     * Tests notificationOpen is called when application is started from a notificaton
+     * applicationDidFinishLaunching is called first and then userNotificationCenter:didReceive may be called
+     */
     func test_notification_applicationDidFinishLaunching_inactive_open() {
         NotificationTestHelper.setApplicationState(.inactive)
         let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.remoteNotification:userInfo]

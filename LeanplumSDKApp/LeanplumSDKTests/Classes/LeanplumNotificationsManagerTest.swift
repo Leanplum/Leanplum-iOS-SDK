@@ -34,8 +34,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         ]
     ]
     
-    // MARK: Muted Notifications
-    
+    // MARK: Muted Notifications    
     let userInfoNoActionMuteInsideTrue:[AnyHashable : Any] = [
         "_lpv": 6527720202764288,
         "_lpx": [
@@ -129,6 +128,9 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
+    /**
+     * Tests LPUIAlert is shown with correct data when notification is received when the app is in foreground and the notification is not muted
+     */
     func test_notification_foreground_alert_shown() {
         let lpAlertShowMethod = class_getClassMethod(LPUIAlert.self, #selector(LPUIAlert.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
         let testShowMethod = class_getInstanceMethod(LeanplumNotificationsManagerTest.self, #selector(LeanplumNotificationsManagerTest.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
@@ -142,6 +144,9 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         method_setImplementation(lpAlertShowMethod, lpAlertShowImp)
     }
     
+    /**
+     * Tests LPUIAlert tap on View executes Notification Open action
+     */
     func test_notification_foreground_alert_open() {
         let onRunActionNamedExpectation = expectation(description: "Notification Alert -> Alert View -> Open Action")
         
@@ -164,6 +169,9 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
+    /**
+     * Tests mute inside app correctly mutes notifications
+     */
     func test_mute_inside_app() {
         XCTAssertFalse(LeanplumUtils.isMuted(LeanplumNotificationsManagerTest.userInfo))
         XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideTrue))

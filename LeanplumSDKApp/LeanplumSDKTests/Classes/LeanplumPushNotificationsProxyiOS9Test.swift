@@ -71,6 +71,9 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertTrue(isForeground)
     }
     
+    /**
+     * Tests notification is opened. Application became active from user tapping the notification, hence didReceiveRemoteNotification was executed.
+     */
     func test_notification_applicationDidReceiveRemote_iOS9_active_open() {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.proxy.resumedTimeInterval = Date().timeIntervalSince1970
@@ -90,6 +93,10 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
     }
     
+    /**
+     * Tests notification is opened. Application became active from user tapping the notification 300ms ago.
+     * didReceiveRemoteNotification was executed by notification tap.
+     */
     func test_notification_applicationDidReceiveRemote_iOS9_active_interval_open() {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         var date = Date()
@@ -111,6 +118,9 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
     }
     
+    /**
+     * Tests notification is receive in foreground. Application became active 1s ago. User did not tap on the notification.
+     */
     func test_notification_applicationDidReceiveRemote_iOS9_active_interval_receive() {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         var date = Date()
@@ -152,8 +162,10 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertEqual(LP_VALUE_DEFAULT_PUSH_ACTION, manager.actionName)
     }
     
-    /// Tests notificationOpen is called when application is started from a local notificaton
-    /// applicationDidFinishLaunching is called first and then userNotificationCenter:didReceive may be called
+    /**
+     * Tests notificationOpen is called when application is started from a local notificaton
+     * applicationDidFinishLaunching is called first and then userNotificationCenter:didReceive may be called
+     */
     @available(iOS 10, *)
     func test_local_notification_applicationDidFinishLaunching_inactive_open() {
         NotificationTestHelper.setApplicationState(.inactive)
@@ -185,7 +197,9 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         XCTAssertTrue(Leanplum.notificationsManager().proxy.notificationOpenedFromStart)
         XCTAssertTrue(Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo))
     }
-    
+    /**
+     * Tests Local Notification Open for iOS 9. Notification is tapped which calls application:didReceive:
+     */
     func test_local_notification_didReceive_open() {
         NotificationTestHelper.setApplicationState(.inactive)
         let localNotif = UILocalNotification()

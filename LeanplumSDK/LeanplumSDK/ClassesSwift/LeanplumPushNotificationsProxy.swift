@@ -13,6 +13,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
     internal override init() {}
     
     @objc public var deviceVersion:String?
+    // TimeInterval when application was resumed
+    // Used for iOS 9 notifications when state changes from inactive to active
     @objc public var resumedTimeInterval:Double = 0
     
     lazy var appDelegate = UIApplication.shared.delegate
