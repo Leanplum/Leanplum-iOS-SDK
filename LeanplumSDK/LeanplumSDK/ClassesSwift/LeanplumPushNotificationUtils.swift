@@ -9,52 +9,6 @@ import Foundation
 
 public class LeanplumPushNotificationUtils: NSObject {
     
-    @objc public static func checkIfPushNotificationIdIsInDefaults(_ pushId: String) -> Bool {
-        //TODO: decode
-        if var recievedPushIds = UserDefaults.standard.value(forKey: LEANPLUM_DEFAULTS_PUSH_IDS_KEY) as? Dictionary<String, Any> {
-            if recievedPushIds.keys.contains(pushId) {
-//                return isDuplicate and or handle it
-                return true
-            } else {
-                recievedPushIds[pushId] = Date()
-                //TODO: encode
-                UserDefaults.standard.setValue(recievedPushIds, forKey: LEANPLUM_DEFAULTS_PUSH_IDS_KEY)
-                return false
-            }
-        } else {
-            var recievedPushIds: [String: Any] = [:]
-            recievedPushIds[pushId] = Date()
-            UserDefaults.standard.setValue(recievedPushIds, forKey: LEANPLUM_DEFAULTS_PUSH_IDS_KEY)
-        }
-        return false
-    }
-    
-//    @objc public static func getLastPushId() -> String? {
-//        guard let recievedPushIds = UserDefaults.standard.value(forKey: LEANPLUM_DEFAULTS_PUSH_IDS_KEY) as? Dictionary<String, Any> else {
-//            return nil
-//        }
-//        for pushId in recievedPushIds.keys {
-//            //TODO: logic to get newest push id if needed
-//        }
-//        return UserDefaults.standard.value(forKey: "lastPushIdKey") as? String
-//    }
-//
-    @objc static public func messageIdFromUserInfo(_ userInfo: Dictionary<String, Any>) -> String? {
-        if let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] {
-            return String(describing: messageId)
-        }
-        if let messageId = userInfo[LP_KEY_PUSH_MUTE_IN_APP] {
-            return String(describing: messageId)
-        }
-        if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION] {
-            return String(describing: messageId)
-        }
-        if let messageId = userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] {
-            return String(describing: messageId)
-        }
-        return nil
-    }
-    
     static func getFormattedDeviceTokenFromData(_ token: Data) -> String {
         var formattedToken = token.hexEncodedString()
         formattedToken = formattedToken.replacingOccurrences(of: "<", with: "")
@@ -63,13 +17,14 @@ public class LeanplumPushNotificationUtils: NSObject {
         return formattedToken
     }
     
-//   private func hexadecimalStringFromData(_ data: Data) -> String {
-//        return data.hexEncodedString()
-//    }
-    
-    
-    //Push Notifications Utils
     @objc static public func enableSystemPush() {
+        UserDefaults.standard.set(true, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+        disableAskToAsk()
+        if let block = Leanplum.pushSetupBlock() {
+            // If the app used [Leanplum setPushSetup:...], call the block.
+            block()
+            return
+        }
         if #available(iOS 10.0, *) {
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
                 if let error = error {
@@ -87,9 +42,6 @@ public class LeanplumPushNotificationUtils: NSObject {
             UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert],
                                                                                              categories: nil))
             UIApplication.shared.registerForRemoteNotifications()
-        } else {
-            //support for versions below iOS 8
-            //TODO: ??
         }
     }
     
@@ -133,6 +85,7 @@ public class LeanplumPushNotificationUtils: NSObject {
     }
     
     private static func pushTokenKey() -> String {
+        //TODO: check if some of the values is nil
         return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
     }
     
@@ -140,7 +93,7 @@ public class LeanplumPushNotificationUtils: NSObject {
         UserDefaults.standard.removeObject(forKey: LeanplumPushNotificationUtils.pushTokenKey())
     }
     
-    static func isPushEnabled() -> Bool {
+    @objc public static func isPushEnabled() -> Bool {
         if !Thread.isMainThread {
             var output = false
             DispatchQueue.main.sync(execute: { [self] in
@@ -156,9 +109,54 @@ public class LeanplumPushNotificationUtils: NSObject {
         return false
     }
     
-//    func requireMessageContentWithMessageId(_ messageId: String, completionHandler: @escaping LeanplumVariablesChangedBlock) {
-//        
-//    }
+    @objc public static func disableAskToAsk() {
+        UserDefaults.standard.setValue(true, forKey: DEFAULTS_ASKED_TO_PUSH)
+    }
+    
+    @objc public static func hasDisabledAskToAsk() -> Bool {
+        return UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+    }
+
+    @objc public static func refreshPushPermissions() {
+        if UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH) {
+            LeanplumPushNotificationUtils.enableSystemPush()
+        }
+    }
+    
+    func requireMessageContentWithMessageId(_ messageId: String, completionHandler: @escaping () -> Void) {
+        Leanplum.onceVariablesChangedAndNoDownloadsPending {
+            //LP_END_USER_CODE
+            leanplumIncrementUserCodeBlock(-1)
+            if VarCache.shared().messages()?[messageId] != nil {
+                completionHandler()
+            } else {
+                // Try downloading the messages again if it doesn't exist.
+                // Maybe the message was created while the app was running.
+                let request = LPRequestFactory.getVarsWithParams( [LP_PARAM_INCLUDE_DEFAULTS: NSNumber.init(booleanLiteral: false),
+                                                                 LP_PARAM_INCLUDE_MESSAGE_ID: messageId]).andRequestType(.Immediate)
+                
+                request.onResponse { _ , response in
+                    if let response = response as? [AnyHashable: Any?] {
+                        let values = response[LP_KEY_VARS] as? [String: Any]
+                        let messages = response[LP_KEY_MESSAGES] as? [String: Any]
+                        let variants = response[LP_KEY_VARIANTS] as? [String]
+                        let regions = response[LP_KEY_REGIONS] as? [String: Any]
+                        let varsJson = ((response[LP_KEY_VARS] as? String) != nil) ? LPJSON.string(fromJSON: response[LP_KEY_VARS] ?? "") : nil
+                        let varsSignature = response[LP_KEY_VARS_SIGNATURE] as? String
+                        let localCaps = response[LP_KEY_LOCAL_CAPS] as? [[AnyHashable: Any]]
+                        
+                        VarCache.shared().applyVariableDiffs(values, messages: messages, variants: variants, localCaps: localCaps, regions: regions, variantDebugInfo: nil, varsJson: varsJson, varsSignature: varsSignature)
+                        
+                        completionHandler()
+                    }
+                }
+                
+                LPRequestSender.sharedInstance().send(request)
+            }
+            //LP_BEGIN_USER_CODE
+            leanplumIncrementUserCodeBlock(1)
+        }
+    }
 }
 
 

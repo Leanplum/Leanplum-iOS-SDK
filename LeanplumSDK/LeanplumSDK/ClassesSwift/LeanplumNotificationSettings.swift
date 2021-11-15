@@ -7,83 +7,110 @@
 
 import Foundation
 
-public class LeanplumNotificationSettings: NSObject {
+class LeanplumNotificationSettings {
 
-    @objc public var currentSettings: Dictionary<String, Any> = [:]
-    @objc public var updateSettings: (() -> Void)?
+    var currentSettings: [AnyHashable: Any] = [:]
+    var updateSettings: (() -> Void)?
     
-    @objc public func setUp() {
-        loadSettings()
+    func setUp() {
+//        loadSettings()
         updateSettings = { [weak self] in
             self?.loadSettings()
         }
     }
     
-    private func getSettigs(completionHandler: @escaping (_ settings: Dictionary<String, Any>)->()) {
+    func toRequestParams() -> [AnyHashable: Any]? {//TODO: move into Utils?
+        guard !currentSettings.isEmpty, let types = currentSettings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let categories = LPJSON.string(fromJSON:currentSettings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
+            return nil
+        }
+        
+        let params: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+                                      LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: categories]
+        
+        return params
+    }
+    
+    func getSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
         if #available(iOS 10.0, *) {
-            self.getSettingsFromUserNotification { settings in
-                var tmp: [String: Any] = [:]
-                for item in settings {
-                    if let value = item.value {
-                        tmp[item.key] = value
-                    } else {
-                        tmp[item.key] = NSNull()
-                    }
+            self.getSettingsFromUserNotification { [weak self] settings in
+                guard let self = self else {
+                    completionHandler([:], false)
+                    return
                 }
-                completionHandler(tmp)
+                var settings_: [AnyHashable: Any] = [:]
+                for item in settings {
+                    settings_[item.key] = item.value != nil ? item.value : NSNull()
+                }
+                let changed = self.checkIfSettingsAreChanged(newSettings: settings_)
+                completionHandler(settings_, changed)
             }
         } else {
             // Fallback on earlier versions
-            completionHandler(getSettingsFromUIApplication())
+            let settings = getSettingsFromUIApplication()
+            let changed = checkIfSettingsAreChanged(newSettings: settings)
+            completionHandler(settings, changed)
         }
     }
     
-    private func loadSettings() {
-        getSettigs { [weak self] settings in
+    private func loadSettings() {//TODO: remnam to update or something
+        guard let key = self.leanplumUserNotificationSettingsKey() else {
+            return
+        }
+        if let savedSettings = UserDefaults.standard.dictionary(forKey: key) {
+            currentSettings = savedSettings
+        }
+        getSettings { [weak self] settings, areChanged in
             guard let self = self else { return }
-            if self.checkIfSettingsAreChanged(newSettings: settings) { //TODO: do we care and do we need to save them???
-                self.updateSettings(newSettings: settings)
+            if areChanged {
                 self.currentSettings = settings //TODO: potential issue: check case: value is nil for type??
+                self.saveSettings()
+                //update settings to server
+                self.updateSettingsToServer()
             }
         }
     }
     
-    private func updateSettings(newSettings: Dictionary<String, Any>) {
-        UserDefaults.standard.setValue(newSettings, forKey: self.leanplumUserNotificationSettingsKey())
-        //TODO: update settings to server
-//        updateSettingsToServer(settings: newSettings)
+    private func saveSettings() {
+        guard let key = self.leanplumUserNotificationSettingsKey() else {
+            return
+        }
+        UserDefaults.standard.setValue(currentSettings, forKey: key)
     }
     
     
     
-    private func updateSettingsToServer(settings: Dictionary<String, Any>) {
+    private func updateSettingsToServer() {
         //TODO: create params add settings etc
-//        let params: [String: Any] = [:]
-//        let request = LPRequestFactory.setDeviceAttributesWithParams(params).andRequestType(.Immediate)//TODO: check if immediate
-//        LPRequestSender.sharedInstance().send(request)
-        
-        Leanplum.onStartResponse { success in
-            if success {
-                //update here
+        if let params = self.toRequestParams() {
+            Leanplum.onStartResponse { success in
+                if success {
+                    //update here
+                    let request = LPRequestFactory.setDeviceAttributesWithParams(params).andRequestType(.Immediate)//TODO: check if immediate
+                    LPRequestSender.sharedInstance().send(request)
+                }
             }
         }
     }
     
-    private func checkIfSettingsAreChanged(newSettings: Dictionary<String, Any>) -> Bool {
-        //TODO: compare with saved dictionary
-        if let savedSettings = UserDefaults.standard.dictionary(forKey: self.leanplumUserNotificationSettingsKey()), NSDictionary(dictionary: savedSettings).isEqual(to: NSDictionary(dictionary: currentSettings) as! [AnyHashable : Any] ) {
-            //TODO: fix !
-            return true
+    private func checkIfSettingsAreChanged(newSettings: [AnyHashable: Any]) -> Bool {
+        guard let key = self.leanplumUserNotificationSettingsKey() else {
+            return false //TODO: false or true???
         }
-        return false
+        if let savedSettings = UserDefaults.standard.dictionary(forKey: key), NSDictionary(dictionary: savedSettings).isEqual(to: newSettings) {
+            return false
+        }
+        return true
     }
     
-    private func leanplumUserNotificationSettingsKey() -> String {
-        return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
+    private func leanplumUserNotificationSettingsKey() -> String? {
+        guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
+            return nil
+        }
+        return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)
     }
     
     @available(iOS 10.0, *)
-    private func getSettingsFromUserNotification(completionHandler: @escaping (_ settings: Dictionary<String, Any?>)->()) {
+    private func getSettingsFromUserNotification(completionHandler: @escaping (_ settings: [AnyHashable: Any?])->()) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             let types = settings.toInt()
             
@@ -99,56 +126,17 @@ public class LeanplumNotificationSettings: NSObject {
                 let settings = [
                     LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
                     LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories
-                ] as [String : Any?]
+                ] as [AnyHashable : Any?]
                 completionHandler(settings)
             }
         }
     }
     
     //Get settings for os befor iOS 10
-    private func getSettingsFromUIApplication() -> Dictionary<String, Any> {
+    private func getSettingsFromUIApplication() -> [AnyHashable: Any] {
         guard let settings = UIApplication.shared.currentUserNotificationSettings?.dictionary else {
             return [:]
         }
         return settings
-    }
-}
-
-//TODO: this should go into manager
-extension LeanplumPushNotificationUtils {
-    //
-    func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
-        let formattedToken = LeanplumPushNotificationUtils.getFormattedDeviceTokenFromData(deviceToken)
-        
-        let deviceAttributeParams: NSMutableDictionary = NSMutableDictionary()
-        if let existingToken = LeanplumPushNotificationUtils.pushToken() {
-            if existingToken == "" || existingToken != formattedToken {
-                LeanplumPushNotificationUtils.savePushToken(formattedToken)
-                deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
-            }
-        } else {
-            LeanplumPushNotificationUtils.savePushToken(formattedToken)
-            deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
-        }
-        
-        //TODO: move notificationSettings instance into manager
-        //TODO: add chack if they are changed from before
-        let settings = LPInternalState.shared().notificationSettings.currentSettings
-        //TODO: refactor addEntries directly in [AnyHashable: Any] avaid using NSMutableDictionary
-        deviceAttributeParams.addEntries(from: LPNetworkEngine.notificationSettings(toRequestParams: settings))
-        
-        if let deviceAttributeParams = deviceAttributeParams as? [AnyHashable: Any], deviceAttributeParams.isEmpty {
-            Leanplum.onStartResponse { success in
-                if success {
-                    let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams)
-                    LPRequestSender.sharedInstance().send(requst)
-                }
-            }
-        }
-    }
-    
-    func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
-//        [self leanplum_disableAskToAsk];
-        LeanplumPushNotificationUtils.removePushToken()
     }
 }

@@ -142,21 +142,21 @@
 #pragma mark - Push Notifications
 - (void)sendUserNotificationSettingsIfChanged:(UIUserNotificationSettings *)notificationSettings
 {
-    NSDictionary* settings = [notificationSettings dictionary];
-    // Send settings.
-    if ([self updateUserNotificationSettings:settings]) {
-        NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
-        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
-        if (existingToken) {
-            params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
-        }
-        [Leanplum onStartResponse:^(BOOL success) {
-            LP_END_USER_CODE
-            LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
-            [[LPRequestSender sharedInstance] send:request];
-            LP_BEGIN_USER_CODE
-        }];
-    }
+//    NSDictionary* settings = [notificationSettings dictionary];
+//    // Send settings.
+//    if ([self updateUserNotificationSettings:settings]) {
+//        NSString *existingToken = [[LPPushNotificationsManager sharedManager] pushToken];
+//        NSMutableDictionary *params = [NSMutableDictionary dictionaryWithDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
+//        if (existingToken) {
+//            params[LP_PARAM_DEVICE_PUSH_TOKEN] = existingToken;
+//        }
+//        [Leanplum onStartResponse:^(BOOL success) {
+//            LP_END_USER_CODE
+//            LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
+//            [[LPRequestSender sharedInstance] send:request];
+//            LP_BEGIN_USER_CODE
+//        }];
+//    }
 }
 
 - (void)leanplum_disableAskToAsk

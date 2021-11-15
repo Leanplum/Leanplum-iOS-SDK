@@ -8,7 +8,7 @@
 import Foundation
 
 extension UIUserNotificationSettings {
-    var dictionary: Dictionary<String, Any> {
+    var dictionary: [AnyHashable: Any] {
         let types = self.types
         var categories: [UIUserNotificationCategory] = []
         if let tmpCategories = self.categories {
@@ -24,7 +24,7 @@ extension UIUserNotificationSettings {
         let settings = [
             LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
             LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories
-        ] as [String : Any]
+        ] as [AnyHashable : Any]
         return settings
     }
 }

@@ -42,6 +42,7 @@
 #import "LPAppRatingMessageTemplate.h"
 #import "LPIconChangeMessageTemplate.h"
 #import "LPPushNotificationsManager.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 #define APP_NAME (([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDisplayName"]) ?: \
     ([[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"]))
@@ -104,12 +105,12 @@
 // refreshPushPermissions is called by [Leanplum start].
 - (void)refreshPushPermissions
 {
-    [[LPPushNotificationsManager sharedManager] refreshPushPermissions];
+    [LeanplumPushNotificationUtils refreshPushPermissions];
 }
 
 - (void)disableAskToAsk
 {
-    [[LPPushNotificationsManager sharedManager] disableAskToAsk];
+    [LeanplumPushNotificationUtils disableAskToAsk];
 }
 
 @end

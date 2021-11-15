@@ -1085,7 +1085,7 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    [[[LPInternalState sharedState] notificationSettings] updateSettings];
+                    [[Leanplum notificationsManager] updateNotificaitonSettings];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
                     if ([[UIApplication sharedApplication]
@@ -1605,7 +1605,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didRegisterForRemoteNotificationsWithDeviceToken:token];
+        [[Leanplum notificationsManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
     }
     else
     {

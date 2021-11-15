@@ -11,7 +11,8 @@ import UIKit
 // LP Swizzling looks for the selector in the same class
 extension NSObject {
     @objc func leanplum_application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        LPPushNotificationsManager.shared().handler.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
+//        LPPushNotificationsManager.shared().handler.didRegisterForRemoteNotifications(withDeviceToken: deviceToken)
+        Leanplum.notificationsManager().didRegisterForRemoteNotificationsWithDeviceToken(deviceToken)
         
         // Call overridden method
         let selector = #selector(self.leanplum_application(_:didRegisterForRemoteNotificationsWithDeviceToken:))

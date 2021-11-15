@@ -8,6 +8,7 @@
 #import "LPPushMessageTemplate.h"
 #import "LPActionManager.h"
 #import "LPLogManager.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @implementation LPPushMessageTemplate
 
@@ -30,17 +31,17 @@
 
 -(void)showNativePushPrompt
 {
-    [[LPPushNotificationsManager sharedManager] enableSystemPush];
+    [LeanplumPushNotificationUtils enableSystemPush];
 }
 
 - (BOOL)isPushEnabled
 {
-    return [[LPPushNotificationsManager sharedManager] isPushEnabled];
+    return [LeanplumPushNotificationUtils isPushEnabled];
 }
 
 - (BOOL)hasDisabledAskToAsk
 {
-    return [[LPPushNotificationsManager sharedManager] hasDisabledAskToAsk];
+    return [LeanplumPushNotificationUtils hasDisabledAskToAsk];
 }
 
 @end

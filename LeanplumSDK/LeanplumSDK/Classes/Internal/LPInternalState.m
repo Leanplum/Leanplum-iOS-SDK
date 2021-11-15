@@ -6,7 +6,6 @@
 //
 
 #import "LPInternalState.h"
-#import <Leanplum/Leanplum-Swift.h>
 
 @implementation LPInternalState
 
@@ -40,8 +39,6 @@
         _actionManager = nil;
         _userAttributeChanges = [NSMutableArray array];
         _calledHandleNotification = NO;
-        _notificationSettings = [[LeanplumNotificationSettings alloc] init];
-        [_notificationSettings setUp];
     }
     return self;
 }
