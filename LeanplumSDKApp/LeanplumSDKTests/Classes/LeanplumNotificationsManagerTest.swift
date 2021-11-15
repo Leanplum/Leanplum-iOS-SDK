@@ -13,7 +13,7 @@ import XCTest
 class LeanplumNotificationsManagerTest: XCTestCase {
     
     let timeout:TimeInterval = 5
-    
+    static var showExecuted = false
     static let userInfo:[AnyHashable : Any] = [
         "aps": [
             "alert": [
@@ -34,8 +34,44 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         ]
     ]
     
-    static var showExecuted = false
+    // MARK: Muted Notifications
     
+    let userInfoNoActionMuteInsideTrue:[AnyHashable : Any] = [
+        "_lpv": 6527720202764288,
+        "_lpx": [
+            "__name__" : "",
+        ],
+        "apns-push-type": "alert",
+        "aps": [
+            "alert": [
+                "body": "test",
+                "subtitle": "sub",
+                "title": "title",
+            ],
+            "content-available": 1,
+        ],
+        "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97",
+    ]
+
+    let userInfoActionOpenURLMuteInsideTrue:[AnyHashable : Any] = [
+        "_lpu": 6527720202764288,
+        "_lpx":     [
+            "URL": "http://www.test.com",
+            "__name__": "Open URL",
+        ],
+        "lp_occurrence_id" : "ba77fe0a-d020-4a34-a79b-d388232deee3",
+    ]
+
+    let userInfoNoActionMuteInsideFalse:[AnyHashable : Any] = [
+        "_lpn": 6527720202764288,
+        "_lpx":     [
+            "__name__": "",
+        ],
+        "apns-push-type": "alert",
+        "lp_occurrence_id": "c5231787-4514-491b-b943-b99e9d9f36a0",
+    ]
+
+    // MARK: Setup and Teardown
     override func setUp() {
         LPInternalState.shared().issuedStart = true
         VarCache.shared().applyVariableDiffs(nil, messages: nil, variants: nil, localCaps: nil, regions: nil, variantDebugInfo: nil, varsJson: nil, varsSignature: nil)
@@ -46,6 +82,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         LeanplumNotificationsManagerTest.showExecuted = false
     }
     
+    // MARK: LPUIAlert:show mock
     func show(withTitle title: String, message: String, cancelButtonTitle: String, otherButtonTitles: [Any]?, block: LeanplumUIAlertCompletionBlock? = nil) {
         // self is LPUIAlert
         LeanplumNotificationsManagerTest.showExecuted = true
@@ -58,6 +95,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         XCTAssertEqual(otherButtonTitles as! [String], ["View"])
     }
     
+    // MARK: Tests
     func test_notification_open_run_action() {
         let onRunActionNamedExpectation = expectation(description: "Notification Open Action")
         
@@ -116,6 +154,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
             return false
         }
         
+        // Other UIAlertControllers can block the notification LPUIAlert
+        // Dismiss all controllers so after notificationReceived is executed, the top one will be the LPUIAlert
         dismissAllPresentedControllers(block: {
             Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
             self.getTopController()?.tapButton(atIndex: 1)
@@ -124,6 +164,14 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
+    func test_mute_inside_app() {
+        XCTAssertFalse(LeanplumUtils.isMuted(LeanplumNotificationsManagerTest.userInfo))
+        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideTrue))
+        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideFalse))
+        XCTAssertTrue(LeanplumUtils.isMuted(userInfoActionOpenURLMuteInsideTrue))
+    }
+    
+    // MARK: View Controller Helper Functions
     func getTopController() -> UIAlertController? {
         var ctrl = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController
         while(ctrl?.presentedViewController != nil){
@@ -132,6 +180,9 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         return (ctrl as? UIAlertController)
     }
     
+    /**
+     * Dismisses all presentedViewControllers then executes the block
+     */
     func dismissAllPresentedControllers(block: @escaping () -> Void) {
         if let ctrl = getTopController() {
             ctrl.dismiss(animated: false, completion: {
