@@ -25,8 +25,12 @@ import Foundation
         notificationSettings.setUp()
     }
     
-    @objc public func updateNotificaitonSettings() {
-        notificationSettings.updateSettings?()
+    @objc public func updateNotificationSettings(_ settings: [AnyHashable: Any]? = nil) {
+        if let settings = settings {
+            notificationSettings.update(settings)
+        } else {
+            notificationSettings.updateSettings?()
+        }
     }
     
     @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
@@ -34,25 +38,26 @@ import Foundation
     }
     
     @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
-        LeanplumPushNotificationUtils.disableAskToAsk()
+        disableAskToAsk()
         
-        let formattedToken = LeanplumPushNotificationUtils.getFormattedDeviceTokenFromData(deviceToken)
+        let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
         
         var deviceAttributeParams: [AnyHashable: Any] = [:]
-        if let existingToken = LeanplumPushNotificationUtils.pushToken() {
+        //TODO: refactor?
+        if let existingToken = self.pushToken() {
             if existingToken != formattedToken {
-                LeanplumPushNotificationUtils.savePushToken(formattedToken)
+                updatePushToken(formattedToken)
                 deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
             }
         } else {
-            LeanplumPushNotificationUtils.savePushToken(formattedToken)
+            updatePushToken(formattedToken)
             deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
         }
         
         notificationSettings.getSettings { [weak self] settings, areChanged in
             guard let self = self else { return }
             if areChanged {
-                if let settings = self.notificationSettings.toRequestParams() {
+                if let settings = self.notificationSettingsToRequestParams(settings) {
                     let result = Array(settings.keys).reduce(deviceAttributeParams) { (dict, key) -> [AnyHashable: Any] in
                         var dict = dict
                         dict[key] = settings[key] as Any?
@@ -74,8 +79,13 @@ import Foundation
     }
     
     @objc public func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
-        LeanplumPushNotificationUtils.disableAskToAsk()
-        LeanplumPushNotificationUtils.removePushToken()
+        disableAskToAsk()
+        removePushToken()
+    }
+    
+    @objc(didRegisterUserNotificationSettings:)
+    public func didRegister(_ settings: UIUserNotificationSettings) {
+        //TODO: 
     }
     
     @objc(notificationOpened:action:)
@@ -128,6 +138,9 @@ import Foundation
         } else {
             if !LeanplumUtils.areActionsEmbedded(userInfo) {
                 // TODO: check if notification action is not embedded and needs FCU / Prefetch
+                requireMessageContentWithMessageId(messageId) {
+                    
+                }
             }
         }
     }

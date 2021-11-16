@@ -7,9 +7,10 @@
 
 import Foundation
 
-public class LeanplumPushNotificationUtils: NSObject {
+//public class LeanplumPushNotificationUtils: NSObject {
+@objc extension LeanplumNotificationsManager {
     
-    static func getFormattedDeviceTokenFromData(_ token: Data) -> String {
+    func getFormattedDeviceTokenFromData(_ token: Data) -> String {
         var formattedToken = token.hexEncodedString()
         formattedToken = formattedToken.replacingOccurrences(of: "<", with: "")
             .replacingOccurrences(of: ">", with: "")
@@ -17,7 +18,7 @@ public class LeanplumPushNotificationUtils: NSObject {
         return formattedToken
     }
     
-    @objc static public func enableSystemPush() {
+    @objc public func enableSystemPush() {
         UserDefaults.standard.set(true, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
         disableAskToAsk()
         if let block = Leanplum.pushSetupBlock() {
@@ -46,7 +47,7 @@ public class LeanplumPushNotificationUtils: NSObject {
     }
     
     @available(iOS 12.0, *)
-    @objc static public func enableProvisionalPush() {
+    @objc public func enableProvisionalPush() {
         UNUserNotificationCenter.current().requestAuthorization(options: .provisional) { granted, error in
             if let error = error {
                 // Handle the error here.
@@ -61,39 +62,39 @@ public class LeanplumPushNotificationUtils: NSObject {
         }
     }
     
-    @objc public static func isUNUserNotificationCenterDelegateNil() -> Bool {
+    @objc public func isUNUserNotificationCenterDelegateNil() -> Bool {
         if #available(iOS 10.0, *) {
             return UNUserNotificationCenter.current().delegate == nil
         }
         return true
     }
     
-    @objc public static func isRemoteNotificationsBackgroundModeEnabled() -> Bool {
+    @objc public func isRemoteNotificationsBackgroundModeEnabled() -> Bool {
         if let backgroundModes = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String] {
             return backgroundModes.firstIndex(of: "remote-notification") != nil
         }
         return false
     }
     
-    static func pushToken() -> String? {
+    @objc public func pushToken() -> String? {
         //return push token from defaults
-        return UserDefaults.standard.string(forKey: LeanplumPushNotificationUtils.pushTokenKey())
+        return UserDefaults.standard.string(forKey: pushTokenKey())
     }
     
-    static func savePushToken(_ token: String) {
-        UserDefaults.standard.setValue(token, forKey: LeanplumPushNotificationUtils.pushTokenKey())
+    @objc public func updatePushToken(_ token: String) {
+        UserDefaults.standard.setValue(token, forKey: pushTokenKey())
     }
     
-    private static func pushTokenKey() -> String {
+    private func pushTokenKey() -> String {
         //TODO: check if some of the values is nil
         return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
     }
     
-    static func removePushToken() {
-        UserDefaults.standard.removeObject(forKey: LeanplumPushNotificationUtils.pushTokenKey())
+    func removePushToken() {
+        UserDefaults.standard.removeObject(forKey: pushTokenKey())
     }
     
-    @objc public static func isPushEnabled() -> Bool {
+    @objc public func isPushEnabled() -> Bool {
         if !Thread.isMainThread {
             var output = false
             DispatchQueue.main.sync(execute: { [self] in
@@ -109,18 +110,29 @@ public class LeanplumPushNotificationUtils: NSObject {
         return false
     }
     
-    @objc public static func disableAskToAsk() {
+    @objc public func disableAskToAsk() {
         UserDefaults.standard.setValue(true, forKey: DEFAULTS_ASKED_TO_PUSH)
     }
     
-    @objc public static func hasDisabledAskToAsk() -> Bool {
+    @objc public func hasDisabledAskToAsk() -> Bool {
         return UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
     }
 
-    @objc public static func refreshPushPermissions() {
+    @objc public func refreshPushPermissions() {
         if UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH) {
-            LeanplumPushNotificationUtils.enableSystemPush()
+            enableSystemPush()
         }
+    }
+    
+    @objc public func notificationSettingsToRequestParams(_ settings: [AnyHashable: Any]) -> [AnyHashable: Any]? {//TODO: move into Utils/Notificaitonmanager?
+        guard let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let categories = LPJSON.string(fromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
+            return nil
+        }
+        
+        let params: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+                                      LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: categories]
+        
+        return params
     }
     
     func requireMessageContentWithMessageId(_ messageId: String, completionHandler: @escaping () -> Void) {

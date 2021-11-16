@@ -26,7 +26,7 @@
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPRequestFactory.h>
-#import <Leanplum/LPPushNotificationsHandler.h>
+//#import <Leanplum/LPPushNotificationsHandler.h>
 #import <Leanplum/LPDeferMessageManager.h>
 
 @interface Leanplum(UnitTest)
@@ -45,12 +45,12 @@
 
 @end
 
-@interface LPPushNotificationsHandler(UnitTest)
-
-- (void)maybePerformNotificationActions:(NSDictionary *)userInfo action:(NSString *)action
-                                 active:(BOOL)active;
-
-@end
+//@interface LPPushNotificationsHandler(UnitTest)
+//
+//- (void)maybePerformNotificationActions:(NSDictionary *)userInfo action:(NSString *)action
+//                                 active:(BOOL)active;
+//
+//@end
 
 @interface LPActionContext(UnitTest)
 

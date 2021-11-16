@@ -9,7 +9,6 @@
 #import "LPLocalNotificationsManager.h"
 #import "LeanplumInternal.h"
 #import "LPNotificationsConstants.h"
-#import "LPNotificationsManager.h"
 #import <UserNotifications/UNUserNotificationCenter.h>
 #import <Leanplum/Leanplum-Swift.h>
 
