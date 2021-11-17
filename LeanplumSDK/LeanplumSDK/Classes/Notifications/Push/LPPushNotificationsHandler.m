@@ -430,13 +430,14 @@
         return;
     }
 
+    BOOL active = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
+
     void (^onContent)(void) = ^{
         if (completionHandler) {
             completionHandler(UIBackgroundFetchResultNewData);
         }
         BOOL hasAlert = userInfo[@"aps"][@"alert"] != nil;
         if (hasAlert) {
-            BOOL active = UIApplication.sharedApplication.applicationState == UIApplicationStateActive;
             [self maybePerformNotificationActions:userInfo action:nil active:active];
         }
     };
