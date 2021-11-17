@@ -704,6 +704,15 @@ NS_SWIFT_UNAVAILABLE("use forceContentUpdate(completion:)");
 + (void)forceContentUpdate:(nullable LeanplumVariablesChangedBlock)block;
 
 /**
+ * Forces content to update from the server. If variables have changed, the
+ * appropriate callbacks will fire. Use sparingly as if the app is updated,
+ * you'll have to deal with potentially inconsistent state or user experience.
+ * The provided callback has a boolean flag whether the update was successful or not. The callback fires regardless
+ * of whether the variables have changed.
+ */
++ (void)forceContentUpdateWithBlock:(LeanplumForceContentUpdateBlock)updateBlock;
+
+/**
  * This should be your first statement in a unit test. This prevents
  * Leanplum from communicating with the server.
  * Deprecated. Use [Leanplum setTestModeEnabled:YES] instead.

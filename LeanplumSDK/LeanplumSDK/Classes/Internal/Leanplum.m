@@ -2351,11 +2351,20 @@ andParameters:(NSDictionary *)params
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
 {
+    [Leanplum forceContentUpdateWithBlock:^(BOOL success) {
+        if (block) {
+            block();
+        }
+    }];
+}
+
++ (void)forceContentUpdateWithBlock:(LeanplumForceContentUpdateBlock)updateBlock
+{
     [[LPCountAggregator sharedAggregator] incrementCount:@"force_content_update"];
     
     if (IS_NOOP) {
-        if (block) {
-            block();
+        if (updateBlock) {
+            updateBlock(NO);
         }
         return;
     }
@@ -2405,13 +2414,13 @@ andParameters:(NSDictionary *)params
             [[self inbox] triggerInboxSyncedWithStatus:YES withCompletionHandler:nil];
         }
         LP_END_TRY
-        if (block) {
-            block();
+        if (updateBlock) {
+            updateBlock(YES);
         }
     }];
     [request onError:^(NSError *error) {
-        if (block) {
-            block();
+        if (updateBlock) {
+            updateBlock(NO);
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO withCompletionHandler:nil];
     }];
