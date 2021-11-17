@@ -417,7 +417,7 @@ void leanplumExceptionHandler(NSException *exception);
             [params addEntriesFromDictionary:set];
         }
         
-        //TODO: do we want to remove old values first???
+        //TODO: do we want to remove values with old key first?
         
         // Change the LPAPIConfig after getting the push token and settings
         // The LPAPIConfig value is used in retrieving them

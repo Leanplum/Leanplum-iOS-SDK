@@ -43,7 +43,7 @@ import Foundation
         let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
         
         var deviceAttributeParams: [AnyHashable: Any] = [:]
-        //TODO: refactor?
+        //TODO: refactor
         if let existingToken = self.pushToken() {
             if existingToken != formattedToken {
                 updatePushToken(formattedToken)
@@ -85,7 +85,8 @@ import Foundation
     
     @objc(didRegisterUserNotificationSettings:)
     public func didRegister(_ settings: UIUserNotificationSettings) {
-        //TODO: 
+        disableAskToAsk()
+        notificationSettings.getSettings()
     }
     
     @objc(notificationOpened:action:)
@@ -97,7 +98,14 @@ import Foundation
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
         let actionName = isDefaultAction ? action : "iOS options.Custom actions.\(action)"
         
-        var context:ActionContext
+        let downloadFilesAndRunAction: (ActionContext) -> () = { context in
+            context.maybeDownloadFiles()
+            // Wait for Leanplum start so action responders are registered
+            Leanplum.onStartIssued {
+                context.runTrackedAction(name: actionName)
+            }
+        }
+        
         if LeanplumUtils.areActionsEmbedded(userInfo) {
             var args:[AnyHashable : Any]
             if isDefaultAction {
@@ -114,16 +122,14 @@ import Foundation
                     ]
                 ]
             }
-            context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
+            let context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
             context.preventRealtimeUpdating = true
+            downloadFilesAndRunAction(context)
         } else {
-            // TODO: check if the message exists or needs FCU
-            context = Leanplum.createActionContext(forMessageId: messageId)
-        }
-        context.maybeDownloadFiles()
-        // Wait for Leanplum start so action responders are registered
-        Leanplum.onStartIssued {
-            context.runTrackedAction(name: actionName)
+            requireMessageContentWithMessageId(messageId) {
+                let context = Leanplum.createActionContext(forMessageId: messageId)
+                downloadFilesAndRunAction(context)
+            }
         }
     }
     
@@ -137,10 +143,7 @@ import Foundation
             }
         } else {
             if !LeanplumUtils.areActionsEmbedded(userInfo) {
-                // TODO: check if notification action is not embedded and needs FCU / Prefetch
-                requireMessageContentWithMessageId(messageId) {
-                    
-                }
+                requireMessageContentWithMessageId(messageId)
             }
         }
     }

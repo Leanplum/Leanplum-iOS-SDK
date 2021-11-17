@@ -58,12 +58,12 @@ class LeanplumNotificationSettings {
     }
     
     private func updateSettingsToServer(_ settings: [AnyHashable: Any]) {
-        //TODO: add push token???
         if let params = Leanplum.notificationsManager().notificationSettingsToRequestParams(settings) {
             Leanplum.onStartResponse { success in
                 if success {
-                    //update here
-                    let request = LPRequestFactory.setDeviceAttributesWithParams(params).andRequestType(.Immediate)//TODO: check if immediate
+                    var deviceAttributesWithParams = params
+                    deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = Leanplum.notificationsManager().pushToken
+                    let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)//TODO: check if immediate
                     LPRequestSender.sharedInstance().send(request)
                 }
             }
@@ -72,7 +72,7 @@ class LeanplumNotificationSettings {
     
     private func checkIfSettingsAreChanged(newSettings: [AnyHashable: Any]) -> Bool {
         guard let key = self.leanplumUserNotificationSettingsKey() else {
-            return false //TODO: false or true???
+            return true
         }
         if let savedSettings = UserDefaults.standard.dictionary(forKey: key), NSDictionary(dictionary: savedSettings).isEqual(to: newSettings) {
             return false

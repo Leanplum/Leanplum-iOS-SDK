@@ -78,20 +78,31 @@ import Foundation
     
     @objc public func pushToken() -> String? {
         //return push token from defaults
-        return UserDefaults.standard.string(forKey: pushTokenKey())
+        guard let key = pushTokenKey() else {
+            return nil
+        }
+        return UserDefaults.standard.string(forKey: key)
     }
     
     @objc public func updatePushToken(_ token: String) {
-        UserDefaults.standard.setValue(token, forKey: pushTokenKey())
+        guard let key = pushTokenKey() else {
+            return
+        }
+        UserDefaults.standard.setValue(token, forKey: key)
     }
     
-    private func pushTokenKey() -> String {
-        //TODO: check if some of the values is nil
-        return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, LPAPIConfig.shared().appId, LPAPIConfig.shared().userId, [LPAPIConfig.shared().deviceId])
+    private func pushTokenKey() -> String? {
+        guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
+            return nil
+        }
+        return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, appId, userId, deviceId)
     }
     
     func removePushToken() {
-        UserDefaults.standard.removeObject(forKey: pushTokenKey())
+        guard let key = pushTokenKey() else {
+            return
+        }
+        UserDefaults.standard.removeObject(forKey: key)
     }
     
     @objc public func isPushEnabled() -> Bool {
@@ -124,7 +135,7 @@ import Foundation
         }
     }
     
-    @objc public func notificationSettingsToRequestParams(_ settings: [AnyHashable: Any]) -> [AnyHashable: Any]? {//TODO: move into Utils/Notificaitonmanager?
+    @objc public func notificationSettingsToRequestParams(_ settings: [AnyHashable: Any]) -> [AnyHashable: Any]? {
         guard let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let categories = LPJSON.string(fromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
             return nil
         }
@@ -135,12 +146,12 @@ import Foundation
         return params
     }
     
-    func requireMessageContentWithMessageId(_ messageId: String, completionHandler: @escaping () -> Void) {
+    func requireMessageContentWithMessageId(_ messageId: String, completionHandler: (() -> Void)? = nil) {
         Leanplum.onceVariablesChangedAndNoDownloadsPending {
             //LP_END_USER_CODE
             leanplumIncrementUserCodeBlock(-1)
             if VarCache.shared().messages()?[messageId] != nil {
-                completionHandler()
+                completionHandler?()
             } else {
                 // Try downloading the messages again if it doesn't exist.
                 // Maybe the message was created while the app was running.
@@ -159,7 +170,7 @@ import Foundation
                         
                         VarCache.shared().applyVariableDiffs(values, messages: messages, variants: variants, localCaps: localCaps, regions: regions, variantDebugInfo: nil, varsJson: varsJson, varsSignature: varsSignature)
                         
-                        completionHandler()
+                        completionHandler?()
                     }
                 }
                 
