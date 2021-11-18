@@ -159,6 +159,12 @@ class LeanplumNotificationsManagerTest: XCTestCase {
             return false
         }
         
+        if UIApplication.shared.keyWindow == nil {
+            let window = UIWindow()
+            window.rootViewController = UIViewController()
+            window.makeKeyAndVisible()
+        }
+        
         // Other UIAlertControllers can block the notification LPUIAlert
         // Dismiss all controllers so after notificationReceived is executed, the top one will be the LPUIAlert
         dismissAllPresentedControllers(block: {
