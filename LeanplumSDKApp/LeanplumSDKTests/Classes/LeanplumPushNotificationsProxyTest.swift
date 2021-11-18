@@ -81,7 +81,7 @@ class LeanplumPushNotificationsProxyTest: XCTestCase {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.proxy.userNotificationCenter(willPresent: notif) { options in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[NotificationTestHelper.occurrenceIdKey] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -99,7 +99,7 @@ class LeanplumPushNotificationsProxyTest: XCTestCase {
         // didReceiveRemoteNotification is called after willPresent if push has content-available flag
         manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[NotificationTestHelper.occurrenceIdKey] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -233,6 +233,10 @@ fileprivate class UNNotificationResponseTestCoder: NSCoder {
     
     init(with request: UNNotificationRequest) {
         self.request = request
+    }
+    
+    override func decodeInt64(forKey key: String) -> Int64 {
+        return 0
     }
     
     override func decodeObject(forKey key: String) -> Any? {
