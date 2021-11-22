@@ -13,11 +13,11 @@ class LeanplumNotificationSettings {
     
     func setUp() {
         updateSettings = { [weak self] in
-            self?.getSettings()
+            self?.getSettings(updateToServer: true)
         }
     }
     
-    func getSettings(completionHandler: ((_ settings: [AnyHashable: Any], _ areChanged: Bool)->())? = nil) {
+    func getSettings(updateToServer: Bool = false, completionHandler: ((_ settings: [AnyHashable: Any], _ areChanged: Bool)->())? = nil) {
         if #available(iOS 10.0, *) {
             self.getSettingsFromUserNotification { [weak self] settings in
                 guard let self = self else {
@@ -26,11 +26,11 @@ class LeanplumNotificationSettings {
                 }
                 var settings_: [AnyHashable: Any] = [:]
                 for item in settings {
-                    settings_[item.key] = item.value != nil ? item.value : NSNull()
+                    settings_[item.key] = item.value != nil ? item.value : nil
                 }
                 let changed = self.checkIfSettingsAreChanged(newSettings: settings_)
                 if changed {
-                    self.saveSettings(settings_)
+                    self.saveSettings(settings_, updateToServer: updateToServer)
                 }
                 completionHandler?(settings_, changed)
             }
@@ -39,7 +39,7 @@ class LeanplumNotificationSettings {
             let settings = getSettingsFromUIApplication()
             let changed = checkIfSettingsAreChanged(newSettings: settings)
             if changed {
-                saveSettings(settings)
+                saveSettings(settings, updateToServer: updateToServer)
             }
             completionHandler?(settings, changed)
         }
@@ -52,17 +52,21 @@ class LeanplumNotificationSettings {
         UserDefaults.standard.setValue(settings, forKey: key)
     }
     
-    private func saveSettings(_ settings: [AnyHashable: Any]) {
+    private func saveSettings(_ settings: [AnyHashable: Any], updateToServer: Bool) {
         update(settings)
-        updateSettingsToServer(settings)
+        if updateToServer {
+            updateSettingsToServer(settings)
+        }
     }
     
     private func updateSettingsToServer(_ settings: [AnyHashable: Any]) {
         if let params = Leanplum.notificationsManager().notificationSettingsToRequestParams(settings) {
             Leanplum.onStartResponse { success in
                 if success {
-                    var deviceAttributesWithParams = params
-                    deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = Leanplum.notificationsManager().pushToken
+                    var deviceAttributesWithParams: [AnyHashable: Any] = params
+                    if let pushToken = Leanplum.notificationsManager().pushToken() {
+                        deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken
+                    }
                     let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)//TODO: check if immediate
                     LPRequestSender.sharedInstance().send(request)
                 }

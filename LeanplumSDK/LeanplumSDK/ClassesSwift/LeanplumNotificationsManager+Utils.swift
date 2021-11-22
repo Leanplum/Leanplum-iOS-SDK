@@ -7,7 +7,6 @@
 
 import Foundation
 
-//public class LeanplumPushNotificationUtils: NSObject {
 @objc extension LeanplumNotificationsManager {
     
     func getFormattedDeviceTokenFromData(_ token: Data) -> String {
@@ -33,10 +32,9 @@ import Foundation
                     print("Error: \(error)")
                 }
                 
-                if granted {
-                    DispatchQueue.main.async {
-                        UIApplication.shared.registerForRemoteNotifications()
-                    }
+                //Register for remote notificaiton to create and send push token to leanplum
+                DispatchQueue.main.async {
+                    UIApplication.shared.registerForRemoteNotifications()
                 }
             }
         } else if #available(iOS 8.0, *) {
@@ -48,16 +46,15 @@ import Foundation
     
     @available(iOS 12.0, *)
     @objc public func enableProvisionalPush() {
-        UNUserNotificationCenter.current().requestAuthorization(options: .provisional) { granted, error in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .provisional]) { granted, error in
             if let error = error {
                 // Handle the error here.
                 print("Error: \(error)")
             }
             
-            if granted {
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+                
             }
         }
     }

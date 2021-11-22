@@ -43,16 +43,13 @@ import Foundation
         let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
         
         var deviceAttributeParams: [AnyHashable: Any] = [:]
-        //TODO: refactor
-        if let existingToken = self.pushToken() {
-            if existingToken != formattedToken {
-                updatePushToken(formattedToken)
-                deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
-            }
-        } else {
+        
+        let existingToken = self.pushToken()
+        if existingToken == nil || existingToken != formattedToken {
             updatePushToken(formattedToken)
             deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
         }
+        
         
         notificationSettings.getSettings { [weak self] settings, areChanged in
             guard let self = self else { return }
@@ -70,7 +67,7 @@ import Foundation
             if !deviceAttributeParams.isEmpty {
                 Leanplum.onStartResponse { success in
                     if success {
-                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams)
+                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams)//TODO: immediate
                         LPRequestSender.sharedInstance().send(requst)
                     }
                 }
