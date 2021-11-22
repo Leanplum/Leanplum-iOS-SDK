@@ -235,6 +235,10 @@ fileprivate class UNNotificationResponseTestCoder: NSCoder {
         self.request = request
     }
     
+    override func decodeInt64(forKey key: String) -> Int64 {
+        return 0
+    }
+    
     override func decodeObject(forKey key: String) -> Any? {
         let fieldKey = FieldKey(rawValue: key)
         switch fieldKey {
