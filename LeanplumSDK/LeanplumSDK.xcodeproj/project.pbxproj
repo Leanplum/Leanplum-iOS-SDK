@@ -182,6 +182,8 @@
 		6A265E2827187EBB0074354F /* LeanplumPushNotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */; };
 		6A265E2927187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
 		6A265E2A27187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
+		6A54E9D727458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9D627458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift */; };
+		6A54E9D827458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9D627458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift */; };
 		6A714AF326F8B317004A34A9 /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADDA26847EC4007CA1BD /* LPConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF426F8B317004A34A9 /* LPActionManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADC726847EC3007CA1BD /* LPActionManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF526F8B317004A34A9 /* LPWebInterstitialViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD7426847EC3007CA1BD /* LPWebInterstitialViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -742,6 +744,7 @@
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
 		6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumPushNotificationsProxy.swift; sourceTree = "<group>"; };
 		6A265E2627187EBB0074354F /* NSObject+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Notifications.swift"; sourceTree = "<group>"; };
+		6A54E9D627458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeanplumNotificationsManager+Tracking.swift"; sourceTree = "<group>"; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A714BA426F8B318004A34A9 /* Leanplum copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Leanplum copy-Info.plist"; path = "/Users/nikolazagorchev/Downloads/Developer/Leanplum-iOS-SDK/Leanplum-iOS-SDK/LeanplumSDK/Leanplum copy-Info.plist"; sourceTree = "<absolute>"; };
 		6A714C0026F8B88A004A34A9 /* LeanplumUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
@@ -1239,6 +1242,7 @@
 				6A265E2627187EBB0074354F /* NSObject+Notifications.swift */,
 				6A714C0026F8B88A004A34A9 /* LeanplumUtils.swift */,
 				6A98A9BB272A941D00D8753A /* LeanplumNotificationsManager.swift */,
+				6A54E9D627458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift */,
 			);
 			path = ClassesSwift;
 			sourceTree = "<group>";
@@ -1632,6 +1636,7 @@
 				075AAE2026847EC4007CA1BD /* LPLogManager.m in Sources */,
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
+				6A54E9D727458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift in Sources */,
 				075AAE0126847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
 				6A714C0126F8B88A004A34A9 /* LeanplumUtils.swift in Sources */,
 				075AAE2826847EC4007CA1BD /* LPRevenueManager.m in Sources */,
@@ -1728,6 +1733,7 @@
 				6A714B8626F8B317004A34A9 /* LPLogManager.m in Sources */,
 				6A714B8726F8B317004A34A9 /* LPSecuredVars.m in Sources */,
 				6A714B8826F8B317004A34A9 /* LPConfirmMessageTemplate.m in Sources */,
+				6A54E9D827458D4F00DE0E61 /* LeanplumNotificationsManager+Tracking.swift in Sources */,
 				6A714B8926F8B317004A34A9 /* LPRequestSenderTimer.m in Sources */,
 				6A714C0226F8B88A004A34A9 /* LeanplumUtils.swift in Sources */,
 				6A714B8A26F8B317004A34A9 /* LPRevenueManager.m in Sources */,

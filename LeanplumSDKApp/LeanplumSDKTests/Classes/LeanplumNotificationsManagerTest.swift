@@ -31,7 +31,9 @@ class LeanplumNotificationsManagerTest: XCTestCase {
                 "URL": "http://www.my-action.com",
                 "__name__": "Open URL"
             ]
-        ]
+        ],
+        "lp_sent_time": 12345.0,
+        "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97"
     ]
     
     // MARK: Muted Notifications    
@@ -49,25 +51,25 @@ class LeanplumNotificationsManagerTest: XCTestCase {
             ],
             "content-available": 1,
         ],
-        "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97",
+        "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97"
     ]
 
     let userInfoActionOpenURLMuteInsideTrue:[AnyHashable : Any] = [
         "_lpu": 6527720202764288,
-        "_lpx":     [
+        "_lpx": [
             "URL": "http://www.test.com",
             "__name__": "Open URL",
         ],
-        "lp_occurrence_id" : "ba77fe0a-d020-4a34-a79b-d388232deee3",
+        "lp_occurrence_id" : "ba77fe0a-d020-4a34-a79b-d388232deee3"
     ]
 
     let userInfoNoActionMuteInsideFalse:[AnyHashable : Any] = [
         "_lpn": 6527720202764288,
-        "_lpx":     [
+        "_lpx": [
             "__name__": "",
         ],
         "apns-push-type": "alert",
-        "lp_occurrence_id": "c5231787-4514-491b-b943-b99e9d9f36a0",
+        "lp_occurrence_id": "c5231787-4514-491b-b943-b99e9d9f36a0"
     ]
 
     // MARK: Setup and Teardown
@@ -173,8 +175,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "LeanplumShouldHandleNotificationBlock")
         
         let shouldHandleBlock:LeanplumShouldHandleNotificationBlock = { (userInfo, handler) in
-            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo[NotificationTestHelper.occurrenceIdKey]),
-                           String(describing: userInfo[NotificationTestHelper.occurrenceIdKey]))
+            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_OCCURRENCE_ID]),
+                           String(describing: userInfo[LP_KEY_PUSH_OCCURRENCE_ID]))
             onRunActionNamedExpectation.fulfill()
         }
         
@@ -203,6 +205,48 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
         
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
+    }
+    
+    func test_track_delivery() {
+        LPRequestFactory.swizzle_methods()
+        LPRequestSender.swizzle_methods()
+        
+        let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
+        LPRequestSender.validate_request { method, apiMethod, params in
+            XCTAssertEqual(apiMethod, "track")
+            XCTAssertEqual(params?["event"] as? String, PUSH_DELIVERED_EVENT_NAME)
+            
+            let str = params?["params"] as? String
+            guard let paramsStr = str else {
+                XCTFail("Request has no parameters")
+                return true
+            }
+            // The params come as a JSON string
+            var eventParams = [String:String]()
+            paramsStr
+                .replacingOccurrences(of: "{", with: "")
+                .replacingOccurrences(of: "}", with: "")
+                .replacingOccurrences(of: "\"", with: "")
+                .components(separatedBy: ",")
+                .forEach { str in
+                    let keyValue = str.components(separatedBy: ":")
+                    eventParams[keyValue[0]] = keyValue[1]
+                }
+            
+            XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_CHANNEL], DEFAULT_PUSH_CHANNEL)
+            XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_MESSAGE_ID],
+                           LeanplumUtils.messageIdFromUserInfo(LeanplumNotificationsManagerTest.userInfo))
+            XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_OCCURRENCE_ID],
+                           LeanplumUtils.getNotificationId(LeanplumNotificationsManagerTest.userInfo))
+            XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_SENT_TIME]!),
+                           LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
+                        
+            onRequestExpectation.fulfill()
+            return true
+        }
+        
+        Leanplum.notificationsManager().trackDelivery(userInfo: LeanplumNotificationsManagerTest.userInfo)
+        wait(for: [onRequestExpectation], timeout: timeout)
     }
     
     /**

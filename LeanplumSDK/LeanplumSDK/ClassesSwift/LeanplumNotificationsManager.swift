@@ -64,6 +64,7 @@ import Foundation
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
         LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. MessageId: @%, Id: %@", isForeground ? "Foreground" : "Background", messageId, LeanplumUtils.getNotificationId(userInfo))
         
+        trackDelivery(userInfo: userInfo)
         if isForeground {
             if !LeanplumUtils.isMuted(userInfo) {
                 showNotificationInForeground(userInfo: userInfo)
