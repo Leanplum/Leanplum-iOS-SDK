@@ -17,6 +17,12 @@ extension LeanplumNotificationsManager {
             return
         }
         
+        // We cannot consistently track delivery for local notifications
+        // Do not track
+        guard userInfo[LP_KEY_LOCAL_NOTIF] == nil else {
+            return
+        }
+        
         var args = [String:Any]()
         args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = LeanplumUtils.messageIdFromUserInfo(userInfo)
         args[LP_KEY_PUSH_METRIC_OCCURRENCE_ID] = userInfo[LP_KEY_PUSH_OCCURRENCE_ID]

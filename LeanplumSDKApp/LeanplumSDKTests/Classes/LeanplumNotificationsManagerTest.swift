@@ -244,7 +244,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
                            LeanplumUtils.messageIdFromUserInfo(LeanplumNotificationsManagerTest.userInfo))
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_OCCURRENCE_ID],
                            LeanplumUtils.getNotificationId(LeanplumNotificationsManagerTest.userInfo))
-            XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_SENT_TIME]!),
+            XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_METRIC_SENT_TIME]!),
                            LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
                         
             onRequestExpectation.fulfill()
@@ -253,6 +253,28 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         
         Leanplum.notificationsManager().trackDelivery(userInfo: LeanplumNotificationsManagerTest.userInfo)
         wait(for: [onRequestExpectation], timeout: timeout)
+    }
+    
+    func test_not_track_delivery_local() {
+        LPRequestFactory.swizzle_methods()
+        LPRequestSender.swizzle_methods()
+        
+        let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
+        LPRequestSender.validate_request { method, apiMethod, params in
+            XCTFail("Push Delivery must not be tracked for local notifications")
+            onRequestExpectation.fulfill()
+            return true
+        }
+        
+        let localUserInfo:[AnyHashable : Any] = [
+            "_lpm": 1234567890,
+            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97",
+            "_lpl":true
+        ]
+        
+        Leanplum.notificationsManager().trackDelivery(userInfo: localUserInfo)
+        let result = XCTWaiter.wait(for: [onRequestExpectation], timeout: 2.0)
+        XCTAssertEqual(result, XCTWaiter.Result.timedOut)
     }
     
     /**

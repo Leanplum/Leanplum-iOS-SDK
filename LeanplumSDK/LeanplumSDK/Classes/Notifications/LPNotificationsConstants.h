@@ -20,6 +20,7 @@ static NSString *LP_KEY_PUSH_ACTION = @"_lpx";
 static NSString *LP_KEY_PUSH_CUSTOM_ACTIONS = @"_lpc";
 static NSString *LP_KEY_PUSH_OCCURRENCE_ID = @"lp_occurrence_id";
 static NSString *LP_KEY_PUSH_SENT_TIME = @"lp_sent_time";
+static NSString *LP_KEY_LOCAL_NOTIF = @"_lpl";
 
 static NSString *LP_KEY_PUSH_METRIC_SENT_TIME = @"sentTime";
 static NSString *LP_KEY_PUSH_METRIC_OCCURRENCE_ID = @"occurrenceId";
