@@ -45,13 +45,6 @@
 
 @end
 
-//@interface LPPushNotificationsHandler(UnitTest)
-//
-//- (void)maybePerformNotificationActions:(NSDictionary *)userInfo action:(NSString *)action
-//                                 active:(BOOL)active;
-//
-//@end
-
 @interface LPActionContext(UnitTest)
 
 + (LPActionContext *)actionContextWithName:(NSString *)name

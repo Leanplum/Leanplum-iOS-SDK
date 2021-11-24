@@ -29,10 +29,13 @@ import Foundation
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
                 if let error = error {
                     // Handle the error here.
-                    print("Error: \(error)")
+                    LeanplumUtils.lpLog(type: .error, format: "Error: %@", error.localizedDescription)
                 }
                 
-                //Register for remote notificaiton to create and send push token to leanplum
+                //Register for remote notificaiton to create and send push token to server
+                //no metter if the request was granted or has error, push token will be generated
+                //and later if user decides to go into the settings and enables push notificaitons
+                //we will have token and will only update push types
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
@@ -49,7 +52,7 @@ import Foundation
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .provisional]) { granted, error in
             if let error = error {
                 // Handle the error here.
-                print("Error: \(error)")
+                LeanplumUtils.lpLog(type: .error, format: "Error: %@", error.localizedDescription)
             }
             
             DispatchQueue.main.async {
@@ -57,20 +60,6 @@ import Foundation
                 
             }
         }
-    }
-    
-    @objc public func isUNUserNotificationCenterDelegateNil() -> Bool {
-        if #available(iOS 10.0, *) {
-            return UNUserNotificationCenter.current().delegate == nil
-        }
-        return true
-    }
-    
-    @objc public func isRemoteNotificationsBackgroundModeEnabled() -> Bool {
-        if let backgroundModes = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String] {
-            return backgroundModes.firstIndex(of: "remote-notification") != nil
-        }
-        return false
     }
     
     @objc public func pushToken() -> String? {
@@ -95,7 +84,7 @@ import Foundation
         return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, appId, userId, deviceId)
     }
     
-    func removePushToken() {
+    @objc public func removePushToken() {
         guard let key = pushTokenKey() else {
             return
         }

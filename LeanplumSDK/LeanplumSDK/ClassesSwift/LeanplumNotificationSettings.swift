@@ -52,6 +52,13 @@ class LeanplumNotificationSettings {
         UserDefaults.standard.setValue(settings, forKey: key)
     }
     
+    func removeSettings() {
+        guard let key = self.leanplumUserNotificationSettingsKey() else {
+            return
+        }
+        UserDefaults.standard.removeObject(forKey: key)
+    }
+    
     private func saveSettings(_ settings: [AnyHashable: Any], updateToServer: Bool) {
         update(settings)
         if updateToServer {
@@ -67,7 +74,7 @@ class LeanplumNotificationSettings {
                     if let pushToken = Leanplum.notificationsManager().pushToken() {
                         deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken
                     }
-                    let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)//TODO: check if immediate
+                    let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)
                     LPRequestSender.sharedInstance().send(request)
                 }
             }
@@ -114,7 +121,8 @@ class LeanplumNotificationSettings {
         }
     }
     
-    //Get settings for os befor iOS 10
+    //method for retrieving notification settings from UIApplication
+    //used for iOS 9 devices (older then iOS 10)
     private func getSettingsFromUIApplication() -> [AnyHashable: Any] {
         guard let settings = UIApplication.shared.currentUserNotificationSettings?.dictionary else {
             return [:]

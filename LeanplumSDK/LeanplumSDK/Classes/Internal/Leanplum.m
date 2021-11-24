@@ -417,9 +417,12 @@ void leanplumExceptionHandler(NSException *exception);
             [params addEntriesFromDictionary:set];
         }
         
-        //TODO: do we want to remove values with old key first?
+        //Clean UserDefaults before changing deviceId because it is used to generate key
+        [[Leanplum notificationsManager] removePushToken];
+        [[Leanplum notificationsManager] removeNotificaitonSettings];
         
         // Change the LPAPIConfig after getting the push token and settings
+        // and after cleaning UserDefaults
         // The LPAPIConfig value is used in retrieving them
         [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
         [[LPVarCache sharedCache] saveDiffs];
@@ -1103,8 +1106,12 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    [[Leanplum notificationsManager] updateNotificationSettings:nil];
+                    //call update notificaiton settings to check if values are changed.
+                    //if they are changed the new valeus will be updated to server as well
+                    [[Leanplum notificationsManager] updateNotificationSettings];
+        
                     [Leanplum resume];
+        
                     // Used for push notifications iOS 9
                     [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
                     [self maybePerformActions:@[@"resume"]

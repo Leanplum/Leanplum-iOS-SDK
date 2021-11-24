@@ -25,12 +25,16 @@ import Foundation
         notificationSettings.setUp()
     }
     
-    @objc public func updateNotificationSettings(_ settings: [AnyHashable: Any]? = nil) {
-        if let settings = settings {
-            notificationSettings.update(settings)
-        } else {
-            notificationSettings.updateSettings?()
-        }
+    @objc public func updateNotificationSettings() {
+        notificationSettings.updateSettings?()
+    }
+    
+    @objc public func updateNotificationSettings(_ settings: [AnyHashable: Any]) {
+        notificationSettings.update(settings)       
+    }
+    
+    @objc public func removeNotificaitonSettings() {
+        notificationSettings.removeSettings()
     }
     
     @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
@@ -67,7 +71,7 @@ import Foundation
             if !deviceAttributeParams.isEmpty {
                 Leanplum.onStartResponse { success in
                     if success {
-                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams)//TODO: immediate
+                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams).andRequestType(.Immediate)
                         LPRequestSender.sharedInstance().send(requst)
                     }
                 }
