@@ -29,8 +29,8 @@ import Foundation
         notificationSettings.updateSettings?()
     }
     
-    @objc public func updateNotificationSettings(_ settings: [AnyHashable: Any]) {
-        notificationSettings.update(settings)       
+    @objc public func saveNotificationSettings(_ settings: [AnyHashable: Any]) {
+        notificationSettings.save(settings)       
     }
     
     @objc public func removeNotificaitonSettings() {

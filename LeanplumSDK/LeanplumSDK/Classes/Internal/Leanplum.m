@@ -429,7 +429,7 @@ void leanplumExceptionHandler(NSException *exception);
         
         // Update the token and settings now that the key is different
         [[Leanplum notificationsManager] updatePushToken:pushToken];
-        [[Leanplum notificationsManager] updateNotificationSettings:settings];
+        [[Leanplum notificationsManager] saveNotificationSettings:settings];
         
         
         LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];

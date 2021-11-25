@@ -30,7 +30,7 @@ class LeanplumNotificationSettings {
                 }
                 let changed = self.checkIfSettingsAreChanged(newSettings: settings_)
                 if changed {
-                    self.saveSettings(settings_, updateToServer: updateToServer)
+                    self.updateSettings(settings_, updateToServer: updateToServer)
                 }
                 completionHandler?(settings_, changed)
             }
@@ -39,13 +39,13 @@ class LeanplumNotificationSettings {
             let settings = getSettingsFromUIApplication()
             let changed = checkIfSettingsAreChanged(newSettings: settings)
             if changed {
-                saveSettings(settings, updateToServer: updateToServer)
+                updateSettings(settings, updateToServer: updateToServer)
             }
             completionHandler?(settings, changed)
         }
     }
     
-    func update(_ settings: [AnyHashable: Any]) {
+    func save(_ settings: [AnyHashable: Any]) {
         guard let key = self.leanplumUserNotificationSettingsKey() else {
             return
         }
@@ -59,8 +59,8 @@ class LeanplumNotificationSettings {
         UserDefaults.standard.removeObject(forKey: key)
     }
     
-    private func saveSettings(_ settings: [AnyHashable: Any], updateToServer: Bool) {
-        update(settings)
+    private func updateSettings(_ settings: [AnyHashable: Any], updateToServer: Bool) {
+        save(settings)
         if updateToServer {
             updateSettingsToServer(settings)
         }
