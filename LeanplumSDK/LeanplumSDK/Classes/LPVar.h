@@ -27,6 +27,7 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^LeanplumVariablesChangedBlock)(void);
+typedef void (^LeanplumForceContentUpdateBlock)(BOOL success);
 
 @class LPVar;
 
