@@ -8,7 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "LPRegisterDevice.h"
 #import "LPActionManager.h"
-
+@class LeanplumNotificationSettings;
 @interface LPInternalState : NSObject
 
 @property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks, *startIssuedBlocks, *messageDisplayedBlocks;
@@ -22,6 +22,7 @@
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
 @property(assign, nonatomic) BOOL isVariantDebugInfoEnabled;
 @property(assign, nonatomic) BOOL calledHandleNotification;
+@property(strong, nonatomic) LeanplumNotificationSettings *notificationSettings;
 
 + (LPInternalState *)sharedState;
 

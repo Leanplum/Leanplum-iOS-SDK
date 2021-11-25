@@ -27,7 +27,6 @@
 #import <Foundation/Foundation.h>
 #import "LPContextualValues.h"
 #import <UserNotifications/UserNotifications.h>
-#import "LPPushNotificationsManager.h"
 #import "LPLocalNotificationsManager.h"
 
 NS_ASSUME_NONNULL_BEGIN

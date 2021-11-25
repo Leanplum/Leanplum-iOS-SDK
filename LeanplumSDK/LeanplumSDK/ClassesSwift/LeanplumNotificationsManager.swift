@@ -16,9 +16,78 @@ import Foundation
     @objc
     public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     
+    private var notificationSettings: LeanplumNotificationSettings
+    
     @objc
     public override init() {
         proxy = LeanplumPushNotificationsProxy()
+        notificationSettings = LeanplumNotificationSettings()
+        notificationSettings.setUp()
+    }
+    
+    @objc public func updateNotificationSettings() {
+        notificationSettings.updateSettings?()
+    }
+    
+    @objc public func saveNotificationSettings(_ settings: [AnyHashable: Any]) {
+        notificationSettings.save(settings)       
+    }
+    
+    @objc public func removeNotificaitonSettings() {
+        notificationSettings.removeSettings()
+    }
+    
+    @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
+        notificationSettings.getSettings(completionHandler: completionHandler)
+    }
+    
+    @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
+        disableAskToAsk()
+        
+        let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
+        
+        var deviceAttributeParams: [AnyHashable: Any] = [:]
+        
+        let existingToken = self.pushToken()
+        if existingToken == nil || existingToken != formattedToken {
+            updatePushToken(formattedToken)
+            deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
+        }
+        
+        
+        notificationSettings.getSettings { [weak self] settings, areChanged in
+            guard let self = self else { return }
+            if areChanged {
+                if let settings = self.notificationSettingsToRequestParams(settings) {
+                    let result = Array(settings.keys).reduce(deviceAttributeParams) { (dict, key) -> [AnyHashable: Any] in
+                        var dict = dict
+                        dict[key] = settings[key] as Any?
+                        return dict
+                    }
+                    deviceAttributeParams = result
+                }
+            }
+            
+            if !deviceAttributeParams.isEmpty {
+                Leanplum.onStartResponse { success in
+                    if success {
+                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams).andRequestType(.Immediate)
+                        LPRequestSender.sharedInstance().send(requst)
+                    }
+                }
+            }
+        }
+    }
+    
+    @objc public func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
+        disableAskToAsk()
+        removePushToken()
+    }
+    
+    @objc(didRegisterUserNotificationSettings:)
+    public func didRegister(_ settings: UIUserNotificationSettings) {
+        disableAskToAsk()
+        notificationSettings.getSettings()
     }
     
     @objc(notificationOpened:action:)
@@ -30,7 +99,14 @@ import Foundation
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
         let actionName = isDefaultAction ? action : "iOS options.Custom actions.\(action)"
         
-        var context:ActionContext
+        let downloadFilesAndRunAction: (ActionContext) -> () = { context in
+            context.maybeDownloadFiles()
+            // Wait for Leanplum start so action responders are registered
+            Leanplum.onStartIssued {
+                context.runTrackedAction(name: actionName)
+            }
+        }
+        
         if LeanplumUtils.areActionsEmbedded(userInfo) {
             var args:[AnyHashable : Any]
             if isDefaultAction {
@@ -47,16 +123,14 @@ import Foundation
                     ]
                 ]
             }
-            context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
+            let context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
             context.preventRealtimeUpdating = true
+            downloadFilesAndRunAction(context)
         } else {
-            // TODO: check if the message exists or needs FCU
-            context = Leanplum.createActionContext(forMessageId: messageId)
-        }
-        context.maybeDownloadFiles()
-        // Wait for Leanplum start so action responders are registered
-        Leanplum.onStartIssued {
-            context.runTrackedAction(name: actionName)
+            requireMessageContentWithMessageId(messageId) {
+                let context = Leanplum.createActionContext(forMessageId: messageId)
+                downloadFilesAndRunAction(context)
+            }
         }
     }
     
@@ -70,7 +144,7 @@ import Foundation
             }
         } else {
             if !LeanplumUtils.areActionsEmbedded(userInfo) {
-                // TODO: check if notification action is not embedded and needs FCU / Prefetch
+                requireMessageContentWithMessageId(messageId)
             }
         }
     }
