@@ -405,26 +405,36 @@ void leanplumExceptionHandler(NSException *exception);
         LP_PARAM_DEVICE_ID: deviceId
     } mutableCopy];
     
-    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
+    NSString *pushToken = [[Leanplum notificationsManager] pushToken];
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
-
-    NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
-    if (settings) {
-        [params addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
-    }
     
-    // Change the LPAPIConfig after getting the push token and settings
-    // The LPAPIConfig value is used in retrieving them
-    [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
-    [[LPVarCache sharedCache] saveDiffs];
-    // Update the token and settings now that the key is different
-    [[LPPushNotificationsManager sharedManager] updatePushToken:pushToken];
-    [[[LPPushNotificationsManager sharedManager] handler] updateUserNotificationSettings:settings];
-    
-    LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
-    [[LPRequestSender sharedInstance] send:request];
+    [[Leanplum notificationsManager] getNotificationSettingsWithCompletionHandler:^(NSDictionary * _Nonnull settings, BOOL areChanged) {
+        if (areChanged) {
+            //add in params
+            NSDictionary *set = [[Leanplum notificationsManager] notificationSettingsToRequestParams:settings];
+            [params addEntriesFromDictionary:set];
+        }
+        
+        //Clean UserDefaults before changing deviceId because it is used to generate key
+        [[Leanplum notificationsManager] removePushToken];
+        [[Leanplum notificationsManager] removeNotificaitonSettings];
+        
+        // Change the LPAPIConfig after getting the push token and settings
+        // and after cleaning UserDefaults
+        // The LPAPIConfig value is used in retrieving them
+        [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+        [[LPVarCache sharedCache] saveDiffs];
+        
+        // Update the token and settings now that the key is different
+        [[Leanplum notificationsManager] updatePushToken:pushToken];
+        [[Leanplum notificationsManager] saveNotificationSettings:settings];
+        
+        
+        LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
+        [[LPRequestSender sharedInstance] send:request];
+    }];
 }
 
 + (void)syncResourcesAsync:(BOOL)async
@@ -942,7 +952,7 @@ void leanplumExceptionHandler(NSException *exception);
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
     
     // Push token.
-    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
+    NSString *pushToken = [[Leanplum notificationsManager] pushToken];
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
@@ -1096,16 +1106,12 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                    if ([[UIApplication sharedApplication]
-                            respondsToSelector:@selector(currentUserNotificationSettings)]) {
-                        [[LPPushNotificationsManager sharedManager].handler sendUserNotificationSettingsIfChanged:
-                                                             [[UIApplication sharedApplication]
-                                                                 currentUserNotificationSettings]];
-                    }
-#pragma clang diagnostic pop
+                    //call update notificaiton settings to check if values are changed.
+                    //if they are changed the new valeus will be updated to server as well
+                    [[Leanplum notificationsManager] updateNotificationSettings];
+        
                     [Leanplum resume];
+        
                     // Used for push notifications iOS 9
                     [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
                     [self maybePerformActions:@[@"resume"]
@@ -1615,7 +1621,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didRegisterForRemoteNotificationsWithDeviceToken:token];
+        [[Leanplum notificationsManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
     }
     else
     {
@@ -1629,7 +1635,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didFailToRegisterForRemoteNotificationsWithError:error];
+        [[Leanplum notificationsManager] didFailToRegisterForRemoteNotificationsWithError:error];
     }
     else
     {
@@ -1691,7 +1697,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didRegisterUserNotificationSettings:notificationSettings];
+        [[Leanplum notificationsManager] didRegisterUserNotificationSettings:notificationSettings];
     }
     else
     {

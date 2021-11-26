@@ -18,7 +18,6 @@
 		075AB0962684A1A4007CA1BD /* Leanplum-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */; };
 		075AB10B2684AAD9007CA1BD /* LPJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */; };
 		075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */; };
-		075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */; };
 		075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */; };
 		075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E22684AAD8007CA1BD /* LPInboxTest.m */; };
 		075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */; };
@@ -36,7 +35,6 @@
 		075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */; };
 		075AB11E2684AAD9007CA1BD /* LPCountAggregatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */; };
 		075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */; };
-		075AB1202684AAD9007CA1BD /* LPPushNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */; };
 		075AB1212684AAD9007CA1BD /* LPRequestSenderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */; };
 		075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */; };
 		075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */; };
@@ -174,7 +172,6 @@
 		075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "Leanplum-Info.plist"; path = "LeanplumSDKTests/Supporting Files/Leanplum-Info.plist"; sourceTree = SOURCE_ROOT; };
 		075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
 		075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAppIconManagerTest.m; sourceTree = "<group>"; };
-		075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNotificationsManagerTest.m; sourceTree = "<group>"; };
 		075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		075AB0E22684AAD8007CA1BD /* LPInboxTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInboxTest.m; sourceTree = "<group>"; };
 		075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSecuredVarsTest.m; sourceTree = "<group>"; };
@@ -192,7 +189,6 @@
 		075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
 		075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregatorTest.m; sourceTree = "<group>"; };
 		075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNetworkOperationTest.m; sourceTree = "<group>"; };
-		075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsManagerTest.m; sourceTree = "<group>"; };
 		075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTest.m; sourceTree = "<group>"; };
 		075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionContextTest.m; sourceTree = "<group>"; };
 		075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFileManagerTest.m; sourceTree = "<group>"; };
@@ -385,9 +381,7 @@
 				075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */,
 				07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */,
 				075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */,
-				075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */,
 				075AB1072684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m */,
-				075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */,
 				075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */,
 				075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */,
 				075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */,
@@ -760,7 +754,6 @@
 				075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */,
 				075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */,
 				075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */,
-				075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */,
 				075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */,
 				07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */,
 				075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */,
@@ -795,7 +788,6 @@
 				075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */,
 				075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */,
 				075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */,
-				075AB1202684AAD9007CA1BD /* LPPushNotificationsManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
