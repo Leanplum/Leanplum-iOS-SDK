@@ -213,11 +213,48 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
+    /**
+     * Tests mute inside app correctly mutes notifications
+     */
+    func test_mute_inside_app() {
+        XCTAssertFalse(LeanplumUtils.isMuted(LeanplumNotificationsManagerTest.userInfo))
+        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideTrue))
+        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideFalse))
+        XCTAssertTrue(LeanplumUtils.isMuted(userInfoActionOpenURLMuteInsideTrue))
+    }
+    
+    // MARK: Tests Delivery Tracking
     func test_track_delivery() {
+        class LeanplumNotificationsManagerDeliveryMock: LeanplumNotificationsManager {
+            public var deliveryInvocations = 0
+            override func trackDelivery(userInfo: [AnyHashable : Any]) {
+                self.deliveryInvocations += 1
+            }
+        }
+        
+        let userInfo:[AnyHashable : Any] = [
+            "_lpm": 1234567890,
+            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12"
+        ]
+
+        let mock = LeanplumNotificationsManagerDeliveryMock()
+        mock.notificationOpened(userInfo: userInfo)
+        XCTAssertEqual(mock.deliveryInvocations, 0)
+        mock.notificationReceived(userInfo: userInfo, isForeground: false)
+        XCTAssertEqual(mock.deliveryInvocations, 1)
+        mock.notificationReceived(userInfo: userInfo, isForeground: true)
+        XCTAssertEqual(mock.deliveryInvocations, 2)
+    }
+    
+    /**
+     * Tests Push Delivered event is tracked with the correct params
+     */
+    func test_track_delivery_req_params() {
         LPRequestFactory.swizzle_methods()
         LPRequestSender.swizzle_methods()
         
         let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
+        
         LPRequestSender.validate_request { method, apiMethod, params in
             XCTAssertEqual(apiMethod, "track")
             XCTAssertEqual(params?["event"] as? String, PUSH_DELIVERED_EVENT_NAME)
@@ -277,14 +314,27 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         XCTAssertEqual(result, XCTWaiter.Result.timedOut)
     }
     
-    /**
-     * Tests mute inside app correctly mutes notifications
-     */
-    func test_mute_inside_app() {
-        XCTAssertFalse(LeanplumUtils.isMuted(LeanplumNotificationsManagerTest.userInfo))
-        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideTrue))
-        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideFalse))
-        XCTAssertTrue(LeanplumUtils.isMuted(userInfoActionOpenURLMuteInsideTrue))
+    func test_not_track_delivery_disabled() {
+        LPRequestFactory.swizzle_methods()
+        LPRequestSender.swizzle_methods()
+        
+        let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
+        LPRequestSender.validate_request { method, apiMethod, params in
+            XCTFail("Push Delivery must not be tracked when tracking is disabled")
+            onRequestExpectation.fulfill()
+            return true
+        }
+        
+        let userInfo:[AnyHashable : Any] = [
+            "_lpm": 1234567890,
+            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12"
+        ]
+        
+        Leanplum.setPushDeliveryTrackingEnabled(false)
+        Leanplum.notificationsManager().trackDelivery(userInfo: userInfo)
+        let result = XCTWaiter.wait(for: [onRequestExpectation], timeout: 2.0)
+        XCTAssertEqual(result, XCTWaiter.Result.timedOut)
+        Leanplum.setPushDeliveryTrackingEnabled(true)
     }
     
     // MARK: View Controller Helper Functions

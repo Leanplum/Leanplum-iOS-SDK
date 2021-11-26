@@ -1748,6 +1748,13 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
++ (void)setPushDeliveryTrackingEnabled:(BOOL)enabled
+{
+    LP_TRY
+    [Leanplum notificationsManager].isPushDeliveryTrackingEnabled = enabled;
+    LP_END_TRY
+}
+
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName
 {
     if (!responder) {

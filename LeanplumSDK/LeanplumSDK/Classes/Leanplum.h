@@ -462,12 +462,19 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
                  completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
-/*
+/**
  * Block to call that decides whether a notification should be displayed when it is
  * received while the app is running, and the notification is not muted.
  * Overrides the default behavior of showing an alert view with the notification message.
  */
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block;
+
+/**
+ * Sets if a Deliver event should be tracked when a Push Notification is received.
+ * Default value is true - event is tracked.
+ * @see PUSH_DELIVERED_EVENT_NAME for the event name
+ */
++ (void)setPushDeliveryTrackingEnabled:(BOOL)enabled;
 
 /**
  * @{
