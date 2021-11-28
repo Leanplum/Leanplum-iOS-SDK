@@ -27,6 +27,23 @@
     }
 }
 
++ (void)unswizzle_methods
+{
+    NSError *error;
+    bool success = [LPSwizzle swizzleClassMethod:@selector(swizzle_createGetForApiMethod:params:)
+                                 withClassMethod:@selector(createGetForApiMethod:params:)
+                                       error:&error
+                                       class:[LPRequestFactory class]];
+    success &= [LPSwizzle swizzleClassMethod:@selector(swizzle_createPostForApiMethod:params:)
+                             withClassMethod:@selector(createPostForApiMethod:params:)
+                                       error:&error
+                                       class:[LPRequestFactory class]];
+    if (!success || error) {
+        NSLog(@"Failed unswizzling methods for LPRequestFactory: %@", error);
+    }
+}
+
+
 + (LPRequest *)swizzle_createGetForApiMethod:(NSString *) apiMethod_ params:(NSDictionary *) params_
 {
     if ([LPRequestSender sharedInstance].requestCallback != nil)
