@@ -78,9 +78,20 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         VarCache.shared().applyVariableDiffs(nil, messages: nil, variants: nil, localCaps: nil, regions: nil, variantDebugInfo: nil, varsJson: nil, varsSignature: nil)
     }
     
-    override class func tearDown() {
+    override func tearDown() {
         LPInternalState.shared().issuedStart = false
         LeanplumNotificationsManagerTest.showExecuted = false
+    }
+    
+    func setUp_request() {
+        LPRequestFactory.swizzle_methods()
+        LPRequestSender.swizzle_methods()
+    }
+    
+    func tearDown_request() {
+        LPRequestFactory.unswizzle_methods()
+        LPRequestSender.reset()
+        LPRequestSender.unswizzle_methods()
     }
     
     // MARK: LPUIAlert:show mock
@@ -151,7 +162,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
      */
     func test_notification_foreground_alert_open() {
         let onRunActionNamedExpectation = expectation(description: "Notification Alert -> Alert View -> Open Action")
-        
+        let dismissControllerExp = expectation(description: "Dismiss Controller")
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
             let lpx = LeanplumNotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
@@ -172,9 +183,12 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         dismissAllPresentedControllers(block: {
             Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
             self.getTopController()?.tapButton(atIndex: 1)
+            self.getTopController()?.dismiss(animated: false, completion: {
+                dismissControllerExp.fulfill()
+            })
         })
         
-        wait(for: [onRunActionNamedExpectation], timeout: timeout)
+        wait(for: [onRunActionNamedExpectation, dismissControllerExp], timeout: timeout)
     }
     
     func test_notification_foreground_custom_block() {
@@ -250,15 +264,14 @@ class LeanplumNotificationsManagerTest: XCTestCase {
      * Tests Push Delivered event is tracked with the correct params
      */
     func test_track_delivery_req_params() {
-        LPRequestFactory.swizzle_methods()
-        LPRequestSender.swizzle_methods()
-        
+        setUp_request()
+
         let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
-        
+
         LPRequestSender.validate_request { method, apiMethod, params in
             XCTAssertEqual(apiMethod, "track")
             XCTAssertEqual(params?["event"] as? String, PUSH_DELIVERED_EVENT_NAME)
-            
+
             let str = params?["params"] as? String
             guard let paramsStr = str else {
                 XCTFail("Request has no parameters")
@@ -283,58 +296,60 @@ class LeanplumNotificationsManagerTest: XCTestCase {
                            LeanplumUtils.getNotificationId(LeanplumNotificationsManagerTest.userInfo))
             XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_METRIC_SENT_TIME]!),
                            LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
-                        
+
             onRequestExpectation.fulfill()
             return true
         }
-        
+
+
         Leanplum.notificationsManager().trackDelivery(userInfo: LeanplumNotificationsManagerTest.userInfo)
         wait(for: [onRequestExpectation], timeout: timeout)
+        tearDown_request()
     }
     
     func test_not_track_delivery_local() {
-        LPRequestFactory.swizzle_methods()
-        LPRequestSender.swizzle_methods()
-        
+        setUp_request()
+
         let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
         LPRequestSender.validate_request { method, apiMethod, params in
             XCTFail("Push Delivery must not be tracked for local notifications")
             onRequestExpectation.fulfill()
             return true
         }
-        
+
         let localUserInfo:[AnyHashable : Any] = [
             "_lpm": 1234567890,
             "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97",
             "_lpl":true
         ]
-        
+
         Leanplum.notificationsManager().trackDelivery(userInfo: localUserInfo)
         let result = XCTWaiter.wait(for: [onRequestExpectation], timeout: 2.0)
         XCTAssertEqual(result, XCTWaiter.Result.timedOut)
+        tearDown_request()
     }
     
     func test_not_track_delivery_disabled() {
-        LPRequestFactory.swizzle_methods()
-        LPRequestSender.swizzle_methods()
-        
+        setUp_request()
+
         let onRequestExpectation = expectation(description: "Track Push Delivery Event Request")
         LPRequestSender.validate_request { method, apiMethod, params in
             XCTFail("Push Delivery must not be tracked when tracking is disabled")
             onRequestExpectation.fulfill()
             return true
         }
-        
+
         let userInfo:[AnyHashable : Any] = [
             "_lpm": 1234567890,
             "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12"
         ]
-        
+
         Leanplum.setPushDeliveryTrackingEnabled(false)
         Leanplum.notificationsManager().trackDelivery(userInfo: userInfo)
         let result = XCTWaiter.wait(for: [onRequestExpectation], timeout: 2.0)
         XCTAssertEqual(result, XCTWaiter.Result.timedOut)
         Leanplum.setPushDeliveryTrackingEnabled(true)
+        tearDown_request()
     }
     
     // MARK: View Controller Helper Functions
