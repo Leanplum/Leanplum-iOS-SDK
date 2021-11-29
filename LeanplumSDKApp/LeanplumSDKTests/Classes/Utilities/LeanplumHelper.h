@@ -42,6 +42,7 @@ extern NSInteger DISPATCH_WAIT_TIME;
 @interface LeanplumHelper : NSObject
 
 @property (class) NSString *lastErrorMessage;
+@property (class) id leanplumClassMock;
 
 /// called before starting any test, to swizzle methods
 + (void)setup_method_swizzling;
@@ -71,5 +72,9 @@ extern NSInteger DISPATCH_WAIT_TIME;
 + (void)dismissPresentedViewControllers;
 
 + (void)mockThrowErrorToThrow;
+
++ (void)stopMockThrowErrorToThrow;
+
++ (BOOL)swizzled;
 
 @end

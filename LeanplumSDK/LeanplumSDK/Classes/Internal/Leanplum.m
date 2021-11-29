@@ -744,6 +744,7 @@ void leanplumExceptionHandler(NSException *exception);
     LPInternalState *state = [LPInternalState sharedState];
     state.calledStart = NO;
     state.hasStarted = NO;
+    state.issuedStart = NO;
     state.hasStartedAndRegisteredAsDeveloper = NO;
     state.startSuccessful = NO;
     [state.startBlocks removeAllObjects];

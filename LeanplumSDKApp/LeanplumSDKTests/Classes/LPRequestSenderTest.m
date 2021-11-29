@@ -38,11 +38,17 @@
 {
     [super setUp];
     // Called only once to setup method swizzling.
-    [LeanplumHelper setup_method_swizzling];
+
+}
+
+- (void)setUp {
+    [LeanplumHelper setup_development_test];
+    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:YES];
 }
 
 - (void)tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
+    [LeanplumHelper clean_up];
 }
 
 - (void)testSend {
@@ -103,6 +109,7 @@
 }
 
 - (void)testSendIfConnected {
+    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:YES];
     LPRequest *request = [[LPRequest post:@"test" params:@{}] andRequestType:Immediate];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id requestSenderMock = OCMPartialMock(requestSender);
@@ -114,6 +121,8 @@
     OCMVerify([requestSenderMock sendRequests]);
 
     [requestSenderMock stopMocking];
+    [reachabilityMock stopMocking];
+    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
 }
 
 - (void)testSendIfNotConnected {
@@ -146,6 +155,8 @@
     OCMVerify([requestSender.engine enqueueOperation:opMock]);
     OCMVerify([opMock addData:datas[@"key"] forKey:@"key"]);
     OCMVerify([opMock addCompletionHandler:[OCMArg any] errorHandler:[OCMArg any]]);
+    
+    [opMock stopMocking];
 }
 
 @end

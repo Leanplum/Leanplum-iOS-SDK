@@ -43,6 +43,7 @@
 #import "Leanplum+Extensions.h"
 #import "LPRequest+Extension.h"
 #import "LPRequestSender+Categories.h"
+#import "LPRequestFactory+Extension.h"
 #import "LeanplumReachability+Category.h"
 #import <Leanplum/Leanplum-Swift.h>
 
@@ -86,16 +87,13 @@
 {
     [super setUp];
     // Called only once to setup method swizzling.
+    [LeanplumHelper clean_up];
     [LeanplumHelper setup_method_swizzling];
     [Leanplum_Reachability online:YES];
 }
 
 - (void)setUp {
     [super setUp];
-    
-    // Clear the set keys, required for plist testing
-    [[LPAPIConfig sharedConfig] setAppId:nil withAccessKey:nil];
-    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
 }
 
 - (void)tearDown {
@@ -103,6 +101,12 @@
     // Clean up after every test.
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
+}
+
++ (void)tearDown {
+    [super tearDown];
+    [LPRequestSender unswizzle_methods];
+    [LPRequestFactory unswizzle_methods];
 }
 
 /**
@@ -120,6 +124,7 @@
     XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
     XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    [mockLeanplum stopMocking];
 }
 
 /**
@@ -137,6 +142,7 @@
     XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
     XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    [mockLeanplum stopMocking];
 }
 
 /**
@@ -171,6 +177,7 @@
     [LeanplumHelper mockThrowErrorToThrow];
     XCTAssertThrows([Leanplum setAppEnvironment:@"staging"], @"Incorrect environment.");
     XCTAssertTrue([LeanplumHelper.lastErrorMessage containsString:@"Incorrect env parameter."]);
+    [LeanplumHelper stopMockThrowErrorToThrow];
 }
 
 /**
@@ -186,6 +193,7 @@
     
     XCTAssertThrows([Leanplum setAppEnvironment:kEnvProduction], @"Already called start.");
     XCTAssertTrue([LeanplumHelper.lastErrorMessage containsString:@"Leanplum already started. Call this method before [Leanplum start]."]);
+    [LeanplumHelper stopMockThrowErrorToThrow];
 }
 
 /**
@@ -201,6 +209,7 @@
     XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], nil);
     XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], nil);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
+    [mockLeanplum stopMocking];
 }
 
 /**
@@ -266,7 +275,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -308,7 +317,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -352,7 +361,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
         XCTAssertNotNil(params[@"locale"]);
@@ -375,10 +384,14 @@
  */
 - (void) test_complex_development_start
 {
+    XCTestExpectation *validate_request_expect = [self expectationWithDescription:@"validate_request_expect"];
+    XCTestExpectation *stub_response_expect = [self expectationWithDescription:@"stub_response_expect"];
+    XCTestExpectation *start_response_expect = [self expectationWithDescription:@"start_response_expect"];
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"complex_start_response.json", self.class);
+        [stub_response_expect fulfill];
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
@@ -393,14 +406,13 @@
                                         NSDictionary *params) {
         // Check api method first.
         XCTAssertEqualObjects(apiMethod, @"start");
-
         // Check if request has all params.
         XCTAssertTrue([params[@"city"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"country"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -408,21 +420,19 @@
         XCTAssertNotNil(params[@"timezone"]);
         XCTAssertNotNil(params[@"timezoneOffsetSeconds"]);
         XCTAssertNotNil(params[@"userAttributes"]);
+        [validate_request_expect fulfill];
         return YES;
     }];
 
     [LeanplumHelper setup_development_test];
 
     // Test user attributes.
-    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
     [Leanplum startWithUserId:@"john.smith" userAttributes:userAttributes
               responseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        dispatch_semaphore_signal(semaphor);
+        [start_response_expect fulfill];
     }];
-    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
-    XCTAssertTrue(timedOut == 0);
-
+    [self waitForExpectations:@[validate_request_expect,stub_response_expect,start_response_expect] timeout:10];
     XCTAssertTrue([Leanplum hasStarted]);
 }
 
@@ -452,7 +462,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -475,10 +485,12 @@
  */
 - (void) test_complex_production_start
 {
+    XCTestExpectation *stub_response_expect = [self expectationWithDescription:@"stub_response_expect"];
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"complex_start_response.json", self.class);
+        [stub_response_expect fulfill];
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
@@ -504,7 +516,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
         XCTAssertNotNil(params[@"locale"]);
@@ -519,15 +531,15 @@
     [LeanplumHelper setup_production_test];
 
     // Expectation for start handler.
-    XCTestExpectation *expect = [self expectationWithDescription:@"start_expecatation"];
+    XCTestExpectation *start_expecatation = [self expectationWithDescription:@"start_expecatation"];
 
     [Leanplum startWithUserId:@"john.smith" userAttributes:userAttributes
               responseHandler:^(BOOL success) {
         XCTAssertTrue(success);
-        [expect fulfill];
+        [start_expecatation fulfill];
     }];
     // Wait and verify.
-    [self waitForExpectationsWithTimeout:10 handler:nil];
+    [self waitForExpectations:@[stub_response_expect, start_expecatation, request_expectation] timeout:10];
     XCTAssertTrue([Leanplum hasStarted]);
 }
 
@@ -555,7 +567,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -581,7 +593,6 @@
  */
 - (void) test_start_with_attributes
 {
-    [LeanplumHelper clean_up];
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
@@ -612,7 +623,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -669,7 +680,7 @@
                 XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
                 XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
                 NSString* deviceModel = params[@"deviceModel"];
-                XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+                XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                               [deviceModel isEqualToString:@"iPhone Simulator"]);
                 XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
                 XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -732,7 +743,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -789,7 +800,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
@@ -840,7 +851,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"]
                             isEqualToString:[[UIDevice currentDevice] name]]);
@@ -924,6 +935,9 @@
                                         varsJson:nil
                                    varsSignature:nil];
     
+    
+    XCTestExpectation *expectResponse = [self expectationWithDescription:@"response"];
+    
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
@@ -938,6 +952,7 @@
         ]\
         }";
         NSData *data = [errorResponseJson dataUsingEncoding:NSUTF8StringEncoding];
+        [expectResponse fulfill];
         return [HTTPStubsResponse responseWithData:data statusCode:404 headers:nil];
     }];
     
@@ -959,6 +974,8 @@
     }];
     
     [self waitForExpectationsWithTimeout:5 handler:nil];
+    
+    [mockLeanplumClass stopMocking];
 }
 
 /**
@@ -1034,6 +1051,7 @@
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue([Leanplum hasStarted]);
+    [mockLeanplum stopMocking];
 }
 
 /**
@@ -1080,6 +1098,8 @@
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue([[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]);
+    
+    [mockLeanplum stopMocking];
 }
 
 /**
@@ -1121,7 +1141,6 @@
         XCTAssertEqual(outputDict[messageIdOne][@"countdown"], outputDict[messageIdOne][@"countdown"], @"Countdown not Equal");
     }];
     [Leanplum track:trackName];
-    [[LPOperationQueue serialQueue] waitUntilAllOperationsAreFinished];
     [Leanplum forceContentUpdate];
     XCTAssertTrue([Leanplum hasStarted]);
 }
@@ -1662,20 +1681,7 @@
  */
 - (void)test_advance
 {
-    // This stub have to be removed when start command is successfully executed.
-    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
-                                           ^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
-    }];
-
     XCTAssertTrue([LeanplumHelper start_development_test]);
-
-    // Remove stub after start is successful, so we don't capture requests from other methods.
-    [HTTPStubs removeStub:startStub];
 
     NSString *advanceName = @"advance to test";
     NSString *advanceInfo = @"advance info";
@@ -1683,6 +1689,9 @@
                                     @"advance_string": @"string"
                                     };
 
+    XCTestExpectation *advance_expectation =
+        [self expectationWithDescription:@"advance"];
+    
     // Validate advance with value and info request.
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
@@ -1690,10 +1699,13 @@
         XCTAssertEqualObjects(apiMethod, @"advance");
         // Check if request has all params.
         XCTAssertTrue([params[@"state"] isEqualToString:advanceName]);
+        [advance_expectation fulfill];
         return YES;
     }];
     [Leanplum advanceTo:advanceName];
 
+    XCTestExpectation *advanceInfo_expectation =
+        [self expectationWithDescription:@"advance_info"];
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
@@ -1701,9 +1713,13 @@
         // Check if request has all params.
         XCTAssertTrue([params[@"state"] isEqualToString:advanceName]);
         XCTAssertTrue([params[@"info"] isEqualToString:advanceInfo]);
+        [advanceInfo_expectation fulfill];
         return YES;
     }];
     [Leanplum advanceTo:advanceName withInfo:advanceInfo];
+    
+    XCTestExpectation *advanceParams_expectation =
+        [self expectationWithDescription:@"advance_params"];
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
@@ -1711,9 +1727,12 @@
         // Check if request has all params.
         XCTAssertTrue([params[@"state"] isEqualToString:advanceName]);
         XCTAssertEqualObjects([LPJSON JSONFromString:params[@"params"]], advanceParams);
+        [advanceParams_expectation fulfill];
         return YES;
     }];
     [Leanplum advanceTo:advanceName withParameters:advanceParams];
+    XCTestExpectation *advanceInfoParams_expectation =
+        [self expectationWithDescription:@"advance_info_params"];
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
         // Check api method first.
@@ -1722,9 +1741,12 @@
         XCTAssertTrue([params[@"state"] isEqualToString:advanceName]);
         XCTAssertTrue([params[@"info"] isEqualToString:advanceInfo]);
         XCTAssertEqualObjects([LPJSON JSONFromString:params[@"params"]], advanceParams);
+        [advanceInfoParams_expectation fulfill];
         return YES;
     }];
     [Leanplum advanceTo:advanceName withInfo:advanceInfo andParameters:advanceParams];
+    [self waitForExpectations:@[advance_expectation, advanceInfo_expectation,
+                                advanceParams_expectation, advanceInfoParams_expectation] timeout:5.0];
 }
 
 /**
@@ -2104,6 +2126,7 @@
     [Leanplum setNetworkTimeoutSeconds:-1 forDownloads:20];
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSeconds, timeout);
     XCTAssertEqual([LPConstantsState sharedState].networkTimeoutSecondsForDownloads, timeout);
+    [Leanplum setNetworkTimeoutSeconds:10 forDownloads:15];
 }
 
 - (void)testStartResponseShouldParseCounters
@@ -2282,6 +2305,7 @@
     [Leanplum triggerMessageDisplayed:actionContext];
 
     XCTAssertTrue(blockCalled);
+    [leanplumMock stopMocking];
 }
 
 /**
@@ -2361,7 +2385,7 @@
         XCTAssertTrue([params[@"location"] isEqualToString:@"(detect)"]);
         XCTAssertTrue([params[@"region"] isEqualToString:@"(detect)"]);
         NSString* deviceModel = params[@"deviceModel"];
-        XCTAssertTrue([deviceModel isEqualToString:@"iPhone"] ||
+        XCTAssertTrue([deviceModel containsString:@"iPhone"] ||
                       [deviceModel isEqualToString:@"iPhone Simulator"]);
         XCTAssertTrue([params[@"deviceName"] isEqualToString:[[UIDevice currentDevice] name]]);
         XCTAssertEqualObjects(@0, params[@"includeDefaults"]);
