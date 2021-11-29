@@ -105,8 +105,7 @@
 
 + (void)tearDown {
     [super tearDown];
-    [LPRequestSender unswizzle_methods];
-    [LPRequestFactory unswizzle_methods];
+    [LeanplumHelper restore_method_swizzling];
 }
 
 /**

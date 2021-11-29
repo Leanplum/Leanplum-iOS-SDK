@@ -238,4 +238,16 @@ static BOOL swizzled = NO;
     [[LeanplumHelper leanplumClassMock] stopMocking];
 }
 
++ (void) restore_method_swizzling
+{
+    [LPRequestSender unswizzle_methods];
+    [LPRequestFactory unswizzle_methods];
+    
+    [LPRequest unswizzle_methods];
+    [Leanplum_Reachability unswizzle_methods];
+    [LPNetworkOperation unswizzle_methods];
+    
+    swizzled = NO;
+}
+
 @end

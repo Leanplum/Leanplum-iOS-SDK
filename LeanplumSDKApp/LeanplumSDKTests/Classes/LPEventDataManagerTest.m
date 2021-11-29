@@ -68,6 +68,11 @@
     [HTTPStubs removeAllStubs];
 }
 
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
+}
+
 - (NSDictionary *)sampleData
 {
     return @{@"action":@"track", @"deviceId":@"123", @"userId":@"QA_TEST", @"client":@"ios",

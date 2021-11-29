@@ -77,4 +77,7 @@ extern NSInteger DISPATCH_WAIT_TIME;
 
 + (BOOL)swizzled;
 
+/// restore swizzled methods
++ (void)restore_method_swizzling;
+
 @end

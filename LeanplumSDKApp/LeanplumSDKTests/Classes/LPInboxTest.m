@@ -62,6 +62,11 @@
     [HTTPStubs removeAllStubs];
 }
 
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
+}
+
 /**
  * Tests inbox class. Mimics Newsfeed. Make sure both tests are identical.
  */
