@@ -29,6 +29,7 @@
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import "LeanplumHelper.h"
 #import "LPRequestSender+Categories.h"
+#import "LPRequestFactory+Extension.h"
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LeanplumReachability+Category.h"
@@ -55,7 +56,11 @@
     // Clean up after every test.
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
-    
+}
+
++ (void)tearDown
+{
+    [LeanplumHelper restore_method_swizzling];
 }
 
 - (void) test_start_offline

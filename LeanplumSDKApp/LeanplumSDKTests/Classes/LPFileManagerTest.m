@@ -32,6 +32,7 @@
 #import <Leanplum/LPFileManager.h>
 #import "LeanplumHelper.h"
 #import "LPRequestSender+Categories.h"
+#import "LPRequestFactory+Extension.h"
 #import "LPNetworkEngine+Category.h"
 #import <Leanplum/LPConstants.h>
 
@@ -56,6 +57,11 @@
     // Clean up after every test.
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
+}
+
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
 }
 
 /**

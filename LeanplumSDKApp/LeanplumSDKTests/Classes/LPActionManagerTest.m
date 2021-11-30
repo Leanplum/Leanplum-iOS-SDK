@@ -33,6 +33,7 @@
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
 #import "LPRequestSender+Categories.h"
+#import "LPRequestFactory+Extension.h"
 #import "LPNetworkEngine+Category.h"
 
 @interface LPActionManager (UnitTest)
@@ -67,6 +68,11 @@
 {
     [super tearDown];
     [LeanplumHelper clean_up];
+}
+
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
 }
 
 - (void)test_matched_trigger

@@ -30,6 +30,24 @@ static LPNetworkResponseBlock responseCallback;
        }
 }
 
++ (void)unswizzle_methods
+{
+    NSError *error;
+    bool success = [LPSwizzle swizzleMethod:@selector(swizzle_onResponse:)
+    withMethod:@selector(onResponse:)
+         error:&error
+         class:[LPRequest class]];
+    
+    success &= [LPSwizzle swizzleMethod:@selector(swizzle_createArgsDictionary)
+    withMethod:@selector(createArgsDictionary)
+         error:&error
+         class:[LPRequest class]];
+    
+    if (!success || error) {
+           NSLog(@"Failed unswizzling methods for LPRequest: %@", error);
+       }
+}
+
 - (void)swizzle_onResponse:(LPNetworkResponseBlock) response_
 {
     [self swizzle_onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {

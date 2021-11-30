@@ -41,6 +41,18 @@
     }
 }
 
++ (void)unswizzle_methods
+{
+    NSError *error;
+    bool success = [LPSwizzle swizzleMethod:@selector(swizzle_runSynchronously:)
+                                 withMethod:@selector(runSynchronously:)
+                                      error:&error
+                                      class:[LPNetworkOperation class]];
+    if (!success || error) {
+        NSLog(@"Failed swizzling methods for LPNetworkOperation: %@", error);
+    }
+}
+
 - (void)swizzle_runSynchronously:(BOOL)synchronous
 {
     [self swizzle_runSynchronously:YES];

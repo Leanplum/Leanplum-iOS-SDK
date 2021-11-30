@@ -5,3 +5,4 @@
 #import <Leanplum/LPNotificationsConstants.h>
 #import "LPRequestSender+Categories.h"
 #import "LPRequestFactory+Extension.h"
+#import "LPVarCache+Extensions.h"

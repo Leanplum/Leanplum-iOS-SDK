@@ -37,6 +37,7 @@
     [session setValue:@"SESSION" forKey:@"type"];
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"Local caps are parsed"];
+    [LeanplumHelper setup_production_test];
     [Leanplum startWithResponseHandler:^(BOOL success) {
         [HTTPStubs removeStub:startStub];
         
@@ -65,6 +66,7 @@
     [day setValue:@"DAY" forKey:@"type"];
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"Local caps are parsed"];
+    [LeanplumHelper setup_production_test];
     [Leanplum startWithResponseHandler:^(BOOL success) {
         [HTTPStubs removeStub:startStub];
         
@@ -93,6 +95,7 @@
     [week setValue:@"WEEK" forKey:@"type"];
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"Local caps are parsed"];
+    [LeanplumHelper setup_production_test];
     [Leanplum startWithResponseHandler:^(BOOL success) {
         [HTTPStubs removeStub:startStub];
         
@@ -131,6 +134,7 @@
     [week setValue:@"WEEK" forKey:@"type"];
     
     XCTestExpectation *expectation = [self expectationWithDescription:@"Local caps are parsed"];
+    [LeanplumHelper setup_production_test];
     [Leanplum startWithResponseHandler:^(BOOL success) {
         [HTTPStubs removeStub:startStub];
         

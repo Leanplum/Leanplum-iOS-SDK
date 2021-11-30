@@ -71,16 +71,20 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         "apns-push-type": "alert",
         "lp_occurrence_id": "c5231787-4514-491b-b943-b99e9d9f36a0"
     ]
-
+    
     // MARK: Setup and Teardown
     override func setUp() {
         LPInternalState.shared().issuedStart = true
+        Leanplum.Constants.shared().isDevelopmentModeEnabled = false
         VarCache.shared().applyVariableDiffs(nil, messages: nil, variants: nil, localCaps: nil, regions: nil, variantDebugInfo: nil, varsJson: nil, varsSignature: nil)
     }
     
     override func tearDown() {
         LPInternalState.shared().issuedStart = false
         LeanplumNotificationsManagerTest.showExecuted = false
+        VarCache.shared().reset()
+        VarCache.shared().initialize()
+        LPEventDataManager.deleteEvents(withLimit: LPEventDataManager.count())
     }
     
     func setUp_request() {
@@ -89,8 +93,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
     }
     
     func tearDown_request() {
-        LPRequestFactory.unswizzle_methods()
         LPRequestSender.reset()
+        LPRequestFactory.unswizzle_methods()
         LPRequestSender.unswizzle_methods()
     }
     
@@ -248,7 +252,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         
         let userInfo:[AnyHashable : Any] = [
             "_lpm": 1234567890,
-            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12"
+            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12",
+            "_lpx":[]
         ]
 
         let mock = LeanplumNotificationsManagerDeliveryMock()
@@ -320,7 +325,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let localUserInfo:[AnyHashable : Any] = [
             "_lpm": 1234567890,
             "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0b97",
-            "_lpl":true
+            "_lpl":true,
+            "_lpx":[]
         ]
 
         Leanplum.notificationsManager().trackDelivery(userInfo: localUserInfo)
@@ -341,7 +347,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
 
         let userInfo:[AnyHashable : Any] = [
             "_lpm": 1234567890,
-            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12"
+            "lp_occurrence_id": "5813dbe3-214d-4031-a3ad-a124b38e0a12",
+            "_lpx":[]
         ]
 
         Leanplum.setPushDeliveryTrackingEnabled(false)

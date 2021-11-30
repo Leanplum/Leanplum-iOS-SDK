@@ -146,6 +146,8 @@
              withContextualValues:self.mockContextualValues];
 
     XCTAssertTrue([calledMessageIds isEqualToSet:expectedMessageIds]);
+    
+    [mockLeanplum stopMocking];
 }
 
 - (void) test_single_message
@@ -267,6 +269,8 @@
     // Run Dismiss Action on 2 that will chain to 1.
     [context2 runActionNamed:@"Dismiss action"];
     XCTAssertTrue([chainedMessageId isEqual:@"1"]);
+    
+    [mockLeanplum stopMocking];
 }
 
 - (void) test_active_period_true

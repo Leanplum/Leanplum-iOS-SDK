@@ -59,20 +59,16 @@
                                       error:&error
                                       class:[LPRequestSender class]];
     if (!success || error) {
-        NSLog(@"Failed swizzling methods for LPRequestSender: %@", error);
+        LPLog(LPError, @"Failed swizzling methods for LPRequestSender: %@", error);
     }
 }
 
 + (void)unswizzle_methods
 {
-    NSError *error;
-    bool success = [LPSwizzle swizzleMethod:@selector(swizzle_sendNow:)
-                                 withMethod:@selector(sendNow:)
-                                      error:&error
-                                      class:[LPRequestSender class]];
-    if (!success || error) {
-        NSLog(@"Failed swizzling methods for LPRequestSender: %@", error);
-    }
+    Method mock = class_getInstanceMethod([LPRequestSender class], @selector(swizzle_sendNow:));
+    Method orig = class_getInstanceMethod([LPRequestSender class], @selector(sendNow:));
+    
+    method_exchangeImplementations(mock, orig);
 }
 
 - (void)swizzle_sendNow:(LPRequest *)request
