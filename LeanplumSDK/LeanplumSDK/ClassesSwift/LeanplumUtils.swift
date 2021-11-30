@@ -14,7 +14,7 @@ public class LeanplumUtils: NSObject {
     }
     
     static func getNotificationId(_ userInfo: [AnyHashable:Any]) -> String {
-        if let occId = userInfo["lp_occurrence_id"] {
+        if let occId = userInfo[LP_KEY_PUSH_OCCURRENCE_ID] {
             return String(describing: occId)
         }
         return "-1"

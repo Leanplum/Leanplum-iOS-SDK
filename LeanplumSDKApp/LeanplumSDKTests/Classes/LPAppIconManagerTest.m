@@ -31,6 +31,7 @@
 #import <Leanplum/LPVarCache.h>
 #import <Leanplum/LPConstants.h>
 #import "LPRequestSender+Categories.h"
+#import "LPRequestFactory+Extension.h"
 #import <Leanplum/LPJSON.h>
 
 /**
@@ -70,6 +71,11 @@
     // Clean up after every test.
     [LeanplumHelper clean_up];
     [HTTPStubs removeAllStubs];
+}
+
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
 }
 
 - (void)test_supportsAlternateIcons {

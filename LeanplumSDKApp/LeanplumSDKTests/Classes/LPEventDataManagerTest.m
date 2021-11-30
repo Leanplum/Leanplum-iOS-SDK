@@ -68,6 +68,11 @@
     [HTTPStubs removeAllStubs];
 }
 
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
+}
+
 - (NSDictionary *)sampleData
 {
     return @{@"action":@"track", @"deviceId":@"123", @"userId":@"QA_TEST", @"client":@"ios",
@@ -129,6 +134,7 @@
 - (void)test_response_code
 {
     [LeanplumHelper clean_up];
+    [LeanplumHelper setup_production_test];
     [LPEventDataManager deleteEventsWithLimit:10000];
 
     // Simulate error from http response code.
@@ -150,7 +156,7 @@
 
     LPRequest *request = [[LPRequestFactory createPostForApiMethod:@"sample3" params:nil] andRequestType:Immediate];
     [[LPRequestSender sharedInstance] send:request];
-    long timedOut =dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
+    long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     events = [LPEventDataManager eventsWithLimit:10000];
     XCTAssertTrue(events.count == 1);

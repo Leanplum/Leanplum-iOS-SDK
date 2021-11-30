@@ -19,8 +19,6 @@ class NotificationTestHelper {
     
     private static var appStateImp:IMP?
     
-    static let occurrenceIdKey = "lp_occurrence_id"
-    
     static let occurrenceIdNilError = "Notification occurrence id must not be nil."
     static let foregroundNilError = "IsForeground must not be nil. Notification Received method was not called"
     static let foregroundNotNilError = "Notification Received method was called. Expected Notification Open to be called instead."
@@ -55,7 +53,7 @@ class NotificationTestHelper {
     
     func updateNotifId() -> String {
         let newId = UUID().uuidString
-        userInfo[NotificationTestHelper.occurrenceIdKey] = newId
+        userInfo[LP_KEY_PUSH_OCCURRENCE_ID] = newId
         return newId
     }
     

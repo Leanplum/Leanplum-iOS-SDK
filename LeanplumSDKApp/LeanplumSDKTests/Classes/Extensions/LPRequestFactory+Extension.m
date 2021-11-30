@@ -8,6 +8,7 @@
 
 #import "LPRequestFactory+Extension.h"
 #import "LPRequestSender+Categories.h"
+#import <objc/runtime.h>
 
 @implementation LPRequestFactory (Extension)
 
@@ -26,6 +27,20 @@
         NSLog(@"Failed swizzling methods for LPRequestFactory: %@", error);
     }
 }
+
++ (void)unswizzle_methods
+{
+    Method mock = class_getClassMethod([LPRequestFactory class], @selector(swizzle_createGetForApiMethod:params:));
+    Method orig = class_getClassMethod([LPRequestFactory class], @selector(createGetForApiMethod:params:));
+    
+    method_exchangeImplementations(mock, orig);
+    
+    Method mockPost = class_getClassMethod([LPRequestFactory class], @selector(swizzle_createPostForApiMethod:params:));
+    Method origPost = class_getClassMethod([LPRequestFactory class], @selector(createPostForApiMethod:params:));
+    
+    method_exchangeImplementations(mockPost, origPost);
+}
+
 
 + (LPRequest *)swizzle_createGetForApiMethod:(NSString *) apiMethod_ params:(NSDictionary *) params_
 {

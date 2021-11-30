@@ -33,6 +33,7 @@
     // Mock LOG_LP_MESSAGE_EXCEPTION through [LPLogManager maybeSendLog:]
     id mockLPLogManager = OCMClassMock([LPLogManager class]);
     [OCMStub(ClassMethod([mockLPLogManager maybeSendLog:[OCMArg any]])) andCall:@selector(maybeSendLog:) onObject:self];
+    [LeanplumHelper stopMockThrowErrorToThrow];
 }
 
 /**
@@ -153,6 +154,8 @@
     OCMVerify([deferManager triggerDeferredMessage]);
     OCMVerify([templateUtils presentOverVisible:OCMArg.any]);
     OCMVerify([lpMock triggerAction:context handledBlock:OCMArg.any]);
+    
+    [lpMock stopMocking];
 }
 
 @end
