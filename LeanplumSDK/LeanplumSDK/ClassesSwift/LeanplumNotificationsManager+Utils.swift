@@ -112,9 +112,12 @@ import Foundation
     }
     
     @objc public func hasDisabledAskToAsk() -> Bool {
-        return UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+        return UserDefaults.standard.bool(forKey: DEFAULTS_ASKED_TO_PUSH)
     }
 
+    // If notification were enabled by Leanplum's "Push Ask to Ask" or "Register For Push",
+    // refreshPushPermissions will do the same registration for subsequent app sessions.
+    // refreshPushPermissions is called by [Leanplum start].
     @objc public func refreshPushPermissions() {
         if UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH) {
             enableSystemPush()

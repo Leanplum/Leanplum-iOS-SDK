@@ -130,6 +130,7 @@
 		6A9D0A9827342EE300466133 /* LeanplumNotificationsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9727342EE300466133 /* LeanplumNotificationsManagerMock.swift */; };
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
 		779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */; };
+		C9D503672754C9DC0034C5B3 /* LeanplumPushNotificationSettingsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D503662754C9DC0034C5B3 /* LeanplumPushNotificationSettingsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -258,6 +259,7 @@
 		6A9D0A9727342EE300466133 /* LeanplumNotificationsManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManagerMock.swift; sourceTree = "<group>"; };
 		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
 		B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.release.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.release.xcconfig"; sourceTree = "<group>"; };
+		C9D503662754C9DC0034C5B3 /* LeanplumPushNotificationSettingsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumPushNotificationSettingsTest.swift; sourceTree = "<group>"; };
 		E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDKTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -397,6 +399,7 @@
 				6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */,
 				6A9D0A9527342BA300466133 /* LeanplumPushNotificationsProxyiOS9Test.swift */,
 				6A54E9CC273B156600DE0E61 /* LeanplumNotificationsManagerTest.swift */,
+				C9D503662754C9DC0034C5B3 /* LeanplumPushNotificationSettingsTest.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -770,6 +773,7 @@
 				075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */,
 				075AB1162684AAD9007CA1BD /* ExceptionsTest.m in Sources */,
 				075AB12C2684AAD9007CA1BD /* LeanplumHelper.m in Sources */,
+				C9D503672754C9DC0034C5B3 /* LeanplumPushNotificationSettingsTest.swift in Sources */,
 				075AB1262684AAD9007CA1BD /* LPRequest+Extension.m in Sources */,
 				6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */,
 				075AB12B2684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m in Sources */,
