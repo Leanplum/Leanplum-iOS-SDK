@@ -51,6 +51,27 @@ static BOOL workOnline;
     [Leanplum_Reachability online:YES];
 }
 
++ (void)unswizzle_methods
+{
+    NSError* error;
+    bool success = [LPSwizzle swizzleMethod:@selector(swizzle_isReachable)
+                                 withMethod:@selector(isReachable)
+                                      error:&error
+                                      class:[Leanplum_Reachability class]];
+
+    success &= [LPSwizzle swizzleMethod:@selector(swizzle_isReachableViaWiFi)
+                             withMethod:@selector(isReachableViaWiFi)
+                                  error:&error
+                                  class:[Leanplum_Reachability class]];
+
+    success &= [LPSwizzle swizzleMethod:@selector(swizzle_isReachableViaWWAN)
+                             withMethod:@selector(isReachableViaWWAN)
+                                  error:&error
+                                  class:[Leanplum_Reachability class]];
+
+    [Leanplum_Reachability online:YES];
+}
+
 + (void)online:(BOOL)online
 {
     workOnline = online;

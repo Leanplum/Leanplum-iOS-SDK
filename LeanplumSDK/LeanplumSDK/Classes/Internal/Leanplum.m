@@ -744,6 +744,7 @@ void leanplumExceptionHandler(NSException *exception);
     LPInternalState *state = [LPInternalState sharedState];
     state.calledStart = NO;
     state.hasStarted = NO;
+    state.issuedStart = NO;
     state.hasStartedAndRegisteredAsDeveloper = NO;
     state.startSuccessful = NO;
     [state.startBlocks removeAllObjects];
@@ -1754,6 +1755,13 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
++ (void)setPushDeliveryTrackingEnabled:(BOOL)enabled
+{
+    LP_TRY
+    [Leanplum notificationsManager].isPushDeliveryTrackingEnabled = enabled;
+    LP_END_TRY
+}
+
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName
 {
     if (!responder) {
@@ -2387,11 +2395,20 @@ andParameters:(NSDictionary *)params
 
 + (void)forceContentUpdate:(LeanplumVariablesChangedBlock)block
 {
+    [Leanplum forceContentUpdateWithBlock:^(BOOL success) {
+        if (block) {
+            block();
+        }
+    }];
+}
+
++ (void)forceContentUpdateWithBlock:(LeanplumForceContentUpdateBlock)updateBlock
+{
     [[LPCountAggregator sharedAggregator] incrementCount:@"force_content_update"];
     
     if (IS_NOOP) {
-        if (block) {
-            block();
+        if (updateBlock) {
+            updateBlock(NO);
         }
         return;
     }
@@ -2441,13 +2458,13 @@ andParameters:(NSDictionary *)params
             [[self inbox] triggerInboxSyncedWithStatus:YES withCompletionHandler:nil];
         }
         LP_END_TRY
-        if (block) {
-            block();
+        if (updateBlock) {
+            updateBlock(YES);
         }
     }];
     [request onError:^(NSError *error) {
-        if (block) {
-            block();
+        if (updateBlock) {
+            updateBlock(NO);
         }
         [[self inbox] triggerInboxSyncedWithStatus:NO withCompletionHandler:nil];
     }];

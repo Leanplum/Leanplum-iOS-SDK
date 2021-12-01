@@ -39,7 +39,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -57,7 +57,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -79,7 +79,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.proxy.resumedTimeInterval = Date().timeIntervalSince1970
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -104,7 +104,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.proxy.resumedTimeInterval = date.timeIntervalSince1970
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -128,7 +128,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         manager.proxy.resumedTimeInterval = date.timeIntervalSince1970
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -148,7 +148,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -177,7 +177,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -208,7 +208,7 @@ class LeanplumPushNotificationsProxyiOS9Test: XCTestCase {
         let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
         manager.proxy.application(didReceive: localNotif)
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[NotificationTestHelper.occurrenceIdKey] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }

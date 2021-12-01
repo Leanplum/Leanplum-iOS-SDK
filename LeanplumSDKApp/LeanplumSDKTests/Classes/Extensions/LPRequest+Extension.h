@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface LPRequest (Extension)
 + (void)validate_onResponse:(LPNetworkResponseBlock)response;
 + (void)swizzle_methods;
++ (void)unswizzle_methods;
 + (void)reset;
 @end
 

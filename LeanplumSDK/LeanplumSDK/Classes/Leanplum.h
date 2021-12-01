@@ -462,12 +462,19 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
                  completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
-/*
+/**
  * Block to call that decides whether a notification should be displayed when it is
  * received while the app is running, and the notification is not muted.
  * Overrides the default behavior of showing an alert view with the notification message.
  */
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block;
+
+/**
+ * Sets if a Deliver event should be tracked when a Push Notification is received.
+ * Default value is true - event is tracked.
+ * @see PUSH_DELIVERED_EVENT_NAME for the event name
+ */
++ (void)setPushDeliveryTrackingEnabled:(BOOL)enabled;
 
 /**
  * @{
@@ -690,6 +697,15 @@ NS_SWIFT_UNAVAILABLE("use forceContentUpdate(completion:)");
  * of whether the variables have changed.
  */
 + (void)forceContentUpdate:(nullable LeanplumVariablesChangedBlock)block;
+
+/**
+ * Forces content to update from the server. If variables have changed, the
+ * appropriate callbacks will fire. Use sparingly as if the app is updated,
+ * you'll have to deal with potentially inconsistent state or user experience.
+ * The provided callback has a boolean flag whether the update was successful or not. The callback fires regardless
+ * of whether the variables have changed.
+ */
++ (void)forceContentUpdateWithBlock:(LeanplumForceContentUpdateBlock)updateBlock;
 
 /**
  * This should be your first statement in a unit test. This prevents

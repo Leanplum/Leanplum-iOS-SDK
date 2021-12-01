@@ -30,9 +30,6 @@
         LP_END_USER_CODE
         UIApplication *app = [UIApplication sharedApplication];
 
-        
-        // TODO: Add lp_occurrence_id
-        
         BOOL contentAvailable = [context boolNamed:@"iOS options.Preload content"];
         NSString *message = [context stringNamed:@"Message"];
 
@@ -78,6 +75,12 @@
         
         // Adding body message manually.
         mutableInfo[@"aps"] = @{@"alert":@{@"body": message ?: @""} };
+        
+        // Set unique occurrence id
+        mutableInfo[LP_KEY_PUSH_OCCURRENCE_ID] = [[[NSUUID UUID] UUIDString] lowercaseString];
+        
+        // Set local notification flag
+        mutableInfo[LP_KEY_LOCAL_NOTIF] = @YES;
 
         // Specify open action
         if (openAction) {
