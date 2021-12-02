@@ -2249,6 +2249,14 @@ andParameters:(NSDictionary *)params
     [[LPRequestSender sharedInstance] send:request];
 }
 
++ (void)setLocale:(NSLocale *)locale
+{
+    LPRequest *request = [LPRequestFactory setUserAttributesWithParams:@{
+        LP_KEY_LOCALE: [locale localeIdentifier]
+    }];
+    [[LPRequestSender sharedInstance] send:request];
+}
+
 + (void)advanceTo:(NSString *)state
 {
     [self advanceTo:state withInfo:nil];

@@ -527,6 +527,12 @@ NS_SWIFT_NAME(setUserId(_:attributes:));
 NS_SWIFT_NAME(setTrafficSource(info:));
 
 /**
+ * Updates a user locale after session start.
+ */
++(void)setLocale:(NSLocale *)locale
+NS_SWIFT_NAME(setLocale(_:));
+
+/**
  * @{
  * Advances to a particular state in your application. The string can be
  * any value of your choosing, and will show up in the dashboard.
