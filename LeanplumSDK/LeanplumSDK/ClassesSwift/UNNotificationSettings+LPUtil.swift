@@ -45,7 +45,7 @@ extension UNNotificationSettings {
         if settings.notificationCenterSetting == .enabled {
             result |= (1 << 4)
         }
-        if settings.alertStyle != .none {//settings.alertStyle == .banner || settings.alertStyle == .alert { //TODO: != .none
+        if settings.alertStyle != .none {
             result |= (1 << 5)
         }
         
