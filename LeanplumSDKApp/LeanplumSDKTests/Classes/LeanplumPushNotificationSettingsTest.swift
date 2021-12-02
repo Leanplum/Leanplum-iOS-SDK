@@ -3,6 +3,7 @@
 //  LeanplumSDKTests
 //
 //  Created by Dejan Krstevski on 29.11.21.
+//  Copyright © 2021 Leanplum. All rights reserved.
 //
 
 import Foundation
@@ -19,6 +20,10 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         notificaitonSettings = LeanplumNotificationSettings()
     }
     
+    override func tearDown() {
+        UNNotificationSettings.fakeAuthorizationStatus = .notDetermined
+    }
+    
     override class func setUp() {
         super.setUp()
         UNNotificationSettings.swizzleAuthorizationStatus()
@@ -28,18 +33,30 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         LPAPIConfig.shared().userId = "testUserId"
     }
     
-//    func setUp_request() {
-//        LPRequestFactory.swizzle_methods()
-//        LPRequestSender.swizzle_methods()
-//    }
-//        
-//    func tearDown_request() {
-//        LPRequestSender.reset()
-//        LPRequestFactory.unswizzle_methods()
-//        LPRequestSender.unswizzle_methods()
-//    }
+    override class func tearDown() {
+        UNUserNotificationCenter.unswizzleGetNotificationSettings()
+        UNNotificationSettings.unswizzleAuthorizationStatus()
+        LPAPIConfig.shared().setAppId(nil, withAccessKey: nil)
+        LPAPIConfig.shared().deviceId = nil
+        LPAPIConfig.shared().userId = nil
+    }
     
-    func testSetup() {
+    func setUp_request() {
+        LPRequestFactory.swizzle_methods()
+        LPRequestSender.swizzle_methods()
+        LPInternalState.shared().hasStarted = true
+        LPInternalState.shared().startSuccessful = true
+    }
+        
+    func tearDown_request() {
+        LPRequestSender.reset()
+        LPRequestFactory.unswizzle_methods()
+        LPRequestSender.unswizzle_methods()
+        LPInternalState.shared().hasStarted = false
+        LPInternalState.shared().startSuccessful = false
+    }
+    
+    func testSetUp() {
         notificaitonSettings.setUp()
         XCTAssertTrue(notificaitonSettings.updateSettings != nil)
     }
@@ -103,7 +120,8 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         notificaitonSettings.save(testSettings)
         
         guard let savedSettings = UserDefaults.standard.value(forKey: notificaitonSettings.leanplumUserNotificationSettingsKey()) as? [AnyHashable : Any] else {
-            fatalError()
+            XCTFail("Settings are not saved")
+            return
         }
         XCTAssertTrue(NSDictionary(dictionary: savedSettings).isEqual(to: testSettings))
         
@@ -112,16 +130,32 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         XCTAssertNil(UserDefaults.standard.value(forKey: notificaitonSettings.leanplumUserNotificationSettingsKey()))
     }
     
-    override func tearDown() {
-        UNNotificationSettings.fakeAuthorizationStatus = .notDetermined
-    }
-    
-    override class func tearDown() {
-        UNUserNotificationCenter.unswizzleGetNotificationSettings()
-        UNNotificationSettings.unswizzleAuthorizationStatus()
-        LPAPIConfig.shared().setAppId(nil, withAccessKey: nil)
-        LPAPIConfig.shared().deviceId = nil
-        LPAPIConfig.shared().userId = nil
+    func testWhenUpdateSettingsIsCalledItWillUpdateSettingsToServer() {
+        setUp_request()
+        //first remove settings from defaults
+        notificaitonSettings.removeSettings()
+        notificaitonSettings.setUp()
+        //authorize settings to have push types
+        UNNotificationSettings.fakeAuthorizationStatus = .authorized
+        
+        let expectation = expectation(description: "Update settings to server")
+        
+        LPRequestSender.validate_request { method, apiMethod, params in
+            print("testing \(apiMethod ?? "")")
+            if apiMethod == LP_API_METHOD_SET_DEVICE_ATTRIBUTES {
+                if let parameters = params, let _ = parameters[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let _ = parameters[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] {
+                    expectation.fulfill()
+                    return true
+                }
+            }
+            return false
+        }
+        
+        //calling updateSettings will trigger update settings to server
+        notificaitonSettings.updateSettings?()
+        
+        wait(for: [expectation], timeout: 5)
+        tearDown_request()
     }
 }
 
