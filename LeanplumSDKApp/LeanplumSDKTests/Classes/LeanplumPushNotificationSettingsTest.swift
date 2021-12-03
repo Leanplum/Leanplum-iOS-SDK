@@ -28,7 +28,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         super.setUp()
         UNNotificationSettings.swizzleAuthorizationStatus()
         UNUserNotificationCenter.swizzleGetNotificationSettings()
-        LPAPIConfig.shared().setAppId("testAppId", withAccessKey: "testAccessKey")
+        LeanplumHelper.setup_development_test()
         LPAPIConfig.shared().deviceId = "testDeviceId"
         LPAPIConfig.shared().userId = "testUserId"
     }
@@ -36,9 +36,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     override class func tearDown() {
         UNUserNotificationCenter.unswizzleGetNotificationSettings()
         UNNotificationSettings.unswizzleAuthorizationStatus()
-        LPAPIConfig.shared().setAppId(nil, withAccessKey: nil)
-        LPAPIConfig.shared().deviceId = nil
-        LPAPIConfig.shared().userId = nil
+        LeanplumHelper.clean_up()
     }
     
     func setUp_request() {
@@ -141,7 +139,6 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         let expectation = expectation(description: "Update settings to server")
         
         LPRequestSender.validate_request { method, apiMethod, params in
-            print("testing \(apiMethod ?? "")")
             if apiMethod == LP_API_METHOD_SET_DEVICE_ATTRIBUTES {
                 if let parameters = params, let _ = parameters[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let _ = parameters[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] {
                     expectation.fulfill()
