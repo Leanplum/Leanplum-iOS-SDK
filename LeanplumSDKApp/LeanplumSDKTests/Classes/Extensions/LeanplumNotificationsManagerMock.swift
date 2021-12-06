@@ -16,10 +16,11 @@ class LeanplumNotificationsManagerMock: LeanplumNotificationsManager {
         return notificationsManagerManagerInstance
     }
     
-    public var userInfoProcessed:[AnyHashable : Any]?
-    public var actionName:String?
-    public var foreground:Bool?
+    public var userInfoProcessed: [AnyHashable : Any]?
+    public var actionName: String?
+    public var foreground: Bool?
     public var methodInvocations = 0
+    public var isPushEnabled: Bool?
     
     override func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         userInfoProcessed = userInfo
@@ -30,6 +31,13 @@ class LeanplumNotificationsManagerMock: LeanplumNotificationsManager {
     override func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
         userInfoProcessed = userInfo
         foreground = isForeground
+        methodInvocations += 1
+    }
+    
+    override func enableSystemPush() {
+        isPushEnabled = true
+        UserDefaults.standard.set(true, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+        disableAskToAsk()
         methodInvocations += 1
     }
     
