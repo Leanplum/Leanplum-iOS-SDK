@@ -1076,42 +1076,44 @@
 }
 
 /**
- * Tests setting the user locale after Leanplum start
+ * Tests setting the user locale before Leanplum start
  */
-- (void) test_set_locale
+- (void) test_set_locale_before_start
 {
     NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ab_CD"];
 
-    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"simple_start_response.json", self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
+    XCTestExpectation *request_expectation = [self expectationWithDescription:@"request_expectation"];
+    [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
+        XCTAssertFalse([args[LP_KEY_LOCALE] isEqualToString:[Leanplum.systemLocale localeIdentifier]]);
+        XCTAssertTrue([args[LP_KEY_LOCALE] isEqualToString:[locale localeIdentifier]]);
+        [request_expectation fulfill];
     }];
 
-    [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
-                                        NSDictionary *params) {
-        XCTAssertEqualObjects(apiMethod, @"start");
-        return YES;
-    }];
+    [Leanplum setLocale:locale];
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    [self waitForExpectations:@[request_expectation] timeout:1.0];
+}
 
-    XCTAssertTrue([LeanplumHelper start_production_test]);
+/**
+ * Tests setting the user locale after Leanplum start
+ */
+- (void) test_set_locale_after_start
+{
+    NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ab_CD"];
 
-    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    XCTestExpectation *request_expectation = [self expectationWithDescription:@"request_expectation"];
     [Leanplum onStartResponse:^(BOOL success) {
         XCTAssertTrue(success);
         [Leanplum setLocale:locale];
-        dispatch_semaphore_signal(semaphor);
+        [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
+            XCTAssertFalse([args[LP_KEY_LOCALE] isEqualToString:[Leanplum.systemLocale localeIdentifier]]);
+            XCTAssertTrue([args[LP_KEY_LOCALE] isEqualToString:[locale localeIdentifier]]);
+            [request_expectation fulfill];
+        }];
     }];
-    long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
-    XCTAssertTrue(timedOut == 0);
-    XCTAssertTrue([Leanplum hasStarted]);
 
-    [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
-        XCTAssertTrue([args[LP_KEY_LOCALE] isEqualToString:[locale localeIdentifier]]);
-        XCTAssertFalse([args[LP_KEY_LOCALE] isEqualToString:[[NSLocale currentLocale] localeIdentifier]]);
-    }];
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    [self waitForExpectations:@[request_expectation] timeout:1.0];
 }
 
 /**
