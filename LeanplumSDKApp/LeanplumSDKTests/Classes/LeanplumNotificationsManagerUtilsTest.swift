@@ -20,10 +20,6 @@ class LeanplumNotificationsManagerUtilsTest: XCTestCase {
         manager = LeanplumNotificationsManager()
     }
     
-    override func tearDown() {
-        
-    }
-    
     override class func setUp() {
         super.setUp()
         LeanplumHelper.setup_development_test()
