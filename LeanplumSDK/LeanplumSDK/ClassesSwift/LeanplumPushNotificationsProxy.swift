@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 public class LeanplumPushNotificationsProxy: NSObject {
-    
+    // MARK: - Initialization
     internal override init() {}
     
     @objc public var deviceVersion:String?
@@ -27,6 +27,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
     @available(iOS 10.0, *)
     lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
     
+    let userNotificationDelegateName = "UNUserNotificationCenterDelegate"
+    
     private(set) var swizzledApplicationDidRegisterRemoteNotifications = false
     private(set) var swizzledApplicationDidFailToRegisterForRemoteNotificationsWithError = false
     
@@ -39,14 +41,13 @@ public class LeanplumPushNotificationsProxy: NSObject {
     
     private(set) var swizzledApplicationDidRegisterUserNotificationSettings = false
     
-    private(set) var notificationOpenedFromStart = false
-    private(set) var notificationHandledFromStart:[AnyHashable:Any]?
-    
     private(set) var hasImplementedNotifCenterMethods = false
     private(set) var shouldFallbackToLegacyMethods = false
     
-    let userNotificationDelegateName = "UNUserNotificationCenterDelegate"
+    private(set) var notificationOpenedFromStart = false
+    private(set) var notificationHandledFromStart:[AnyHashable:Any]?
     
+    // MARK: - Application didFinishLaunching
     @objc public func addDidFinishLaunchingObserver() {
         NotificationCenter.default.addObserver(self, selector: #selector(leanplum_applicationDidFinishLaunching(notification:)), name: UIApplication.didFinishLaunchingNotification, object: nil)
     }
@@ -83,22 +84,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
-    func isEqualToHandledNotification(userInfo: [AnyHashable : Any]) -> Bool {
-        if let fromStart = notificationHandledFromStart {
-            let idA = LeanplumUtils.getNotificationId(fromStart)
-            let idB = LeanplumUtils.getNotificationId(userInfo)
-            return idA == idB
-        }
-        
-        return false
-    }
-    
-    func isIOSVersionGreaterThanOrEqual(_ version:String) -> Bool {
-        let currentVersion = UIDevice.current.systemVersion
-        return (deviceVersion ?? currentVersion).compare(version,options: .numeric) != .orderedAscending
-    }
-    
-    // MARK: - Swizzle Disabled methods
+    // MARK: - Methods Swizzling Disabled
     @objc public func applicationDidFinishLaunching(launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         LeanplumUtils.lpLog(type: .debug, format: "Called applicationDidFinishLaunching: %@, state %d", launchOptions ?? [:], UIApplication.shared.applicationState.rawValue)
         if let launchOptions = launchOptions {
@@ -134,7 +120,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
-    // MARK: - swizzleTokenMethods
+    // MARK: - Swizzle Push Token Methods
     func swizzleTokenMethods() {
         // didRegister
         let applicationDidRegisterForRemoteNotificationsWithDeviceToken = #selector(UIApplicationDelegate.application(_:didRegisterForRemoteNotificationsWithDeviceToken:))
@@ -153,6 +139,13 @@ public class LeanplumPushNotificationsProxy: NSObject {
         LPSwizzle.hook(into: applicationDidFailToRegisterForRemoteNotificationsWithError, with: leanplum_applicationDidFailToRegisterForRemoteNotificationsWithError, for: appDelegateClass)
     }
     
+    // MARK: - Swizzle Application didReceiveRemoteNotification
+    
+    /**
+     * Check if didReceiveRemoteNotification is implemented (deprecated in iOS 10).
+     * If :didReceiveRemoteNotification:fetchCompletionHandler: is implemented the above mentioned method
+     * will not be called
+     */
     func hasImplementedApplicationDidReceive() -> Bool {
         let applicationDidReceiveRemoteNotificationSelector =
         #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:))
@@ -181,6 +174,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
+    // MARK: - Swizzle UNUserNotificationCenter methods
     @available(iOS 10.0, *)
     func swizzleUNUserNotificationCenterMethods() {
         // userNotificationCenter:didReceive:withCompletionHandler:
@@ -241,6 +235,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         }
     }
     
+    // MARK: - Swizzle Local Notification method
     func swizzleLocalNotificationMethods() {
         // Detect local notifications while app is running
         let applicationDidReceiveLocalNotification = #selector(UIApplicationDelegate.application(_:didReceive:))
@@ -249,6 +244,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         LPSwizzle.hook(into: applicationDidReceiveLocalNotification, with: leanplum_applicationDidReceiveLocalNotification, for: appDelegateClass)
     }
     
+    // MARK: - Swizzle Notification Settings method
     func swizzleUserNotificationSettings() {
         let applicationDidRegisterUserNotificationSettings = #selector(UIApplicationDelegate.application(_:didRegister:))
         let leanplum_applicationDidRegisterUserNotificationSettings = #selector(leanplum_application(_:didRegister:))
@@ -257,29 +253,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
         LPSwizzle.hook(into: applicationDidRegisterUserNotificationSettings, with: leanplum_applicationDidRegisterUserNotificationSettings, for: appDelegateClass)
     }
     
-    @objc public func setCustomAppDelegate(_ appDel: UIApplicationDelegate) {
-        isCustomAppDelegateUsed = true
-        appDelegate = appDel
-    }
-    
-    /// Ensures the original AppDelegate is swizzled when using mParticle
-    /// or another library that proxies the AppDelegate that way
-    func ensureOriginalAppDelegate() {
-        if let appDel = appDelegate, String(describing: appDel.self).contains("AppDelegateProxy") {
-            let sel = Selector(("originalAppDelegate"))
-            let method = class_getInstanceMethod(object_getClass(appDel), sel)
-            if let m = method {
-                let imp = method_getImplementation(m)
-                typealias OriginalAppDelegateGetter = @convention(c) (AnyObject, Selector) -> UIApplicationDelegate?
-                let curriedImplementation:OriginalAppDelegateGetter = unsafeBitCast(imp, to: OriginalAppDelegateGetter.self)
-                let originalAppDelegate = curriedImplementation(appDel, sel)
-                if originalAppDelegate != nil {
-                    appDelegate = originalAppDelegate
-                }
-            }
-        }
-    }
-    
+    // MARK: - Swizzle All Methods
     @objc public func swizzleNotificationMethods() {
         if !LPUtils.isSwizzlingEnabled() {
             LeanplumUtils.lpLog(type: .info, format: "Method swizzling is disabled, make sure to manually call Leanplum methods.")
@@ -323,5 +297,46 @@ public class LeanplumPushNotificationsProxy: NSObject {
                 }
             }
         }
+    }
+    
+    // MARK: - Utils
+    func isEqualToHandledNotification(userInfo: [AnyHashable : Any]) -> Bool {
+        if let fromStart = notificationHandledFromStart {
+            let idA = Leanplum.notificationsManager().getNotificationId(fromStart)
+            let idB = Leanplum.notificationsManager().getNotificationId(userInfo)
+            return idA == idB
+        }
+        
+        return false
+    }
+    
+    @objc public func setCustomAppDelegate(_ appDel: UIApplicationDelegate) {
+        isCustomAppDelegateUsed = true
+        appDelegate = appDel
+    }
+    
+    /**
+     * Ensures the original AppDelegate is swizzled when using mParticle
+     * or another library that proxies the AppDelegate that way
+     */
+    func ensureOriginalAppDelegate() {
+        if let appDel = appDelegate, String(describing: appDel.self).contains("AppDelegateProxy") {
+            let sel = Selector(("originalAppDelegate"))
+            let method = class_getInstanceMethod(object_getClass(appDel), sel)
+            if let m = method {
+                let imp = method_getImplementation(m)
+                typealias OriginalAppDelegateGetter = @convention(c) (AnyObject, Selector) -> UIApplicationDelegate?
+                let curriedImplementation:OriginalAppDelegateGetter = unsafeBitCast(imp, to: OriginalAppDelegateGetter.self)
+                let originalAppDelegate = curriedImplementation(appDel, sel)
+                if originalAppDelegate != nil {
+                    appDelegate = originalAppDelegate
+                }
+            }
+        }
+    }
+    
+    func isIOSVersionGreaterThanOrEqual(_ version:String) -> Bool {
+        let currentVersion = UIDevice.current.systemVersion
+        return (deviceVersion ?? currentVersion).compare(version,options: .numeric) != .orderedAscending
     }
 }

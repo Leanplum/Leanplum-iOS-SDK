@@ -121,8 +121,10 @@ class LeanplumNotificationSettings {
         }
     }
     
-    //method for retrieving notification settings from UIApplication
-    //used for iOS 9 devices (older then iOS 10)
+    /**
+     * Retrieves notification settings from UIApplication
+     * Used for iOS 9 devices (older than iOS 10)
+     */
     private func getSettingsFromUIApplication() -> [AnyHashable: Any] {
         guard let settings = UIApplication.shared.currentUserNotificationSettings?.dictionary else {
             return [:]

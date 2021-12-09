@@ -235,10 +235,10 @@ class LeanplumNotificationsManagerTest: XCTestCase {
      * Tests mute inside app correctly mutes notifications
      */
     func test_mute_inside_app() {
-        XCTAssertFalse(LeanplumUtils.isMuted(LeanplumNotificationsManagerTest.userInfo))
-        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideTrue))
-        XCTAssertTrue(LeanplumUtils.isMuted(userInfoNoActionMuteInsideFalse))
-        XCTAssertTrue(LeanplumUtils.isMuted(userInfoActionOpenURLMuteInsideTrue))
+        XCTAssertFalse(Leanplum.notificationsManager().isMuted(LeanplumNotificationsManagerTest.userInfo))
+        XCTAssertTrue(Leanplum.notificationsManager().isMuted(userInfoNoActionMuteInsideTrue))
+        XCTAssertTrue(Leanplum.notificationsManager().isMuted(userInfoNoActionMuteInsideFalse))
+        XCTAssertTrue(Leanplum.notificationsManager().isMuted(userInfoActionOpenURLMuteInsideTrue))
     }
     
     // MARK: Tests Delivery Tracking
@@ -298,7 +298,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_MESSAGE_ID],
                            LeanplumUtils.messageIdFromUserInfo(LeanplumNotificationsManagerTest.userInfo))
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_OCCURRENCE_ID],
-                           LeanplumUtils.getNotificationId(LeanplumNotificationsManagerTest.userInfo))
+                           Leanplum.notificationsManager().getNotificationId(LeanplumNotificationsManagerTest.userInfo))
             XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_METRIC_SENT_TIME]!),
                            LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
 

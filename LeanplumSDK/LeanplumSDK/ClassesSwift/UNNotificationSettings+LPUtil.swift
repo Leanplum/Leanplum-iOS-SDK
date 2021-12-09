@@ -28,7 +28,6 @@ extension UNNotificationSettings {
             return 0
         }
         
-        //
         // Authorization Status Enabled
         if settings.soundSetting == .enabled {
             result |= UNAuthorizationOptions.sound.rawValue
