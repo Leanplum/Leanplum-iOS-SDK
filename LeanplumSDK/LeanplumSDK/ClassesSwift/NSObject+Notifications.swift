@@ -10,6 +10,7 @@ import UIKit
 
 // LP Swizzling looks for the selector in the same class
 extension NSObject {
+    // MARK: - Register For Remote Notifications
     @objc func leanplum_application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         Leanplum.notificationsManager().didRegisterForRemoteNotificationsWithDeviceToken(deviceToken)
         
@@ -30,6 +31,7 @@ extension NSObject {
         }
     }
     
+    // MARK: - didReceiveRemoteNotification
     @objc func leanplum_application(_ application: UIApplication,
                                      didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -82,6 +84,7 @@ extension NSObject {
         }
     }
     
+    // MARK: iOS 9 didReceiveRemoteNotification
     func leanplum_application_ios9(_ application: UIApplication,
                                      didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
@@ -112,6 +115,7 @@ extension NSObject {
         }
     }
     
+    // MARK: - UserNotificationCenter
     @objc @available(iOS 10.0, *)
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveNotificationResponse:withCompletionHandler")
@@ -181,6 +185,7 @@ extension NSObject {
         Leanplum.notificationsManager().notificationReceived(userInfo: notification.request.content.userInfo, isForeground: true)
     }
     
+    // MARK: - didReceive Local Notification
     @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
         LeanplumUtils.lpLog(type: .debug, format: "Called swizzled application:didReceive:localNotification %d", UIApplication.shared.applicationState.rawValue)
         
@@ -204,6 +209,7 @@ extension NSObject {
         }
     }
     
+    // MARK: - didRegister Notification Settings
     @objc func leanplum_application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
         Leanplum.notificationsManager().didRegister(notificationSettings)
         

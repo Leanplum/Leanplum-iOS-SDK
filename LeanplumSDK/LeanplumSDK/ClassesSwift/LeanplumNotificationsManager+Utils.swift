@@ -169,4 +169,32 @@ import Foundation
             leanplumIncrementUserCodeBlock(1)
         }
     }
+    
+    func getNotificationId(_ userInfo: [AnyHashable:Any]) -> String {
+        if let occId = userInfo[LP_KEY_PUSH_OCCURRENCE_ID] {
+            return String(describing: occId)
+        }
+        return "-1"
+    }
+    
+    func areActionsEmbedded(_ userInfo:[AnyHashable:Any]) -> Bool {
+        return userInfo[LP_KEY_PUSH_ACTION] != nil ||
+        userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
+    }
+    
+    func isMuted(_ userInfo:[AnyHashable:Any]) -> Bool {
+        return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil || userInfo[LP_KEY_PUSH_NO_ACTION] != nil
+    }
+    
+    func getNotificationText(_ userInfo:[AnyHashable:Any]) -> String? {
+        // Handle payload "aps":{ "alert": "message" } and "aps":{ "alert": { "title": "...", "body": "message" }
+        if let aps = userInfo["aps"] as? [AnyHashable : Any] {
+            if let alert = aps["alert"] as? [AnyHashable : Any] {
+                return alert["body"] as? String
+            } else {
+                return aps["alert"] as? String
+            }
+        }
+        return nil
+    }
 }

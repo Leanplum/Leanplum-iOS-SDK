@@ -10,6 +10,7 @@ import Foundation
 /// Manager responsible for handling push (remote) and local notifications
 @objc public class LeanplumNotificationsManager: NSObject {
     
+    // MARK: - Initialization
     @objc
     let proxy: LeanplumPushNotificationsProxy
     
@@ -25,6 +26,7 @@ import Foundation
         notificationSettings.setUp()
     }
     
+    // MARK: - Notification Settings
     @objc public func updateNotificationSettings() {
         notificationSettings.updateSettings?()
     }
@@ -41,6 +43,13 @@ import Foundation
         notificationSettings.getSettings(completionHandler: completionHandler)
     }
     
+    @objc(didRegisterUserNotificationSettings:)
+    public func didRegister(_ settings: UIUserNotificationSettings) {
+        disableAskToAsk()
+        notificationSettings.getSettings()
+    }
+    
+    // MARK: - Push Token
     @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
         disableAskToAsk()
         
@@ -53,8 +62,7 @@ import Foundation
             updatePushToken(formattedToken)
             deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
         }
-        
-        
+                
         notificationSettings.getSettings { [weak self] settings, areChanged in
             guard let self = self else { return }
             if areChanged {
@@ -84,15 +92,11 @@ import Foundation
         removePushToken()
     }
     
-    @objc(didRegisterUserNotificationSettings:)
-    public func didRegister(_ settings: UIUserNotificationSettings) {
-        disableAskToAsk()
-        notificationSettings.getSettings()
-    }
-    
+    // MARK: - Notification Actions
+    // MARK: Notification Open
     @objc(notificationOpened:action:)
     func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", LeanplumUtils.getNotificationId(userInfo))
+        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", Leanplum.notificationsManager().getNotificationId(userInfo))
         
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
         
@@ -107,7 +111,7 @@ import Foundation
             }
         }
         
-        if LeanplumUtils.areActionsEmbedded(userInfo) {
+        if Leanplum.notificationsManager().areActionsEmbedded(userInfo) {
             var args:[AnyHashable : Any]
             if isDefaultAction {
                 args = [action: userInfo[LP_KEY_PUSH_ACTION] ?? ""]
@@ -134,17 +138,18 @@ import Foundation
         }
     }
     
+    // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. MessageId: @%, Id: %@", isForeground ? "Foreground" : "Background", messageId, LeanplumUtils.getNotificationId(userInfo))
+        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. MessageId: @%, Id: %@", isForeground ? "Foreground" : "Background", messageId, Leanplum.notificationsManager().getNotificationId(userInfo))
         
         trackDelivery(userInfo: userInfo)
         if isForeground {
-            if !LeanplumUtils.isMuted(userInfo) {
+            if !Leanplum.notificationsManager().isMuted(userInfo) {
                 showNotificationInForeground(userInfo: userInfo)
             }
         } else {
-            if !LeanplumUtils.areActionsEmbedded(userInfo) {
+            if !Leanplum.notificationsManager().areActionsEmbedded(userInfo) {
                 requireMessageContentWithMessageId(messageId)
             }
         }
@@ -162,7 +167,7 @@ import Foundation
         }
         
         // Display the Notification as Confirm in-app message
-        if let notifMessage = LeanplumUtils.getNotificationText(userInfo) {
+        if let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo) {
             LPUIAlert.show(withTitle: LeanplumUtils.getAppName(), message: notifMessage, cancelButtonTitle: NSLocalizedString("Cancel", comment: ""), otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
                 if buttonIndex == 1 {
                     openNotificationHandler()
@@ -171,6 +176,7 @@ import Foundation
         }
     }
     
+    // MARK: - Delivery Tracking
     func trackDelivery(userInfo:[AnyHashable:Any]) {
         guard isPushDeliveryTrackingEnabled else {
             LeanplumUtils.lpLog(type: .debug, format: "Push delivery tracking is disabled")
