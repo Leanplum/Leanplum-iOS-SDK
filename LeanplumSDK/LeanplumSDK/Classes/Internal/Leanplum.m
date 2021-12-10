@@ -1914,13 +1914,14 @@ void leanplumExceptionHandler(NSException *exception);
                 }
                 if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
                     [[LPLocalNotificationsManager sharedManager] scheduleLocalNotification:actionContext];
-                }
-                [self triggerAction:actionContext handledBlock:^(BOOL success) {
-                    if (success) {
-                        [[LPInternalState sharedState].actionManager
+                } else {
+                    [self triggerAction:actionContext handledBlock:^(BOOL success) {
+                        if (success) {
+                            [[LPInternalState sharedState].actionManager
                              recordMessageImpression:[actionContext messageId]];
-                    }
-                }];
+                        }
+                    }];
+                }
             }
         }
     }

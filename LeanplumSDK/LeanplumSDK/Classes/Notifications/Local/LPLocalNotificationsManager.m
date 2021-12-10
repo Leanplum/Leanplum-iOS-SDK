@@ -192,7 +192,7 @@
     LP_END_USER_CODE
     UIApplication *app = [UIApplication sharedApplication];
     NSArray *notifications = [app scheduledLocalNotifications];
-    BOOL cancelled = NO;
+    BOOL canceled = NO;
     if (@available(iOS 10.0, *)) {
         __block BOOL didCancel = NO;
         dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
@@ -212,7 +212,7 @@
         dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
         dispatch_semaphore_wait(semaphor, waitTime);
         LP_BEGIN_USER_CODE
-        cancelled = didCancel;
+        canceled = didCancel;
     } else {
         // Fallback on earlier versions
         BOOL didCancel = NO;
@@ -227,10 +227,10 @@
             }
         }
         LP_BEGIN_USER_CODE
-        cancelled = didCancel;
+        canceled = didCancel;
     }
     
-    if (cancelled) {
+    if (canceled) {
         // Track cancel
         [Leanplum track:@"Cancel" withValue:0.0 andInfo:nil
                 andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
