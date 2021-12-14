@@ -1858,17 +1858,10 @@ void leanplumExceptionHandler(NSException *exception);
 
             // Make sure we cancel before matching in case the criteria overlap.
             if (result.matchedUnlessTrigger) {
-                NSString *cancelActionName = [@"__Cancel" stringByAppendingString:actionType];
-                LPActionContext *context = [LPActionContext actionContextWithName:cancelActionName
-                                                                             args:@{}
-                                                                        messageId:messageId];
-                [self triggerAction:context handledBlock:^(BOOL success) {
-                    if (success) {
-                        // Track cancel.
-                        [Leanplum track:@"Cancel" withValue:0.0 andInfo:nil
-                                andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
-                    }
-                }];
+                // Currently Unless Trigger is possible for Local Notifications only
+                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:actionType]) {
+                    [[LPLocalNotificationsManager sharedManager] cancelLocalNotification:messageId];
+                }
             }
             if (result.matchedTrigger) {
                 [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
@@ -1919,16 +1912,16 @@ void leanplumExceptionHandler(NSException *exception);
                     LPLog(LPDebug, @"Local IAM caps reached, suppressing messageId=%@", [actionContext messageId]);
                     continue;
                 }
-                [self triggerAction:actionContext handledBlock:^(BOOL success) {
-                    if (success) {
-                        if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
-                            [[LPInternalState sharedState].actionManager recordLocalPushImpression:[actionContext messageId]];
-                        } else {
+                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
+                    [[LPLocalNotificationsManager sharedManager] scheduleLocalNotification:actionContext];
+                } else {
+                    [self triggerAction:actionContext handledBlock:^(BOOL success) {
+                        if (success) {
                             [[LPInternalState sharedState].actionManager
                              recordMessageImpression:[actionContext messageId]];
                         }
-                    }
-                }];
+                    }];
+                }
             }
         }
     }
