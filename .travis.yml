@@ -6,7 +6,7 @@ osx_image: xcode13.1
 
 xcode_workspace: Leanplum.xcworkspace
 xcode_scheme: LeanplumSDKApp
-xcode_destination: platform=iOS Simulator,OS=14.5,name=iPhone 12
+xcode_destination: platform=iOS Simulator,OS=15.0,name=iPhone 12
 
 cache: cocoapods
 podfile: Podfile
