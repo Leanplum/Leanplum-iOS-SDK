@@ -44,8 +44,10 @@ extension UNNotificationSettings {
         if settings.notificationCenterSetting == .enabled {
             result |= (1 << 4)
         }
-        if settings.alertStyle != .none {
-            result |= (1 << 5)
+        if #available(iOS 15.0, *) {
+            if settings.timeSensitiveSetting == .enabled {
+                result |= (1 << 5)
+            }
         }
         
         return result
