@@ -96,9 +96,8 @@ import Foundation
     // MARK: Notification Open
     @objc(notificationOpened:action:)
     func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened Id: %@", Leanplum.notificationsManager().getNotificationId(userInfo))
-        
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened MessageId: %@", messageId)
         
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
         let actionName = isDefaultAction ? action : "iOS options.Custom actions.\(action)"
@@ -141,7 +140,7 @@ import Foundation
     // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received on %@. MessageId: @%, Id: %@", isForeground ? "Foreground" : "Background", messageId, Leanplum.notificationsManager().getNotificationId(userInfo))
+        LeanplumUtils.lpLog(type: .debug, format: "Notification received - %@. MessageId: @%", isForeground ? "Foreground" : "Background", messageId)
         
         trackDelivery(userInfo: userInfo)
         if isForeground {
