@@ -17,7 +17,7 @@
 + (void)maybeSendLog:(NSString *)message;
 @end
 @implementation LPLogManager
-static LPLogLevel logLevel = Info;
+static LPLogLevel logLevel = LPLogLevelInfo;
 
 +(void)setLogLevel:(LPLogLevel)level
 {
@@ -123,7 +123,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
             logType = @"DEBUG";
             message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, formattedMessage];
             [LPLogManager maybeSendLog:message];
-            if (level < Debug) {
+            if (level < LPLogLevelDebug) {
                 return;
             }
             break;
@@ -131,7 +131,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
             logType = @"INFO";
             message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, formattedMessage];
             [LPLogManager maybeSendLog:message];
-            if (level < Info) {
+            if (level < LPLogLevelInfo) {
                 return;
             }
             break;
@@ -139,7 +139,7 @@ void LPLog(LPLogType type, NSString *format, ...) {
             logType = @"ERROR";
             message = [NSString stringWithFormat:@"[%@] [%@]: %@", leanplumString, logType, formattedMessage];
             [LPLogManager maybeSendLog:message];
-            if (level < Error) {
+            if (level < LPLogLevelError) {
                 return;
             }
             break;
