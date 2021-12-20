@@ -2804,6 +2804,16 @@ void leanplumExceptionHandler(NSException *exception)
     return [[LPActionManager sharedManager] shouldSuppressMessages];
 }
 
++ (void)enablePushNotifications
+{
+    [[Leanplum notificationsManager] enableSystemPush];
+}
+
++ (void)enableProvisionalPushNotifications
+{
+    [[Leanplum notificationsManager] enableProvisionalPush];
+}
+
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];
