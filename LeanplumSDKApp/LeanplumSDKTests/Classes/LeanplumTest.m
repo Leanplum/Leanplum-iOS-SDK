@@ -1076,6 +1076,47 @@
 }
 
 /**
+ * Tests setting the user locale before Leanplum start
+ */
+- (void) test_set_locale_before_start
+{
+    NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ab_CD"];
+
+    XCTestExpectation *request_expectation = [self expectationWithDescription:@"request_expectation"];
+    [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
+        XCTAssertFalse([args[LP_KEY_LOCALE] isEqualToString:[Leanplum.systemLocale localeIdentifier]]);
+        XCTAssertTrue([args[LP_KEY_LOCALE] isEqualToString:[locale localeIdentifier]]);
+        [request_expectation fulfill];
+    }];
+
+    [Leanplum setLocale:locale];
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    [self waitForExpectations:@[request_expectation] timeout:1.0];
+}
+
+/**
+ * Tests setting the user locale after Leanplum start
+ */
+- (void) test_set_locale_after_start
+{
+    NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:@"ab_CD"];
+
+    XCTestExpectation *request_expectation = [self expectationWithDescription:@"request_expectation"];
+    [Leanplum onStartResponse:^(BOOL success) {
+        XCTAssertTrue(success);
+        [Leanplum setLocale:locale];
+        [LPRequestSender validate_request_args_dictionary:^(NSDictionary *args) {
+            XCTAssertFalse([args[LP_KEY_LOCALE] isEqualToString:[Leanplum.systemLocale localeIdentifier]]);
+            XCTAssertTrue([args[LP_KEY_LOCALE] isEqualToString:[locale localeIdentifier]]);
+            [request_expectation fulfill];
+        }];
+    }];
+
+    XCTAssertTrue([LeanplumHelper start_development_test]);
+    [self waitForExpectations:@[request_expectation] timeout:1.0];
+}
+
+/**
  * Tests track with events of same type , priority and countdown.
  */
 - (void) test_track_events_priority_countDown
