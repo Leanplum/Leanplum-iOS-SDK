@@ -13,11 +13,11 @@ import XCTest
 @available(iOS 10.0, *)
 class LeanplumPushNotificationSettingsTest: XCTestCase {
     
-    var notificaitonSettings: LeanplumNotificationSettings!
+    var notificationSettings: LeanplumNotificationSettings!
     
     override func setUp() {
         super.setUp()
-        notificaitonSettings = LeanplumNotificationSettings()
+        notificationSettings = LeanplumNotificationSettings()
     }
     
     override func tearDown() {
@@ -55,14 +55,14 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     }
     
     func testSetUp() {
-        notificaitonSettings.setUp()
-        XCTAssertTrue(notificaitonSettings.updateSettings != nil)
+        notificationSettings.setUp()
+        XCTAssertTrue(notificationSettings.updateSettings != nil)
     }
     
     func testGetSettingsWhenAuthorizationStatusNotDetermined() {
         let expectation = expectation(description: "Test authorizationStatus notDetermined")
         UNNotificationSettings.fakeAuthorizationStatus = .notDetermined
-        notificaitonSettings.getSettings() { settings, areChanged in
+        notificationSettings.getSettings() { settings, areChanged in
             if let _ = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
                 fatalError()
             } else {
@@ -75,7 +75,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testGetSettingsWhenAuthorizationStatusDenied() {
         let expectation = expectation(description: "Test authorizationStatus denied")
         UNNotificationSettings.fakeAuthorizationStatus = .denied
-        notificaitonSettings.getSettings() { settings, areChanged in
+        notificationSettings.getSettings() { settings, areChanged in
             if let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
                 if types == 0 {
                     expectation.fulfill()
@@ -88,7 +88,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testGetSettingsWhenAuthorizationStatusAuthorized() {
         let expectation = expectation(description: "Test authorized")
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
-        notificaitonSettings.getSettings() { settings, areChanged in
+        notificationSettings.getSettings() { settings, areChanged in
             if let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
                 if types == 63 {
                     expectation.fulfill()
@@ -102,7 +102,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testGetSettingsWithProvisionalAuthorizationStatus() {
         let expectation = expectation(description: "Test provisional authorizationStatus")
         UNNotificationSettings.fakeAuthorizationStatus = .provisional
-        notificaitonSettings.getSettings() { settings, areChanged in
+        notificationSettings.getSettings() { settings, areChanged in
             if let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
                 if types == 64 {
                     expectation.fulfill()
@@ -115,24 +115,24 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testSaveAndRemoveSettings() {
         let testSettings: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: 7,
                             LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: []]
-        notificaitonSettings.save(testSettings)
+        notificationSettings.save(testSettings)
         
-        guard let savedSettings = UserDefaults.standard.value(forKey: notificaitonSettings.leanplumUserNotificationSettingsKey()) as? [AnyHashable : Any] else {
+        guard let savedSettings = UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()) as? [AnyHashable : Any] else {
             XCTFail("Settings are not saved")
             return
         }
         XCTAssertTrue(NSDictionary(dictionary: savedSettings).isEqual(to: testSettings))
         
-        notificaitonSettings.removeSettings()
+        notificationSettings.removeSettings()
         
-        XCTAssertNil(UserDefaults.standard.value(forKey: notificaitonSettings.leanplumUserNotificationSettingsKey()))
+        XCTAssertNil(UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()))
     }
     
     func testWhenUpdateSettingsIsCalledItWillUpdateSettingsToServer() {
         setUp_request()
         //first remove settings from defaults
-        notificaitonSettings.removeSettings()
-        notificaitonSettings.setUp()
+        notificationSettings.removeSettings()
+        notificationSettings.setUp()
         //authorize settings to have push types
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
         
@@ -149,18 +149,18 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         }
         
         //calling updateSettings will trigger update settings to server
-        notificaitonSettings.updateSettings?()
+        notificationSettings.updateSettings?()
         
         wait(for: [expectation], timeout: 5)
         tearDown_request()
     }
 }
 
-protocol LeanplumNotificaitonSettingsProtocol {
+protocol LeanplumNotificationSettingsProtocol {
     func leanplumUserNotificationSettingsKey() -> String
 }
 
-extension LeanplumNotificationSettings: LeanplumNotificaitonSettingsProtocol {
+extension LeanplumNotificationSettings: LeanplumNotificationSettingsProtocol {
     func leanplumUserNotificationSettingsKey() -> String {
         guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
             fatalError()

@@ -35,7 +35,7 @@ import Foundation
         notificationSettings.save(settings)       
     }
     
-    @objc public func removeNotificaitonSettings() {
+    @objc public func removeNotificationSettings() {
         notificationSettings.removeSettings()
     }
     
