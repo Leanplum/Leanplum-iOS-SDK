@@ -257,8 +257,6 @@ NS_SWIFT_NAME(setAppId(_:productionKey:));
  */
 + (void)setAppVersion:(NSString *)appVersion;
 
-+ (void)setDeviceVersion:(NSString *)deviceVersion;
-
 /**
  * Syncs resources between Leanplum and the current app.
  * You should only call this once, and before {@link start}.
