@@ -35,7 +35,8 @@ extension NSObject {
     @objc func leanplum_application(_ application: UIApplication,
                                      didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveRemoteNotification:fetchCompletionHandler")
+        LeanplumUtils.lpLog(type: .debug,
+                            format: "Called swizzled application:didReceiveRemoteNotification:fetchCompletionHandler AppState: %d", UIApplication.shared.applicationState.rawValue)
         
         defer {
             // Call overridden method
@@ -70,7 +71,7 @@ extension NSObject {
         
         let state = UIApplication.shared.applicationState
         // Call notification received or perform action
-        if Leanplum.notificationsManager().proxy.isIOSVersionGreaterThanOrEqual("10") { //, #available(iOS 10, *) {
+        if #available(iOS 10, *) {
             // Open notification will be handled by userNotificationCenter:didReceive or
             // application:didFinishLaunchingWithOptions
             // Receiving of notification when app is running on foreground is handled by userNotificationCenter:willPresent
@@ -90,7 +91,6 @@ extension NSObject {
                                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         // iOS 9
         let state = UIApplication.shared.applicationState
-        LeanplumUtils.lpLog(type: .debug, format: "didReceiveRemoteNotification:fetchCompletionHandler: %d", state.rawValue)
         // Notification was not handled by application:didFinishLaunchingWithOptions
         if !Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) {
         if  state == .inactive {
@@ -118,7 +118,8 @@ extension NSObject {
     // MARK: - UserNotificationCenter
     @objc @available(iOS 10.0, *)
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled didReceiveNotificationResponse:withCompletionHandler")
+        LeanplumUtils.lpLog(type: .debug,
+                            format: "Called swizzled userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler")
         
         let userInfo = response.notification.request.content.userInfo
         defer {
@@ -150,8 +151,6 @@ extension NSObject {
         // Handle UNNotificationDefaultActionIdentifier and Custom Actions
         if response.actionIdentifier != UNNotificationDismissActionIdentifier {
             let notifWasOpenedFromStart = Leanplum.notificationsManager().proxy.isEqualToHandledNotification(userInfo: userInfo) && Leanplum.notificationsManager().proxy.notificationOpenedFromStart
-            
-            LeanplumUtils.lpLog(type: .debug, format: "notificationOpenedFromStart \(notifWasOpenedFromStart)")
             if !notifWasOpenedFromStart {
                 // Open Notification action
                 if response.actionIdentifier == UNNotificationDefaultActionIdentifier {
@@ -166,7 +165,8 @@ extension NSObject {
     
     @objc @available(iOS 10.0, *)
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled willPresentNotification:withCompletionHandler")
+        LeanplumUtils.lpLog(type: .debug,
+                            format: "Called swizzled userNotificationCenter:willPresentNotification:withCompletionHandler")
         
         defer {
             // Call overridden method
@@ -187,7 +187,7 @@ extension NSObject {
     
     // MARK: - didReceive Local Notification
     @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled application:didReceive:localNotification %d", UIApplication.shared.applicationState.rawValue)
+        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled application:didReceive:localNotification")
         
         defer {
             // Call overridden method

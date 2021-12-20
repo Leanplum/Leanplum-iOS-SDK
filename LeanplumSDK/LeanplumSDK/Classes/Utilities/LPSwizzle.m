@@ -154,18 +154,27 @@ static NSMutableDictionary *_methodTable;
 + (BOOL)hookInto:(SEL)originalSelector withSelector:(SEL)newSelector forObject:(id)object
 {
     NSError *error;
+    BOOL swizzled = NO;
     Method originalMethod = class_getInstanceMethod(object, originalSelector);
     if (!originalMethod) {
-        class_addMethod(object, originalSelector,
+        BOOL methodAdded = class_addMethod(object, originalSelector,
                         class_getMethodImplementation(NSObject.class, newSelector),
                         method_getTypeEncoding(class_getInstanceMethod(
                                             NSObject.class, newSelector)));
-        return NO;
+        if (!methodAdded) {
+            LPLog(LPError, @"Method not added: %@", originalSelector);
+        }
     } else {
         [LPSwizzle swizzleMethod:originalSelector withMethod:newSelector error:&error
                            class:[object class]];
-        return YES;
+        swizzled = YES;
     }
+    
+    if (error) {
+        LPLog(LPError, @"Swizzling Error: %@", [error description]);
+    }
+    
+    return swizzled;
 }
 
 + (Class)implementingSuperclassForSelector:(SEL)selector onClass:(Class)class

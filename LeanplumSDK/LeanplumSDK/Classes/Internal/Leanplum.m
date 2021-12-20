@@ -336,13 +336,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
 }
 
-+ (void)setDeviceVersion:(NSString *)deviceVersion
-{
-    LP_TRY
-    [Leanplum notificationsManager].proxy.deviceVersion = deviceVersion;
-    LP_END_TRY
-}
-
 + (void)setAppId:(NSString *)appId withProductionKey:(NSString *)accessKey
 {
     if ([LPUtils isNullOrEmpty:appId]) {
