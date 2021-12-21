@@ -32,9 +32,9 @@ import Foundation
                     LeanplumUtils.lpLog(type: .error, format: "Error: %@", error.localizedDescription)
                 }
                 
-                //Register for remote notificaiton to create and send push token to server
+                //Register for remote notification to create and send push token to server
                 //no metter if the request was granted or has error, push token will be generated
-                //and later if user decides to go into the settings and enables push notificaitons
+                //and later if user decides to go into the settings and enables push notifications
                 //we will have token and will only update push types
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
