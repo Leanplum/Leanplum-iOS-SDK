@@ -412,7 +412,7 @@ void leanplumExceptionHandler(NSException *exception);
         
         //Clean UserDefaults before changing deviceId because it is used to generate key
         [[Leanplum notificationsManager] removePushToken];
-        [[Leanplum notificationsManager] removeNotificaitonSettings];
+        [[Leanplum notificationsManager] removeNotificationSettings];
         
         // Change the LPAPIConfig after getting the push token and settings
         // and after cleaning UserDefaults
@@ -1100,7 +1100,7 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-                    //call update notificaiton settings to check if values are changed.
+                    //call update notification settings to check if values are changed.
                     //if they are changed the new valeus will be updated to server as well
                     [[Leanplum notificationsManager] updateNotificationSettings];
         
@@ -2810,6 +2810,16 @@ void leanplumExceptionHandler(NSException *exception)
     }
     // checks if message caps are reached
     return [[LPActionManager sharedManager] shouldSuppressMessages];
+}
+
++ (void)enablePushNotifications
+{
+    [[Leanplum notificationsManager] enableSystemPush];
+}
+
++ (void)enableProvisionalPushNotifications
+{
+    [[Leanplum notificationsManager] enableProvisionalPush];
 }
 
 - (void) dealloc {

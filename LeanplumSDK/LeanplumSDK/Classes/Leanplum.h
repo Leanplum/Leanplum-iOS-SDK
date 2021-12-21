@@ -829,6 +829,16 @@ NS_SWIFT_NAME(setDeviceLocation(latitude:longitude:city:region:country:type:));
  */
 + (nullable LPSecuredVars *)securedVars;
 
+/**
+ Enables system push notifications through Leanplum SDK
+ */
++ (void)enablePushNotifications;
+
+/**
+ Enables provisional push notifications through Leanplum SDK
+ */
++ (void)enableProvisionalPushNotifications API_AVAILABLE(ios(12.0));
+
 @end
 
 NS_ASSUME_NONNULL_END
