@@ -1595,7 +1595,7 @@ void leanplumExceptionHandler(NSException *exception);
     [blocks addObject:[block copy]];
     LP_END_TRY
 }
-
+#pragma mark Notifications Swizzling Disabled Methods
 + (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions
 {
     LP_TRY
@@ -1639,12 +1639,12 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:completionHandler];
+        void (^emptyBlock)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result) {};
+        [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:emptyBlock];
     }
     else
     {
@@ -1654,12 +1654,12 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
-                 withCompletionHandler:(void (^)(void))completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[Leanplum notificationsManager].proxy userNotificationCenterWithDidReceive:response withCompletionHandler:completionHandler];
+        void (^emptyBlock)(void) = ^{};
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithDidReceive:response withCompletionHandler:emptyBlock];
     }
     else
     {
@@ -1669,12 +1669,12 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)willPresentNotification:(UNNotification *)notification
-          withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[Leanplum notificationsManager].proxy userNotificationCenterWithWillPresent:notification withCompletionHandler:completionHandler];
+        void(^emptyBlock)(UNNotificationPresentationOptions) = ^(UNNotificationPresentationOptions options) {};
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithWillPresent:notification withCompletionHandler:emptyBlock];
     }
     else
     {
@@ -1753,6 +1753,14 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     [Leanplum notificationsManager].isPushDeliveryTrackingEnabled = enabled;
     LP_END_TRY
+}
+
+/**
+ * Sets the UNNotificationPresentationOptions to be used when Swizzling is enabled.
+ */
++ (void)setPushNotificationPresentationOption:(UNNotificationPresentationOptions)options
+{
+    [[[Leanplum notificationsManager] proxy] setPushNotificationPresentationOption:options];
 }
 
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName

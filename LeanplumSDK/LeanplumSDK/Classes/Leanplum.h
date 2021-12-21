@@ -427,12 +427,21 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler;
-+ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
-+ (void)willPresentNotification:(UNNotification *)notification
-          withCompletionHandler:(void(^)(UNNotificationPresentationOptions options))completionHandler
-    API_AVAILABLE(ios(10.0));
+/**
+ * Call this method from application:didReceiveRemoteNotification:fetchCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
++ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
+/**
+ * Call this method from userNotificationCenter:didReceive:withCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
++ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response API_AVAILABLE(ios(10.0));
+/**
+ * Call this method from userNotificationCenter:willPresent:withCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
++ (void)willPresentNotification:(UNNotification *)notification API_AVAILABLE(ios(10.0));
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
@@ -441,6 +450,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 
 /**
  * Call this to handle custom actions for local notifications.
+ * Call the completionHandler yourself.
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -452,6 +462,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 
 /**
  * Call this to handle custom actions for remote notifications.
+ * Call the completionHandler yourself.
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
@@ -473,6 +484,8 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
  * @see PUSH_DELIVERED_EVENT_NAME for the event name
  */
 + (void)setPushDeliveryTrackingEnabled:(BOOL)enabled;
+
++ (void)setPushNotificationPresentationOption:(UNNotificationPresentationOptions)options API_AVAILABLE(ios(10.0));
 
 /**
  * @{

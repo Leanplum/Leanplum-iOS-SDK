@@ -173,6 +173,8 @@ extension NSObject {
             let selector = #selector(self.leanplum_userNotificationCenter(_:willPresent:withCompletionHandler:))
             if Leanplum.notificationsManager().proxy.swizzledUserNotificationCenterWillPresentNotificationWithCompletionHandler && self.responds(to: selector) {
                 self.leanplum_userNotificationCenter(center, willPresent: notification, withCompletionHandler: completionHandler)
+            } else {
+                completionHandler(Leanplum.notificationsManager().proxy.pushNotificationPresentationOption)
             }
         }
         
