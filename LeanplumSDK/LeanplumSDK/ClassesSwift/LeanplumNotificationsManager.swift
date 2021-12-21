@@ -140,7 +140,7 @@ import Foundation
     // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received - %@. MessageId: @%", isForeground ? "Foreground" : "Background", messageId)
+        LeanplumUtils.lpLog(type: .debug, format: "Notification received - %@. MessageId: %@", isForeground ? "Foreground" : "Background", messageId)
         
         trackDelivery(userInfo: userInfo)
         if isForeground {
