@@ -8,14 +8,6 @@
 import Foundation
 
 class LeanplumNotificationSettings {
-
-    var updateSettings: (() -> Void)?
-    
-    func setUp() {
-        updateSettings = { [weak self] in
-            self?.getSettings(updateToServer: true)
-        }
-    }
     
     func getSettings(updateToServer: Bool = false, completionHandler: ((_ settings: [AnyHashable: Any], _ areChanged: Bool)->())? = nil) {
         if #available(iOS 10.0, *) {
