@@ -22,4 +22,4 @@ static NSString *LP_KEY_PUSH_CUSTOM_ACTIONS = @"_lpc";
 static NSString *DEFAULTS_ASKED_TO_PUSH = @"__Leanplum_asked_to_push";
 static NSString *DEFAULTS_LEANPLUM_ENABLED_PUSH = @"__Leanplum_enabled_push";
 
-#define  LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"
+#define LP_PUSH_NOTIFICATION_ACTION @"__Push Notification"

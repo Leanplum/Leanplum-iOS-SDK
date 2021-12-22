@@ -17,7 +17,8 @@
     [Leanplum defineAction:LPMT_OPEN_URL_NAME
                     ofKind:kLeanplumActionKindAction
              withArguments:@[[LPActionArg argNamed:LPMT_ARG_URL withString:LPMT_DEFAULT_URL]]
-             withResponder:^BOOL(LPActionContext *context) {
+               withOptions:@{}
+            presentHandler:^BOOL(LPActionContext *context) {
         @try {
             LPOpenUrlMessageTemplate *template = [[LPOpenUrlMessageTemplate alloc] init];
             template.context = context;
@@ -29,7 +30,8 @@
             LOG_LP_MESSAGE_EXCEPTION;
             return NO;
         }
-    }];
+    }
+            dismissHandler:nil];
 }
 
 - (void) openURL

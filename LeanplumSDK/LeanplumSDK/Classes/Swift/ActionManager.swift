@@ -7,40 +7,103 @@
 
 import Foundation
 
-public class ActionManager {
-    
-    public enum ActionTypes {
-        case start
-        case resume
-        case event
-        case userAttribute
-        case state
-    }
-    
-    public var displayDelegate: MessageDisplayDelegate?
-    public var controllerDelegate: MessageControllerDelegate?
-    
-    lazy var queue: ActionQueue = ActionQueue()
-    lazy var scheduler: ActionScheduler = ActionScheduler()
+// TODO: Fix triggering to be more friendly
+@objc public class ActionManager: NSObject {
+    @objc public static let shared: ActionManager = .init()
+
+    lazy var queue: Queue = Queue()
+    lazy var scheduler: Scheduler = Scheduler()
     lazy var state = State()
-    lazy var definitions = Definitions()
+    lazy var definitions: [ActionDefinition] = []
     
-    init() {
+    override init() {
+        super.init()
         scheduler.delegate = self
     }
     
-    public func performAction(types: [ActionTypes], eventName: String) {
-        guard let messages = VarCache.shared().messages() else {
-            return
-        }
+    var shouldDisplayMessage: ((ActionContext) -> MessageOrder)?
+    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageOrder) {
+        shouldDisplayMessage = callback
+    }
+    
+    var onMessageDisplayed: ((ActionContext) -> Void)?
+    @objc public func onMessageDisplayed(_ callback: @escaping (ActionContext) -> Void) {
+        onMessageDisplayed = callback
+    }
+    
+    var onMessageDismissed: ((ActionContext) -> Void)?
+    @objc public func onMessageDismissed(_ callback: @escaping (ActionContext) -> Void) {
+        onMessageDismissed = callback
+    }
+    
+    var onMessageAction: ((_ actionName: String, _ context: ActionContext) -> Void)?
+    @objc public func onMessageAction(_ callback: @escaping (_ actionName: String, _ context: ActionContext) -> Void) {
+        onMessageAction = callback
+    }
+    
+    var sortAndOrderMessages: ((_ contexts: [ActionContext], _ trigger: [String: String]) -> [ActionContext])?
+    @objc public func sortAndOrderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: [String: String]) -> [ActionContext]) {
+        sortAndOrderMessages = callback
+    }
+}
 
-        for _ in messages {
-            // filter
-            // triggers
-            // hold back
-            // sort
-            // execute
-            // record impressions
+extension ActionManager {
+    /// Adds ActionContext to front or back of the queue depending on action type
+    @objc public func addActions(contexts: [ActionContext]) {
+        let actions: [Action] = contexts.map {
+            .action(context: $0)
+        }
+        addActions(actions: actions)
+    }
+    
+    /// Adds ActionContext to back of the queue
+    @objc public func appendActions(contexts: [ActionContext]) {
+        let actions: [Action] = contexts.map {
+            .action(context: $0)
+        }
+        appendActions(actions: actions)
+    }
+    
+    /// Adds ActionContext to front of the queue
+    @objc public func insertActions(contexts: [ActionContext]) {
+        let actions: [Action] = contexts.map {
+            .action(context: $0)
+        }
+        insertActions(actions: actions)
+    }
+}
+
+extension ActionManager {
+    /// Adds action to front or back of the queue depending on action type
+    func addActions(actions: [Action]) {
+        actions.forEach { action in
+            if action.type == .chained {
+                insertActions(actions: actions)
+            } else {
+                appendActions(actions: actions)
+            }
+        }
+    }
+    
+    /// Adds action to back of the queue
+    func appendActions(actions: [Action]) {
+        actions.forEach { action in
+            if action.context.hasMissingFiles() {
+                Leanplum.onceVariablesChangedAndNoDownloadsPending {
+                    self.queue.pushBack(action)
+                }
+            }
+        }
+    }
+    
+    /// Adds action to front of the queue
+    func insertActions(actions: [Action]) {
+        actions.forEach { action in
+            if action.context.hasMissingFiles() {
+                Leanplum.onceVariablesChangedAndNoDownloadsPending {
+                    self.queue.pushFront(action)
+                }
+            }
         }
     }
 }

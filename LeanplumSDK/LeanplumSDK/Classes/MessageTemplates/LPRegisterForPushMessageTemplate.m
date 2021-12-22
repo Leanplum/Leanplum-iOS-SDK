@@ -17,10 +17,9 @@
     [Leanplum defineAction:LPMT_REGISTER_FOR_PUSH
                     ofKind:kLeanplumActionKindAction
              withArguments:@[]
-             withResponder:^BOOL(LPActionContext *context) {
-
+               withOptions:@{}
+            presentHandler:^BOOL(LPActionContext *context) {
         LPRegisterForPushMessageTemplate *template = [[LPRegisterForPushMessageTemplate alloc] init];
-        
         if ([template shouldShowPushMessage]) {
             [template showNativePushPrompt];
             // Will count View event
@@ -28,9 +27,9 @@
         } else {
             return NO;
         }
-        
         return YES;
-    }];
+    }
+            dismissHandler:nil];
 }
 
 @end

@@ -12,10 +12,12 @@
 @implementation LPAppRatingMessageTemplate
 
 +(void)defineAction
-{
+{    
     [Leanplum defineAction:LPMT_APP_RATING_NAME
-                    ofKind:kLeanplumActionKindAction withArguments:@[]
-             withResponder:^BOOL(LPActionContext *context) {
+                    ofKind:kLeanplumActionKindAction
+             withArguments:@[]
+               withOptions:@{}
+            presentHandler:^BOOL(LPActionContext *context) {
         @try {
             LPAppRatingMessageTemplate *appRatingMessageTemplate = [[LPAppRatingMessageTemplate alloc] init];
 
@@ -26,7 +28,8 @@
             LOG_LP_MESSAGE_EXCEPTION;
         }
         return NO;
-    }];
+    }
+            dismissHandler:nil];
 }
 
 - (void)appStorePrompt

@@ -25,16 +25,18 @@
             return NO;
         }
     };
-
+    
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
              withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
-                 [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_ALERT_MESSAGE],
-                 [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
-             ]
-             withResponder:responder];
+        [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
+        [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_ALERT_MESSAGE],
+        [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
+        [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
+    ]
+               withOptions:@{}
+            presentHandler:responder
+            dismissHandler:nil];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

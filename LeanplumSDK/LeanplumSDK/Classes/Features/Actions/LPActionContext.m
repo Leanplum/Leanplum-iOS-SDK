@@ -10,6 +10,7 @@
 #import "LPFileManager.h"
 #import "LPUtils.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
@@ -30,7 +31,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 @interface LPActionContext()
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
-@property (strong, nonatomic) LeanplumActionBlock actionNamedResponder;
 
 @end
 
@@ -186,6 +186,19 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 {
     [self setProperArgs];
     return [_args copy];
+}
+
+- (BOOL)isChainedMessage
+{
+    if (!self.args) {
+        return NO;
+    }
+
+    NSString *actionType = self.args[LP_VALUE_ACTION_ARG];
+    if ([actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
+        return YES;
+    }
+    return NO;
 }
 
 - (void)setProperArgs
@@ -499,29 +512,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_END_TRY
 }
 
-- (void)setActionNamedResponder:(LeanplumActionBlock)block
-{
-    if (block) {
-        _actionNamedResponder = [block copy];
-    } else {
-        _actionNamedResponder = nil;
-    }
-}
-
-- (void)triggerActionNamedResponder:(NSString *)name withArgs:(NSDictionary *)args
-{
-    if ([self actionNamedResponder]) {
-        LPActionContext *actionContext = [LPActionContext
-                                          actionContextWithName:name
-                                          args:args messageId:_messageId];
-        
-        __weak LPActionContext *weakSelf = self;
-        actionContext->_parentContext = weakSelf;
-        
-        self.actionNamedResponder(actionContext);
-    }
-}
-
 - (void)runActionNamed:(NSString *)name
 {
     LP_TRY
@@ -530,8 +520,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         return;
     }
     NSDictionary *args = [self getChildArgs:name];
-    
-    [self triggerActionNamedResponder:name withArgs:args];
     
     if (!args) {
         return;
@@ -542,27 +530,12 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     NSString *actionType = args[LP_VALUE_ACTION_ARG];
 
     void (^executeChainedMessage)(void) = ^void(void) {
-        LPActionContext *chainedActionContext =
-        [Leanplum createActionContextForMessageId:messageId];
+        LPActionContext *chainedActionContext = [Leanplum createActionContextForMessageId:messageId];
         chainedActionContext.contextualValues = self.contextualValues;
         chainedActionContext->_preventRealtimeUpdating = self->_preventRealtimeUpdating;
         chainedActionContext->_isRooted = self->_isRooted;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [Leanplum triggerAction:chainedActionContext handledBlock:^(BOOL success) {
-                if (success) {
-                    // Track when the chain message is viewed.
-                    // We do not want to count occurrences for action kind, because in multi message
-                    // campaigns the Open URL action is not a message. Also if the user has defined
-                    // actions of type Action we do not want to count them.
-                    LeanplumActionKind kind = [[LPVarCache sharedCache] getActionDefinitionType:[chainedActionContext actionName]];
-                    if (kind == kLeanplumActionKindAction) {
-                        [[LPInternalState sharedState].actionManager recordChainedActionImpression:[chainedActionContext messageId]];
-                    } else {
-                        [[LPInternalState sharedState].actionManager
-                         recordMessageImpression:[chainedActionContext messageId]];
-                    }
-                }
-            }];
+            [[ActionManager shared] triggerWithActionContexts:@[chainedActionContext]];
         });
     };
 
@@ -570,30 +543,31 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
         if (message) {
             executeChainedMessage();
-            return;
         } else {
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
                 NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
                 if (message) {
+                    // put it into the front of the queue
                     executeChainedMessage();
                 }
             }];
         }
+    } else {
+        LPActionContext *childContext = [LPActionContext
+                                         actionContextWithName:args[LP_VALUE_ACTION_ARG]
+                                         args:args
+                                         messageId:_messageId];
+        childContext.contextualValues = self.contextualValues;
+        childContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
+        childContext->_isRooted = _isRooted;
+        childContext->_parentContext = self;
+        childContext->_key = name;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[ActionManager shared] triggerWithActionContexts:@[childContext]];
+        });
     }
-
-    LPActionContext *childContext = [LPActionContext
-                                     actionContextWithName:args[LP_VALUE_ACTION_ARG]
-                                     args:args messageId:_messageId];
-    childContext.contextualValues = self.contextualValues;
-    childContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
-    childContext->_isRooted = _isRooted;
-    childContext->_parentContext = self;
-    childContext->_key = name;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [Leanplum triggerAction:childContext];
-    });
     LP_END_TRY
     
     [self.countAggregator incrementCount:@"run_action_named"];

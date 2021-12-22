@@ -56,7 +56,6 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 #import "LPVar.h"
 #import "LPAppIconManager.h"
 #import "LPCountAggregator.h"
-#import "LPDeferMessageManager.h"
 #import "LPFileManager.h"
 #import "LPLogManager.h"
 #import "LPRegisterDevice.h"

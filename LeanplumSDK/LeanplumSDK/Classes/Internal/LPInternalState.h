@@ -11,8 +11,7 @@
 
 @interface LPInternalState : NSObject
 
-@property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks, *startIssuedBlocks, *messageDisplayedBlocks;
-@property(strong, nonatomic) NSMutableDictionary *actionBlocks, *actionResponders;
+@property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks, *startIssuedBlocks;
 @property(strong, nonatomic) NSMutableSet *startResponders, *variablesChangedResponders, *noDownloadsResponders;
 @property(assign, nonatomic) NSUncaughtExceptionHandler *customExceptionHandler;
 @property(strong, nonatomic) LPRegisterDevice *registration;

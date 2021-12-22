@@ -30,6 +30,7 @@
 #import "LPUIAlert.h"
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 id<LPNetworkEngineProtocol> engine_;
 
@@ -161,7 +162,8 @@ static dispatch_once_t leanplum_onceToken;
             context.preventRealtimeUpdating = YES;
             [context setIsRooted:isRooted];
             [context maybeDownloadFiles];
-            [Leanplum triggerAction:context];
+            // TODO: Recording message impressionn
+            [[ActionManager shared] triggerWithActionContexts:@[context]];
             [[LPActionManager sharedManager] recordMessageImpression:messageId];
         }
 

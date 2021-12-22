@@ -26,18 +26,20 @@
             return NO;
         }
     };
-
+    
     [Leanplum defineAction:LPMT_CONFIRM_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
              withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
-                 [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_CONFIRM_MESSAGE],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_TEXT withString:LPMT_DEFAULT_YES_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_CANCEL_TEXT withString:LPMT_DEFAULT_NO_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
-                 [LPActionArg argNamed:LPMT_ARG_CANCEL_ACTION withAction:nil],
-             ]
-             withResponder:responder];
+        [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
+        [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_CONFIRM_MESSAGE],
+        [LPActionArg argNamed:LPMT_ARG_ACCEPT_TEXT withString:LPMT_DEFAULT_YES_BUTTON_TEXT],
+        [LPActionArg argNamed:LPMT_ARG_CANCEL_TEXT withString:LPMT_DEFAULT_NO_BUTTON_TEXT],
+        [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
+        [LPActionArg argNamed:LPMT_ARG_CANCEL_ACTION withAction:nil]
+    ]
+               withOptions:@{}
+            presentHandler:responder
+            dismissHandler:nil];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

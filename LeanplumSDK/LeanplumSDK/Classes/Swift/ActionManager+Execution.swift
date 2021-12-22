@@ -8,39 +8,16 @@
 import Foundation
 
 extension ActionManager {
-    
-    struct Action {
-        enum State {
-            case queued
-            case delayed
-            case executing
-            case completed
-        }
-        var state: State
-        var context: ActionContext
-    }
-    
-    struct State {
-        var currentAction: Action?
-    }
-    
-    func addActions(actions: [Action]) {
-        actions.forEach(queue.pushBack(_:))
-        execute()
-    }
-    
-    func addActions(actions: [ActionContext]) {
-        actions.forEach {
-            queue.pushBack(Action(state: .queued, context: $0))
-        }
-        execute()
-    }
-    
-    func execute() {
-        // do not run if we have current action running
-        guard state.currentAction == nil else {
+    @objc public func performActions() {
+        // ask user to dimiss current action so we can execute next one
+        if let action = state.currentAction {
+            let definition = definitions.first { $0.name == action.context.name }
+            let _ = definition?.dismissAction?(action.context)
+            state.currentAction = nil
+            performActions()
             return
         }
+        
         // gets the next action from the queue
         state.currentAction = queue.pop()
         guard var action = state.currentAction else {
@@ -49,30 +26,29 @@ extension ActionManager {
         // change state to executing
         action.state = .executing
         
-        // reset state when we finish executing current action
-        defer {
-            state.currentAction = nil
-            execute()
-        }
-
         // decide if we are going to display the message
         // by calling delegate and let it decide what are we supposed to do
-        let messageDisplayDecision = controllerDelegate?.shouldDisplayMessage(action: action.context) ?? .show
+        
+        let messageDisplayDecision = shouldDisplayMessage?(action.context)
         
         // if message is discarded, early exit
-        if case .discard = messageDisplayDecision {
+        if case .discard = messageDisplayDecision?.decision {
+            state.currentAction = nil
+            performActions()
             return
         }
         
         // if message is delayed, add it to the scheduler to be delayed
         // by the amount of seconds, and exit
-        if case .delay(let amount) = messageDisplayDecision {
+        if case .delay(let amount) = messageDisplayDecision?.decision {
             if amount > 0 {
                 scheduler.schedule(action: action, delay: amount)
             } else {
                 state.currentAction?.state = .delayed
-                addActions(actions: [action])
+                appendActions(contexts: [action.context])
             }
+            state.currentAction = nil
+            performActions()
             return
         }
         
@@ -82,24 +58,37 @@ extension ActionManager {
         // 3) ask and wait for client to dismiss view controller
         
         // get the action definition
-        let definition = definitions.actionDefinitions.first { $0.name == action.context.name }
+        let definition = definitions.first { $0.name == action.context.name }
         
-        // 3) set the dismiss block
-        action.context.dismissBlock = { [weak self] in
-            self?.displayDelegate?.onMessageDismissed(action: action.context)
+        // 2) set the execute block which will be called by client
+        action.context.onActionExecuted = { [weak self] actionName, tracked in
+            self?.onMessageAction?(actionName, action.context)
         }
-
-        // 2) set the action block
-        action.context.actionBlock = { [weak self] name, tracked in
-            tracked ? action.context.runTrackedAction(name: name) : action.context.runAction(name: name)
-            self?.displayDelegate?.onMessageClicked(action: action.context)
+        
+        // 3) set the dismiss block which will be called by client
+        action.context.onActionDismissed = { [weak self] in
+            self?.onMessageDismissed?(action.context)
         }
         
         // 1) ask to present, return if its not
-        guard let presented = definition?.present?(action.context), presented else {
+        guard let handled = definition?.presentAction?(action.context), handled else {
+            state.currentAction = nil
+            performActions()
             return
         }
+        // iff handled track that message has been displayed
         // propagate event that message is displayed
-        displayDelegate?.onMessageDisplayed(action: action.context)
+        onMessageDisplayed?(action.context)
+        
+        if action.context.name == LP_PUSH_NOTIFICATION_ACTION {
+            // do something
+        }
+        
+        if action.type == .chained /* && messageType == action*/ {
+            //  TODO: track the chained message impressionn
+        }
+        
+        // record the impression
+        recordImpression(action: action)
     }
 }
