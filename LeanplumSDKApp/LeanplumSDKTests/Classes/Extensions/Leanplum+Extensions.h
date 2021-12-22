@@ -31,6 +31,8 @@
 
 @interface Leanplum(UnitTest)
 
++ (NSLocale *)systemLocale;
+
 + (void)reset;
 
 + (void)maybePerformActions:(NSArray *)whenConditions

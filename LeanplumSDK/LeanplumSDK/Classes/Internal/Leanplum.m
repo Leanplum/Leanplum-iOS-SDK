@@ -897,10 +897,8 @@ void leanplumExceptionHandler(NSException *exception);
     // Setup parameters.
     NSString *versionName = [self appVersion];
     UIDevice *device = [UIDevice currentDevice];
-    NSLocale *currentLocale = [NSLocale currentLocale];
-    NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
-                                     [[NSLocale preferredLanguages] objectAtIndex:0],
-                                     [currentLocale objectForKey:NSLocaleCountryCode]];
+    NSString *currentLocaleString = [self.locale localeIdentifier];
+
     // Set the device name. But only if running in development mode.
     NSString *deviceName = @"";
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -2285,6 +2283,35 @@ andParameters:(NSDictionary *)params
         LP_PARAM_TRAFFIC_SOURCE: info
         }];
     [[LPRequestSender sharedInstance] send:request];
+}
+
++ (NSLocale *)systemLocale {
+    static NSLocale * _systemLocale = nil;
+    if (!_systemLocale) {
+        NSLocale *currentLocale = [NSLocale currentLocale];
+        NSString *currentLocaleString = [NSString stringWithFormat:@"%@_%@",
+                                         [[NSLocale preferredLanguages] objectAtIndex:0],
+                                         [currentLocale objectForKey:NSLocaleCountryCode]];
+        _systemLocale = [[NSLocale alloc] initWithLocaleIdentifier:currentLocaleString];
+    }
+    return _systemLocale;
+}
+
+static NSLocale * _locale;
++ (NSLocale *)locale
+{
+    return _locale ?: self.systemLocale;
+}
+
++ (void)setLocale:(NSLocale *)locale
+{
+    _locale = locale;
+    if ([self hasStarted]) {
+        LPRequest *request = [LPRequestFactory setUserAttributesWithParams:@{
+            LP_KEY_LOCALE: [locale localeIdentifier]
+        }];
+        [[LPRequestSender sharedInstance] send:request];
+    }
 }
 
 + (void)advanceTo:(NSString *)state

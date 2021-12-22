@@ -91,7 +91,7 @@ static BOOL swizzled = NO;
 }
 
 + (void)setup_development_test {
-    [Leanplum setLogLevel:Debug];
+    [Leanplum setLogLevel:LPLogLevelDebug];
     [Leanplum setAppId:APPLICATION_ID withDevelopmentKey:DEVELOPMENT_KEY];
 }
 
