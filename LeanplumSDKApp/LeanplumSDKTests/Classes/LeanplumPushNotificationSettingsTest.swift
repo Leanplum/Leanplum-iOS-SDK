@@ -54,11 +54,6 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         LPInternalState.shared().startSuccessful = false
     }
     
-    func testSetUp() {
-        notificationSettings.setUp()
-        XCTAssertTrue(notificationSettings.updateSettings != nil)
-    }
-    
     func testGetSettingsWhenAuthorizationStatusNotDetermined() {
         let expectation = expectation(description: "Test authorizationStatus notDetermined")
         UNNotificationSettings.fakeAuthorizationStatus = .notDetermined
@@ -128,11 +123,10 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         XCTAssertNil(UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()))
     }
     
-    func testWhenUpdateSettingsIsCalledItWillUpdateSettingsToServer() {
+    func testUpdateSettingsToServer() {
         setUp_request()
         //first remove settings from defaults
         notificationSettings.removeSettings()
-        notificationSettings.setUp()
         //authorize settings to have push types
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
         
@@ -148,8 +142,8 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
             return false
         }
         
-        //calling updateSettings will trigger update settings to server
-        notificationSettings.updateSettings?()
+        //calling getSettings with updateToServer true will trigger update settings to server
+        notificationSettings.getSettings(updateToServer: true)
         
         wait(for: [expectation], timeout: 5)
         tearDown_request()

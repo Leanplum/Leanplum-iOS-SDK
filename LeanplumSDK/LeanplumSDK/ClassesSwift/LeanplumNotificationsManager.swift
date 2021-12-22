@@ -23,12 +23,11 @@ import Foundation
     public override init() {
         proxy = LeanplumPushNotificationsProxy()
         notificationSettings = LeanplumNotificationSettings()
-        notificationSettings.setUp()
     }
     
     // MARK: - Notification Settings
     @objc public func updateNotificationSettings() {
-        notificationSettings.updateSettings?()
+        notificationSettings.getSettings(updateToServer: true)
     }
     
     @objc public func saveNotificationSettings(_ settings: [AnyHashable: Any]) {
