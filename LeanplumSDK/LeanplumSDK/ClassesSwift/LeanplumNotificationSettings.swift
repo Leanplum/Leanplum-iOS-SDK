@@ -104,12 +104,12 @@ class LeanplumNotificationSettings {
             let types = settings.toInt()
             
             UNUserNotificationCenter.current().getNotificationCategories { categories in
-                var cate: [UNNotificationCategory] = []
+                var cate: [String] = []
                 for category in categories {
-                    cate.append(category)
+                    cate.append(category.identifier)
                 }
-                let sortedCategories = cate.sorted { (lhs: UNNotificationCategory, rhs: UNNotificationCategory) -> Bool in
-                    return lhs.identifier.caseInsensitiveCompare(rhs.identifier) == .orderedAscending
+                let sortedCategories = cate.sorted { (lhs: String, rhs: String) -> Bool in
+                    return lhs.caseInsensitiveCompare(rhs) == .orderedAscending
                 }
                 
                 let settings = [

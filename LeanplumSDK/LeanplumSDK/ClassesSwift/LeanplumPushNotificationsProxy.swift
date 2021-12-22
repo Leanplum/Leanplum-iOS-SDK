@@ -24,7 +24,8 @@ public class LeanplumPushNotificationsProxy: NSObject {
     var isCustomAppDelegateUsed = false
     
     @available(iOS 10.0, *)
-    lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
+    @objc
+    public lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
     
     let userNotificationDelegateName = "UNUserNotificationCenterDelegate"
     

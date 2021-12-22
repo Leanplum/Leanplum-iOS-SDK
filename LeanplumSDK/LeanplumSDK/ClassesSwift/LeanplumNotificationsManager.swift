@@ -100,13 +100,12 @@ import Foundation
         LeanplumUtils.lpLog(type: .debug, format: "Notification Opened MessageId: %@", messageId)
         
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
-        let actionName = isDefaultAction ? action : "iOS options.Custom actions.\(action)"
         
         let downloadFilesAndRunAction: (ActionContext) -> () = { context in
             context.maybeDownloadFiles()
             // Wait for Leanplum start so action responders are registered
             Leanplum.onStartIssued {
-                context.runTrackedAction(name: actionName)
+                context.runTrackedAction(name: action)
             }
         }
         
@@ -116,15 +115,7 @@ import Foundation
                 args = [action: userInfo[LP_KEY_PUSH_ACTION] ?? ""]
             } else {
                 let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any]
-                // Arguments must be nested, so ActionContext.getChildArgs: resolves the action
-                // ActionName is split by "." into components
-                args = [
-                    "iOS options": [
-                        "Custom actions": [
-                            action: customActions?[action]
-                        ]
-                    ]
-                ]
+                args = [action: customActions?[action] ?? ""]
             }
             let context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
             context.preventRealtimeUpdating = true
@@ -140,7 +131,7 @@ import Foundation
     // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received - %@. MessageId: @%", isForeground ? "Foreground" : "Background", messageId)
+        LeanplumUtils.lpLog(type: .debug, format: "Notification received - %@. MessageId: %@", isForeground ? "Foreground" : "Background", messageId)
         
         trackDelivery(userInfo: userInfo)
         if isForeground {
