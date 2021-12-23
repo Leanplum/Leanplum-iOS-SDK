@@ -11,7 +11,7 @@ import Foundation
 @objc public class LeanplumNotificationsManager: NSObject {
     
     // MARK: - Initialization
-    @objc let proxy: LeanplumPushNotificationsProxy
+    @objc let proxy: LeanplumNotificationsProxy
     
     @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     @objc public var isPushDeliveryTrackingEnabled = true
@@ -20,7 +20,7 @@ import Foundation
     
     @objc
     public override init() {
-        proxy = LeanplumPushNotificationsProxy()
+        proxy = LeanplumNotificationsProxy()
         notificationSettings = LeanplumNotificationSettings()
     }
     

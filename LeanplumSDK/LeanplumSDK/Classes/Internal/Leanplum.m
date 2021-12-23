@@ -69,7 +69,7 @@ __weak static NSExtensionContext *_extensionContext = nil;
 static LeanplumPushSetupBlock pushSetupBlock;
 
 @interface LeanplumNotificationsManager(Internal)
-@property (nonatomic, strong) LeanplumPushNotificationsProxy* proxy;
+@property (nonatomic, strong) LeanplumNotificationsProxy* proxy;
 @end
 
 @implementation NSExtensionContext (Leanplum)

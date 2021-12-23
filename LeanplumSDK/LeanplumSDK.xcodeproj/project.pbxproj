@@ -172,8 +172,8 @@
 		075AAEF426847FEA007CA1BD /* WebInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075AAEE226847EE0007CA1BD /* WebInterstitial.storyboard */; };
 		075AAEF526847FEA007CA1BD /* Popup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075AAEE126847EE0007CA1BD /* Popup.storyboard */; };
 		075AAEFB268480E9007CA1BD /* Leanplum-iOS-SDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 075AAEEC26847FE1007CA1BD /* Leanplum-iOS-SDK.bundle */; };
-		6A265E2727187EBB0074354F /* LeanplumPushNotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */; };
-		6A265E2827187EBB0074354F /* LeanplumPushNotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */; };
+		6A265E2727187EBB0074354F /* LeanplumNotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* LeanplumNotificationsProxy.swift */; };
+		6A265E2827187EBB0074354F /* LeanplumNotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* LeanplumNotificationsProxy.swift */; };
 		6A265E2927187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
 		6A265E2A27187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
 		6A714AF326F8B317004A34A9 /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADDA26847EC4007CA1BD /* LPConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -728,7 +728,7 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
-		6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumPushNotificationsProxy.swift; sourceTree = "<group>"; };
+		6A265E2527187EBB0074354F /* LeanplumNotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsProxy.swift; sourceTree = "<group>"; };
 		6A265E2627187EBB0074354F /* NSObject+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Notifications.swift"; sourceTree = "<group>"; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A714C0026F8B88A004A34A9 /* LeanplumNotificationsManager+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeanplumNotificationsManager+Utils.swift"; sourceTree = "<group>"; };
@@ -1226,7 +1226,7 @@
 		6AD9784C2774E51F00A7C6C6 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
-				6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */,
+				6A265E2527187EBB0074354F /* LeanplumNotificationsProxy.swift */,
 				6A265E2627187EBB0074354F /* NSObject+Notifications.swift */,
 				6A98A9BB272A941D00D8753A /* LeanplumNotificationsManager.swift */,
 				6A714C0026F8B88A004A34A9 /* LeanplumNotificationsManager+Utils.swift */,
@@ -1581,7 +1581,7 @@
 				075AADF626847EC4007CA1BD /* LPAPIConfig.m in Sources */,
 				075AAE1126847EC4007CA1BD /* LPRequestUUIDHelper.m in Sources */,
 				075AAEDE26847EC4007CA1BD /* LPConstants.m in Sources */,
-				6A265E2727187EBB0074354F /* LeanplumPushNotificationsProxy.swift in Sources */,
+				6A265E2727187EBB0074354F /* LeanplumNotificationsProxy.swift in Sources */,
 				075AAE3726847EC4007CA1BD /* LPCenterPopupMessageTemplate.m in Sources */,
 				075AAEB726847EC4007CA1BD /* LPActionManager.m in Sources */,
 				075AAE0E26847EC4007CA1BD /* LPNetworkOperation.m in Sources */,
@@ -1680,7 +1680,7 @@
 				6A714B6126F8B317004A34A9 /* LPAPIConfig.m in Sources */,
 				6A714B6226F8B317004A34A9 /* LPRequestUUIDHelper.m in Sources */,
 				6A714B6426F8B317004A34A9 /* LPConstants.m in Sources */,
-				6A265E2827187EBB0074354F /* LeanplumPushNotificationsProxy.swift in Sources */,
+				6A265E2827187EBB0074354F /* LeanplumNotificationsProxy.swift in Sources */,
 				6A714B6526F8B317004A34A9 /* LPCenterPopupMessageTemplate.m in Sources */,
 				6A714B6626F8B317004A34A9 /* LPActionManager.m in Sources */,
 				6A714B6726F8B317004A34A9 /* LPNetworkOperation.m in Sources */,

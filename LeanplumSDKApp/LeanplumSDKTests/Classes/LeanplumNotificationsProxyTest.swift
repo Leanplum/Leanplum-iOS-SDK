@@ -1,5 +1,5 @@
 //
-//  LeanplumPushNotificationsProxyTest.swift
+//  LeanplumNotificationsProxyTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 26.10.21.
@@ -10,7 +10,7 @@ import XCTest
 @testable import Leanplum
 
 @available(iOS 10, *)
-class LeanplumPushNotificationsProxyTest: XCTestCase {
+class LeanplumNotificationsProxyTest: XCTestCase {
     
     let utils = NotificationTestHelper()
     var notificationId = ""

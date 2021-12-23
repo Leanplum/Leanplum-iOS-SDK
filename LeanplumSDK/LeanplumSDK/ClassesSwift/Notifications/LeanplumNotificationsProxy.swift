@@ -1,5 +1,5 @@
 //
-//  LeanplumPushNotificationsProxy.swift
+//  LeanplumNotificationsProxy.swift
 //  Leanplum-iOS-SDK
 //
 //  Created by Nikola Zagorchev on 29.09.21.
@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-public class LeanplumPushNotificationsProxy: NSObject {
+public class LeanplumNotificationsProxy: NSObject {
     // MARK: - Initialization
     internal override init() {}
     
