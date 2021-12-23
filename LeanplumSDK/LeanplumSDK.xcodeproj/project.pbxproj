@@ -1213,18 +1213,26 @@
 		6A714BFF26F8B7DC004A34A9 /* ClassesSwift */ = {
 			isa = PBXGroup;
 			children = (
-				6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */,
+				6AD9784C2774E51F00A7C6C6 /* Notifications */,
 				C9374A38272C36B200F4915A /* LeanplumUtils.swift */,
-				6A265E2627187EBB0074354F /* NSObject+Notifications.swift */,
-				6A98A9BB272A941D00D8753A /* LeanplumNotificationsManager.swift */,
-				6A714C0026F8B88A004A34A9 /* LeanplumNotificationsManager+Utils.swift */,
-				C90C489C2707299D00E33F1F /* LeanplumNotificationSettings.swift */,
 				C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */,
 				C90C48A527072AD800E33F1F /* UNNotificationSettings+Transform.swift */,
 				C90C48A227072A5200E33F1F /* Data+EncodedString.swift */,
 				6AD978482774BE7500A7C6C6 /* Logging.swift */,
 			);
 			path = ClassesSwift;
+			sourceTree = "<group>";
+		};
+		6AD9784C2774E51F00A7C6C6 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */,
+				6A265E2627187EBB0074354F /* NSObject+Notifications.swift */,
+				6A98A9BB272A941D00D8753A /* LeanplumNotificationsManager.swift */,
+				6A714C0026F8B88A004A34A9 /* LeanplumNotificationsManager+Utils.swift */,
+				C90C489C2707299D00E33F1F /* LeanplumNotificationSettings.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
