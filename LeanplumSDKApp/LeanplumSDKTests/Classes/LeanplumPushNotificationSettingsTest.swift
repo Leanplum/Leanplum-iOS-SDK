@@ -110,7 +110,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testSaveAndRemoveSettings() {
         let testSettings: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: 7,
                             LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: []]
-        notificationSettings.save(testSettings)
+        notificationSettings.settings = testSettings
         
         guard let savedSettings = UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()) as? [AnyHashable : Any] else {
             XCTFail("Settings are not saved")
@@ -118,7 +118,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
         }
         XCTAssertTrue(NSDictionary(dictionary: savedSettings).isEqual(to: testSettings))
         
-        notificationSettings.removeSettings()
+        notificationSettings.settings = nil
         
         XCTAssertNil(UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()))
     }
@@ -126,7 +126,7 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testUpdateSettingsToServer() {
         setUp_request()
         //first remove settings from defaults
-        notificationSettings.removeSettings()
+        notificationSettings.settings = nil
         //authorize settings to have push types
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
         

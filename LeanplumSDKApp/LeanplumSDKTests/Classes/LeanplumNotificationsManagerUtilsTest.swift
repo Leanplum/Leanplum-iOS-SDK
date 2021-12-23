@@ -71,18 +71,18 @@ class LeanplumNotificationsManagerUtilsTest: XCTestCase {
     
     func testPushToken() {
         //clean push token if any
-        manager.removePushToken()
-        XCTAssertNil(manager.pushToken())
-        manager.updatePushToken("newToken")
-        XCTAssertEqual(manager.pushToken(), "newToken")
+        manager.pushToken = nil
+        XCTAssertNil(manager.pushToken)
+        manager.pushToken = "newToken"
+        XCTAssertEqual(manager.pushToken, "newToken")
     }
     
     func testDisableAskToAsk() {
         //clean user defaults
         UserDefaults.standard.removeObject(forKey: DEFAULTS_ASKED_TO_PUSH)
-        XCTAssertFalse(manager.hasDisabledAskToAsk())
-        manager.disableAskToAsk()
-        XCTAssertTrue(manager.hasDisabledAskToAsk())
+        XCTAssertFalse(manager.isAskToAskDisabled)
+        manager.isAskToAskDisabled = true
+        XCTAssertTrue(manager.isAskToAskDisabled)
     }
     
     func testRefreshPushPermissions() {

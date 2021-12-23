@@ -37,7 +37,7 @@ class LeanplumNotificationsManagerMock: LeanplumNotificationsManager {
     override func enableSystemPush() {
         isPushEnabled = true
         UserDefaults.standard.set(true, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
-        disableAskToAsk()
+        isAskToAskDisabled = true
         methodInvocations += 1
     }
     
