@@ -72,10 +72,10 @@ import Foundation
                     Log.error("Error: \(error.localizedDescription)")
                 }
                 
-                //Register for remote notification to create and send push token to server
-                //no metter if the request was granted or has error, push token will be generated
-                //and later if user decides to go into the settings and enables push notifications
-                //we will have token and will only update push types
+                // Register for remote notification to create and send push token to server
+                // no metter if the request was granted or has error, push token will be generated
+                // and later if user decides to go into the settings and enables push notifications
+                // we will have token and will only update push types
                 DispatchQueue.main.async {
                     UIApplication.shared.registerForRemoteNotifications()
                 }
@@ -129,7 +129,8 @@ import Foundation
     }
     
     @objc public func notificationSettingsToRequestParams(_ settings: [AnyHashable: Any]) -> [AnyHashable: Any]? {
-        guard let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let categories = LPJSON.string(fromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
+        guard let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
+              let categories = LPJSON.string(fromJSON: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
             return nil
         }
         let params: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
@@ -184,27 +185,27 @@ import Foundation
         }
     }
     
-    func getNotificationId(_ userInfo: [AnyHashable:Any]) -> String {
+    func getNotificationId(_ userInfo: [AnyHashable: Any]) -> String {
         if let occId = userInfo[LP_KEY_PUSH_OCCURRENCE_ID] {
             return String(describing: occId)
         }
         return "-1"
     }
     
-    func areActionsEmbedded(_ userInfo:[AnyHashable:Any]) -> Bool {
+    func areActionsEmbedded(_ userInfo:[AnyHashable: Any]) -> Bool {
         return
             userInfo[LP_KEY_PUSH_ACTION] != nil ||
             userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
     }
     
-    func isMuted(_ userInfo: [AnyHashable:Any]) -> Bool {
+    func isMuted(_ userInfo: [AnyHashable: Any]) -> Bool {
         return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil || userInfo[LP_KEY_PUSH_NO_ACTION] != nil
     }
     
-    func getNotificationText(_ userInfo: [AnyHashable:Any]) -> String? {
+    func getNotificationText(_ userInfo: [AnyHashable: Any]) -> String? {
         // Handle payload "aps":{ "alert": "message" } and "aps":{ "alert": { "title": "...", "body": "message" }
-        if let aps = userInfo["aps"] as? [AnyHashable : Any] {
-            if let alert = aps["alert"] as? [AnyHashable : Any] {
+        if let aps = userInfo["aps"] as? [AnyHashable: Any] {
+            if let alert = aps["alert"] as? [AnyHashable: Any] {
                 return alert["body"] as? String
             } else {
                 return aps["alert"] as? String

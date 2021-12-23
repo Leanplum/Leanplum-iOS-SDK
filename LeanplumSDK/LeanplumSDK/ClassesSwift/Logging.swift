@@ -9,15 +9,15 @@
  * Swift equivalent of the LPLog C function
  */
 enum Log {
-    static func info(_ msg:String) {
+    static func info(_ msg: String) {
         LPLogv(.info, msg, getVaList([]))
     }
     
-    static func debug(_ msg:String) {
+    static func debug(_ msg: String) {
         LPLogv(.debug, msg, getVaList([]))
     }
     
-    static func error(_ msg:String) {
+    static func error(_ msg: String) {
         LPLogv(.error, msg, getVaList([]))
     }
 }

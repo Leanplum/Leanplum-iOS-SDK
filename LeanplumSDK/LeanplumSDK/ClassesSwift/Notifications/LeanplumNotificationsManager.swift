@@ -94,7 +94,7 @@ import Foundation
     // MARK: - Notification Actions
     // MARK: Notification Open
     @objc(notificationOpened:action:)
-    func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
+    func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
         Log.debug("Notification Opened MessageId: \(messageId)")
         
@@ -109,7 +109,7 @@ import Foundation
         }
         
         if Leanplum.notificationsManager().areActionsEmbedded(userInfo) {
-            var args:[AnyHashable : Any]
+            var args: [AnyHashable: Any]
             if isDefaultAction {
                 args = [action: userInfo[LP_KEY_PUSH_ACTION] ?? ""]
             } else {
@@ -130,7 +130,7 @@ import Foundation
     }
     
     // MARK: Notification Received
-    func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
+    func notificationReceived(userInfo: [AnyHashable: Any], isForeground: Bool) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
         Log.debug("Notification received - \(isForeground ? "Foreground" : "Background"). MessageId: \(messageId)")
         
@@ -146,7 +146,7 @@ import Foundation
         }
     }
     
-    func showNotificationInForeground(userInfo: [AnyHashable : Any]) {
+    func showNotificationInForeground(userInfo: [AnyHashable: Any]) {
         let openNotificationHandler = {
             self.notificationOpened(userInfo: userInfo)
         }
@@ -171,7 +171,7 @@ import Foundation
     }
     
     // MARK: - Delivery Tracking
-    func trackDelivery(userInfo:[AnyHashable:Any]) {
+    func trackDelivery(userInfo: [AnyHashable: Any]) {
         guard isPushDeliveryTrackingEnabled else {
             Log.debug("Push delivery tracking is disabled")
             return
@@ -183,7 +183,7 @@ import Foundation
             return
         }
         
-        var args = [String:Any]()
+        var args = [String: Any]()
         args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = LeanplumUtils.messageIdFromUserInfo(userInfo)
         args[LP_KEY_PUSH_METRIC_OCCURRENCE_ID] = userInfo[LP_KEY_PUSH_OCCURRENCE_ID]
         args[LP_KEY_PUSH_METRIC_SENT_TIME] = userInfo[LP_KEY_PUSH_SENT_TIME] ?? Date().timeIntervalSince1970

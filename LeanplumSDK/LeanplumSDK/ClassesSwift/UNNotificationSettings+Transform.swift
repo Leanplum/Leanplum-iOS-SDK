@@ -13,7 +13,7 @@ extension UNNotificationSettings {
         
         let settings = self
         
-        var result:UInt = 0
+        var result: UInt = 0
         
         // Authorization Status
         if #available(iOS 12.0, *) {

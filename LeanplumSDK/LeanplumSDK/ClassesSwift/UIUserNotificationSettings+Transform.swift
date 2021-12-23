@@ -24,7 +24,7 @@ extension UIUserNotificationSettings {
         let settings = [
             LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types.rawValue,
             LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories
-        ] as [AnyHashable : Any]
+        ] as [AnyHashable: Any]
         return settings
     }
 }
