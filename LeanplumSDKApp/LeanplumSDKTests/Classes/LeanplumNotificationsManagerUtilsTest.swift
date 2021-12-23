@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsManagerUtilsTest.swift
+//  NotificationsManagerUtilsTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Dejan Krstevski on 2.12.21.
@@ -11,13 +11,13 @@ import Foundation
 import XCTest
 @testable import Leanplum
 
-class LeanplumNotificationsManagerUtilsTest: XCTestCase {
+class NotificationsManagerUtilsTest: XCTestCase {
     
-    var manager: LeanplumNotificationsManager!
+    var manager: NotificationsManager!
     
     override func setUp() {
         super.setUp()
-        manager = LeanplumNotificationsManager()
+        manager = NotificationsManager()
     }
     
     override class func setUp() {
@@ -86,14 +86,14 @@ class LeanplumNotificationsManagerUtilsTest: XCTestCase {
     }
     
     func testRefreshPushPermissions() {
-        let managerMock = LeanplumNotificationsManagerMock.notificationsManager()
+        let managerMock = NotificationsManagerMock.notificationsManager()
         XCTAssertEqual(managerMock.methodInvocations, 0)
         managerMock.enableSystemPush()
         XCTAssertEqual(managerMock.methodInvocations, 1)
         //refreshPushPermissions should call enableSystemPush
         managerMock.refreshPushPermissions()
         XCTAssertEqual(managerMock.methodInvocations, 2)
-        LeanplumNotificationsManagerMock.reset()
+        NotificationsManagerMock.reset()
     }
     
     func testNotificationSettingsToRequestParams() {

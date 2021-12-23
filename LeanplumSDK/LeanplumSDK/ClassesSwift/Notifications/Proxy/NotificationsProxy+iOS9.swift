@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsProxy+iOS9.swift
+//  NotificationsProxy+iOS9.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension LeanplumNotificationsProxy {
+extension NotificationsProxy {
     
     /**
      * Check if didReceiveRemoteNotification is implemented (deprecated in iOS 10).

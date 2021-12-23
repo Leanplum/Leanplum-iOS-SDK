@@ -11,11 +11,11 @@ import UIKit
 /// LP Swizzling looks for the selector in the same class
 extension NSObject {
 
-    private var notificationsProxy: LeanplumNotificationsProxy {
+    private var notificationsProxy: NotificationsProxy {
         return Leanplum.notificationsManager().proxy
     }
     
-    private var swizzling: LeanplumNotificationsProxy.Swizzled {
+    private var swizzling: NotificationsProxy.Swizzled {
         return notificationsProxy.swizzled
     }
     

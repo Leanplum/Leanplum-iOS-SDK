@@ -1,5 +1,5 @@
 //
-//  LeanplumPushNotificationUtils.swift
+//  NotificationsManager+Utils.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 20.09.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-@objc extension LeanplumNotificationsManager {
+@objc extension NotificationsManager {
     
     @objc public var pushToken: String? {
         get {

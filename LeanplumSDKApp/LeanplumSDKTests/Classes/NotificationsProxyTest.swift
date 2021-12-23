@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsProxyTest.swift
+//  NotificationsProxyTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 26.10.21.
@@ -10,7 +10,7 @@ import XCTest
 @testable import Leanplum
 
 @available(iOS 10, *)
-class LeanplumNotificationsProxyTest: XCTestCase {
+class NotificationsProxyTest: XCTestCase {
     
     let utils = NotificationTestHelper()
     var notificationId = ""
@@ -36,7 +36,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
     
     // MARK: UNUserNotificationCenter Tests
     func test_userNotificationCenter_didReceive() {
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         let actionIdentifier = UNNotificationDefaultActionIdentifier
         manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: actionIdentifier, and: userInfo), withCompletionHandler: {})
         
@@ -56,7 +56,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
     }
     
     func test_userNotificationCenter_didReceive_custom_action() {
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         let actionIdentifier = "MyAction"
         manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: actionIdentifier, and: userInfo), withCompletionHandler: {})
         
@@ -78,7 +78,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
         let req = UNNotificationResponse.notificationRequest(with: UNNotificationDefaultActionIdentifier, and: utils.userInfo)
         let notif = UNNotification(coder: UNNotificationResponseTestCoder(with: req))!
         
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.userNotificationCenter(willPresent: notif) { options in }
         
         guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -94,7 +94,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
         let req = UNNotificationResponse.notificationRequest(with: UNNotificationDefaultActionIdentifier, and: utils.userInfo)
         let notif = UNNotification(coder: UNNotificationResponseTestCoder(with: req))!
         
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.userNotificationCenter(willPresent: notif) { options in }
         // didReceiveRemoteNotification is called after willPresent if push has content-available flag
         manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { result in }
@@ -119,7 +119,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
         NotificationTestHelper.setApplicationState(.background)
         let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.remoteNotification:userInfo]
         
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -153,7 +153,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
     func test_notification_applicationDidFinishLaunching_inactive_open() {
         NotificationTestHelper.setApplicationState(.inactive)
         let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.remoteNotification:userInfo]
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -181,7 +181,7 @@ class LeanplumNotificationsProxyTest: XCTestCase {
     
     func test_notification_applicationDidReceiveRemote_background() {
         NotificationTestHelper.setApplicationState(.background)
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { res in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {

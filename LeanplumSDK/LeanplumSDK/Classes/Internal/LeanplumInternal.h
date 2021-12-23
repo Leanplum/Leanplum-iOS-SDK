@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class LeanplumSocket;
 @class LPRegisterDevice;
-@class LeanplumNotificationsManager;
+@class NotificationsManager;
 
 /**
  * Keys for the plist file name
@@ -57,7 +57,7 @@ typedef void (^LeanplumStartIssuedBlock)(void);
 typedef void (^LeanplumEventsChangedBlock)(void);
 typedef void (^LeanplumHandledBlock)(BOOL success);
 
-+ (LeanplumNotificationsManager*)notificationsManager;
++ (NotificationsManager*)notificationsManager;
 
 + (void)throwError:(NSString *)reason;
 

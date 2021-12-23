@@ -68,8 +68,8 @@ static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
 static LeanplumPushSetupBlock pushSetupBlock;
 
-@interface LeanplumNotificationsManager(Internal)
-@property (nonatomic, strong) LeanplumNotificationsProxy* proxy;
+@interface NotificationsManager(Internal)
+@property (nonatomic, strong) NotificationsProxy* proxy;
 @end
 
 @implementation NSExtensionContext (Leanplum)
@@ -122,12 +122,12 @@ void leanplumExceptionHandler(NSException *exception);
 #endif
 }
 
-+ (LeanplumNotificationsManager*)notificationsManager
++ (NotificationsManager*)notificationsManager
 {
-    static LeanplumNotificationsManager *managerInstance = nil;
+    static NotificationsManager *managerInstance = nil;
     static dispatch_once_t onceLPInternalStateToken;
     dispatch_once(&onceLPInternalStateToken, ^{
-        managerInstance = [LeanplumNotificationsManager new];
+        managerInstance = [NotificationsManager new];
     });
     return managerInstance;
 }

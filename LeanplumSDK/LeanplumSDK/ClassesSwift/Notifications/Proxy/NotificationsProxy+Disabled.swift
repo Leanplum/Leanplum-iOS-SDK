@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsProxy+Disabled.swift
+//  NotificationsProxy+Disabled.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension LeanplumNotificationsProxy {
+extension NotificationsProxy {
     
     @objc public func applicationDidFinishLaunching(launchOptions: [UIApplication.LaunchOptionsKey: Any]?) {
         if let launchOptions = launchOptions {

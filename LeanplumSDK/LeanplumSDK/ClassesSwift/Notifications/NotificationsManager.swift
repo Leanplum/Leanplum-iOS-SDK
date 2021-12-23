@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsManager.swift
+//  NotificationsManager.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 28.10.21.
@@ -8,10 +8,10 @@
 import Foundation
 
 /// Manager responsible for handling push (remote) and local notifications
-@objc public class LeanplumNotificationsManager: NSObject {
+@objc public class NotificationsManager: NSObject {
     
     // MARK: - Initialization
-    @objc let proxy: LeanplumNotificationsProxy
+    @objc let proxy: NotificationsProxy
     
     @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     @objc public var isPushDeliveryTrackingEnabled = true
@@ -20,7 +20,7 @@ import Foundation
     
     @objc
     public override init() {
-        proxy = LeanplumNotificationsProxy()
+        proxy = NotificationsProxy()
         notificationSettings = LeanplumNotificationSettings()
     }
     

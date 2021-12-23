@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsProxyiOS9Test.swift
+//  NotificationsProxyiOS9Test.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 4.11.21.
@@ -9,7 +9,7 @@ import Foundation
 import XCTest
 @testable import Leanplum
 
-class LeanplumNotificationsProxyiOS9Test: XCTestCase {
+class NotificationsProxyiOS9Test: XCTestCase {
     
     let utils = NotificationTestHelper()
     var notificationId = ""
@@ -36,7 +36,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
     func test_notification_applicationDidReceiveRemote_iOS9_background_receive() {
         NotificationTestHelper.setApplicationState(.background)
         
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -54,7 +54,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
     }
     
     func test_notification_applicationDidReceiveRemote_iOS9_active_receive() {
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -75,7 +75,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
      * Tests notification is opened. Application became active from user tapping the notification, hence didReceiveRemoteNotification was executed.
      */
     func test_notification_applicationDidReceiveRemote_iOS9_active_open() {
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.resumedTimeInterval = Date().timeIntervalSince1970
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
@@ -98,7 +98,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
      * didReceiveRemoteNotification was executed by notification tap.
      */
     func test_notification_applicationDidReceiveRemote_iOS9_active_interval_open() {
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         var date = Date()
         date.addTimeInterval(-0.3)
         manager.proxy.resumedTimeInterval = date.timeIntervalSince1970
@@ -122,7 +122,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
      * Tests notification is receive in foreground. Application became active 1s ago. User did not tap on the notification.
      */
     func test_notification_applicationDidReceiveRemote_iOS9_active_interval_receive() {
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         var date = Date()
         date.addTimeInterval(-1)
         manager.proxy.resumedTimeInterval = date.timeIntervalSince1970
@@ -145,7 +145,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
     func test_notification_applicationDidReceiveRemote_iOS9_inactive_open() {
         NotificationTestHelper.setApplicationState(.inactive)
         
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.leanplum_application_ios9(UIApplication.shared, didReceiveRemoteNotification: userInfo) { result in }
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -174,7 +174,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
         localNotif.userInfo = userInfo
         
         let options:[UIApplication.LaunchOptionsKey : Any] = [UIApplication.LaunchOptionsKey.localNotification:localNotif]
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
@@ -205,7 +205,7 @@ class LeanplumNotificationsProxyiOS9Test: XCTestCase {
         let localNotif = UILocalNotification()
         localNotif.userInfo = userInfo
 
-        let manager = Leanplum.notificationsManager() as! LeanplumNotificationsManagerMock
+        let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.application(didReceive: localNotif)
         
         guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {

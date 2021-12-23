@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsManagerMock.swift
+//  NotificationsManagerMock.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 4.11.21.
@@ -8,11 +8,11 @@
 import Foundation
 @testable import Leanplum
 
-class LeanplumNotificationsManagerMock: LeanplumNotificationsManager {
+class NotificationsManagerMock: NotificationsManager {
     
-    static var notificationsManagerManagerInstance = LeanplumNotificationsManagerMock()
+    static var notificationsManagerManagerInstance = NotificationsManagerMock()
     
-    class func notificationsManager() -> LeanplumNotificationsManagerMock {
+    class func notificationsManager() -> NotificationsManagerMock {
         return notificationsManagerManagerInstance
     }
     
@@ -42,6 +42,6 @@ class LeanplumNotificationsManagerMock: LeanplumNotificationsManager {
     }
     
     class func reset() {
-        notificationsManagerManagerInstance = LeanplumNotificationsManagerMock()
+        notificationsManagerManagerInstance = NotificationsManagerMock()
     }
 }

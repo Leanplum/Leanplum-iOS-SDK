@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsProxy+Utils.swift
+//  NotificationsProxy+Utils.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension LeanplumNotificationsProxy {
+extension NotificationsProxy {
     
     func isEqualToHandledNotification(userInfo: [AnyHashable: Any]) -> Bool {
         if let fromStart = notificationHandledFromStart {

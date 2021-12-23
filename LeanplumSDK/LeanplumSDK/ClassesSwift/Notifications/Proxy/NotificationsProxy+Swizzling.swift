@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsProxy+Swizzling.swift
+//  NotificationsProxy+Swizzling.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension LeanplumNotificationsProxy {
+extension NotificationsProxy {
  
     struct Swizzled {
         var applicationDidRegisterRemoteNotifications = false
