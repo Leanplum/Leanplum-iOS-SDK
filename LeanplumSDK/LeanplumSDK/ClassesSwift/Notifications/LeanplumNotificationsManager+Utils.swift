@@ -164,7 +164,14 @@ import Foundation
                         let varsSignature = response[LP_KEY_VARS_SIGNATURE] as? String
                         let localCaps = response[LP_KEY_LOCAL_CAPS] as? [[AnyHashable: Any]]
                         
-                        VarCache.shared().applyVariableDiffs(values, messages: messages, variants: variants, localCaps: localCaps, regions: regions, variantDebugInfo: nil, varsJson: varsJson, varsSignature: varsSignature)
+                        VarCache.shared().applyVariableDiffs(values,
+                                                             messages: messages,
+                                                             variants: variants,
+                                                             localCaps: localCaps,
+                                                             regions: regions,
+                                                             variantDebugInfo: nil,
+                                                             varsJson: varsJson,
+                                                             varsSignature: varsSignature)
                         
                         completionHandler?()
                     }
