@@ -8,13 +8,6 @@
 import Foundation
 
 public class LeanplumUtils: NSObject {
-
-    /**
-     * Swift equivalent of the LPLog function
-     */
-    public static func lpLog(type:Leanplum.LogTypeNew, format:String, _ args:CVarArg...) {
-        LPLogv(type, format, getVaList(args))
-    }
     
     /**
      * Returns Leanplum message Id from Notification userInfo.

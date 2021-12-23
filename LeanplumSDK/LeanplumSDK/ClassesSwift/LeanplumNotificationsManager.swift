@@ -11,8 +11,7 @@ import Foundation
 @objc public class LeanplumNotificationsManager: NSObject {
     
     // MARK: - Initialization
-    @objc
-    let proxy: LeanplumPushNotificationsProxy
+    @objc let proxy: LeanplumPushNotificationsProxy
     
     @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     @objc public var isPushDeliveryTrackingEnabled = true
@@ -96,7 +95,7 @@ import Foundation
     @objc(notificationOpened:action:)
     func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification Opened MessageId: %@", messageId)
+        Log.debug("Notification Opened MessageId: \(messageId)")
         
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
         
@@ -130,7 +129,7 @@ import Foundation
     // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
         guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
-        LeanplumUtils.lpLog(type: .debug, format: "Notification received - %@. MessageId: %@", isForeground ? "Foreground" : "Background", messageId)
+        Log.debug("Notification received - \(isForeground ? "Foreground" : "Background"). MessageId: \(messageId)")
         
         trackDelivery(userInfo: userInfo)
         if isForeground {
@@ -168,7 +167,7 @@ import Foundation
     // MARK: - Delivery Tracking
     func trackDelivery(userInfo:[AnyHashable:Any]) {
         guard isPushDeliveryTrackingEnabled else {
-            LeanplumUtils.lpLog(type: .debug, format: "Push delivery tracking is disabled")
+            Log.debug("Push delivery tracking is disabled")
             return
         }
         

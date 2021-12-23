@@ -29,7 +29,7 @@ import Foundation
             UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
                 if let error = error {
                     // Handle the error here.
-                    LeanplumUtils.lpLog(type: .error, format: "Error: %@", error.localizedDescription)
+                    Log.error("Error: \(error.localizedDescription)")
                 }
                 
                 //Register for remote notification to create and send push token to server
@@ -52,7 +52,7 @@ import Foundation
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound, .provisional]) { granted, error in
             if let error = error {
                 // Handle the error here.
-                LeanplumUtils.lpLog(type: .error, format: "Error: %@", error.localizedDescription)
+                Log.error("Error: \(error.localizedDescription)")
             }
             
             DispatchQueue.main.async {

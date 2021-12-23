@@ -35,8 +35,7 @@ extension NSObject {
     @objc func leanplum_application(_ application: UIApplication,
                                      didReceiveRemoteNotification userInfo: [AnyHashable : Any],
                                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        LeanplumUtils.lpLog(type: .debug,
-                            format: "Called swizzled application:didReceiveRemoteNotification:fetchCompletionHandler AppState: %d", UIApplication.shared.applicationState.rawValue)
+        Log.debug("Called swizzled application:didReceiveRemoteNotification:fetchCompletionHandler AppState: \(UIApplication.shared.applicationState.rawValue)")
         
         defer {
             // Call overridden method
@@ -118,8 +117,7 @@ extension NSObject {
     // MARK: - UserNotificationCenter
     @objc @available(iOS 10.0, *)
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        LeanplumUtils.lpLog(type: .debug,
-                            format: "Called swizzled userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler")
+        Log.debug("Called swizzled userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler")
         
         let userInfo = response.notification.request.content.userInfo
         defer {
@@ -165,8 +163,7 @@ extension NSObject {
     
     @objc @available(iOS 10.0, *)
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        LeanplumUtils.lpLog(type: .debug,
-                            format: "Called swizzled userNotificationCenter:willPresentNotification:withCompletionHandler")
+        Log.debug("Called swizzled userNotificationCenter:willPresentNotification:withCompletionHandler")
         
         defer {
             // Call overridden method
@@ -189,7 +186,7 @@ extension NSObject {
     
     // MARK: - didReceive Local Notification
     @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        LeanplumUtils.lpLog(type: .debug, format: "Called swizzled application:didReceive:localNotification")
+        Log.debug("Called swizzled application:didReceive:localNotification")
         
         defer {
             // Call overridden method

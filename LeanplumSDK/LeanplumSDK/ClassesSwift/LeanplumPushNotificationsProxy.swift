@@ -23,8 +23,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
     var pushNotificationBackgroundFetchResult:UIBackgroundFetchResult = .newData
     var isCustomAppDelegateUsed = false
     
-    @available(iOS 10.0, *)
-    @objc
+    @objc @available(iOS 10.0, *) 
     public lazy var pushNotificationPresentationOption:UNNotificationPresentationOptions = [] // UNNotificationPresentationOptionNone
     
     let userNotificationDelegateName = "UNUserNotificationCenterDelegate"
@@ -57,7 +56,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
     }
     
     @objc func leanplum_applicationDidFinishLaunching(notification: Notification) {
-        LeanplumUtils.lpLog(type: .debug, format: "Called leanplum_applicationDidFinishLaunching: %@, state %d", notification.userInfo ?? [:], UIApplication.shared.applicationState.rawValue)
+        Log.debug("Called leanplum_applicationDidFinishLaunching: \(notification.userInfo ?? [:]), state \(UIApplication.shared.applicationState.rawValue))")
         
         if let userInfo = notification.userInfo {
             self.leanplum_applicationDidFinishLaunching(launchOptions: userInfo)
@@ -213,7 +212,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
             swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
             swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
         } else {
-            LeanplumUtils.lpLog(type: .debug, format: "\(userNotificationDelegateName) is not set.")
+            Log.debug("\(userNotificationDelegateName) is not set.")
             let userNotificationCenterDelegateProtocol = objc_getProtocol(userNotificationDelegateName)
             if let notifProtocol = userNotificationCenterDelegateProtocol, let applicationDelegate = appDelegate {
                 var conforms = applicationDelegate.conforms(to: notifProtocol)
@@ -223,12 +222,12 @@ public class LeanplumPushNotificationsProxy: NSObject {
                 }
                 
                 if conforms, let notifDelegate = applicationDelegate as? UNUserNotificationCenterDelegate {
-                    LeanplumUtils.lpLog(type: .debug, format: "Setting \(userNotificationDelegateName).")
+                    Log.debug("Setting \(userNotificationDelegateName).")
                     UNUserNotificationCenter.current().delegate = notifDelegate
                     swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
                     swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
                 } else {
-                    LeanplumUtils.lpLog(type: .error, format: "Failed to set \(userNotificationDelegateName).")
+                    Log.debug("Failed to set \(userNotificationDelegateName).")
                 }
             }
         }
@@ -255,7 +254,7 @@ public class LeanplumPushNotificationsProxy: NSObject {
     // MARK: - Swizzle All Methods
     @objc public func swizzleNotificationMethods() {
         if !LPUtils.isSwizzlingEnabled() {
-            LeanplumUtils.lpLog(type: .info, format: "Method swizzling is disabled, make sure to manually call Leanplum methods.")
+            Log.info("Method swizzling is disabled, make sure to manually call Leanplum methods.")
             return
         }
         
