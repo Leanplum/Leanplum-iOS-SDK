@@ -110,7 +110,7 @@
 
 - (void)disableAskToAsk
 {
-    [[Leanplum notificationsManager] disableAskToAsk];
+    [Leanplum notificationsManager].isAskToAskDisabled = YES;
 }
 
 @end

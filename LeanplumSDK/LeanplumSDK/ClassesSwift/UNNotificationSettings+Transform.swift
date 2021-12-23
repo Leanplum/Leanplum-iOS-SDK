@@ -1,5 +1,5 @@
 //
-//  UNNotificationSettings+LPUtil.swift
+//  UNNotificationSettings+Transform.swift
 //  LeanplumSDK
 //
 //  Copyright (c) 2021 Leanplum, Inc. All rights reserved.

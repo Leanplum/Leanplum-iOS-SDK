@@ -7,8 +7,7 @@
 
 import Foundation
 
-public class LeanplumUtils: NSObject {
-    
+public class LeanplumUtils: NSObject {    
     /**
      * Returns Leanplum message Id from Notification userInfo.
      * Use this method to identify Leanplum Notifications
@@ -21,6 +20,7 @@ public class LeanplumUtils: NSObject {
     }
     
     static func getAppName() -> String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ?? Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+        return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
+        Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
     }
 }

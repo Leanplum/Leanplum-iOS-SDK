@@ -9,6 +9,46 @@ import Foundation
 
 @objc extension LeanplumNotificationsManager {
     
+    @objc public var pushToken: String? {
+        get {
+            UserDefaults.standard.string(forKey: key)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: key)
+        }
+    }
+    
+    @objc public var isAskToAskDisabled: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: DEFAULTS_ASKED_TO_PUSH)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: DEFAULTS_ASKED_TO_PUSH)
+        }
+    }
+    
+    private var key: String {
+        get {
+            guard
+                let appId = LPAPIConfig.shared().appId,
+                let userId = LPAPIConfig.shared().userId,
+                let deviceId = LPAPIConfig.shared().deviceId
+            else {
+                return ""
+            }
+            return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, appId, userId, deviceId)
+        }
+    }
+    
+    private var pushEnabled: Bool {
+        get {
+            UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+        }
+    }
+    
     func getFormattedDeviceTokenFromData(_ token: Data) -> String {
         var formattedToken = token.hexEncodedString()
         formattedToken = formattedToken.replacingOccurrences(of: "<", with: "")
@@ -18,8 +58,8 @@ import Foundation
     }
     
     @objc public func enableSystemPush() {
-        UserDefaults.standard.set(true, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
-        disableAskToAsk()
+        pushEnabled = true
+        isAskToAskDisabled = true
         if let block = Leanplum.pushSetupBlock() {
             // If the app used [Leanplum setPushSetup:...], call the block.
             block()
@@ -45,6 +85,7 @@ import Foundation
                                                                                              categories: nil))
             UIApplication.shared.registerForRemoteNotifications()
         }
+    
     }
     
     @available(iOS 12.0, *)
@@ -62,35 +103,6 @@ import Foundation
         }
     }
     
-    @objc public func pushToken() -> String? {
-        //return push token from defaults
-        guard let key = pushTokenKey() else {
-            return nil
-        }
-        return UserDefaults.standard.string(forKey: key)
-    }
-    
-    @objc public func updatePushToken(_ token: String) {
-        guard let key = pushTokenKey() else {
-            return
-        }
-        UserDefaults.standard.setValue(token, forKey: key)
-    }
-    
-    private func pushTokenKey() -> String? {
-        guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
-            return nil
-        }
-        return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, appId, userId, deviceId)
-    }
-    
-    @objc public func removePushToken() {
-        guard let key = pushTokenKey() else {
-            return
-        }
-        UserDefaults.standard.removeObject(forKey: key)
-    }
-    
     @objc public func isPushEnabled() -> Bool {
         if !Thread.isMainThread {
             var output = false
@@ -106,20 +118,12 @@ import Foundation
         
         return false
     }
-    
-    @objc public func disableAskToAsk() {
-        UserDefaults.standard.setValue(true, forKey: DEFAULTS_ASKED_TO_PUSH)
-    }
-    
-    @objc public func hasDisabledAskToAsk() -> Bool {
-        return UserDefaults.standard.bool(forKey: DEFAULTS_ASKED_TO_PUSH)
-    }
 
     // If notification were enabled by Leanplum's "Push Ask to Ask" or "Register For Push",
     // refreshPushPermissions will do the same registration for subsequent app sessions.
     // refreshPushPermissions is called by [Leanplum start].
     @objc public func refreshPushPermissions() {
-        if UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH) {
+        if pushEnabled {
             enableSystemPush()
         }
     }
@@ -128,7 +132,6 @@ import Foundation
         guard let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let categories = LPJSON.string(fromJSON:settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
             return nil
         }
-        
         let params: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
                                       LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: categories]
         
@@ -144,8 +147,12 @@ import Foundation
             } else {
                 // Try downloading the messages again if it doesn't exist.
                 // Maybe the message was created while the app was running.
-                let request = LPRequestFactory.getVarsWithParams( [LP_PARAM_INCLUDE_DEFAULTS: NSNumber.init(booleanLiteral: false),
-                                                                 LP_PARAM_INCLUDE_MESSAGE_ID: messageId]).andRequestType(.Immediate)
+                let request = LPRequestFactory
+                    .getVarsWithParams([
+                        LP_PARAM_INCLUDE_DEFAULTS: NSNumber.init(booleanLiteral: false),
+                        LP_PARAM_INCLUDE_MESSAGE_ID: messageId
+                    ])
+                    .andRequestType(.Immediate)
                 
                 request.onResponse { _ , response in
                     if let response = response as? [AnyHashable: Any?] {
@@ -178,15 +185,16 @@ import Foundation
     }
     
     func areActionsEmbedded(_ userInfo:[AnyHashable:Any]) -> Bool {
-        return userInfo[LP_KEY_PUSH_ACTION] != nil ||
-        userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
+        return
+            userInfo[LP_KEY_PUSH_ACTION] != nil ||
+            userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
     }
     
-    func isMuted(_ userInfo:[AnyHashable:Any]) -> Bool {
+    func isMuted(_ userInfo: [AnyHashable:Any]) -> Bool {
         return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil || userInfo[LP_KEY_PUSH_NO_ACTION] != nil
     }
     
-    func getNotificationText(_ userInfo:[AnyHashable:Any]) -> String? {
+    func getNotificationText(_ userInfo: [AnyHashable:Any]) -> String? {
         // Handle payload "aps":{ "alert": "message" } and "aps":{ "alert": { "title": "...", "body": "message" }
         if let aps = userInfo["aps"] as? [AnyHashable : Any] {
             if let alert = aps["alert"] as? [AnyHashable : Any] {

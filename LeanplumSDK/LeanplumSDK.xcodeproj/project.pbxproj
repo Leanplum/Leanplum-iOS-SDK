@@ -430,12 +430,12 @@
 		6AD9784A2774BE7500A7C6C6 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD978482774BE7500A7C6C6 /* Logging.swift */; };
 		C90C489D2707299D00E33F1F /* LeanplumNotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489C2707299D00E33F1F /* LeanplumNotificationSettings.swift */; };
 		C90C489E2707299D00E33F1F /* LeanplumNotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489C2707299D00E33F1F /* LeanplumNotificationSettings.swift */; };
-		C90C48A027072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489F27072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift */; };
-		C90C48A127072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489F27072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift */; };
+		C90C48A027072A0200E33F1F /* UIUserNotificationSettings+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */; };
+		C90C48A127072A0200E33F1F /* UIUserNotificationSettings+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */; };
 		C90C48A327072A5200E33F1F /* Data+EncodedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C48A227072A5200E33F1F /* Data+EncodedString.swift */; };
 		C90C48A427072A5200E33F1F /* Data+EncodedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C48A227072A5200E33F1F /* Data+EncodedString.swift */; };
-		C90C48A627072AD800E33F1F /* UNNotificationSettings+LPUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C48A527072AD800E33F1F /* UNNotificationSettings+LPUtil.swift */; };
-		C90C48A727072AD800E33F1F /* UNNotificationSettings+LPUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C48A527072AD800E33F1F /* UNNotificationSettings+LPUtil.swift */; };
+		C90C48A627072AD800E33F1F /* UNNotificationSettings+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C48A527072AD800E33F1F /* UNNotificationSettings+Transform.swift */; };
+		C90C48A727072AD800E33F1F /* UNNotificationSettings+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C48A527072AD800E33F1F /* UNNotificationSettings+Transform.swift */; };
 		C9374A39272C36B200F4915A /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9374A38272C36B200F4915A /* LeanplumUtils.swift */; };
 		C9374A3A272C36B200F4915A /* LeanplumUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9374A38272C36B200F4915A /* LeanplumUtils.swift */; };
 /* End PBXBuildFile section */
@@ -731,14 +731,13 @@
 		6A265E2527187EBB0074354F /* LeanplumPushNotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumPushNotificationsProxy.swift; sourceTree = "<group>"; };
 		6A265E2627187EBB0074354F /* NSObject+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Notifications.swift"; sourceTree = "<group>"; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6A714BA426F8B318004A34A9 /* Leanplum copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Leanplum copy-Info.plist"; path = "/Users/nikolazagorchev/Downloads/Developer/Leanplum-iOS-SDK/Leanplum-iOS-SDK/LeanplumSDK/Leanplum copy-Info.plist"; sourceTree = "<absolute>"; };
 		6A714C0026F8B88A004A34A9 /* LeanplumNotificationsManager+Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LeanplumNotificationsManager+Utils.swift"; sourceTree = "<group>"; };
 		6A98A9BB272A941D00D8753A /* LeanplumNotificationsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManager.swift; sourceTree = "<group>"; };
 		6AD978482774BE7500A7C6C6 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		C90C489C2707299D00E33F1F /* LeanplumNotificationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationSettings.swift; sourceTree = "<group>"; };
-		C90C489F27072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserNotificationSettings+LPUtil.swift"; sourceTree = "<group>"; };
+		C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserNotificationSettings+Transform.swift"; sourceTree = "<group>"; };
 		C90C48A227072A5200E33F1F /* Data+EncodedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EncodedString.swift"; sourceTree = "<group>"; };
-		C90C48A527072AD800E33F1F /* UNNotificationSettings+LPUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationSettings+LPUtil.swift"; sourceTree = "<group>"; };
+		C90C48A527072AD800E33F1F /* UNNotificationSettings+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UNNotificationSettings+Transform.swift"; sourceTree = "<group>"; };
 		C9374A38272C36B200F4915A /* LeanplumUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeanplumUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -774,7 +773,6 @@
 				075AAD0A26847C23007CA1BD /* LeanplumSDK */,
 				075AAEED26847FE1007CA1BD /* LeanplumSDKBundle */,
 				075AAD0926847C23007CA1BD /* Products */,
-				6A714BA426F8B318004A34A9 /* Leanplum copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1221,8 +1219,8 @@
 				6A98A9BB272A941D00D8753A /* LeanplumNotificationsManager.swift */,
 				6A714C0026F8B88A004A34A9 /* LeanplumNotificationsManager+Utils.swift */,
 				C90C489C2707299D00E33F1F /* LeanplumNotificationSettings.swift */,
-				C90C489F27072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift */,
-				C90C48A527072AD800E33F1F /* UNNotificationSettings+LPUtil.swift */,
+				C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */,
+				C90C48A527072AD800E33F1F /* UNNotificationSettings+Transform.swift */,
 				C90C48A227072A5200E33F1F /* Data+EncodedString.swift */,
 				6AD978482774BE7500A7C6C6 /* Logging.swift */,
 			);
@@ -1565,7 +1563,7 @@
 				075AAE2C26847EC4007CA1BD /* LPFileManager.m in Sources */,
 				075AAE1626847EC4007CA1BD /* LPRequest.m in Sources */,
 				075AAEAF26847EC4007CA1BD /* LPVar.m in Sources */,
-				C90C48A627072AD800E33F1F /* UNNotificationSettings+LPUtil.swift in Sources */,
+				C90C48A627072AD800E33F1F /* UNNotificationSettings+Transform.swift in Sources */,
 				075AAE5826847EC4007CA1BD /* LPRegisterForPushMessageTemplate.m in Sources */,
 				075AAE7F26847EC4007CA1BD /* LPDatabase.m in Sources */,
 				075AAE1E26847EC4007CA1BD /* LPRequestBatch.m in Sources */,
@@ -1595,7 +1593,7 @@
 				075AAED826847EC4007CA1BD /* LPContextualValues.m in Sources */,
 				075AAE2A26847EC4007CA1BD /* LPRegisterDevice.m in Sources */,
 				075AAE7C26847EC4007CA1BD /* LPAES.m in Sources */,
-				C90C48A027072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift in Sources */,
+				C90C48A027072A0200E33F1F /* UIUserNotificationSettings+Transform.swift in Sources */,
 				075AAE4326847EC4007CA1BD /* LPInterstitialMessageTemplate.m in Sources */,
 				075AAE2E26847EC4007CA1BD /* LPCountAggregator.m in Sources */,
 				075AAE5A26847EC4007CA1BD /* LPAppRatingMessageTemplate.m in Sources */,
@@ -1664,7 +1662,7 @@
 				6A714B5726F8B317004A34A9 /* LPFileManager.m in Sources */,
 				6A714B5926F8B317004A34A9 /* LPRequest.m in Sources */,
 				6A714B5A26F8B317004A34A9 /* LPVar.m in Sources */,
-				C90C48A727072AD800E33F1F /* UNNotificationSettings+LPUtil.swift in Sources */,
+				C90C48A727072AD800E33F1F /* UNNotificationSettings+Transform.swift in Sources */,
 				6A714B5C26F8B317004A34A9 /* LPRegisterForPushMessageTemplate.m in Sources */,
 				6A714B5D26F8B317004A34A9 /* LPDatabase.m in Sources */,
 				6A714B5E26F8B317004A34A9 /* LPRequestBatch.m in Sources */,
@@ -1694,7 +1692,7 @@
 				6A714B7526F8B317004A34A9 /* LPContextualValues.m in Sources */,
 				6A714B7626F8B317004A34A9 /* LPRegisterDevice.m in Sources */,
 				6A714B7726F8B317004A34A9 /* LPAES.m in Sources */,
-				C90C48A127072A0200E33F1F /* UIUserNotificationSettings+LPUtil.swift in Sources */,
+				C90C48A127072A0200E33F1F /* UIUserNotificationSettings+Transform.swift in Sources */,
 				6A714B7826F8B317004A34A9 /* LPInterstitialMessageTemplate.m in Sources */,
 				6A714B7926F8B317004A34A9 /* LPCountAggregator.m in Sources */,
 				6A714B7A26F8B317004A34A9 /* LPAppRatingMessageTemplate.m in Sources */,

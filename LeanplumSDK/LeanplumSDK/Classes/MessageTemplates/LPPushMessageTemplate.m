@@ -42,7 +42,7 @@
 
 - (BOOL)hasDisabledAskToAsk
 {
-    return [[Leanplum notificationsManager] hasDisabledAskToAsk];
+    return [Leanplum notificationsManager].isAskToAskDisabled;
 }
 
 @end

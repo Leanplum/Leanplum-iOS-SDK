@@ -30,11 +30,11 @@ import Foundation
     }
     
     @objc public func saveNotificationSettings(_ settings: [AnyHashable: Any]) {
-        notificationSettings.save(settings)       
+        notificationSettings.settings = settings
     }
     
     @objc public func removeNotificationSettings() {
-        notificationSettings.removeSettings()
+        notificationSettings.settings = nil
     }
     
     @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
@@ -43,21 +43,20 @@ import Foundation
     
     @objc(didRegisterUserNotificationSettings:)
     public func didRegister(_ settings: UIUserNotificationSettings) {
-        disableAskToAsk()
+        isAskToAskDisabled = true
         notificationSettings.getSettings()
     }
     
     // MARK: - Push Token
     @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
-        disableAskToAsk()
+        isAskToAskDisabled = true
         
         let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
         
         var deviceAttributeParams: [AnyHashable: Any] = [:]
-        
-        let existingToken = self.pushToken()
-        if existingToken == nil || existingToken != formattedToken {
-            updatePushToken(formattedToken)
+
+        if pushToken != formattedToken {
+            pushToken = formattedToken
             deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
         }
                 
@@ -77,8 +76,10 @@ import Foundation
             if !deviceAttributeParams.isEmpty {
                 Leanplum.onStartResponse { success in
                     if success {
-                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams).andRequestType(.Immediate)
-                        LPRequestSender.sharedInstance().send(requst)
+                        let request = LPRequestFactory
+                            .setDeviceAttributesWithParams(deviceAttributeParams)
+                            .andRequestType(.Immediate)
+                        LPRequestSender.sharedInstance().send(request)
                     }
                 }
             }
@@ -86,8 +87,8 @@ import Foundation
     }
     
     @objc public func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
-        disableAskToAsk()
-        removePushToken()
+        isAskToAskDisabled = true
+        pushToken = nil
     }
     
     // MARK: - Notification Actions
@@ -115,7 +116,9 @@ import Foundation
                 let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any]
                 args = [action: customActions?[action] ?? ""]
             }
-            let context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
+            let context: ActionContext = .init(name: LP_PUSH_NOTIFICATION_ACTION,
+                                               args: args,
+                                               messageId: messageId)
             context.preventRealtimeUpdating = true
             downloadFilesAndRunAction(context)
         } else {
