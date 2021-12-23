@@ -781,7 +781,7 @@ void leanplumExceptionHandler(NSException *exception);
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
-    [[Leanplum notificationsManager].proxy swizzleNotificationMethods];
+    [[Leanplum notificationsManager].proxy setupNotificationSwizzling];
     
     if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
