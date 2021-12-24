@@ -1,5 +1,5 @@
 //
-//  NotificationsManager+Utils.swift
+//  NotificationsManager+Utilities.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 20.09.21.
@@ -8,7 +8,6 @@
 import Foundation
 
 @objc extension NotificationsManager {
-    
     @objc public var pushToken: String? {
         get {
             UserDefaults.standard.string(forKey: key)
@@ -106,9 +105,9 @@ import Foundation
     @objc public func isPushEnabled() -> Bool {
         if !Thread.isMainThread {
             var output = false
-            DispatchQueue.main.sync(execute: { [self] in
+            DispatchQueue.main.sync {
                 output = isPushEnabled()
-            })
+            }
             return output
         }
         
@@ -194,7 +193,7 @@ import Foundation
         return "-1"
     }
     
-    func areActionsEmbedded(_ userInfo:[AnyHashable: Any]) -> Bool {
+    func areActionsEmbedded(_ userInfo: [AnyHashable: Any]) -> Bool {
         return
             userInfo[LP_KEY_PUSH_ACTION] != nil ||
             userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil

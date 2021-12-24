@@ -8,40 +8,32 @@
 import Foundation
 
 extension NotificationsProxy {
-    
-    /**
-     * Check if didReceiveRemoteNotification is implemented (deprecated in iOS 10).
-     * If :didReceiveRemoteNotification:fetchCompletionHandler: is implemented the above mentioned method
-     * will not be called
-     */
+    /// Check if didReceiveRemoteNotification is implemented (deprecated in iOS 10).
+    /// If :didReceiveRemoteNotification:fetchCompletionHandler: is implemented the above mentioned method
+    /// will not be called
     func hasImplementedApplicationDidReceive() -> Bool {
-        let applicationDidReceiveRemoteNotificationSelector =
-        #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:))
-        
-        let applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(appDelegateClass, applicationDidReceiveRemoteNotificationSelector);
-        
+        let applicationDidReceiveRemoteNotificationSelector = #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:))
+        let applicationDidReceiveRemoteNotificationMethod = class_getInstanceMethod(appDelegateClass,
+                                                                                    applicationDidReceiveRemoteNotificationSelector)
         return applicationDidReceiveRemoteNotificationMethod != nil
     }
     
-    // MARK: - Swizzle Local Notification method
+    /// Swizzle Local Notification method
     func swizzleLocalNotificationMethods() {
         // Detect local notifications while app is running
         let applicationDidReceiveLocalNotification = #selector(UIApplicationDelegate.application(_:didReceive:))
         let leanplum_applicationDidReceiveLocalNotification = #selector(leanplum_application(_:didReceive:))
-        swizzled.applicationDidReceiveLocalNotification =
-        LPSwizzle.hook(into: applicationDidReceiveLocalNotification,
-                       with: leanplum_applicationDidReceiveLocalNotification,
-                       for: appDelegateClass)
+        swizzled.applicationDidReceiveLocalNotification = LPSwizzle.hook(into: applicationDidReceiveLocalNotification,
+                                                                         with: leanplum_applicationDidReceiveLocalNotification,
+                                                                         for: appDelegateClass)
     }
     
-    // MARK: - Swizzle Notification Settings method
+    /// Swizzle Notification Settings method
     func swizzleUserNotificationSettings() {
         let applicationDidRegisterUserNotificationSettings = #selector(UIApplicationDelegate.application(_:didRegister:))
         let leanplum_applicationDidRegisterUserNotificationSettings = #selector(leanplum_application(_:didRegister:))
-        
-        swizzled.applicationDidRegisterUserNotificationSettings =
-        LPSwizzle.hook(into: applicationDidRegisterUserNotificationSettings,
-                       with: leanplum_applicationDidRegisterUserNotificationSettings,
-                       for: appDelegateClass)
+        swizzled.applicationDidRegisterUserNotificationSettings = LPSwizzle.hook(into: applicationDidRegisterUserNotificationSettings,
+                                                                                 with: leanplum_applicationDidRegisterUserNotificationSettings,
+                                                                                 for: appDelegateClass)
     }
 }

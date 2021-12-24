@@ -15,7 +15,7 @@ extension NotificationsProxy {
         }
     }
     
-    @objc public func didReceiveRemoteNotification(userInfo: [AnyHashable : Any], fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    @objc public func didReceiveRemoteNotification(userInfo: [AnyHashable: Any], fetchCompletionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         self.leanplum_application(UIApplication.shared, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: fetchCompletionHandler)
     }
     
@@ -33,11 +33,11 @@ extension NotificationsProxy {
         self.leanplum_application(UIApplication.shared, didReceive: notification)
     }
     
-    @objc public func handleActionWithIdentifier(_ identifier:String, forRemoteNotification notification: [AnyHashable:Any]) {
+    @objc public func handleActionWithIdentifier(_ identifier: String, forRemoteNotification notification: [AnyHashable:Any]) {
         Leanplum.notificationsManager().notificationOpened(userInfo: notification, action: identifier)
     }
     
-    @objc public func handleActionWithIdentifier(_ identifier:String, forLocalNotification notification: UILocalNotification) {
+    @objc public func handleActionWithIdentifier(_ identifier: String, forLocalNotification notification: UILocalNotification) {
         if let userInfo = notification.userInfo {
             Leanplum.notificationsManager().notificationOpened(userInfo: userInfo, action: identifier)
         }

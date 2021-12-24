@@ -8,7 +8,6 @@
 import Foundation
 
 class NotificationSettings {
-    
     private var key: String {
         get {
             guard
@@ -75,7 +74,7 @@ class NotificationSettings {
             }
         }
     }
-    
+
     @available(iOS 10.0, *)
     private func getSettingsFromUserNotification(completionHandler: @escaping (_ settings: [AnyHashable: Any?])->()) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -98,11 +97,8 @@ class NotificationSettings {
             }
         }
     }
-    
-    /**
-     * Retrieves notification settings from UIApplication
-     * Used for iOS 9 devices (older than iOS 10)
-     */
+
+    /// Retrieves notification settings from UIApplication. Used for iOS9 devices (older than iOS 10)
     private func getSettingsFromUIApplication() -> [AnyHashable: Any] {
         guard let settings = UIApplication.shared.currentUserNotificationSettings?.dictionary else {
             return [:]

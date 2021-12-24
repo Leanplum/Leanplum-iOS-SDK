@@ -9,20 +9,11 @@ import Foundation
 
 /// Manager responsible for handling push (remote) and local notifications
 @objc public class NotificationsManager: NSObject {
-    
-    // MARK: - Initialization
-    @objc let proxy: NotificationsProxy
+    @objc let proxy = NotificationsProxy()
+    private let notificationSettings = NotificationSettings()
     
     @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     @objc public var isPushDeliveryTrackingEnabled = true
-    
-    private var notificationSettings: NotificationSettings
-    
-    @objc
-    public override init() {
-        proxy = NotificationsProxy()
-        notificationSettings = NotificationSettings()
-    }
     
     // MARK: - Notification Settings
     @objc public func updateNotificationSettings() {
@@ -52,7 +43,6 @@ import Foundation
         isAskToAskDisabled = true
         
         let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
-        
         var deviceAttributeParams: [AnyHashable: Any] = [:]
 
         if pushToken != formattedToken {
@@ -163,7 +153,7 @@ import Foundation
         
         // Display the Notification as Confirm in-app message
         if let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo) {
-            LPUIAlert.show(withTitle: Utilities.getAppName(),
+            LPUIAlert.show(withTitle: Bundle.appName,
                            message: notifMessage,
                            cancelButtonTitle: NSLocalizedString("Cancel", comment: ""),
                            otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in

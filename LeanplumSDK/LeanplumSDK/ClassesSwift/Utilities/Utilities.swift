@@ -7,6 +7,7 @@
 
 import Foundation
 
+// TODO: Remove Utilities class when we add proper models
 public class Utilities: NSObject {    
     /**
      * Returns Leanplum message Id from Notification userInfo.
@@ -20,10 +21,5 @@ public class Utilities: NSObject {
             return String(describing: messageId)
         }
         return nil
-    }
-    
-    static func getAppName() -> String {
-        return Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
     }
 }

@@ -127,7 +127,9 @@ extension NSObject {
     
     // MARK: - UserNotificationCenter
     @objc @available(iOS 10.0, *)
-    func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter,
+                                         didReceive response: UNNotificationResponse,
+                                         withCompletionHandler completionHandler: @escaping () -> Void) {
         Log.debug("Called swizzled userNotificationCenter:didReceiveNotificationResponse:withCompletionHandler")
         
         let userInfo = response.notification.request.content.userInfo

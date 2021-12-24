@@ -31,11 +31,11 @@ public class NotificationsProxy: NSObject {
     
     var swizzled = Swizzled()
 
-    var hasImplementedNotifCenterMethods = false
+    var hasImplementedNotificationCenterMethods = false
     private(set) var shouldFallbackToLegacyMethods = false
     
     private(set) var notificationOpenedFromStart = false
-    private(set) var notificationHandledFromStart:[AnyHashable:Any]?
+    private(set) var notificationHandledFromStart: [AnyHashable:Any]?
     
     // MARK: - Application didFinishLaunching
     @objc public func addDidFinishLaunchingObserver() {
@@ -52,25 +52,26 @@ public class NotificationsProxy: NSObject {
         Log.debug("Called leanplum_applicationDidFinishLaunching: \(notification.userInfo ?? [:]), state \(UIApplication.shared.applicationState.rawValue))")
         
         if let userInfo = notification.userInfo {
-            self.applicationLaunched(launchOptions: userInfo)
+            applicationLaunched(launchOptions: userInfo)
         }
     }
     
     func applicationLaunched(launchOptions: [AnyHashable: Any]) {
-        if let remoteNotif = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable: Any] {
-            self.notificationHandledFromStart = remoteNotif
+        if let remoteNotification = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable: Any] {
+            notificationHandledFromStart = remoteNotification
             
             // started in background, woken up by remote notification
             if UIApplication.shared.applicationState == .background {
                 notificationOpenedFromStart = false
-                Leanplum.notificationsManager().notificationReceived(userInfo: remoteNotif, isForeground: false)
+                Leanplum.notificationsManager().notificationReceived(userInfo: remoteNotification, isForeground: false)
             } else {
                 notificationOpenedFromStart = true
-                Leanplum.notificationsManager().notificationOpened(userInfo: remoteNotif)
+                Leanplum.notificationsManager().notificationOpened(userInfo: remoteNotification)
             }
-        } else if let localNotif =
+        } else if
+            let localNotification =
                     launchOptions[UIApplication.LaunchOptionsKey.localNotification] as? UILocalNotification,
-                  let userInfo = localNotif.userInfo {
+                let userInfo = localNotification.userInfo {
             notificationHandledFromStart = userInfo
             notificationOpenedFromStart = true
             Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
@@ -100,7 +101,7 @@ public class NotificationsProxy: NSObject {
             if !swizzled.applicationDidReceiveRemoteNotificationWithCompletionHandler {
                 // if background modes / content-available:1, swizzle for prefetch
                 swizzleApplicationDidReceiveFetchCompletionHandler(true)
-            } else if !hasImplementedNotifCenterMethods {
+            } else if !hasImplementedNotificationCenterMethods {
                 // application:didReceiveRemoteNotification:fetchCompletionHandler: method is implemented and
                 // notificationCenter methods are not, we need to call that method manually,
                 // since we set our own notification center delegate

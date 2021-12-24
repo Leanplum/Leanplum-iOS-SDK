@@ -1,5 +1,5 @@
 //
-//  NotificationsProxy+Utils.swift
+//  NotificationsProxy+Utilities.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.

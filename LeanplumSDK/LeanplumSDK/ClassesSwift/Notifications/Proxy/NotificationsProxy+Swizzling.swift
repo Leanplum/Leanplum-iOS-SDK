@@ -43,7 +43,7 @@ extension NotificationsProxy {
     }
     
     // MARK: - Swizzle Application didReceiveRemoteNotification
-    func swizzleApplicationDidReceiveFetchCompletionHandler(_ force:Bool = false) {
+    func swizzleApplicationDidReceiveFetchCompletionHandler(_ force: Bool = false) {
         let applicationDidReceiveRemoteNotificationFetchCompletionHandlerSelector =
         #selector(UIApplicationDelegate.application(_:didReceiveRemoteNotification:fetchCompletionHandler:))
         
@@ -100,7 +100,7 @@ extension NotificationsProxy {
             // application:didReceiveRemoteNotification:fetchCompletionHandler: is called after
             // userNotificationCenter:willPresent:withCompletionHandler: by iOS
             if userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerMethod != nil {
-                hasImplementedNotifCenterMethods = true
+                hasImplementedNotificationCenterMethods = true
             }
             
             userNotificationCenterDelegateClass = object_getClass(UNUserNotificationCenter.current().delegate)
