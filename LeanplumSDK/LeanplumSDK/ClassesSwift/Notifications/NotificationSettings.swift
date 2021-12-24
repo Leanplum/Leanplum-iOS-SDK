@@ -41,7 +41,7 @@ class NotificationSettings {
                 for item in settings {
                     settings_[item.key] = item.value != nil ? item.value : nil
                 }
-                let changed = self.checkIfSettingsAreChanged(newSettings: settings_)
+                let changed = !settings_.isEqual(UserDefaults.standard.dictionary(forKey: self.key) ?? [:])
                 if changed {
                     self.updateSettings(settings_, updateToServer: updateToServer)
                 }
@@ -50,7 +50,7 @@ class NotificationSettings {
         } else {
             // Fallback on earlier versions
             let settings = getSettingsFromUIApplication()
-            let changed = checkIfSettingsAreChanged(newSettings: settings)
+            let changed = !settings.isEqual(UserDefaults.standard.dictionary(forKey: key) ?? [:])
             if changed {
                 updateSettings(settings, updateToServer: updateToServer)
             }
@@ -74,14 +74,6 @@ class NotificationSettings {
                 }
             }
         }
-    }
-    
-    private func checkIfSettingsAreChanged(newSettings: [AnyHashable: Any]) -> Bool {
-        if let savedSettings = UserDefaults.standard.dictionary(forKey: key),
-            NSDictionary(dictionary: savedSettings).isEqual(to: newSettings) {
-            return false
-        }
-        return true
     }
     
     @available(iOS 10.0, *)
