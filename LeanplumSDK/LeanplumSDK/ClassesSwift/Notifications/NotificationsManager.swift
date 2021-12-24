@@ -109,12 +109,13 @@ import Foundation
         }
         
         if Leanplum.notificationsManager().areActionsEmbedded(userInfo) {
-            var args: [AnyHashable: Any]
+            var args: [AnyHashable: Any] = [:]
             if isDefaultAction {
-                args = [action: userInfo[LP_KEY_PUSH_ACTION] ?? ""]
+                args[action] = userInfo[LP_KEY_PUSH_ACTION]
             } else {
-                let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any]
-                args = [action: customActions?[action] ?? ""]
+                if let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any] {
+                    args[action] = customActions[action]
+                }
             }
             let context: ActionContext = .init(name: LP_PUSH_NOTIFICATION_ACTION,
                                                args: args,

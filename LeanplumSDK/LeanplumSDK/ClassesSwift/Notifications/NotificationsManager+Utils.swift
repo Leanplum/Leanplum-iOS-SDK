@@ -133,8 +133,10 @@ import Foundation
               let categories = LPJSON.string(fromJSON: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
             return nil
         }
-        let params: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                                      LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: categories]
+        let params: [AnyHashable: Any] = [
+            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
+            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: categories
+        ]
         
         return params
     }
