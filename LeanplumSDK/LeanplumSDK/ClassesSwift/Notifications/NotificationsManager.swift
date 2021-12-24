@@ -95,7 +95,10 @@ import Foundation
     // MARK: Notification Open
     @objc(notificationOpened:action:)
     func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else {
+            Log.debug("Push notification not handled, no message id found.")
+            return
+        }
         Log.debug("Notification Opened MessageId: \(messageId)")
         
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION

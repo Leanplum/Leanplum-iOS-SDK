@@ -15,27 +15,26 @@ extension NotificationsProxy {
             let idB = Leanplum.notificationsManager().getNotificationId(userInfo)
             return idA == idB
         }
-        
         return false
     }
     
-    @objc public func setCustomAppDelegate(_ appDel: UIApplicationDelegate) {
+    @objc public func setCustomAppDelegate(_ delegate: UIApplicationDelegate) {
         isCustomAppDelegateUsed = true
-        appDelegate = appDel
+        appDelegate = delegate
     }
     
     /// Ensures the original AppDelegate is swizzled when using mParticle
     /// or another library that proxies the AppDelegate that way
     func ensureOriginalAppDelegate() {
-        if let appDel = appDelegate, String(describing: appDel.self).contains("AppDelegateProxy") {
+        if let delegate = appDelegate, String(describing: delegate.self).contains("AppDelegateProxy") {
             let sel = Selector(("originalAppDelegate"))
-            let method = class_getInstanceMethod(object_getClass(appDel), sel)
+            let method = class_getInstanceMethod(object_getClass(delegate), sel)
             if let instanceMethod = method {
                 let imp = method_getImplementation(instanceMethod)
                 typealias OriginalAppDelegateGetter = @convention(c) (AnyObject, Selector) -> UIApplicationDelegate?
                 let curriedImplementation: OriginalAppDelegateGetter =
                 unsafeBitCast(imp, to: OriginalAppDelegateGetter.self)
-                let originalAppDelegate = curriedImplementation(appDel, sel)
+                let originalAppDelegate = curriedImplementation(delegate, sel)
                 if originalAppDelegate != nil {
                     appDelegate = originalAppDelegate
                 }
