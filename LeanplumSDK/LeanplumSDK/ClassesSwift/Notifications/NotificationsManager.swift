@@ -16,12 +16,12 @@ import Foundation
     @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     @objc public var isPushDeliveryTrackingEnabled = true
     
-    private var notificationSettings: LeanplumNotificationSettings
+    private var notificationSettings: NotificationSettings
     
     @objc
     public override init() {
         proxy = NotificationsProxy()
-        notificationSettings = LeanplumNotificationSettings()
+        notificationSettings = NotificationSettings()
     }
     
     // MARK: - Notification Settings

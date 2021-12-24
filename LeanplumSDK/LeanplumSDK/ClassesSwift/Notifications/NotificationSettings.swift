@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationSettings.swift
+//  NotificationSettings.swift
 //  LeanplumSDK
 //
 //  Copyright (c) 2021 Leanplum, Inc. All rights reserved.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-class LeanplumNotificationSettings {
+class NotificationSettings {
     
     private var key: String {
         get {

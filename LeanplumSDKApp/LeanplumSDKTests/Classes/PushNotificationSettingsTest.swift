@@ -13,11 +13,11 @@ import XCTest
 @available(iOS 10.0, *)
 class LeanplumPushNotificationSettingsTest: XCTestCase {
     
-    var notificationSettings: LeanplumNotificationSettings!
+    var notificationSettings: NotificationSettings!
     
     override func setUp() {
         super.setUp()
-        notificationSettings = LeanplumNotificationSettings()
+        notificationSettings = NotificationSettings()
     }
     
     override func tearDown() {
@@ -154,7 +154,7 @@ protocol LeanplumNotificationSettingsProtocol {
     func leanplumUserNotificationSettingsKey() -> String
 }
 
-extension LeanplumNotificationSettings: LeanplumNotificationSettingsProtocol {
+extension NotificationSettings: LeanplumNotificationSettingsProtocol {
     func leanplumUserNotificationSettingsKey() -> String {
         guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
             fatalError()
