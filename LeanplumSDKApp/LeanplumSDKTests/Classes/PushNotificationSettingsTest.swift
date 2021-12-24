@@ -1,5 +1,5 @@
 //
-//  LeanplumPushNotificationSettingsTest.swift
+//  PushNotificationSettingsTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Dejan Krstevski on 29.11.21.
@@ -11,13 +11,13 @@ import XCTest
 @testable import Leanplum
 
 @available(iOS 10.0, *)
-class LeanplumPushNotificationSettingsTest: XCTestCase {
+class PushNotificationSettingsTest: XCTestCase {
     
-    var notificationSettings: LeanplumNotificationSettings!
+    var notificationSettings: NotificationSettings!
     
     override func setUp() {
         super.setUp()
-        notificationSettings = LeanplumNotificationSettings()
+        notificationSettings = NotificationSettings()
     }
     
     override func tearDown() {
@@ -110,23 +110,23 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     func testSaveAndRemoveSettings() {
         let testSettings: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: 7,
                             LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: []]
-        notificationSettings.save(testSettings)
+        notificationSettings.settings = testSettings
         
-        guard let savedSettings = UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()) as? [AnyHashable : Any] else {
+        guard let savedSettings = UserDefaults.standard.value(forKey: notificationSettings.key) as? [AnyHashable : Any] else {
             XCTFail("Settings are not saved")
             return
         }
         XCTAssertTrue(NSDictionary(dictionary: savedSettings).isEqual(to: testSettings))
         
-        notificationSettings.removeSettings()
+        notificationSettings.settings = nil
         
-        XCTAssertNil(UserDefaults.standard.value(forKey: notificationSettings.leanplumUserNotificationSettingsKey()))
+        XCTAssertNil(UserDefaults.standard.value(forKey: notificationSettings.key))
     }
     
     func testUpdateSettingsToServer() {
         setUp_request()
         //first remove settings from defaults
-        notificationSettings.removeSettings()
+        notificationSettings.settings = nil
         //authorize settings to have push types
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
         
@@ -150,16 +150,21 @@ class LeanplumPushNotificationSettingsTest: XCTestCase {
     }
 }
 
-protocol LeanplumNotificationSettingsProtocol {
-    func leanplumUserNotificationSettingsKey() -> String
+protocol NotificationSettingsProtocol {
+    var key: String { get }
 }
 
-extension LeanplumNotificationSettings: LeanplumNotificationSettingsProtocol {
-    func leanplumUserNotificationSettingsKey() -> String {
-        guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
-            fatalError()
+extension NotificationSettings: NotificationSettingsProtocol {
+    var key: String {
+        get {
+            guard
+                let appId = LPAPIConfig.shared().appId,
+                let userId = LPAPIConfig.shared().userId,
+                let deviceId = LPAPIConfig.shared().deviceId else {
+                    return ""
+                }
+            return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)
         }
-        return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)
     }
 }
 

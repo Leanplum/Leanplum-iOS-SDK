@@ -1,5 +1,5 @@
 //
-//  UNNotificationSettings+LPUtil.swift
+//  UNNotificationSettings+Transform.swift
 //  LeanplumSDK
 //
 //  Copyright (c) 2021 Leanplum, Inc. All rights reserved.
@@ -13,7 +13,7 @@ extension UNNotificationSettings {
         
         let settings = self
         
-        var result:UInt = 0
+        var result: UInt = 0
         
         // Authorization Status
         if #available(iOS 12.0, *) {

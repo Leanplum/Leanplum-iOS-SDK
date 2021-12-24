@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsManager.swift
+//  NotificationsManager.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 28.10.21.
@@ -8,21 +8,12 @@
 import Foundation
 
 /// Manager responsible for handling push (remote) and local notifications
-@objc public class LeanplumNotificationsManager: NSObject {
-    
-    // MARK: - Initialization
-    @objc let proxy: LeanplumPushNotificationsProxy
+@objc public class NotificationsManager: NSObject {
+    @objc let proxy = NotificationsProxy()
+    private let notificationSettings = NotificationSettings()
     
     @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
     @objc public var isPushDeliveryTrackingEnabled = true
-    
-    private var notificationSettings: LeanplumNotificationSettings
-    
-    @objc
-    public override init() {
-        proxy = LeanplumPushNotificationsProxy()
-        notificationSettings = LeanplumNotificationSettings()
-    }
     
     // MARK: - Notification Settings
     @objc public func updateNotificationSettings() {
@@ -30,11 +21,11 @@ import Foundation
     }
     
     @objc public func saveNotificationSettings(_ settings: [AnyHashable: Any]) {
-        notificationSettings.save(settings)       
+        notificationSettings.settings = settings
     }
     
     @objc public func removeNotificationSettings() {
-        notificationSettings.removeSettings()
+        notificationSettings.settings = nil
     }
     
     @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
@@ -43,21 +34,19 @@ import Foundation
     
     @objc(didRegisterUserNotificationSettings:)
     public func didRegister(_ settings: UIUserNotificationSettings) {
-        disableAskToAsk()
+        isAskToAskDisabled = true
         notificationSettings.getSettings()
     }
     
     // MARK: - Push Token
     @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
-        disableAskToAsk()
+        isAskToAskDisabled = true
         
         let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
-        
         var deviceAttributeParams: [AnyHashable: Any] = [:]
-        
-        let existingToken = self.pushToken()
-        if existingToken == nil || existingToken != formattedToken {
-            updatePushToken(formattedToken)
+
+        if pushToken != formattedToken {
+            pushToken = formattedToken
             deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
         }
                 
@@ -77,8 +66,10 @@ import Foundation
             if !deviceAttributeParams.isEmpty {
                 Leanplum.onStartResponse { success in
                     if success {
-                        let requst = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributeParams).andRequestType(.Immediate)
-                        LPRequestSender.sharedInstance().send(requst)
+                        let request = LPRequestFactory
+                            .setDeviceAttributesWithParams(deviceAttributeParams)
+                            .andRequestType(.Immediate)
+                        LPRequestSender.sharedInstance().send(request)
                     }
                 }
             }
@@ -86,15 +77,18 @@ import Foundation
     }
     
     @objc public func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
-        disableAskToAsk()
-        removePushToken()
+        isAskToAskDisabled = true
+        pushToken = nil
     }
     
     // MARK: - Notification Actions
     // MARK: Notification Open
     @objc(notificationOpened:action:)
-    func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+    func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
+        guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else {
+            Log.debug("Push notification not handled, no message id found.")
+            return
+        }
         Log.debug("Notification Opened MessageId: \(messageId)")
         
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
@@ -108,14 +102,17 @@ import Foundation
         }
         
         if Leanplum.notificationsManager().areActionsEmbedded(userInfo) {
-            var args:[AnyHashable : Any]
+            var args: [AnyHashable: Any] = [:]
             if isDefaultAction {
-                args = [action: userInfo[LP_KEY_PUSH_ACTION] ?? ""]
+                args[action] = userInfo[LP_KEY_PUSH_ACTION]
             } else {
-                let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any]
-                args = [action: customActions?[action] ?? ""]
+                if let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any] {
+                    args[action] = customActions[action]
+                }
             }
-            let context = ActionContext.init(name: LP_PUSH_NOTIFICATION_ACTION, args: args, messageId: messageId)
+            let context: ActionContext = .init(name: LP_PUSH_NOTIFICATION_ACTION,
+                                               args: args,
+                                               messageId: messageId)
             context.preventRealtimeUpdating = true
             downloadFilesAndRunAction(context)
         } else {
@@ -127,8 +124,8 @@ import Foundation
     }
     
     // MARK: Notification Received
-    func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+    func notificationReceived(userInfo: [AnyHashable: Any], isForeground: Bool) {
+        guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else { return }
         Log.debug("Notification received - \(isForeground ? "Foreground" : "Background"). MessageId: \(messageId)")
         
         trackDelivery(userInfo: userInfo)
@@ -143,7 +140,7 @@ import Foundation
         }
     }
     
-    func showNotificationInForeground(userInfo: [AnyHashable : Any]) {
+    func showNotificationInForeground(userInfo: [AnyHashable: Any]) {
         let openNotificationHandler = {
             self.notificationOpened(userInfo: userInfo)
         }
@@ -156,7 +153,10 @@ import Foundation
         
         // Display the Notification as Confirm in-app message
         if let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo) {
-            LPUIAlert.show(withTitle: LeanplumUtils.getAppName(), message: notifMessage, cancelButtonTitle: NSLocalizedString("Cancel", comment: ""), otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
+            LPUIAlert.show(withTitle: Bundle.appName,
+                           message: notifMessage,
+                           cancelButtonTitle: NSLocalizedString("Cancel", comment: ""),
+                           otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
                 if buttonIndex == 1 {
                     openNotificationHandler()
                 }
@@ -165,7 +165,7 @@ import Foundation
     }
     
     // MARK: - Delivery Tracking
-    func trackDelivery(userInfo:[AnyHashable:Any]) {
+    func trackDelivery(userInfo: [AnyHashable: Any]) {
         guard isPushDeliveryTrackingEnabled else {
             Log.debug("Push delivery tracking is disabled")
             return
@@ -177,8 +177,8 @@ import Foundation
             return
         }
         
-        var args = [String:Any]()
-        args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = LeanplumUtils.messageIdFromUserInfo(userInfo)
+        var args = [String: Any]()
+        args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = Utilities.messageIdFromUserInfo(userInfo)
         args[LP_KEY_PUSH_METRIC_OCCURRENCE_ID] = userInfo[LP_KEY_PUSH_OCCURRENCE_ID]
         args[LP_KEY_PUSH_METRIC_SENT_TIME] = userInfo[LP_KEY_PUSH_SENT_TIME] ?? Date().timeIntervalSince1970
         args[LP_KEY_PUSH_METRIC_CHANNEL] = DEFAULT_PUSH_CHANNEL

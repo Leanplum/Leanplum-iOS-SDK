@@ -68,8 +68,8 @@ static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
 static LeanplumPushSetupBlock pushSetupBlock;
 
-@interface LeanplumNotificationsManager(Internal)
-@property (nonatomic, strong) LeanplumPushNotificationsProxy* proxy;
+@interface NotificationsManager(Internal)
+@property (nonatomic, strong) NotificationsProxy* proxy;
 @end
 
 @implementation NSExtensionContext (Leanplum)
@@ -122,12 +122,12 @@ void leanplumExceptionHandler(NSException *exception);
 #endif
 }
 
-+ (LeanplumNotificationsManager*)notificationsManager
++ (NotificationsManager*)notificationsManager
 {
-    static LeanplumNotificationsManager *managerInstance = nil;
+    static NotificationsManager *managerInstance = nil;
     static dispatch_once_t onceLPInternalStateToken;
     dispatch_once(&onceLPInternalStateToken, ^{
-        managerInstance = [LeanplumNotificationsManager new];
+        managerInstance = [NotificationsManager new];
     });
     return managerInstance;
 }
@@ -398,7 +398,7 @@ void leanplumExceptionHandler(NSException *exception);
         LP_PARAM_DEVICE_ID: deviceId
     } mutableCopy];
     
-    NSString *pushToken = [[Leanplum notificationsManager] pushToken];
+    NSString *pushToken = [Leanplum notificationsManager].pushToken;
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
@@ -411,7 +411,7 @@ void leanplumExceptionHandler(NSException *exception);
         }
         
         //Clean UserDefaults before changing deviceId because it is used to generate key
-        [[Leanplum notificationsManager] removePushToken];
+        [Leanplum notificationsManager].pushToken = nil;
         [[Leanplum notificationsManager] removeNotificationSettings];
         
         // Change the LPAPIConfig after getting the push token and settings
@@ -421,7 +421,7 @@ void leanplumExceptionHandler(NSException *exception);
         [[LPVarCache sharedCache] saveDiffs];
         
         // Update the token and settings now that the key is different
-        [[Leanplum notificationsManager] updatePushToken:pushToken];
+        [Leanplum notificationsManager].pushToken = pushToken;
         [[Leanplum notificationsManager] saveNotificationSettings:settings];
         
         
@@ -781,7 +781,7 @@ void leanplumExceptionHandler(NSException *exception);
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
-    [[Leanplum notificationsManager].proxy swizzleNotificationMethods];
+    [[Leanplum notificationsManager].proxy setupNotificationSwizzling];
     
     if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "

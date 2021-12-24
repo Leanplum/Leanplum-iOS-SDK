@@ -43,12 +43,12 @@ class NotificationTestHelper {
     ]
     
     private static var mockApplicationState = UIApplication.State.active
-    @objc var applicationState:UIApplication.State {
+    @objc var applicationState: UIApplication.State {
         return NotificationTestHelper.mockApplicationState
     }
     
-    @objc static func notificationsManagerMock() ->  LeanplumNotificationsManager {
-        return LeanplumNotificationsManagerMock.notificationsManager()
+    @objc static func notificationsManagerMock() ->  NotificationsManager {
+        return NotificationsManagerMock.notificationsManager()
     }
     
     func updateNotifId() -> String {
@@ -63,7 +63,7 @@ class NotificationTestHelper {
     }
     
     class func cleanUp() {
-        LeanplumNotificationsManagerMock.reset()
+        NotificationsManagerMock.reset()
         NotificationTestHelper.mockApplicationState = .active
     }
     

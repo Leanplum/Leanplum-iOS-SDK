@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationsManagerTest.swift
+//  NotificationsManagerTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 9.11.21.
@@ -10,7 +10,7 @@ import XCTest
 @testable import Leanplum
 
 @available(iOS 10, *)
-class LeanplumNotificationsManagerTest: XCTestCase {
+class NotificationsManagerTest: XCTestCase {
     
     let timeout:TimeInterval = 5
     static var showExecuted = false
@@ -81,7 +81,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
     
     override func tearDown() {
         LPInternalState.shared().issuedStart = false
-        LeanplumNotificationsManagerTest.showExecuted = false
+        NotificationsManagerTest.showExecuted = false
         VarCache.shared().reset()
         VarCache.shared().initialize()
         LPEventDataManager.deleteEvents(withLimit: LPEventDataManager.count())
@@ -101,8 +101,8 @@ class LeanplumNotificationsManagerTest: XCTestCase {
     // MARK: LPUIAlert:show mock
     func show(withTitle title: String, message: String, cancelButtonTitle: String, otherButtonTitles: [Any]?, block: LeanplumUIAlertCompletionBlock? = nil) {
         // self is LPUIAlert
-        LeanplumNotificationsManagerTest.showExecuted = true
-        let info = LeanplumNotificationsManagerTest.userInfo as NSDictionary
+        NotificationsManagerTest.showExecuted = true
+        let info = NotificationsManagerTest.userInfo as NSDictionary
         let appName = "LeanplumSDKApp"
         let body = info.value(forKeyPath: "aps.alert.body") as! String
         XCTAssertEqual(title, appName)
@@ -116,15 +116,15 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "Notification Open Action")
         
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
-            let lpx = LeanplumNotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
+            let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: "URL")!)
-            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
+            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
             XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
             onRunActionNamedExpectation.fulfill()
             return false
         }
         
-        Leanplum.notificationsManager().notificationOpened(userInfo: LeanplumNotificationsManagerTest.userInfo)
+        Leanplum.notificationsManager().notificationOpened(userInfo: NotificationsManagerTest.userInfo)
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
@@ -132,16 +132,16 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "Notification Open Action - Custom Action")
         
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
-            let url = (LeanplumNotificationsManagerTest.userInfo as NSDictionary).value(forKeyPath: "_lpc.MyAction.URL")!
+            let url = (NotificationsManagerTest.userInfo as NSDictionary).value(forKeyPath: "_lpc.MyAction.URL")!
             XCTAssertEqual(String(describing: url), context.string(name: LPMT_ARG_URL)!)
-            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
+            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
             XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
             
             onRunActionNamedExpectation.fulfill()
             return false
         }
         
-        Leanplum.notificationsManager().notificationOpened(userInfo: LeanplumNotificationsManagerTest.userInfo, action: "MyAction")
+        Leanplum.notificationsManager().notificationOpened(userInfo: NotificationsManagerTest.userInfo, action: "MyAction")
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
     
@@ -150,14 +150,14 @@ class LeanplumNotificationsManagerTest: XCTestCase {
      */
     func test_notification_foreground_alert_shown() {
         let lpAlertShowMethod = class_getClassMethod(LPUIAlert.self, #selector(LPUIAlert.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
-        let testShowMethod = class_getInstanceMethod(LeanplumNotificationsManagerTest.self, #selector(LeanplumNotificationsManagerTest.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
+        let testShowMethod = class_getInstanceMethod(NotificationsManagerTest.self, #selector(NotificationsManagerTest.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
         let lpAlertShowImp = method_setImplementation(lpAlertShowMethod, method_getImplementation(testShowMethod))
         defer {
             method_setImplementation(lpAlertShowMethod, lpAlertShowImp)
         }
         
-        Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
-        XCTAssertTrue(LeanplumNotificationsManagerTest.showExecuted)
+        Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
+        XCTAssertTrue(NotificationsManagerTest.showExecuted)
         method_setImplementation(lpAlertShowMethod, lpAlertShowImp)
     }
     
@@ -168,9 +168,9 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "Notification Alert -> Alert View -> Open Action")
         let dismissControllerExp = expectation(description: "Dismiss Controller")
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
-            let lpx = LeanplumNotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
+            let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
-            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
+            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
             XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
             onRunActionNamedExpectation.fulfill()
             return false
@@ -185,7 +185,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         // Other UIAlertControllers can block the notification LPUIAlert
         // Dismiss all controllers so after notificationReceived is executed, the top one will be the LPUIAlert
         dismissAllPresentedControllers(block: {
-            Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
+            Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
             self.getTopController()?.tapButton(atIndex: 1)
             self.getTopController()?.dismiss(animated: false, completion: {
                 dismissControllerExp.fulfill()
@@ -199,13 +199,13 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "LeanplumShouldHandleNotificationBlock")
         
         let shouldHandleBlock:LeanplumShouldHandleNotificationBlock = { (userInfo, handler) in
-            XCTAssertEqual(String(describing: LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_OCCURRENCE_ID]),
+            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo[LP_KEY_PUSH_OCCURRENCE_ID]),
                            String(describing: userInfo[LP_KEY_PUSH_OCCURRENCE_ID]))
             onRunActionNamedExpectation.fulfill()
         }
         
         Leanplum.setShouldOpenNotificationHandler(shouldHandleBlock)
-        Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
+        Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
         
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
@@ -214,7 +214,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "LeanplumShouldHandleNotificationBlock -> Open Action")
         
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
-            let lpx = LeanplumNotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
+            let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
             XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
             onRunActionNamedExpectation.fulfill()
@@ -226,7 +226,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
         }
         
         Leanplum.setShouldOpenNotificationHandler(shouldHandleBlock)
-        Leanplum.notificationsManager().notificationReceived(userInfo: LeanplumNotificationsManagerTest.userInfo, isForeground: true)
+        Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
         
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
     }
@@ -235,7 +235,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
      * Tests mute inside app correctly mutes notifications
      */
     func test_mute_inside_app() {
-        XCTAssertFalse(Leanplum.notificationsManager().isMuted(LeanplumNotificationsManagerTest.userInfo))
+        XCTAssertFalse(Leanplum.notificationsManager().isMuted(NotificationsManagerTest.userInfo))
         XCTAssertTrue(Leanplum.notificationsManager().isMuted(userInfoNoActionMuteInsideTrue))
         XCTAssertTrue(Leanplum.notificationsManager().isMuted(userInfoNoActionMuteInsideFalse))
         XCTAssertTrue(Leanplum.notificationsManager().isMuted(userInfoActionOpenURLMuteInsideTrue))
@@ -243,7 +243,7 @@ class LeanplumNotificationsManagerTest: XCTestCase {
     
     // MARK: Tests Delivery Tracking
     func test_track_delivery() {
-        class LeanplumNotificationsManagerDeliveryMock: LeanplumNotificationsManager {
+        class LeanplumNotificationsManagerDeliveryMock: NotificationsManager {
             public var deliveryInvocations = 0
             override func trackDelivery(userInfo: [AnyHashable : Any]) {
                 self.deliveryInvocations += 1
@@ -296,18 +296,18 @@ class LeanplumNotificationsManagerTest: XCTestCase {
             
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_CHANNEL], DEFAULT_PUSH_CHANNEL)
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_MESSAGE_ID],
-                           LeanplumUtils.messageIdFromUserInfo(LeanplumNotificationsManagerTest.userInfo))
+                           Utilities.messageIdFromUserInfo(NotificationsManagerTest.userInfo))
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_OCCURRENCE_ID],
-                           Leanplum.notificationsManager().getNotificationId(LeanplumNotificationsManagerTest.userInfo))
+                           Leanplum.notificationsManager().getNotificationId(NotificationsManagerTest.userInfo))
             XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_METRIC_SENT_TIME]!),
-                           LeanplumNotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
+                           NotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
 
             onRequestExpectation.fulfill()
             return true
         }
 
 
-        Leanplum.notificationsManager().trackDelivery(userInfo: LeanplumNotificationsManagerTest.userInfo)
+        Leanplum.notificationsManager().trackDelivery(userInfo: NotificationsManagerTest.userInfo)
         wait(for: [onRequestExpectation], timeout: timeout)
         tearDown_request()
     }

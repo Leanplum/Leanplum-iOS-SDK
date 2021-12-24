@@ -75,7 +75,7 @@
 
 @end
 
-@interface LeanplumNotificationsManager(UnitTest)
+@interface NotificationsManager(UnitTest)
 
 - (void)notificationOpened:(NSDictionary * _Nonnull)userInfo action:(NSString * _Nonnull)action;
 

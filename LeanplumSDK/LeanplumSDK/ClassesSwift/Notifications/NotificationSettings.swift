@@ -1,5 +1,5 @@
 //
-//  LeanplumNotificationSettings.swift
+//  NotificationSettings.swift
 //  LeanplumSDK
 //
 //  Copyright (c) 2021 Leanplum, Inc. All rights reserved.
@@ -7,7 +7,27 @@
 
 import Foundation
 
-class LeanplumNotificationSettings {
+class NotificationSettings {
+    private var key: String {
+        get {
+            guard
+                let appId = LPAPIConfig.shared().appId,
+                let userId = LPAPIConfig.shared().userId,
+                let deviceId = LPAPIConfig.shared().deviceId else {
+                    return ""
+                }
+            return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)
+        }
+    }
+    
+    var settings: [AnyHashable: Any]? {
+        get {
+            UserDefaults.standard.dictionary(forKey: key)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: key)
+        }
+    }
     
     func getSettings(updateToServer: Bool = false, completionHandler: ((_ settings: [AnyHashable: Any], _ areChanged: Bool)->())? = nil) {
         if #available(iOS 10.0, *) {
@@ -20,7 +40,7 @@ class LeanplumNotificationSettings {
                 for item in settings {
                     settings_[item.key] = item.value != nil ? item.value : nil
                 }
-                let changed = self.checkIfSettingsAreChanged(newSettings: settings_)
+                let changed = !settings_.isEqual(self.settings ?? [:])
                 if changed {
                     self.updateSettings(settings_, updateToServer: updateToServer)
                 }
@@ -29,7 +49,7 @@ class LeanplumNotificationSettings {
         } else {
             // Fallback on earlier versions
             let settings = getSettingsFromUIApplication()
-            let changed = checkIfSettingsAreChanged(newSettings: settings)
+            let changed = !settings.isEqual(self.settings ?? [:])
             if changed {
                 updateSettings(settings, updateToServer: updateToServer)
             }
@@ -37,59 +57,24 @@ class LeanplumNotificationSettings {
         }
     }
     
-    func save(_ settings: [AnyHashable: Any]) {
-        guard let key = self.leanplumUserNotificationSettingsKey() else {
-            return
-        }
-        UserDefaults.standard.setValue(settings, forKey: key)
-    }
-    
-    func removeSettings() {
-        guard let key = self.leanplumUserNotificationSettingsKey() else {
-            return
-        }
-        UserDefaults.standard.removeObject(forKey: key)
-    }
-    
     private func updateSettings(_ settings: [AnyHashable: Any], updateToServer: Bool) {
-        save(settings)
+        self.settings = settings
         if updateToServer {
-            updateSettingsToServer(settings)
-        }
-    }
-    
-    private func updateSettingsToServer(_ settings: [AnyHashable: Any]) {
-        if let params = Leanplum.notificationsManager().notificationSettingsToRequestParams(settings) {
-            Leanplum.onStartResponse { success in
-                if success {
-                    var deviceAttributesWithParams: [AnyHashable: Any] = params
-                    if let pushToken = Leanplum.notificationsManager().pushToken() {
-                        deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken
+            if let params = Leanplum.notificationsManager().notificationSettingsToRequestParams(settings) {
+                Leanplum.onStartResponse { success in
+                    if success {
+                        var deviceAttributesWithParams: [AnyHashable: Any] = params
+                        if let pushToken = Leanplum.notificationsManager().pushToken {
+                            deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken
+                        }
+                        let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)
+                        LPRequestSender.sharedInstance().send(request)
                     }
-                    let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)
-                    LPRequestSender.sharedInstance().send(request)
                 }
             }
         }
     }
-    
-    private func checkIfSettingsAreChanged(newSettings: [AnyHashable: Any]) -> Bool {
-        guard let key = self.leanplumUserNotificationSettingsKey() else {
-            return true
-        }
-        if let savedSettings = UserDefaults.standard.dictionary(forKey: key), NSDictionary(dictionary: savedSettings).isEqual(to: newSettings) {
-            return false
-        }
-        return true
-    }
-    
-    private func leanplumUserNotificationSettingsKey() -> String? {
-        guard let appId = LPAPIConfig.shared().appId, let userId = LPAPIConfig.shared().userId, let deviceId = LPAPIConfig.shared().deviceId else {
-            return nil
-        }
-        return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)
-    }
-    
+
     @available(iOS 10.0, *)
     private func getSettingsFromUserNotification(completionHandler: @escaping (_ settings: [AnyHashable: Any?])->()) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -112,11 +97,8 @@ class LeanplumNotificationSettings {
             }
         }
     }
-    
-    /**
-     * Retrieves notification settings from UIApplication
-     * Used for iOS 9 devices (older than iOS 10)
-     */
+
+    /// Retrieves notification settings from UIApplication. Used for iOS9 devices (older than iOS 10)
     private func getSettingsFromUIApplication() -> [AnyHashable: Any] {
         guard let settings = UIApplication.shared.currentUserNotificationSettings?.dictionary else {
             return [:]
