@@ -1,5 +1,5 @@
 //
-//  LeanplumUtils.swift
+//  Utilities.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 20.09.21.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class LeanplumUtils: NSObject {    
+public class Utilities: NSObject {    
     /**
      * Returns Leanplum message Id from Notification userInfo.
      * Use this method to identify Leanplum Notifications

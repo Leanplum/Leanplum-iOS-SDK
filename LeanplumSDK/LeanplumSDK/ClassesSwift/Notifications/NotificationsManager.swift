@@ -95,7 +95,7 @@ import Foundation
     // MARK: Notification Open
     @objc(notificationOpened:action:)
     func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else {
+        guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else {
             Log.debug("Push notification not handled, no message id found.")
             return
         }
@@ -135,7 +135,7 @@ import Foundation
     
     // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable: Any], isForeground: Bool) {
-        guard let messageId = LeanplumUtils.messageIdFromUserInfo(userInfo) else { return }
+        guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else { return }
         Log.debug("Notification received - \(isForeground ? "Foreground" : "Background"). MessageId: \(messageId)")
         
         trackDelivery(userInfo: userInfo)
@@ -163,7 +163,7 @@ import Foundation
         
         // Display the Notification as Confirm in-app message
         if let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo) {
-            LPUIAlert.show(withTitle: LeanplumUtils.getAppName(),
+            LPUIAlert.show(withTitle: Utilities.getAppName(),
                            message: notifMessage,
                            cancelButtonTitle: NSLocalizedString("Cancel", comment: ""),
                            otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
@@ -188,7 +188,7 @@ import Foundation
         }
         
         var args = [String: Any]()
-        args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = LeanplumUtils.messageIdFromUserInfo(userInfo)
+        args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = Utilities.messageIdFromUserInfo(userInfo)
         args[LP_KEY_PUSH_METRIC_OCCURRENCE_ID] = userInfo[LP_KEY_PUSH_OCCURRENCE_ID]
         args[LP_KEY_PUSH_METRIC_SENT_TIME] = userInfo[LP_KEY_PUSH_SENT_TIME] ?? Date().timeIntervalSince1970
         args[LP_KEY_PUSH_METRIC_CHANNEL] = DEFAULT_PUSH_CHANNEL

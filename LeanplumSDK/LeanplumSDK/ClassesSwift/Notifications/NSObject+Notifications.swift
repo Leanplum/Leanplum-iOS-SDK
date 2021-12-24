@@ -75,7 +75,7 @@ extension NSObject {
         }
         
         // Do not handle non-Leanplum notifications
-        guard LeanplumUtils.messageIdFromUserInfo(userInfo) != nil else {
+        guard Utilities.messageIdFromUserInfo(userInfo) != nil else {
             return
         }
         
@@ -153,7 +153,7 @@ extension NSObject {
         }
         
         // Do not handle non-Leanplum notifications
-        guard LeanplumUtils.messageIdFromUserInfo(userInfo) != nil else {
+        guard Utilities.messageIdFromUserInfo(userInfo) != nil else {
             return
         }
         
@@ -189,7 +189,7 @@ extension NSObject {
         }
         
         // Do not handle non-Leanplum notifications
-        guard LeanplumUtils.messageIdFromUserInfo(notification.request.content.userInfo) != nil else {
+        guard Utilities.messageIdFromUserInfo(notification.request.content.userInfo) != nil else {
             return
         }
         
@@ -210,7 +210,7 @@ extension NSObject {
         }
         
         // Do not handle non-Leanplum notifications
-        guard let userInfo = notification.userInfo, LeanplumUtils.messageIdFromUserInfo(userInfo) != nil else {
+        guard let userInfo = notification.userInfo, Utilities.messageIdFromUserInfo(userInfo) != nil else {
             return
         }
         

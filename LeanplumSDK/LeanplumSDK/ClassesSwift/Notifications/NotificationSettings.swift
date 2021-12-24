@@ -41,7 +41,7 @@ class NotificationSettings {
                 for item in settings {
                     settings_[item.key] = item.value != nil ? item.value : nil
                 }
-                let changed = !settings_.isEqual(UserDefaults.standard.dictionary(forKey: self.key) ?? [:])
+                let changed = !settings_.isEqual(self.settings ?? [:])
                 if changed {
                     self.updateSettings(settings_, updateToServer: updateToServer)
                 }
@@ -50,7 +50,7 @@ class NotificationSettings {
         } else {
             // Fallback on earlier versions
             let settings = getSettingsFromUIApplication()
-            let changed = !settings.isEqual(UserDefaults.standard.dictionary(forKey: key) ?? [:])
+            let changed = !settings.isEqual(self.settings ?? [:])
             if changed {
                 updateSettings(settings, updateToServer: updateToServer)
             }

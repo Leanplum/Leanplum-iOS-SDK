@@ -296,7 +296,7 @@ class NotificationsManagerTest: XCTestCase {
             
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_CHANNEL], DEFAULT_PUSH_CHANNEL)
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_MESSAGE_ID],
-                           LeanplumUtils.messageIdFromUserInfo(NotificationsManagerTest.userInfo))
+                           Utilities.messageIdFromUserInfo(NotificationsManagerTest.userInfo))
             XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_OCCURRENCE_ID],
                            Leanplum.notificationsManager().getNotificationId(NotificationsManagerTest.userInfo))
             XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_METRIC_SENT_TIME]!),
