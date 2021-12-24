@@ -32,4 +32,6 @@
 
 + (void)swizzle_methods;
 
++ (void)unswizzle_methods;
+
 @end

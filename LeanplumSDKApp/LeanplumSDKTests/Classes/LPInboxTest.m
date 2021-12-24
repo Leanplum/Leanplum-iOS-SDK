@@ -62,6 +62,11 @@
     [HTTPStubs removeAllStubs];
 }
 
++ (void)tearDown {
+    [super tearDown];
+    [LeanplumHelper restore_method_swizzling];
+}
+
 /**
  * Tests inbox class. Mimics Newsfeed. Make sure both tests are identical.
  */
@@ -482,6 +487,7 @@
 
     [LeanplumHelper setup_development_test];
     [[Leanplum inbox] downloadMessages];
+    [LeanplumHelper stopMockThrowErrorToThrow];
 }
 
 - (void)testDownloadMessages
@@ -512,6 +518,7 @@
     
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
+    [LeanplumHelper stopMockThrowErrorToThrow];
 }
 
 - (void)testDownloadMessagesWithCompletionHandler
@@ -541,6 +548,7 @@
     
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
+    [LeanplumHelper stopMockThrowErrorToThrow];
 }
 
 @end

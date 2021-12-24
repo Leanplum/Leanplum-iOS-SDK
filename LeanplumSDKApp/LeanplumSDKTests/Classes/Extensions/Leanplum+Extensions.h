@@ -26,7 +26,7 @@
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPRequestFactory.h>
-#import <Leanplum/LPPushNotificationsHandler.h>
+//#import <Leanplum/LPPushNotificationsHandler.h>
 #import <Leanplum/LPDeferMessageManager.h>
 
 @interface Leanplum(UnitTest)
@@ -44,13 +44,6 @@
 + (void)triggerAction:(LPActionContext *)context handledBlock:(LeanplumHandledBlock)handledBlock;
 
 + (void)setDeviceIdInternal:(NSString *)deviceId;
-
-@end
-
-@interface LPPushNotificationsHandler(UnitTest)
-
-- (void)maybePerformNotificationActions:(NSDictionary *)userInfo action:(NSString *)action
-                                 active:(BOOL)active;
 
 @end
 

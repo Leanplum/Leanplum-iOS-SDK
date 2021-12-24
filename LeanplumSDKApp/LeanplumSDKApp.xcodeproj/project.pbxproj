@@ -17,9 +17,7 @@
 		075AB09426849EBC007CA1BD /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 075AB09326849EBC007CA1BD /* Leanplum.framework */; };
 		075AB0962684A1A4007CA1BD /* Leanplum-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */; };
 		075AB10B2684AAD9007CA1BD /* LPJSONTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */; };
-		075AB10C2684AAD9007CA1BD /* LPPushNotificationsHandlerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DE2684AAD8007CA1BD /* LPPushNotificationsHandlerTest.m */; };
 		075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */; };
-		075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */; };
 		075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */; };
 		075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E22684AAD8007CA1BD /* LPInboxTest.m */; };
 		075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */; };
@@ -37,7 +35,6 @@
 		075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */; };
 		075AB11E2684AAD9007CA1BD /* LPCountAggregatorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */; };
 		075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */; };
-		075AB1202684AAD9007CA1BD /* LPPushNotificationsManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */; };
 		075AB1212684AAD9007CA1BD /* LPRequestSenderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */; };
 		075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */; };
 		075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */; };
@@ -125,7 +122,16 @@
 		07828DB4268B4A630029A339 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAA268B4A5E0029A339 /* local_caps_day_response.json */; };
 		07828DB5268B4A630029A339 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAB268B4A5E0029A339 /* local_caps_session_response.json */; };
 		07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */; };
+		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
+		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
+		6A54E9D3273D814100DE0E61 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A54E9D2273D814100DE0E61 /* Leanplum.framework */; };
+		6A54E9D4273D814100DE0E61 /* Leanplum.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A54E9D2273D814100DE0E61 /* Leanplum.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6A9D0A9627342BA300466133 /* NotificationsProxyiOS9Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */; };
+		6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */; };
+		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
 		779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */; };
+		C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */; };
+		C9D503672754C9DC0034C5B3 /* PushNotificationSettingsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -137,6 +143,20 @@
 			remoteInfo = LeanplumSDKApp;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		6A54E9D5273D814100DE0E61 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6A54E9D4273D814100DE0E61 /* Leanplum.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		075AACE726847BF3007CA1BD /* LeanplumSDKApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LeanplumSDKApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,9 +173,7 @@
 		075AB09326849EBC007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AB0952684A1A4007CA1BD /* Leanplum-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; name = "Leanplum-Info.plist"; path = "LeanplumSDKTests/Supporting Files/Leanplum-Info.plist"; sourceTree = SOURCE_ROOT; };
 		075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPJSONTest.m; sourceTree = "<group>"; };
-		075AB0DE2684AAD8007CA1BD /* LPPushNotificationsHandlerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsHandlerTest.m; sourceTree = "<group>"; };
 		075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPAppIconManagerTest.m; sourceTree = "<group>"; };
-		075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNotificationsManagerTest.m; sourceTree = "<group>"; };
 		075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventCallbackManagerTest.m; sourceTree = "<group>"; };
 		075AB0E22684AAD8007CA1BD /* LPInboxTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPInboxTest.m; sourceTree = "<group>"; };
 		075AB0E32684AAD8007CA1BD /* LPSecuredVarsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPSecuredVarsTest.m; sourceTree = "<group>"; };
@@ -173,7 +191,6 @@
 		075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
 		075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPCountAggregatorTest.m; sourceTree = "<group>"; };
 		075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPNetworkOperationTest.m; sourceTree = "<group>"; };
-		075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPPushNotificationsManagerTest.m; sourceTree = "<group>"; };
 		075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestSenderTest.m; sourceTree = "<group>"; };
 		075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionContextTest.m; sourceTree = "<group>"; };
 		075AB0F52684AAD9007CA1BD /* LPFileManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFileManagerTest.m; sourceTree = "<group>"; };
@@ -235,7 +252,16 @@
 		07828DAD268B4A5E0029A339 /* local_caps_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_response.json; sourceTree = "<group>"; };
 		07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLocalCapsTest.m; sourceTree = "<group>"; };
 		4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.debug.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyTest.swift; sourceTree = "<group>"; };
+		6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerTest.swift; sourceTree = "<group>"; };
+		6A54E9D2273D814100DE0E61 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyiOS9Test.swift; sourceTree = "<group>"; };
+		6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerMock.swift; sourceTree = "<group>"; };
+		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
 		B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.release.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.release.xcconfig"; sourceTree = "<group>"; };
+		C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManagerUtilsTest.swift; sourceTree = "<group>"; };
+		C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSettingsTest.swift; sourceTree = "<group>"; };
 		E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDKTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -244,6 +270,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A54E9D3273D814100DE0E61 /* Leanplum.framework in Frameworks */,
 				075AAFB526849A74007CA1BD /* Leanplum.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -304,6 +331,7 @@
 		075AAFB326849A74007CA1BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6A54E9D2273D814100DE0E61 /* Leanplum.framework */,
 				075AB09326849EBC007CA1BD /* Leanplum.framework */,
 				075AAFB426849A74007CA1BD /* Leanplum.framework */,
 				E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */,
@@ -357,10 +385,7 @@
 				075AB0DD2684AAD8007CA1BD /* LPJSONTest.m */,
 				07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */,
 				075AB0F12684AAD9007CA1BD /* LPNetworkOperationTest.m */,
-				075AB0E02684AAD8007CA1BD /* LPNotificationsManagerTest.m */,
 				075AB1072684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m */,
-				075AB0DE2684AAD8007CA1BD /* LPPushNotificationsHandlerTest.m */,
-				075AB0F22684AAD9007CA1BD /* LPPushNotificationsManagerTest.m */,
 				075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */,
 				075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */,
 				075AB0F32684AAD9007CA1BD /* LPRequestSenderTest.m */,
@@ -372,6 +397,12 @@
 				075AB0E62684AAD9007CA1BD /* MessagesTest.m */,
 				075AB0F62684AAD9007CA1BD /* Extensions */,
 				075AB1082684AAD9007CA1BD /* Utilities */,
+				6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */,
+				6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */,
+				6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */,
+				6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */,
+				C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */,
+				C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -404,6 +435,7 @@
 				075AB1032684AAD9007CA1BD /* LPRequestSender+Categories.m */,
 				075AB1042684AAD9007CA1BD /* LPNetworkEngine+Category.h */,
 				075AB1052684AAD9007CA1BD /* LeanplumReachability+Category.h */,
+				6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -413,6 +445,7 @@
 			children = (
 				075AB1092684AAD9007CA1BD /* LeanplumHelper.m */,
 				075AB10A2684AAD9007CA1BD /* LeanplumHelper.h */,
+				6A9D0A99273430A700466133 /* NotificationTestHelper.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -503,6 +536,7 @@
 				075AACE326847BF3007CA1BD /* Sources */,
 				075AACE426847BF3007CA1BD /* Frameworks */,
 				075AACE526847BF3007CA1BD /* Resources */,
+				6A54E9D5273D814100DE0E61 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -547,6 +581,7 @@
 					};
 					075AAFBB26849AC1007CA1BD = {
 						CreatedOnToolsVersion = 12.5.1;
+						LastSwiftMigration = 1300;
 						TestTargetID = 075AACE626847BF3007CA1BD;
 					};
 				};
@@ -725,23 +760,25 @@
 				075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */,
 				075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */,
 				075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */,
-				075AB10E2684AAD9007CA1BD /* LPNotificationsManagerTest.m in Sources */,
 				075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */,
 				07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */,
 				075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */,
 				075AB1182684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m in Sources */,
 				075AB1212684AAD9007CA1BD /* LPRequestSenderTest.m in Sources */,
+				6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */,
+				6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */,
 				075AB11B2684AAD9007CA1BD /* LPRequestBatchTest.m in Sources */,
 				075AB11E2684AAD9007CA1BD /* LPCountAggregatorTest.m in Sources */,
 				075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */,
-				075AB10C2684AAD9007CA1BD /* LPPushNotificationsHandlerTest.m in Sources */,
 				075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */,
 				075AB1292684AAD9007CA1BD /* LPRequestSender+Categories.m in Sources */,
 				075AB1252684AAD9007CA1BD /* LPNetworkEngine+Category.m in Sources */,
 				075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */,
 				075AB1162684AAD9007CA1BD /* ExceptionsTest.m in Sources */,
 				075AB12C2684AAD9007CA1BD /* LeanplumHelper.m in Sources */,
+				C9D503672754C9DC0034C5B3 /* PushNotificationSettingsTest.swift in Sources */,
 				075AB1262684AAD9007CA1BD /* LPRequest+Extension.m in Sources */,
+				6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */,
 				075AB12B2684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m in Sources */,
 				075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */,
 				075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */,
@@ -750,13 +787,15 @@
 				075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */,
 				075AB11A2684AAD9007CA1BD /* LPDeferMessageManagerTest.m in Sources */,
 				075AB1272684AAD9007CA1BD /* LPNetworkOperation+Category.m in Sources */,
+				C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */,
 				075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */,
+				6A9D0A9627342BA300466133 /* NotificationsProxyiOS9Test.swift in Sources */,
 				075AB10B2684AAD9007CA1BD /* LPJSONTest.m in Sources */,
 				075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */,
+				6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */,
 				075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */,
 				075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */,
 				075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */,
-				075AB1202684AAD9007CA1BD /* LPPushNotificationsManagerTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -911,6 +950,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				INFOPLIST_FILE = "LeanplumSDKApp/Supporting Files/Info.plist";
@@ -918,8 +958,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -930,6 +972,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				INFOPLIST_FILE = "LeanplumSDKApp/Supporting Files/Info.plist";
@@ -937,8 +980,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -950,7 +995,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				INFOPLIST_FILE = "LeanplumSDKTests/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -958,8 +1004,25 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"OCMock\"",
+					"-framework",
+					"\"OHHTTPStubs\"",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanplumSDKTests/Classes/LeanplumSDKTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LeanplumSDKApp.app/LeanplumSDKApp";
 			};
@@ -971,7 +1034,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 4XLWYATZ5P;
 				INFOPLIST_FILE = "LeanplumSDKTests/Supporting Files/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -979,8 +1043,24 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"OCMock\"",
+					"-framework",
+					"\"OHHTTPStubs\"",
+					"-ObjC",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDKTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "LeanplumSDKTests/Classes/LeanplumSDKTests-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LeanplumSDKApp.app/LeanplumSDKApp";
 			};

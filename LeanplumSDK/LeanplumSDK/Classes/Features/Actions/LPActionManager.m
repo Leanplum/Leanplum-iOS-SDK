@@ -87,7 +87,6 @@ static long WEEK_SECONDS;
 - (id)init
 {
     if (self = [super init]) {
-        [[LPLocalNotificationsManager sharedManager] listenForLocalNotifications];
         _sessionOccurrences = [NSMutableDictionary dictionary];
         _messageImpressionOccurrences = [NSMutableDictionary dictionary];
         _messageTriggerOccurrences = [NSMutableDictionary dictionary];

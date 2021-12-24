@@ -89,6 +89,7 @@ NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
 NSString *LEANPLUM_DEFAULTS_VARS_JSON_KEY = @"__leanplum_variables_json";
 NSString *LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY = @"__leanplum_variables_signature";
 NSString *LEANPLUM_DEFAULTS_LOCAL_CAPS_KEY = @"__leanplum_local_caps";
+NSString *LEANPLUM_DEFAULTS_PUSH_IDS_KEY = @"__leanplum_push_ids";
 
 NSString *LEANPLUM_SQLITE_NAME = @"__leanplum.sqlite";
 

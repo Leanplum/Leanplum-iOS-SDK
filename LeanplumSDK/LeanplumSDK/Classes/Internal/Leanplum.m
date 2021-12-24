@@ -51,6 +51,7 @@
 #import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>
 #import "LPSecuredVars.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 NSString *const kAppKeysFileName = @"Leanplum-Info";
 NSString *const kAppKeysFileType = @"plist";
@@ -66,6 +67,10 @@ static NSString *leanplum_deviceId = nil;
 static NSString *registrationEmail = nil;
 __weak static NSExtensionContext *_extensionContext = nil;
 static LeanplumPushSetupBlock pushSetupBlock;
+
+@interface NotificationsManager(Internal)
+@property (nonatomic, strong) NotificationsProxy* proxy;
+@end
 
 @implementation NSExtensionContext (Leanplum)
 
@@ -94,6 +99,13 @@ void leanplumExceptionHandler(NSException *exception);
 
 +(void)load
 {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        if ([LPUtils isSwizzlingEnabled]) {
+            [[Leanplum notificationsManager].proxy addDidFinishLaunchingObserver];
+        }
+    });
+    
     NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
     if (appKeysDictionary == nil) {
         return;
@@ -108,6 +120,16 @@ void leanplumExceptionHandler(NSException *exception);
 #else
     [self setAppUsingPlist:appKeysDictionary forEnvironment:kEnvProduction];
 #endif
+}
+
++ (NotificationsManager*)notificationsManager
+{
+    static NotificationsManager *managerInstance = nil;
+    static dispatch_once_t onceLPInternalStateToken;
+    dispatch_once(&onceLPInternalStateToken, ^{
+        managerInstance = [NotificationsManager new];
+    });
+    return managerInstance;
 }
 
 + (void)throwError:(NSString *)reason
@@ -376,26 +398,36 @@ void leanplumExceptionHandler(NSException *exception);
         LP_PARAM_DEVICE_ID: deviceId
     } mutableCopy];
     
-    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
+    NSString *pushToken = [Leanplum notificationsManager].pushToken;
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
-
-    NSDictionary *settings = [[[LPPushNotificationsManager sharedManager] handler] currentUserNotificationSettings];
-    if (settings) {
-        [params addEntriesFromDictionary:[LPNetworkEngine notificationSettingsToRequestParams:settings]];
-    }
     
-    // Change the LPAPIConfig after getting the push token and settings
-    // The LPAPIConfig value is used in retrieving them
-    [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
-    [[LPVarCache sharedCache] saveDiffs];
-    // Update the token and settings now that the key is different
-    [[LPPushNotificationsManager sharedManager] updatePushToken:pushToken];
-    [[[LPPushNotificationsManager sharedManager] handler] updateUserNotificationSettings:settings];
-    
-    LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
-    [[LPRequestSender sharedInstance] send:request];
+    [[Leanplum notificationsManager] getNotificationSettingsWithCompletionHandler:^(NSDictionary * _Nonnull settings, BOOL areChanged) {
+        if (areChanged) {
+            //add in params
+            NSDictionary *set = [[Leanplum notificationsManager] notificationSettingsToRequestParams:settings];
+            [params addEntriesFromDictionary:set];
+        }
+        
+        //Clean UserDefaults before changing deviceId because it is used to generate key
+        [Leanplum notificationsManager].pushToken = nil;
+        [[Leanplum notificationsManager] removeNotificationSettings];
+        
+        // Change the LPAPIConfig after getting the push token and settings
+        // and after cleaning UserDefaults
+        // The LPAPIConfig value is used in retrieving them
+        [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+        [[LPVarCache sharedCache] saveDiffs];
+        
+        // Update the token and settings now that the key is different
+        [Leanplum notificationsManager].pushToken = pushToken;
+        [[Leanplum notificationsManager] saveNotificationSettings:settings];
+        
+        
+        LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
+        [[LPRequestSender sharedInstance] send:request];
+    }];
 }
 
 + (void)syncResourcesAsync:(BOOL)async
@@ -705,6 +737,7 @@ void leanplumExceptionHandler(NSException *exception);
     LPInternalState *state = [LPInternalState sharedState];
     state.calledStart = NO;
     state.hasStarted = NO;
+    state.issuedStart = NO;
     state.hasStartedAndRegisteredAsDeveloper = NO;
     state.startSuccessful = NO;
     [state.startBlocks removeAllObjects];
@@ -748,6 +781,8 @@ void leanplumExceptionHandler(NSException *exception);
          userAttributes:(NSDictionary *)attributes
         responseHandler:(LeanplumStartBlock)startResponse
 {
+    [[Leanplum notificationsManager].proxy setupNotificationSwizzling];
+    
     if ([LPAPIConfig sharedConfig].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
          @"methods."];
@@ -909,7 +944,7 @@ void leanplumExceptionHandler(NSException *exception);
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
     
     // Push token.
-    NSString *pushToken = [[LPPushNotificationsManager sharedManager] pushToken];
+    NSString *pushToken = [[Leanplum notificationsManager] pushToken];
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
@@ -1063,16 +1098,14 @@ void leanplumExceptionHandler(NSException *exception);
                 usingBlock:^(NSNotification *notification) {
                     RETURN_IF_NOOP;
                     LP_TRY
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-                    if ([[UIApplication sharedApplication]
-                            respondsToSelector:@selector(currentUserNotificationSettings)]) {
-                        [[LPPushNotificationsManager sharedManager].handler sendUserNotificationSettingsIfChanged:
-                                                             [[UIApplication sharedApplication]
-                                                                 currentUserNotificationSettings]];
-                    }
-#pragma clang diagnostic pop
+                    //call update notification settings to check if values are changed.
+                    //if they are changed the new valeus will be updated to server as well
+                    [[Leanplum notificationsManager] updateNotificationSettings];
+        
                     [Leanplum resume];
+        
+                    // Used for push notifications iOS 9
+                    [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
                     [self maybePerformActions:@[@"resume"]
                                 withEventName:nil
                                    withFilter:kLeanplumActionFilterAll
@@ -1560,17 +1593,19 @@ void leanplumExceptionHandler(NSException *exception);
     [blocks addObject:[block copy]];
     LP_END_TRY
 }
-
-+ (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
+#pragma mark Notifications Swizzling Disabled Methods
++ (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions
 {
     LP_TRY
-    [LPInternalState sharedState].calledHandleNotification = YES;
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                                                       withAction:nil
-                                           fetchCompletionHandler:completionHandler];
+    if (![LPUtils isSwizzlingEnabled])
+    {
+        [[Leanplum notificationsManager].proxy applicationDidFinishLaunchingWithLaunchOptions:launchOptions];
+    }
+    else
+    {
+        LPLog(LPDebug, @"Call to applicationDidFinishLaunchingWithOptions will be ignored due to swizzling.");
+    }
     LP_END_TRY
-    [[LPCountAggregator sharedAggregator] incrementCount:@"handle_notification"];
 }
 
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token
@@ -1578,7 +1613,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didRegisterForRemoteNotificationsWithDeviceToken:token];
+        [[Leanplum notificationsManager] didRegisterForRemoteNotificationsWithDeviceToken:token];
     }
     else
     {
@@ -1592,7 +1627,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didFailToRegisterForRemoteNotificationsWithError:error];
+        [[Leanplum notificationsManager] didFailToRegisterForRemoteNotificationsWithError:error];
     }
     else
     {
@@ -1606,23 +1641,8 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo];
-    }
-    else
-    {
-        LPLog(LPDebug, @"Call to didReceiveRemoteNotification will be ignored due to swizzling.");
-    }
-    LP_END_TRY
-}
-
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-{
-    LP_TRY
-    if (![LPUtils isSwizzlingEnabled])
-    {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:userInfo
-                                               fetchCompletionHandler:completionHandler];
+        void (^emptyBlock)(UIBackgroundFetchResult) = ^(UIBackgroundFetchResult result) {};
+        [[Leanplum notificationsManager].proxy didReceiveRemoteNotificationWithUserInfo:userInfo fetchCompletionHandler:emptyBlock];
     }
     else
     {
@@ -1632,17 +1652,31 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)didReceiveNotificationResponse:(UNNotificationResponse *)response
-                 withCompletionHandler:(void (^)(void))completionHandler
 {
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didReceiveNotificationResponse:response
-                                                  withCompletionHandler:completionHandler];
+        void (^emptyBlock)(void) = ^{};
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithDidReceive:response withCompletionHandler:emptyBlock];
     }
     else
     {
         LPLog(LPDebug, @"Call to didReceiveNotificationResponse:withCompletionHandler: will be ignored due to swizzling.");
+    }
+    LP_END_TRY
+}
+
++ (void)willPresentNotification:(UNNotification *)notification
+{
+    LP_TRY
+    if (![LPUtils isSwizzlingEnabled])
+    {
+        void(^emptyBlock)(UNNotificationPresentationOptions) = ^(UNNotificationPresentationOptions options) {};
+        [[Leanplum notificationsManager].proxy userNotificationCenterWithWillPresent:notification withCompletionHandler:emptyBlock];
+    }
+    else
+    {
+        LPLog(LPDebug, @"Call to willPresentNotification:withCompletionHandler: will be ignored due to swizzling.");
     }
     LP_END_TRY
 }
@@ -1655,7 +1689,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPPushNotificationsManager sharedManager].handler didRegisterUserNotificationSettings:notificationSettings];
+        [[Leanplum notificationsManager] didRegisterUserNotificationSettings:notificationSettings];
     }
     else
     {
@@ -1669,7 +1703,7 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     if (![LPUtils isSwizzlingEnabled])
     {
-        [[LPLocalNotificationsManager sharedManager].handler didReceiveLocalNotification:localNotification];
+        [[Leanplum notificationsManager].proxy applicationWithDidReceive:localNotification];
     }
     else
     {
@@ -1680,12 +1714,10 @@ void leanplumExceptionHandler(NSException *exception);
 
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:[notification userInfo]
-                                                       withAction:identifier
-                                           fetchCompletionHandler:completionHandler];
+    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forLocalNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop
@@ -1694,12 +1726,10 @@ void leanplumExceptionHandler(NSException *exception);
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     LP_TRY
-    [[LPPushNotificationsManager sharedManager].handler didReceiveRemoteNotification:notification
-                                                       withAction:identifier
-                                           fetchCompletionHandler:completionHandler];
+    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forRemoteNotification:notification];
     LP_END_TRY
 }
 #pragma clang diagnostic pop
@@ -1712,8 +1742,23 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
     LP_TRY
-    [[LPPushNotificationsManager sharedManager] setShouldHandleNotification:block];
+    [Leanplum notificationsManager].shouldHandleNotificationBlock = block;
     LP_END_TRY
+}
+
++ (void)setPushDeliveryTrackingEnabled:(BOOL)enabled
+{
+    LP_TRY
+    [Leanplum notificationsManager].isPushDeliveryTrackingEnabled = enabled;
+    LP_END_TRY
+}
+
+/**
+ * Sets the UNNotificationPresentationOptions to be used when Swizzling is enabled.
+ */
++ (void)setPushNotificationPresentationOption:(UNNotificationPresentationOptions)options
+{
+    [[[Leanplum notificationsManager] proxy] setPushNotificationPresentationOption:options];
 }
 
 + (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName
@@ -1812,17 +1857,10 @@ void leanplumExceptionHandler(NSException *exception);
 
             // Make sure we cancel before matching in case the criteria overlap.
             if (result.matchedUnlessTrigger) {
-                NSString *cancelActionName = [@"__Cancel" stringByAppendingString:actionType];
-                LPActionContext *context = [LPActionContext actionContextWithName:cancelActionName
-                                                                             args:@{}
-                                                                        messageId:messageId];
-                [self triggerAction:context handledBlock:^(BOOL success) {
-                    if (success) {
-                        // Track cancel.
-                        [Leanplum track:@"Cancel" withValue:0.0 andInfo:nil
-                                andArgs:@{LP_PARAM_MESSAGE_ID: messageId} andParameters:nil];
-                    }
-                }];
+                // Currently Unless Trigger is possible for Local Notifications only
+                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:actionType]) {
+                    [[LPLocalNotificationsManager sharedManager] cancelLocalNotification:messageId];
+                }
             }
             if (result.matchedTrigger) {
                 [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
@@ -1873,16 +1911,16 @@ void leanplumExceptionHandler(NSException *exception);
                     LPLog(LPDebug, @"Local IAM caps reached, suppressing messageId=%@", [actionContext messageId]);
                     continue;
                 }
-                [self triggerAction:actionContext handledBlock:^(BOOL success) {
-                    if (success) {
-                        if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
-                            [[LPInternalState sharedState].actionManager recordLocalPushImpression:[actionContext messageId]];
-                        } else {
+                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
+                    [[LPLocalNotificationsManager sharedManager] scheduleLocalNotification:actionContext];
+                } else {
+                    [self triggerAction:actionContext handledBlock:^(BOOL success) {
+                        if (success) {
                             [[LPInternalState sharedState].actionManager
                              recordMessageImpression:[actionContext messageId]];
                         }
-                    }
-                }];
+                    }];
+                }
             }
         }
     }
@@ -2801,7 +2839,18 @@ void leanplumExceptionHandler(NSException *exception)
     return [[LPActionManager sharedManager] shouldSuppressMessages];
 }
 
++ (void)enablePushNotifications
+{
+    [[Leanplum notificationsManager] enableSystemPush];
+}
+
++ (void)enableProvisionalPushNotifications
+{
+    [[Leanplum notificationsManager] enableProvisionalPush];
+}
+
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];
 }
 @end

@@ -58,23 +58,22 @@
                                  withMethod:@selector(swizzle_sendNow:)
                                       error:&error
                                       class:[LPRequestSender class]];
-    success &= [LPSwizzle swizzleMethod:@selector(sendEventually:sync:)
-                             withMethod:@selector(swizzle_sendEventually:sync:)
-                                  error:&error
-                                  class:[LPRequestSender class]];
     if (!success || error) {
-        NSLog(@"Failed swizzling methods for LPRequestSender: %@", error);
+        LPLog(LPError, @"Failed swizzling methods for LPRequestSender: %@", error);
     }
+}
+
++ (void)unswizzle_methods
+{
+    Method mock = class_getInstanceMethod([LPRequestSender class], @selector(swizzle_sendNow:));
+    Method orig = class_getInstanceMethod([LPRequestSender class], @selector(sendNow:));
+    
+    method_exchangeImplementations(mock, orig);
 }
 
 - (void)swizzle_sendNow:(LPRequest *)request
 {
     [self swizzle_sendNow:request];
-}
-
-- (void)swizzle_sendEventually:(LPRequest *)request sync:(BOOL)sync
-{
-    [self swizzle_sendEventually:request sync:sync];
 }
 
 - (void)swizzle_download

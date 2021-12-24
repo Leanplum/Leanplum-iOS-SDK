@@ -39,6 +39,7 @@
 + (void)validate_request:(BOOL (^)(NSString *, NSString *, NSDictionary *))callback;
 + (void)validate_request_args_dictionary:(void (^)(NSDictionary *))callback;
 + (void)swizzle_methods;
++ (void)unswizzle_methods;
 + (void)reset;
 
 @end

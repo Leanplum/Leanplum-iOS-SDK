@@ -146,8 +146,6 @@ typedef void (^LeanplumSetLocationBlock)(BOOL success);
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
 typedef void (^LeanplumHandleNotificationBlock)(void);
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
-typedef NSUInteger LeanplumUIBackgroundFetchResult; // UIBackgroundFetchResult
-typedef void (^LeanplumFetchCompletionBlock)(LeanplumUIBackgroundFetchResult result);
 typedef void (^LeanplumPushSetupBlock)(void);
 /**@}*/
 
@@ -421,21 +419,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
  */
 + (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
 
-/**
- * Handles a push notification for apps that use Background Notifications.
- * Without background notifications, Leanplum handles them automatically.
- * Deprecated. Leanplum calls handleNotification automatically now. If you
- * implement application:didReceiveRemoteNotification:fetchCompletionHandler:
- * in your app delegate, you should remove any calls to [Leanplum handleNotification]
- * and call the completion handler yourself.
- */
-+ (void)handleNotification:(NSDictionary *)userInfo
-    fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler
-    __attribute__((deprecated("Leanplum calls handleNotification automatically now. If you "
-        "implement application:didReceiveRemoteNotification:fetchCompletionHandler: in your app "
-        "delegate, you should remove any calls to [Leanplum handleNotification] and call the "
-        "completion handler yourself.")));
-
++ (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
 #pragma clang diagnostic push
@@ -443,10 +427,21 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
 #pragma clang diagnostic pop
+/**
+ * Call this method from application:didReceiveRemoteNotification:fetchCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
 + (void)didReceiveRemoteNotification:(NSDictionary *)userInfo;
-+ (void)didReceiveRemoteNotification:(NSDictionary *)userInfo
-              fetchCompletionHandler:(LeanplumFetchCompletionBlock)completionHandler;
-+ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void (^)(void))completionHandler API_AVAILABLE(ios(10.0));
+/**
+ * Call this method from userNotificationCenter:didReceive:withCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
++ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response API_AVAILABLE(ios(10.0));
+/**
+ * Call this method from userNotificationCenter:willPresent:withCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
++ (void)willPresentNotification:(UNNotification *)notification API_AVAILABLE(ios(10.0));
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
@@ -455,31 +450,42 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 
 /**
  * Call this to handle custom actions for local notifications.
+ * Call the completionHandler yourself.
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
               forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
 /**
  * Call this to handle custom actions for remote notifications.
+ * Call the completionHandler yourself.
  */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification
-                 completionHandler:(void (^)(LeanplumUIBackgroundFetchResult))completionHandler;
+                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
 
-/*
+/**
  * Block to call that decides whether a notification should be displayed when it is
  * received while the app is running, and the notification is not muted.
  * Overrides the default behavior of showing an alert view with the notification message.
  */
 + (void)setShouldOpenNotificationHandler:(LeanplumShouldHandleNotificationBlock)block;
+
+/**
+ * Sets if a Deliver event should be tracked when a Push Notification is received.
+ * Default value is true - event is tracked.
+ * @see PUSH_DELIVERED_EVENT_NAME for the event name
+ */
++ (void)setPushDeliveryTrackingEnabled:(BOOL)enabled;
+
++ (void)setPushNotificationPresentationOption:(UNNotificationPresentationOptions)options API_AVAILABLE(ios(10.0));
 
 /**
  * @{
@@ -828,6 +834,16 @@ NS_SWIFT_NAME(setDeviceLocation(latitude:longitude:city:region:country:type:));
  * @return @c LPSecuredVars instance containing variable's JSON and signature. If signature wasn't downloaded from server it will return nil.
  */
 + (nullable LPSecuredVars *)securedVars;
+
+/**
+ Enables system push notifications through Leanplum SDK
+ */
++ (void)enablePushNotifications;
+
+/**
+ Enables provisional push notifications through Leanplum SDK
+ */
++ (void)enableProvisionalPushNotifications API_AVAILABLE(ios(12.0));
 
 @end
 

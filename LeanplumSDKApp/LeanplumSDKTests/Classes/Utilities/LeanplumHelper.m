@@ -63,7 +63,21 @@ static NSString *_lastErrorMessage = nil;
     _lastErrorMessage = lastErrorMessage;
 }
 
+static id _leanplumClassMock = nil;
+
++ (id)leanplumClassMock {
+  return _leanplumClassMock;
+}
+
++ (void)setLeanplumClassMock:(id)leanplumClassMock {
+    _leanplumClassMock = leanplumClassMock;
+}
+
 static BOOL swizzled = NO;
+
++ (BOOL)swizzled {
+    return swizzled;
+}
 
 + (void)setup_method_swizzling {
     if (!swizzled) {
@@ -139,6 +153,12 @@ static BOOL swizzled = NO;
     [[LPAPIConfig sharedConfig] setDeviceId:nil];
     [[LPAPIConfig sharedConfig] setUserId:nil];
     [[LPAPIConfig sharedConfig] setToken:nil];
+    
+    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
+    [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];
+    
+    [[LPAPIConfig sharedConfig] setAppId:nil withAccessKey:nil];
+    
     [LPRequest reset];
     [LPRequestSender reset];
     [LeanplumHelper reset_user_defaults];
@@ -204,13 +224,30 @@ static BOOL swizzled = NO;
 
 + (void) mockThrowErrorToThrow
 {
-    id mockLeanplumClass = OCMClassMock([Leanplum class]);
-    [OCMStub(ClassMethod([mockLeanplumClass throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
+    [LeanplumHelper setLeanplumClassMock:OCMClassMock([Leanplum class])];
+    [OCMStub(ClassMethod([[LeanplumHelper leanplumClassMock] throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
 
     // Cannot mock leanplumInternalError(NSException *e) since it is a function
     // Mocking [LPUtils handleException:e] which is used inside leanplumInternalError first
     id mockLPUtilsClass = OCMClassMock([LPUtils class]);
     [OCMStub(ClassMethod([mockLPUtilsClass handleException:[OCMArg any]])) andCall:@selector(handleException:) onObject:self];
+}
+
++ (void) stopMockThrowErrorToThrow
+{
+    [[LeanplumHelper leanplumClassMock] stopMocking];
+}
+
++ (void) restore_method_swizzling
+{
+    [LPRequestSender unswizzle_methods];
+    [LPRequestFactory unswizzle_methods];
+    
+    [LPRequest unswizzle_methods];
+    [Leanplum_Reachability unswizzle_methods];
+    [LPNetworkOperation unswizzle_methods];
+    
+    swizzled = NO;
 }
 
 @end
