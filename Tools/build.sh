@@ -107,6 +107,7 @@ build_ios_dylib() {
   -scheme Leanplum \
   -archivePath Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
+  -destination generic/platform=iOS \
   SKIP_INSTALL=NO
 
   run "Building Leanplum-SDK-iOS dynamic (device) target ..." \
@@ -114,6 +115,7 @@ build_ios_dylib() {
   -scheme Leanplum \
   -archivePath Release/dynamic/LeanplumSDK-iphoneos.xcarchive \
   -sdk iphoneos \
+  -destination generic/platform=iOS \
   SKIP_INSTALL=NO
 
   run "Creating Leanplum-SDK-iOS dynamic xcframework ..." \
@@ -162,6 +164,7 @@ build_ios_static() {
   -scheme Leanplum-Static \
   -archivePath Release/static/LeanplumSDK-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
+  -destination generic/platform=iOS \
   SKIP_INSTALL=NO
 
   run "Building Leanplum-SDK-iOS static (device) target ..." \
@@ -169,6 +172,7 @@ build_ios_static() {
   -scheme Leanplum-Static \
   -archivePath Release/static/LeanplumSDK-iphoneos.xcarchive \
   -sdk iphoneos \
+  -destination generic/platform=iOS \
   SKIP_INSTALL=NO
 
   run "Creating Leanplum-SDK-iOS static xcframework ..." \
