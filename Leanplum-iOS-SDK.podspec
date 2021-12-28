@@ -32,5 +32,6 @@ Pod::Spec.new do |s|
     s.resource_bundle = {
       'Leanplum-iOS-SDK' => 'LeanplumSDK/LeanplumSDKBundle/Resources/**/*'
     }
+    s.swift_version = '5.0'
   end
   
