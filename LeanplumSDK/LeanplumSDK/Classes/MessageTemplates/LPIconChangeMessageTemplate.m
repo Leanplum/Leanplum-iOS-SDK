@@ -16,10 +16,10 @@
     [Leanplum defineAction:LPMT_ICON_CHANGE_NAME
                     ofKind:kLeanplumActionKindAction
              withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_APP_ICON
-                              withFile:LPMT_DEFAULT_APP_ICON]
-             ]
-             withResponder:^BOOL(LPActionContext *context) {
+        [LPActionArg argNamed:LPMT_ARG_APP_ICON withFile:LPMT_DEFAULT_APP_ICON]
+    ]
+               withOptions:@{}
+            presentHandler:^BOOL(LPActionContext *context) {
         @try {
             LPIconChangeMessageTemplate *template = [[LPIconChangeMessageTemplate alloc] init];
             if ([template hasAlternateIcon]) {
@@ -32,7 +32,8 @@
             LOG_LP_MESSAGE_EXCEPTION;
         }
         return NO;
-    }];
+    }
+            dismissHandler:nil];
 }
 
 - (BOOL)hasAlternateIcon

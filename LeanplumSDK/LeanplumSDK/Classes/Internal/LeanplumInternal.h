@@ -91,9 +91,6 @@ NS_SWIFT_NAME(track(event:value:info:args:params:));
                              responseHandler:(nullable LeanplumSetLocationBlock)response;
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId;
-+ (void)triggerAction:(LPActionContext *)context;
-+ (void)triggerAction:(LPActionContext *)context
-         handledBlock:(nullable LeanplumHandledBlock)handledBlock;
 + (void)maybePerformActions:(NSArray<NSString *> *)whenConditions
               withEventName:(nullable NSString *)eventName
                  withFilter:(LeanplumActionFilter)filter

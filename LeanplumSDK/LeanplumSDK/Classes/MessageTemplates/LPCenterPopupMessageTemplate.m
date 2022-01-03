@@ -33,20 +33,22 @@
     [Leanplum defineAction:LPMT_CENTER_POPUP_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
              withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_TITLE_TEXT withString:APP_NAME],
-                 [LPActionArg argNamed:LPMT_ARG_TITLE_COLOR withColor:[UIColor blackColor]],
-                 [LPActionArg argNamed:LPMT_ARG_MESSAGE_TEXT withString:LPMT_DEFAULT_POPUP_MESSAGE],
-                 [LPActionArg argNamed:LPMT_ARG_MESSAGE_COLOR withColor:[UIColor blackColor]],
-                 [LPActionArg argNamed:LPMT_ARG_BACKGROUND_IMAGE withFile:nil],
-                 [LPActionArg argNamed:LPMT_ARG_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR withColor:UIColor.blueColor],
-                 [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
-                 [LPActionArg argNamed:LPMT_ARG_LAYOUT_WIDTH withNumber:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH)],
-                 [LPActionArg argNamed:LPMT_ARG_LAYOUT_HEIGHT withNumber:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT)]
-             ]
-             withResponder:responder];
+        [LPActionArg argNamed:LPMT_ARG_TITLE_TEXT withString:APP_NAME],
+        [LPActionArg argNamed:LPMT_ARG_TITLE_COLOR withColor:[UIColor blackColor]],
+        [LPActionArg argNamed:LPMT_ARG_MESSAGE_TEXT withString:LPMT_DEFAULT_POPUP_MESSAGE],
+        [LPActionArg argNamed:LPMT_ARG_MESSAGE_COLOR withColor:[UIColor blackColor]],
+        [LPActionArg argNamed:LPMT_ARG_BACKGROUND_IMAGE withFile:nil],
+        [LPActionArg argNamed:LPMT_ARG_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
+        [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
+        [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_BACKGROUND_COLOR withColor:[UIColor whiteColor]],
+        [LPActionArg argNamed:LPMT_ARG_ACCEPT_BUTTON_TEXT_COLOR withColor:UIColor.blueColor],
+        [LPActionArg argNamed:LPMT_ARG_ACCEPT_ACTION withAction:nil],
+        [LPActionArg argNamed:LPMT_ARG_LAYOUT_WIDTH withNumber:@(LPMT_DEFAULT_CENTER_POPUP_WIDTH)],
+        [LPActionArg argNamed:LPMT_ARG_LAYOUT_HEIGHT withNumber:@(LPMT_DEFAULT_CENTER_POPUP_HEIGHT)]
+    ]
+               withOptions:@{}
+            presentHandler:responder
+            dismissHandler:nil];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

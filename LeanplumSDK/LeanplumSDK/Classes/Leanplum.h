@@ -355,13 +355,6 @@ NS_SWIFT_NAME(start(userId:attributes:completion:));
  */
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
-typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *messageArchiveData);
-
-/**
- * Block to call when a message is displayed to the user.
- */
-+ (void)onMessageDisplayed:(LeanplumMessageDisplayedCallbackBlock)block;
-
 /**
  * Clears cached values for messages, variables and test assignments.
  * Use sparingly as if the app is updated, you'll have to deal with potentially
@@ -369,34 +362,14 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  */
 + (void)clearUserContent;
 
-/**
- * @{
- * Defines new action and message types to be performed at points set up on the Leanplum dashboard.
- */
+/// Defines new action and message types to be performed at points set up on the Leanplum dashboard.
 + (void)defineAction:(NSString *)name
               ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-NS_SWIFT_NAME(defineAction(name:kind:args:));
-
-+ (void)defineAction:(NSString *)name
-              ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-         withOptions:(NSDictionary *)options
-NS_SWIFT_NAME(defineAction(name:kind:args:options:));
-
-+ (void)defineAction:(NSString *)name
-              ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-       withResponder:(nullable LeanplumActionBlock)responder
-NS_SWIFT_NAME(defineAction(name:kind:args:completion:));
-
-+ (void)defineAction:(NSString *)name
-              ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-         withOptions:(NSDictionary *)options
-       withResponder:(nullable LeanplumActionBlock)responder
-NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
-/**@}*/
+       withArguments:(NSArray<LPActionArg *> *)args
+         withOptions:(NSDictionary<NSString *, id> *)options
+      presentHandler:(nullable LeanplumActionBlock)presentHandler
+      dismissHandler:(nullable LeanplumActionBlock)dismissHandler
+NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
 
 /**
  * Defer message display from specified view controllers.
@@ -413,11 +386,6 @@ NS_SWIFT_NAME(deferMessagesForViewControllers(_:));
  */
 + (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
 NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
-
-/**
- * Block to call when an action is received, such as to show a message to the user.
- */
-+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
 
 + (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;

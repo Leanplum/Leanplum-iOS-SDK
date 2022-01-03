@@ -46,6 +46,15 @@ NS_SWIFT_NAME(ActionContext)
  */
 @property (readonly, nonatomic, strong, nullable) LPActionContext *parentContext;
 
+/// Bool indicating if the message is a chained message
+@property (readonly) BOOL isChainedMessage;
+
+/// Call this to notify action manager that action should be handled
+@property (nonatomic, strong, nullable) void (^onActionExecuted)(NSString* name, bool track);
+
+/// Call this to notify action mannager that messages has bee dismissed
+@property (nonatomic, strong, nullable) void (^onActionDismissed)(void);
+
 - (id)objectNamed:(NSString *)name
 NS_SWIFT_NAME(object(name:));
 
@@ -81,11 +90,6 @@ NS_SWIFT_NAME(htmlTemplate(name:));
  */
 - (void)runActionNamed:(NSString *)name
 NS_SWIFT_NAME(runAction(name:));
-
-/**
- * Executes a block when action is run.
- */
-- (void)setActionNamedResponder:(LeanplumActionBlock)block;
 
 /**
  * Runs and tracks an event for the action given by the "name" key.
