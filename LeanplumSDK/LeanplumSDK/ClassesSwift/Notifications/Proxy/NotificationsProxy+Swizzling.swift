@@ -3,13 +3,15 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.
-//  Copyright © 2021 Leanplum. All rights reserved.
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 
 extension NotificationsProxy {
  
     struct Swizzled {
+        var once = false
+        
         var applicationDidRegisterRemoteNotifications = false
         var applicationDidFailToRegisterForRemoteNotificationsWithError = false
         
