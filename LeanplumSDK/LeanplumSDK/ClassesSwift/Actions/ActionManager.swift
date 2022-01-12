@@ -7,7 +7,6 @@
 
 import Foundation
 
-// TODO: Fix triggering to be more friendly
 @objc public class ActionManager: NSObject {
     @objc public static let shared: ActionManager = .init()
 
@@ -16,7 +15,7 @@ import Foundation
     lazy var state = State()
     lazy var definitions: [ActionDefinition] = []
 
-    override init() {
+    private override init() {
         super.init()
         scheduler.delegate = self
     }
@@ -41,8 +40,8 @@ import Foundation
         onMessageAction = callback
     }
 
-    var sortAndOrderMessages: ((_ contexts: [ActionContext], _ trigger: [String: String]) -> [ActionContext])?
-    @objc public func sortAndOrderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: [String: String]) -> [ActionContext]) {
+    var sortAndOrderMessages: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?
+    @objc public func sortAndOrderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
         sortAndOrderMessages = callback
     }
 }

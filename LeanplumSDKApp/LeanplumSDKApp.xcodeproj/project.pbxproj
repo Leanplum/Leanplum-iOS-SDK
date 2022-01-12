@@ -121,6 +121,7 @@
 		07828DB4268B4A630029A339 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAA268B4A5E0029A339 /* local_caps_day_response.json */; };
 		07828DB5268B4A630029A339 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAB268B4A5E0029A339 /* local_caps_session_response.json */; };
 		07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */; };
+		39C081A8278D95ED00C1DBD6 /* ActionManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */; };
 		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
 		6A54E9D3273D814100DE0E61 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A54E9D2273D814100DE0E61 /* Leanplum.framework */; };
@@ -249,6 +250,7 @@
 		07828DAC268B4A5E0029A339 /* local_caps_week_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_week_response.json; sourceTree = "<group>"; };
 		07828DAD268B4A5E0029A339 /* local_caps_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_response.json; sourceTree = "<group>"; };
 		07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLocalCapsTest.m; sourceTree = "<group>"; };
+		39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionManagerTest.swift; sourceTree = "<group>"; };
 		4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.debug.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyTest.swift; sourceTree = "<group>"; };
@@ -368,6 +370,7 @@
 		075AAFC726849AE9007CA1BD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				39C081A6278D939800C1DBD6 /* Actions */,
 				075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */,
 				075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */,
 				075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */,
@@ -511,6 +514,14 @@
 				075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */,
 			);
 			path = TestData;
+			sourceTree = "<group>";
+		};
+		39C081A6278D939800C1DBD6 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */,
+			);
+			path = Actions;
 			sourceTree = "<group>";
 		};
 		E0CB0FD8F4E44175F7CB3EEF /* Pods */ = {
@@ -790,6 +801,7 @@
 				075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */,
 				6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */,
 				075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */,
+				39C081A8278D95ED00C1DBD6 /* ActionManagerTest.swift in Sources */,
 				075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */,
 				075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */,
 			);

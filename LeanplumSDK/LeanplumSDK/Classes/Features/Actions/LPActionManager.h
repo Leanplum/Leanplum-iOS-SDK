@@ -49,7 +49,6 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
 
 #define  LP_HELD_BACK_ACTION @"__held_back"
 
-NS_SWIFT_NAME(ActionManager)
 @interface LPActionManager : NSObject {
     
 }

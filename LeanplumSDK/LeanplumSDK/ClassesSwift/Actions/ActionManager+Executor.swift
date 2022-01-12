@@ -28,7 +28,6 @@ extension ActionManager {
 
         // decide if we are going to display the message
         // by calling delegate and let it decide what are we supposed to do
-
         let messageDisplayDecision = shouldDisplayMessage?(action.context)
 
         // if message is discarded, early exit
@@ -79,14 +78,6 @@ extension ActionManager {
         // iff handled track that message has been displayed
         // propagate event that message is displayed
         onMessageDisplayed?(action.context)
-
-        if action.context.name == LP_PUSH_NOTIFICATION_ACTION {
-            // do something
-        }
-
-        if action.type == .chained /* && messageType == action*/ {
-            //  TODO: track the chained message impressionn
-        }
 
         // record the impression
         recordImpression(action: action)

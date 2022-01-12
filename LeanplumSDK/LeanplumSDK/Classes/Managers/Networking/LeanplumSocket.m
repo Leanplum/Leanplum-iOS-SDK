@@ -162,8 +162,7 @@ static dispatch_once_t leanplum_onceToken;
             context.preventRealtimeUpdating = YES;
             [context setIsRooted:isRooted];
             [context maybeDownloadFiles];
-            [[ActionManager shared] triggerWithActionContexts:@[context]];
-            [[LPActionManager sharedManager] recordMessageImpression:messageId];
+//            [[ActionManager shared] triggerWithActionContexts:@[context]];
         }
 
     } else if ([packet.name isEqualToString:@"getVariables"]) {

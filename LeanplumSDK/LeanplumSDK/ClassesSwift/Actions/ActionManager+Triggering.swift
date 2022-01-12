@@ -15,12 +15,12 @@ extension ActionManager: ActionSchedulerDelegate {
     }
 
     @objc public func trigger(actionContexts: [ActionContext]) {
-        let filteredActions = sortAndOrderMessages?(actionContexts, [:]) ?? actionContexts
+        let filteredActions = sortAndOrderMessages?(actionContexts, nil) ?? actionContexts
         addActions(contexts: filteredActions)
     }
 
     @objc public func trigger(actionContexts: [ActionContext], priority: Priority = .default) {
-        let filteredActions = sortAndOrderMessages?(actionContexts, [:]) ?? actionContexts
+        let filteredActions = sortAndOrderMessages?(actionContexts, nil) ?? actionContexts
         switch priority {
         case .high:
             insertActions(contexts: filteredActions)
@@ -29,9 +29,8 @@ extension ActionManager: ActionSchedulerDelegate {
         }
     }
 
-    // refactor to use struct/class
-    @objc public func trigger(actionContexts: [ActionContext], trigger: [String: String]? = nil) {
-        let filteredActions = sortAndOrderMessages?(actionContexts, [:]) ?? actionContexts
+    @objc public func trigger(actionContexts: [ActionContext], trigger: ActionsTrigger? = nil) {
+        let filteredActions = sortAndOrderMessages?(actionContexts, trigger) ?? actionContexts
         addActions(contexts: filteredActions)
     }
 

@@ -1718,10 +1718,11 @@ void leanplumExceptionHandler(NSException *exception);
                 }
             }
         }
-        // TODO: LPActionsTrigger with when condition, eventName, contexdtualValues
-        // TODO: Record impression for messages
+        ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:eventName
+                                                                  condition:whenConditions
+                                                           contextualValues:contextualValues];
         [[ActionManager shared] triggerWithActionContexts:contexts
-                                                  trigger:nil];
+                                                  trigger:trigger];
     }
 }
 
