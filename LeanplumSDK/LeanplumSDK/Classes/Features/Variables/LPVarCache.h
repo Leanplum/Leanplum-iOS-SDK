@@ -90,7 +90,7 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (nullable NSDictionary<NSString *, id> *)messages;
 - (void)registerActionDefinition:(NSString *)name
                           ofKind:(int)kind
-                   withArguments:(nullable NSArray<NSString *> *)args
+                   withArguments:(nullable NSArray<LPActionArg *> *)args
                       andOptions:(nullable NSDictionary<NSString *, id> *)options;
 
 // Development mode.

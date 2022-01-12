@@ -10,6 +10,9 @@ import Foundation
 extension ActionManager {
     @objc public func defineAction(definition: ActionDefinition) {
         definitions.append(definition)
-        // TODO: Register in VarCache this definition so it can be diffend and synced
+        VarCache.shared().registerActionDefinition(definition.name,
+                                                     ofKind: Int32(definition.kind.rawValue),
+                                                     withArguments: definition.args,
+                                                     andOptions: definition.options)
     }
 }

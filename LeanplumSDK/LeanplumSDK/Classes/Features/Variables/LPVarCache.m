@@ -800,7 +800,7 @@ static dispatch_once_t leanplum_onceToken;
 
 - (void)registerActionDefinition:(NSString *)name
                           ofKind:(int)kind
-                   withArguments:(NSArray *)args
+                   withArguments:(NSArray<LPActionArg *> *)args
                       andOptions:(NSDictionary *)options
 {
     NSMutableDictionary *values = [NSMutableDictionary dictionary];
