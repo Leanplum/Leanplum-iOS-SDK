@@ -244,9 +244,8 @@ zip_ios() {
   echo "zipping dynamic xcframework for SPM"
   cd dynamic
   zip -r Leanplum.xcframework.zip \
-    dynamic/Leanplum.framework \
-    dynamic/Leanplum.xcframework \
-  cd -
+    Leanplum.xcframework
+  cd ../..
 }
 
 update_spm_info(){
