@@ -223,22 +223,12 @@ zip_ios() {
   echo "zipping for iOS release"
   cd Release
   zip -r Leanplum.framework.zip \
-    dynamic/Leanplum.framework \
-    dynamic/Leanplum.xcframework \
-    static/Leanplum.framework \
-    static/Leanplum.xcframework
+    $(find . -maxdepth 2 -type d -name "Leanplum.*")
   mv Leanplum.framework.zip ..
   
   echo "zipping for iOS Location release"
   zip -r LeanplumLocation.framework.zip \
-    dynamic/LeanplumLocation.framework \
-    dynamic/LeanplumLocation.xcframework \
-    static/LeanplumLocation.framework \
-    static/LeanplumLocation.xcframework \
-    dynamic/LeanplumLocationAndBeacons.framework \
-    dynamic/LeanplumLocationAndBeacons.xcframework \
-    static/LeanplumLocationAndBeacons.framework \
-    static/LeanplumLocationAndBeacons.xcframework
+    $(find . -maxdepth 2 -type d -name "LeanplumLocation*")
   mv LeanplumLocation.framework.zip ..
 
   echo "zipping dynamic xcframework for SPM"
