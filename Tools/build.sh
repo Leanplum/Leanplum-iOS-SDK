@@ -125,6 +125,12 @@ build_ios_dylib() {
   -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$scheme.framework \
   -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$scheme.framework \
   -output Release/dynamic/$scheme.xcframework
+  
+  # Remove module name from xcframework swiftinterface
+  # It prevents error X is not a member of type Leanplum.Leanplum
+  # This happens when a class name is same as the module name
+  # https://stackoverflow.com/a/62310245
+  find Release/dynamic/$scheme.xcframework -name "*.swiftinterface" -exec sed -i -e "s/$scheme\.//g" {} \;
 
   # simulator build also contains arm64 slice, we are removing it to keep backward compatibility
   # it will still be available in xcframework
