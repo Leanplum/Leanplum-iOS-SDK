@@ -256,7 +256,7 @@ update_spm_info(){
   package_file=Package.swift
   package_tmp_file=Package_tmp.swift
   checksum=`swift package compute-checksum Release/dynamic/Leanplum.xcframework.zip`
-  awk -v value="\"$checksum\"," '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
+  awk -v value="\"$checksum\"" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
       && mv $package_tmp_file $package_file
   
   version=`cat sdk-version.txt`
