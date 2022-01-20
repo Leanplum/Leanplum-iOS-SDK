@@ -64,25 +64,26 @@ run() {
 #######################################
 main() {
   rm -rf Release
+  build_ios_dylib 'Leanplum' 'Release/dynamic/LeanplumSDK'
+  build_ios_dylib 'LeanplumLocation' 'Release/dynamic/LeanplumSDKLocation'
+  build_ios_dylib 'LeanplumLocationAndBeacons' 'Release/dynamic/LeanplumSDKLocationAndBeacons'
 
-  build_ios_dylib
   printf "\n"
-  build_ios_static
+  build_ios_static 'Leanplum-Static' 'Release/static/LeanplumSDK' 'Leanplum'
+  build_ios_static 'LeanplumLocation-Static' \
+  'Release/static/LeanplumSDKLocation' 'LeanplumLocation'
+  build_ios_static 'LeanplumLocationAndBeacons-Static' \
+  'Release/static/LeanplumSDKLocationAndBeacons' 'LeanplumLocationAndBeacons'
 
-  # # remove duplicate assets if any
+  # remove duplicate assets if any
   find "Release/" -name '_CodeSignature' -exec rm -rf {} +
 
-  rm -rf Release/dynamic/LeanplumSDK-iphoneos.xcarchive
-  rm -rf Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive
-  rm -rf Release/static/LeanplumSDK-iphoneos.xcarchive
-  rm -rf Release/static/LeanplumSDK-iphonesimulator.xcarchive
-  
   # zip all iOS frameworks
   zip_ios
-  
+
   # update SPM checksum and url
   update_spm_info
-  
+
   # zip static iOS framework for Unreal Engine
   zip_unreal_engine
 
@@ -95,54 +96,68 @@ main() {
 # Globals:
 #   None
 # Arguments:
-#   None
+#   scheme
+#   archivePath
 # Returns:
 #   None
 #######################################
 build_ios_dylib() {
-  echo "Starting build for Leanplum-SDK (iOS) dynamic framework"
+  scheme=$1
+  archivePath=$2
+  
+  echo "Starting build for $scheme (iOS) dynamic framework"
 
-  run "Building Leanplum-SDK-iOS dynamic (simulator) target ..." \
+  echo "Building $scheme dynamic (simulator) target ..."
   xcodebuild archive \
-  -scheme Leanplum \
-  -archivePath Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive \
+  -quiet \
+  -scheme $scheme \
+  -archivePath $archivePath-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
   SKIP_INSTALL=NO
 
-  run "Building Leanplum-SDK-iOS dynamic (device) target ..." \
+  echo "Building $scheme dynamic (device) target ..."
   xcodebuild archive \
-  -scheme Leanplum \
-  -archivePath Release/dynamic/LeanplumSDK-iphoneos.xcarchive \
+  -quiet \
+  -scheme $scheme \
+  -archivePath $archivePath-iphoneos.xcarchive \
   -sdk iphoneos \
   SKIP_INSTALL=NO
 
-  run "Creating Leanplum-SDK-iOS dynamic xcframework ..." \
-  xcodebuild -create-xcframework \
-  -framework Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework \
-  -framework Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
-  -output Release/dynamic/Leanplum.xcframework
+  echo "Creating $scheme dynamic xcframework ..."
+  xcodebuild -quiet -create-xcframework \
+  -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$scheme.framework \
+  -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$scheme.framework \
+  -output Release/dynamic/$scheme.xcframework
+  
+  # Remove module name from xcframework swiftinterface
+  # It prevents error X is not a member of type Leanplum.Leanplum
+  # This happens when a class name is same as the module name
+  # https://stackoverflow.com/a/62310245
+  find Release/dynamic/$scheme.xcframework -name "*.swiftinterface" -exec sed -i -e "s/$scheme\.//g" {} \;
 
   # simulator build also contains arm64 slice, we are removing it to keep backward compatibility
   # it will still be available in xcframework
-  run "Removing arm64 from simulator slice ..." \
+  echo "Removing arm64 from simulator slice ..."
   lipo -remove arm64 \
-    Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
-    -output Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
+    $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$scheme.framework/$scheme \
+    -output $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$scheme.framework/$scheme
 
-  cp -r Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
-    Release/dynamic/Leanplum.framework
-  rm -rf Release/dynamic/Leanplum.framework/Leanplum
+  cp -r $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$scheme.framework \
+    Release/dynamic/$scheme.framework
+  rm -rf Release/dynamic/$scheme.framework/$scheme
 
-  run "Creating iphoneos & iphonesimulator fat dynamic library ..." \
+  echo "Creating iphoneos & iphonesimulator fat dynamic library ..."
   lipo -create \
-    Release/dynamic/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
-    Release/dynamic/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
-    -output Release/dynamic/Leanplum.framework/Leanplum
+        $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$scheme.framework/$scheme \
+        $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$scheme.framework/$scheme \
+    -output Release/dynamic/$scheme.framework/$scheme
 
-  run "Modifying plist to include both Simulator & iPhone ..." \
-  plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator Release/dynamic/Leanplum.framework/Info.plist
+  echo "Modifying plist to include both Simulator & iPhone ..."
+  plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator Release/dynamic/$scheme.framework/Info.plist
 
-  printf "%s\n" "Successfully built Leanplum-SDK dynamic framework."
+  rm -rf $archivePath-iphoneos.xcarchive
+  rm -rf $archivePath-iphonesimulator.xcarchive
+  printf "%s\n" "Successfully built $scheme dynamic framework."
 }
 
 #######################################
@@ -150,52 +165,62 @@ build_ios_dylib() {
 # Globals:
 #   None
 # Arguments:
-#   None
+#   scheme
+#   archivePath
+#   productName
 # Returns:
 #   None
 #######################################
 build_ios_static() {
-  echo "Starting build for Leanplum-SDK static framework"
+  scheme=$1
+  archivePath=$2
+  productName=$3
+  
+  echo "Starting build for $scheme static framework"
 
-  run "Building Leanplum-SDK-iOS static (simulator) target ..." \
+  echo "Building $scheme static (simulator) target ..."
   xcodebuild archive \
-  -scheme Leanplum-Static \
-  -archivePath Release/static/LeanplumSDK-iphonesimulator.xcarchive \
+  -quiet \
+  -scheme $scheme \
+  -archivePath $archivePath-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
   SKIP_INSTALL=NO
 
-  run "Building Leanplum-SDK-iOS static (device) target ..." \
+  echo "Building $scheme static (device) target ..."
   xcodebuild archive \
-  -scheme Leanplum-Static \
-  -archivePath Release/static/LeanplumSDK-iphoneos.xcarchive \
+  -quiet \
+  -scheme $scheme \
+  -archivePath $archivePath-iphoneos.xcarchive \
   -sdk iphoneos \
   SKIP_INSTALL=NO
 
-  run "Creating Leanplum-SDK-iOS static xcframework ..." \
-  xcodebuild -create-xcframework \
-  -framework Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework \
-  -framework Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
-  -output Release/static/Leanplum.xcframework
+  echo "Creating $scheme static xcframework ..."
+  xcodebuild -quiet -create-xcframework \
+  -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework \
+  -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$productName.framework \
+  -output Release/static/$productName.xcframework
 
-  run "Removing arm64 from simulator slice ..." \
+  echo "Removing arm64 from simulator slice ..."
   lipo -remove arm64 \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
-    -output Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum
+    $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework/$productName \
+    -output $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework/$productName
 
-  cp -r Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework \
-    Release/static/Leanplum.framework
-  rm -rf Release/static/Leanplum.framework/Leanplum
+  cp -r $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$productName.framework \
+    Release/static/$productName.framework
+  rm -rf Release/static/$productName.framework/$productName
 
-  run "Creating iphoneos & iphonesimulator fat static library ..." \
+  echo "Creating iphoneos & iphonesimulator fat static library ..."
   lipo -create \
-    Release/static/LeanplumSDK-iphonesimulator.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
-    Release/static/LeanplumSDK-iphoneos.xcarchive/Products/Library/Frameworks/Leanplum.framework/Leanplum \
-    -output Release/static/Leanplum.framework/Leanplum
+        $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework/$productName \
+        $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$productName.framework/$productName \
+    -output Release/static/$productName.framework/$productName
 
-  run "Modifying plist to include both Simulator & iPhone ..." \
-  plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator Release/static/Leanplum.framework/Info.plist
+  echo "Modifying plist to include both Simulator & iPhone ..."
+  plutil -insert CFBundleSupportedPlatforms.1 -string iPhoneSimulator Release/static/$productName.framework/Info.plist
 
-  printf "%s\n" "Successfully built Leanplum-SDK static framework."
+  rm -rf $archivePath-iphoneos.xcarchive
+  rm -rf $archivePath-iphonesimulator.xcarchive
+  printf "%s\n" "Successfully built $scheme static framework."
 }
 
 #######################################
@@ -209,13 +234,21 @@ build_ios_static() {
 #######################################
 zip_ios() {
   echo "zipping for iOS release"
-  cd Release/dynamic
-  zip -r Leanplum.framework.zip *
+  cd Release
+  zip -q -r Leanplum.framework.zip \
+    $(find . -maxdepth 2 -type d -name "Leanplum.*")
   mv Leanplum.framework.zip ..
+  
+  echo "zipping for iOS Location release"
+  zip -q -r LeanplumLocation.framework.zip \
+    $(find . -maxdepth 2 -type d -name "LeanplumLocation*")
+  mv LeanplumLocation.framework.zip ..
 
   echo "zipping dynamic xcframework for SPM"
-  zip -r Leanplum.xcframework.zip *
-  cd -
+  cd dynamic
+  zip -q -r Leanplum.xcframework.zip \
+    Leanplum.xcframework
+  cd ../..
 }
 
 update_spm_info(){
@@ -223,14 +256,14 @@ update_spm_info(){
   package_file=Package.swift
   package_tmp_file=Package_tmp.swift
   checksum=`swift package compute-checksum Release/dynamic/Leanplum.xcframework.zip`
-  awk -v value="\"$checksum\";" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
+  awk -v value="\"$checksum\"" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
       && mv $package_tmp_file $package_file
   
   version=`cat sdk-version.txt`
   lp_framework="Leanplum.xcframework.zip"
   github_url="https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download"
   url="$github_url/$version/$lp_framework"
-  awk -v value="\"$url\";" '!x{x=sub(/url: .*/, "url: "value)}1' $package_file > $package_tmp_file \
+  awk -v value="\"$url\"," '!x{x=sub(/url: .*/, "url: "value)}1' $package_file > $package_tmp_file \
     && mv $package_tmp_file $package_file
 }
 
@@ -241,13 +274,13 @@ zip_unreal_engine() {
 
   mkdir -p Leanplum.embeddedframework
   cp -R Leanplum.framework Leanplum.embeddedframework
-  zip -r Leanplum.embeddedframework.zip Leanplum.embeddedframework
+  zip -q -r Leanplum.embeddedframework.zip Leanplum.embeddedframework
   mv Leanplum.embeddedframework.zip ..
   rm -rf Leanplum.embeddedframework
 
   mkdir -p Leanplum.embeddedxcframework
   cp -R Leanplum.xcframework Leanplum.embeddedxcframework
-  zip -r Leanplum.embeddedxcframework.zip Leanplum.embeddedxcframework
+  zip -q -r Leanplum.embeddedxcframework.zip Leanplum.embeddedxcframework
   mv Leanplum.embeddedxcframework.zip ..
   rm -rf Leanplum.embeddedxcframework
   cd -
