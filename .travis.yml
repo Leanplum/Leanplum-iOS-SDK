@@ -14,18 +14,18 @@ before_install:
   - gem install cocoapods # Since Travis is not always on latest version
   - pod install
 
-before_script:
-  >-
-      if [ -z "$TRAVIS_TAG" ] 
-        then 
-          echo "No tag, so not triggering Location" 
-        else
-          ./Tools/triggerLocation.sh
-        fi
-
 before_deploy:
   - ./Tools/verifyTag.sh
-  - ./Tools/build.sh
+  - >
+    if grep -q "/$TRAVIS_TAG/" Package.swift; then
+      echo "Duplicate build from SPM update"
+      exit 1
+    fi
+  - >
+    if ! [ "$BUILD_ONCE" ]; then
+      export BUILD_ONCE=1;
+      ./Tools/build.sh;
+    fi
 
 after_deploy:
   >-
@@ -45,8 +45,17 @@ deploy:
     skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file: 
-      - Release/Leanplum.framework.zip
+      - Leanplum.framework.zip
+      - LeanplumLocation.framework.zip
       - Release/dynamic/Leanplum.xcframework.zip
     draft: true
+    on:
+      tags: true
+  - provider: script
+    skip_cleanup: true
+    script: 
+      >-
+        git restore --staged .; git add Package.swift; git commit -m 'update spm'; 
+        git tag -f `cat sdk-version.txt`; git push -f origin `cat sdk-version.txt`;
     on:
       tags: true

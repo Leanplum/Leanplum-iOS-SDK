@@ -8,6 +8,9 @@
       location = "group:LeanplumSDK/LeanplumSDK.xcodeproj">
    </FileRef>
    <FileRef
+      location = "group:LeanplumSDKLocation/LeanplumSDKLocation.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
 </Workspace>
