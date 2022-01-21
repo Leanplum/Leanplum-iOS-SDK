@@ -17,7 +17,7 @@ before_install:
 before_deploy:
   - ./Tools/verifyTag.sh
   - >
-    if grep -q "/$TRAVIS_TAG/" Package.swift; then
+    if ! [ "$BUILD_ONCE" ] && grep -q "/$TRAVIS_TAG/" Package.swift; then
       echo "Duplicate build from SPM update"
       exit 1
     fi
