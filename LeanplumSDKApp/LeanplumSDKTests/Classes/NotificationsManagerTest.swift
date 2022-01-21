@@ -208,6 +208,7 @@ class NotificationsManagerTest: XCTestCase {
         Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
         
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
+        Leanplum.notificationsManager().shouldHandleNotificationBlock = nil
     }
     
     func test_notification_foreground_custom_block_open() {
@@ -229,6 +230,7 @@ class NotificationsManagerTest: XCTestCase {
         Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
         
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
+        Leanplum.notificationsManager().shouldHandleNotificationBlock = nil
     }
     
     /**
