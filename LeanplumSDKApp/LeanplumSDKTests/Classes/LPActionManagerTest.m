@@ -248,11 +248,9 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         [HTTPStubs removeStub:startStub];
-        NSLog(@"LOG: testShouldSuppressMessagesSessionLimit: %@", success ? @"YES" : @"NO");
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
-        
     }];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     if (timedOut > 0) {
@@ -290,12 +288,10 @@
     }];
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
-        NSLog(@"LOG: testShouldSuppressMessagesDayLimit: %@", success ? @"YES" : @"NO");
         [HTTPStubs removeStub:startStub];
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
-        
     }];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     if (timedOut > 0) {
@@ -359,11 +355,9 @@
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
     [Leanplum startWithResponseHandler:^(BOOL success) {
         [HTTPStubs removeStub:startStub];
-        NSLog(@"LOG: testShouldSuppressMessagesWeekLimit: %@", success ? @"YES" : @"NO");
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
-        
     }];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     if (timedOut > 0) {
