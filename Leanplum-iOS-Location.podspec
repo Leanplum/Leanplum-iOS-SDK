@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = 'Leanplum-iOS-Location'
-  version = `cat ../sdk-version.txt`
+  version = `cat sdk-version.txt`
   s.version = version
   s.summary = 'Supplementary Leanplum pod to provide geofencing support.'
   s.description = 'Use LeanplumLocationAndBeacons instead if you also want support for iBeacons.'
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.platform = :ios, '9.0'
   s.requires_arc = true
   s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s}
-  s.source_files = 'LeanplumSDKLocation/Classes/**/*'
+  s.source_files = 'LeanplumSDKLocation/LeanplumSDKLocation/Classes/**/*'
   s.frameworks = 'CoreLocation'
   s.documentation_url = 'https://docs.leanplum.com/'
   s.dependency 'Leanplum-iOS-SDK'
