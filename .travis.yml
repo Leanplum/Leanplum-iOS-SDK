@@ -11,16 +11,16 @@ xcode_destination: platform=iOS Simulator,OS=15.0,name=iPhone 12
 cache: cocoapods
 podfile: Podfile
 before_install:
+  - >
+    if ! [ -z "$TRAVIS_TAG" ] && grep -q "/$TRAVIS_TAG/" Package.swift; then
+      echo "Duplicate build from SPM update"
+      exit 1
+    fi
   - gem install cocoapods # Since Travis is not always on latest version
   - pod install
 
 before_deploy:
   - ./Tools/verifyTag.sh
-  - >
-    if ! [ "$BUILD_ONCE" ] && grep -q "/$TRAVIS_TAG/" Package.swift; then
-      echo "Duplicate build from SPM update"
-      exit 1
-    fi
   - >
     if ! [ "$BUILD_ONCE" ]; then
       export BUILD_ONCE=1;
@@ -55,6 +55,9 @@ deploy:
     skip_cleanup: true
     script: 
       >-
+        git config --local user.email "e2@leanplum.com";git config --local user.name "leanplum-e2";
+        git remote set-url origin https://leanplum-e2:$GITHUB_TOKEN@github.com/Leanplum/Leanplum-iOS-SDK.git;
+        export RELEASE_VERSION=${TRAVIS_TAG%-*};git checkout -b release/$RELEASE_VERSION;
         git restore --staged .; git add Package.swift; git commit -m 'update spm'; 
         git tag -f `cat sdk-version.txt`; git push -f origin `cat sdk-version.txt`;
     on:
