@@ -1,5 +1,6 @@
 # Build only if commit is tagged or PR is opened/updated
-if: (tag IS present) OR (type = pull_request)
+if: ((tag IS present) OR (type = pull_request)) AND \
+((commit_message != "update spm") AND (sender != env(GITHUB_NAME)))
 
 language: objective-c
 osx_image: xcode13.1
@@ -11,11 +12,6 @@ xcode_destination: platform=iOS Simulator,OS=15.0,name=iPhone 12
 cache: cocoapods
 podfile: Podfile
 before_install:
-  - >
-    if ! [ -z "$TRAVIS_TAG" ] && grep -q "/$TRAVIS_TAG/" Package.swift; then
-      echo "Duplicate build from SPM update"
-      exit 1
-    fi
   - gem install cocoapods # Since Travis is not always on latest version
   - pod install
 
@@ -53,12 +49,6 @@ deploy:
       tags: true
   - provider: script
     skip_cleanup: true
-    script: 
-      >-
-        git config --local user.email "e2@leanplum.com";git config --local user.name "leanplum-e2";
-        git remote set-url origin https://leanplum-e2:$GITHUB_TOKEN@github.com/Leanplum/Leanplum-iOS-SDK.git;
-        export RELEASE_VERSION=${TRAVIS_TAG%-*};git checkout -b release/$RELEASE_VERSION;
-        git restore --staged .; git add Package.swift; git commit -m 'update spm'; 
-        git tag -f `cat sdk-version.txt`; git push -f origin `cat sdk-version.txt`;
+    script: ./Tools/pushSPM.sh
     on:
       tags: true
