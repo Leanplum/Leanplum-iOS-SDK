@@ -8,6 +8,7 @@ git checkout -b release/$RELEASE_VERSION
 git restore --staged .
 git add Package.swift
 git commit -m 'update spm'
+git pull origin release/$RELEASE_VERSION
 git push --set-upstream origin release/$RELEASE_VERSION
 git tag -f `cat sdk-version.txt`
 git push -f origin `cat sdk-version.txt`
