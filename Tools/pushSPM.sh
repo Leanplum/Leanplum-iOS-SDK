@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 git config --local user.email "$GITHUB_EMAIL"
 git config --local user.name "$GITHUB_NAME"
+git config pull.rebase false
 git remote set-url origin https://$GITHUB_NAME:$GITHUB_TOKEN@github.com/Leanplum/Leanplum-iOS-SDK.git
 RELEASE_VERSION=${TRAVIS_TAG%-*}
 echo $RELEASE_VERSION
