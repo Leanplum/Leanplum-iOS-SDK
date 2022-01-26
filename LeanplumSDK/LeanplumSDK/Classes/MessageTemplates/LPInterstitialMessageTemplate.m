@@ -51,7 +51,7 @@
 -(UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPInterstitialViewController *viewController = [LPInterstitialViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationFullScreen;
+    viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
     viewController.context = context;
     return viewController;
 }

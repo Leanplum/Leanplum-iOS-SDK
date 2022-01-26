@@ -52,7 +52,7 @@
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPPopupViewController *viewController = [LPPopupViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
     viewController.context = context;
     viewController.shouldShowCancelButton = NO;
     return viewController;
