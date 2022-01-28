@@ -54,8 +54,6 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 @property (nonatomic, strong) NSMutableDictionary *messageImpressionOccurrences;
 @property (nonatomic, strong) NSMutableDictionary *messageTriggerOccurrences;
 @property (nonatomic, strong) NSMutableDictionary *sessionOccurrences;
-@property (nonatomic, strong) NSString *displayedTracked;
-@property (nonatomic, strong) NSDate *displayedTrackedTime;
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
 @end
@@ -97,18 +95,6 @@ static long WEEK_SECONDS;
         WEEK_SECONDS = 7 * DAY_SECONDS;
     }
     return self;
-}
-
-- (BOOL)hasTrackedDisplayed:(NSDictionary *)userInfo
-{
-    if ([self.displayedTracked isEqualToString:[LPJSON stringFromJSON:userInfo]] &&
-        [[NSDate date] timeIntervalSinceDate:self.displayedTrackedTime] < 10.0) {
-        return YES;
-    }
-
-    self.displayedTracked = [LPJSON stringFromJSON:userInfo];
-    self.displayedTrackedTime = [NSDate date];
-    return NO;
 }
 
 #pragma mark - Delivery

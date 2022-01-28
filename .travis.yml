@@ -1,5 +1,7 @@
 # Build only if commit is tagged or PR is opened/updated
-if: (tag IS present) OR (type = pull_request)
+if: |
+  ((tag IS present) OR (type = pull_request)) AND \
+  ((commit_message != 'update spm') AND (sender != env(GITHUB_NAME)))
 
 language: objective-c
 osx_image: xcode13.1
@@ -16,11 +18,6 @@ before_install:
 
 before_deploy:
   - ./Tools/verifyTag.sh
-  - >
-    if grep -q "/$TRAVIS_TAG/" Package.swift; then
-      echo "Duplicate build from SPM update"
-      exit 1
-    fi
   - >
     if ! [ "$BUILD_ONCE" ]; then
       export BUILD_ONCE=1;
@@ -53,9 +50,6 @@ deploy:
       tags: true
   - provider: script
     skip_cleanup: true
-    script: 
-      >-
-        git restore --staged .; git add Package.swift; git commit -m 'update spm'; 
-        git tag -f `cat sdk-version.txt`; git push -f origin `cat sdk-version.txt`;
+    script: ./Tools/pushSPM.sh
     on:
       tags: true

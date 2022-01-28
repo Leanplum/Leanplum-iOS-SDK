@@ -28,7 +28,8 @@
 
 - (void)testDefaultTimerIsSetTo15Min
 {
-    XCTAssertTrue([LPRequestSenderTimer sharedInstance].timerInterval == AT_MOST_15_MINUTES);
+    LPRequestSenderTimer *timer = [[LPRequestSenderTimer alloc] init];
+    XCTAssertTrue(timer.timerInterval == AT_MOST_15_MINUTES);
 }
 
 - (void)testStartTimerWillFireForTimeInterval

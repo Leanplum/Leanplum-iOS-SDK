@@ -3,7 +3,7 @@
 //  Leanplum-iOS-SDK
 //
 //  Created by Nikola Zagorchev on 29.09.21.
-//  Copyright © 2021 Leanplum. All rights reserved.
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 import UIKit
@@ -81,10 +81,16 @@ public class NotificationsProxy: NSObject {
     // MARK: - Swizzle Methods
     /// Swizzling Entry point
     @objc public func setupNotificationSwizzling() {
-        if !LPUtils.isSwizzlingEnabled() {
+        guard LPUtils.isSwizzlingEnabled() else {
             Log.info("Method swizzling is disabled, make sure to manually call Leanplum methods.")
             return
         }
+        
+        guard !swizzled.once else {
+            return
+        }
+        
+        swizzled.once = true
         
         if !isCustomAppDelegateUsed {
             ensureOriginalAppDelegate()
