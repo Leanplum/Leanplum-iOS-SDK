@@ -34,6 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) BOOL isPreview;
 @property (nonatomic, strong) LPContextualValues *contextualValues;
 
+@property (nonatomic, strong, nullable) void (^actionDidExecute)(LPActionContext *context);
+@property (nonatomic, strong, nullable) void (^actionDidDismiss)(void);
+
 - (void)maybeDownloadFiles;
 - (void)preventRealtimeUpdating;
 + (void)sortByPriority:(NSMutableArray *)actionContexts;

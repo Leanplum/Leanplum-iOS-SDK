@@ -53,6 +53,12 @@ extension ActionManager {
             }
         }
 
+        func count() -> Int {
+            return lock.with {
+                queue.count
+            }
+        }
+
         func prepareActions(to state: Action.State = .delayed) {
             lock.with {
                 for var action in queue {

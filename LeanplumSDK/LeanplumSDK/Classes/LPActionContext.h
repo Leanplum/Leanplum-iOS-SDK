@@ -49,12 +49,6 @@ NS_SWIFT_NAME(ActionContext)
 /// Bool indicating if the message is a chained message
 @property (readonly) BOOL isChainedMessage;
 
-/// Call this to notify action manager that action should be handled
-@property (nonatomic, strong, nullable) void (^onActionExecuted)(NSString* name, bool track);
-
-/// Call this to notify action mannager that messages has bee dismissed
-@property (nonatomic, strong, nullable) void (^onActionDismissed)(void);
-
 - (id)objectNamed:(NSString *)name
 NS_SWIFT_NAME(object(name:));
 
@@ -125,6 +119,9 @@ NS_SWIFT_NAME(trackMessage(event:value:info:params:));
  * Checks if the action context has any missing files that still need to be downloaded.
  */
 - (BOOL)hasMissingFiles;
+
+/// Needs to be called when action was dismissed
+- (void)actionDismissed;
 
 @end
 

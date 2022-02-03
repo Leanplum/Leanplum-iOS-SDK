@@ -521,6 +521,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         return;
     }
     NSDictionary *args = [self getChildArgs:name];
+
+    // notifies our ActionManager that the action was executed
+    self.actionDidExecute(self);
     
     if (!args) {
         return;
@@ -629,6 +632,11 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         NSNumber *priorityB = [contextB priority];
         return [priorityA compare:priorityB];
     }];
+}
+
+- (void)actionDismissed
+{
+    self.actionDidDismiss();
 }
 
 @end

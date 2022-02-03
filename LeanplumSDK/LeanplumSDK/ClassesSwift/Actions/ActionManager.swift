@@ -15,7 +15,9 @@ import Foundation
     lazy var state = State()
     lazy var definitions: [ActionDefinition] = []
 
-    private override init() {
+    public var enabled: Bool = true
+
+    override init() {
         super.init()
         scheduler.delegate = self
     }
@@ -49,6 +51,7 @@ import Foundation
 extension ActionManager {
     /// Adds ActionContext to front or back of the queue depending on action type
     @objc public func addActions(contexts: [ActionContext]) {
+        guard enabled else { return }
         let actions: [Action] = contexts.map {
             .action(context: $0)
         }
@@ -57,18 +60,20 @@ extension ActionManager {
 
     /// Adds ActionContext to back of the queue
     @objc public func appendActions(contexts: [ActionContext]) {
+        guard enabled else { return }
         let actions: [Action] = contexts.map {
             .action(context: $0)
         }
-        appendActions(actions: actions)
+        actions.forEach(appendAction(action:))
     }
 
     /// Adds ActionContext to front of the queue
     @objc public func insertActions(contexts: [ActionContext]) {
+        guard enabled else { return }
         let actions: [Action] = contexts.map {
             .action(context: $0)
         }
-        insertActions(actions: actions)
+        actions.forEach(insertAction(action:))
     }
 }
 
@@ -77,32 +82,32 @@ extension ActionManager {
     func addActions(actions: [Action]) {
         actions.forEach { action in
             if action.type == .chained {
-                insertActions(actions: actions)
+                insertAction(action: action)
             } else {
-                appendActions(actions: actions)
+                appendAction(action: action)
             }
         }
     }
 
     /// Adds action to back of the queue
-    func appendActions(actions: [Action]) {
-        actions.forEach { action in
-            if action.context.hasMissingFiles() {
-                Leanplum.onceVariablesChangedAndNoDownloadsPending {
-                    self.queue.pushBack(action)
-                }
+    func appendAction(action: Action) {
+        if action.context.hasMissingFiles() {
+            Leanplum.onceVariablesChangedAndNoDownloadsPending {
+                self.queue.pushBack(action)
             }
+        } else {
+            queue.pushBack(action)
         }
     }
 
     /// Adds action to front of the queue
-    func insertActions(actions: [Action]) {
-        actions.forEach { action in
-            if action.context.hasMissingFiles() {
-                Leanplum.onceVariablesChangedAndNoDownloadsPending {
-                    self.queue.pushFront(action)
-                }
+    func insertAction(action: Action) {
+        if action.context.hasMissingFiles() {
+            Leanplum.onceVariablesChangedAndNoDownloadsPending {
+                self.queue.pushFront(action)
             }
+        } else {
+            queue.pushFront(action)
         }
     }
 }

@@ -13,8 +13,6 @@ extension ActionManager {
         if let action = state.currentAction {
             let definition = definitions.first { $0.name == action.context.name }
             let _ = definition?.dismissAction?(action.context)
-            state.currentAction = nil
-            performActions()
             return
         }
 
@@ -53,20 +51,22 @@ extension ActionManager {
 
         // logic:
         // 1) ask client to show view controller
-        // 2) ask and wait for client to execute action
+        // 2) wait for client to execute action
         // 3) ask and wait for client to dismiss view controller
 
         // get the action definition
         let definition = definitions.first { $0.name == action.context.name }
 
         // 2) set the execute block which will be called by client
-        action.context.onActionExecuted = { [weak self] actionName, tracked in
-            self?.onMessageAction?(actionName, action.context)
+        action.context.actionDidExecute = { [weak self] context in
+            self?.onMessageAction?(context.name, context)
         }
 
         // 3) set the dismiss block which will be called by client
-        action.context.onActionDismissed = { [weak self] in
+        action.context.actionDidDismiss = { [weak self] in
             self?.onMessageDismissed?(action.context)
+            self?.state.currentAction = nil
+            self?.performActions()
         }
 
         // 1) ask to present, return if its not

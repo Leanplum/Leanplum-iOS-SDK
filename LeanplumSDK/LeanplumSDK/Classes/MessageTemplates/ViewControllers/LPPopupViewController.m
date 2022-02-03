@@ -120,9 +120,13 @@
 - (void)dismiss:(BOOL)animated
 {
     if (self.navigationController) {
-        [self.navigationController dismissViewControllerAnimated:animated completion:nil];
+        [self.navigationController dismissViewControllerAnimated:animated completion:^{
+            [self.context actionDismissed];
+        }];
     } else {
-        [self dismissViewControllerAnimated:animated completion:nil];
+        [self dismissViewControllerAnimated:animated completion:^{
+            [self.context actionDismissed];
+        }];
     }
 }
 

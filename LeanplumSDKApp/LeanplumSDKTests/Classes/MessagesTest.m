@@ -131,13 +131,13 @@
 
     __block NSMutableSet *calledMessageIds = [NSMutableSet set];
     id mockLeanplum = OCMClassMock([Leanplum class]);
-    OCMStub([mockLeanplum triggerAction:[OCMArg any]
-                           handledBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation){
-        // __unsafe_unretained prevents double-release.
-        __unsafe_unretained LPActionContext *actionContext;
-        [invocation getArgument:&actionContext atIndex:2];
-        [calledMessageIds addObject:[actionContext messageId]];
-    });
+//    OCMStub([mockLeanplum triggerAction:[OCMArg any]
+//                           handledBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation){
+//        // __unsafe_unretained prevents double-release.
+//        __unsafe_unretained LPActionContext *actionContext;
+//        [invocation getArgument:&actionContext atIndex:2];
+//        [calledMessageIds addObject:[actionContext messageId]];
+//    });
 
     [Leanplum maybePerformActions:self.mockWhenCondtions
                     withEventName:self.mockEventName

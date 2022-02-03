@@ -150,15 +150,15 @@
     
     __weak LPActionContext *weakMessageContext = messageContext;
     
-    [messageContext setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
-        XCTAssertEqual([context actionName], acceptAction);
-        XCTAssertNotNil([context parentContext]);
-        XCTAssertEqual([[context parentContext] actionName], [weakMessageContext actionName]);
-        XCTAssertEqual([[context parentContext] messageId], [weakMessageContext messageId]);
-        [onRunActionNamedExpectation fulfill];
-        return YES;
-    }];
-    [messageContext runActionNamed:acceptAction];
+//    [messageContext setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
+//        XCTAssertEqual([context actionName], acceptAction);
+//        XCTAssertNotNil([context parentContext]);
+//        XCTAssertEqual([[context parentContext] actionName], [weakMessageContext actionName]);
+//        XCTAssertEqual([[context parentContext] messageId], [weakMessageContext messageId]);
+//        [onRunActionNamedExpectation fulfill];
+//        return YES;
+//    }];
+//    [messageContext runActionNamed:acceptAction];
     
     [self waitForExpectationsWithTimeout:6 handler:nil];
 }
