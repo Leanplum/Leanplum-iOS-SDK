@@ -172,6 +172,11 @@
 		075AAEF426847FEA007CA1BD /* WebInterstitial.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075AAEE226847EE0007CA1BD /* WebInterstitial.storyboard */; };
 		075AAEF526847FEA007CA1BD /* Popup.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 075AAEE126847EE0007CA1BD /* Popup.storyboard */; };
 		075AAEFB268480E9007CA1BD /* Leanplum-iOS-SDK.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 075AAEEC26847FE1007CA1BD /* Leanplum-iOS-SDK.bundle */; };
+		07B7B7EE27AD228E00BD408D /* UIImage+Close.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B7B7ED27AD228E00BD408D /* UIImage+Close.swift */; };
+		07B7B7F327AD270100BD408D /* Messages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B7B7F227AD270100BD408D /* Messages.swift */; };
+		07B7B7F527AD2C3600BD408D /* Messages+Args.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07B7B7F427AD2C3600BD408D /* Messages+Args.swift */; };
+		07E90E4727AC37DF001E1D8F /* Actionable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E90E4627AC37DF001E1D8F /* Actionable.swift */; };
+		07E90E4927AC3936001E1D8F /* InterstitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07E90E4827AC3936001E1D8F /* InterstitialViewController.swift */; };
 		39D0AA1427760842003C7192 /* Bundle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39D0AA1327760842003C7192 /* Bundle+Extensions.swift */; };
 		39D0AA1527760842003C7192 /* Bundle+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39D0AA1327760842003C7192 /* Bundle+Extensions.swift */; };
 		6A265E2727187EBB0074354F /* NotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* NotificationsProxy.swift */; };
@@ -740,6 +745,11 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
+		07B7B7ED27AD228E00BD408D /* UIImage+Close.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Close.swift"; sourceTree = "<group>"; };
+		07B7B7F227AD270100BD408D /* Messages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Messages.swift; sourceTree = "<group>"; };
+		07B7B7F427AD2C3600BD408D /* Messages+Args.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Messages+Args.swift"; sourceTree = "<group>"; };
+		07E90E4627AC37DF001E1D8F /* Actionable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Actionable.swift; sourceTree = "<group>"; };
+		07E90E4827AC3936001E1D8F /* InterstitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterstitialViewController.swift; sourceTree = "<group>"; };
 		39D0AA1327760842003C7192 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
 		6A265E2527187EBB0074354F /* NotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsProxy.swift; sourceTree = "<group>"; };
 		6A265E2627187EBB0074354F /* NSObject+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Notifications.swift"; sourceTree = "<group>"; };
@@ -1228,9 +1238,38 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		07B7B7EF27AD26CD00BD408D /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				07E90E4827AC3936001E1D8F /* InterstitialViewController.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		07B7B7F127AD26DF00BD408D /* Templates */ = {
+			isa = PBXGroup;
+			children = (
+				07B7B7F227AD270100BD408D /* Messages.swift */,
+				07B7B7F427AD2C3600BD408D /* Messages+Args.swift */,
+			);
+			path = Templates;
+			sourceTree = "<group>";
+		};
+		07E90E4527AC3785001E1D8F /* Messages */ = {
+			isa = PBXGroup;
+			children = (
+				07B7B7F127AD26DF00BD408D /* Templates */,
+				07B7B7EF27AD26CD00BD408D /* Views */,
+				07E90E4627AC37DF001E1D8F /* Actionable.swift */,
+				07B7B7ED27AD228E00BD408D /* UIImage+Close.swift */,
+			);
+			path = Messages;
+			sourceTree = "<group>";
+		};
 		6A714BFF26F8B7DC004A34A9 /* ClassesSwift */ = {
 			isa = PBXGroup;
 			children = (
+				07E90E4527AC3785001E1D8F /* Messages */,
 				C9D064DA2775C85600A7A5F9 /* Extensions */,
 				6AD9785B2774FCB500A7C6C6 /* Utilities */,
 				6AD9784C2774E51F00A7C6C6 /* Notifications */,
@@ -1607,6 +1646,7 @@
 				075AAECF26847EC4007CA1BD /* LPFeatureFlagManager.m in Sources */,
 				075AAE0C26847EC4007CA1BD /* LPResponse.m in Sources */,
 				6A98A9BC272A941D00D8753A /* NotificationsManager.swift in Sources */,
+				07E90E4727AC37DF001E1D8F /* Actionable.swift in Sources */,
 				C9374A39272C36B200F4915A /* Utilities.swift in Sources */,
 				075AAEC426847EC4007CA1BD /* LPEventDataManager.m in Sources */,
 				075AAE5326847EC4007CA1BD /* LPInterstitialViewController.m in Sources */,
@@ -1633,10 +1673,13 @@
 				6A265E2727187EBB0074354F /* NotificationsProxy.swift in Sources */,
 				075AAE3726847EC4007CA1BD /* LPCenterPopupMessageTemplate.m in Sources */,
 				075AAEB726847EC4007CA1BD /* LPActionManager.m in Sources */,
+				07B7B7F527AD2C3600BD408D /* Messages+Args.swift in Sources */,
 				075AAE0E26847EC4007CA1BD /* LPNetworkOperation.m in Sources */,
 				075AAEA626847EC4007CA1BD /* LPKeychainWrapper.m in Sources */,
+				07B7B7EE27AD228E00BD408D /* UIImage+Close.swift in Sources */,
 				075AAE6226847EC4007CA1BD /* LPHitView.m in Sources */,
 				075AAE9526847EC4007CA1BD /* Leanplum_WebSocket.m in Sources */,
+				07B7B7F327AD270100BD408D /* Messages.swift in Sources */,
 				075AAE6626847EC4007CA1BD /* LPMessageArchiveData.m in Sources */,
 				075AAE5626847EC4007CA1BD /* LPRichInterstitialMessageTemplate.m in Sources */,
 				075AAEC926847EC4007CA1BD /* LPInternalState.m in Sources */,
@@ -1692,6 +1735,7 @@
 				075AAE8B26847EC4007CA1BD /* LPUtils.m in Sources */,
 				075AADE926847EC4007CA1BD /* LPMessageTemplates.m in Sources */,
 				075AAE9826847EC4007CA1BD /* Leanplum_SocketIO.m in Sources */,
+				07E90E4927AC3936001E1D8F /* InterstitialViewController.swift in Sources */,
 				075AAED126847EC4007CA1BD /* LPEnumConstants.m in Sources */,
 				075AAEDA26847EC4007CA1BD /* LPExceptionHandler.m in Sources */,
 				075AAE8526847EC4007CA1BD /* LPJSON.m in Sources */,
