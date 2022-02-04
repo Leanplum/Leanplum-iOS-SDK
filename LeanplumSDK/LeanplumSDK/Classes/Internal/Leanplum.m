@@ -984,6 +984,9 @@ void leanplumExceptionHandler(NSException *exception);
 
         if ([response[LP_KEY_SYNC_INBOX] boolValue]) {
             [[self inbox] downloadMessages];
+        } else {
+            // Inbox is up to date, so inform observers
+            [[self inbox] triggerInboxChanged];
         }
 
         if ([response[LP_KEY_LOGGING_ENABLED] boolValue]) {
