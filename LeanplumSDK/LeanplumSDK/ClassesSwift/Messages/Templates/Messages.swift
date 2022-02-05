@@ -11,11 +11,11 @@ public enum Messages { }
 
 extension Messages {
     @available(iOS 11.0, *)
-    public enum Kind: CaseIterable {
+    public enum Kind {
         case alert
         case centerPopup
         case confirm
-        case interstitial
+        case interstitial(configuration: InterstitialViewController.Configuration?)
         case richInterstitial
         case webInterstitial
         case appRating
@@ -53,8 +53,8 @@ extension Messages {
         
         var presentHandler: LeanplumActionBlock? {
             switch self {
-                case .interstitial:
-                    return viewController(type: InterstitialViewController.self)
+                case .interstitial(let configuration):
+                    return viewController(type: InterstitialViewController.self, configuration: configuration)
                 default:
                     return nil
             }
@@ -68,15 +68,30 @@ extension Messages {
                     return nil
             }
         }
-        
-        private func viewController<ViewController: UIViewController>(type: ViewController.Type) -> LeanplumActionBlock? where ViewController: Actionable {
-            return { context in
-                var vc = type.init()
-                vc.context = context
-                vc.modalPresentationStyle = .overFullScreen
-                LPMessageTemplateUtilities.presentOverVisible(vc)
-                return true
+    }
+}
+
+@available(iOS 11.0, *)
+extension Messages.Kind {
+    /// Default case should have configuration set
+    static var interstitial: Self {
+        .interstitial(configuration: .default)
+    }
+}
+
+@available(iOS 11.0, *)
+extension Messages.Kind {
+    fileprivate func viewController<ViewController: UIViewController>(type: ViewController.Type,
+                                                                      configuration: AnyConfiguration? = nil) -> LeanplumActionBlock? where ViewController: Actionable & Configurable {
+        return { context in
+            var vc = type.init()
+            vc.context = context
+            if let configuration = configuration as? ViewController.ConfigurationType {
+                vc.configuration = configuration
             }
+            vc.modalPresentationStyle = .overFullScreen
+            LPMessageTemplateUtilities.presentOverVisible(vc)
+            return true
         }
     }
 }
@@ -93,5 +108,13 @@ extension Messages {
                                   args: $0.arguments,
                                   completion: $0.presentHandler)
         }
+    }
+    
+    /// Defines an existing action with ability to use custom configuration
+    public static func defineAction(kind: Kind) {
+        Leanplum.defineAction(name: kind.name,
+                              kind: kind.kind,
+                              args: kind.arguments,
+                              completion: kind.presentHandler)
     }
 }

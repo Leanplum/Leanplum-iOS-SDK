@@ -8,7 +8,9 @@
 import Foundation
 
 @available(iOS 11.0, *)
-public class InterstitialViewController: UIViewController, Actionable, ObstructableView {
+public class InterstitialViewController: UIViewController, Actionable, Configurable, ObstructableView {
+    public typealias ConfigurationType = Configuration
+
     public var context: ActionContext? {
         didSet {
             if context != oldValue {
@@ -67,9 +69,29 @@ public class InterstitialViewController: UIViewController, Actionable, Obstructa
         return button
     }()
     
+    public var configuration: Configuration = .default {
+        didSet {
+            updateConfiguration()
+        }
+    }
+    
+    init(configuration: Configuration = .default) {
+        super.init(nibName: nil, bundle: nil)
+        self.configuration = configuration
+    }
+    
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        updateConfiguration()
         updateView()
     }
     
@@ -104,6 +126,11 @@ public class InterstitialViewController: UIViewController, Actionable, Obstructa
         closeButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10).isActive = true
         closeButton.widthAnchor.constraint(equalToConstant: 44.0).isActive = true
         closeButton.heightAnchor.constraint(equalToConstant: 44.0).isActive = true
+    }
+    
+    private func updateConfiguration() {
+        titleLabel.font = configuration.titleFont
+        messageLabel.font = configuration.messageFont
     }
     
     private func updateView() {
