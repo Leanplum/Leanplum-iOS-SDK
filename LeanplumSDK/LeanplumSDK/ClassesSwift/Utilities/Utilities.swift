@@ -14,10 +14,10 @@ public class Utilities: NSObject {
      * Use this method to identify Leanplum Notifications
      */
     @objc public static func messageIdFromUserInfo(_ userInfo: [AnyHashable: Any]) -> String? {
-        if let messageId = userInfo[LP_KEY_PUSH_MESSAGE_ID] ??
-            userInfo[LP_KEY_PUSH_MUTE_IN_APP] ??
-            userInfo[LP_KEY_PUSH_NO_ACTION] ??
-            userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] {
+        if let messageId = userInfo[Constants.PushNotifications.Keys.messageId] ??
+            userInfo[Constants.PushNotifications.Keys.muteInApp] ??
+            userInfo[Constants.PushNotifications.Keys.noAction] ??
+            userInfo[Constants.PushNotifications.Keys.noActionMute] {
             return String(describing: messageId)
         }
         return nil

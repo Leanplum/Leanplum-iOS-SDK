@@ -53,7 +53,7 @@ class NotificationTestHelper {
     
     func updateNotifId() -> String {
         let newId = UUID().uuidString
-        userInfo[LP_KEY_PUSH_OCCURRENCE_ID] = newId
+        userInfo[Constants.PushNotifications.Keys.occurrenceId] = newId
         return newId
     }
     

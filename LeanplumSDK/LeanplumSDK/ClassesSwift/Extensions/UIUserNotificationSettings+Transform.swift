@@ -22,8 +22,8 @@ extension UIUserNotificationSettings {
             return lhs.caseInsensitiveCompare(rhs) == .orderedAscending
         }
         let settings = [
-            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types.rawValue,
-            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories
+            Constants.Device.Leanplum.Parameter.userNotificationTypes: types.rawValue,
+            Constants.Device.Leanplum.Parameter.userNotificationCategories: sortedCategories
         ] as [AnyHashable: Any]
         return settings
     }

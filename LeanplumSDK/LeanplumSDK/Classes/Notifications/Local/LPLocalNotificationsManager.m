@@ -8,7 +8,6 @@
 
 #import "LPLocalNotificationsManager.h"
 #import "LeanplumInternal.h"
-#import "LPNotificationsConstants.h"
 #import <UserNotifications/UNUserNotificationCenter.h>
 #import <Leanplum/Leanplum-Swift.h>
 
@@ -87,23 +86,23 @@
     mutableInfo[@"aps"] = @{@"alert":@{@"body": message ?: @""} };
     
     // Set unique occurrence id
-    mutableInfo[LP_KEY_PUSH_OCCURRENCE_ID] = [[[NSUUID UUID] UUIDString] lowercaseString];
+    mutableInfo[[ConstantsSwift lpKeyPushOccurrenceId]] = [[[NSUUID UUID] UUIDString] lowercaseString];
     
     // Set local notification flag
-    mutableInfo[LP_KEY_LOCAL_NOTIF] = @YES;
+    mutableInfo[[ConstantsSwift lpKeyLocalNotification]] = @YES;
 
     // Specify open action
     if (openAction) {
         if (muteInsideApp) {
-            mutableInfo[LP_KEY_PUSH_MUTE_IN_APP] = messageId;
+            mutableInfo[[ConstantsSwift lpKeyPushMuteInApp]] = messageId;
         } else {
-            mutableInfo[LP_KEY_PUSH_MESSAGE_ID] = messageId;
+            mutableInfo[[ConstantsSwift lpKeyPushMessageId]] = messageId;
         }
     } else {
         if (muteInsideApp) {
-            mutableInfo[LP_KEY_PUSH_NO_ACTION_MUTE] = messageId;
+            mutableInfo[[ConstantsSwift lpKeyPushNoActionMute]] = messageId;
         } else {
-            mutableInfo[LP_KEY_PUSH_NO_ACTION] = messageId;
+            mutableInfo[[ConstantsSwift lpKeyPushNoAction]] = messageId;
         }
     }
     

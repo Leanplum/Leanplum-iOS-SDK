@@ -36,7 +36,7 @@ class NotificationsManagerMock: NotificationsManager {
     
     override func enableSystemPush() {
         isPushEnabled = true
-        UserDefaults.standard.set(true, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+        UserDefaults.standard.set(true, forKey: Constants.PushNotifications.Defaults.leanplumEnabledPush)
         isAskToAskDisabled = true
         methodInvocations += 1
     }

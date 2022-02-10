@@ -65,7 +65,7 @@ class NotificationSettings {
                     if success {
                         var deviceAttributesWithParams: [AnyHashable: Any] = params
                         if let pushToken = Leanplum.notificationsManager().pushToken {
-                            deviceAttributesWithParams[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken
+                            deviceAttributesWithParams[Constants.Device.Leanplum.Parameter.pushToken] = pushToken
                         }
                         let request = LPRequestFactory.setDeviceAttributesWithParams(deviceAttributesWithParams).andRequestType(.Immediate)
                         LPRequestSender.sharedInstance().send(request)
@@ -90,8 +90,8 @@ class NotificationSettings {
                 }
                 
                 let settings = [
-                    LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-                    LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: sortedCategories
+                    Constants.Device.Leanplum.Parameter.userNotificationTypes: types,
+                    Constants.Device.Leanplum.Parameter.userNotificationCategories: sortedCategories
                 ] as [AnyHashable : Any?]
                 completionHandler(settings)
             }

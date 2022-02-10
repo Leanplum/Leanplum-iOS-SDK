@@ -400,7 +400,7 @@ void leanplumExceptionHandler(NSException *exception);
     
     NSString *pushToken = [Leanplum notificationsManager].pushToken;
     if (pushToken) {
-        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+        params[[ConstantsSwift lpParamDevicePushToken]] = pushToken;
     }
     
     [[Leanplum notificationsManager] getNotificationSettingsWithCompletionHandler:^(NSDictionary * _Nonnull settings, BOOL areChanged) {
@@ -946,7 +946,7 @@ void leanplumExceptionHandler(NSException *exception);
     // Push token.
     NSString *pushToken = [[Leanplum notificationsManager] pushToken];
     if (pushToken) {
-        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+        params[[ConstantsSwift lpParamDevicePushToken]] = pushToken;
     }
 
     // Issue start API call.
@@ -1825,7 +1825,7 @@ void leanplumExceptionHandler(NSException *exception);
             }
 
             // Filter action types that don't match the filtering criteria.
-            BOOL isForeground = ![actionType isEqualToString:LP_PUSH_NOTIFICATION_ACTION];
+            BOOL isForeground = ![actionType isEqualToString:[ConstantsSwift lpPushNotificationAction]];
             if (isForeground) {
                 if (!(filter & kLeanplumActionFilterForeground)) {
                     continue;
@@ -1858,7 +1858,7 @@ void leanplumExceptionHandler(NSException *exception);
             // Make sure we cancel before matching in case the criteria overlap.
             if (result.matchedUnlessTrigger) {
                 // Currently Unless Trigger is possible for Local Notifications only
-                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:actionType]) {
+                if ([[ConstantsSwift lpPushNotificationAction] isEqualToString:actionType]) {
                     [[LPLocalNotificationsManager sharedManager] cancelLocalNotification:messageId];
                 }
             }
@@ -1911,7 +1911,7 @@ void leanplumExceptionHandler(NSException *exception);
                     LPLog(LPDebug, @"Local IAM caps reached, suppressing messageId=%@", [actionContext messageId]);
                     continue;
                 }
-                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
+                if ([[ConstantsSwift lpPushNotificationAction] isEqualToString:[actionContext actionName]]) {
                     [[LPLocalNotificationsManager sharedManager] scheduleLocalNotification:actionContext];
                 } else {
                     [self triggerAction:actionContext handledBlock:^(BOOL success) {
@@ -2831,7 +2831,7 @@ void leanplumExceptionHandler(NSException *exception)
 */
 + (BOOL)shouldSuppressMessage:(LPActionContext *)context
 {
-    if([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[context actionName]]) {
+    if([[ConstantsSwift lpPushNotificationAction] isEqualToString:[context actionName]]) {
         // do not suppress local push
         return NO;
     }

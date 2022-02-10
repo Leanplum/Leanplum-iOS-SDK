@@ -119,7 +119,7 @@ class NotificationsManagerTest: XCTestCase {
             let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: "URL")!)
             XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
-            XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
+            XCTAssertEqual(Constants.PushNotifications.pushNotificationAction, context.parent?.name)
             onRunActionNamedExpectation.fulfill()
             return false
         }
@@ -135,7 +135,7 @@ class NotificationsManagerTest: XCTestCase {
             let url = (NotificationsManagerTest.userInfo as NSDictionary).value(forKeyPath: "_lpc.MyAction.URL")!
             XCTAssertEqual(String(describing: url), context.string(name: LPMT_ARG_URL)!)
             XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
-            XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
+            XCTAssertEqual(Constants.PushNotifications.pushNotificationAction, context.parent?.name)
             
             onRunActionNamedExpectation.fulfill()
             return false
@@ -171,7 +171,7 @@ class NotificationsManagerTest: XCTestCase {
             let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
             XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
-            XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
+            XCTAssertEqual(Constants.PushNotifications.pushNotificationAction, context.parent?.name)
             onRunActionNamedExpectation.fulfill()
             return false
         }
@@ -199,8 +199,8 @@ class NotificationsManagerTest: XCTestCase {
         let onRunActionNamedExpectation = expectation(description: "LeanplumShouldHandleNotificationBlock")
         
         let shouldHandleBlock:LeanplumShouldHandleNotificationBlock = { (userInfo, handler) in
-            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo[LP_KEY_PUSH_OCCURRENCE_ID]),
-                           String(describing: userInfo[LP_KEY_PUSH_OCCURRENCE_ID]))
+            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo[Constants.PushNotifications.Keys.occurrenceId]),
+                           String(describing: userInfo[Constants.PushNotifications.Keys.occurrenceId]))
             onRunActionNamedExpectation.fulfill()
         }
         
@@ -217,7 +217,7 @@ class NotificationsManagerTest: XCTestCase {
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
             let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
-            XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
+            XCTAssertEqual(Constants.PushNotifications.pushNotificationAction, context.parent?.name)
             onRunActionNamedExpectation.fulfill()
             return false
         }
@@ -277,7 +277,7 @@ class NotificationsManagerTest: XCTestCase {
 
         LPRequestSender.validate_request { method, apiMethod, params in
             XCTAssertEqual(apiMethod, "track")
-            XCTAssertEqual(params?["event"] as? String, PUSH_DELIVERED_EVENT_NAME)
+            XCTAssertEqual(params?["event"] as? String, Constants.PushNotifications.deliveredEventName)
 
             let str = params?["params"] as? String
             guard let paramsStr = str else {
@@ -296,13 +296,13 @@ class NotificationsManagerTest: XCTestCase {
                     eventParams[keyValue[0]] = keyValue[1]
                 }
             
-            XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_CHANNEL], DEFAULT_PUSH_CHANNEL)
-            XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_MESSAGE_ID],
+            XCTAssertEqual(eventParams[Constants.PushNotifications.Metric.channel], Constants.PushNotifications.pushChannel)
+            XCTAssertEqual(eventParams[Constants.PushNotifications.Metric.messageId],
                            Utilities.messageIdFromUserInfo(NotificationsManagerTest.userInfo))
-            XCTAssertEqual(eventParams[LP_KEY_PUSH_METRIC_OCCURRENCE_ID],
+            XCTAssertEqual(eventParams[Constants.PushNotifications.Metric.occurrenceId],
                            Leanplum.notificationsManager().getNotificationId(NotificationsManagerTest.userInfo))
-            XCTAssertEqual(Double(eventParams[LP_KEY_PUSH_METRIC_SENT_TIME]!),
-                           NotificationsManagerTest.userInfo[LP_KEY_PUSH_SENT_TIME] as? Double)
+            XCTAssertEqual(Double(eventParams[Constants.PushNotifications.Metric.sentTime]!),
+                           NotificationsManagerTest.userInfo[Constants.PushNotifications.Keys.sentTime] as? Double)
 
             onRequestExpectation.fulfill()
             return true

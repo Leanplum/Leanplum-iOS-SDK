@@ -19,10 +19,10 @@ import Foundation
     
     @objc public var isAskToAskDisabled: Bool {
         get {
-            UserDefaults.standard.bool(forKey: DEFAULTS_ASKED_TO_PUSH)
+            UserDefaults.standard.bool(forKey: Constants.PushNotifications.Defaults.askedToPush)
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: DEFAULTS_ASKED_TO_PUSH)
+            UserDefaults.standard.setValue(newValue, forKey: Constants.PushNotifications.Defaults.askedToPush)
         }
     }
     
@@ -35,16 +35,16 @@ import Foundation
             else {
                 return ""
             }
-            return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, appId, userId, deviceId)
+            return String(format: Constants.PushNotifications.Defaults.pushTokenKey, appId, userId, deviceId)
         }
     }
     
     private var pushEnabled: Bool {
         get {
-            UserDefaults.standard.bool(forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+            UserDefaults.standard.bool(forKey: Constants.PushNotifications.Defaults.leanplumEnabledPush)
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: DEFAULTS_LEANPLUM_ENABLED_PUSH)
+            UserDefaults.standard.set(newValue, forKey: Constants.PushNotifications.Defaults.leanplumEnabledPush)
         }
     }
     
@@ -128,13 +128,13 @@ import Foundation
     }
     
     @objc public func notificationSettingsToRequestParams(_ settings: [AnyHashable: Any]) -> [AnyHashable: Any]? {
-        guard let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES],
-              let categories = LPJSON.string(fromJSON: settings[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES]) else {
+        guard let types = settings[Constants.Device.Leanplum.Parameter.userNotificationTypes],
+              let categories = LPJSON.string(fromJSON: settings[Constants.Device.Leanplum.Parameter.userNotificationCategories]) else {
             return nil
         }
         let params: [AnyHashable: Any] = [
-            LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: types,
-            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: categories
+            Constants.Device.Leanplum.Parameter.userNotificationTypes: types,
+            Constants.Device.Leanplum.Parameter.userNotificationCategories: categories
         ]
         
         return params
@@ -187,20 +187,21 @@ import Foundation
     }
     
     func getNotificationId(_ userInfo: [AnyHashable: Any]) -> String {
-        if let occId = userInfo[LP_KEY_PUSH_OCCURRENCE_ID] {
+        if let occId = userInfo[Constants.PushNotifications.Keys.occurrenceId] {
             return String(describing: occId)
         }
         return "-1"
     }
     
     func areActionsEmbedded(_ userInfo: [AnyHashable: Any]) -> Bool {
-        return
-            userInfo[LP_KEY_PUSH_ACTION] != nil ||
-            userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] != nil
+        return userInfo[Constants.PushNotifications.Keys.action] != nil ||
+        userInfo[Constants.PushNotifications.Keys.customActions] != nil
     }
     
     func isMuted(_ userInfo: [AnyHashable: Any]) -> Bool {
-        return userInfo[LP_KEY_PUSH_MUTE_IN_APP] != nil || userInfo[LP_KEY_PUSH_NO_ACTION_MUTE] != nil || userInfo[LP_KEY_PUSH_NO_ACTION] != nil
+        return userInfo[Constants.PushNotifications.Keys.muteInApp] != nil ||
+        userInfo[Constants.PushNotifications.Keys.noActionMute] != nil ||
+        userInfo[Constants.PushNotifications.Keys.noAction] != nil
     }
     
     func getNotificationText(_ userInfo: [AnyHashable: Any]) -> String? {

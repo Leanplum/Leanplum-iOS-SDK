@@ -481,7 +481,7 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 /**
  * Sets if a Deliver event should be tracked when a Push Notification is received.
  * Default value is true - event is tracked.
- * @see PUSH_DELIVERED_EVENT_NAME for the event name
+ * @see Constants.PushNotifications.deliveredEventName for the event name
  */
 + (void)setPushDeliveryTrackingEnabled:(BOOL)enabled;
 

@@ -55,7 +55,7 @@ class NotificationsManagerUtilsTest: XCTestCase {
         let expectation = expectation(description: "Push token to server")
         LPRequestSender.validate_request { method, apiMethod, params in
             if apiMethod == LP_API_METHOD_SET_DEVICE_ATTRIBUTES {
-                if let parameters = params, let token = parameters[LP_PARAM_DEVICE_PUSH_TOKEN] as? String {
+                if let parameters = params, let token = parameters[Constants.Device.Leanplum.Parameter.pushToken] as? String {
                     XCTAssertEqual(formattedToken, token)
                     expectation.fulfill()
                     return true
@@ -79,7 +79,7 @@ class NotificationsManagerUtilsTest: XCTestCase {
     
     func testDisableAskToAsk() {
         //clean user defaults
-        UserDefaults.standard.removeObject(forKey: DEFAULTS_ASKED_TO_PUSH)
+        UserDefaults.standard.removeObject(forKey: Constants.PushNotifications.Defaults.askedToPush)
         XCTAssertFalse(manager.isAskToAskDisabled)
         manager.isAskToAskDisabled = true
         XCTAssertTrue(manager.isAskToAskDisabled)
@@ -97,8 +97,8 @@ class NotificationsManagerUtilsTest: XCTestCase {
     }
     
     func testNotificationSettingsToRequestParams() {
-        var testSettings: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: 7,
-                            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: []]
+        var testSettings: [AnyHashable: Any] = [Constants.Device.Leanplum.Parameter.userNotificationTypes: 7,
+                                                Constants.Device.Leanplum.Parameter.userNotificationCategories: []]
         var settigns = manager.notificationSettingsToRequestParams(testSettings)
         XCTAssertNotNil(settigns)
         testSettings = [:]

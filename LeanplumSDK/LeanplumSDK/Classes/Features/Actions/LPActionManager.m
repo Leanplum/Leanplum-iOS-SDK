@@ -35,6 +35,7 @@
 #import "LPRequestSender.h"
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -265,7 +266,7 @@ static long WEEK_SECONDS;
         NSMutableSet *regionNames;
         id action = messageConfig[@"action"];
         if ([action isKindOfClass:NSString.class]) {
-            if ([action isEqualToString:LP_PUSH_NOTIFICATION_ACTION]) {
+            if ([action isEqualToString:[ConstantsSwift lpPushNotificationAction]]) {
                 regionNames = *backgroundRegionNames;
             } else {
                 regionNames = *foregroundRegionNames;

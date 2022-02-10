@@ -47,7 +47,7 @@ import Foundation
 
         if pushToken != formattedToken {
             pushToken = formattedToken
-            deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
+            deviceAttributeParams[Constants.Device.Leanplum.Parameter.pushToken] = formattedToken
         }
                 
         notificationSettings.getSettings { [weak self] settings, areChanged in
@@ -84,14 +84,14 @@ import Foundation
     // MARK: - Notification Actions
     // MARK: Notification Open
     @objc(notificationOpened:action:)
-    func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
+    func notificationOpened(userInfo: [AnyHashable: Any], action: String = Constants.PushNotifications.defaultPushAction) {
         guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else {
             Log.debug("Push notification not handled, no message id found.")
             return
         }
         Log.debug("Notification Opened MessageId: \(messageId)")
         
-        let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
+        let isDefaultAction = action == Constants.PushNotifications.defaultPushAction
         
         let downloadFilesAndRunAction: (ActionContext) -> () = { context in
             context.maybeDownloadFiles()
@@ -104,13 +104,13 @@ import Foundation
         if Leanplum.notificationsManager().areActionsEmbedded(userInfo) {
             var args: [AnyHashable: Any] = [:]
             if isDefaultAction {
-                args[action] = userInfo[LP_KEY_PUSH_ACTION]
+                args[action] = userInfo[Constants.PushNotifications.Keys.action]
             } else {
-                if let customActions = userInfo[LP_KEY_PUSH_CUSTOM_ACTIONS] as? [AnyHashable : Any] {
+                if let customActions = userInfo[Constants.PushNotifications.Keys.customActions] as? [AnyHashable : Any] {
                     args[action] = customActions[action]
                 }
             }
-            let context: ActionContext = .init(name: LP_PUSH_NOTIFICATION_ACTION,
+            let context: ActionContext = .init(name: Constants.PushNotifications.pushNotificationAction,
                                                args: args,
                                                messageId: messageId)
             context.preventRealtimeUpdating = true
@@ -173,16 +173,16 @@ import Foundation
         
         // We cannot consistently track delivery for local notifications
         // Do not track
-        guard userInfo[LP_KEY_LOCAL_NOTIF] == nil else {
+        guard userInfo[Constants.LocalNotifications.localNotificationKey] == nil else {
             return
         }
         
         var args = [String: Any]()
-        args[LP_KEY_PUSH_METRIC_MESSAGE_ID] = Utilities.messageIdFromUserInfo(userInfo)
-        args[LP_KEY_PUSH_METRIC_OCCURRENCE_ID] = userInfo[LP_KEY_PUSH_OCCURRENCE_ID]
-        args[LP_KEY_PUSH_METRIC_SENT_TIME] = userInfo[LP_KEY_PUSH_SENT_TIME] ?? Date().timeIntervalSince1970
-        args[LP_KEY_PUSH_METRIC_CHANNEL] = DEFAULT_PUSH_CHANNEL
+        args[Constants.PushNotifications.Metric.messageId] = Utilities.messageIdFromUserInfo(userInfo)
+        args[Constants.PushNotifications.Metric.occurrenceId] = userInfo[Constants.PushNotifications.Keys.occurrenceId]
+        args[Constants.PushNotifications.Metric.sentTime] = userInfo[Constants.PushNotifications.Keys.sentTime] ?? Date().timeIntervalSince1970
+        args[Constants.PushNotifications.Metric.channel] = Constants.PushNotifications.pushChannel
         
-        Leanplum.track(PUSH_DELIVERED_EVENT_NAME, params: args)
+        Leanplum.track(Constants.PushNotifications.deliveredEventName, params: args)
     }
 }

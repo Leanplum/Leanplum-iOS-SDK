@@ -8,9 +8,13 @@
 import Foundation
 
 extension Bundle {
+    
+    static let bundleDisplayNameKey: String = "CFBundleDisplayName"
+    static let bundleNameKey: String = "CFBundleName"
+    
     static var appName: String {
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String ??
-        Bundle.main.object(forInfoDictionaryKey: "CFBundleName") as? String ?? ""
+        Bundle.main.object(forInfoDictionaryKey: Bundle.bundleDisplayNameKey) as? String ??
+        Bundle.main.object(forInfoDictionaryKey: Bundle.bundleNameKey) as? String ?? ""
     }
     
     static var identifier: String {

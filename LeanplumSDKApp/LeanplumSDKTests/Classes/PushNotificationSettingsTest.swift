@@ -58,7 +58,7 @@ class PushNotificationSettingsTest: XCTestCase {
         let expectation = expectation(description: "Test authorizationStatus notDetermined")
         UNNotificationSettings.fakeAuthorizationStatus = .notDetermined
         notificationSettings.getSettings() { settings, areChanged in
-            if let _ = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
+            if let _ = settings[Constants.Device.Leanplum.Parameter.userNotificationTypes] as? UInt {
                 fatalError()
             } else {
                 expectation.fulfill()
@@ -71,7 +71,7 @@ class PushNotificationSettingsTest: XCTestCase {
         let expectation = expectation(description: "Test authorizationStatus denied")
         UNNotificationSettings.fakeAuthorizationStatus = .denied
         notificationSettings.getSettings() { settings, areChanged in
-            if let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
+            if let types = settings[Constants.Device.Leanplum.Parameter.userNotificationTypes] as? UInt {
                 if types == 0 {
                     expectation.fulfill()
                 }
@@ -84,7 +84,7 @@ class PushNotificationSettingsTest: XCTestCase {
         let expectation = expectation(description: "Test authorized")
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
         notificationSettings.getSettings() { settings, areChanged in
-            if let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
+            if let types = settings[Constants.Device.Leanplum.Parameter.userNotificationTypes] as? UInt {
                 if types == 63 {
                     expectation.fulfill()
                 }
@@ -98,7 +98,7 @@ class PushNotificationSettingsTest: XCTestCase {
         let expectation = expectation(description: "Test provisional authorizationStatus")
         UNNotificationSettings.fakeAuthorizationStatus = .provisional
         notificationSettings.getSettings() { settings, areChanged in
-            if let types = settings[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES] as? UInt {
+            if let types = settings[Constants.Device.Leanplum.Parameter.userNotificationTypes] as? UInt {
                 if types == 64 {
                     expectation.fulfill()
                 }
@@ -108,8 +108,8 @@ class PushNotificationSettingsTest: XCTestCase {
     }
     
     func testSaveAndRemoveSettings() {
-        let testSettings: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: 7,
-                            LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: []]
+        let testSettings: [AnyHashable: Any] = [Constants.Device.Leanplum.Parameter.userNotificationTypes: 7,
+                                                Constants.Device.Leanplum.Parameter.userNotificationCategories: []]
         notificationSettings.settings = testSettings
         
         guard let savedSettings = UserDefaults.standard.value(forKey: notificationSettings.key) as? [AnyHashable : Any] else {
@@ -134,7 +134,7 @@ class PushNotificationSettingsTest: XCTestCase {
         
         LPRequestSender.validate_request { method, apiMethod, params in
             if apiMethod == LP_API_METHOD_SET_DEVICE_ATTRIBUTES {
-                if let parameters = params, let _ = parameters[LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES], let _ = parameters[LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES] {
+                if let parameters = params, let _ = parameters[Constants.Device.Leanplum.Parameter.userNotificationTypes], let _ = parameters[Constants.Device.Leanplum.Parameter.userNotificationCategories] {
                     expectation.fulfill()
                     return true
                 }

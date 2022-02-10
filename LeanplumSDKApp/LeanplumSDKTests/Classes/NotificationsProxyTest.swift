@@ -40,7 +40,7 @@ class NotificationsProxyTest: XCTestCase {
         let actionIdentifier = UNNotificationDefaultActionIdentifier
         manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: actionIdentifier, and: userInfo), withCompletionHandler: {})
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -60,7 +60,7 @@ class NotificationsProxyTest: XCTestCase {
         let actionIdentifier = "MyAction"
         manager.proxy.userNotificationCenter(didReceive: UNNotificationResponse.testNotificationResponse(with: actionIdentifier, and: userInfo), withCompletionHandler: {})
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -81,7 +81,7 @@ class NotificationsProxyTest: XCTestCase {
         let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.userNotificationCenter(willPresent: notif) { options in }
         
-        guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -99,7 +99,7 @@ class NotificationsProxyTest: XCTestCase {
         // didReceiveRemoteNotification is called after willPresent if push has content-available flag
         manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { result in }
         
-        guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notifProcessed = manager.userInfoProcessed, let occId = notifProcessed[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -122,7 +122,7 @@ class NotificationsProxyTest: XCTestCase {
         let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -156,7 +156,7 @@ class NotificationsProxyTest: XCTestCase {
         let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.applicationDidFinishLaunching(launchOptions: options)
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
@@ -184,7 +184,7 @@ class NotificationsProxyTest: XCTestCase {
         let manager = Leanplum.notificationsManager() as! NotificationsManagerMock
         manager.proxy.didReceiveRemoteNotification(userInfo: userInfo) { res in }
         
-        guard let notif = manager.userInfoProcessed, let occId = notif[LP_KEY_PUSH_OCCURRENCE_ID] else {
+        guard let notif = manager.userInfoProcessed, let occId = notif[Constants.PushNotifications.Keys.occurrenceId] else {
             XCTFail(NotificationTestHelper.occurrenceIdNilError)
             return
         }
