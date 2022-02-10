@@ -47,6 +47,7 @@
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
+@property (nonatomic) BOOL onceHost;
 @end
 
 
@@ -256,7 +257,58 @@
 
             [self.uiTimeoutTimer invalidate];
             self.uiTimeoutTimer = nil;
-
+            
+            NSDictionary *testJson = @{
+                @"response": @[
+                    @{
+                        @"success": @(NO),
+                        @"apiHost": @"api2.leanplum.com",
+                        @"apiServlet": @"new-api",
+                        @"devServerHost": @"dev2.leanplum.com"
+                    }
+                ]
+            };
+            
+            if (!self.onceHost) {
+                self.onceHost = YES;
+                json = testJson;
+            }
+            
+            if ([json isKindOfClass:NSDictionary.class]) {
+                BOOL isEndpointChangeRequest = NO;
+                
+                for (NSUInteger i = 0; i < [LPResponse numResponsesInDictionary:json]; i++) {
+                    NSDictionary *response = [LPResponse getResponseAt:i fromDictionary:json];
+                    if ([LPResponse isResponseSuccess:response]) {
+                        continue;
+                    }
+                    
+                    NSString *apiHost = [response objectForKey:@"apiHost"];
+                    NSString *apiServlet = [response objectForKey:@"apiServlet"];
+                    NSString *devServerHost = [response objectForKey:@"devServerHost"];
+                    if (apiHost || apiServlet) {
+                        isEndpointChangeRequest = YES;
+                        apiHost = apiHost ? apiHost : [LPConstantsState sharedState].apiHostName;
+                        apiServlet = apiServlet ? apiServlet : [LPConstantsState sharedState].apiServlet;
+                        [Leanplum setApiHostName:apiHost withServletName:apiServlet usingSsl:YES];
+                    }
+                    if (devServerHost) {
+                        isEndpointChangeRequest = YES;
+                        [[LPConstantsState sharedState] setSocketHost:devServerHost];
+                    }
+                    
+                    if (isEndpointChangeRequest) {
+                        break;
+                    }
+                }
+                if (isEndpointChangeRequest) {
+                    // Retry request on new endpoint
+                    [self sendRequests];
+                    dispatch_semaphore_signal(semaphore);
+                    return;
+                }
+            }
+            
             // Delete events on success.
             [LPRequestBatchFactory deleteFinishedBatch:batch];
 
