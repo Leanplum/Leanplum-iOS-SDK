@@ -2,7 +2,7 @@
 //  Constants.swift
 //  LeanplumSDK
 //
-//  Created by Dejan Krstevski on 8.02.22.
+//  Copyright (c) 2022 Leanplum, Inc. All rights reserved.
 //
 
 /*
