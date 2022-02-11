@@ -1,0 +1,10 @@
+{
+    "response": [
+        {
+            "success": false,
+            "apiHost": "api2.leanplum.com",
+            "apiServlet": "new-api",
+            "devServerHost": "dev2.leanplum.com"
+        }
+    ]
+}

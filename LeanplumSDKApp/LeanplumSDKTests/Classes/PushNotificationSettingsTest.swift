@@ -29,8 +29,8 @@ class PushNotificationSettingsTest: XCTestCase {
         UNNotificationSettings.swizzleAuthorizationStatus()
         UNUserNotificationCenter.swizzleGetNotificationSettings()
         LeanplumHelper.setup_development_test()
-        LPAPIConfig.shared().deviceId = "testDeviceId"
-        LPAPIConfig.shared().userId = "testUserId"
+        ApiConfig.shared.deviceId = "testDeviceId"
+        ApiConfig.shared.userId = "testUserId"
     }
     
     override class func tearDown() {
@@ -158,9 +158,9 @@ extension NotificationSettings: NotificationSettingsProtocol {
     var key: String {
         get {
             guard
-                let appId = LPAPIConfig.shared().appId,
-                let userId = LPAPIConfig.shared().userId,
-                let deviceId = LPAPIConfig.shared().deviceId else {
+                let appId = ApiConfig.shared.appId,
+                let userId = ApiConfig.shared.userId,
+                let deviceId = ApiConfig.shared.deviceId else {
                     return ""
                 }
             return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)

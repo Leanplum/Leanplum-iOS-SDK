@@ -23,8 +23,8 @@ class NotificationsManagerUtilsTest: XCTestCase {
     override class func setUp() {
         super.setUp()
         LeanplumHelper.setup_development_test()
-        LPAPIConfig.shared().deviceId = "testDeviceId"
-        LPAPIConfig.shared().userId = "testUserId"
+        ApiConfig.shared.deviceId = "testDeviceId"
+        ApiConfig.shared.userId = "testUserId"
     }
     
     override class func tearDown() {

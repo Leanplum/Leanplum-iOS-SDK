@@ -37,5 +37,4 @@
  * Create Request Headers for network call
  */
 + (NSDictionary *)createHeaders;
-+ (void)attachApiKeys:(NSMutableDictionary *)dict;
 @end

@@ -168,9 +168,9 @@ void leanplumExceptionHandler(NSException *exception);
     }
 
     LP_TRY
-    [LPConstantsState sharedState].apiHostName = hostName;
-    [LPConstantsState sharedState].apiServlet = servletName;
-    [LPConstantsState sharedState].apiSSL = ssl;
+    [ApiConfig shared].apiHostName = hostName;
+    [ApiConfig shared].apiServlet = servletName;
+    [ApiConfig shared].apiSSL = ssl;
     LP_END_TRY
 }
 
@@ -182,8 +182,8 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
 
-    [LPConstantsState sharedState].socketHost = hostName;
-    [LPConstantsState sharedState].socketPort = port;
+    [ApiConfig shared].socketHost = hostName;
+    [ApiConfig shared].socketPort = port;
 }
 
 + (void)setClient:(NSString *)client withVersion:(NSString *)version
@@ -325,7 +325,7 @@ void leanplumExceptionHandler(NSException *exception);
 
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = YES;
-    [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
+    [[ApiConfig shared] setAppId:appId accessKey:accessKey];
     LP_END_TRY
 }
 
@@ -350,7 +350,7 @@ void leanplumExceptionHandler(NSException *exception);
 
     LP_TRY
     [LPConstantsState sharedState].isDevelopmentModeEnabled = NO;
-    [[LPAPIConfig sharedConfig] setAppId:appId withAccessKey:accessKey];
+    [[ApiConfig shared] setAppId:appId accessKey:accessKey];
     LP_END_TRY
 }
 
@@ -377,10 +377,10 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     // If Leanplum start has been called already, changing the deviceId results in a new device
     // Ensure the id is updated and the new device has all attributes set
-    if ([LPInternalState sharedState].hasStarted && ![[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]) {
+    if ([LPInternalState sharedState].hasStarted && ![[ApiConfig shared].deviceId isEqualToString:deviceId]) {
         [self setDeviceIdInternal:deviceId];
     } else {
-       [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+       [[ApiConfig shared] setDeviceId:deviceId];
     }
     LP_END_TRY
 }
@@ -417,7 +417,7 @@ void leanplumExceptionHandler(NSException *exception);
         // Change the LPAPIConfig after getting the push token and settings
         // and after cleaning UserDefaults
         // The LPAPIConfig value is used in retrieving them
-        [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+        [[ApiConfig shared] setDeviceId:deviceId];
         [[LPVarCache sharedCache] saveDiffs];
         
         // Update the token and settings now that the key is different
@@ -783,7 +783,7 @@ void leanplumExceptionHandler(NSException *exception);
 {
     [[Leanplum notificationsManager].proxy setupNotificationSwizzling];
     
-    if ([LPAPIConfig sharedConfig].appId == nil) {
+    if ([ApiConfig shared].appId == nil) {
         [self throwError:@"Please provide your app ID using one of the [Leanplum setAppId:] "
          @"methods."];
         return;
@@ -852,7 +852,6 @@ void leanplumExceptionHandler(NSException *exception);
     });
     state.actionManager = [LPActionManager sharedManager];
 
-    [[LPAPIConfig sharedConfig] loadToken];
     [[LPVarCache sharedCache] setSilent:YES];
     [[LPVarCache sharedCache] loadDiffs];
     [[LPVarCache sharedCache] setSilent:NO];
@@ -871,7 +870,7 @@ void leanplumExceptionHandler(NSException *exception);
     }];
 
     // Set device ID.
-    NSString *deviceId = [LPAPIConfig sharedConfig].deviceId;
+    NSString *deviceId = [ApiConfig shared].deviceId;
     // This is the device ID set when the MAC address is used on iOS 7.
     // This is to allow apps who upgrade to the new ID to forget the old one.
     if ([deviceId isEqualToString:@"0f607264fc6318a92b9e13c65db7cd3c"]) {
@@ -882,17 +881,17 @@ void leanplumExceptionHandler(NSException *exception);
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
-        [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+        [[ApiConfig shared] setDeviceId:deviceId];
     }
 
     // Set user ID.
     if (!userId) {
-        userId = [LPAPIConfig sharedConfig].userId;
+        userId = [ApiConfig shared].userId;
         if (!userId) {
-            userId = [LPAPIConfig sharedConfig].deviceId;
+            userId = [ApiConfig shared].deviceId;
         }
     }
-    [[LPAPIConfig sharedConfig] setUserId:userId];
+    [[ApiConfig shared] setUserId:userId];
 
     // Setup parameters.
     NSString *versionName = [self appVersion];
@@ -971,8 +970,7 @@ void leanplumExceptionHandler(NSException *exception);
         NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
         NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
         NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
-        [[LPAPIConfig sharedConfig] setToken:token];
-        [[LPAPIConfig sharedConfig] saveToken];
+        [[ApiConfig shared] setToken:token];
         [[LPVarCache sharedCache] applyVariableDiffs:values
                                             messages:messages
                                             variants:variants
@@ -1027,8 +1025,8 @@ void leanplumExceptionHandler(NSException *exception);
             [[LPVarCache sharedCache] setDevModeValuesFromServer:valuesFromCode
                                     fileAttributes:fileAttributes
                                  actionDefinitions:actionDefinitions];
-            [[LeanplumSocket sharedSocket] connectToAppId:[LPAPIConfig sharedConfig].appId
-                                                 deviceId:[LPAPIConfig sharedConfig].deviceId];
+            [[LeanplumSocket sharedSocket] connectToAppId:[ApiConfig shared].appId
+                                                 deviceId:[ApiConfig shared].deviceId];
             if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
                 [Leanplum onHasStartedAndRegisteredAsDeveloper];
             }
@@ -2206,13 +2204,13 @@ andParameters:(NSDictionary *)params
 
     LPRequest *request = [LPRequestFactory setUserAttributesWithParams:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
-        LP_PARAM_USER_ID: [LPAPIConfig sharedConfig].userId ?: @"",
+        LP_PARAM_USER_ID: [ApiConfig shared].userId ?: @"",
         LP_PARAM_NEW_USER_ID: userId ?: @""
     }];
     [[LPRequestSender sharedInstance] send:request];
 
     if (userId.length) {
-        [[LPAPIConfig sharedConfig] setUserId:userId];
+        [[ApiConfig shared] setUserId:userId];
         if ([LPInternalState sharedState].hasStarted) {
             [[LPVarCache sharedCache] saveDiffs];
         }
@@ -2648,7 +2646,7 @@ void leanplumExceptionHandler(NSException *exception)
         [self throwError:@"[Leanplum start] must be called before calling deviceId"];
         return nil;
     }
-    return [LPAPIConfig sharedConfig].deviceId;
+    return [ApiConfig shared].deviceId;
     LP_END_TRY
     return nil;
 }
@@ -2660,7 +2658,7 @@ void leanplumExceptionHandler(NSException *exception)
         [self throwError:@"[Leanplum start] must be called before calling userId"];
         return nil;
     }
-    return [LPAPIConfig sharedConfig].userId;
+    return [ApiConfig shared].userId;
     LP_END_TRY
     return nil;
 }

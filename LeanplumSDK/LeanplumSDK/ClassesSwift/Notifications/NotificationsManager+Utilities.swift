@@ -29,9 +29,9 @@ import Foundation
     private var key: String {
         get {
             guard
-                let appId = LPAPIConfig.shared().appId,
-                let userId = LPAPIConfig.shared().userId,
-                let deviceId = LPAPIConfig.shared().deviceId
+                let appId = ApiConfig.shared.appId,
+                let userId = ApiConfig.shared.userId,
+                let deviceId = ApiConfig.shared.deviceId
             else {
                 return ""
             }

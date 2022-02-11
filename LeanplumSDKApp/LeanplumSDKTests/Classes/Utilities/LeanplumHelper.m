@@ -38,8 +38,8 @@
 #import "LeanplumReachability+Category.h"
 #import "LPNetworkEngine+Category.h"
 #import "LPNetworkOperation+Category.h"
-#import <Leanplum/LPAPIConfig.h>
 #import <Leanplum/LPOperationQueue.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 // Keys also used in Leanplum-Info.plist file
 NSString *APPLICATION_ID = @"app_nLiaLr3lXvCjXhsztS1Gw8j281cPLO6sZetTDxYnaSk";
@@ -150,14 +150,15 @@ static BOOL swizzled = NO;
     [[LPVarCache sharedCache] reset];
     [[LPVarCache sharedCache] initialize];
     [LPActionManager reset];
-    [[LPAPIConfig sharedConfig] setDeviceId:nil];
-    [[LPAPIConfig sharedConfig] setUserId:nil];
-    [[LPAPIConfig sharedConfig] setToken:nil];
+    [[ApiConfig shared] setDeviceId:nil];
+    [[ApiConfig shared] setUserId:nil];
+    // TODO: fix -> nil throws exception
+    [[ApiConfig shared] setToken:nil];
     
     [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];
     
-    [[LPAPIConfig sharedConfig] setAppId:nil withAccessKey:nil];
+    [[ApiConfig shared] setAppId:@"" accessKey:@""];
     
     [LPRequest reset];
     [LPRequestSender reset];

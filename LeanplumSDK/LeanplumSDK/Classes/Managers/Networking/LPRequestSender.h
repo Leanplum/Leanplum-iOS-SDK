@@ -23,14 +23,18 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import "Leanplum.h"
-#import "LPNetworkFactory.h"
-#import "LPRequest.h"
+//#import "Leanplum.h"
+//#import "LPNetworkFactory.h"
+//#import "LPRequest.h"
+
+@class LPRequest;
 
 @interface LPRequestSender : NSObject
 
 + (instancetype)sharedInstance;
 
 - (void)send:(LPRequest *)request;
+
+- (void)updateApiHost:(NSString *)host;
 
 @end

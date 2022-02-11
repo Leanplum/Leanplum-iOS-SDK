@@ -28,6 +28,7 @@
 #import "LPNetworkConstants.h"
 #import "LPConstants.h"
 #import "LPAPIConfig.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequest()
 
@@ -99,16 +100,16 @@
     NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
     NSMutableDictionary *args = [@{
                                    LP_PARAM_ACTION: self.apiMethod,
-                                   LP_PARAM_DEVICE_ID: [LPAPIConfig sharedConfig].deviceId ?: @"",
-                                   LP_PARAM_USER_ID: [LPAPIConfig sharedConfig].userId ?: @"",
+                                   LP_PARAM_DEVICE_ID: [ApiConfig shared].deviceId ?: @"",
+                                   LP_PARAM_USER_ID: [ApiConfig shared].userId ?: @"",
                                    LP_PARAM_SDK_VERSION: constants.sdkVersion,
                                    LP_PARAM_CLIENT: constants.client,
                                    LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),
                                    LP_PARAM_TIME: timestamp,
                                    LP_PARAM_REQUEST_ID: self.requestId,
                                    } mutableCopy];
-    if ([LPAPIConfig sharedConfig].token) {
-        args[LP_PARAM_TOKEN] = [LPAPIConfig sharedConfig].token;
+    if ([ApiConfig shared].token) {
+        args[LP_PARAM_TOKEN] = [ApiConfig shared].token;
     }
     if (self.params && self.params.count > 0) {
         [args addEntriesFromDictionary:self.params];

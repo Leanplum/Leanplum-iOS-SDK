@@ -7,20 +7,20 @@
 
 #import <Foundation/Foundation.h>
 
-@interface LPAPIConfig : NSObject
-
-@property (nonatomic, readonly) NSString *appId;
-@property (nonatomic, readonly) NSString *accessKey;
-
-@property (nonatomic, strong) NSString *deviceId;
-@property (nonatomic, strong) NSString *userId;
-@property (nonatomic, strong) NSString *token;
-
-+ (instancetype)sharedConfig;
-
-- (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
-
-- (void)loadToken;
-- (void)saveToken;
-
-@end
+//@interface LPAPIConfig : NSObject
+//
+//@property (nonatomic, readonly) NSString *appId;
+//@property (nonatomic, readonly) NSString *accessKey;
+//
+//@property (nonatomic, strong) NSString *deviceId;
+//@property (nonatomic, strong) NSString *userId;
+//@property (nonatomic, strong) NSString *token;
+//
+//+ (instancetype)sharedConfig;
+//
+//- (void)setAppId:(NSString *)appId withAccessKey:(NSString *)accessKey;
+//
+//- (void)loadToken;
+//- (void)saveToken;
+//
+//@end

@@ -77,4 +77,6 @@ typedef void (^LPNetworkProgressBlock)(double progress);
 - (void)enqueueOperation:(id<LPNetworkOperationProtocol>)operation;
 - (void)runSynchronously:(id<LPNetworkOperationProtocol>)operation;
 
+- (void)setHostName:(NSString *)hostName;
+
 @end

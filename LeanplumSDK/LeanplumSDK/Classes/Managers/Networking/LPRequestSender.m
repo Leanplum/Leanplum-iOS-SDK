@@ -36,6 +36,7 @@
 #import "LPRequestSenderTimer.h"
 #import "LPRequestBatchFactory.h"
 #import "LPRequestUUIDHelper.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequestSender()
 
@@ -47,7 +48,6 @@
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
-@property (nonatomic) BOOL onceHost;
 @end
 
 
@@ -70,13 +70,23 @@
             if (!_requestHeaders) {
                 _requestHeaders = [LPNetworkEngine createHeaders];
             }
-            _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
+            _engine = [LPNetworkFactory engineWithHostName:[ApiConfig shared].apiHostName
                                         customHeaderFields:_requestHeaders];
         }
         [[LPRequestSenderTimer sharedInstance] start];
         _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
+}
+
+- (void)updateApiHost:(NSString *)host
+{
+    if (!host) {
+        LPLog(LPError, @"Cannot update host. Host is nil");
+        return;
+    }
+    
+    [_engine setHostName:host];
 }
 
 - (void)send:(LPRequest *)request
@@ -95,12 +105,12 @@
 
 - (BOOL)validateConfigFor:(LPRequest *)request
 {
-    if (![LPAPIConfig sharedConfig].appId) {
+    if (![ApiConfig shared].appId) {
         LPLog(LPError, @"Cannot send request. appId is not set");
         return false;
     }
     
-    if (![LPAPIConfig sharedConfig].accessKey) {
+    if (![ApiConfig shared].appId) {
         LPLog(LPError, @"Cannot send request. accessKey is not set");
         return false;
     }
@@ -143,10 +153,11 @@
                 return;
             }
             
-            NSString *uuid = [LPRequestUUIDHelper loadUUID];
+            NSString *uuid = [self uuid];
             NSInteger count = [LPEventDataManager count];
-            if (!uuid || count % LP_MAX_EVENTS_PER_API_CALL == 0) {
-                uuid = [LPRequestUUIDHelper generateUUID];
+            if (count % LP_MAX_EVENTS_PER_API_CALL == 0) {
+                uuid = [[NSUUID UUID] UUIDString];
+                [self setUuid:uuid];
             }
 
             NSMutableDictionary *args = [request createArgsDictionary];
@@ -170,12 +181,12 @@
 - (void)sendNow:(LPRequest *)request withDatas:(NSDictionary *)datas
 {
     NSMutableDictionary *dict = [request createArgsDictionary];
-    [LPNetworkEngine attachApiKeys:dict];
+    [ApiConfig attachApiKeysWithDict:dict];
     id<LPNetworkOperationProtocol> op =
-    [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+    [self.engine operationWithPath:[ApiConfig shared].apiServlet
                             params:dict
                         httpMethod:@"POST"
-                               ssl:[LPConstantsState sharedState].apiSSL
+                               ssl:[ApiConfig shared].apiSSL
                     timeoutSeconds:60];
 
     [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -209,7 +220,8 @@
             return;
         }
 
-        [LPRequestUUIDHelper generateUUID];
+        // Update UUID
+        [self setUuid:[[NSUUID UUID] UUIDString]];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
         [[LPCountAggregator sharedAggregator] sendAllCounts];
@@ -230,7 +242,7 @@
                                                    LP_PARAM_ACTION: LP_API_METHOD_MULTI,
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
-        [LPNetworkEngine attachApiKeys:multiRequestArgs];
+        [ApiConfig attachApiKeysWithDict:multiRequestArgs];
         int timeout = constants.networkTimeoutSeconds;
 
         NSTimeInterval uiTimeoutInterval = timeout;
@@ -241,10 +253,10 @@
         });
         self.didUiTimeout = NO;
 
-        id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:constants.apiServlet
+        id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:[ApiConfig shared].apiServlet
                                                                     params:multiRequestArgs
                                                                 httpMethod:@"POST"
-                                                                       ssl:constants.apiSSL
+                                                                       ssl:[ApiConfig shared].apiSSL
                                                             timeoutSeconds:timeout];
 
         // Request callbacks.
@@ -257,22 +269,6 @@
 
             [self.uiTimeoutTimer invalidate];
             self.uiTimeoutTimer = nil;
-            
-            NSDictionary *testJson = @{
-                @"response": @[
-                    @{
-                        @"success": @(NO),
-                        @"apiHost": @"api2.leanplum.com",
-                        @"apiServlet": @"new-api",
-                        @"devServerHost": @"dev2.leanplum.com"
-                    }
-                ]
-            };
-            
-            if (!self.onceHost) {
-                self.onceHost = YES;
-                json = testJson;
-            }
             
             if ([json isKindOfClass:NSDictionary.class]) {
                 BOOL isEndpointChangeRequest = NO;
@@ -288,13 +284,13 @@
                     NSString *devServerHost = [response objectForKey:@"devServerHost"];
                     if (apiHost || apiServlet) {
                         isEndpointChangeRequest = YES;
-                        apiHost = apiHost ? apiHost : [LPConstantsState sharedState].apiHostName;
-                        apiServlet = apiServlet ? apiServlet : [LPConstantsState sharedState].apiServlet;
+                        apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
+                        apiServlet = apiServlet ? apiServlet : [ApiConfig shared].apiServlet;
                         [Leanplum setApiHostName:apiHost withServletName:apiServlet usingSsl:YES];
                     }
                     if (devServerHost) {
                         isEndpointChangeRequest = YES;
-                        [[LPConstantsState sharedState] setSocketHost:devServerHost];
+                        [[ApiConfig shared] setSocketHost:devServerHost];
                     }
                     
                     if (isEndpointChangeRequest) {
@@ -302,7 +298,7 @@
                     }
                 }
                 if (isEndpointChangeRequest) {
-                    // Retry request on new endpoint
+                    // Retry the same request on the new endpoint
                     [self sendRequests];
                     dispatch_semaphore_signal(semaphore);
                     return;

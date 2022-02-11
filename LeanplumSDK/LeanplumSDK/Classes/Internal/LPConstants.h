@@ -70,11 +70,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_SWIFT_NAME(Leanplum.Constants)
 @interface LPConstantsState : NSObject {
-    NSString *_apiHostName;
-    NSString *_apiServlet;
-    BOOL _apiSSL;
-    NSString *_socketHost;
-    int _socketPort;
     int _networkTimeoutSeconds;
     int _networkTimeoutSecondsForDownloads;
     int _syncNetworkTimeoutSeconds;
@@ -89,16 +84,11 @@ NS_SWIFT_NAME(Leanplum.Constants)
     int _userCodeBlocks;
 }
 
-@property(strong, nonatomic) NSString *apiHostName;
-@property(strong, nonatomic) NSString *socketHost;
-@property(assign, nonatomic) int socketPort;
-@property(assign, nonatomic) BOOL apiSSL;
 @property(assign, nonatomic) int networkTimeoutSeconds;
 @property(assign, nonatomic) int networkTimeoutSecondsForDownloads;
 @property(assign, nonatomic) int syncNetworkTimeoutSeconds;
 @property(assign, nonatomic) BOOL isDevelopmentModeEnabled;
 @property(assign, nonatomic) BOOL loggingEnabled;
-@property(strong, nonatomic) NSString *apiServlet;
 @property(assign, nonatomic) BOOL isTestMode;
 @property(assign, nonatomic) BOOL isInPermanentFailureState;
 @property(strong, nonatomic) NSString *client;

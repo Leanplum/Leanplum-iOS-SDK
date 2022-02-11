@@ -27,6 +27,7 @@
 #import "LeanplumInternal.h"
 #import "LPCountAggregator.h"
 #import "LPAPIConfig.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPNetworkEngine()
 
@@ -78,10 +79,11 @@
 
 - (void)setHostName:(NSString *)hostName
 {
-    _hostName = hostName;
-
-    self.reachability = [Leanplum_Reachability reachabilityWithHostname:_hostName];
-    [self.reachability startNotifier];
+    if (_hostName != hostName) {
+        _hostName = hostName;
+        self.reachability = [Leanplum_Reachability reachabilityWithHostname:_hostName];
+        [self.reachability startNotifier];
+    }
 }
 
 - (id<LPNetworkOperationProtocol>)operationWithPath:(NSString *)path
@@ -150,7 +152,7 @@
     NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
                                  infoDict[(NSString *)kCFBundleNameKey],
                                  infoDict[(NSString *)kCFBundleVersionKey],
-                                 [LPAPIConfig sharedConfig].appId,
+                                 [ApiConfig shared].appId,
                                  LEANPLUM_CLIENT,
                                  LEANPLUM_SDK_VERSION,
                                  [[UIDevice currentDevice] systemName],
@@ -162,12 +164,6 @@
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
     
     return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
-}
-
-+ (void)attachApiKeys:(NSMutableDictionary *)dict
-{
-    dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
-    dict[LP_PARAM_CLIENT_KEY] = [LPAPIConfig sharedConfig].accessKey;
 }
 
 @end

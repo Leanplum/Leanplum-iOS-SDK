@@ -8,7 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
-#import <Leanplum/LPAPIConfig.h>
+#import <OHHTTPStubs/HTTPStubs.h>
+#import <OHHTTPStubs/HTTPStubsPathHelpers.h>
 #import <Leanplum/LPEventDataManager.h>
 #import <Leanplum/LPNetworkProtocol.h>
 #import <Leanplum/LPRequestSender.h>
@@ -17,6 +18,7 @@
 #import <Leanplum/LPCountAggregator.h>
 #import "LeanplumHelper.h"
 #import <Leanplum/LPOperationQueue.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequestSender(UnitTest)
 
@@ -55,8 +57,8 @@
     LPRequest *request = [LPRequest post:@"test" params:@{}];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id requestSenderMock = OCMPartialMock(requestSender);
-    id configMock = OCMClassMock([LPAPIConfig class]);
-    OCMStub([configMock sharedConfig]).andReturn(configMock);
+    id configMock = OCMClassMock([ApiConfig class]);
+    OCMStub([configMock shared]).andReturn(configMock);
     OCMStub([configMock appId]).andReturn(@"appID");
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
     [requestSender send:request];
@@ -71,8 +73,8 @@
     LPRequest *request = [[LPRequest post:@"test" params:@{}] andRequestType:Immediate];
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     id requestSenderMock = OCMPartialMock(requestSender);
-    id configMock = OCMClassMock([LPAPIConfig class]);
-    OCMStub([configMock sharedConfig]).andReturn(configMock);
+    id configMock = OCMClassMock([ApiConfig class]);
+    OCMStub([configMock shared]).andReturn(configMock);
     OCMStub([configMock appId]).andReturn(@"appID");
     OCMStub([configMock accessKey]).andReturn(@"accessKey");
     [requestSender send:request];
@@ -157,6 +159,39 @@
     OCMVerify([opMock addCompletionHandler:[OCMArg any] errorHandler:[OCMArg any]]);
     
     [opMock stopMocking];
+}
+
+- (void)testSendRequestsUpdateHost {
+    
+    [Leanplum setAppId:@"123" withProductionKey:@"123"];
+    [Leanplum setApiHostName:API_HOST withServletName:@"api" usingSsl:YES];
+    
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:API_HOST];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        NSString *response_file = OHPathForFile(@"change_host_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+    XCTestExpectation *expectRetryOnNewHost = [self expectationWithDescription:@"testSendRequestsUpdateHost"];
+    
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.host isEqualToString:@"api2.leanplum.com"];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        [expectRetryOnNewHost fulfill];
+        NSString *response_file = OHPathForFile(@"action_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                   headers:@{@"Content-Type":@"application/json"}];
+    }];
+    
+
+    
+    LPRequest *request = [[LPRequest post:@"test" params:@{}] andRequestType:Immediate];
+    // use shared instance
+    [[LPRequestSender sharedInstance] send:request];
+
+    [self waitForExpectations:@[expectRetryOnNewHost] timeout:500.0];
 }
 
 @end

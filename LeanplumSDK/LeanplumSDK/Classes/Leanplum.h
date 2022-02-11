@@ -66,6 +66,7 @@
 #import "LPAES.h"
 #import "LPLogManager.h"
 #import "LPRequestSenderTimer.h"
+#import "LPRequestSender.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

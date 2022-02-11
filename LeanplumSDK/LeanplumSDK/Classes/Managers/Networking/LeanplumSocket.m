@@ -30,6 +30,7 @@
 #import "LPUIAlert.h"
 #import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 id<LPNetworkEngineProtocol> engine_;
 
@@ -60,11 +61,11 @@ static dispatch_once_t leanplum_onceToken;
                                                                         kCFBundleNameKey],
                                      NSBundle.mainBundle.infoDictionary[(NSString *)
                                                                         kCFBundleVersionKey],
-                                     [LPAPIConfig sharedConfig].appId,
+                                     [ApiConfig shared].appId,
                                      LEANPLUM_CLIENT,
                                      LEANPLUM_SDK_VERSION];
         engine_ = [LPNetworkFactory
-                   engineWithHostName:[LPConstantsState sharedState].socketHost
+                   engineWithHostName:[ApiConfig shared].socketHost
                    customHeaderFields:@{@"User-Agent": userAgentString}];
     }
     return engine_;
@@ -102,9 +103,9 @@ static dispatch_once_t leanplum_onceToken;
 
 - (void)connect
 {
-    int port = [LPConstantsState sharedState].socketPort;
+    int port = [ApiConfig shared].socketPort;
     [_socketIO connectWithEngine:[LeanplumSocket engine]
-                        withHost:[LPConstantsState sharedState].socketHost
+                        withHost:[ApiConfig shared].socketHost
                           onPort:port
                 secureConnection:port == 443];
 }
