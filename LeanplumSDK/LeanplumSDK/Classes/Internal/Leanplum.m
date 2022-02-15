@@ -153,23 +153,23 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)setApiHostName:(NSString *)hostName
-       withServletName:(NSString *)servletName
+       withPath:(NSString *)apiPath
               usingSsl:(BOOL)ssl
 {
     if ([LPUtils isNullOrEmpty:hostName]) {
-        [self throwError:@"[Leanplum setApiHostName:withServletName:usingSsl:] Empty hostname "
+        [self throwError:@"[Leanplum setApiHostName:withPath:usingSsl:] Empty hostname "
          @"parameter provided."];
         return;
     }
-    if ([LPUtils isNullOrEmpty:servletName]) {
-        [self throwError:@"[Leanplum setApiHostName:withServletName:usingSsl:] Empty servletName "
+    if ([LPUtils isNullOrEmpty:apiPath]) {
+        [self throwError:@"[Leanplum setApiHostName:withPath:usingSsl:] Empty apiPath "
          @"parameter provided."];
         return;
     }
 
     LP_TRY
     [ApiConfig shared].apiHostName = hostName;
-    [ApiConfig shared].apiServlet = servletName;
+    [ApiConfig shared].apiPath = apiPath;
     [ApiConfig shared].apiSSL = ssl;
     LP_END_TRY
 }

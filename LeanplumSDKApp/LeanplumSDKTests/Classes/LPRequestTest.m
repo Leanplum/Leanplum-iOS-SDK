@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import <Leanplum/LPRequest.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequest(UnitTest)
 
@@ -65,6 +66,7 @@
                                    LP_PARAM_TIME: timestamp,
                                    LP_PARAM_UUID: @"uuid",
                                    LP_PARAM_REQUEST_ID: request.requestId,
+                                   LP_PARAM_TOKEN: [ApiConfig shared].token,
                                    } mutableCopy];
     NSMutableDictionary *args = [request createArgsDictionary];
     args[LP_PARAM_UUID] = @"uuid";

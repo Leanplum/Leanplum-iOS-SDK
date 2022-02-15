@@ -3,8 +3,11 @@
         {
             "success": false,
             "apiHost": "api2.leanplum.com",
-            "apiServlet": "new-api",
-            "devServerHost": "dev2.leanplum.com"
+            "apiPath": "new-api",
+            "devServerHost": "dev2.leanplum.com",
+            "error": {
+                "message": "App endpoint configuration mismatch."
+            }
         }
     ]
 }

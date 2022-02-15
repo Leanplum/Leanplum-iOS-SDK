@@ -47,6 +47,7 @@ NSString *DEVELOPMENT_KEY = @"dev_2bbeWLmVJyNrqI8F21Kn9nqyUPRkVCUoLddBkHEyzmk";
 NSString *PRODUCTION_KEY = @"prod_XYpURdwPAaxJyYLclXNfACe9Y8hs084dBx2pB8wOnqU";
 
 NSString *API_HOST = @"api.leanplum.com";
+NSString *API_PATH = @"api";
 
 NSInteger DISPATCH_WAIT_TIME = 4;
 
@@ -158,7 +159,9 @@ static BOOL swizzled = NO;
     [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];
     
-    [[ApiConfig shared] setAppId:@"" accessKey:@""];
+    // Reset values directly
+    [ApiConfig shared].appId = nil;
+    [ApiConfig shared].accessKey = nil;
     
     [LPRequest reset];
     [LPRequestSender reset];

@@ -183,7 +183,7 @@
     NSMutableDictionary *dict = [request createArgsDictionary];
     [ApiConfig attachApiKeysWithDict:dict];
     id<LPNetworkOperationProtocol> op =
-    [self.engine operationWithPath:[ApiConfig shared].apiServlet
+    [self.engine operationWithPath:[ApiConfig shared].apiPath
                             params:dict
                         httpMethod:@"POST"
                                ssl:[ApiConfig shared].apiSSL
@@ -253,7 +253,7 @@
         });
         self.didUiTimeout = NO;
 
-        id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:[ApiConfig shared].apiServlet
+        id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:[ApiConfig shared].apiPath
                                                                     params:multiRequestArgs
                                                                 httpMethod:@"POST"
                                                                        ssl:[ApiConfig shared].apiSSL
@@ -280,13 +280,13 @@
                     }
                     
                     NSString *apiHost = [response objectForKey:@"apiHost"];
-                    NSString *apiServlet = [response objectForKey:@"apiServlet"];
+                    NSString *apiPath = [response objectForKey:@"apiPath"];
                     NSString *devServerHost = [response objectForKey:@"devServerHost"];
-                    if (apiHost || apiServlet) {
+                    if (apiHost || apiPath) {
                         isEndpointChangeRequest = YES;
                         apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
-                        apiServlet = apiServlet ? apiServlet : [ApiConfig shared].apiServlet;
-                        [Leanplum setApiHostName:apiHost withServletName:apiServlet usingSsl:YES];
+                        apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
+                        [Leanplum setApiHostName:apiHost withPath:apiPath usingSsl:YES];
                     }
                     if (devServerHost) {
                         isEndpointChangeRequest = YES;

@@ -162,9 +162,8 @@
 }
 
 - (void)testSendRequestsUpdateHost {
-    
-    [Leanplum setAppId:@"123" withProductionKey:@"123"];
-    [Leanplum setApiHostName:API_HOST withServletName:@"api" usingSsl:YES];
+    [Leanplum setAppId:@"test" withProductionKey:@"test"];
+    [Leanplum setApiHostName:API_HOST withPath:API_PATH usingSsl:YES];
     
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
@@ -174,7 +173,7 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
-    XCTestExpectation *expectRetryOnNewHost = [self expectationWithDescription:@"testSendRequestsUpdateHost"];
+    XCTestExpectation *expectRetryOnNewHost = [self expectationWithDescription:@"request_update_host_expectation"];
     
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:@"api2.leanplum.com"];
@@ -182,16 +181,17 @@
         [expectRetryOnNewHost fulfill];
         NSString *response_file = OHPathForFile(@"action_response.json", self.class);
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
+                                                 headers:@{@"Content-Type":@"application/json"}];
     }];
     
-
-    
     LPRequest *request = [[LPRequest post:@"test" params:@{}] andRequestType:Immediate];
-    // use shared instance
+    // Use shared instance
     [[LPRequestSender sharedInstance] send:request];
 
-    [self waitForExpectations:@[expectRetryOnNewHost] timeout:500.0];
+    [self waitForExpectations:@[expectRetryOnNewHost] timeout:5];
+    
+    // Reset endpoint
+    [Leanplum setApiHostName:API_HOST withPath:API_PATH usingSsl:YES];
 }
 
 @end

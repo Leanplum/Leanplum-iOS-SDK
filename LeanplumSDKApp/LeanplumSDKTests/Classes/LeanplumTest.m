@@ -2124,25 +2124,26 @@
 - (void)test_configuration
 {
     NSString* host = @"test_host";
-    NSString* servlet = @"servlet";
+    NSString* path = @"test_path";
     
-    XCTAssertEqualObjects([ApiConfig shared].apiHostName, @"api.leanplum.com");
-    XCTAssertEqualObjects([ApiConfig shared].apiServlet, @"api");
+    XCTAssertEqualObjects([ApiConfig shared].apiHostName, API_HOST);
+    XCTAssertEqualObjects([ApiConfig shared].apiPath, API_PATH);
     
-    [Leanplum setApiHostName:host withServletName:servlet usingSsl:true];
-
+    [Leanplum setApiHostName:host withPath:path usingSsl:true];
     XCTAssertEqual([ApiConfig shared].apiHostName, host);
-    XCTAssertEqual([ApiConfig shared].apiServlet, servlet);
+    XCTAssertEqual([ApiConfig shared].apiPath, path);
     
-    [Leanplum setApiHostName:nil withServletName:nil usingSsl:true];
-    
+    // Nil is not a valid value, api config must be unchanged
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
+    [Leanplum setApiHostName:nil withPath:nil usingSsl:true];
+    #pragma clang diagnostic pop
     XCTAssertEqual([ApiConfig shared].apiHostName, host);
-    XCTAssertEqual([ApiConfig shared].apiServlet, servlet);
+    XCTAssertEqual([ApiConfig shared].apiPath, path);
     
-    [Leanplum setApiHostName:host withServletName:nil usingSsl:true];
-    
-    XCTAssertEqual([ApiConfig shared].apiHostName, host);
-    XCTAssertEqual([ApiConfig shared].apiServlet, servlet);
+    [Leanplum setApiHostName:API_HOST withPath:API_PATH usingSsl:true];
+    XCTAssertEqual([ApiConfig shared].apiHostName, API_HOST);
+    XCTAssertEqual([ApiConfig shared].apiPath, API_PATH);
     
     int timeout = 10;
     
@@ -2355,7 +2356,6 @@
 {
     NSString *messageID = @"testMessageID";
     NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
 
     LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
@@ -2374,7 +2374,6 @@
 {
     NSString *messageID = @"testMessageID";
     NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
 
     LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
@@ -2393,8 +2392,7 @@
 {
     NSString *messageID = @"testMessageID";
     NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
-
+    
     LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
 

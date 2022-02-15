@@ -255,7 +255,7 @@
     } else if ([self.filenameToURLs valueForKey:path]) {
         op = [self.engine operationWithURLString:[self.filenameToURLs valueForKey:path]];
     } else {
-        op = [self.engine operationWithPath:[ApiConfig shared].apiServlet
+        op = [self.engine operationWithPath:[ApiConfig shared].apiPath
                                      params:dict
                                  httpMethod:[LPNetworkFactory fileRequestMethod]
                                         ssl:[ApiConfig shared].apiSSL

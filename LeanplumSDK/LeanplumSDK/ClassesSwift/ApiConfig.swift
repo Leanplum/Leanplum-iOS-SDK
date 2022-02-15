@@ -41,7 +41,7 @@ import Foundation
         static let keyChainUserName = "defaultUser";
         
         static let apiHostName = "api.leanplum.com";
-        static let apiServlet = "api";
+        static let apiPath = "api";
         static let apiSSL = true
         static let socketHost = "dev.leanplum.com";
         static let socketPort = 443;
@@ -84,12 +84,12 @@ import Foundation
         }
     }
     
-    @objc public var apiServlet: String {
+    @objc public var apiPath: String {
         get {
             if let apiServlet = UserDefaults.standard.string(forKey: Constants.apiServletKey) {
                 return apiServlet
             }
-            return Constants.apiServlet
+            return Constants.apiPath
         }
         set {
             UserDefaults.standard.setValue(newValue, forKey: Constants.apiServletKey)
