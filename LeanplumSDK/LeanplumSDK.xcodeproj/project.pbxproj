@@ -767,13 +767,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		075AAEE926847FE1007CA1BD /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6A714B9C26F8B317004A34A9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -1496,8 +1489,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 075AAEEF26847FE1007CA1BD /* Build configuration list for PBXNativeTarget "Leanplum-Bundle" */;
 			buildPhases = (
-				075AAEE826847FE1007CA1BD /* Sources */,
-				075AAEE926847FE1007CA1BD /* Frameworks */,
 				075AAEEA26847FE1007CA1BD /* Resources */,
 			);
 			buildRules = (
@@ -1695,13 +1686,6 @@
 				075AAED126847EC4007CA1BD /* LPEnumConstants.m in Sources */,
 				075AAEDA26847EC4007CA1BD /* LPExceptionHandler.m in Sources */,
 				075AAE8526847EC4007CA1BD /* LPJSON.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		075AAEE826847FE1007CA1BD /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
