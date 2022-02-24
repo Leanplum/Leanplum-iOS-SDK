@@ -104,7 +104,10 @@ import Foundation
             return Constants.socketHost
         }
         set {
-            UserDefaults.standard.setValue(newValue, forKey: Constants.socketHostKey)
+            if newValue != socketHost {
+                UserDefaults.standard.setValue(newValue, forKey: Constants.socketHostKey)
+                LeanplumSocket.shared().connect(toNewHost: newValue)
+            }
         }
     }
     

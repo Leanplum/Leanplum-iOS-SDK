@@ -970,7 +970,9 @@ void leanplumExceptionHandler(NSException *exception);
         NSString *varsJson = [LPJSON stringFromJSON:[response valueForKey:LP_KEY_VARS]];
         NSString *varsSignature = response[LP_KEY_VARS_SIGNATURE];
         NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
-        [[ApiConfig shared] setToken:token];
+        if (token) {
+            [[ApiConfig shared] setToken:token];
+        }
         [[LPVarCache sharedCache] applyVariableDiffs:values
                                             messages:messages
                                             variants:variants

@@ -40,7 +40,7 @@
 @end
 
 @interface Leanplum_WebSocket : NSObject {
-    id<Leanplum_WebSocketDelegate> __unsafe_unretained delegate;
+    id<Leanplum_WebSocketDelegate> __weak delegate;
     NSURL* url;
     Leanplum_AsyncSocket* socket;
     BOOL connected;
@@ -49,7 +49,7 @@
     NSArray* runLoopModes;
 }
 
-@property(nonatomic,assign) id<Leanplum_WebSocketDelegate> delegate;
+@property(nonatomic,weak) id<Leanplum_WebSocketDelegate> delegate;
 @property(nonatomic,readonly) NSURL* url;
 @property(nonatomic,retain) NSString* origin;
 @property(nonatomic,readonly) BOOL connected;

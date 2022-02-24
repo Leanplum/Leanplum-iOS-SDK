@@ -153,8 +153,6 @@ static BOOL swizzled = NO;
     [LPActionManager reset];
     [[ApiConfig shared] setDeviceId:nil];
     [[ApiConfig shared] setUserId:nil];
-    // TODO: fix -> nil throws exception
-    [[ApiConfig shared] setToken:nil];
     
     [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];

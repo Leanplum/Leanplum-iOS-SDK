@@ -48,6 +48,8 @@
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
+- (BOOL)updateApiConfig:(id)json;
+
 @end
 
 
@@ -270,39 +272,11 @@
             [self.uiTimeoutTimer invalidate];
             self.uiTimeoutTimer = nil;
             
-            if ([json isKindOfClass:NSDictionary.class]) {
-                BOOL isEndpointChangeRequest = NO;
-                
-                for (NSUInteger i = 0; i < [LPResponse numResponsesInDictionary:json]; i++) {
-                    NSDictionary *response = [LPResponse getResponseAt:i fromDictionary:json];
-                    if ([LPResponse isResponseSuccess:response]) {
-                        continue;
-                    }
-                    
-                    NSString *apiHost = [response objectForKey:@"apiHost"];
-                    NSString *apiPath = [response objectForKey:@"apiPath"];
-                    NSString *devServerHost = [response objectForKey:@"devServerHost"];
-                    if (apiHost || apiPath) {
-                        isEndpointChangeRequest = YES;
-                        apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
-                        apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
-                        [Leanplum setApiHostName:apiHost withPath:apiPath usingSsl:YES];
-                    }
-                    if (devServerHost) {
-                        isEndpointChangeRequest = YES;
-                        [[ApiConfig shared] setSocketHost:devServerHost];
-                    }
-                    
-                    if (isEndpointChangeRequest) {
-                        break;
-                    }
-                }
-                if (isEndpointChangeRequest) {
-                    // Retry the same request on the new endpoint
-                    [self sendRequests];
-                    dispatch_semaphore_signal(semaphore);
-                    return;
-                }
+            if ([self updateApiConfig:json]) {
+                // Retry the same request on the new endpoint
+                [self sendRequests];
+                dispatch_semaphore_signal(semaphore);
+                return;
             }
             
             // Delete events on success.
@@ -392,7 +366,32 @@
     [[LPOperationQueue serialQueue] addOperation:requestOperation];
 }
 
--(void)uiDidTimeout {
+- (BOOL)updateApiConfig:(id)json {
+    if ([json isKindOfClass:NSDictionary.class]) {
+        for (NSUInteger i = 0; i < [LPResponse numResponsesInDictionary:json]; i++) {
+            NSDictionary *response = [LPResponse getResponseAt:i fromDictionary:json];
+            if ([LPResponse isResponseSuccess:response]) {
+                continue;
+            }
+            
+            NSString *apiHost = [response objectForKey:@"apiHost"];
+            NSString *apiPath = [response objectForKey:@"apiPath"];
+            NSString *devServerHost = [response objectForKey:@"devServerHost"];
+            if (apiHost || apiPath || devServerHost) {
+                apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
+                apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
+                [Leanplum setApiHostName:apiHost withPath:apiPath usingSsl:[ApiConfig shared].apiSSL];
+                
+                devServerHost = devServerHost ? devServerHost : [ApiConfig shared].socketHost;
+                [Leanplum setSocketHostName:devServerHost withPortNumber:(int)[ApiConfig shared].socketPort];
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+- (void)uiDidTimeout {
     self.didUiTimeout = YES;
     [self.uiTimeoutTimer invalidate];
     self.uiTimeoutTimer = nil;

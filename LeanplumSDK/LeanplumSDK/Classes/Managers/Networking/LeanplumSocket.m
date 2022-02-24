@@ -75,15 +75,21 @@ static dispatch_once_t leanplum_onceToken;
 {
     self = [super init];
     if (self) {
-        if (![LPConstantsState sharedState].isTestMode) {
-            if (_socketIO == nil) {
-                _socketIO = [[Leanplum_SocketIO alloc] initWithDelegate:self];
-            }
-            _connected = NO;
-        }
-        _countAggregator = [LPCountAggregator sharedAggregator];
+        [self initWithDelegate];
     }
     return self;
+}
+
+- (void)initWithDelegate
+{
+    if (![LPConstantsState sharedState].isTestMode) {
+        if (_socketIO == nil) {
+            _socketIO = [[Leanplum_SocketIO alloc] initWithDelegate:self];
+        }
+        _connected = NO;
+        _authSent = NO;
+    }
+    _countAggregator = [LPCountAggregator sharedAggregator];
 }
 
 - (void)connectToAppId:(NSString *)appId deviceId:(NSString *)deviceId
@@ -103,7 +109,7 @@ static dispatch_once_t leanplum_onceToken;
 
 - (void)connect
 {
-    int port = [ApiConfig shared].socketPort;
+    long port = [ApiConfig shared].socketPort;
     [_socketIO connectWithEngine:[LeanplumSocket engine]
                         withHost:[ApiConfig shared].socketHost
                           onPort:port
@@ -113,6 +119,16 @@ static dispatch_once_t leanplum_onceToken;
 - (void)reconnect
 {
     if (!_connected) {
+        [self connect];
+    }
+}
+
+- (void)connectToNewHost:(NSString *)newHost
+{
+    [[LeanplumSocket engine] setHostName:newHost];
+    if (_connected || [_socketIO isConnecting]) {
+        _socketIO = nil;
+        [self initWithDelegate];
         [self connect];
     }
 }
@@ -131,9 +147,16 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
--(void)socketIODidDisconnect:(Leanplum_SocketIO *)socketIO
+- (void)socketIODidDisconnect:(Leanplum_SocketIO *)socketIO
 {
     LPLog(LPInfo, @"Disconnected from development server");
+    _connected = NO;
+    _authSent = NO;
+}
+
+- (void)socketIOHandshakeFailed:(Leanplum_SocketIO *)socket
+{
+    LPLog(LPInfo, @"Handshake with development server failed");
     _connected = NO;
     _authSent = NO;
 }

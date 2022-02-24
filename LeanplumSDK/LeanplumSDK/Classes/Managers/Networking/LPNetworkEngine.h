@@ -31,7 +31,6 @@
 @interface LPNetworkEngine : NSObject<LPNetworkEngineProtocol>
 
 @property (nonatomic, strong) NSURLSessionConfiguration *sessionConfiguration;
-@property (strong, nonatomic) Leanplum_Reachability *reachability;
 
 /**
  * Create Request Headers for network call

@@ -77,15 +77,6 @@
     self.sessionConfiguration = nil;
 }
 
-- (void)setHostName:(NSString *)hostName
-{
-    if (_hostName != hostName) {
-        _hostName = hostName;
-        self.reachability = [Leanplum_Reachability reachabilityWithHostname:_hostName];
-        [self.reachability startNotifier];
-    }
-}
-
 - (id<LPNetworkOperationProtocol>)operationWithPath:(NSString *)path
                                              params:(NSMutableDictionary *)body
                                          httpMethod:(NSString *)method
@@ -152,7 +143,7 @@
     NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
                                  infoDict[(NSString *)kCFBundleNameKey],
                                  infoDict[(NSString *)kCFBundleVersionKey],
-                                 [ApiConfig shared].appId,
+                                 [[ApiConfig shared] appId],
                                  LEANPLUM_CLIENT,
                                  LEANPLUM_SDK_VERSION,
                                  [[UIDevice currentDevice] systemName],
