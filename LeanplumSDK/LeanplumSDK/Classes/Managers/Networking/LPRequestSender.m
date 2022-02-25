@@ -30,12 +30,10 @@
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
-#import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
 #import "LPNetworkConstants.h"
 #import "LPRequestSenderTimer.h"
 #import "LPRequestBatchFactory.h"
-#import "LPRequestUUIDHelper.h"
 #import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequestSender()

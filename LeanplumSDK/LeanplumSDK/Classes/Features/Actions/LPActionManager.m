@@ -33,7 +33,6 @@
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
-#import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
 
 #import <objc/runtime.h>

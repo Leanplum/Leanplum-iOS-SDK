@@ -9,15 +9,6 @@ import Foundation
 
 @objc public class ApiConfig: NSObject {
     
-    // TODO: Split
-    // (Leanplum)User
-    // user id
-    // device id
-    
-    // AppConfig
-    // app key
-    // client key
-    
     @objc public static let shared: ApiConfig = .init()
     
     @objc public private(set) var appId: String?
@@ -25,7 +16,6 @@ import Foundation
     
     @objc public var userId: String?
     @objc public var deviceId: String?
-    
     
     @objc public var socketPort = Constants.socketPort
     @objc public var apiSSL = Constants.apiSSL

@@ -27,7 +27,6 @@
 #import "LPCountAggregator.h"
 #import "LPNetworkConstants.h"
 #import "LPConstants.h"
-#import "LPAPIConfig.h"
 #import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequest()

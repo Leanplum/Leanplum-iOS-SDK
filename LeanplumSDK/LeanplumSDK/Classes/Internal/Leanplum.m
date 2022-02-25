@@ -46,7 +46,6 @@
 #import "LPRequestFactory.h"
 #import "LPFileTransferManager.h"
 #import "LPRequestSender.h"
-#import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
 #import "LPDeferMessageManager.h"
 #include <sys/sysctl.h>

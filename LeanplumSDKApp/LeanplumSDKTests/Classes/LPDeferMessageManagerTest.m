@@ -13,7 +13,6 @@
 #import "LeanplumHelper.h"
 #import <Leanplum/LPDeferMessageManager.h>
 #import <Leanplum/LPAlertMessageTemplate.h>
-#import <Leanplum/LPAPIConfig.h>
 
 @interface LPDeferMessageManagerTest : XCTestCase
 
