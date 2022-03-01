@@ -134,8 +134,8 @@ void leanplumExceptionHandler(NSException *exception);
 + (User*)user
 {
     static User *userInstance = nil;
-    static dispatch_once_t onceLPInternalStateToken;
-    dispatch_once(&onceLPInternalStateToken, ^{
+    static dispatch_once_t onceUserInstanceToken;
+    dispatch_once(&onceUserInstanceToken, ^{
         userInstance = [User new];
     });
     return userInstance;
