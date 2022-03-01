@@ -151,8 +151,8 @@ static BOOL swizzled = NO;
     [[LPVarCache sharedCache] reset];
     [[LPVarCache sharedCache] initialize];
     [LPActionManager reset];
-    [[ApiConfig shared] setDeviceId:nil];
-    [[ApiConfig shared] setUserId:nil];
+    [[Leanplum user] setDeviceId:nil];
+    [[Leanplum user] setUserId:nil];
     
     [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];

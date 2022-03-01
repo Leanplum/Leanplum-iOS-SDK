@@ -99,8 +99,8 @@
     NSString *timestamp = [NSString stringWithFormat:@"%f", [[NSDate date] timeIntervalSince1970]];
     NSMutableDictionary *args = [@{
                                    LP_PARAM_ACTION: self.apiMethod,
-                                   LP_PARAM_DEVICE_ID: [ApiConfig shared].deviceId ?: @"",
-                                   LP_PARAM_USER_ID: [ApiConfig shared].userId ?: @"",
+                                   LP_PARAM_DEVICE_ID: [[Leanplum user] deviceId] ?: @"",
+                                   LP_PARAM_USER_ID: [[Leanplum user] userId] ?: @"",
                                    LP_PARAM_SDK_VERSION: constants.sdkVersion,
                                    LP_PARAM_CLIENT: constants.client,
                                    LP_PARAM_DEV_MODE: @(constants.isDevelopmentModeEnabled),

@@ -21,11 +21,11 @@ import Foundation
     }
     
     @objc public func saveNotificationSettings(_ settings: [AnyHashable: Any]) {
-        notificationSettings.settings = settings
+        Leanplum.user.notificationSettings = settings
     }
     
     @objc public func removeNotificationSettings() {
-        notificationSettings.settings = nil
+        Leanplum.user.notificationSettings = nil
     }
     
     @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [AnyHashable: Any], _ areChanged: Bool)->()) {
@@ -45,8 +45,8 @@ import Foundation
         let formattedToken = getFormattedDeviceTokenFromData(deviceToken)
         var deviceAttributeParams: [AnyHashable: Any] = [:]
 
-        if pushToken != formattedToken {
-            pushToken = formattedToken
+        if Leanplum.user.pushToken != formattedToken {
+            Leanplum.user.pushToken = formattedToken
             deviceAttributeParams[LP_PARAM_DEVICE_PUSH_TOKEN] = formattedToken
         }
                 
@@ -78,7 +78,7 @@ import Foundation
     
     @objc public func didFailToRegisterForRemoteNotificationsWithError(_ error: Error) {
         isAskToAskDisabled = true
-        pushToken = nil
+        Leanplum.user.pushToken = nil
     }
     
     // MARK: - Notification Actions

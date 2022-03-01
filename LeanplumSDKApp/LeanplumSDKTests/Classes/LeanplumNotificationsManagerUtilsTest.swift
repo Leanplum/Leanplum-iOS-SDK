@@ -23,8 +23,8 @@ class NotificationsManagerUtilsTest: XCTestCase {
     override class func setUp() {
         super.setUp()
         LeanplumHelper.setup_development_test()
-        ApiConfig.shared.deviceId = "testDeviceId"
-        ApiConfig.shared.userId = "testUserId"
+        Leanplum.user.deviceId = "testDeviceId"
+        Leanplum.user.userId = "testUserId"
     }
     
     override class func tearDown() {
@@ -71,10 +71,10 @@ class NotificationsManagerUtilsTest: XCTestCase {
     
     func testPushToken() {
         //clean push token if any
-        manager.pushToken = nil
-        XCTAssertNil(manager.pushToken)
-        manager.pushToken = "newToken"
-        XCTAssertEqual(manager.pushToken, "newToken")
+        Leanplum.user.pushToken = nil
+        XCTAssertNil(Leanplum.user.pushToken)
+        Leanplum.user.pushToken = "newToken"
+        XCTAssertEqual(Leanplum.user.pushToken, "newToken")
     }
     
     func testDisableAskToAsk() {

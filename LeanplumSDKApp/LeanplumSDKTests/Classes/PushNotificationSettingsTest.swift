@@ -29,8 +29,8 @@ class PushNotificationSettingsTest: XCTestCase {
         UNNotificationSettings.swizzleAuthorizationStatus()
         UNUserNotificationCenter.swizzleGetNotificationSettings()
         LeanplumHelper.setup_development_test()
-        ApiConfig.shared.deviceId = "testDeviceId"
-        ApiConfig.shared.userId = "testUserId"
+        Leanplum.user.deviceId = "testDeviceId"
+        Leanplum.user.userId = "testUserId"
     }
     
     override class func tearDown() {
@@ -110,7 +110,7 @@ class PushNotificationSettingsTest: XCTestCase {
     func testSaveAndRemoveSettings() {
         let testSettings: [AnyHashable: Any] = [LP_PARAM_DEVICE_USER_NOTIFICATION_TYPES: 7,
                             LP_PARAM_DEVICE_USER_NOTIFICATION_CATEGORIES: []]
-        notificationSettings.settings = testSettings
+        Leanplum.user.notificationSettings = testSettings
         
         guard let savedSettings = UserDefaults.standard.value(forKey: notificationSettings.key) as? [AnyHashable : Any] else {
             XCTFail("Settings are not saved")
@@ -118,7 +118,7 @@ class PushNotificationSettingsTest: XCTestCase {
         }
         XCTAssertTrue(NSDictionary(dictionary: savedSettings).isEqual(to: testSettings))
         
-        notificationSettings.settings = nil
+        Leanplum.user.notificationSettings = nil
         
         XCTAssertNil(UserDefaults.standard.value(forKey: notificationSettings.key))
     }
@@ -126,7 +126,7 @@ class PushNotificationSettingsTest: XCTestCase {
     func testUpdateSettingsToServer() {
         setUp_request()
         //first remove settings from defaults
-        notificationSettings.settings = nil
+        Leanplum.user.notificationSettings = nil
         //authorize settings to have push types
         UNNotificationSettings.fakeAuthorizationStatus = .authorized
         
@@ -159,8 +159,8 @@ extension NotificationSettings: NotificationSettingsProtocol {
         get {
             guard
                 let appId = ApiConfig.shared.appId,
-                let userId = ApiConfig.shared.userId,
-                let deviceId = ApiConfig.shared.deviceId else {
+                let userId = Leanplum.user.userId,
+                let deviceId = Leanplum.user.deviceId else {
                     return ""
                 }
             return String(format: LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY, appId, userId, deviceId)

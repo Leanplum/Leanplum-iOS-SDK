@@ -31,7 +31,9 @@
 
 @interface Leanplum(UnitTest)
 
-+ (NSLocale *)systemLocale;
+@property (class, readonly) User* _Nonnull user;
+
++ (NSLocale * _Nullable)systemLocale;
 
 + (void)reset;
 

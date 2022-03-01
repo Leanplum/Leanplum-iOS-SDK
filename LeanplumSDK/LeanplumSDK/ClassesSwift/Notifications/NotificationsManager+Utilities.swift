@@ -8,14 +8,6 @@
 import Foundation
 
 @objc extension NotificationsManager {
-    @objc public var pushToken: String? {
-        get {
-            UserDefaults.standard.string(forKey: key)
-        }
-        set {
-            UserDefaults.standard.setValue(newValue, forKey: key)
-        }
-    }
     
     @objc public var isAskToAskDisabled: Bool {
         get {
@@ -23,19 +15,6 @@ import Foundation
         }
         set {
             UserDefaults.standard.setValue(newValue, forKey: DEFAULTS_ASKED_TO_PUSH)
-        }
-    }
-    
-    private var key: String {
-        get {
-            guard
-                let appId = ApiConfig.shared.appId,
-                let userId = ApiConfig.shared.userId,
-                let deviceId = ApiConfig.shared.deviceId
-            else {
-                return ""
-            }
-            return String(format: LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY, appId, userId, deviceId)
         }
     }
     

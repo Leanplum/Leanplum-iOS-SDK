@@ -14,9 +14,6 @@ import Foundation
     @objc public private(set) var appId: String?
     @objc public private(set) var accessKey: String?
     
-    @objc public var userId: String?
-    @objc public var deviceId: String?
-    
     @objc public var socketPort = Constants.socketPort
     @objc public var apiSSL = Constants.apiSSL
     

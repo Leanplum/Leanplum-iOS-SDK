@@ -1095,7 +1095,7 @@
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
-    XCTAssertTrue([[ApiConfig shared].deviceId isEqualToString:deviceId]);
+    XCTAssertTrue([[Leanplum user].deviceId isEqualToString:deviceId]);
     
     [mockLeanplum stopMocking];
 }

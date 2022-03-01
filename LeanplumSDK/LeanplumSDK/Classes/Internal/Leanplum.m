@@ -131,6 +131,16 @@ void leanplumExceptionHandler(NSException *exception);
     return managerInstance;
 }
 
++ (User*)user
+{
+    static User *userInstance = nil;
+    static dispatch_once_t onceLPInternalStateToken;
+    dispatch_once(&onceLPInternalStateToken, ^{
+        userInstance = [User new];
+    });
+    return userInstance;
+}
+
 + (void)throwError:(NSString *)reason
 {
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
@@ -376,10 +386,10 @@ void leanplumExceptionHandler(NSException *exception);
     LP_TRY
     // If Leanplum start has been called already, changing the deviceId results in a new device
     // Ensure the id is updated and the new device has all attributes set
-    if ([LPInternalState sharedState].hasStarted && ![[ApiConfig shared].deviceId isEqualToString:deviceId]) {
+    if ([LPInternalState sharedState].hasStarted && ![[Leanplum user].deviceId isEqualToString:deviceId]) {
         [self setDeviceIdInternal:deviceId];
     } else {
-       [[ApiConfig shared] setDeviceId:deviceId];
+       [[Leanplum user] setDeviceId:deviceId];
     }
     LP_END_TRY
 }
@@ -397,7 +407,7 @@ void leanplumExceptionHandler(NSException *exception);
         LP_PARAM_DEVICE_ID: deviceId
     } mutableCopy];
     
-    NSString *pushToken = [Leanplum notificationsManager].pushToken;
+    NSString *pushToken = [Leanplum user].pushToken;
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
@@ -410,17 +420,17 @@ void leanplumExceptionHandler(NSException *exception);
         }
         
         //Clean UserDefaults before changing deviceId because it is used to generate key
-        [Leanplum notificationsManager].pushToken = nil;
+        [Leanplum user].pushToken = nil;
         [[Leanplum notificationsManager] removeNotificationSettings];
         
         // Change the LPAPIConfig after getting the push token and settings
         // and after cleaning UserDefaults
         // The LPAPIConfig value is used in retrieving them
-        [[ApiConfig shared] setDeviceId:deviceId];
+        [[Leanplum user] setDeviceId:deviceId];
         [[LPVarCache sharedCache] saveDiffs];
         
         // Update the token and settings now that the key is different
-        [Leanplum notificationsManager].pushToken = pushToken;
+        [Leanplum user].pushToken = pushToken;
         [[Leanplum notificationsManager] saveNotificationSettings:settings];
         
         
@@ -869,7 +879,7 @@ void leanplumExceptionHandler(NSException *exception);
     }];
 
     // Set device ID.
-    NSString *deviceId = [ApiConfig shared].deviceId;
+    NSString *deviceId = [Leanplum user].deviceId;
     // This is the device ID set when the MAC address is used on iOS 7.
     // This is to allow apps who upgrade to the new ID to forget the old one.
     if ([deviceId isEqualToString:@"0f607264fc6318a92b9e13c65db7cd3c"]) {
@@ -880,17 +890,17 @@ void leanplumExceptionHandler(NSException *exception);
         if (!deviceId) {
             deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
         }
-        [[ApiConfig shared] setDeviceId:deviceId];
+        [[Leanplum user] setDeviceId:deviceId];
     }
 
     // Set user ID.
     if (!userId) {
-        userId = [ApiConfig shared].userId;
+        userId = [Leanplum user].userId;
         if (!userId) {
-            userId = [ApiConfig shared].deviceId;
+            userId = [Leanplum user].deviceId;
         }
     }
-    [[ApiConfig shared] setUserId:userId];
+    [[Leanplum user] setUserId:userId];
 
     // Setup parameters.
     NSString *versionName = [self appVersion];
@@ -942,7 +952,7 @@ void leanplumExceptionHandler(NSException *exception);
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
     
     // Push token.
-    NSString *pushToken = [[Leanplum notificationsManager] pushToken];
+    NSString *pushToken = [[Leanplum user] pushToken];
     if (pushToken) {
         params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
     }
@@ -1027,7 +1037,7 @@ void leanplumExceptionHandler(NSException *exception);
                                     fileAttributes:fileAttributes
                                  actionDefinitions:actionDefinitions];
             [[LeanplumSocket sharedSocket] connectToAppId:[ApiConfig shared].appId
-                                                 deviceId:[ApiConfig shared].deviceId];
+                                                 deviceId:[Leanplum user].deviceId];
             if ([response[LP_KEY_IS_REGISTERED] boolValue]) {
                 [Leanplum onHasStartedAndRegisteredAsDeveloper];
             }
@@ -2205,13 +2215,13 @@ andParameters:(NSDictionary *)params
 
     LPRequest *request = [LPRequestFactory setUserAttributesWithParams:@{
         LP_PARAM_USER_ATTRIBUTES: attributes ? [LPJSON stringFromJSON:attributes] : @"",
-        LP_PARAM_USER_ID: [ApiConfig shared].userId ?: @"",
+        LP_PARAM_USER_ID: [Leanplum user].userId ?: @"",
         LP_PARAM_NEW_USER_ID: userId ?: @""
     }];
     [[LPRequestSender sharedInstance] send:request];
 
     if (userId.length) {
-        [[ApiConfig shared] setUserId:userId];
+        [[Leanplum user] setUserId:userId];
         if ([LPInternalState sharedState].hasStarted) {
             [[LPVarCache sharedCache] saveDiffs];
         }
@@ -2647,7 +2657,7 @@ void leanplumExceptionHandler(NSException *exception)
         [self throwError:@"[Leanplum start] must be called before calling deviceId"];
         return nil;
     }
-    return [ApiConfig shared].deviceId;
+    return [Leanplum user].deviceId;
     LP_END_TRY
     return nil;
 }
@@ -2659,7 +2669,7 @@ void leanplumExceptionHandler(NSException *exception)
         [self throwError:@"[Leanplum start] must be called before calling userId"];
         return nil;
     }
-    return [ApiConfig shared].userId;
+    return [Leanplum user].userId;
     LP_END_TRY
     return nil;
 }
