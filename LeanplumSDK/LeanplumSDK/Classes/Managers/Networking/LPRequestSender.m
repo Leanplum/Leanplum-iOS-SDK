@@ -372,9 +372,9 @@
                 continue;
             }
             
-            NSString *apiHost = [response objectForKey:@"apiHost"];
-            NSString *apiPath = [response objectForKey:@"apiPath"];
-            NSString *devServerHost = [response objectForKey:@"devServerHost"];
+            NSString *apiHost = [response objectForKey:LP_PARAM_API_HOST];
+            NSString *apiPath = [response objectForKey:LP_PARAM_API_PATH];
+            NSString *devServerHost = [response objectForKey:LP_PARAM_DEV_SERVER_HOST];
             if (apiHost || apiPath || devServerHost) {
                 apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
                 apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
