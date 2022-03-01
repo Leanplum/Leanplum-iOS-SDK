@@ -423,16 +423,15 @@ void leanplumExceptionHandler(NSException *exception);
         [Leanplum user].pushToken = nil;
         [[Leanplum notificationsManager] removeNotificationSettings];
         
-        // Change the LPAPIConfig after getting the push token and settings
+        // Change the User deviceId after getting the push token and settings
         // and after cleaning UserDefaults
-        // The LPAPIConfig value is used in retrieving them
+        // The User userId and deviceId are used in retrieving them
         [[Leanplum user] setDeviceId:deviceId];
         [[LPVarCache sharedCache] saveDiffs];
         
         // Update the token and settings now that the key is different
         [Leanplum user].pushToken = pushToken;
         [[Leanplum notificationsManager] saveNotificationSettings:settings];
-        
         
         LPRequest *request = [LPRequestFactory setDeviceAttributesWithParams:params];
         [[LPRequestSender sharedInstance] send:request];

@@ -8,6 +8,7 @@
 import Foundation
 
 @objc public class ApiConfig: NSObject {
+    private override init() {}
     
     @objc public static let shared: ApiConfig = .init()
     
