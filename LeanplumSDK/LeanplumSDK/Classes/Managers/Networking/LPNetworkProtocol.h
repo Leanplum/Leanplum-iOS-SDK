@@ -23,7 +23,6 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import "Leanplum_Reachability.h"
 
 @protocol LPNetworkOperationProtocol;
 
@@ -76,7 +75,5 @@ typedef void (^LPNetworkProgressBlock)(double progress);
 - (id<LPNetworkOperationProtocol>)operationWithURLString:(NSString *)urlString;
 - (void)enqueueOperation:(id<LPNetworkOperationProtocol>)operation;
 - (void)runSynchronously:(id<LPNetworkOperationProtocol>)operation;
-
-//- (void)setHostName:(NSString *)hostName;
 
 @end
