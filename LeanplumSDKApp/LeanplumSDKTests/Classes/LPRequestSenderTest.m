@@ -152,7 +152,12 @@
     LPRequestSender *requestSender = [[LPRequestSender alloc] init];
     requestSender.engine = OCMProtocolMock(@protocol(LPNetworkEngineProtocol));
     id opMock = OCMProtocolMock(@protocol(LPNetworkOperationProtocol));
-    OCMStub([requestSender.engine operationWithPath:[OCMArg any] params:[OCMArg any] httpMethod:[OCMArg any] ssl:[OCMArg any] timeoutSeconds:60]).andReturn(opMock);
+    OCMStub([requestSender.engine operationWithHost:[OCMArg any]
+                                               path:[OCMArg any]
+                                             params:[OCMArg any]
+                                         httpMethod:[OCMArg any]
+                                                ssl:[OCMArg any]
+                                     timeoutSeconds:60]).andReturn(opMock);
 
     NSMutableDictionary *datas = [[NSMutableDictionary alloc] init];
     datas[@"key"] = [@"value" dataUsingEncoding:NSUTF8StringEncoding];

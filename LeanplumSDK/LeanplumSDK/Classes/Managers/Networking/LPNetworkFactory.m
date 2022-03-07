@@ -28,16 +28,14 @@
 
 @implementation LPNetworkFactory
 
-+ (id<LPNetworkEngineProtocol>)engineWithHostName:(NSString*)hostName
-                               customHeaderFields:(NSDictionary*)headers
++ (id<LPNetworkEngineProtocol>)engineWithCustomHeaderFields:(NSDictionary*)headers
 {
-    return [[LPNetworkEngine alloc] initWithHostName:hostName
-                                  customHeaderFields:headers];
+    return [[LPNetworkEngine alloc] initWithCustomHeaderFields:headers];
 }
 
-+ (id<LPNetworkEngineProtocol>)engineWithHostName:(NSString*)hostName
++ (id<LPNetworkEngineProtocol>)engine
 {
-    return [[LPNetworkEngine alloc] initWithHostName:hostName];
+    return [[LPNetworkEngine alloc] init];
 }
 
 + (NSString *)fileRequestMethod

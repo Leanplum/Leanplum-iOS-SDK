@@ -30,7 +30,6 @@
 
 @interface LPNetworkEngine()
 
-@property (nonatomic, copy) NSString *hostName;
 @property (nonatomic, strong)NSURLRequest *request;
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
@@ -49,24 +48,14 @@
         self.sessionConfiguration.URLCredentialStorage = nil;
         self.sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         self.countAggregator = [LPCountAggregator sharedAggregator];
-        _hostName = @"";
     }
     return self;
 }
 
-- (id)initWithHostName:(NSString *)hostName customHeaderFields:(NSDictionary *)headers
+- (id)initWithCustomHeaderFields:(NSDictionary *)headers
 {
     self = [self init];
     self.sessionConfiguration.HTTPAdditionalHeaders = headers;
-    self.hostName = hostName;
-
-    return self;
-}
-
-- (id)initWithHostName:(NSString *)hostName
-{
-    self = [self init];
-    self.hostName = hostName;
 
     return self;
 }
@@ -76,14 +65,15 @@
     self.sessionConfiguration = nil;
 }
 
-- (id<LPNetworkOperationProtocol>)operationWithPath:(NSString *)path
+- (id<LPNetworkOperationProtocol>)operationWithHost:(NSString *)host
+                                               path:(NSString *)path
                                              params:(NSMutableDictionary *)body
                                          httpMethod:(NSString *)method
                                                 ssl:(BOOL)useSSL
                                      timeoutSeconds:(int)timeout
 {
     NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@://%@",
-                                  useSSL ? @"https" : @"http", self.hostName];
+                                  useSSL ? @"https" : @"http", host];
     [urlString appendFormat:@"/%@", path];
     
     [self.countAggregator incrementCount:@"operation_with_path"];

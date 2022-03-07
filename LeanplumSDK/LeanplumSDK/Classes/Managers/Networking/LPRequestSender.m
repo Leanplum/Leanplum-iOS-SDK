@@ -70,23 +70,12 @@
             if (!_requestHeaders) {
                 _requestHeaders = [LPNetworkEngine createHeaders];
             }
-            _engine = [LPNetworkFactory engineWithHostName:[ApiConfig shared].apiHostName
-                                        customHeaderFields:_requestHeaders];
+            _engine = [LPNetworkFactory engineWithCustomHeaderFields:_requestHeaders];
         }
         [[LPRequestSenderTimer sharedInstance] start];
         _countAggregator = [LPCountAggregator sharedAggregator];
     }
     return self;
-}
-
-- (void)updateApiHost:(NSString *)host
-{
-    if (!host) {
-        LPLog(LPError, @"Cannot update host. Host is nil");
-        return;
-    }
-    
-    [_engine setHostName:host];
 }
 
 - (void)send:(LPRequest *)request
@@ -183,7 +172,8 @@
     NSMutableDictionary *dict = [request createArgsDictionary];
     [ApiConfig attachApiKeysWithDict:dict];
     id<LPNetworkOperationProtocol> op =
-    [self.engine operationWithPath:[ApiConfig shared].apiPath
+    [self.engine operationWithHost:[ApiConfig shared].apiHostName
+                              path:[ApiConfig shared].apiPath
                             params:dict
                         httpMethod:@"POST"
                                ssl:[ApiConfig shared].apiSSL
@@ -253,7 +243,8 @@
         });
         self.didUiTimeout = NO;
 
-        id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:[ApiConfig shared].apiPath
+        id<LPNetworkOperationProtocol> op = [self.engine operationWithHost:[ApiConfig shared].apiHostName
+                                                                      path:[ApiConfig shared].apiPath
                                                                     params:multiRequestArgs
                                                                 httpMethod:@"POST"
                                                                        ssl:[ApiConfig shared].apiSSL

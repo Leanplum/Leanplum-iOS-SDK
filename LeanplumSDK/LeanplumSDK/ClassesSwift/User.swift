@@ -8,6 +8,11 @@
 import Foundation
 
 @objc public class User: NSObject {
+    public struct UserKey {
+        public let appId: String
+        public let userId: String
+        public let deviceId: String
+    }
     
     @objc public var userId: String?
     @objc public var deviceId: String?
@@ -42,12 +47,6 @@ import Foundation
             
             return UserKey(appId: appId, userId: userId, deviceId: deviceId)
         }
-    }
-    
-    public struct UserKey {
-        public let appId: String
-        public let userId: String
-        public let deviceId: String
     }
     
     private var tokenKey: String {

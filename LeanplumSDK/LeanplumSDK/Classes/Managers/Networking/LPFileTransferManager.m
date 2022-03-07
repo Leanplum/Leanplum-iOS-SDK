@@ -73,8 +73,7 @@
             if (!_requestHeaders) {
                 _requestHeaders = [LPNetworkEngine createHeaders];
             }
-            _engine = [LPNetworkFactory engineWithHostName:[ApiConfig shared].apiHostName
-                                        customHeaderFields:_requestHeaders];
+            _engine = [LPNetworkFactory engineWithCustomHeaderFields:_requestHeaders];
         }
 
     }
@@ -255,7 +254,8 @@
     } else if ([self.filenameToURLs valueForKey:path]) {
         op = [self.engine operationWithURLString:[self.filenameToURLs valueForKey:path]];
     } else {
-        op = [self.engine operationWithPath:[ApiConfig shared].apiPath
+        op = [self.engine operationWithHost:[ApiConfig shared].apiHostName
+                                       path:[ApiConfig shared].apiPath
                                      params:dict
                                  httpMethod:[LPNetworkFactory fileRequestMethod]
                                         ssl:[ApiConfig shared].apiSSL

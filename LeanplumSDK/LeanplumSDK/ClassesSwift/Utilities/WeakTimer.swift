@@ -9,7 +9,6 @@ import Foundation
 
 @objc(LPWeakTimer)
 public class WeakTimer: NSObject {
-    
     private weak var target: AnyObject?
     private let action: (Timer) -> Void
     
@@ -35,7 +34,7 @@ public class WeakTimer: NSObject {
                                            action: @escaping (Timer) -> Void) -> Timer {
         
         let target = WeakTimer(target: target, action: action)
-        return Timer.scheduledTimer(timeInterval: timeInterval,
+        return .scheduledTimer(timeInterval: timeInterval,
                                     target: target,
                                     selector: #selector(fire),
                                     userInfo: userInfo,

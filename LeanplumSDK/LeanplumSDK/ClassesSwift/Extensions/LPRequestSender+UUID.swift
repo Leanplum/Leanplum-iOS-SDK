@@ -8,7 +8,6 @@
 import Foundation
 
 extension LPRequestSender {
-    
     enum Constants {
         // LEANPLUM_DEFAULTS_UUID_KEY
         static let uuidKey = "__leanplum_uuid"
@@ -20,7 +19,7 @@ extension LPRequestSender {
                 return uuid
             }
             // Ensure UUID is set and returned
-            self.uuid = UUID().uuidString
+            self.uuid = UUID().uuidString.lowercased()
             return self.uuid
         }
         set {

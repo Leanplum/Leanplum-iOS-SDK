@@ -162,7 +162,7 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 + (void)setApiHostName:(NSString *)hostName
-       withPath:(NSString *)apiPath
+              withPath:(NSString *)apiPath
               usingSsl:(BOOL)ssl
 {
     if ([LPUtils isNullOrEmpty:hostName]) {
@@ -191,8 +191,12 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
 
-    [ApiConfig shared].socketHost = hostName;
-    [ApiConfig shared].socketPort = port;
+    if ([ApiConfig shared].socketHost != hostName ||
+        [ApiConfig shared].socketPort != port) {
+        [ApiConfig shared].socketHost = hostName;
+        [ApiConfig shared].socketPort = port;
+        [[LeanplumSocket sharedSocket] connectToNewSocket];
+    }
 }
 
 + (void)setClient:(NSString *)client withVersion:(NSString *)version

@@ -31,9 +31,8 @@
  */
 @interface LPNetworkFactory : NSObject
 
-+ (id<LPNetworkEngineProtocol>)engineWithHostName:(NSString*)hostName
-                               customHeaderFields:(NSDictionary*)headers;
-+ (id<LPNetworkEngineProtocol>)engineWithHostName:(NSString*)hostName;
++ (id<LPNetworkEngineProtocol>)engineWithCustomHeaderFields:(NSDictionary*)headers;
++ (id<LPNetworkEngineProtocol>)engine;
 
 /**
  * Workaround to use POST on new and GET on old networking library.

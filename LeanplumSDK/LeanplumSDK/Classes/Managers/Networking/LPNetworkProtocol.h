@@ -61,10 +61,10 @@ typedef void (^LPNetworkProgressBlock)(double progress);
  */
 @protocol LPNetworkEngineProtocol <NSObject>
 
-- (id)initWithHostName:(NSString *)hostName customHeaderFields:(NSDictionary *)headers;
-- (id)initWithHostName:(NSString *)hostName;
+- (id)initWithCustomHeaderFields:(NSDictionary *)headers;
 
-- (id<LPNetworkOperationProtocol>)operationWithPath:(NSString *)path
+- (id<LPNetworkOperationProtocol>)operationWithHost:(NSString *)host
+                                               path:(NSString *)path
                                              params:(NSMutableDictionary *)body
                                          httpMethod:(NSString *)method
                                                 ssl:(BOOL)useSSL
@@ -77,6 +77,6 @@ typedef void (^LPNetworkProgressBlock)(double progress);
 - (void)enqueueOperation:(id<LPNetworkOperationProtocol>)operation;
 - (void)runSynchronously:(id<LPNetworkOperationProtocol>)operation;
 
-- (void)setHostName:(NSString *)hostName;
+//- (void)setHostName:(NSString *)hostName;
 
 @end

@@ -8,16 +8,6 @@
 import Foundation
 
 @objc public class ApiConfig: NSObject {
-    private override init() {}
-    
-    @objc public static let shared: ApiConfig = .init()
-    
-    @objc public private(set) var appId: String?
-    @objc public private(set) var accessKey: String?
-    
-    @objc public var socketPort = Constants.socketPort
-    @objc public var apiSSL = Constants.apiSSL
-    
     enum Constants {
         static let apiHostKey = "__leanplum_api_host"
         static let apiServletKey = "__leanplum_api_servlet"
@@ -34,6 +24,16 @@ import Foundation
         static let socketHost = "dev.leanplum.com";
         static let socketPort = 443;
     }
+    
+    private override init() {}
+    
+    @objc public static let shared: ApiConfig = .init()
+    
+    @objc public private(set) var appId: String?
+    @objc public private(set) var accessKey: String?
+    
+    @objc public var socketPort = Constants.socketPort
+    @objc public var apiSSL = Constants.apiSSL
     
     @objc public var token: String? {
         get {
@@ -68,7 +68,6 @@ import Foundation
         }
         set {
             UserDefaults.standard.setValue(newValue, forKey: Constants.apiHostKey)
-            LPRequestSender.sharedInstance().updateApiHost(newValue)
         }
     }
     
@@ -92,10 +91,7 @@ import Foundation
             return Constants.socketHost
         }
         set {
-            if newValue != socketHost {
-                UserDefaults.standard.setValue(newValue, forKey: Constants.socketHostKey)
-                LeanplumSocket.shared().connect(toNewHost: newValue)
-            }
+            UserDefaults.standard.setValue(newValue, forKey: Constants.socketHostKey)
         }
     }
     

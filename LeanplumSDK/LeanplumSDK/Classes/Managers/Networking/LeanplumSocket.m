@@ -64,8 +64,7 @@ static dispatch_once_t leanplum_onceToken;
                                      LEANPLUM_CLIENT,
                                      LEANPLUM_SDK_VERSION];
         engine_ = [LPNetworkFactory
-                   engineWithHostName:[ApiConfig shared].socketHost
-                   customHeaderFields:@{@"User-Agent": userAgentString}];
+                   engineWithCustomHeaderFields:@{@"User-Agent": userAgentString}];
     }
     return engine_;
 }
@@ -122,10 +121,10 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
-- (void)connectToNewHost:(NSString *)newHost
+- (void)connectToNewSocket
 {
-    [[LeanplumSocket engine] setHostName:newHost];
     if (_connected || [_socketIO isConnecting]) {
+        [_socketIO disconnect];
         _socketIO = nil;
         [self initWithDelegate];
         [self connect];

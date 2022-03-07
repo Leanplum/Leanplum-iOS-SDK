@@ -38,7 +38,7 @@
 + (LeanplumSocket *)sharedSocket;
 
 - (void)connectToAppId:(NSString *)appId deviceId:(NSString *)deviceId;
-- (void)connectToNewHost:(NSString *)newHost;
+- (void)connectToNewSocket;
 - (void)sendEvent:(NSString *)eventName withData:(NSDictionary *)data;
 
 @end

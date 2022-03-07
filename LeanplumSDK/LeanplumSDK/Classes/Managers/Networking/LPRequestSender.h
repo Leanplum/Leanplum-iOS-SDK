@@ -32,6 +32,4 @@
 
 - (void)send:(LPRequest *)request;
 
-- (void)updateApiHost:(NSString *)host;
-
 @end
