@@ -367,13 +367,30 @@
             NSString *apiPath = [response objectForKey:LP_PARAM_API_PATH];
             NSString *devServerHost = [response objectForKey:LP_PARAM_DEV_SERVER_HOST];
             if (apiHost || apiPath || devServerHost) {
-                apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
-                apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
-                [Leanplum setApiHostName:apiHost withPath:apiPath usingSsl:[ApiConfig shared].apiSSL];
+                // Prevent setting the same API config, prevent request retry loop
+                BOOL updateSettings = NO;
+                if (apiHost &&
+                    ![apiHost isEqualToString:[ApiConfig shared].apiHostName]) {
+                    updateSettings = YES;
+                } else if (apiPath &&
+                           ![apiPath isEqualToString:[ApiConfig shared].apiPath]) {
+                    updateSettings = YES;
+                } else if (devServerHost &&
+                           ![devServerHost isEqualToString:[ApiConfig shared].socketHost]) {
+                    updateSettings = YES;
+                }
                 
-                devServerHost = devServerHost ? devServerHost : [ApiConfig shared].socketHost;
-                [Leanplum setSocketHostName:devServerHost withPortNumber:(int)[ApiConfig shared].socketPort];
-                return YES;
+                if (updateSettings) {
+                    apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
+                    apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
+                    [Leanplum setApiHostName:apiHost withPath:apiPath usingSsl:[ApiConfig shared].apiSSL];
+                    
+                    devServerHost = devServerHost ? devServerHost : [ApiConfig shared].socketHost;
+                    [Leanplum setSocketHostName:devServerHost withPortNumber:(int)[ApiConfig shared].socketPort];
+                    return YES;
+                } else {
+                    return NO;
+                }
             }
         }
     }

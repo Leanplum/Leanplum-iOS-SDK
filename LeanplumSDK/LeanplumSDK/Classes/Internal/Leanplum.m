@@ -191,7 +191,7 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
 
-    if ([ApiConfig shared].socketHost != hostName ||
+    if (![[ApiConfig shared].socketHost isEqualToString:hostName] ||
         [ApiConfig shared].socketPort != port) {
         [ApiConfig shared].socketHost = hostName;
         [ApiConfig shared].socketPort = port;
