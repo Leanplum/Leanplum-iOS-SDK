@@ -26,12 +26,14 @@
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPRequestFactory.h>
-//#import <Leanplum/LPPushNotificationsHandler.h>
 #import <Leanplum/LPDeferMessageManager.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface Leanplum(UnitTest)
 
-+ (NSLocale *)systemLocale;
+@property (class, readonly) User* _Nonnull user;
+
++ (NSLocale * _Nullable)systemLocale;
 
 + (void)reset;
 
@@ -69,4 +71,9 @@
 @interface LPDeferMessageManager(UnitTest)
 + (void)triggerDeferredMessage;
 + (void)reset;
+@end
+
+@interface ApiConfig(UnitTest)
+@property (nonatomic, strong)  NSString * _Nullable appId;
+@property (nonatomic, strong)  NSString * _Nullable accessKey;
 @end

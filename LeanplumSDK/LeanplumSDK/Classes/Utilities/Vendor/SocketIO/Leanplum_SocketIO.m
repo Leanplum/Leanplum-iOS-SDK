@@ -44,6 +44,7 @@
 #import "LPNetworkProtocol.h"
 #import "Leanplum_WebSocket.h"
 #import "LPLogManager.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 #import "LPJSON.h"
 
@@ -74,6 +75,11 @@
 
 @end
 
+@interface Leanplum_SocketIO ()
+
+@property (nonatomic) BOOL isConnecting;
+
+@end
 
 # pragma mark -
 # pragma mark SocketIO implementation
@@ -102,9 +108,9 @@
 
 - (void) connectWithEngine:(id<LPNetworkEngineProtocol>)engine withHost:(NSString*)host onPort:(NSInteger)port secureConnection:(BOOL)useTLS
 {
-    if (!_isConnected && !_isConnecting)
+    if (!_isConnected && ![self isConnecting])
     {
-        _isConnecting = YES;
+        [self setIsConnecting:YES];
 
         _host = host;
         _port = port;
@@ -131,7 +137,6 @@
             }
         }];
 
-        // if (_useTLS) [request setValidatesSecureCertificate:NO];
         [engine enqueueOperation: op];
     }
 }
@@ -203,9 +208,14 @@
 {
     NSString *url = [NSString stringWithFormat:SOCKET_URL, _useTLS ? @"s" : @"", _host, (int) (_port == 443 ? 80 : _port), _sid];
 
-    _webSocket = nil;
+    if (_webSocket) {
+        _webSocket.delegate = nil;
+        [_webSocket close];
+    }
+    
+    __weak Leanplum_SocketIO *weakSelf = self;
 
-    _webSocket = [[Leanplum_WebSocket alloc] initWithURLString:url delegate:self];
+    _webSocket = [[Leanplum_WebSocket alloc] initWithURLString:url delegate:weakSelf];
     [self log:[NSString stringWithFormat:@"Opening %@", url]];
     [_webSocket open];
 }
@@ -447,7 +457,7 @@
 - (void) onConnect
 {
     _isConnected = YES;
-    _isConnecting = NO;
+    [self setIsConnecting:NO];
 
     if ([_delegate respondsToSelector:@selector(socketIODidConnect:)])
     {
@@ -465,7 +475,7 @@
     BOOL wasConnected = _isConnected;
 
     _isConnected = NO;
-    _isConnecting = NO;
+    [self setIsConnecting:NO];
     _sid = nil;
 
     [_queue removeAllObjects];
@@ -512,12 +522,16 @@
         [_timeout invalidate];
         _timeout = nil;
     }
+    
+    __weak Leanplum_SocketIO *weakSelf = self;
 
-    _timeout = [NSTimer scheduledTimerWithTimeInterval:_heartbeatTimeout
-                                                 target:self
-                                               selector:@selector(onTimeout)
-                                               userInfo:nil
-                                                repeats:NO];
+    _timeout = [LPWeakTimer scheduledTimerWithTimeInterval:_heartbeatTimeout
+                                                  target:self
+                                                userInfo:nil
+                                                 repeats:NO
+                                                   block:^(NSTimer *timer) {
+        [weakSelf onTimeout];
+    }];
 }
 
 
@@ -555,7 +569,7 @@
 {
     LPLog(LPError, @"Handshake failed ... %@", [error localizedDescription]);
 
-    _isConnecting = NO;
+    [self setIsConnecting:NO];
     _isConnected  = NO;
 
     if ([_delegate respondsToSelector:@selector(socketIOHandshakeFailed:)])
@@ -601,6 +615,10 @@
 - (void) dealloc
 {
     [_timeout invalidate];
+    if (_webSocket) {
+        [_webSocket setDelegate:nil];
+        _webSocket = nil;
+    }
 }
 
 @end

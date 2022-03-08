@@ -23,7 +23,6 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import "Leanplum_Reachability.h"
 
 @protocol LPNetworkOperationProtocol;
 
@@ -61,10 +60,10 @@ typedef void (^LPNetworkProgressBlock)(double progress);
  */
 @protocol LPNetworkEngineProtocol <NSObject>
 
-- (id)initWithHostName:(NSString *)hostName customHeaderFields:(NSDictionary *)headers;
-- (id)initWithHostName:(NSString *)hostName;
+- (id)initWithCustomHeaderFields:(NSDictionary *)headers;
 
-- (id<LPNetworkOperationProtocol>)operationWithPath:(NSString *)path
+- (id<LPNetworkOperationProtocol>)operationWithHost:(NSString *)host
+                                               path:(NSString *)path
                                              params:(NSMutableDictionary *)body
                                          httpMethod:(NSString *)method
                                                 ssl:(BOOL)useSSL

@@ -35,6 +35,8 @@ extern NSString *PRODUCTION_KEY;
 
 /// host of the api
 extern NSString *API_HOST;
+/// path of the api
+extern NSString *API_PATH;
 
 /// default dispatch time
 extern NSInteger DISPATCH_WAIT_TIME;

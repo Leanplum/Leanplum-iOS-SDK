@@ -30,12 +30,11 @@
 #import "LPKeychainWrapper.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
-#import "LPAPIConfig.h"
 #import "LPOperationQueue.h"
 #import "LPNetworkConstants.h"
 #import "LPRequestSenderTimer.h"
 #import "LPRequestBatchFactory.h"
-#import "LPRequestUUIDHelper.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPRequestSender()
 
@@ -46,6 +45,8 @@
 @property (nonatomic, assign) BOOL didUiTimeout;
 
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
+
+- (BOOL)updateApiConfig:(id)json;
 
 @end
 
@@ -69,8 +70,7 @@
             if (!_requestHeaders) {
                 _requestHeaders = [LPNetworkEngine createHeaders];
             }
-            _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
-                                        customHeaderFields:_requestHeaders];
+            _engine = [LPNetworkFactory engineWithCustomHeaderFields:_requestHeaders];
         }
         [[LPRequestSenderTimer sharedInstance] start];
         _countAggregator = [LPCountAggregator sharedAggregator];
@@ -94,12 +94,12 @@
 
 - (BOOL)validateConfigFor:(LPRequest *)request
 {
-    if (![LPAPIConfig sharedConfig].appId) {
+    if (![ApiConfig shared].appId) {
         LPLog(LPError, @"Cannot send request. appId is not set");
         return false;
     }
     
-    if (![LPAPIConfig sharedConfig].accessKey) {
+    if (![ApiConfig shared].appId) {
         LPLog(LPError, @"Cannot send request. accessKey is not set");
         return false;
     }
@@ -142,10 +142,11 @@
                 return;
             }
             
-            NSString *uuid = [LPRequestUUIDHelper loadUUID];
+            NSString *uuid = [self uuid];
             NSInteger count = [LPEventDataManager count];
-            if (!uuid || count % LP_MAX_EVENTS_PER_API_CALL == 0) {
-                uuid = [LPRequestUUIDHelper generateUUID];
+            if (count % LP_MAX_EVENTS_PER_API_CALL == 0) {
+                uuid = [[NSUUID UUID] UUIDString];
+                [self setUuid:uuid];
             }
 
             NSMutableDictionary *args = [request createArgsDictionary];
@@ -169,12 +170,13 @@
 - (void)sendNow:(LPRequest *)request withDatas:(NSDictionary *)datas
 {
     NSMutableDictionary *dict = [request createArgsDictionary];
-    [LPNetworkEngine attachApiKeys:dict];
+    [ApiConfig attachApiKeysWithDict:dict];
     id<LPNetworkOperationProtocol> op =
-    [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+    [self.engine operationWithHost:[ApiConfig shared].apiHostName
+                              path:[ApiConfig shared].apiPath
                             params:dict
                         httpMethod:@"POST"
-                               ssl:[LPConstantsState sharedState].apiSSL
+                               ssl:[ApiConfig shared].apiSSL
                     timeoutSeconds:60];
 
     [datas enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
@@ -208,7 +210,8 @@
             return;
         }
 
-        [LPRequestUUIDHelper generateUUID];
+        // Update UUID
+        [self setUuid:[[NSUUID UUID] UUIDString]];
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
         [[LPCountAggregator sharedAggregator] sendAllCounts];
@@ -229,7 +232,7 @@
                                                    LP_PARAM_ACTION: LP_API_METHOD_MULTI,
                                                    LP_PARAM_TIME: timestamp
                                                    } mutableCopy];
-        [LPNetworkEngine attachApiKeys:multiRequestArgs];
+        [ApiConfig attachApiKeysWithDict:multiRequestArgs];
         int timeout = constants.networkTimeoutSeconds;
 
         NSTimeInterval uiTimeoutInterval = timeout;
@@ -240,10 +243,11 @@
         });
         self.didUiTimeout = NO;
 
-        id<LPNetworkOperationProtocol> op = [self.engine operationWithPath:constants.apiServlet
+        id<LPNetworkOperationProtocol> op = [self.engine operationWithHost:[ApiConfig shared].apiHostName
+                                                                      path:[ApiConfig shared].apiPath
                                                                     params:multiRequestArgs
                                                                 httpMethod:@"POST"
-                                                                       ssl:constants.apiSSL
+                                                                       ssl:[ApiConfig shared].apiSSL
                                                             timeoutSeconds:timeout];
 
         // Request callbacks.
@@ -256,7 +260,14 @@
 
             [self.uiTimeoutTimer invalidate];
             self.uiTimeoutTimer = nil;
-
+            
+            if ([self updateApiConfig:json]) {
+                // Retry the same request on the new endpoint
+                [self sendRequests];
+                dispatch_semaphore_signal(semaphore);
+                return;
+            }
+            
             // Delete events on success.
             [LPRequestBatchFactory deleteFinishedBatch:batch];
 
@@ -344,7 +355,49 @@
     [[LPOperationQueue serialQueue] addOperation:requestOperation];
 }
 
--(void)uiDidTimeout {
+- (BOOL)updateApiConfig:(id)json {
+    if ([json isKindOfClass:NSDictionary.class]) {
+        for (NSUInteger i = 0; i < [LPResponse numResponsesInDictionary:json]; i++) {
+            NSDictionary *response = [LPResponse getResponseAt:i fromDictionary:json];
+            if ([LPResponse isResponseSuccess:response]) {
+                continue;
+            }
+            
+            NSString *apiHost = [response objectForKey:LP_PARAM_API_HOST];
+            NSString *apiPath = [response objectForKey:LP_PARAM_API_PATH];
+            NSString *devServerHost = [response objectForKey:LP_PARAM_DEV_SERVER_HOST];
+            if (apiHost || apiPath || devServerHost) {
+                // Prevent setting the same API config, prevent request retry loop
+                BOOL updateSettings = NO;
+                if (apiHost &&
+                    ![apiHost isEqualToString:[ApiConfig shared].apiHostName]) {
+                    updateSettings = YES;
+                } else if (apiPath &&
+                           ![apiPath isEqualToString:[ApiConfig shared].apiPath]) {
+                    updateSettings = YES;
+                } else if (devServerHost &&
+                           ![devServerHost isEqualToString:[ApiConfig shared].socketHost]) {
+                    updateSettings = YES;
+                }
+                
+                if (updateSettings) {
+                    apiHost = apiHost ? apiHost : [ApiConfig shared].apiHostName;
+                    apiPath = apiPath ? apiPath : [ApiConfig shared].apiPath;
+                    [Leanplum setApiHostName:apiHost withPath:apiPath usingSsl:[ApiConfig shared].apiSSL];
+                    
+                    devServerHost = devServerHost ? devServerHost : [ApiConfig shared].socketHost;
+                    [Leanplum setSocketHostName:devServerHost withPortNumber:(int)[ApiConfig shared].socketPort];
+                    return YES;
+                } else {
+                    return NO;
+                }
+            }
+        }
+    }
+    return NO;
+}
+
+- (void)uiDidTimeout {
     self.didUiTimeout = YES;
     [self.uiTimeoutTimer invalidate];
     self.uiTimeoutTimer = nil;

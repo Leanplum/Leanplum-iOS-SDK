@@ -25,6 +25,7 @@
 
 #import "LPRequestSender+Categories.h"
 #import <Leanplum/LPSwizzle.h>
+#import <Leanplum/LPLogManager.h>
 #import <objc/runtime.h>
 
 @implementation LPRequestSender(MethodSwizzling)

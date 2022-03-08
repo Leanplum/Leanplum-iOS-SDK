@@ -71,7 +71,6 @@
     Leanplum_WebSocket *_webSocket;
     
     BOOL _isConnected;
-    BOOL _isConnecting;
     BOOL _useTLS;
     
     // heartbeat
@@ -84,6 +83,8 @@
     NSMutableDictionary *_acks;
     NSInteger _ackCount;
 }
+
+@property (nonatomic, readonly) BOOL isConnecting;
 
 - (id) initWithDelegate:(id<Leanplum_SocketIODelegate>)delegate;
 - (void) connectWithEngine:(id<LPNetworkEngineProtocol>)engine withHost:(NSString*)host onPort:(NSInteger)port;

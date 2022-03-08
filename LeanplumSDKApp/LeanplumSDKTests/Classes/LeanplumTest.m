@@ -37,7 +37,6 @@
 #import <Leanplum/LPRegisterDevice.h>
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LPOperationQueue.h>
-#import <Leanplum/LPAPIConfig.h>
 #import <Leanplum/LPInternalState.h>
 #import "LeanplumHelper.h"
 #import "Leanplum+Extensions.h"
@@ -120,8 +119,8 @@
     // Force reload
     [Leanplum load];
 
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     [mockLeanplum stopMocking];
 }
@@ -138,8 +137,8 @@
     // Force reload
     [Leanplum load];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     [mockLeanplum stopMocking];
 }
@@ -151,8 +150,8 @@
 {
     [Leanplum setAppEnvironment:kEnvDevelopment];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -163,8 +162,8 @@
 {
     [Leanplum setAppEnvironment:kEnvProduction];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -205,8 +204,8 @@
     // Force reload
     [Leanplum load];
     
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], nil);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], nil);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], nil);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], nil);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     [mockLeanplum stopMocking];
 }
@@ -218,13 +217,13 @@
 {
     [Leanplum load];
     #if DEBUG
-        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+        XCTAssertEqualObjects([[ApiConfig shared] accessKey], DEVELOPMENT_KEY);
         XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     #else
-        XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+        XCTAssertEqualObjects([[ApiConfig shared] accessKey], PRODUCTION_KEY);
         XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
     #endif
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
 }
 
 /**
@@ -233,8 +232,8 @@
 - (void) test_set_development_from_plist
 {
     [Leanplum setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:kEnvDevelopment];
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], DEVELOPMENT_KEY);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], DEVELOPMENT_KEY);
     XCTAssertTrue([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -244,8 +243,8 @@
 - (void) test_set_production_from_plist
 {
     [Leanplum setAppUsingPlist:[Leanplum getDefaultAppKeysPlist] forEnvironment:kEnvProduction];
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] appId], APPLICATION_ID);
-    XCTAssertEqualObjects([[LPAPIConfig sharedConfig] accessKey], PRODUCTION_KEY);
+    XCTAssertEqualObjects([[ApiConfig shared] appId], APPLICATION_ID);
+    XCTAssertEqualObjects([[ApiConfig shared] accessKey], PRODUCTION_KEY);
     XCTAssertFalse([[LPConstantsState sharedState] isDevelopmentModeEnabled]);
 }
 
@@ -1096,7 +1095,7 @@
     }];
     long timedOut = dispatch_semaphore_wait(semaphor, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
-    XCTAssertTrue([[LPAPIConfig sharedConfig].deviceId isEqualToString:deviceId]);
+    XCTAssertTrue([[Leanplum user].deviceId isEqualToString:deviceId]);
     
     [mockLeanplum stopMocking];
 }
@@ -2125,25 +2124,26 @@
 - (void)test_configuration
 {
     NSString* host = @"test_host";
-    NSString* servlet = @"servlet";
+    NSString* path = @"test_path";
     
-    XCTAssertEqualObjects([LPConstantsState sharedState].apiHostName, @"api.leanplum.com");
-    XCTAssertEqualObjects([LPConstantsState sharedState].apiServlet, @"api");
+    XCTAssertEqualObjects([ApiConfig shared].apiHostName, API_HOST);
+    XCTAssertEqualObjects([ApiConfig shared].apiPath, API_PATH);
     
-    [Leanplum setApiHostName:host withServletName:servlet usingSsl:true];
-
-    XCTAssertEqual([LPConstantsState sharedState].apiHostName, host);
-    XCTAssertEqual([LPConstantsState sharedState].apiServlet, servlet);
+    [Leanplum setApiHostName:host withPath:path usingSsl:true];
+    XCTAssertEqual([ApiConfig shared].apiHostName, host);
+    XCTAssertEqual([ApiConfig shared].apiPath, path);
     
-    [Leanplum setApiHostName:nil withServletName:nil usingSsl:true];
+    // Nil is not a valid value, api config must be unchanged
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wnonnull"
+    [Leanplum setApiHostName:nil withPath:nil usingSsl:true];
+    #pragma clang diagnostic pop
+    XCTAssertEqual([ApiConfig shared].apiHostName, host);
+    XCTAssertEqual([ApiConfig shared].apiPath, path);
     
-    XCTAssertEqual([LPConstantsState sharedState].apiHostName, host);
-    XCTAssertEqual([LPConstantsState sharedState].apiServlet, servlet);
-    
-    [Leanplum setApiHostName:host withServletName:nil usingSsl:true];
-    
-    XCTAssertEqual([LPConstantsState sharedState].apiHostName, host);
-    XCTAssertEqual([LPConstantsState sharedState].apiServlet, servlet);
+    [Leanplum setApiHostName:API_HOST withPath:API_PATH usingSsl:true];
+    XCTAssertEqual([ApiConfig shared].apiHostName, API_HOST);
+    XCTAssertEqual([ApiConfig shared].apiPath, API_PATH);
     
     int timeout = 10;
     
@@ -2356,7 +2356,6 @@
 {
     NSString *messageID = @"testMessageID";
     NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
 
     LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
@@ -2375,7 +2374,6 @@
 {
     NSString *messageID = @"testMessageID";
     NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
 
     LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
@@ -2394,8 +2392,7 @@
 {
     NSString *messageID = @"testMessageID";
     NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
-
+    
     LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
     id actionContextMock = OCMPartialMock(actionContext);
 

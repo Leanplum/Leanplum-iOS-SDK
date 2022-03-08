@@ -23,9 +23,8 @@
 //  under the License.
 
 #import <Foundation/Foundation.h>
-#import "Leanplum.h"
-#import "LPNetworkFactory.h"
-#import "LPRequest.h"
+
+@class LPRequest;
 
 @interface LPRequestSender : NSObject
 

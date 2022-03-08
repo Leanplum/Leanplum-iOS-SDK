@@ -66,6 +66,7 @@
 #import "LPAES.h"
 #import "LPLogManager.h"
 #import "LPRequestSenderTimer.h"
+#import "LPRequestSender.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -178,11 +179,11 @@ extern NSString *const kEnvProduction;
 /**
  * Optional. Sets the API server. The API path is of the form http[s]://hostname/servletName
  * @param hostName The name of the API host, such as api.leanplum.com
- * @param servletName The name of the API servlet, such as api
+ * @param apiPath The name of the API path, such as api
  * @param ssl Whether to use SSL
  */
-+ (void)setApiHostName:(NSString *)hostName withServletName:(NSString *)servletName usingSsl:(BOOL)ssl
-NS_SWIFT_NAME(setApiHostName(_:servletName:ssl:));
++ (void)setApiHostName:(NSString *)hostName withPath:(NSString *)apiPath usingSsl:(BOOL)ssl
+NS_SWIFT_NAME(setApiHostName(_:apiPath:ssl:));
 
 /**
  * Optional. Sets socket hostname and port

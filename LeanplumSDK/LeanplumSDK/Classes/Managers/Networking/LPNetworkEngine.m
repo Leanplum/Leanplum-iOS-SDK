@@ -26,11 +26,10 @@
 #import "LPNetworkOperation.h"
 #import "LeanplumInternal.h"
 #import "LPCountAggregator.h"
-#import "LPAPIConfig.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPNetworkEngine()
 
-@property (nonatomic, copy) NSString *hostName;
 @property (nonatomic, strong)NSURLRequest *request;
 @property (nonatomic, strong) LPCountAggregator *countAggregator;
 
@@ -49,24 +48,14 @@
         self.sessionConfiguration.URLCredentialStorage = nil;
         self.sessionConfiguration.requestCachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         self.countAggregator = [LPCountAggregator sharedAggregator];
-        _hostName = @"";
     }
     return self;
 }
 
-- (id)initWithHostName:(NSString *)hostName customHeaderFields:(NSDictionary *)headers
+- (id)initWithCustomHeaderFields:(NSDictionary *)headers
 {
     self = [self init];
     self.sessionConfiguration.HTTPAdditionalHeaders = headers;
-    self.hostName = hostName;
-
-    return self;
-}
-
-- (id)initWithHostName:(NSString *)hostName
-{
-    self = [self init];
-    self.hostName = hostName;
 
     return self;
 }
@@ -76,22 +65,15 @@
     self.sessionConfiguration = nil;
 }
 
-- (void)setHostName:(NSString *)hostName
-{
-    _hostName = hostName;
-
-    self.reachability = [Leanplum_Reachability reachabilityWithHostname:_hostName];
-    [self.reachability startNotifier];
-}
-
-- (id<LPNetworkOperationProtocol>)operationWithPath:(NSString *)path
+- (id<LPNetworkOperationProtocol>)operationWithHost:(NSString *)host
+                                               path:(NSString *)path
                                              params:(NSMutableDictionary *)body
                                          httpMethod:(NSString *)method
                                                 ssl:(BOOL)useSSL
                                      timeoutSeconds:(int)timeout
 {
     NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@://%@",
-                                  useSSL ? @"https" : @"http", self.hostName];
+                                  useSSL ? @"https" : @"http", host];
     [urlString appendFormat:@"/%@", path];
     
     [self.countAggregator incrementCount:@"operation_with_path"];
@@ -150,7 +132,7 @@
     NSString *userAgentString = [NSString stringWithFormat:@"%@/%@/%@/%@/%@/%@/%@/%@/%@",
                                  infoDict[(NSString *)kCFBundleNameKey],
                                  infoDict[(NSString *)kCFBundleVersionKey],
-                                 [LPAPIConfig sharedConfig].appId,
+                                 [[ApiConfig shared] appId],
                                  LEANPLUM_CLIENT,
                                  LEANPLUM_SDK_VERSION,
                                  [[UIDevice currentDevice] systemName],
@@ -162,12 +144,6 @@
                                 [[NSLocale preferredLanguages] componentsJoinedByString:@", "]];
     
     return @{@"User-Agent": userAgentString, @"Accept-Language" : languageHeader, @"Accept-Encoding" : LEANPLUM_SUPPORTED_ENCODING};
-}
-
-+ (void)attachApiKeys:(NSMutableDictionary *)dict
-{
-    dict[LP_PARAM_APP_ID] = [LPAPIConfig sharedConfig].appId;
-    dict[LP_PARAM_CLIENT_KEY] = [LPAPIConfig sharedConfig].accessKey;
 }
 
 @end
