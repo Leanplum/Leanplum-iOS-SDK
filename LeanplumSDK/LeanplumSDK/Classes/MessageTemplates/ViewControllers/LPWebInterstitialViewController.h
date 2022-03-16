@@ -13,7 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface LPWebInterstitialViewController : UIViewController <WKNavigationDelegate>
+@interface LPWebInterstitialViewController : UIViewController <WKNavigationDelegate, WKUIDelegate>
 
 @property (strong, nonatomic) LPActionContext *context;
 
