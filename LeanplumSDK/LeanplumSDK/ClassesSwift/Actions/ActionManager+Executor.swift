@@ -37,13 +37,9 @@ extension ActionManager {
 
         // if message is delayed, add it to the scheduler to be delayed
         // by the amount of seconds, and exit
-        if case .delay(let amount) = messageDisplayDecision?.decision {
-            if amount > 0 {
-                scheduler.schedule(action: action, delay: amount)
-            } else {
-                state.currentAction?.state = .delayed
-                appendActions(contexts: [action.context])
-            }
+        if case .delay(let amount) = messageDisplayDecision?.decision, amount > 0 {
+            action.state = .delayed
+            scheduler.schedule(action: action, delay: amount)
             state.currentAction = nil
             performActions()
             return

@@ -7,39 +7,28 @@
 
 import Foundation
 
-extension ActionManager: ActionSchedulerDelegate {
-
+extension ActionManager {
+    
     @objc public enum Priority: Int {
         case high
         case `default`
     }
 
-    @objc public func trigger(actionContexts: [ActionContext]) {
-        let filteredActions = sortAndOrderMessages?(actionContexts, nil) ?? actionContexts
-        addActions(contexts: filteredActions)
-    }
-
-    @objc public func trigger(actionContexts: [ActionContext], priority: Priority = .default) {
-        let filteredActions = sortAndOrderMessages?(actionContexts, nil) ?? actionContexts
+    @objc public func trigger(contexts: [ActionContext], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
+        let filteredActions = orderMessages?(contexts, trigger) ?? contexts
+        let actions: [Action] = filteredActions.map {
+            .action(context: $0)
+        }
         switch priority {
-        case .high:
-            insertActions(contexts: filteredActions)
-        default:
-            appendActions(contexts: filteredActions)
+            case .high:
+                insertActions(actions: actions)
+            default:
+                appendActions(actions: actions)
         }
     }
-
-    @objc public func trigger(actionContexts: [ActionContext], trigger: ActionsTrigger? = nil) {
-        let filteredActions = sortAndOrderMessages?(actionContexts, trigger) ?? actionContexts
-        addActions(contexts: filteredActions)
-    }
-
+    
     @objc public func triggerDelayedMessages() {
         queue.prepareActions()
-    }
-
-    func onActionDelayed(context: ActionContext) {
-        appendActions(contexts: [context])
     }
 }
 
@@ -49,22 +38,22 @@ extension ActionManager {
         case discard
         case delay(seconds: Int)
     }
-
+    
     @objc public class MessageOrder: NSObject {
         var decision: MessageDisplayOrder = .show
-
+        
         @objc public static func show() -> Self {
             .init(decision: .show)
         }
-
+        
         @objc public static func discard() -> Self {
             .init(decision: .discard)
         }
-
+        
         @objc public static func delay(seconds: Int) -> Self {
             .init(decision: .delay(seconds: seconds))
         }
-
+        
         required init(decision: MessageDisplayOrder) {
             super.init()
             self.decision = decision

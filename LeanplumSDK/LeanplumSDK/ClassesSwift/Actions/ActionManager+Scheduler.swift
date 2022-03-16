@@ -7,17 +7,13 @@
 
 import Foundation
 
-protocol ActionSchedulerDelegate: AnyObject {
-    func onActionDelayed(context: ActionContext)
-}
-
 extension ActionManager {
     public class Scheduler {
-        weak var delegate: ActionSchedulerDelegate?
+        var actionDelayed: ((Action) -> ())?
 
         func schedule(action: Action, delay: Int) {
             DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(delay)) {
-                self.delegate?.onActionDelayed(context: action.context)
+                self.actionDelayed?(action)
             }
         }
     }

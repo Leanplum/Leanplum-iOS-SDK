@@ -1721,8 +1721,7 @@ void leanplumExceptionHandler(NSException *exception);
         ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:eventName
                                                                   condition:whenConditions
                                                            contextualValues:contextualValues];
-        [[ActionManager shared] triggerWithActionContexts:contexts
-                                                  trigger:trigger];
+        [[ActionManager shared] triggerWithContexts:contexts priority:PriorityDefault trigger:trigger];
     }
 }
 

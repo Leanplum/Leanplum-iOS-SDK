@@ -539,7 +539,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         chainedActionContext->_preventRealtimeUpdating = self->_preventRealtimeUpdating;
         chainedActionContext->_isRooted = self->_isRooted;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithActionContexts:@[chainedActionContext]];
+            [[ActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityDefault trigger:nil];
         });
     };
 
@@ -568,7 +568,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         childContext->_parentContext = self;
         childContext->_key = name;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithActionContexts:@[childContext]];
+            [[ActionManager shared] triggerWithContexts:@[childContext] priority:PriorityDefault trigger:nil];
+            
         });
     }
 

@@ -9,23 +9,30 @@ import Foundation
 
 extension ActionManager {
     final class Queue {
-        let lock = DispatchSemaphore(value: 1)
-        var queue: [Action] = []
+        let lock = DispatchQueue(label: "leanplum.access_dispatch_queue", attributes: .concurrent)
+        var didChange: (() -> Void)?
+        var queue: [Action] = [] {
+            didSet {
+                DispatchQueue.main.async {
+                    self.didChange?()
+                }
+            }
+        }
 
         func pushBack(_ item: Action) {
-            lock.with {
-                queue.append(item)
+            lock.async(flags: .barrier) {
+                self.queue.append(item)
             }
         }
 
         func pushFront(_ item: Action) {
-            lock.with {
-                queue.insert(item, at: 0)
+            lock.async(flags: .barrier) {
+                self.queue.insert(item, at: 0)
             }
         }
 
         func pop() -> Action? {
-            return lock.with {
+            return lock.sync {
                 if !queue.isEmpty {
                     if let index = queue.firstIndex(where: { $0.state != .delayed }) {
                         return queue.remove(at: index)
@@ -36,44 +43,35 @@ extension ActionManager {
         }
 
         func first() -> Action? {
-            return lock.with {
+            return lock.sync {
                 return queue.first
             }
         }
 
         func last() -> Action? {
-            return lock.with {
+            return lock.sync {
                 return queue.last
             }
         }
 
         func empty() -> Bool {
-            return lock.with {
+            return lock.sync {
                 queue.isEmpty
             }
         }
 
         func count() -> Int {
-            return lock.with {
+            return lock.sync {
                 queue.count
             }
         }
 
         func prepareActions(to state: Action.State = .delayed) {
-            lock.with {
-                for var action in queue {
+            lock.async(flags: .barrier) {
+                for var action in self.queue {
                     action.state = state
                 }
             }
         }
-    }
-}
-
-private extension DispatchSemaphore {
-    @discardableResult
-    func with<T>(_ block: () throws -> T) rethrows -> T {
-        wait()
-        defer { signal() }
-        return try block()
     }
 }

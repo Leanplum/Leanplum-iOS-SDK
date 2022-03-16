@@ -19,7 +19,12 @@ import Foundation
 
     override init() {
         super.init()
-        scheduler.delegate = self
+        queue.didChange = {
+            self.performActions()
+        }
+        scheduler.actionDelayed = {
+            self.appendActions(actions: [$0])
+        }
     }
 
     var shouldDisplayMessage: ((ActionContext) -> MessageOrder)?
@@ -42,37 +47,22 @@ import Foundation
         onMessageAction = callback
     }
 
-    var sortAndOrderMessages: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?
-    @objc public func sortAndOrderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
-        sortAndOrderMessages = callback
+    var orderMessages: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?
+    @objc public func orderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
+        orderMessages = callback
     }
 }
 
 extension ActionManager {
-    /// Adds ActionContext to front or back of the queue depending on action type
-    @objc public func addActions(contexts: [ActionContext]) {
-        guard enabled else { return }
-        let actions: [Action] = contexts.map {
-            .action(context: $0)
-        }
-        addActions(actions: actions)
-    }
-
     /// Adds ActionContext to back of the queue
-    @objc public func appendActions(contexts: [ActionContext]) {
+    func appendActions(actions: [Action]) {
         guard enabled else { return }
-        let actions: [Action] = contexts.map {
-            .action(context: $0)
-        }
         actions.forEach(appendAction(action:))
     }
 
     /// Adds ActionContext to front of the queue
-    @objc public func insertActions(contexts: [ActionContext]) {
+    func insertActions(actions: [Action]) {
         guard enabled else { return }
-        let actions: [Action] = contexts.map {
-            .action(context: $0)
-        }
         actions.forEach(insertAction(action:))
     }
 }
@@ -80,6 +70,7 @@ extension ActionManager {
 extension ActionManager {
     /// Adds action to front or back of the queue depending on action type
     func addActions(actions: [Action]) {
+        guard enabled else { return }
         actions.forEach { action in
             if action.type == .chained {
                 insertAction(action: action)

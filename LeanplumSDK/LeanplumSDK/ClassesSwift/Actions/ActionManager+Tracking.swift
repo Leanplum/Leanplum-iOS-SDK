@@ -16,14 +16,15 @@ extension ActionManager {
             // actions of type Action we do not want to count them.
             let actionKind: Kind = .init(rawValue: VarCache.shared().getActionDefinitionType(action.context.name))
             switch actionKind {
-            case .action:
-                LPInternalState.shared().actionManager.recordChainedActionImpression(action.context.messageId)
-            case .message:
-                LPInternalState.shared().actionManager.recordMessageImpression(action.context.messageId)
-            default: break
+                case .action:
+                    LPActionManager.shared().recordChainedActionImpression(action.context.messageId)
+                case .message:
+                    LPActionManager.shared().recordMessageImpression(action.context.messageId)
+                default:
+                    break
             }
         } else {
-            LPInternalState.shared().actionManager.recordMessageImpression(action.context.messageId)
+            LPActionManager.shared().recordMessageImpression(action.context.messageId)
         }
     }
 }
