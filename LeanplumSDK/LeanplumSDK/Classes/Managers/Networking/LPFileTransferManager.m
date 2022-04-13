@@ -29,6 +29,7 @@
 #import "LPRequestFactory.h"
 #import "LPResponse.h"
 #import "LPFileManager.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPFileTransferManager()
 
@@ -72,8 +73,7 @@
             if (!_requestHeaders) {
                 _requestHeaders = [LPNetworkEngine createHeaders];
             }
-            _engine = [LPNetworkFactory engineWithHostName:[LPConstantsState sharedState].apiHostName
-                                        customHeaderFields:_requestHeaders];
+            _engine = [LPNetworkFactory engineWithCustomHeaderFields:_requestHeaders];
         }
 
     }
@@ -89,7 +89,7 @@
     RETURN_IF_TEST_MODE;
     NSMutableArray *filesToUpload = [NSMutableArray array];
     dict[LP_PARAM_COUNT] = @(filesToUpload.count);
-    [LPNetworkEngine attachApiKeys:dict];
+    [ApiConfig attachApiKeysWithDict:dict];
 
     for (NSString *filename in filenames) {
         // Set state.
@@ -244,7 +244,7 @@
     LPLog(LPInfo, @"Downloading resource %@", path);
     self.fileTransferStatus[path] = @(YES);
 
-    [LPNetworkEngine attachApiKeys:dict];
+    [ApiConfig attachApiKeysWithDict:dict];
 
     // Download it directly if the argument is URL.
     // Otherwise continue with the api request.
@@ -254,10 +254,11 @@
     } else if ([self.filenameToURLs valueForKey:path]) {
         op = [self.engine operationWithURLString:[self.filenameToURLs valueForKey:path]];
     } else {
-        op = [self.engine operationWithPath:[LPConstantsState sharedState].apiServlet
+        op = [self.engine operationWithHost:[ApiConfig shared].apiHostName
+                                       path:[ApiConfig shared].apiPath
                                      params:dict
                                  httpMethod:[LPNetworkFactory fileRequestMethod]
-                                        ssl:[LPConstantsState sharedState].apiSSL
+                                        ssl:[ApiConfig shared].apiSSL
                              timeoutSeconds:[LPConstantsState sharedState]
               .networkTimeoutSecondsForDownloads];
     }

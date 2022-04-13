@@ -251,7 +251,6 @@
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
-        
     }];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     if (timedOut > 0) {
@@ -293,7 +292,6 @@
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
-        
     }];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     if (timedOut > 0) {
@@ -360,7 +358,6 @@
         if (success) {
             dispatch_semaphore_signal(semaphore);
         }
-        
     }];
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     if (timedOut > 0) {

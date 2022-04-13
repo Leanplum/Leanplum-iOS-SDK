@@ -228,6 +228,8 @@
     long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
     XCTAssertTrue(timedOut == 0);
     XCTAssertTrue(requestCount == 2);
+    // clean up
+    [LPEventDataManager deleteEventsWithLimit:900000];
 }
 
 - (void)test_response_index

@@ -39,6 +39,7 @@
 
     self.webView = [[WKWebView alloc] init];
     self.webView.navigationDelegate = self;
+    self.webView.UIDelegate = self;
 
     // must be inserted at index 0
     [self.view insertSubview:self.webView atIndex:0];
@@ -399,6 +400,17 @@
     NSCharacterSet *letterSet = [NSCharacterSet letterCharacterSet];
     NSArray *components = [htmlString componentsSeparatedByCharactersInSet:letterSet];
     return [[components componentsJoinedByString:@""] floatValue];
+}
+
+#pragma mark WKUIDelegate
+
+//this fix is added to support pages with target="_blank" urls
+- (WKWebView *)webView:(WKWebView *)webView createWebViewWithConfiguration:(WKWebViewConfiguration *)configuration forNavigationAction:(WKNavigationAction *)navigationAction windowFeatures:(WKWindowFeatures *)windowFeatures
+{
+    if (!navigationAction.targetFrame.isMainFrame) {
+        [webView loadRequest:navigationAction.request];
+    }
+    return nil;
 }
 
 #pragma mark Orientation

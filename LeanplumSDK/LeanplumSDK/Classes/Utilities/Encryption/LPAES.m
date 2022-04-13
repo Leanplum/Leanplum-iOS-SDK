@@ -25,14 +25,14 @@
 #import "LPAES.h"
 #import "LPConstants.h"
 #import <CommonCrypto/CommonCryptor.h>
-#import "LPAPIConfig.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @implementation LPAES
 
 + (NSData *)encryptedDataFromData:(NSData *)data;
 {
     return [LPAES AES128WithOperation:kCCEncrypt
-                                  key:[LPAPIConfig sharedConfig].token
+                                  key:[[ApiConfig shared] token]
                            identifier:LP_IV
                                  data:data];
 }
@@ -40,7 +40,7 @@
 + (NSData *)decryptedDataFromData:(NSData *)data
 {
     return [LPAES AES128WithOperation:kCCDecrypt
-                                  key:[LPAPIConfig sharedConfig].token
+                                  key:[[ApiConfig shared] token]
                            identifier:LP_IV
                                  data:data];
 }

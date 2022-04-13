@@ -25,7 +25,6 @@
 #import "LPUtils.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "LPExceptionHandler.h"
-#import "LPAPIConfig.h"
 #import "LPConstants.h"
 #import "Leanplum.h"
 #import <Leanplum/Leanplum-Swift.h>

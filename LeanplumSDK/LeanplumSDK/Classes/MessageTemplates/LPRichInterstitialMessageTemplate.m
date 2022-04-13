@@ -53,7 +53,7 @@
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
     viewController.context = context;
     return viewController;
 }

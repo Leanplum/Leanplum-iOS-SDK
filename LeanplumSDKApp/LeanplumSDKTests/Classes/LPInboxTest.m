@@ -355,6 +355,7 @@
  */
 -(void)test_markAsRead
 {
+    // TODO: Fix the test to be independent
     dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
     [self loadInbox:^{
         // Wait for callback

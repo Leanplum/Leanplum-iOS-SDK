@@ -26,11 +26,13 @@
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPRequestFactory.h>
-//#import <Leanplum/LPPushNotificationsHandler.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface Leanplum(UnitTest)
 
-+ (NSLocale *)systemLocale;
+@property (class, readonly) User* _Nonnull user;
+
++ (NSLocale * _Nullable)systemLocale;
 
 + (void)reset;
 

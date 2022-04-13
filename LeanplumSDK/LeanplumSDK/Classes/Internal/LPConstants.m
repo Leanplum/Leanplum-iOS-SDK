@@ -40,11 +40,6 @@
 
 - (id)init {
     if (self = [super init]) {
-        _apiHostName = @"api.leanplum.com";
-        _apiServlet = @"api";
-        _apiSSL = YES;
-        _socketHost = @"dev.leanplum.com";
-        _socketPort = 443;
         _networkTimeoutSeconds = 10;
         _networkTimeoutSecondsForDownloads = 15;
         _syncNetworkTimeoutSeconds = 5;
@@ -145,6 +140,9 @@ NSString *LP_PARAM_INBOX_MESSAGE_ID = @"newsfeedMessageId";
 NSString *LP_PARAM_RICH_PUSH_ENABLED = @"richPushEnabled";
 NSString *LP_PARAM_UUID = @"uuid";
 NSString *LP_PARAM_CURRENCY_CODE = @"currencyCode";
+NSString *LP_PARAM_API_HOST = @"apiHost";
+NSString *LP_PARAM_API_PATH = @"apiPath";
+NSString *LP_PARAM_DEV_SERVER_HOST = @"devServerHost";
 
 NSString *LP_KEY_REASON = @"reason";
 NSString *LP_KEY_STACK_TRACE = @"stackTrace";
@@ -215,9 +213,6 @@ NSString *LP_VALUE_DEFAULT_PUSH_MESSAGE = @"Push message goes here.";
 NSString *LP_VALUE_SDK_LOG = @"sdkLog";
 NSString *LP_VALUE_SDK_COUNT = @"sdkCount";
 NSString *LP_VALUE_SDK_START_LATENCY = @"sdkStartLatency";
-
-NSString *LP_KEYCHAIN_SERVICE_NAME = @"com.leanplum.storage";
-NSString *LP_KEYCHAIN_USERNAME = @"defaultUser";
 
 NSString *LP_PATH_DOCUMENTS = @"Leanplum_Resources";
 NSString *LP_PATH_BUNDLE = @"Leanplum_Bundle";

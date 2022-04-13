@@ -34,9 +34,9 @@
 #import "LPUtils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
-#import "LPAPIConfig.h"
 #import "LPCountAggregator.h"
 #import "LPFileTransferManager.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface LPVarCache()
 @property (strong, nonatomic) NSRegularExpression *varNameRegex;
@@ -431,10 +431,10 @@ static dispatch_once_t leanplum_onceToken;
             BOOL loggingEnabled = [unarchiver decodeBoolForKey:LP_KEY_LOGGING_ENABLED];
             localCaps = [unarchiver decodeObjectForKey:LEANPLUM_DEFAULTS_LOCAL_CAPS_KEY];
             if (deviceId) {
-                [[LPAPIConfig sharedConfig] setDeviceId:deviceId];
+                [[Leanplum user] setDeviceId:deviceId];
             }
             if (userId) {
-                [[LPAPIConfig sharedConfig] setUserId:userId];
+                [[Leanplum user] setUserId:userId];
             }
             if (loggingEnabled) {
                 [LPConstantsState sharedState].loggingEnabled = YES;
@@ -476,8 +476,8 @@ static dispatch_once_t leanplum_onceToken;
         [archiver encodeObject:self.variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
         [archiver encodeObject:self.regions forKey:LP_KEY_REGIONS];
         [archiver encodeObject:[LPConstantsState sharedState].sdkVersion forKey:LP_PARAM_SDK_VERSION];
-        [archiver encodeObject:[LPAPIConfig sharedConfig].deviceId forKey:LP_PARAM_DEVICE_ID];
-        [archiver encodeObject:[LPAPIConfig sharedConfig].userId forKey:LP_PARAM_USER_ID];
+        [archiver encodeObject:[[Leanplum user] deviceId] forKey:LP_PARAM_DEVICE_ID];
+        [archiver encodeObject:[[Leanplum user] userId] forKey:LP_PARAM_USER_ID];
         [archiver encodeBool:[LPConstantsState sharedState].loggingEnabled forKey:LP_KEY_LOGGING_ENABLED];
         [archiver encodeObject:self.varsJson forKey:LEANPLUM_DEFAULTS_VARS_JSON_KEY];
         [archiver encodeObject:self.varsSignature forKey:LEANPLUM_DEFAULTS_VARS_SIGNATURE_KEY];
@@ -740,7 +740,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     if (!_userAttributes) {
         @try {
-            NSString *token = [[LPAPIConfig sharedConfig] token];
+            NSString *token = [[ApiConfig shared] token];
             if (token) {
                 NSData *encryptedValue = [[NSUserDefaults standardUserDefaults] dataForKey:LEANPLUM_DEFAULTS_ATTRIBUTES_KEY];
                 if (encryptedValue) {

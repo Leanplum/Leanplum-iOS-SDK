@@ -38,8 +38,8 @@
 #import "LeanplumReachability+Category.h"
 #import "LPNetworkEngine+Category.h"
 #import "LPNetworkOperation+Category.h"
-#import <Leanplum/LPAPIConfig.h>
 #import <Leanplum/LPOperationQueue.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 // Keys also used in Leanplum-Info.plist file
 NSString *APPLICATION_ID = @"app_nLiaLr3lXvCjXhsztS1Gw8j281cPLO6sZetTDxYnaSk";
@@ -47,6 +47,7 @@ NSString *DEVELOPMENT_KEY = @"dev_2bbeWLmVJyNrqI8F21Kn9nqyUPRkVCUoLddBkHEyzmk";
 NSString *PRODUCTION_KEY = @"prod_XYpURdwPAaxJyYLclXNfACe9Y8hs084dBx2pB8wOnqU";
 
 NSString *API_HOST = @"api.leanplum.com";
+NSString *API_PATH = @"api";
 
 NSInteger DISPATCH_WAIT_TIME = 4;
 
@@ -150,14 +151,15 @@ static BOOL swizzled = NO;
     [[LPVarCache sharedCache] reset];
     [[LPVarCache sharedCache] initialize];
     [LPActionManager reset];
-    [[LPAPIConfig sharedConfig] setDeviceId:nil];
-    [[LPAPIConfig sharedConfig] setUserId:nil];
-    [[LPAPIConfig sharedConfig] setToken:nil];
+    [[Leanplum user] setDeviceId:nil];
+    [[Leanplum user] setUserId:nil];
     
     [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:NO];
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];
     
-    [[LPAPIConfig sharedConfig] setAppId:nil withAccessKey:nil];
+    // Reset values directly
+    [ApiConfig shared].appId = nil;
+    [ApiConfig shared].accessKey = nil;
     
     [LPRequest reset];
     [LPRequestSender reset];

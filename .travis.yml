@@ -1,5 +1,7 @@
 # Build only if commit is tagged or PR is opened/updated
-if: (tag IS present) OR (type = pull_request)
+if: |
+  ((tag IS present) OR (type = pull_request)) AND \
+  ((commit_message != 'update spm') AND (sender != env(GITHUB_NAME)))
 
 language: objective-c
 osx_image: xcode13.1
@@ -14,18 +16,13 @@ before_install:
   - gem install cocoapods # Since Travis is not always on latest version
   - pod install
 
-before_script:
-  >-
-      if [ -z "$TRAVIS_TAG" ] 
-        then 
-          echo "No tag, so not triggering Location" 
-        else
-          ./Tools/triggerLocation.sh
-        fi
-
 before_deploy:
   - ./Tools/verifyTag.sh
-  - ./Tools/build.sh
+  - >
+    if ! [ "$BUILD_ONCE" ]; then
+      export BUILD_ONCE=1;
+      ./Tools/build.sh;
+    fi
 
 after_deploy:
   >-
@@ -45,8 +42,14 @@ deploy:
     skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file: 
-      - Release/Leanplum.framework.zip
+      - Leanplum.framework.zip
+      - LeanplumLocation.framework.zip
       - Release/dynamic/Leanplum.xcframework.zip
     draft: true
+    on:
+      tags: true
+  - provider: script
+    skip_cleanup: true
+    script: ./Tools/pushSPM.sh
     on:
       tags: true
