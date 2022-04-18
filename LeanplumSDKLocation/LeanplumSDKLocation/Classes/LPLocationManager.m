@@ -196,8 +196,8 @@
 - (void)authorize {
     LP_TRY
     CLLocationManager *locationManager = [self locationManager];
-    if ([locationManager respondsToSelector:@selector(requestAlwaysAuthorization)]) {
-        [locationManager requestAlwaysAuthorization];
+    if ([locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [locationManager requestWhenInUseAuthorization];
     }
     LP_END_TRY
 }
