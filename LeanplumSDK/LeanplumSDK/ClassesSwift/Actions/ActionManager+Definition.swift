@@ -8,11 +8,16 @@
 import Foundation
 
 extension ActionManager {
+    
     @objc public func defineAction(definition: ActionDefinition) {
         definitions.append(definition)
-        VarCache.shared().registerActionDefinition(definition.name,
-                                                     ofKind: Int32(definition.kind.rawValue),
-                                                     withArguments: definition.args,
-                                                     andOptions: definition.options)
+    }
+    
+    func getActionDefinitionType(name: String) -> UInt {
+        let definition = definition(withName: name)
+        if let definition = definition {
+            return definition.kind.rawValue
+        }
+        return 0
     }
 }

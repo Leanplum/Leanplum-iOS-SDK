@@ -34,6 +34,7 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -258,7 +259,7 @@ static long WEEK_SECONDS;
 {
     *foregroundRegionNames = [NSMutableSet set];
     *backgroundRegionNames = [NSMutableSet set];
-    NSDictionary *messages = [[LPVarCache sharedCache] messages];
+    NSDictionary *messages = [[ActionManager shared] messages];
     for (NSString *messageId in messages) {
         NSDictionary *messageConfig = messages[messageId];
         NSMutableSet *regionNames;

@@ -84,7 +84,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSDictionary *)defaultValues
 {
-    return [LPVarCache sharedCache].actionDefinitions[_name][@"values"];
+//    return [LPVarCache sharedCache].actionDefinitions[_name][@"values"];
+    for (ActionDefinition *ad in [[ActionManager shared] definitions])
+    {
+        if ([[ad name] isEqualToString:_name]) {
+            return [ad values];
+        }
+    }
+    return nil;
 }
 
 /**
@@ -92,90 +99,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
  */
 - (void)maybeDownloadFiles
 {
-    [self maybeDownloadFilesWithinArgs:_args withPrefix:@"" withDefaultValues:[self defaultValues]];
-}
-
-/**
- * Downloads missing files that are part of this action.
- */
-- (void)maybeDownloadFilesWithinArgs:(NSDictionary *)args
-                          withPrefix:(NSString *)prefix
-                   withDefaultValues:(NSDictionary *)defaultValues
-{
-    [self forEachFile:args
-           withPrefix:prefix
-    withDefaultValues:defaultValues
-             callback:^(NSString *value, NSString *defaultValue) {
-                 [LPFileManager maybeDownloadFile:value
-                                     defaultValue:defaultValue
-                                       onComplete:^{}];
-             }];
-}
-
-- (void)forEachFile:(NSDictionary *)args
-         withPrefix:(NSString *)prefix
-  withDefaultValues:(NSDictionary *)defaultValues
-           callback:(LPFileCallback)callback
-{
-    NSDictionary *kinds = [LPVarCache sharedCache].actionDefinitions[_name][@"kinds"];
-    for (NSString *arg in args) {
-        id value = args[arg];
-        id defaultValue = nil;
-        if ([defaultValues isKindOfClass:[NSDictionary class]]) {
-            defaultValue = defaultValues[arg];
-        }
-        NSString *prefixAndArg = [NSString stringWithFormat:@"%@%@", prefix, arg];
-        NSString *kind = kinds[prefixAndArg];
-
-        if ((kind == nil || ![kind isEqualToString:LP_KIND_ACTION])
-            && [value isKindOfClass:[NSDictionary class]]
-            && !value[LP_VALUE_ACTION_ARG]) {
-            [self forEachFile:value
-                   withPrefix:[NSString stringWithFormat:@"%@.", prefixAndArg]
-            withDefaultValues:defaultValue
-                     callback:callback];
-
-        } else if ([kind isEqualToString:LP_KIND_FILE] &&
-                   ![arg isEqualToString:LP_APP_ICON_NAME]) {
-            callback(value, defaultValue);
-
-            // Check for specific file type extension (HTML).
-        } else if ([arg hasPrefix:@"__file__"] && ![LPUtils isNullOrEmpty:value]) {
-            callback(value, defaultValue);
-
-            // Need to check for nil because server actions like push notifications aren't
-            // defined in the SDK, and so there's no associated metadata.
-        } else if ([kind isEqualToString:LP_KIND_ACTION] || kind == nil) {
-            NSDictionary *actionArgs = [self dictionaryNamed:prefixAndArg];
-            if (![actionArgs isKindOfClass:[NSDictionary class]]) {
-                continue;
-            }
-            LPActionContext *context = [LPActionContext
-                                        actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
-                                        args:actionArgs
-                                        messageId:_messageId];
-            [context forEachFile:context->_args
-                      withPrefix:@""
-               withDefaultValues:[context defaultValues]
-                        callback:callback];
-        }
-    }
+    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
+    [[ActionManager shared] downloadFilesWithMessageArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (BOOL)hasMissingFiles
 {
-    __block BOOL hasMissingFiles = NO;
-    LP_TRY
-    [self forEachFile:_args
-           withPrefix:@""
-    withDefaultValues:[self defaultValues]
-             callback:^(NSString *value, NSString *defaultValue) {
-                 if ([LPFileManager shouldDownloadFile:value defaultValue:defaultValue]) {
-                     hasMissingFiles = YES;
-                 }
-             }];
-    LP_END_TRY
-    return hasMissingFiles;
+    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
+    return [[ActionManager shared] hasMissingFilesWithMessageArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (NSString *)actionName
@@ -209,7 +140,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if (parent) {
             _args = [parent getChildArgs:_key];
         } else if (_messageId) {
-            NSDictionary *message = [LPVarCache sharedCache].messages[_messageId];
+            NSDictionary *message = [[ActionManager shared] messages][_messageId];
             if (message) {
                 _args = message[LP_KEY_VARS];
             }
@@ -463,10 +394,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if (![actionArgs isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-    NSDictionary *defaultArgs = [LPVarCache sharedCache].actionDefinitions
-    [actionArgs[LP_VALUE_ACTION_ARG]]
-    [@"values"];
-    actionArgs = [[LPVarCache sharedCache] mergeHelper:defaultArgs withDiffs:actionArgs];
+    
+    NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
+    actionArgs = [[ActionManager shared] mergeWithVars:defaultArgs diff:actionArgs];
+    
     return actionArgs;
     LP_END_TRY
 }
@@ -523,7 +454,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     NSDictionary *args = [self getChildArgs:name];
 
     // notifies our ActionManager that the action was executed
-    self.actionDidExecute(self);
+    if ([self actionDidExecute]) {
+        self.actionDidExecute(self);
+    }
     
     if (!args) {
         return;
@@ -544,14 +477,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     };
 
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
-        NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
+        NSDictionary *message = [[ActionManager shared] messages][messageId];
         if (message) {
             executeChainedMessage();
         } else {
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
-                NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
+                NSDictionary *message = [[ActionManager shared] messages][messageId];
                 if (message) {
                     executeChainedMessage();
                 }

@@ -9,11 +9,18 @@ import Foundation
 
 @objc public class ActionManager: NSObject {
     @objc public static let shared: ActionManager = .init()
+    
+    // TODO: add contentVersion
 
     lazy var queue: Queue = Queue()
     lazy var scheduler: Scheduler = Scheduler()
     lazy var state = State()
-    lazy var definitions: [ActionDefinition] = []
+    
+    @objc public lazy var definitions: [ActionDefinition] = []
+    // Move to struct
+    @objc public lazy var messages: [AnyHashable:Any] = [:]
+    @objc public lazy var messagesDataFromServer: [AnyHashable:Any] = [:] // messageDiffs
+    @objc public lazy var devModeActionDefinitionsFromServer: [AnyHashable:Any] = [:]
 
     public var enabled: Bool = true
 

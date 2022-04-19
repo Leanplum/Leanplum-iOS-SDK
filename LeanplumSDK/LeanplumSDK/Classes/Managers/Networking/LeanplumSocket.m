@@ -173,9 +173,10 @@ static dispatch_once_t leanplum_onceToken;
             NSString *messageId = [payload[LP_PARAM_MESSAGE_ID] description];
             BOOL isRooted = [payload[@"isRooted"] boolValue];
             NSString *actionType = action[LP_VALUE_ACTION_ARG];
-            NSDictionary *defaultArgs = [LPVarCache sharedCache].actionDefinitions
-                                          [action[LP_VALUE_ACTION_ARG]] [@"values"];
-            action = [[LPVarCache sharedCache] mergeHelper:defaultArgs withDiffs:action];
+            
+            NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:action[LP_VALUE_ACTION_ARG]] values];
+            action = [[ActionManager shared] mergeWithVars:defaultArgs diff:action];
+            
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
                                                                          args:action
                                                                     messageId:messageId];

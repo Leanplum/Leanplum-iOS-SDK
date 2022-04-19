@@ -45,12 +45,9 @@
 @property (strong, nonatomic) NSMutableDictionary<NSString *, id> *fileAttributes;
 @property (strong, nonatomic) NSMutableDictionary<NSString *, id> *valuesFromClient;
 @property (readwrite, nonatomic) NSMutableDictionary<NSString *, id> *defaultKinds;
-@property (strong, nonatomic) NSMutableDictionary<NSString *, id> *actionDefinitions;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *diffs;
-@property (strong, nonatomic) NSDictionary<NSString *, id> *messageDiffs;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeValuesFromServer;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *devModeFileAttributesFromServer;
-@property (strong, nonatomic) NSDictionary<NSString *, id> *devModeActionDefinitionsFromServer;
 @property (strong, nonatomic) NSArray<NSString *> *variants;
 @property (strong, nonatomic) NSArray<NSDictionary *> *localCaps;
 @property (strong, nonatomic) NSDictionary<NSString *, id> *variantDebugInfo;
@@ -58,7 +55,6 @@
 @property (strong, nonatomic) NSDictionary<NSString *, id> *regions;
 @property (strong, nonatomic) CacheUpdateBlock updateBlock;
 @property (assign, nonatomic) BOOL hasReceivedDiffs;
-@property (strong, nonatomic) NSMutableDictionary<NSString *, id> *messages;
 @property (strong, nonatomic) id merged;
 @property (assign, nonatomic) BOOL silent;
 @property (assign, nonatomic) int contentVersion;
@@ -95,13 +91,13 @@ static dispatch_once_t leanplum_onceToken;
 - (void)initialize
 {
     self.vars = [NSMutableDictionary dictionary];
-    self.messages = [NSMutableDictionary dictionary];
+//    self.messages = [NSMutableDictionary dictionary];
     self.filesToInspect = [NSMutableDictionary dictionary];
     self.fileAttributes = [NSMutableDictionary dictionary];
     self.valuesFromClient = [NSMutableDictionary dictionary];
     self.diffs = [NSMutableDictionary dictionary];
     self.defaultKinds = [NSMutableDictionary dictionary];
-    self.actionDefinitions = [NSMutableDictionary dictionary];
+//    self.actionDefinitions = [NSMutableDictionary dictionary];
     self.localCaps = [NSArray array];
     self.hasReceivedDiffs = NO;
     self.silent = NO;
@@ -300,6 +296,7 @@ static dispatch_once_t leanplum_onceToken;
         if ([diff isKindOfClass:NSDictionary.class] && [diff count] > 0) {
             isArray = YES;
             for (id var in diff) {
+                // [12] {12}
                 if (![var isKindOfClass:NSString.class]
                     || ([var length] < 3)
                     || ([var characterAtIndex:0] != '[' || [var characterAtIndex:[var length] - 1] != ']')) {
@@ -471,7 +468,8 @@ static dispatch_once_t leanplum_onceToken;
         NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
 #pragma clang diagnostic pop
         [archiver encodeObject:self.diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
-        [archiver encodeObject:self.messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
+        NSDictionary *messages = [[ActionManager shared] messages];
+        [archiver encodeObject:messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
         [archiver encodeObject:self.variants forKey:LP_KEY_VARIANTS];
         [archiver encodeObject:self.variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
         [archiver encodeObject:self.regions forKey:LP_KEY_REGIONS];
@@ -525,26 +523,28 @@ static dispatch_once_t leanplum_onceToken;
         }
         
         if (messages_) {
-            // Store messages.
-            self.messageDiffs = messages_;
-            self.messages = [NSMutableDictionary dictionary];
-            for (NSString *name in messages_) {
-                NSDictionary *messageConfig = messages_[name];
-                NSMutableDictionary *newConfig = [messageConfig mutableCopy];
-                NSDictionary *actionArgs = messageConfig[LP_KEY_VARS];
-                NSDictionary *defaultArgs = self.actionDefinitions
-                                              [newConfig[LP_PARAM_ACTION]][@"values"];
-                NSDictionary *messageVars = [self mergeHelper:defaultArgs
-                                                    withDiffs:actionArgs];
-                _messages[name] = newConfig;
-                newConfig[LP_KEY_VARS] = messageVars;
-                
-                // Download files.
-                [[LPActionContext actionContextWithName:messageConfig[@"action"]
-                                                   args:actionArgs
-                                              messageId:name]
-                 maybeDownloadFiles];
-            }
+//            // Store messages.
+//            self.messageDiffs = messages_;
+//            self.messages = [NSMutableDictionary dictionary];
+//            for (NSString *name in messages_) {
+//                NSDictionary *messageConfig = messages_[name];
+//                NSMutableDictionary *newConfig = [messageConfig mutableCopy];
+//                NSDictionary *actionArgs = messageConfig[LP_KEY_VARS];
+//                NSDictionary *defaultArgs = self.actionDefinitions
+//                                              [newConfig[LP_PARAM_ACTION]][@"values"];
+//                NSDictionary *messageVars = [self mergeHelper:defaultArgs
+//                                                    withDiffs:actionArgs];
+//                _messages[name] = newConfig;
+//                newConfig[LP_KEY_VARS] = messageVars;
+//
+//                // Download files.
+//                [[LPActionContext actionContextWithName:messageConfig[@"action"]
+//                                                   args:actionArgs
+//                                              messageId:name]
+//                 maybeDownloadFiles];
+//            }
+            [[ActionManager shared] updateMessages: messages_];
+            // TODO: (nikola) Download files
         }
     
         // If LeanplumLocation is linked in, setup region monitoring.
@@ -637,10 +637,17 @@ static dispatch_once_t leanplum_onceToken;
         (![self.valuesFromClient isEqualToDictionary:self.devModeValuesFromServer])) {
         changed = YES;
     }
-    if (actions && ![self areActionDefinitionsEqual:self.actionDefinitions
-                                              other:self.devModeActionDefinitionsFromServer]) {
+    
+    NSArray<ActionDefinition*> *definitions = [[ActionManager shared] definitions];
+    NSMutableDictionary<NSString *, id> *actionDefinitions = [NSMutableDictionary dictionary];
+    for (ActionDefinition *def in definitions) {
+        actionDefinitions[def.name] = def.json;
+    }
+    if (actions && ![self areActionDefinitionsEqual:actionDefinitions
+                                              other:[[ActionManager shared] devModeActionDefinitionsFromServer]]) {
         changed = YES;
     }
+    
     if (changed) {
          NSDictionary *limitedFileAttributes = self.fileAttributes;
          NSDictionary *limitedValues = self.valuesFromClient;
@@ -661,7 +668,10 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_KINDS] = [LPJSON stringFromJSON:self.defaultKinds];
              }
              if (actions) {
-                 args[LP_PARAM_ACTION_DEFINITIONS] = [LPJSON stringFromJSON:self.actionDefinitions];
+                 NSArray *jsonDefinitions = [self map:definitions with:^id(id obj) {
+                     return [obj json];
+                 }];
+                 args[LP_PARAM_ACTION_DEFINITIONS] =  [LPJSON stringFromJSON:jsonDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
              LPRequest *request = [LPRequestFactory setVarsWithParams:args];
@@ -673,6 +683,14 @@ static dispatch_once_t leanplum_onceToken;
          }
      }
     return NO;
+}
+
+- (NSArray *)map: (NSArray*)arr with: (id (^)(id obj))block {
+    NSMutableArray *mutableArray = [NSMutableArray new];
+    [arr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        [mutableArray addObject:block(obj)];
+    }];
+    return [mutableArray copy];
 }
 
 - (void)maybeUploadNewFiles
@@ -725,7 +743,9 @@ static dispatch_once_t leanplum_onceToken;
                  actionDefinitions:(NSDictionary *)actionDefinitions
 {
     self.devModeValuesFromServer = values;
-    self.devModeActionDefinitionsFromServer = actionDefinitions;
+    [[ActionManager shared] setDevModeActionDefinitionsFromServer: actionDefinitions];
+//    self.devModeActionDefinitionsFromServer = actionDefinitions;
+    
     self.devModeFileAttributesFromServer = fileAttributes;
 }
 
@@ -798,32 +818,32 @@ static dispatch_once_t leanplum_onceToken;
     [self.countAggregator incrementCount:@"save_user_attributes"];
 }
 
-- (void)registerActionDefinition:(NSString *)name
-                          ofKind:(int)kind
-                   withArguments:(NSArray<LPActionArg *> *)args
-                      andOptions:(NSDictionary *)options
-{
-    NSMutableDictionary *values = [NSMutableDictionary dictionary];
-    NSMutableDictionary *kinds = [NSMutableDictionary dictionary];
-    NSMutableArray *order = [NSMutableArray array];
-    for (LPActionArg *arg in args) {
-        [self updateValues:arg.name
-            nameComponents:[self getNameComponents:arg.name]
-                     value:arg.defaultValue
-                      kind:arg.kind
-                    values:values
-                     kinds:kinds];
-        [order addObject:arg.name];
-    }
-    NSDictionary *definition = @{
-                                 @"kind": @(kind),
-                                 @"values": values,
-                                 @"kinds": kinds,
-                                 @"order": order,
-                                 @"options": options
-                                 };
-    _actionDefinitions[name] = definition;
-}
+//- (void)registerActionDefinition:(NSString *)name
+//                          ofKind:(int)kind
+//                   withArguments:(NSArray<LPActionArg *> *)args
+//                      andOptions:(NSDictionary *)options
+//{
+//    NSMutableDictionary *values = [NSMutableDictionary dictionary];
+//    NSMutableDictionary *kinds = [NSMutableDictionary dictionary];
+//    NSMutableArray *order = [NSMutableArray array];
+//    for (LPActionArg *arg in args) {
+//        [self updateValues:arg.name
+//            nameComponents:[self getNameComponents:arg.name]
+//                     value:arg.defaultValue
+//                      kind:arg.kind
+//                    values:values
+//                     kinds:kinds];
+//        [order addObject:arg.name];
+//    }
+//    NSDictionary *definition = @{
+//                                 @"kind": @(kind),
+//                                 @"values": values,
+//                                 @"kinds": kinds,
+//                                 @"order": order,
+//                                 @"options": options
+//                                 };
+//    _actionDefinitions[name] = definition;
+//}
 
 - (LPSecuredVars *)securedVars
 {
@@ -838,22 +858,22 @@ static dispatch_once_t leanplum_onceToken;
     return self.localCaps;
 }
 
-- (NSUInteger)getActionDefinitionType:(NSString *)actionName
-{
-    id actionDef = [self.actionDefinitions objectForKey:actionName];
-    if ([actionDef isKindOfClass:[NSDictionary class]]) {
-        LeanplumActionKind kind = (LeanplumActionKind)[(NSDictionary *)actionDef valueForKey:@"kind"];
-        return kind;
-    }
-    
-    return 0;
-}
+//- (NSUInteger)getActionDefinitionType:(NSString *)actionName
+//{
+//    id actionDef = [self.actionDefinitions objectForKey:actionName];
+//    if ([actionDef isKindOfClass:[NSDictionary class]]) {
+//        LeanplumActionKind kind = (LeanplumActionKind)[(NSDictionary *)actionDef valueForKey:@"kind"];
+//        return kind;
+//    }
+//    
+//    return 0;
+//}
 
 - (void)clearUserContent
 {
     self.diffs = nil;
-    self.messageDiffs = nil;
-    self.messages = nil;
+//    self.messageDiffs = nil;
+//    self.messages = nil;
     self.variants = nil;
     self.localCaps = nil;
     self.variantDebugInfo = nil;
@@ -865,7 +885,9 @@ static dispatch_once_t leanplum_onceToken;
 
     self.devModeValuesFromServer = nil;
     self.devModeFileAttributesFromServer = nil;
-    self.devModeActionDefinitionsFromServer = nil;
+//    self.devModeActionDefinitionsFromServer = nil;
+    
+    
 
 }
 
@@ -877,19 +899,19 @@ static dispatch_once_t leanplum_onceToken;
     self.fileAttributes = nil;
     self.valuesFromClient = nil;
     self.defaultKinds = nil;
-    self.actionDefinitions = nil;
+//    self.actionDefinitions = nil;
     self.diffs = nil;
-    self.messageDiffs = nil;
+//    self.messageDiffs = nil;
     self.devModeValuesFromServer = nil;
     self.devModeFileAttributesFromServer = nil;
-    self.devModeActionDefinitionsFromServer = nil;
+//    self.devModeActionDefinitionsFromServer = nil;
     self.variants = nil;
     self.localCaps = nil;
     self.variantDebugInfo = nil;
     self.userAttributes = nil;
     self.updateBlock = nil;
     self.hasReceivedDiffs = NO;
-    self.messages = nil;
+//    self.messages = nil;
     self.merged = nil;
     self.silent = NO;
     self.contentVersion = 0;

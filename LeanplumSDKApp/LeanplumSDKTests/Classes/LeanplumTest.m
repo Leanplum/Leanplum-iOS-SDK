@@ -2346,7 +2346,7 @@
 
     XCTAssertTrue(blockCalled);
     [leanplumMock stopMocking];
-    [LPInternalState sharedState].messageDisplayedBlocks = nil;
+//    [LPInternalState sharedState].messageDisplayedBlocks = nil;
 }
 
 /**

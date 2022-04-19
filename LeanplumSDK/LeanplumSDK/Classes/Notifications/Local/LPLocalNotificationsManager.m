@@ -50,7 +50,7 @@
 
     NSString *messageId = context.messageId;
 
-    NSDictionary *messageConfig = [LPVarCache sharedCache].messageDiffs[messageId];
+    NSDictionary *messageConfig = [[ActionManager shared] messagesDataFromServer][messageId];
     
     NSNumber *countdown = messageConfig[@"countdown"];
     if (context.isPreview) {
