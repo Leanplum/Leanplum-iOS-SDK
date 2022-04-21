@@ -296,7 +296,6 @@ static dispatch_once_t leanplum_onceToken;
         if ([diff isKindOfClass:NSDictionary.class] && [diff count] > 0) {
             isArray = YES;
             for (id var in diff) {
-                // [12] {12}
                 if (![var isKindOfClass:NSString.class]
                     || ([var length] < 3)
                     || ([var characterAtIndex:0] != '[' || [var characterAtIndex:[var length] - 1] != ']')) {
@@ -523,28 +522,8 @@ static dispatch_once_t leanplum_onceToken;
         }
         
         if (messages_) {
-//            // Store messages.
-//            self.messageDiffs = messages_;
-//            self.messages = [NSMutableDictionary dictionary];
-//            for (NSString *name in messages_) {
-//                NSDictionary *messageConfig = messages_[name];
-//                NSMutableDictionary *newConfig = [messageConfig mutableCopy];
-//                NSDictionary *actionArgs = messageConfig[LP_KEY_VARS];
-//                NSDictionary *defaultArgs = self.actionDefinitions
-//                                              [newConfig[LP_PARAM_ACTION]][@"values"];
-//                NSDictionary *messageVars = [self mergeHelper:defaultArgs
-//                                                    withDiffs:actionArgs];
-//                _messages[name] = newConfig;
-//                newConfig[LP_KEY_VARS] = messageVars;
-//
-//                // Download files.
-//                [[LPActionContext actionContextWithName:messageConfig[@"action"]
-//                                                   args:actionArgs
-//                                              messageId:name]
-//                 maybeDownloadFiles];
-//            }
+            // Process messages data
             [[ActionManager shared] updateMessages: messages_];
-            // TODO: (nikola) Download files
         }
     
         // If LeanplumLocation is linked in, setup region monitoring.
@@ -668,9 +647,11 @@ static dispatch_once_t leanplum_onceToken;
                  args[LP_PARAM_KINDS] = [LPJSON stringFromJSON:self.defaultKinds];
              }
              if (actions) {
-                 NSArray *jsonDefinitions = [self map:definitions with:^id(id obj) {
-                     return [obj json];
+                 NSMutableDictionary<NSString*, id> *jsonDefinitions = [NSMutableDictionary new];
+                 [definitions enumerateObjectsUsingBlock:^(ActionDefinition *ac, NSUInteger idx, BOOL *stop) {
+                     jsonDefinitions[ac.name] = [ac json];
                  }];
+
                  args[LP_PARAM_ACTION_DEFINITIONS] =  [LPJSON stringFromJSON:jsonDefinitions];
              }
              args[LP_PARAM_FILE_ATTRIBUTES] = [LPJSON stringFromJSON:limitedFileAttributes];
@@ -744,8 +725,6 @@ static dispatch_once_t leanplum_onceToken;
 {
     self.devModeValuesFromServer = values;
     [[ActionManager shared] setDevModeActionDefinitionsFromServer: actionDefinitions];
-//    self.devModeActionDefinitionsFromServer = actionDefinitions;
-    
     self.devModeFileAttributesFromServer = fileAttributes;
 }
 

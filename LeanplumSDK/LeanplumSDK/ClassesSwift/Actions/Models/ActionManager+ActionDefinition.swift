@@ -20,7 +20,7 @@ extension ActionManager {
         // Title.Color
         // Title.Text
         // Title.Properties -> Dict
-        // Title { Text: "", Color: "", Properties: { ... }
+        // Title { Text: "", Color: "", Properties: { ... }}
         
         // Title.Action -> Action
         // Title.Action.__name__ = ""
