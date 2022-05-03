@@ -9,8 +9,17 @@ import Foundation
 
 extension ActionManager {
     @objc public func performActions() {
+        // If we are paused, exit as we will continue execution
+        // when we are resumed.
+        guard isPaused == false else {
+            return
+        }
         // ask user to dimiss current action so we can execute next one
-        if let action = state.currentAction {
+        if
+            let action = state.currentAction,
+            let nextAction = queue.first(),
+            nextAction.notification
+        {
             let definition = definitions.first { $0.name == action.context.name }
             let _ = definition?.dismissAction?(action.context)
             return
