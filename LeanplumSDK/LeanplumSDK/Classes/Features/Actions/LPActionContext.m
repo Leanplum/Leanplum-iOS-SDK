@@ -182,6 +182,27 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return value;
 }
 
+- (NSMutableDictionary *)replaceFileNameToLocalFilePath:(NSMutableDictionary *)vars templateNamed:(NSString *)templateName
+{
+    // Replace file arguments keys and values to match HTML template vars
+    // "__file__CSS File": "lp_public_sf_ui_font.css" -> "CSS File": "file:///.../Leanplum_Resources/lp_public_sf_ui_font.css"
+    for (NSString *key in [vars allKeys]) {
+        id obj = vars[key];
+        if ([obj isKindOfClass:[NSDictionary class]]) {
+            // Ensure obj is mutable as well
+            vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] templateNamed:templateName];
+        } else if ([key hasPrefix:@"__file__"] && [obj isKindOfClass:[NSString class]]
+                   && [obj length] > 0 && ![key isEqualToString:templateName]) {
+            NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
+            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:@"__file__"
+                                                                 withString:@""];
+            vars[prunedKey] = [self asciiEncodedFileURL:filePath];
+            [vars removeObjectForKey:key];
+        }
+    }
+    return vars;
+}
+
 - (NSURL *)htmlWithTemplateNamed:(NSString *)templateName
 {
     if ([LPUtils isNullOrEmpty:templateName]) {
@@ -193,27 +214,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_TRY
     [self setProperArgs];
 
-    // Replace to local file path recursively.
-    __block __weak NSMutableDictionary* (^weakReplaceFileToLocalPath) (NSMutableDictionary *);
-    NSMutableDictionary* (^replaceFileToLocalPath) (NSMutableDictionary *);
-    weakReplaceFileToLocalPath = replaceFileToLocalPath =
-    [^ NSMutableDictionary* (NSMutableDictionary *vars){
-        for (NSString *key in [vars allKeys]) {
-            id obj = vars[key];
-            if ([obj isKindOfClass:[NSDictionary class]]) {
-                vars[key] = weakReplaceFileToLocalPath(obj);
-            } else if ([key hasPrefix:@"__file__"] && [obj isKindOfClass:[NSString class]]
-                       && [obj length] > 0 && ![key isEqualToString:templateName]) {
-                NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
-                NSString *prunedKey = [key stringByReplacingOccurrencesOfString:@"__file__"
-                                                                     withString:@""];
-                vars[prunedKey] = [self asciiEncodedFileURL:filePath];
-                [vars removeObjectForKey:key];
-            }
-        }
-        return vars;
-    } copy];
-    NSMutableDictionary *htmlVars = replaceFileToLocalPath([_args mutableCopy]);
+    NSMutableDictionary *htmlVars = [self replaceFileNameToLocalFilePath:[_args mutableCopy]
+                                                           templateNamed:templateName];
     htmlVars[@"messageId"] = self.messageId;
 
     // Triggering Event.
