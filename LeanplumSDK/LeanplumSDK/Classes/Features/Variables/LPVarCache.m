@@ -522,6 +522,10 @@ static dispatch_once_t leanplum_onceToken;
         }
         
         if (messages_) {
+            if (!self.silent) {
+                // Save unmodified message data from API
+                [[ActionManager shared] setMessagesDataFromServer:messages_];
+            }
             // Process messages data
             [[ActionManager shared] updateMessages: messages_];
         }

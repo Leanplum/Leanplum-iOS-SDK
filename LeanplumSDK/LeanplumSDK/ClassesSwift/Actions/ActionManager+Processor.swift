@@ -17,8 +17,8 @@ extension ActionManager {
     }
     
     @objc public func updateMessages(_ messages: [AnyHashable: Any]) {
-        // Save original message data from API
-        messagesDataFromServer = messages
+        // Set messages
+        self.messages = messages
         
         for messageId in messages.keys {
             let messageConfig = messages[messageId] as? [AnyHashable:Any]
@@ -50,6 +50,7 @@ extension ActionManager {
     // nil values come as NSNull
     // In the future, Optional (Any?) can used for parameters and return type or wrap it as  Optional<Any>.none as Any
     // Implementation mimics VarCache mergeHelper
+    // Remove the method in VarCache once variables merging is also using swift
     @objc public func merge(vars: Any, diff: Any) -> Any {
         // Return the modified value if it is a `primitive`
         switch diff {
@@ -125,8 +126,8 @@ extension ActionManager {
         
         if let diffDict = diff as? [AnyHashable: Any] {
             diffDict.forEach { key, value in
-                let newValue = merged[key] ?? NSNull()
-                merged[key] = merge(vars: newValue, diff: value)
+                let defaultValue = merged[key] ?? NSNull()
+                merged[key] = merge(vars: defaultValue, diff: value)
             }
             return merged
         }
@@ -154,7 +155,7 @@ extension ActionManager {
                 return regex.matches(key as? String)
             })
             // if any element does not match format, return false
-            return anyNotMatchingFormat == nil
+            return anyNotMatchingFormat != nil
         }
         
         return false

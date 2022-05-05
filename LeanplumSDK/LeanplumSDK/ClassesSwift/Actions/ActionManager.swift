@@ -16,6 +16,7 @@ import Foundation
     
     public var definitions: [ActionDefinition] = []
     public var messages: [AnyHashable:Any] = [:]
+    // Raw mssages data received from the API
     public var messagesDataFromServer: [AnyHashable:Any] = [:] // messageDiffs
     public var devModeActionDefinitionsFromServer: [AnyHashable:Any] = [:]
 
