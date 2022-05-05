@@ -120,19 +120,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return [_args copy];
 }
 
-- (BOOL)isChainedMessage
-{
-    if (!self.args) {
-        return NO;
-    }
-
-    NSString *actionType = self.args[LP_VALUE_ACTION_ARG];
-    if ([actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
-        return YES;
-    }
-    return NO;
-}
-
 - (void)setProperArgs
 {
     if (!_preventRealtimeUpdating && [[LPVarCache sharedCache] contentVersion] > _contentVersion) {
@@ -394,7 +381,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if (![actionArgs isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-    
+
     NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
     actionArgs = [[ActionManager shared] mergeWithVars:defaultArgs diff:actionArgs];
     
@@ -471,8 +458,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         chainedActionContext.contextualValues = self.contextualValues;
         chainedActionContext->_preventRealtimeUpdating = self->_preventRealtimeUpdating;
         chainedActionContext->_isRooted = self->_isRooted;
+        chainedActionContext->_isChainedMessage = YES;
+        chainedActionContext->_parentContext = self;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityDefault trigger:nil];
+            [[ActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
         });
     };
 
@@ -481,6 +470,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if (message) {
             executeChainedMessage();
         } else {
+            ActionManager.shared.isPaused = YES;
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
@@ -488,6 +478,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                 if (message) {
                     executeChainedMessage();
                 }
+                ActionManager.shared.isPaused = NO;
             }];
         }
     } else {
@@ -501,7 +492,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         childContext->_parentContext = self;
         childContext->_key = name;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithContexts:@[childContext] priority:PriorityDefault trigger:nil];
+            [[ActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
             
         });
     }

@@ -30,32 +30,6 @@ extension ActionManager {
         @objc public var kinds: [String:String] = [:]
         private var order: [String] = []
 
-        @objc public static func action(name: String,
-                                        args: [Any] = [],
-                                        options: [String: String],
-                                        presentAction: ((ActionContext) -> (Bool))? = nil,
-                                        dismissAction: ((ActionContext) -> (Bool))? = nil) -> Self {
-            .init(name: name,
-                  args: args,
-                  kind: .action,
-                  options: options,
-                  presentAction: presentAction,
-                  dismissAction: dismissAction)
-        }
-
-        @objc public static func message(name: String,
-                                         args: [Any] = [],
-                                         options: [String: String],
-                                         presentAction: ((ActionContext) -> (Bool))? = nil,
-                                         dismissAction: ((ActionContext) -> (Bool))? = nil) -> Self {
-            .init(name: name,
-                  args: args,
-                  kind: .message,
-                  options: options,
-                  presentAction: presentAction,
-                  dismissAction: dismissAction)
-        }
-
         @objc public required init(name: String,
                                    args: [Any],
                                    kind: Leanplum.ActionKind,
@@ -91,6 +65,34 @@ extension ActionManager {
                 "options": options
             ]
         }
+    }
+}
+
+extension ActionManager.ActionDefinition {
+    @objc public static func action(name: String,
+                                    args: [ActionArg] = [],
+                                    options: [String: String],
+                                    presentAction: ((ActionContext) -> (Bool))? = nil,
+                                    dismissAction: ((ActionContext) -> (Bool))? = nil) -> Self {
+        .init(name: name,
+              args: args,
+              kind: .action,
+              options: options,
+              presentAction: presentAction,
+              dismissAction: dismissAction)
+    }
+    
+    @objc public static func message(name: String,
+                                     args: [ActionArg] = [],
+                                     options: [String: String],
+                                     presentAction: ((ActionContext) -> (Bool))? = nil,
+                                     dismissAction: ((ActionContext) -> (Bool))? = nil) -> Self {
+        .init(name: name,
+              args: args,
+              kind: .message,
+              options: options,
+              presentAction: presentAction,
+              dismissAction: dismissAction)
     }
 }
 

@@ -7,19 +7,26 @@
 
 import Foundation
 
-@objc public class ActionManager: NSObject {
-    @objc public static let shared: ActionManager = .init()
-    
+@objcMembers public class ActionManager: NSObject {
+    public static let shared: ActionManager = .init()
+
     lazy var queue: Queue = Queue()
     lazy var scheduler: Scheduler = Scheduler()
     lazy var state = State()
     
-    @objc public var definitions: [ActionDefinition] = []
-    @objc public var messages: [AnyHashable:Any] = [:]
-    @objc public var messagesDataFromServer: [AnyHashable:Any] = [:] // messageDiffs
-    @objc public var devModeActionDefinitionsFromServer: [AnyHashable:Any] = [:]
+    public var definitions: [ActionDefinition] = []
+    public var messages: [AnyHashable:Any] = [:]
+    public var messagesDataFromServer: [AnyHashable:Any] = [:] // messageDiffs
+    public var devModeActionDefinitionsFromServer: [AnyHashable:Any] = [:]
 
-    public var enabled: Bool = true
+    public var isEnabled: Bool = true
+    public var isPaused: Bool = false {
+        didSet {
+            if isPaused == false {
+                performActions()
+            }
+        }
+    }
 
     override init() {
         super.init()
@@ -60,30 +67,18 @@ import Foundation
 extension ActionManager {
     /// Adds ActionContext to back of the queue
     func appendActions(actions: [Action]) {
-        guard enabled else { return }
+        guard isEnabled else { return }
         actions.forEach(appendAction(action:))
     }
 
     /// Adds ActionContext to front of the queue
     func insertActions(actions: [Action]) {
-        guard enabled else { return }
+        guard isEnabled else { return }
         actions.forEach(insertAction(action:))
     }
 }
 
 extension ActionManager {
-    /// Adds action to front or back of the queue depending on action type
-    func addActions(actions: [Action]) {
-        guard enabled else { return }
-        actions.forEach { action in
-            if action.type == .chained {
-                insertAction(action: action)
-            } else {
-                appendAction(action: action)
-            }
-        }
-    }
-
     /// Adds action to back of the queue
     func appendAction(action: Action) {
         if action.context.hasMissingFiles() {

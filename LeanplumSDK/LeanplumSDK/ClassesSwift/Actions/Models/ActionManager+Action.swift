@@ -17,32 +17,45 @@ extension ActionManager {
         }
 
         enum ActionType {
-            case chained
+            /// Default action
             case single
+            /// Chained to exisiting action
+            case chained
+            /// Embedded inside existing action
+            case embedded
         }
 
         var state: State
         var type: ActionType = .single
         var context: ActionContext
-
-        static func single(state: State, context: ActionContext) -> Self {
-            .init(state: state,
-                  type: .single,
-                  context: context)
+        
+        var notification: Bool {
+            context.parent != nil && context.parent?.name == LP_PUSH_NOTIFICATION_ACTION
         }
+    }
+}
 
-        static func chained(state: State, context: ActionContext) -> Self {
-            .init(state: state,
-                  type: .chained,
-                  context: context)
+extension ActionManager.Action {
+    static func single(context: ActionContext) -> Self {
+        .init(state: .queued, type: .single, context: context)
+    }
+    
+    static func chained(context: ActionContext) -> Self {
+        .init(state: .queued, type: .chained, context: context)
+    }
+    
+    static func embedded(context: ActionContext) -> Self {
+        .init(state: .queued, type: .embedded, context: context)
+    }
+    
+    static func action(context: ActionContext) -> Self {
+        if context.parent != nil && !context.isChainedMessage {
+            return .embedded(context: context)
         }
-
-        static func action(context: ActionContext) -> Self {
-            if context.isChainedMessage {
-                return .chained(state: .queued, context: context)
-            }
-            return .single(state: .queued, context: context)
+        if context.isChainedMessage {
+            return .chained(context: context)
         }
+        return .single(context: context)
     }
 }
 
