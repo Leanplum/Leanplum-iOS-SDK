@@ -209,4 +209,38 @@ class ActionManagerProcessorTest: XCTestCase {
         let result = actionManager.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
         XCTAssertTrue(expected.isEqual(result))
     }
+    
+    func testMergeDictionariesIncludeDiffs() {
+        let dict: [AnyHashable : Any] = [
+            "abc": "qwe",
+            "nested": [
+                "abc": "qwe",
+                "1": 123
+            ]
+        ]
+        
+        let dictDiff: [AnyHashable : Any] = [
+            "nested": [
+                "qwerty": "qwerty",
+                "nested2": [
+                    "a": "b"
+                    ]
+            ]
+        ]
+        
+        let expected: [AnyHashable : Any] = [
+            "abc": "qwe",
+            "nested": [
+                "abc": "qwe",
+                "1": 123,
+                "qwerty": "qwerty",
+                "nested2": [
+                    "a": "b"
+                    ]
+            ]
+        ]
+        let actionManager = ActionManager()
+        let result = actionManager.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        XCTAssertTrue(expected.isEqual(result))
+    }
 }
