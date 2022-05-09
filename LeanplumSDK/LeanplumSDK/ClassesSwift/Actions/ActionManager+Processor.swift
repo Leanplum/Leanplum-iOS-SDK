@@ -8,6 +8,8 @@
 import Foundation
 
 extension ActionManager {
+    typealias AnyDictionary = [AnyHashable: Any]
+    
     var pattern: String {
         return "^(\\[[1-9]\\d*\\]|\\[0\\])$"
     }
@@ -16,14 +18,14 @@ extension ActionManager {
         return try! NSRegularExpression(pattern: pattern)
     }
     
-    @objc public func updateMessages(_ messages: [AnyHashable: Any]) {
+    @objc public func processMessagesAndDownloadFiles(_ messages: [AnyHashable: Any]) {
         // Set messages
         self.messages = messages
         
         for messageId in messages.keys {
-            let messageConfig = messages[messageId] as? [AnyHashable:Any]
+            let messageConfig = messages[messageId] as? AnyDictionary
             var newConfig = messageConfig
-            let actionArgs = messageConfig?[LP_KEY_VARS] as? [AnyHashable:Any] ?? [:]
+            let actionArgs = messageConfig?[LP_KEY_VARS] as? AnyDictionary ?? [:]
             let actionName = newConfig?[LP_PARAM_ACTION] as? String
             let definition = self.definitions.first(where: { $0.name == actionName })
             
@@ -35,7 +37,7 @@ extension ActionManager {
             }
 
             let defaultArgs = definition.values
-            let messageVars = merge(vars: defaultArgs, diff: actionArgs) as? [AnyHashable : Any] ?? [:]
+            let messageVars = merge(vars: defaultArgs, diff: actionArgs) as? AnyDictionary ?? [:]
             newConfig?[LP_KEY_VARS] = messageVars
             self.messages[messageId] = newConfig
             
@@ -71,7 +73,8 @@ extension ActionManager {
         
         // Merge Arrays
         var isVarsArray = false
-        // Infer that the diffs is an array if the vars value doesn't exist to tell us the type
+        // Infer that the diffs is an array
+        // if the vars value doesn't exist to tell us the type
         if vars is NSNull {
             isVarsArray = isArray(diff: diff)
         }
@@ -92,7 +95,7 @@ extension ActionManager {
             //                  "[0]": "Item 111"  // Modified value from server
             //              }
             //  }
-            if let diffDict = diff as? [AnyHashable: Any] {
+            if let diffDict = diff as? AnyDictionary {
                 for key in diffDict.keys {
                     guard let keyStr = key as? String else {
                         continue
@@ -118,13 +121,13 @@ extension ActionManager {
         }
         
         // Merge Dictionaries
-        var merged: [AnyHashable: Any] = [:]
+        var merged: AnyDictionary = [:]
         
-        if let varsDict = vars as? [AnyHashable: Any] {
+        if let varsDict = vars as? AnyDictionary {
             merged = varsDict
         }
         
-        if let diffDict = diff as? [AnyHashable: Any] {
+        if let diffDict = diff as? AnyDictionary {
             diffDict.forEach { key, value in
                 let defaultValue = merged[key] ?? NSNull()
                 merged[key] = merge(vars: defaultValue, diff: value)
@@ -148,8 +151,10 @@ extension ActionManager {
         return -1
     }
     
+    // Infers if a dictionary is an array
+    // if all indices are in the format "[0]", "[1]", ... "[99]"
     func isArray(diff: Any?) -> Bool {
-        if let diffDict = diff as? [AnyHashable: Any], diffDict.count > 0 {
+        if let diffDict = diff as? AnyDictionary, diffDict.count > 0 {
             // format: "[0]", "[1]", ... "[99]" ... etc
             let anyNotMatchingFormat = diffDict.first(where: { key, value in
                 return regex.matches(key as? String)

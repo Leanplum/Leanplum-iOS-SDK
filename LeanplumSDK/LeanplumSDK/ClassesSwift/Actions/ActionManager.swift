@@ -16,9 +16,9 @@ import Foundation
     
     public var definitions: [ActionDefinition] = []
     public var messages: [AnyHashable:Any] = [:]
-    // Raw mssages data received from the API
+    // Raw messages data received from the API
     public var messagesDataFromServer: [AnyHashable:Any] = [:] // messageDiffs
-    public var devModeActionDefinitionsFromServer: [AnyHashable:Any] = [:]
+    public var actionDefinitionsFromServer: [AnyHashable:Any] = [:]
 
     public var isEnabled: Bool = true
     public var isPaused: Bool = false {

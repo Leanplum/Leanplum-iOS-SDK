@@ -527,7 +527,7 @@ static dispatch_once_t leanplum_onceToken;
                 [[ActionManager shared] setMessagesDataFromServer:messages_];
             }
             // Process messages data
-            [[ActionManager shared] updateMessages: messages_];
+            [[ActionManager shared] processMessagesAndDownloadFiles: messages_];
         }
     
         // If LeanplumLocation is linked in, setup region monitoring.
@@ -627,7 +627,7 @@ static dispatch_once_t leanplum_onceToken;
         actionDefinitions[def.name] = def.json;
     }
     if (actions && ![self areActionDefinitionsEqual:actionDefinitions
-                                              other:[[ActionManager shared] devModeActionDefinitionsFromServer]]) {
+                                              other:[[ActionManager shared] actionDefinitionsFromServer]]) {
         changed = YES;
     }
     
@@ -728,7 +728,7 @@ static dispatch_once_t leanplum_onceToken;
                  actionDefinitions:(NSDictionary *)actionDefinitions
 {
     self.devModeValuesFromServer = values;
-    [[ActionManager shared] setDevModeActionDefinitionsFromServer: actionDefinitions];
+    [[ActionManager shared] setActionDefinitionsFromServer: actionDefinitions];
     self.devModeFileAttributesFromServer = fileAttributes;
 }
 
