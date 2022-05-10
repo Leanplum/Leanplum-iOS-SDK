@@ -65,7 +65,7 @@ class ActionManagerTest: XCTestCase {
 
     func testEnabledActionManager() {
         let actionManager = ActionManager()
-        actionManager.enabled = true
+        actionManager.isEnabled = true
 
         let context = ActionContext(name: "name", args: [:], messageId: "id")
 
@@ -75,7 +75,7 @@ class ActionManagerTest: XCTestCase {
 
     func testDisabledActionManager() {
         let actionManager = ActionManager()
-        actionManager.enabled = false
+        actionManager.isEnabled = false
 
         let context = ActionContext(name: "name", args: [:], messageId: "id")
 

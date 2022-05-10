@@ -9,13 +9,6 @@ import Foundation
 
 extension ActionManager {
     struct Action {
-        enum State {
-            case queued
-            case delayed
-            case executing
-            case completed
-        }
-
         enum ActionType {
             /// Default action
             case single
@@ -25,7 +18,6 @@ extension ActionManager {
             case embedded
         }
 
-        var state: State
         var type: ActionType = .single
         var context: ActionContext
         
@@ -37,15 +29,15 @@ extension ActionManager {
 
 extension ActionManager.Action {
     static func single(context: ActionContext) -> Self {
-        .init(state: .queued, type: .single, context: context)
+        .init(type: .single, context: context)
     }
     
     static func chained(context: ActionContext) -> Self {
-        .init(state: .queued, type: .chained, context: context)
+        .init(type: .chained, context: context)
     }
     
     static func embedded(context: ActionContext) -> Self {
-        .init(state: .queued, type: .embedded, context: context)
+        .init(type: .embedded, context: context)
     }
     
     static func action(context: ActionContext) -> Self {

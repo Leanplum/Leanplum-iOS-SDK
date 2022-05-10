@@ -11,6 +11,7 @@ import Foundation
     public static let shared: ActionManager = .init()
 
     lazy var queue: Queue = Queue()
+    lazy var delayedQueue: Queue = Queue()
     lazy var scheduler: Scheduler = Scheduler()
     lazy var state = State()
     lazy var definitions: [ActionDefinition] = []

@@ -27,11 +27,9 @@ extension ActionManager {
 
         // gets the next action from the queue
         state.currentAction = queue.pop()
-        guard var action = state.currentAction else {
+        guard let action = state.currentAction else {
             return
         }
-        // change state to executing
-        action.state = .executing
 
         // decide if we are going to display the message
         // by calling delegate and let it decide what are we supposed to do
@@ -46,9 +44,14 @@ extension ActionManager {
 
         // if message is delayed, add it to the scheduler to be delayed
         // by the amount of seconds, and exit
-        if case .delay(let amount) = messageDisplayDecision?.decision, amount > 0 {
-            action.state = .delayed
-            scheduler.schedule(action: action, delay: amount)
+        if case .delay(let amount) = messageDisplayDecision?.decision {
+            if amount > 0 {
+                // Schedule for delayed time
+                scheduler.schedule(action: action, delay: amount)
+            } else {
+                // Insert in delayed queue
+                delayedQueue.pushBack(action)
+            }
             state.currentAction = nil
             performActions()
             return

@@ -28,19 +28,19 @@ extension ActionManager {
     }
     
     @objc public func triggerDelayedMessages() {
-        queue.prepareActions()
+        appendActions(actions: delayedQueue.popAll())
     }
 }
 
 extension ActionManager {
-    enum MessageDisplayOrder {
+    enum MessageDisplayChoice {
         case show
         case discard
         case delay(seconds: Int)
     }
     
     @objc public class MessageOrder: NSObject {
-        var decision: MessageDisplayOrder = .show
+        var decision: MessageDisplayChoice = .show
         
         @objc public static func show() -> Self {
             .init(decision: .show)
@@ -54,7 +54,7 @@ extension ActionManager {
             .init(decision: .delay(seconds: seconds))
         }
         
-        required init(decision: MessageDisplayOrder) {
+        required init(decision: MessageDisplayChoice) {
             super.init()
             self.decision = decision
         }
