@@ -191,10 +191,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if ([obj isKindOfClass:[NSDictionary class]]) {
             // Ensure obj is mutable as well
             vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] templateNamed:templateName];
-        } else if ([key hasPrefix:@"__file__"] && [obj isKindOfClass:[NSString class]]
+        } else if ([key hasPrefix:ActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
                    && [obj length] > 0 && ![key isEqualToString:templateName]) {
             NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
-            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:@"__file__"
+            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:ActionManager.ActionArgFilePrefix
                                                                  withString:@""];
             vars[prunedKey] = [self asciiEncodedFileURL:filePath];
             [vars removeObjectForKey:key];

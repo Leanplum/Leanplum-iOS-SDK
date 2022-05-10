@@ -8,7 +8,7 @@
 import Foundation
 
 extension ActionManager {
-    static let ActionArgFilePrefix = "__file__"
+    @objc public static let ActionArgFilePrefix = "__file__"
     
     var downloadFile: (String, String) -> () {
         { value, defaultValue in

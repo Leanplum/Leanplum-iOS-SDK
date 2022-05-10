@@ -728,8 +728,8 @@ static dispatch_once_t leanplum_onceToken;
                  actionDefinitions:(NSDictionary *)actionDefinitions
 {
     self.devModeValuesFromServer = values;
-    [[ActionManager shared] setActionDefinitionsFromServer: actionDefinitions];
     self.devModeFileAttributesFromServer = fileAttributes;
+    [[ActionManager shared] setActionDefinitionsFromServer: actionDefinitions];
 }
 
 - (void)onUpdate:(CacheUpdateBlock) block
