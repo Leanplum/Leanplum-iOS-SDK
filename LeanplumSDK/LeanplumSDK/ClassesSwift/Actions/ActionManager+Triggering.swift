@@ -12,6 +12,15 @@ extension ActionManager {
     @objc public enum Priority: Int {
         case high
         case `default`
+        
+        var name: String {
+            switch self {
+                case .high:
+                    return "high"
+                default:
+                    return "default"
+            }
+        }
     }
 
     @objc public func trigger(contexts: [ActionContext], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
@@ -19,6 +28,9 @@ extension ActionManager {
         let actions: [Action] = filteredActions.map {
             .action(context: $0)
         }
+        
+        Log.debug("[ActionManager]: triggering actions with priority: \(priority.name).")
+        
         switch priority {
             case .high:
                 insertActions(actions: actions)

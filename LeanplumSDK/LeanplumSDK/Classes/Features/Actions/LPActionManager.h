@@ -45,9 +45,9 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
     kLeanplumActionFilterForeground = 0b1,
     kLeanplumActionFilterBackground = 0b10,
     kLeanplumActionFilterAll = 0b11
-} NS_SWIFT_NAME(ActionManager.ActionFilter);
+} NS_SWIFT_NAME(Leanplum.ActionFilter);
 
-#define  LP_HELD_BACK_ACTION @"__held_back"
+#define LP_HELD_BACK_ACTION @"__held_back"
 
 @interface LPActionManager : NSObject {
     
@@ -73,8 +73,6 @@ NS_SWIFT_NAME(shared());
                originalMessageId:(NSString *)originalMessageId;
 - (void)recordChainedActionImpression:(NSString *)messageId;
 - (void)recordLocalPushImpression:(NSString *)messageId;
-
-- (void)muteFutureMessagesOfKind:(NSString *)messageId;
 
 - (BOOL)shouldSuppressMessages;
 

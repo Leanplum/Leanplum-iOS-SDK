@@ -14,22 +14,24 @@
 +(void)defineAction
 {
     [Leanplum defineAction:LPMT_APP_RATING_NAME
-                     ofKind:kLeanplumActionKindAction
-              withArguments:@[]
-                withOptions:@{}
-             presentHandler:^BOOL(LPActionContext *context) {
-         @try {
-             LPAppRatingMessageTemplate *appRatingMessageTemplate = [[LPAppRatingMessageTemplate alloc] init];
-
-             [appRatingMessageTemplate appStorePrompt];
-
-             return YES;
-         } @catch (NSException *exception) {
-             LOG_LP_MESSAGE_EXCEPTION;
-         }
-         return NO;
-     }
-             dismissHandler:nil];
+                    ofKind:kLeanplumActionKindAction
+             withArguments:@[]
+               withOptions:@{}
+            presentHandler:^BOOL(LPActionContext *context) {
+        @try {
+            LPAppRatingMessageTemplate *appRatingMessageTemplate = [[LPAppRatingMessageTemplate alloc] init];
+            
+            [appRatingMessageTemplate appStorePrompt];
+            
+            return YES;
+        } @catch (NSException *exception) {
+            LOG_LP_MESSAGE_EXCEPTION;
+        }
+        return NO;
+    }
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        return NO;
+    }];
 }
 
 - (void)appStorePrompt

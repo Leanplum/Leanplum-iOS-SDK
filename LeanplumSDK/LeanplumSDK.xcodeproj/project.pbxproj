@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07004A1228229E9D00FB64DF /* Leanplum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07004A1128229E9D00FB64DF /* Leanplum.swift */; };
+		07004A1328229E9D00FB64DF /* Leanplum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07004A1128229E9D00FB64DF /* Leanplum.swift */; };
+		07004A152822A1D000FB64DF /* ActionManager+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07004A142822A1D000FB64DF /* ActionManager+Configuration.swift */; };
+		07004A162822A1D000FB64DF /* ActionManager+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07004A142822A1D000FB64DF /* ActionManager+Configuration.swift */; };
 		075AAD2526847E60007CA1BD /* LeanplumSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD2126847E60007CA1BD /* LeanplumSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		075AADE926847EC4007CA1BD /* LPMessageTemplates.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AAD2726847EC2007CA1BD /* LPMessageTemplates.m */; };
 		075AADEB26847EC4007CA1BD /* LPActionContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD2826847EC2007CA1BD /* LPActionContext.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -580,6 +584,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		07004A1128229E9D00FB64DF /* Leanplum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Leanplum.swift; sourceTree = "<group>"; };
+		07004A142822A1D000FB64DF /* ActionManager+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Configuration.swift"; sourceTree = "<group>"; };
 		075AAD0826847C23007CA1BD /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		075AAD2126847E60007CA1BD /* LeanplumSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumSDK.h; sourceTree = "<group>"; };
 		075AAD2426847E60007CA1BD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -591,7 +597,6 @@
 		075AAD2D26847EC3007CA1BD /* LPAppIconManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPAppIconManager.h; sourceTree = "<group>"; };
 		075AAD2E26847EC3007CA1BD /* LPRegisterDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRegisterDevice.h; sourceTree = "<group>"; };
 		075AAD2F26847EC3007CA1BD /* LPRevenueManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRevenueManager.h; sourceTree = "<group>"; };
-		075AAD3226847EC3007CA1BD /* LPRequestUUIDHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPRequestUUIDHelper.h; sourceTree = "<group>"; };
 		075AAD3326847EC3007CA1BD /* LPNetworkOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPNetworkOperation.h; sourceTree = "<group>"; };
 		075AAD3526847EC3007CA1BD /* LPResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LPResponse.h; sourceTree = "<group>"; };
 		075AAD3626847EC3007CA1BD /* LeanplumSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LeanplumSocket.h; sourceTree = "<group>"; };
@@ -1249,6 +1254,7 @@
 				39C0819E2781D3D000C1DBD6 /* ActionManager+Queue.swift */,
 				39C081A02781D3E900C1DBD6 /* ActionManager+Executor.swift */,
 				39C081A22781D40200C1DBD6 /* ActionManager+Definition.swift */,
+				07004A142822A1D000FB64DF /* ActionManager+Configuration.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -1272,6 +1278,7 @@
 				6AD9784C2774E51F00A7C6C6 /* Notifications */,
 				6A9DECA127B6929200052807 /* ApiConfig.swift */,
 				6A96032C27C8DD1200F34BA0 /* User.swift */,
+				07004A1128229E9D00FB64DF /* Leanplum.swift */,
 			);
 			path = ClassesSwift;
 			sourceTree = "<group>";
@@ -1647,6 +1654,7 @@
 				075AAEC226847EC4007CA1BD /* LPEventCallbackManager.m in Sources */,
 				075AAE5026847EC4007CA1BD /* LPPopupViewController.m in Sources */,
 				075AAEBC26847EC4007CA1BD /* LPActionArg.m in Sources */,
+				07004A152822A1D000FB64DF /* ActionManager+Configuration.swift in Sources */,
 				075AAE9326847EC4007CA1BD /* Leanplum_AsyncSocket.m in Sources */,
 				075AAE4126847EC4007CA1BD /* LPIconChangeMessageTemplate.m in Sources */,
 				075AAE2C26847EC4007CA1BD /* LPFileManager.m in Sources */,
@@ -1699,6 +1707,7 @@
 				39C0819B2781D3B000C1DBD6 /* ActionManager+Tracking.swift in Sources */,
 				39D0AA1427760842003C7192 /* Bundle+Extensions.swift in Sources */,
 				075AAE4826847EC4007CA1BD /* LPOpenUrlMessageTemplate.m in Sources */,
+				07004A1228229E9D00FB64DF /* Leanplum.swift in Sources */,
 				075AAEC026847EC4007CA1BD /* LPEventCallback.m in Sources */,
 				075AAE0826847EC4007CA1BD /* LPRequestBatchFactory.m in Sources */,
 				6A265E2927187EBB0074354F /* NSObject+Notifications.swift in Sources */,
@@ -1757,6 +1766,7 @@
 				39C081B0278D995300C1DBD6 /* ActionManager+ActionsTrigger.swift in Sources */,
 				39C081A9278D995300C1DBD6 /* ActionManager+State.swift in Sources */,
 				6A714B5326F8B317004A34A9 /* LPPopupViewController.m in Sources */,
+				07004A162822A1D000FB64DF /* ActionManager+Configuration.swift in Sources */,
 				39C081AE278D995300C1DBD6 /* ActionManager+Executor.swift in Sources */,
 				6A714B5426F8B317004A34A9 /* LPActionArg.m in Sources */,
 				39C081B1278D995300C1DBD6 /* ActionManager+Definition.swift in Sources */,
@@ -1809,6 +1819,7 @@
 				6AD978582774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift in Sources */,
 				C90C48A427072A5200E33F1F /* Data+EncodedString.swift in Sources */,
 				6AD9784F2774EDF600A7C6C6 /* NotificationsProxy+Disabled.swift in Sources */,
+				07004A1328229E9D00FB64DF /* Leanplum.swift in Sources */,
 				6A714B7C26F8B317004A34A9 /* FileMD5Hash.c in Sources */,
 				39D0AA1527760842003C7192 /* Bundle+Extensions.swift in Sources */,
 				6A714B7D26F8B317004A34A9 /* LPOpenUrlMessageTemplate.m in Sources */,

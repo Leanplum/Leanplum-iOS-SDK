@@ -297,13 +297,7 @@ static long WEEK_SECONDS;
 {
     LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
 
-    // 1. Must not be muted.
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:
-         [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]]) {
-        return result;
-    }
-
-    // 2. Must match at least one trigger.
+    // 1. Must match at least one trigger.
     result.matchedTrigger = [LPActionManager matchedTriggers:messageConfig[@"whenTriggers"]
                                                         when:when
                                                    eventName:eventName
@@ -316,11 +310,11 @@ static long WEEK_SECONDS;
         return result;
     }
 
-    // 3. Must match all limit conditions.
+    // 2. Must match all limit conditions.
     NSDictionary *limitConfig = messageConfig[@"whenLimits"];
     result.matchedLimit = [self matchesLimits:limitConfig messageId:messageId];
 
-    // 4. Must be within active period.
+    // 3. Must be within active period.
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval startTime = [messageConfig[@"startTime"] doubleValue] / 1000.0;
     NSTimeInterval endTime = [messageConfig[@"endTime"] doubleValue] / 1000.0;
@@ -507,14 +501,6 @@ static long WEEK_SECONDS;
     
     // Record cross-session occurrences.
     [self incrementMessageImpressionOccurrences:messageId];
-}
-
-- (void)muteFutureMessagesOfKind:(NSString *)messageId
-{
-    if (messageId) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setBool:YES forKey:[NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]];
-    }
 }
 
 /**

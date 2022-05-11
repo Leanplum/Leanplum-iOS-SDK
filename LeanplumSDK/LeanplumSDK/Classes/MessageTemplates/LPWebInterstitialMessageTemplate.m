@@ -13,10 +13,12 @@
 
 + (void)defineAction
 {
+    __block UIViewController *viewController = NULL;
+
     BOOL (^presentHandler)(LPActionContext *) = ^(LPActionContext *context) {
          @try {
              LPWebInterstitialMessageTemplate *template = [[LPWebInterstitialMessageTemplate alloc] init];
-             UIViewController *viewController = [template viewControllerWithContext:context];
+             viewController = [template viewControllerWithContext:context];
 
              [LPMessageTemplateUtilities presentOverVisible:viewController];
              return YES;
@@ -34,7 +36,10 @@
     ]
                withOptions:@{}
             presentHandler:presentHandler
-            dismissHandler:nil];
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+        return YES;
+    }];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

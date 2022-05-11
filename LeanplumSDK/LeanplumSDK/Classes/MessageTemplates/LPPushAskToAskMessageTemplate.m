@@ -69,7 +69,9 @@
             return NO;
         }
     }
-            dismissHandler:nil];
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        return NO;
+    }];
 }
 
 - (LPPopupViewController *)viewControllerWithContext:(LPActionContext *)context
