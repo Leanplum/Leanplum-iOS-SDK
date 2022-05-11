@@ -57,8 +57,8 @@ import Foundation
         NotificationCenter.default.removeObserver(self)
     }
 
-    var shouldDisplayMessage: ((ActionContext) -> MessageOrder)?
-    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageOrder) {
+    var shouldDisplayMessage: ((ActionContext) -> MessageDisplayChoice)?
+    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageDisplayChoice) {
         shouldDisplayMessage = callback
     }
 

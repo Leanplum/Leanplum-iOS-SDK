@@ -45,14 +45,14 @@ extension ActionManager {
 }
 
 extension ActionManager {
-    enum MessageDisplayChoice {
+    enum MessageDisplay {
         case show
         case discard
         case delay(seconds: Int)
     }
     
-    @objc public class MessageOrder: NSObject {
-        var decision: MessageDisplayChoice = .show
+    @objc public class MessageDisplayChoice: NSObject {
+        var decision: MessageDisplay = .show
         
         @objc public static func show() -> Self {
             .init(decision: .show)
@@ -66,7 +66,7 @@ extension ActionManager {
             .init(decision: .delay(seconds: seconds))
         }
         
-        required init(decision: MessageDisplayChoice) {
+        required init(decision: MessageDisplay) {
             super.init()
             self.decision = decision
         }
