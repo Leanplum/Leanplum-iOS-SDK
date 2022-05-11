@@ -372,22 +372,6 @@ NS_SWIFT_NAME(start(userId:attributes:completion:));
       dismissHandler:(nullable LeanplumActionBlock)dismissHandler
 NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
 
-/**
- * Defer message display from specified view controllers.
- * Defers all actions on those controllers unless specific action names are provided using deferMessagesWithActionNames
- * @see deferMessagesWithActionNames:
- * @param controllers The view controller classes not to display messages on
- */
-+ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
-NS_SWIFT_NAME(deferMessagesForViewControllers(_:));
-
-/**
- * Defer only specific actions
- * @param actionNames The names of the actions to defer
- */
-+ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
-NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
-
 + (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
@@ -465,11 +449,9 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 + (void)addStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
-+ (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 + (void)removeStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
-+ (void)removeResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 /**@}*/
 
 /**

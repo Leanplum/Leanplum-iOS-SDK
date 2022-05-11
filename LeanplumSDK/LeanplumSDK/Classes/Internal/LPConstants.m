@@ -73,7 +73,6 @@ NSString *LEANPLUM_DEFAULTS_MESSAGES_KEY = @"__leanplum_messages";
 NSString *LEANPLUM_DEFAULTS_TOKEN_KEY = @"__leanplum_token";
 NSString *LEANPLUM_DEFAULTS_MESSAGE_TRIGGER_OCCURRENCES_KEY = @"__leanplum_message_trigger_occurrences_%@";
 NSString *LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY = @"__leanplum_message_occurrences_%@";
-NSString *LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY = @"__leanplum_message_muted_%@";
 NSString *LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY = @"__leanplum_push_token_%@-%@-%@";
 NSString *LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY = @"__leanplum_user_notification_%@-%@-%@";
 NSString *LEANPLUM_DEFAULTS_REGION_STATE_KEY = @"__leanplum_region_state";

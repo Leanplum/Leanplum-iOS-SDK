@@ -13,6 +13,8 @@
 
 + (void)defineAction
 {
+    __block UIViewController *viewController = NULL;
+    
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         if ([context hasMissingFiles]) {
             return NO;
@@ -20,7 +22,7 @@
 
         @try {
             LPInterstitialMessageTemplate *template = [[LPInterstitialMessageTemplate alloc] init];
-            UIViewController *viewController = [template viewControllerWithContext:context];
+            viewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
 
@@ -47,7 +49,10 @@
     ]
                withOptions:@{}
             presentHandler:responder
-            dismissHandler:nil];
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+        return YES;
+    }];
 }
 
 -(UIViewController *)viewControllerWithContext:(LPActionContext *)context

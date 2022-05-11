@@ -10,7 +10,10 @@ import Foundation
 @objcMembers public class ActionManager: NSObject {
     public static let shared: ActionManager = .init()
 
+    public var configuration: Configuration = .default
+
     lazy var queue: Queue = Queue()
+    lazy var delayedQueue: Queue = Queue()
     lazy var scheduler: Scheduler = Scheduler()
     lazy var state = State()
     
@@ -20,27 +23,47 @@ import Foundation
     public var messagesDataFromServer: [AnyHashable: Any] = [:]
     public var actionDefinitionsFromServer: [AnyHashable: Any] = [:]
 
-    public var isEnabled: Bool = true
+    public var isEnabled: Bool = true {
+        didSet {
+            Log.info("[ActionManager] isEnabled: \(isEnabled)")
+        }
+    }
     public var isPaused: Bool = false {
         didSet {
             if isPaused == false {
-                performActions()
+                performAvailableActions()
             }
+            Log.info("[ActionManager] isPaused: \(isPaused)")
         }
     }
 
     override init() {
         super.init()
         queue.didChange = {
-            self.performActions()
+            self.performAvailableActions()
         }
         scheduler.actionDelayed = {
             self.appendActions(actions: [$0])
         }
+        
+        NotificationCenter
+            .default
+            .addObserver(forName: UIApplication.didBecomeActiveNotification,
+                         object: self,
+                         queue: .main) { [weak self] _ in
+                guard let `self` = self else { return }
+                if self.configuration.resumeOnEnterForeground {
+                    self.performAvailableActions()
+                }
+            }
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
-    var shouldDisplayMessage: ((ActionContext) -> MessageOrder)?
-    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageOrder) {
+    var shouldDisplayMessage: ((ActionContext) -> MessageDisplayChoice)?
+    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageDisplayChoice) {
         shouldDisplayMessage = callback
     }
 
@@ -63,43 +86,27 @@ import Foundation
     @objc public func orderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
         orderMessages = callback
     }
-}
-
-extension ActionManager {
-    /// Adds ActionContext to back of the queue
-    func appendActions(actions: [Action]) {
-        guard isEnabled else { return }
-        actions.forEach(appendAction(action:))
-    }
-
-    /// Adds ActionContext to front of the queue
-    func insertActions(actions: [Action]) {
-        guard isEnabled else { return }
-        actions.forEach(insertAction(action:))
+    
+    func performAvailableActions() {
+        Log.debug("[ActionManager]: performing all available actions.")
+        Leanplum.onceVariablesChangedAndNoDownloadsPending {
+            self.performActions()
+        }
     }
 }
 
 extension ActionManager {
     /// Adds action to back of the queue
-    func appendAction(action: Action) {
-        if action.context.hasMissingFiles() {
-            Leanplum.onceVariablesChangedAndNoDownloadsPending {
-                self.queue.pushBack(action)
-            }
-        } else {
-            queue.pushBack(action)
-        }
+    func appendActions(actions: [Action]) {
+        guard isEnabled else { return }
+        actions.forEach(queue.pushBack(_:))
     }
 
     /// Adds action to front of the queue
-    func insertAction(action: Action) {
-        if action.context.hasMissingFiles() {
-            Leanplum.onceVariablesChangedAndNoDownloadsPending {
-                self.queue.pushFront(action)
-            }
-        } else {
-            queue.pushFront(action)
-        }
+    func insertActions(actions: [Action]) {
+        guard isEnabled else { return }
+        actions
+            .reversed()
+            .forEach(queue.pushFront(_:))
     }
 }
-

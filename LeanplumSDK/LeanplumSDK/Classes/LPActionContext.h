@@ -111,11 +111,6 @@ NS_SWIFT_NAME(track(event:value:params:));
 NS_SWIFT_NAME(trackMessage(event:value:info:params:));
 
 /**
- * Prevents the currently active message from appearing again in the future.
- */
-- (void)muteFutureMessagesOfSameKind;
-
-/**
  * Checks if the action context has any missing files that still need to be downloaded.
  */
 - (BOOL)hasMissingFiles;

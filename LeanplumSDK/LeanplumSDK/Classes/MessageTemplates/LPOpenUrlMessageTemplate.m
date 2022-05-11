@@ -33,7 +33,9 @@
             return NO;
         }
     }
-            dismissHandler:nil];
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        return NO;
+    }];
 }
 
 - (void) openURL

@@ -34,9 +34,7 @@ extension ActionManager {
         func pop() -> Action? {
             return lock.sync {
                 if !queue.isEmpty {
-                    if let index = queue.firstIndex(where: { $0.state != .delayed }) {
-                        return queue.remove(at: index)
-                    }
+                    return queue.remove(at: 0)
                 }
                 return nil
             }
@@ -65,12 +63,14 @@ extension ActionManager {
                 queue.count
             }
         }
-
-        func prepareActions(to state: Action.State = .delayed) {
-            lock.async(flags: .barrier) {
-                for var action in self.queue {
-                    action.state = state
+        
+        func popAll() -> [Action] {
+            return lock.sync {
+                var all = [Action]()
+                while let action = pop() {
+                    all.append(action)
                 }
+                return all
             }
         }
     }

@@ -12,6 +12,15 @@ extension ActionManager {
     @objc public enum Priority: Int {
         case high
         case `default`
+        
+        var name: String {
+            switch self {
+                case .high:
+                    return "high"
+                default:
+                    return "default"
+            }
+        }
     }
 
     @objc public func trigger(contexts: [Any], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
@@ -24,6 +33,9 @@ extension ActionManager {
         let actions: [Action] = filteredActions.map {
             .action(context: $0)
         }
+        
+        Log.debug("[ActionManager]: triggering actions with priority: \(priority.name).")
+        
         switch priority {
             case .high:
                 insertActions(actions: actions)
@@ -33,19 +45,19 @@ extension ActionManager {
     }
     
     @objc public func triggerDelayedMessages() {
-        queue.prepareActions()
+        appendActions(actions: delayedQueue.popAll())
     }
 }
 
 extension ActionManager {
-    enum MessageDisplayOrder {
+    enum MessageDisplay {
         case show
         case discard
         case delay(seconds: Int)
     }
     
-    @objc public class MessageOrder: NSObject {
-        var decision: MessageDisplayOrder = .show
+    @objc public class MessageDisplayChoice: NSObject {
+        var decision: MessageDisplay = .show
         
         @objc public static func show() -> Self {
             .init(decision: .show)
@@ -59,7 +71,7 @@ extension ActionManager {
             .init(decision: .delay(seconds: seconds))
         }
         
-        required init(decision: MessageDisplayOrder) {
+        required init(decision: MessageDisplay) {
             super.init()
             self.decision = decision
         }

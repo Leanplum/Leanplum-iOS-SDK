@@ -81,10 +81,15 @@
             [self.context actionDismissed];
         }];
     } else {
-        [self dismissViewControllerAnimated:animated completion:^{
-            [self.context actionDismissed];
-        }];
+        [self dismissViewControllerAnimated:animated completion:nil];
     }
+}
+
+-(void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    [super dismissViewControllerAnimated:flag completion:^{
+        [self.context actionDismissed];
+        completion();
+    }];
 }
 
 @end

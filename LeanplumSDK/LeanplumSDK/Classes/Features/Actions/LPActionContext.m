@@ -538,12 +538,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     }
 }
 
-- (void)muteFutureMessagesOfSameKind
-{
-    LP_TRY
-    [[LPActionManager sharedManager] muteFutureMessagesOfKind:_messageId];
-    LP_END_TRY
-}
 
 + (void)sortByPriority:(NSMutableArray *)actionContexts
 {
@@ -557,6 +551,11 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (void)actionDismissed
 {
     self.actionDidDismiss();
+}
+
+-(NSString *)description
+{
+    return [NSString stringWithFormat:@"%@:%@", self.name, self.messageId];
 }
 
 @end

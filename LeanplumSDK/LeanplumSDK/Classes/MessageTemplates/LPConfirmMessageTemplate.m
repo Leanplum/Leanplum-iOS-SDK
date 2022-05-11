@@ -13,10 +13,11 @@
 
 + (void)defineAction
 {
+    __block UIViewController *alertViewController = NULL;
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
             LPConfirmMessageTemplate *template = [[LPConfirmMessageTemplate alloc] init];
-            UIViewController *alertViewController = [template viewControllerWithContext:context];
+            alertViewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:alertViewController];
 
@@ -39,7 +40,12 @@
     ]
                withOptions:@{}
             presentHandler:responder
-            dismissHandler:nil];
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        [alertViewController dismissViewControllerAnimated:YES completion:^{
+            [context actionDismissed];
+        }];
+        return YES;
+    }];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context
