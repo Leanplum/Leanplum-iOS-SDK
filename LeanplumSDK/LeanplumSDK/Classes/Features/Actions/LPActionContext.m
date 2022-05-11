@@ -84,14 +84,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSDictionary *)defaultValues
 {
-//    return [LPVarCache sharedCache].actionDefinitions[_name][@"values"];
-    for (ActionDefinition *ad in [[ActionManager shared] definitions])
-    {
-        if ([[ad name] isEqualToString:_name]) {
-            return [ad values];
-        }
-    }
-    return nil;
+    return [[[ActionManager shared] definitionWithName:_name] values];
 }
 
 /**

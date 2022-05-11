@@ -15,10 +15,10 @@ import Foundation
     lazy var state = State()
     
     public var definitions: [ActionDefinition] = []
-    public var messages: [AnyHashable:Any] = [:]
-    // Raw messages data received from the API
-    public var messagesDataFromServer: [AnyHashable:Any] = [:] // messageDiffs
-    public var actionDefinitionsFromServer: [AnyHashable:Any] = [:]
+    public var messages: [AnyHashable: Any] = [:]
+    /// Raw messages data received from the API
+    public var messagesDataFromServer: [AnyHashable: Any] = [:]
+    public var actionDefinitionsFromServer: [AnyHashable: Any] = [:]
 
     public var isEnabled: Bool = true
     public var isPaused: Bool = false {

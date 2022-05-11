@@ -11,11 +11,11 @@ extension ActionManager {
     typealias AnyDictionary = [AnyHashable: Any]
     
     var pattern: String {
-        return "^(\\[[1-9]\\d*\\]|\\[0\\])$"
+        "^(\\[[1-9]\\d*\\]|\\[0\\])$"
     }
     
     var regex: NSRegularExpression {
-        return try! NSRegularExpression(pattern: pattern)
+        try! NSRegularExpression(pattern: pattern)
     }
     
     @objc public func processMessagesAndDownloadFiles(_ messages: [AnyHashable: Any]) {

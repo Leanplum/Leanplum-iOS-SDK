@@ -32,6 +32,7 @@
 #import <Leanplum/LPActionManager.h>
 #import <Leanplum/LPVarCache.h>
 #import <Leanplum/Leanplum.h>
+#import <Leanplum/Leanplum-Swift.h>
 #import <Leanplum/LeanplumInternal.h>
 #import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
@@ -127,7 +128,7 @@
 {
     id mockLPVarCache = OCMPartialMock([LPVarCache sharedCache]);
     OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
-    XCTAssertEqual([[LPVarCache sharedCache] messages], messageConfigs);
+    XCTAssertEqual([[ActionManager shared] messages], messageConfigs);
 
     __block NSMutableSet *calledMessageIds = [NSMutableSet set];
     id mockLeanplum = OCMClassMock([Leanplum class]);
@@ -249,7 +250,7 @@
     // Mock LPVarCache messages.
     id mockLPVarCache = OCMPartialMock([LPVarCache sharedCache]);
     OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
-    XCTAssertEqual([[LPVarCache sharedCache] messages], messageConfigs);
+    XCTAssertEqual([[ActionManager shared] messages], messageConfigs);
 
     LPActionContext *context1 = [Leanplum createActionContextForMessageId:@"1"];
     LPActionContext *context2 = [Leanplum createActionContextForMessageId:@"2"];

@@ -83,7 +83,7 @@ extension ActionManager {
                     }
                 } else {
                     forEachArg(args: dict,
-                               defaultArgs: defaultArgs[arg.key] as? [AnyHashable : Any] ?? [:],
+                               defaultArgs: defaultArgs[arg.key] as? [AnyHashable: Any] ?? [:],
                                definitionKinds: definitionKinds,
                                fileArgCallback: fileArgCallback,
                                prefix: "\(keyWithPrefix).")

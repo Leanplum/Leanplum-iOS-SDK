@@ -25,9 +25,14 @@ extension ActionManager {
         // Title.Action -> Action
         // Title.Action.__name__ = ""
         // Title.Action.Title = ""
-        @objc public var values: [AnyHashable:Any] = [:]
         
-        @objc public var kinds: [String:String] = [:]
+        /// Nested ActionArgs
+        @objc public var values: [AnyHashable: Any] = [:]
+        
+        /// ActionArgs name and ActionArgs Kind
+        @objc public var kinds: [String: String] = [:]
+        
+        /// ActionArgs name order
         private var order: [String] = []
 
         @objc public required init(name: String,
@@ -47,13 +52,21 @@ extension ActionManager {
             self.presentAction = presentAction
             self.dismissAction = dismissAction
             
+            super.init()
+            
+            self.processArgs()
+        }
+        
+        fileprivate func processArgs() {
             for arg in self.args {
                 order.append(arg.name)
                 kinds[arg.name] = arg.kind
+                
+                // Nest Action args
+                // Args: Title.Color, Title.Text, Title.Properties[:]
+                // to Values: Title[Text: "", Color: "", Properties: [:]]
                 values[stringKeyPath: arg.name] = arg.defaultValue
             }
-            
-            super.init()
         }
         
         @objc public var json: [String: Any] {
