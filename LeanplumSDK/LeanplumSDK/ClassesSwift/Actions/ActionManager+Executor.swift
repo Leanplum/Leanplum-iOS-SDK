@@ -15,17 +15,18 @@ extension ActionManager {
             return
         }
         
-        // ask user to dimiss current action so we can execute next one
-        if
-            configuration.dismissOnPushArrival,
-            let action = state.currentAction,
-            let nextAction = queue.first(),
-            nextAction.notification
-        {
-            let definition = definitions.first { $0.name == action.context.name }
-            let _ = definition?.dismissAction?(action.context)
-            
-            Log.debug("[ActionManager]: asking for dismissal: \(action.context).")
+        if let action = state.currentAction {
+            // ask user to dimiss current action so we can execute next one
+            if
+                configuration.dismissOnPushArrival,
+                let nextAction = queue.first(),
+                nextAction.notification
+            {
+                let definition = definitions.first { $0.name == action.context.name }
+                let _ = definition?.dismissAction?(action.context)
+                
+                Log.debug("[ActionManager]: asking for dismissal: \(action.context).")
+            }
             return
         }
 
