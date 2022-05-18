@@ -508,8 +508,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     }
     NSDictionary *args = [self getChildArgs:name];
 
+    __weak LPActionContext *weakSelf = self;
+
+    LPActionContext *actionNamedContext = [LPActionContext
+                                      actionContextWithName:name
+                                      args:args messageId:_messageId];
+    actionNamedContext->_parentContext = weakSelf;
     // notifies our ActionManager that the action was executed
-    self.actionDidExecute(self);
+    self.actionDidExecute(actionNamedContext);
     
     if (!args) {
         return;
@@ -525,7 +531,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         chainedActionContext->_preventRealtimeUpdating = self->_preventRealtimeUpdating;
         chainedActionContext->_isRooted = self->_isRooted;
         chainedActionContext->_isChainedMessage = YES;
-        chainedActionContext->_parentContext = self;
+        chainedActionContext->_parentContext = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[ActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
         });
@@ -555,7 +561,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         childContext.contextualValues = self.contextualValues;
         childContext->_preventRealtimeUpdating = _preventRealtimeUpdating;
         childContext->_isRooted = _isRooted;
-        childContext->_parentContext = self;
+        childContext->_parentContext = weakSelf;
         childContext->_key = name;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[ActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
