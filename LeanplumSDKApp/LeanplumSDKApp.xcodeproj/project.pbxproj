@@ -375,6 +375,8 @@
 		075AAFC726849AE9007CA1BD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6A07FDAC2835441200995BE3 /* Notifications */,
+				6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */,
 				39C081A6278D939800C1DBD6 /* Actions */,
 				6A2FE1822795994000E4A8FE /* LocationAndBeacons */,
 				075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */,
@@ -403,12 +405,7 @@
 				075AB0E62684AAD9007CA1BD /* MessagesTest.m */,
 				075AB0F62684AAD9007CA1BD /* Extensions */,
 				075AB1082684AAD9007CA1BD /* Utilities */,
-				6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */,
 				6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */,
-				6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */,
-				6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */,
-				C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */,
-				C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -441,7 +438,6 @@
 				075AB1032684AAD9007CA1BD /* LPRequestSender+Categories.m */,
 				075AB1042684AAD9007CA1BD /* LPNetworkEngine+Category.h */,
 				075AB1052684AAD9007CA1BD /* LeanplumReachability+Category.h */,
-				6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -527,9 +523,21 @@
 			isa = PBXGroup;
 			children = (
 				39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */,
-				6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */,
 			);
 			path = Actions;
+			sourceTree = "<group>";
+		};
+		6A07FDAC2835441200995BE3 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */,
+				6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */,
+				6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */,
+				C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */,
+				C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */,
+				6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		6A2FE1822795994000E4A8FE /* LocationAndBeacons */ = {
