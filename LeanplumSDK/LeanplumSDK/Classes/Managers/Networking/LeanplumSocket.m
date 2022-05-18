@@ -175,7 +175,7 @@ static dispatch_once_t leanplum_onceToken;
             NSString *actionType = action[LP_VALUE_ACTION_ARG];
             
             NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:action[LP_VALUE_ACTION_ARG]] values];
-            action = [[ActionManager shared] mergeWithVars:defaultArgs diff:action];
+            action = [[ContentMerger shared] mergeWithVars:defaultArgs diff:action];
             
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
                                                                          args:action
@@ -184,7 +184,10 @@ static dispatch_once_t leanplum_onceToken;
             context.preventRealtimeUpdating = YES;
             [context setIsRooted:isRooted];
             [context maybeDownloadFiles];
-//            [[ActionManager shared] triggerWithActionContexts:@[context]];
+            ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:@"Preview"
+                                                                      condition:nil
+                                                               contextualValues:nil];
+            [[ActionManager shared] triggerWithContexts:@[context] priority:PriorityHigh trigger:trigger];
         }
 
     } else if ([packet.name isEqualToString:@"getVariables"]) {

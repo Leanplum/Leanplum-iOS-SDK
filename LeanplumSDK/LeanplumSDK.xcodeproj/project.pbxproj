@@ -198,6 +198,8 @@
 		6A07FDA0280F27C700995BE3 /* NSRegularExpression+Matches.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FD9E280F27C700995BE3 /* NSRegularExpression+Matches.swift */; };
 		6A07FDA22811911000995BE3 /* ActionManager+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA12811911000995BE3 /* ActionManager+Download.swift */; };
 		6A07FDA32811911000995BE3 /* ActionManager+Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA12811911000995BE3 /* ActionManager+Download.swift */; };
+		6A07FDAA28352DCE00995BE3 /* ContentMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA928352DCE00995BE3 /* ContentMerger.swift */; };
+		6A07FDAB28352DCE00995BE3 /* ContentMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA928352DCE00995BE3 /* ContentMerger.swift */; };
 		6A265E2727187EBB0074354F /* NotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* NotificationsProxy.swift */; };
 		6A265E2827187EBB0074354F /* NotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* NotificationsProxy.swift */; };
 		6A265E2927187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
@@ -774,6 +776,7 @@
 		39D0AA1327760842003C7192 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
 		6A07FD9E280F27C700995BE3 /* NSRegularExpression+Matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+Matches.swift"; sourceTree = "<group>"; };
 		6A07FDA12811911000995BE3 /* ActionManager+Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Download.swift"; sourceTree = "<group>"; };
+		6A07FDA928352DCE00995BE3 /* ContentMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMerger.swift; sourceTree = "<group>"; };
 		6A265E2527187EBB0074354F /* NotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsProxy.swift; sourceTree = "<group>"; };
 		6A265E2627187EBB0074354F /* NSObject+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Notifications.swift"; sourceTree = "<group>"; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1293,6 +1296,7 @@
 				6A9DECA127B6929200052807 /* ApiConfig.swift */,
 				6A96032C27C8DD1200F34BA0 /* User.swift */,
 				07004A1128229E9D00FB64DF /* Leanplum.swift */,
+				6A07FDA928352DCE00995BE3 /* ContentMerger.swift */,
 			);
 			path = ClassesSwift;
 			sourceTree = "<group>";
@@ -1666,6 +1670,7 @@
 				39C081952781D34700C1DBD6 /* ActionManager+ActionDefinition.swift in Sources */,
 				075AAEC426847EC4007CA1BD /* LPEventDataManager.m in Sources */,
 				075AAE5326847EC4007CA1BD /* LPInterstitialViewController.m in Sources */,
+				6A07FDAA28352DCE00995BE3 /* ContentMerger.swift in Sources */,
 				075AAEA226847EC4007CA1BD /* UIDevice+IdentifierAddition.m in Sources */,
 				075AAEC226847EC4007CA1BD /* LPEventCallbackManager.m in Sources */,
 				075AAE5026847EC4007CA1BD /* LPPopupViewController.m in Sources */,
@@ -1782,6 +1787,7 @@
 				6A714B4F26F8B317004A34A9 /* LPEventDataManager.m in Sources */,
 				6A714B5026F8B317004A34A9 /* LPInterstitialViewController.m in Sources */,
 				6A714B5126F8B317004A34A9 /* UIDevice+IdentifierAddition.m in Sources */,
+				6A07FDAB28352DCE00995BE3 /* ContentMerger.swift in Sources */,
 				6A714B5226F8B317004A34A9 /* LPEventCallbackManager.m in Sources */,
 				39C081B0278D995300C1DBD6 /* ActionManager+ActionsTrigger.swift in Sources */,
 				39C081A9278D995300C1DBD6 /* ActionManager+State.swift in Sources */,

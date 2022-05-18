@@ -1,5 +1,5 @@
 //
-//  ActionManagerProcessorTest.swift
+//  ContentMergerTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 21.04.22.
@@ -8,53 +8,53 @@
 import XCTest
 @testable import Leanplum
 
-class ActionManagerProcessorTest: XCTestCase {
+class ContentMergerTest: XCTestCase {
     
     func testMergeValues() {
-        let actionManager = ActionManager()
-        let resultString = actionManager.merge(vars: "defaultValue", diff: "newValue") as! String
+        let contentMerger = ContentMerger()
+        let resultString = contentMerger.merge(vars: "defaultValue", diff: "newValue") as! String
         XCTAssertEqual("newValue", resultString)
         
-        let resultNumber = actionManager.merge(vars: 199, diff: 123456789) as! Int
+        let resultNumber = contentMerger.merge(vars: 199, diff: 123456789) as! Int
         XCTAssertEqual(123456789, resultNumber)
         
-        let resultNull = actionManager.merge(vars: NSNull(), diff: "newValue") as! String
+        let resultNull = contentMerger.merge(vars: NSNull(), diff: "newValue") as! String
         XCTAssertEqual("newValue", resultNull)
     }
     
-//    func testMergeArrays() {
-//        let actionManager = ActionManager()
-//
-//        let arr = [1, 2, 3, 4, 5]
-//        let arrDiff = [6, 7, 8, 9, 10]
-////        var result = actionManager.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
-//        var result = VarCache.shared().mergeHelper(arr, withDiffs: arrDiff) as! [AnyHashable]
-//        XCTAssertEqual(arrDiff, result)
-//
-//        let arrMixed: [AnyHashable] = [1, 2, "value", 4, NSNull()]
-//        let arrDiffMixed: [AnyHashable] = [6, 7, "newValue", 9, 10]
-////        result = actionManager.merge(vars: arrMixed, diff: arrDiffMixed) as! [AnyHashable]
-//        result = VarCache.shared().mergeHelper(arrMixed, withDiffs: arrDiffMixed) as! [AnyHashable]
-//        XCTAssertEqual(arrDiffMixed, result)
-//    }
+    func testMergeArrays() {
+        let contentMerger = ContentMerger()
+
+        let arr = [1, 2, 3, 4, 5]
+        let arrDiff = [6, 7, 8, 9, 10]
+        var result = contentMerger.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
+        // Merger does not merge two arrays yet, only array with dictionary with indexes, see method implementation for details
+        XCTAssertEqual(arr, result)
+
+        let arrMixed: [AnyHashable] = [1, 2, "value", 4, NSNull()]
+        let arrDiffMixed: [AnyHashable] = [6, 7, "newValue", 9, 10]
+        result = contentMerger.merge(vars: arrMixed, diff: arrDiffMixed) as! [AnyHashable]
+        // Merger does not merge two arrays yet, only array with dictionary with indexes, see method implementation for details
+        XCTAssertEqual(arrMixed, result)
+    }
         
     func testMergeArraysWithDict() {
-        let actionManager = ActionManager()
+        let contentMerger = ContentMerger()
         
         let arr: [AnyHashable] = [1, 2, 3, 4]
         let arrDiff: [AnyHashable: Any] = ["[0]": 5, "[3]": 6]
         let expected: [AnyHashable] = [5, 2, 3, 6]
-        let result = actionManager.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
+        let result = contentMerger.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
         XCTAssertEqual(expected, result)
     }
     
     func testMergeArraysMixed() {
-        let actionManager = ActionManager()
+        let contentMerger = ContentMerger()
         
         let arr: [AnyHashable] = [1, 2, "value", 4, NSNull()]
         let arrDiff: [AnyHashable: Any] = ["[0]": 6, "[2]": "newValue", "[4]": "anotherValue"]
         let expected: [AnyHashable] = [6, 2, "newValue", 4, "anotherValue"]
-        let result = actionManager.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
+        let result = contentMerger.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
         XCTAssertEqual(expected, result)
     }
     
@@ -79,8 +79,8 @@ class ActionManagerProcessorTest: XCTestCase {
         
         let expected = messagesDiff
         
-        let actionManager = ActionManager()
-        let result = actionManager.merge(vars: messages, diff: messagesDiff) as! [AnyHashable: Any]
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: messages, diff: messagesDiff) as! [AnyHashable: Any]
         XCTAssertTrue(result.isEqual(expected))
     }
     
@@ -111,8 +111,8 @@ class ActionManagerProcessorTest: XCTestCase {
             ]
         ]
         
-        let actionManager = ActionManager()
-        let result = actionManager.merge(vars: messages, diff: messagesDiff) as! [AnyHashable: Any]
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: messages, diff: messagesDiff) as! [AnyHashable: Any]
         XCTAssertTrue(result.isEqual(expected))
     }
     
@@ -158,8 +158,8 @@ class ActionManagerProcessorTest: XCTestCase {
                 "d": 555
             ]
         ]
-        let actionManager = ActionManager()
-        let result = actionManager.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
         XCTAssertTrue(result.isEqual(expected))
     }
     
@@ -205,8 +205,8 @@ class ActionManagerProcessorTest: XCTestCase {
                 "e": 999
             ]
         ]
-        let actionManager = ActionManager()
-        let result = actionManager.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
         XCTAssertTrue(expected.isEqual(result))
     }
     
@@ -239,8 +239,72 @@ class ActionManagerProcessorTest: XCTestCase {
                     ]
             ]
         ]
-        let actionManager = ActionManager()
-        let result = actionManager.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
         XCTAssertTrue(expected.isEqual(result))
+    }
+    
+    func testMergeWithEmpty() {
+        let dict: [AnyHashable : Any] = [
+            "abc": "qwe",
+            "nested": [
+                "abc": "qwe",
+                "1": 123
+            ]
+        ]
+        
+        let dictDiff: [AnyHashable : Any] = [:]
+        
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        XCTAssertTrue(dict.isEqual(result))
+    }
+    
+    func testMergeEmpty() {
+        let dict: [AnyHashable : Any] = [:]
+        
+        let dictDiff: [AnyHashable : Any] = [
+            "abc": "qwe",
+            "nested": [
+                "abc": "qwe",
+                "1": 123
+            ]
+        ]
+        
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        XCTAssertTrue(dictDiff.isEqual(result))
+    }
+    
+    func testMergeNull() {
+        let dict = NSNull()
+        
+        let dictDiff: [AnyHashable : Any] = [
+            "abc": "qwe",
+            "nested": [
+                "abc": "qwe",
+                "1": 123
+            ]
+        ]
+        
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff) as! [AnyHashable: Any]
+        XCTAssertTrue(dictDiff.isEqual(result))
+    }
+    
+    func testMergeWithNull() {
+        let dict: [AnyHashable : Any] = [
+            "abc": "qwe",
+            "nested": [
+                "abc": "qwe",
+                "1": 123
+            ]
+        ]
+        
+        let dictDiff = NSNull()
+        
+        let contentMerger = ContentMerger()
+        let result = contentMerger.merge(vars: dict, diff: dictDiff)
+        XCTAssertTrue(NSNull().isEqual(result))
     }
 }

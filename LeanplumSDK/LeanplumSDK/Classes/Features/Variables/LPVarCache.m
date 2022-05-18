@@ -30,7 +30,6 @@
 #import "FileMD5Hash.h"
 #import "LPKeychainWrapper.h"
 #import "LPAES.h"
-#import "Leanplum_SocketIO.h"
 #import "LPUtils.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
@@ -91,13 +90,11 @@ static dispatch_once_t leanplum_onceToken;
 - (void)initialize
 {
     self.vars = [NSMutableDictionary dictionary];
-//    self.messages = [NSMutableDictionary dictionary];
     self.filesToInspect = [NSMutableDictionary dictionary];
     self.fileAttributes = [NSMutableDictionary dictionary];
     self.valuesFromClient = [NSMutableDictionary dictionary];
     self.diffs = [NSMutableDictionary dictionary];
     self.defaultKinds = [NSMutableDictionary dictionary];
-//    self.actionDefinitions = [NSMutableDictionary dictionary];
     self.localCaps = [NSArray array];
     self.hasReceivedDiffs = NO;
     self.silent = NO;
@@ -135,9 +132,32 @@ static dispatch_once_t leanplum_onceToken;
     }
 }
 
+- (NSArray *) arrayOfCaptureComponentsOfString:(NSString *)data matchedBy:(NSRegularExpression *)regExpression
+{
+    NSMutableArray *test = [NSMutableArray array];
+
+    NSArray *matches = [regExpression matchesInString:data options:0 range:NSMakeRange(0, data.length)];
+
+    for(NSTextCheckingResult *match in matches) {
+        NSMutableArray *result = [NSMutableArray arrayWithCapacity:match.numberOfRanges];
+        for(NSInteger i=0; i<match.numberOfRanges; i++) {
+            NSRange matchRange = [match rangeAtIndex:i];
+            NSString *matchStr = nil;
+            if(matchRange.location != NSNotFound) {
+                matchStr = [data substringWithRange:matchRange];
+            } else {
+                matchStr = @"";
+            }
+            [result addObject:matchStr];
+        }
+        [test addObject:result];
+    }
+    return test;
+}
+
 - (NSArray *)getNameComponents:(NSString *)name
 {
-    NSArray *matches = [Leanplum_SocketIO arrayOfCaptureComponentsOfString:name matchedBy:self.varNameRegex];
+    NSArray *matches = [self arrayOfCaptureComponentsOfString:name matchedBy:self.varNameRegex];
     NSMutableArray *nameComponents = [NSMutableArray array];
     for (NSArray *matchArray in matches) {
         [nameComponents addObject:matchArray[0]];
@@ -255,116 +275,6 @@ static dispatch_once_t leanplum_onceToken;
 - (LPVar *)getVariable:(NSString *)name
 {
     return [self.vars objectForKey:name];
-}
-
-- (void)computeMergedDictionary
-{
-    if (!self.diffs) {
-        self.merged = [self mergeHelper:self.valuesFromClient withDiffs:self.diffs];
-        return;
-    }
-    
-    // Merger helper will mutate diffs.
-    // We need to lock it in case multiple threads will be accessing this.
-    @synchronized (self.diffs) {
-        self.merged = [self mergeHelper:self.valuesFromClient withDiffs:self.diffs];
-    }
-}
-
-- (id)mergeHelper:(id)vars withDiffs:(id)diff
-{
-    if ([vars isKindOfClass:NSNull.class]) {
-        vars = nil;
-    }
-    if ([diff isKindOfClass:NSNumber.class] ||
-        [diff isKindOfClass:NSString.class] ||
-        [diff isKindOfClass:NSNull.class]) {
-        return diff;
-    }
-    if (diff == nil) {
-        return vars;
-    }
-    if ([vars isKindOfClass:NSNumber.class] ||
-        [vars isKindOfClass:NSString.class] ||
-        [vars isKindOfClass:NSNull.class]) {
-        return diff;
-    }
-
-    // Infer that the diffs is an array if the vars value doesn't exist to tell us the type.
-    BOOL isArray = NO;
-    if (vars == nil) {
-        if ([diff isKindOfClass:NSDictionary.class] && [diff count] > 0) {
-            isArray = YES;
-            for (id var in diff) {
-                if (![var isKindOfClass:NSString.class]
-                    || ([var length] < 3)
-                    || ([var characterAtIndex:0] != '[' || [var characterAtIndex:[var length] - 1] != ']')) {
-                    isArray = NO;
-                    break;
-                }
-                NSString *varSubscript = [var substringWithRange:NSMakeRange(1, [var length] - 2)];
-                if (![[NSString stringWithFormat:@"%d", [varSubscript intValue]] isEqualToString:varSubscript]) {
-                    isArray = NO;
-                    break;
-                }
-            }
-        }
-    }
-
-    // Merge arrays.
-    if ([vars isKindOfClass:NSArray.class] || isArray) {
-        NSMutableArray *merged = [NSMutableArray array];
-        for (id var in vars) {
-            [merged addObject:var];
-        }
-        
-        // Merge values from server
-        // Array values from server come as Dictionary
-        // Example:
-        // string[] items = new string[] { "Item 1", "Item 2"};
-        // args.With<string[]>("Items", items); // Action Context arg value
-        // "vars": {
-        //      "Items": {
-        //                  "[1]": "Item 222", // Modified value from server
-        //                  "[0]": "Item 111"  // Modified value from server
-        //              }
-        //  }
-        // Prevent crashing when loading variable diffs where the diff is an Array and not Dictionary
-        if ([diff isKindOfClass:NSDictionary.class]) {
-            for (id varSubscript in diff) {
-                // Get the index from the string key: "[0]" -> 0
-                if ([varSubscript isKindOfClass:NSString.class]) {
-                    NSString *varSubscriptStr = (NSString*)varSubscript;
-                    if ([varSubscriptStr length] > 2 && [varSubscriptStr hasPrefix:@"["] && [varSubscriptStr hasSuffix:@"]"]) {
-                        int subscript = [[varSubscriptStr substringWithRange:NSMakeRange(1, [varSubscriptStr length] - 2)] intValue];
-                        id var = [diff objectForKey:varSubscriptStr];
-                        while (subscript >= [merged count]) {
-                            [merged addObject:[NSNull null]];
-                        }
-                        [merged replaceObjectAtIndex:subscript
-                                          withObject:[self mergeHelper:merged[subscript] withDiffs:var]];
-                    }
-                }
-            }
-        }
-        return merged;
-    }
-
-    // Merge dictionaries.
-    if ([vars isKindOfClass:NSDictionary.class] || [diff isKindOfClass:NSDictionary.class]) {
-        NSMutableDictionary *merged = [NSMutableDictionary dictionary];
-        for (id var in vars) {
-            if ([diff objectForKey:var] == nil) {
-                merged[var] = [vars objectForKey:var];
-            }
-        }
-        for (id var in diff) {
-            merged[var] = [self mergeHelper:[vars objectForKey:var]
-                                  withDiffs:[diff objectForKey:var]];
-        }
-        return merged;
-    }
-    return nil;
 }
 
 - (id)getValueFromComponentArray:(NSArray *) components fromDict:(NSDictionary *)values
@@ -506,8 +416,17 @@ static dispatch_once_t leanplum_onceToken;
     @synchronized (self.vars) {
         if (diffs_ || (!self.silent && !self.hasReceivedDiffs)) {
             self.diffs = diffs_;
-            [self computeMergedDictionary];
             
+            if (!self.diffs) {
+                self.merged = [[ContentMerger shared] mergeWithVars:self.valuesFromClient diff:self.diffs];
+            } else {
+                // Merger helper will mutate diffs.
+                // We need to lock it in case multiple threads will be accessing this.
+                @synchronized (self.diffs) {
+                    self.merged = [[ContentMerger shared] mergeWithVars:self.valuesFromClient diff:self.diffs];
+                }
+            }
+
             // Update variables with new values.
             // Have to extract the keys because a dictionary variable may add a new sub-variable,
             // modifying the variable dictionary.
@@ -670,14 +589,6 @@ static dispatch_once_t leanplum_onceToken;
     return NO;
 }
 
-- (NSArray *)map: (NSArray*)arr with: (id (^)(id obj))block {
-    NSMutableArray *mutableArray = [NSMutableArray new];
-    [arr enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        [mutableArray addObject:block(obj)];
-    }];
-    return [mutableArray copy];
-}
-
 - (void)maybeUploadNewFiles
 {
     RETURN_IF_NOOP;
@@ -801,33 +712,6 @@ static dispatch_once_t leanplum_onceToken;
     [self.countAggregator incrementCount:@"save_user_attributes"];
 }
 
-//- (void)registerActionDefinition:(NSString *)name
-//                          ofKind:(int)kind
-//                   withArguments:(NSArray<LPActionArg *> *)args
-//                      andOptions:(NSDictionary *)options
-//{
-//    NSMutableDictionary *values = [NSMutableDictionary dictionary];
-//    NSMutableDictionary *kinds = [NSMutableDictionary dictionary];
-//    NSMutableArray *order = [NSMutableArray array];
-//    for (LPActionArg *arg in args) {
-//        [self updateValues:arg.name
-//            nameComponents:[self getNameComponents:arg.name]
-//                     value:arg.defaultValue
-//                      kind:arg.kind
-//                    values:values
-//                     kinds:kinds];
-//        [order addObject:arg.name];
-//    }
-//    NSDictionary *definition = @{
-//                                 @"kind": @(kind),
-//                                 @"values": values,
-//                                 @"kinds": kinds,
-//                                 @"order": order,
-//                                 @"options": options
-//                                 };
-//    _actionDefinitions[name] = definition;
-//}
-
 - (LPSecuredVars *)securedVars
 {
     if ([LPUtils isNullOrEmpty:self.varsJson] || [LPUtils isNullOrEmpty:self.varsSignature]) {
@@ -841,22 +725,9 @@ static dispatch_once_t leanplum_onceToken;
     return self.localCaps;
 }
 
-//- (NSUInteger)getActionDefinitionType:(NSString *)actionName
-//{
-//    id actionDef = [self.actionDefinitions objectForKey:actionName];
-//    if ([actionDef isKindOfClass:[NSDictionary class]]) {
-//        LeanplumActionKind kind = (LeanplumActionKind)[(NSDictionary *)actionDef valueForKey:@"kind"];
-//        return kind;
-//    }
-//    
-//    return 0;
-//}
-
 - (void)clearUserContent
 {
     self.diffs = nil;
-//    self.messageDiffs = nil;
-//    self.messages = nil;
     self.variants = nil;
     self.localCaps = nil;
     self.variantDebugInfo = nil;
@@ -868,39 +739,28 @@ static dispatch_once_t leanplum_onceToken;
 
     self.devModeValuesFromServer = nil;
     self.devModeFileAttributesFromServer = nil;
-//    self.devModeActionDefinitionsFromServer = nil;
     
-    
-
+    [ActionManager shared].messages = [NSMutableDictionary dictionary];
+    [ActionManager shared].messagesDataFromServer = [NSMutableDictionary dictionary];
+    [ActionManager shared].actionDefinitionsFromServer = [NSMutableDictionary dictionary];
 }
 
 // Resets the VarCache to stock state. Used for testing purposes.
 - (void)reset
 {
-    self.vars = nil;
+    [self clearUserContent];
+    
     self.filesToInspect = nil;
     self.fileAttributes = nil;
+    
     self.valuesFromClient = nil;
     self.defaultKinds = nil;
-//    self.actionDefinitions = nil;
-    self.diffs = nil;
-//    self.messageDiffs = nil;
-    self.devModeValuesFromServer = nil;
-    self.devModeFileAttributesFromServer = nil;
-//    self.devModeActionDefinitionsFromServer = nil;
-    self.variants = nil;
-    self.localCaps = nil;
-    self.variantDebugInfo = nil;
-    self.userAttributes = nil;
+
     self.updateBlock = nil;
     self.hasReceivedDiffs = NO;
-//    self.messages = nil;
-    self.merged = nil;
     self.silent = NO;
     self.contentVersion = 0;
     self.hasTooManyFiles = NO;
-    self.varsJson = nil;
-    self.varsSignature = nil;
 }
 
 @end

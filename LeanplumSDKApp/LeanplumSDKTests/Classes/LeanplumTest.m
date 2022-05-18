@@ -2312,44 +2312,6 @@
 }
 
 /**
- * Test that method triggerMessageDisplayed calls user defined callback
- */
--(void)test_triggerMessageDisplayedCallsCallback
-{
-    __block BOOL blockCalled = NO;
-
-    NSString *messageID = @"testMessageID";
-    NSString *messageBody = @"testMessageBody";
-    NSString *recipientUserID = @"recipientUserID";
-
-    LPActionContext *actionContext = [LPActionContext actionContextWithName:@"" args:nil messageId:nil];
-    id actionContextMock = OCMPartialMock(actionContext);
-
-    OCMStub([actionContextMock messageId]).andReturn(messageID);
-    OCMStub([actionContextMock args]).andReturn(@{@"Message":messageBody});
-
-    id leanplumMock = OCMClassMock([Leanplum class]);
-    OCMStub([leanplumMock userId]).andReturn(recipientUserID);
-
-//    LeanplumMessageDisplayedCallbackBlock block =
-//    ^void(LPMessageArchiveData *messageArchiveData) {
-//        blockCalled = YES;
-//        XCTAssertEqual(messageArchiveData.messageID, messageID);
-//        XCTAssertEqual(messageArchiveData.messageBody, messageBody);
-//        XCTAssertEqual(messageArchiveData.recipientUserID, recipientUserID);
-//        NSDate *now = [NSDate date];
-//        NSTimeInterval interval = [now timeIntervalSinceDate:messageArchiveData.deliveryDateTime];
-//        XCTAssertTrue(interval < 1000);
-//    };
-//    [Leanplum onMessageDisplayed:block];
-//    [Leanplum triggerMessageDisplayed:actionContext];
-
-    XCTAssertTrue(blockCalled);
-    [leanplumMock stopMocking];
-//    [LPInternalState sharedState].messageDisplayedBlocks = nil;
-}
-
-/**
  * Test that method messageBodyFromContext gets the correct message body for string.
  */
 -(void)test_messageBodyFromContextGetsCorrectBodyForString
@@ -2476,68 +2438,6 @@
     [self waitForExpectationsWithTimeout:10 handler:nil];
 
     XCTAssertTrue([[LPVarCache sharedCache] variants].count == 4);
-}
-
-- (void)test_onAction {
-    NSString *actionName = @"TestAction";
-    LPActionContext *context = [LPActionContext
-                                actionContextWithName:actionName
-                                args:nil
-                                messageId:@"1"];
-    
-    XCTestExpectation *onActionExpectation = [self expectationWithDescription:@"onActionExpectation"];
-    
-//    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
-//        XCTAssertEqual([context actionName], actionName);
-//        [onActionExpectation fulfill];
-//        return NO;
-//    }];
-//    [Leanplum triggerAction:context];
-    
-    [self waitForExpectationsWithTimeout:6 handler:nil];
-}
-
-/**
- * Leanplum triggerAction uses the same context instance to call all LeanplumActionBlock responders
- * Those include the defineAction:actionResponder and the onAction:actionResponder blocks
- */
-- (void)test_onAction_sameContext {
-    NSString *actionName = @"TestAction";
-    LPActionContext *messageContext = [LPActionContext
-                                actionContextWithName:actionName
-                                args:nil
-                                messageId:@"1"];
-    
-    __weak LPActionContext *weakContext = messageContext;
-    
-//    XCTestExpectation *onActionExpectation = [self expectationWithDescription:@"onActionExpectation"];
-//
-//    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
-//        XCTAssertEqual(context, weakContext);
-//
-//        [context setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
-//            return NO;
-//        }];
-//
-//        [onActionExpectation fulfill];
-//        return NO;
-//    }];
-//
-//    XCTestExpectation *onActionExpectation2 = [self expectationWithDescription:@"onActionExpectation2"];
-//
-//    [Leanplum onAction:actionName invoke:^BOOL(LPActionContext * _Nonnull context) {
-//        XCTAssertEqual(context, weakContext);
-//
-//        // The responder is already set to the context from the previous onAction block
-//        XCTAssertNotNil([context actionNamedResponder]);
-//
-//        [onActionExpectation2 fulfill];
-//        return NO;
-//    }];
-//
-//    [Leanplum triggerAction:messageContext];
-    
-    [self waitForExpectationsWithTimeout:6 handler:nil];
 }
 
 @end

@@ -72,7 +72,6 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (void)onUpdate:(CacheUpdateBlock)block;
 - (void)setSilent:(BOOL)silent;
 - (BOOL)silent;
-- (id)mergeHelper:(id)vars withDiffs:(id)diff;
 - (int)contentVersion;
 - (nullable NSArray<NSString *> *)variants;
 - (nullable NSDictionary<NSString *, id> *)regions;

@@ -17,15 +17,6 @@ extension ActionManager {
         public var presentAction: ((ActionContext) -> (Bool))?
         public var dismissAction: ((ActionContext) -> (Bool))?
         
-        // Title.Color
-        // Title.Text
-        // Title.Properties -> Dict
-        // Title { Text: "", Color: "", Properties: { ... }}
-        
-        // Title.Action -> Action
-        // Title.Action.__name__ = ""
-        // Title.Action.Title = ""
-        
         /// Nested ActionArgs
         @objc public var values: [AnyHashable: Any] = [:]
         
@@ -42,11 +33,7 @@ extension ActionManager {
                                    presentAction: ((ActionContext) -> (Bool))? = nil,
                                    dismissAction: ((ActionContext) -> (Bool))? = nil) {
             self.name = name
-            if let actionArgs = args as? [ActionArg]{
-                self.args = actionArgs
-            } else {
-                self.args = []
-            }
+            self.args = args as? [ActionArg] ?? [ActionArg]()
             self.kind = kind
             self.options = options
             self.presentAction = presentAction
