@@ -51,7 +51,7 @@ extension ActionManager {
     func forEachArg(args: [AnyHashable: Any],
                     defaultArgs: [AnyHashable: Any],
                     definitionKinds: [String: String],
-                    fileArgCallback: (String, String) -> (),
+                    fileArgCallback: (_ value: String, _ defaultValue: String) -> (),
                     prefix: String = "") {
         for arg in args {
             let key = arg.key as? String ?? ""
@@ -62,12 +62,12 @@ extension ActionManager {
             
             if kind == LP_KIND_FILE {
                 fileArgCallback(value, defaultValue)
-                return
+                continue
             }
             
             if key.hasPrefix(ActionManager.ActionArgFilePrefix) {
                 fileArgCallback(value, defaultValue)
-                return
+                continue
             }
             
             if let dict = arg.value as? [AnyHashable: Any] {
