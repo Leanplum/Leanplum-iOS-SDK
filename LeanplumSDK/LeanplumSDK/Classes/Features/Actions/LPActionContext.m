@@ -93,13 +93,13 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 - (void)maybeDownloadFiles
 {
     NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
-    [[ActionManager shared] downloadFilesWithMessageArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
+    [[ActionManager shared] downloadFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (BOOL)hasMissingFiles
 {
     NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
-    return [[ActionManager shared] hasMissingFilesWithMessageArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
+    return [[ActionManager shared] hasMissingFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (NSString *)actionName
@@ -175,17 +175,18 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return value;
 }
 
-- (NSMutableDictionary *)replaceFileNameToLocalFilePath:(NSMutableDictionary *)vars templateNamed:(NSString *)templateName
+/// Replace file arguments keys and values to match HTML template vars
+/// "__file__CSS File": "lp_public_sf_ui_font.css" -> "CSS File": "file:///.../Leanplum_Resources/lp_public_sf_ui_font.css"
+/// Does not replace "templateName" key and value
+- (NSMutableDictionary *)replaceFileNameToLocalFilePath:(NSMutableDictionary *)vars preserveFileNamed:(NSString *)reserveName
 {
-    // Replace file arguments keys and values to match HTML template vars
-    // "__file__CSS File": "lp_public_sf_ui_font.css" -> "CSS File": "file:///.../Leanplum_Resources/lp_public_sf_ui_font.css"
     for (NSString *key in [vars allKeys]) {
         id obj = vars[key];
         if ([obj isKindOfClass:[NSDictionary class]]) {
             // Ensure obj is mutable as well
-            vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] templateNamed:templateName];
+            vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] preserveFileNamed:reserveName];
         } else if ([key hasPrefix:ActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
-                   && [obj length] > 0 && ![key isEqualToString:templateName]) {
+                   && [obj length] > 0 && ![key isEqualToString:reserveName]) {
             NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
             NSString *prunedKey = [key stringByReplacingOccurrencesOfString:ActionManager.ActionArgFilePrefix
                                                                  withString:@""];
@@ -208,7 +209,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     [self setProperArgs];
 
     NSMutableDictionary *htmlVars = [self replaceFileNameToLocalFilePath:[_args mutableCopy]
-                                                           templateNamed:templateName];
+                                                       preserveFileNamed:templateName];
     htmlVars[@"messageId"] = self.messageId;
 
     // Triggering Event.
@@ -253,14 +254,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return nil;
 }
 
--(NSString *)asciiEncodedFileURL:(NSString *)filePath {
+- (NSString *)asciiEncodedFileURL:(NSString *)filePath {
     NSMutableCharacterSet *allowed = [NSMutableCharacterSet illegalCharacterSet];
     [allowed formUnionWithCharacterSet:[NSMutableCharacterSet controlCharacterSet]];
     [allowed invert];
     return [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEncodingWithAllowedCharacters:allowed];
 }
 
--(NSString *)htmlStringContentsOfFile:(NSString *)file {
+- (NSString *)htmlStringContentsOfFile:(NSString *)file {
     NSError *error;
     NSString *htmlString = [NSString stringWithContentsOfFile:file
                                                      encoding:NSUTF8StringEncoding

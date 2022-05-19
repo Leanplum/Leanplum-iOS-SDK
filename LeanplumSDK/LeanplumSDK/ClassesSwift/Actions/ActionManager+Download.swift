@@ -16,27 +16,34 @@ extension ActionManager {
         }
     }
     
-    @objc public func downloadFiles(messageArgs: [AnyHashable: Any],
+    @objc public func downloadFiles(actionArgs: [AnyHashable: Any],
                                     defaultValues: [AnyHashable: Any],
                                     definition: ActionDefinition) {
-        forEachArg(args: messageArgs, defaultArgs: defaultValues, definitionKinds: definition.kinds) { value, defaultValue in
+        forEachArg(args: actionArgs, defaultArgs: defaultValues, definitionKinds: definition.kinds) { value, defaultValue in
             downloadFile(value, defaultValue)
         }
     }
     
-    @objc public func downloadFiles(messageArgs: [AnyHashable: Any],
+    /// Download files for action arguments
+    /// File args are ActionArgs of Kind File or args with name prefixed with "__file__"
+    ///
+    /// - Parameters:
+    ///     - actionArgs: Action arguments
+    ///     - defaultValues: Default action arguments
+    ///     - definitionKinds: Action Definition kinds
+    @objc public func downloadFiles(actionArgs: [AnyHashable: Any],
                                     defaultValues: [AnyHashable: Any],
                                     definitionKinds: [String: String]) {
-        forEachArg(args: messageArgs, defaultArgs: defaultValues, definitionKinds: definitionKinds) { value, defaultValue in
+        forEachArg(args: actionArgs, defaultArgs: defaultValues, definitionKinds: definitionKinds) { value, defaultValue in
             downloadFile(value, defaultValue)
         }
     }
     
-    @objc public func hasMissingFiles(messageArgs: [AnyHashable: Any],
+    @objc public func hasMissingFiles(actionArgs: [AnyHashable: Any],
                                       defaultValues: [AnyHashable: Any],
                                       definitionKinds: [String: String]) -> Bool {
         var hasMissingFile = false
-        forEachArg(args: messageArgs, defaultArgs: defaultValues, definitionKinds: definitionKinds) { value, defaultValue in
+        forEachArg(args: actionArgs, defaultArgs: defaultValues, definitionKinds: definitionKinds) { value, defaultValue in
             if LPFileManager.shouldDownloadFile(value, defaultValue: defaultValue) {
                 hasMissingFile = true
                 return
@@ -45,9 +52,16 @@ extension ActionManager {
         return hasMissingFile
     }
     
-    // Iterates recursively all args and executes a callback for each arg that is a file
-    // File args are ActionArgs of Kind File or args with name prefixed with "__file__"
-    // ActionArgs of type Action are merged and their args iterated
+    /// Iterates recursively all args and executes a callback for each arg that is a file
+    /// File args are ActionArgs of Kind File or args with name prefixed with "__file__"
+    /// ActionArgs of type Action are merged and their args iterated
+    ///
+    /// - Parameters:
+    ///     - args: Action arguments
+    ///     - defaultArgs: Default action arguments
+    ///     - definitionKinds: Action Definition kinds
+    ///     - fileArgCallback: File argument callback (value, defaultValue)
+    ///     - prefix: argument key prefix
     func forEachArg(args: [AnyHashable: Any],
                     defaultArgs: [AnyHashable: Any],
                     definitionKinds: [String: String],

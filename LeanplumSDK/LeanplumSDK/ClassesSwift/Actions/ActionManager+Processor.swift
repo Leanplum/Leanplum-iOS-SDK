@@ -8,6 +8,9 @@
 import Foundation
 
 extension ActionManager {
+    
+    /// Merges in-app messages and actions arguments with default ones from ActionDefinition
+    /// Downloads files for action arguments
     @objc public func processMessagesAndDownloadFiles(_ messages: [AnyHashable: Any]) {
         // Set messages
         self.messages = messages
@@ -31,7 +34,7 @@ extension ActionManager {
             newConfig?[LP_KEY_VARS] = messageVars
             self.messages[messageId] = newConfig
             
-            downloadFiles(messageArgs: messageVars,
+            downloadFiles(actionArgs: messageVars,
                           defaultValues: defaultArgs,
                           definitionKinds: definition.kinds)
         }

@@ -20,11 +20,23 @@ import Foundation
         try! NSRegularExpression(pattern: pattern)
     }
     
-    // Currently action arguments are created and represented in objc
-    // API data is also serialized through NSSerialization in objc
-    // nil values come as NSNull
-    // In the future, Optional (Any?) can used for parameters and return type or wrap it as  Optional<Any>.none as Any
-    // Implementation mimics VarCache mergeHelper
+    /// Merges two values together - default and override.
+    /// For primitive types override is returned,
+    /// Dictionaries are merged and same keys are overridden,
+    /// Array overrides come as dictionary with indices and
+    /// are merged with default array values, (array and array cannot be merged).
+    ///
+    /// - Note:
+    ///     Currently action arguments are created and represented in objc
+    ///     API data is also serialized through NSSerialization in objc
+    ///     nil values come as NSNull
+    ///     In the future, Optional (Any?) can used for parameters and return type or wrap it as  Optional<Any>.none as Any
+    ///     Implementation mimics VarCache mergeHelper
+    ///
+    /// - Parameters:
+    ///     - vars: The default value
+    ///     - diff: The override value
+    /// - Returns: The product of merging default and override values
     @objc public func merge(vars: Any, diff: Any) -> Any {
         // Return the modified value if it is a `primitive`
         switch diff {
@@ -48,7 +60,7 @@ import Foundation
         // Infer that the diffs is an array
         // if the vars value doesn't exist to tell us the type
         if vars is NSNull {
-            isVarsArray = isArray(diff: diff)
+            isVarsArray = isArray(value: diff)
         }
         if vars is Array<Any> || isVarsArray {
             var merged: [Any] = []
@@ -57,16 +69,17 @@ import Foundation
                 merged.append(contentsOf: varsArr)
             }
             
-            // Array values from server come as Dictionary
-            // Example:
-            // string[] items = new string[] { "Item 1", "Item 2"};
-            // args.With<string[]>("Items", items); // Action Context arg value
-            // "vars": {
-            //      "Items": {
-            //                  "[1]": "Item 222", // Modified value from server
-            //                  "[0]": "Item 111"  // Modified value from server
-            //              }
-            //  }
+            /** Array values from server come as Dictionary
+                Example:
+                string[] items = new string[] { "Item 1", "Item 2"};
+                args.With<string[]>("Items", items); // Action Context arg value
+                "vars": {
+                    "Items": {
+                                "[1]": "Item 222", // Modified value from server
+                                "[0]": "Item 111"  // Modified value from server
+                            }
+                }
+             */
             if let diffDict = diff as? AnyDictionary {
                 for key in diffDict.keys {
                     guard let keyStr = key as? String else {
@@ -123,12 +136,15 @@ import Foundation
         return -1
     }
     
-    // Infers if a dictionary is an array
-    // if all indices are in the format "[0]", "[1]", ... "[99]"
-    func isArray(diff: Any?) -> Bool {
-        if let diffDict = diff as? AnyDictionary, diffDict.count > 0 {
+    /// Infers if a dictionary is an array
+    /// if all indices are in the format "[0]", "[1]", ... "[99]"
+    ///  - Parameters:
+    ///     - value: The object to test for.
+    ///  - Returns: ``true`` if dictionary is an array, otherwise false
+    func isArray(value: Any?) -> Bool {
+        if let arrDict = value as? AnyDictionary, arrDict.count > 0 {
             // format: "[0]", "[1]", ... "[99]" ... etc
-            let anyNotMatchingFormat = diffDict.first(where: { key, value in
+            let anyNotMatchingFormat = arrDict.first(where: { key, value in
                 return regex.matches(key as? String)
             })
             // if any element does not match format, return false
