@@ -87,9 +87,8 @@ extension ActionManager {
             if let dict = arg.value as? [AnyHashable: Any] {
                 if let actionName = dict[LP_VALUE_ACTION_ARG] as? String {
                     // Argument is an Action
-                    let ac = self.definition(withName: actionName)
-                    if let ac = ac {
-                        let vars = ContentMerger.shared.merge(vars: ac.values, diff: dict) as? [AnyHashable: Any]
+                    if let ac = self.definition(withName: actionName) {
+                        let vars = ContentMerger.merge(vars: ac.values, diff: dict) as? [AnyHashable: Any]
                         forEachArg(args: vars ?? [:],
                                    defaultArgs: ac.values,
                                    definitionKinds: ac.kinds,

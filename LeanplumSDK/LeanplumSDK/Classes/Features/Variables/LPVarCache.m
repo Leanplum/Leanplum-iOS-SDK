@@ -418,12 +418,12 @@ static dispatch_once_t leanplum_onceToken;
             self.diffs = diffs_;
             
             if (!self.diffs) {
-                self.merged = [[ContentMerger shared] mergeWithVars:self.valuesFromClient diff:self.diffs];
+                self.merged = [ContentMerger mergeWithVars:self.valuesFromClient diff:self.diffs];
             } else {
                 // Merger helper will mutate diffs.
                 // We need to lock it in case multiple threads will be accessing this.
                 @synchronized (self.diffs) {
-                    self.merged = [[ContentMerger shared] mergeWithVars:self.valuesFromClient diff:self.diffs];
+                    self.merged = [ContentMerger mergeWithVars:self.valuesFromClient diff:self.diffs];
                 }
             }
 

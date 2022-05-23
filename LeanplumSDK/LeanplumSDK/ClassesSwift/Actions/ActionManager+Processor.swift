@@ -30,7 +30,7 @@ extension ActionManager {
             }
 
             let defaultArgs = definition.values
-            let messageVars = ContentMerger.shared.merge(vars: defaultArgs, diff: actionArgs) as? [AnyHashable: Any] ?? [:]
+            let messageVars = ContentMerger.merge(vars: defaultArgs, diff: actionArgs) as? [AnyHashable: Any] ?? [:]
             newConfig?[LP_KEY_VARS] = messageVars
             self.messages[messageId] = newConfig
             

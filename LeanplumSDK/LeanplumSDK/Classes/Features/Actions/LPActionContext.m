@@ -379,7 +379,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     }
 
     NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
-    actionArgs = [[ContentMerger shared] mergeWithVars:defaultArgs diff:actionArgs];
+    actionArgs = [ContentMerger mergeWithVars:defaultArgs diff:actionArgs];
     
     return actionArgs;
     LP_END_TRY

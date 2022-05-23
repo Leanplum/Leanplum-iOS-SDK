@@ -8,15 +8,13 @@
 import Foundation
 
 @objc public class ContentMerger: NSObject {
-    @objc public static let shared: ContentMerger = .init()
-    
     typealias AnyDictionary = [AnyHashable: Any]
     
-    var pattern: String {
+    class var pattern: String {
         "^(\\[[1-9]\\d*\\]|\\[0\\])$"
     }
     
-    var regex: NSRegularExpression {
+    class var regex: NSRegularExpression {
         try! NSRegularExpression(pattern: pattern)
     }
     
@@ -37,7 +35,7 @@ import Foundation
     ///     - vars: The default value
     ///     - diff: The override value
     /// - Returns: The product of merging default and override values
-    @objc public func merge(vars: Any, diff: Any) -> Any {
+    @objc public class func merge(vars: Any, diff: Any) -> Any {
         // Return the modified value if it is a `primitive`
         switch diff {
         case let str as String:
@@ -123,7 +121,7 @@ import Foundation
         return NSNull()
     }
     
-    func index(fromKey key: String) -> Int {
+    class func index(fromKey key: String) -> Int {
         if regex.matches(key) {
             let start = key.index(key.startIndex, offsetBy: 1)
             let end = key.index(key.endIndex, offsetBy: -2)
@@ -141,7 +139,7 @@ import Foundation
     ///  - Parameters:
     ///     - value: The object to test for.
     ///  - Returns: ``true`` if dictionary is an array, otherwise false
-    func isArray(value: Any?) -> Bool {
+    class func isArray(value: Any?) -> Bool {
         if let arrDict = value as? AnyDictionary, arrDict.count > 0 {
             // format: "[0]", "[1]", ... "[99]" ... etc
             let anyNotMatchingFormat = arrDict.first(where: { key, value in

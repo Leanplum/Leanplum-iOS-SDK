@@ -175,7 +175,7 @@ static dispatch_once_t leanplum_onceToken;
             NSString *actionType = action[LP_VALUE_ACTION_ARG];
             
             NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:action[LP_VALUE_ACTION_ARG]] values];
-            action = [[ContentMerger shared] mergeWithVars:defaultArgs diff:action];
+            action = [ContentMerger mergeWithVars:defaultArgs diff:action];
             
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
                                                                          args:action
