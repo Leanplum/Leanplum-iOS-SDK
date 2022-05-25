@@ -84,7 +84,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSDictionary *)defaultValues
 {
-    return [LPVarCache sharedCache].actionDefinitions[_name][@"values"];
+    return [[[ActionManager shared] definitionWithName:_name] values];
 }
 
 /**
@@ -92,90 +92,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
  */
 - (void)maybeDownloadFiles
 {
-    [self maybeDownloadFilesWithinArgs:_args withPrefix:@"" withDefaultValues:[self defaultValues]];
-}
-
-/**
- * Downloads missing files that are part of this action.
- */
-- (void)maybeDownloadFilesWithinArgs:(NSDictionary *)args
-                          withPrefix:(NSString *)prefix
-                   withDefaultValues:(NSDictionary *)defaultValues
-{
-    [self forEachFile:args
-           withPrefix:prefix
-    withDefaultValues:defaultValues
-             callback:^(NSString *value, NSString *defaultValue) {
-                 [LPFileManager maybeDownloadFile:value
-                                     defaultValue:defaultValue
-                                       onComplete:^{}];
-             }];
-}
-
-- (void)forEachFile:(NSDictionary *)args
-         withPrefix:(NSString *)prefix
-  withDefaultValues:(NSDictionary *)defaultValues
-           callback:(LPFileCallback)callback
-{
-    NSDictionary *kinds = [LPVarCache sharedCache].actionDefinitions[_name][@"kinds"];
-    for (NSString *arg in args) {
-        id value = args[arg];
-        id defaultValue = nil;
-        if ([defaultValues isKindOfClass:[NSDictionary class]]) {
-            defaultValue = defaultValues[arg];
-        }
-        NSString *prefixAndArg = [NSString stringWithFormat:@"%@%@", prefix, arg];
-        NSString *kind = kinds[prefixAndArg];
-
-        if ((kind == nil || ![kind isEqualToString:LP_KIND_ACTION])
-            && [value isKindOfClass:[NSDictionary class]]
-            && !value[LP_VALUE_ACTION_ARG]) {
-            [self forEachFile:value
-                   withPrefix:[NSString stringWithFormat:@"%@.", prefixAndArg]
-            withDefaultValues:defaultValue
-                     callback:callback];
-
-        } else if ([kind isEqualToString:LP_KIND_FILE] &&
-                   ![arg isEqualToString:LP_APP_ICON_NAME]) {
-            callback(value, defaultValue);
-
-            // Check for specific file type extension (HTML).
-        } else if ([arg hasPrefix:@"__file__"] && ![LPUtils isNullOrEmpty:value]) {
-            callback(value, defaultValue);
-
-            // Need to check for nil because server actions like push notifications aren't
-            // defined in the SDK, and so there's no associated metadata.
-        } else if ([kind isEqualToString:LP_KIND_ACTION] || kind == nil) {
-            NSDictionary *actionArgs = [self dictionaryNamed:prefixAndArg];
-            if (![actionArgs isKindOfClass:[NSDictionary class]]) {
-                continue;
-            }
-            LPActionContext *context = [LPActionContext
-                                        actionContextWithName:actionArgs[LP_VALUE_ACTION_ARG]
-                                        args:actionArgs
-                                        messageId:_messageId];
-            [context forEachFile:context->_args
-                      withPrefix:@""
-               withDefaultValues:[context defaultValues]
-                        callback:callback];
-        }
-    }
+    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
+    [[ActionManager shared] downloadFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (BOOL)hasMissingFiles
 {
-    __block BOOL hasMissingFiles = NO;
-    LP_TRY
-    [self forEachFile:_args
-           withPrefix:@""
-    withDefaultValues:[self defaultValues]
-             callback:^(NSString *value, NSString *defaultValue) {
-                 if ([LPFileManager shouldDownloadFile:value defaultValue:defaultValue]) {
-                     hasMissingFiles = YES;
-                 }
-             }];
-    LP_END_TRY
-    return hasMissingFiles;
+    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
+    return [[ActionManager shared] hasMissingFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (NSString *)actionName
@@ -196,7 +120,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if (parent) {
             _args = [parent getChildArgs:_key];
         } else if (_messageId) {
-            NSDictionary *message = [LPVarCache sharedCache].messages[_messageId];
+            NSDictionary *message = [[ActionManager shared] messages][_messageId];
             if (message) {
                 _args = message[LP_KEY_VARS];
             }
@@ -251,6 +175,28 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return value;
 }
 
+/// Replace file arguments keys and values to match HTML template vars
+/// "__file__CSS File": "lp_public_sf_ui_font.css" -> "CSS File": "file:///.../Leanplum_Resources/lp_public_sf_ui_font.css"
+/// Does not replace "templateName" key and value
+- (NSMutableDictionary *)replaceFileNameToLocalFilePath:(NSMutableDictionary *)vars preserveFileNamed:(NSString *)reserveName
+{
+    for (NSString *key in [vars allKeys]) {
+        id obj = vars[key];
+        if ([obj isKindOfClass:[NSDictionary class]]) {
+            // Ensure obj is mutable as well
+            vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] preserveFileNamed:reserveName];
+        } else if ([key hasPrefix:ActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
+                   && [obj length] > 0 && ![key isEqualToString:reserveName]) {
+            NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
+            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:ActionManager.ActionArgFilePrefix
+                                                                 withString:@""];
+            vars[prunedKey] = [self asciiEncodedFileURL:filePath];
+            [vars removeObjectForKey:key];
+        }
+    }
+    return vars;
+}
+
 - (NSURL *)htmlWithTemplateNamed:(NSString *)templateName
 {
     if ([LPUtils isNullOrEmpty:templateName]) {
@@ -262,27 +208,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_TRY
     [self setProperArgs];
 
-    // Replace to local file path recursively.
-    __block __weak NSMutableDictionary* (^weakReplaceFileToLocalPath) (NSMutableDictionary *);
-    NSMutableDictionary* (^replaceFileToLocalPath) (NSMutableDictionary *);
-    weakReplaceFileToLocalPath = replaceFileToLocalPath =
-    [^ NSMutableDictionary* (NSMutableDictionary *vars){
-        for (NSString *key in [vars allKeys]) {
-            id obj = vars[key];
-            if ([obj isKindOfClass:[NSDictionary class]]) {
-                vars[key] = weakReplaceFileToLocalPath(obj);
-            } else if ([key hasPrefix:@"__file__"] && [obj isKindOfClass:[NSString class]]
-                       && [obj length] > 0 && ![key isEqualToString:templateName]) {
-                NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
-                NSString *prunedKey = [key stringByReplacingOccurrencesOfString:@"__file__"
-                                                                     withString:@""];
-                vars[prunedKey] = [self asciiEncodedFileURL:filePath];
-                [vars removeObjectForKey:key];
-            }
-        }
-        return vars;
-    } copy];
-    NSMutableDictionary *htmlVars = replaceFileToLocalPath([_args mutableCopy]);
+    NSMutableDictionary *htmlVars = [self replaceFileNameToLocalFilePath:[_args mutableCopy]
+                                                       preserveFileNamed:templateName];
     htmlVars[@"messageId"] = self.messageId;
 
     // Triggering Event.
@@ -327,14 +254,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     return nil;
 }
 
--(NSString *)asciiEncodedFileURL:(NSString *)filePath {
+- (NSString *)asciiEncodedFileURL:(NSString *)filePath {
     NSMutableCharacterSet *allowed = [NSMutableCharacterSet illegalCharacterSet];
     [allowed formUnionWithCharacterSet:[NSMutableCharacterSet controlCharacterSet]];
     [allowed invert];
     return [[NSString stringWithFormat:@"file://%@", filePath] stringByAddingPercentEncodingWithAllowedCharacters:allowed];
 }
 
--(NSString *)htmlStringContentsOfFile:(NSString *)file {
+- (NSString *)htmlStringContentsOfFile:(NSString *)file {
     NSError *error;
     NSString *htmlString = [NSString stringWithContentsOfFile:file
                                                      encoding:NSUTF8StringEncoding
@@ -450,9 +377,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if (![actionArgs isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-    NSDictionary *defaultArgs = [LPVarCache sharedCache].actionDefinitions
-    [actionArgs[LP_VALUE_ACTION_ARG]][@"values"];
-    actionArgs = [[LPVarCache sharedCache] mergeHelper:defaultArgs withDiffs:actionArgs];
+
+    NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
+    actionArgs = [ContentMerger mergeWithVars:defaultArgs diff:actionArgs];
+    
     return actionArgs;
     LP_END_TRY
 }
@@ -509,13 +437,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     NSDictionary *args = [self getChildArgs:name];
 
     __weak LPActionContext *weakSelf = self;
-
-    LPActionContext *actionNamedContext = [LPActionContext
-                                      actionContextWithName:name
-                                      args:args messageId:_messageId];
-    actionNamedContext->_parentContext = weakSelf;
-    // notifies our ActionManager that the action was executed
-    self.actionDidExecute(actionNamedContext);
+    if ([self actionDidExecute]) {
+        LPActionContext *actionNamedContext = [LPActionContext
+                                          actionContextWithName:name
+                                          args:args messageId:_messageId];
+        actionNamedContext->_parentContext = weakSelf;
+        // notifies our ActionManager that the action was executed
+        self.actionDidExecute(actionNamedContext);
+    }
     
     if (!args) {
         return;
@@ -538,7 +467,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     };
 
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
-        NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
+        NSDictionary *message = [[ActionManager shared] messages][messageId];
         if (message) {
             executeChainedMessage();
         } else {
@@ -546,7 +475,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
-                NSDictionary *message = [[LPVarCache sharedCache] messages][messageId];
+                NSDictionary *message = [[ActionManager shared] messages][messageId];
                 if (message) {
                     executeChainedMessage();
                 }

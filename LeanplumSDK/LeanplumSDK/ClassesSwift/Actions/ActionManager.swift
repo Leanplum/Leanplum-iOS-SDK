@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Milos Jakovljevic on 2.01.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -16,7 +16,12 @@ import Foundation
     lazy var delayedQueue: Queue = Queue()
     lazy var scheduler: Scheduler = Scheduler()
     lazy var state = State()
-    lazy var definitions: [ActionDefinition] = []
+    
+    public var definitions: [ActionDefinition] = []
+    public var messages: [AnyHashable: Any] = [:]
+    /// Raw messages data received from the API
+    public var messagesDataFromServer: [AnyHashable: Any] = [:]
+    public var actionDefinitionsFromServer: [AnyHashable: Any] = [:]
 
     public var isEnabled: Bool = true {
         didSet {

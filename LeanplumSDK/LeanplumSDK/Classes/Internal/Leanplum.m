@@ -1434,7 +1434,7 @@ void leanplumExceptionHandler(NSException *exception);
 
 + (void)defineAction:(NSString *)name
               ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
+       withArguments:(NSArray<LPActionArg *> *)args
          withOptions:(NSDictionary *)options
       presentHandler:(nullable LeanplumActionBlock)presentHandler
       dismissHandler:(nullable LeanplumActionBlock)dismissHandler
@@ -1628,7 +1628,7 @@ void leanplumExceptionHandler(NSException *exception);
               fromMessageId:(NSString *)sourceMessage
        withContextualValues:(LPContextualValues *)contextualValues
 {
-    NSDictionary *messages = [[LPVarCache sharedCache] messages];
+    NSDictionary *messages = [[ActionManager shared] messages];
 
     @synchronized (messages) {
         NSMutableArray *actionContexts = [NSMutableArray array];
@@ -1739,7 +1739,7 @@ void leanplumExceptionHandler(NSException *exception);
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId
 {
-    NSDictionary *messageConfig = [[LPVarCache sharedCache] messages][messageId];
+    NSDictionary *messageConfig = [[ActionManager shared] messages][messageId];
     LPActionContext *context =
         [LPActionContext actionContextWithName:messageConfig[@"action"]
                                           args:messageConfig[LP_KEY_VARS]
@@ -2260,7 +2260,7 @@ static NSLocale * _locale;
         NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
         
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
-            ![messages isEqualToDictionary:[LPVarCache sharedCache].messageDiffs] ||
+            ![messages isEqualToDictionary:[[ActionManager shared] messagesDataFromServer]] ||
             ![variants isEqualToArray:[LPVarCache sharedCache].variants] ||
             ![localCaps isEqualToArray:[[LPVarCache sharedCache] getLocalCaps]] ||
             ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
@@ -2396,7 +2396,7 @@ void leanplumExceptionHandler(NSException *exception)
 + (NSDictionary *)messageMetadata
 {
     LP_TRY
-    NSDictionary *messages = [[LPVarCache sharedCache] messages];
+    NSDictionary *messages = [[ActionManager shared] messages];
     if (messages) {
         return messages;
     }

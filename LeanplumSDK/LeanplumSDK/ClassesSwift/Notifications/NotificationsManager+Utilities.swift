@@ -123,7 +123,7 @@ import Foundation
         Leanplum.onceVariablesChangedAndNoDownloadsPending {
             //LP_END_USER_CODE
             leanplumIncrementUserCodeBlock(-1)
-            if VarCache.shared().messages()?[messageId] != nil {
+            if ActionManager.shared.messages[messageId] != nil {
                 completionHandler?()
             } else {
                 // Try downloading the messages again if it doesn't exist.

@@ -10,6 +10,7 @@
 #import <Leanplum/LPActionContext.h>
 #import <Leanplum/LPVarCache.h>
 #import <Leanplum/LPConstants.h>
+#import <Leanplum/Leanplum-Swift.h>
 
 /**
  * Expose private class methods
@@ -42,7 +43,13 @@
                                 variantDebugInfo:nil
                                         varsJson:nil
                                    varsSignature:nil];
-    [[LPVarCache sharedCache] registerActionDefinition:@"action" ofKind:0 withArguments:@[] andOptions:@{}];
+    
+    ActionDefinition *definition = [ActionDefinition actionWithName:@"action" args:@[] options:@{} presentAction:^BOOL(LPActionContext * _Nonnull ct) {
+        return YES;
+    } dismissAction:^BOOL(LPActionContext * _Nonnull ct) {
+        return YES;
+    }];
+    [[ActionManager shared] defineActionWithDefinition:definition];
 }
 
 - (void)tearDown {
@@ -98,7 +105,7 @@
     // set nil args from the message in the cache
     [context setProperArgs];
     
-    XCTAssertEqualObjects([context args], nil);
+    XCTAssertEqualObjects([context args], @{});
 }
 
 - (void)test_setProperArgs_noMessage {
@@ -133,34 +140,6 @@
     NSString *filePath = @"/Users/mayank/Library/Developer/CoreSimulator/Devices/24394C0B-8820-4369-B3AA-9BF26F62A798/data/Containers/Data/Application/29AF4C33-1C94-46DF-A8A5-4B4CD5A3A364/Library/Caches/Leanplum_Resources/lp_public_sf_ui_font.css";
     NSString *encodedUrl = [context asciiEncodedFileURL:filePath];
     XCTAssert([encodedUrl isEqualToString:@"file:///Users/mayank/Library/Developer/CoreSimulator/Devices/24394C0B-8820-4369-B3AA-9BF26F62A798/data/Containers/Data/Application/29AF4C33-1C94-46DF-A8A5-4B4CD5A3A364/Library/Caches/Leanplum_Resources/lp_public_sf_ui_font.css"]);
-}
-
-- (void)test_setActionNamedResponder {
-    NSString *acceptAction = @"Accept action";
-    NSDictionary *args = @{
-        acceptAction: @"Test"
-    };
-    
-    LPActionContext *messageContext = [LPActionContext
-                                actionContextWithName:@"action"
-                                args:args
-                                messageId:@"1"];
-    
-    XCTestExpectation *onRunActionNamedExpectation = [self expectationWithDescription:@"onRunActionNamedExpectation"];
-    
-    __weak LPActionContext *weakMessageContext = messageContext;
-    
-//    [messageContext setActionNamedResponder:^BOOL(LPActionContext * _Nonnull context) {
-//        XCTAssertEqual([context actionName], acceptAction);
-//        XCTAssertNotNil([context parentContext]);
-//        XCTAssertEqual([[context parentContext] actionName], [weakMessageContext actionName]);
-//        XCTAssertEqual([[context parentContext] messageId], [weakMessageContext messageId]);
-//        [onRunActionNamedExpectation fulfill];
-//        return YES;
-//    }];
-//    [messageContext runActionNamed:acceptAction];
-    
-    [self waitForExpectationsWithTimeout:6 handler:nil];
 }
 
 @end

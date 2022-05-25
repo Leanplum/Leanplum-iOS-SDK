@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Milos Jakovljevic on 2.01.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -23,7 +23,12 @@ extension ActionManager {
         }
     }
 
-    @objc public func trigger(contexts: [ActionContext], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
+    @objc public func trigger(contexts: [Any], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
+        
+        guard let contexts = contexts as? [ActionContext] else {
+            return
+        }
+        
         let filteredActions = orderMessages?(contexts, trigger) ?? contexts
         let actions: [Action] = filteredActions.map {
             .action(context: $0)

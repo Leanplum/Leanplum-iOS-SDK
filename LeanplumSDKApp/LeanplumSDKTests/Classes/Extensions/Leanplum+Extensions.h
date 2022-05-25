@@ -66,3 +66,9 @@
 @interface LPLogManager(UnitTest)
 + (void)maybeSendLog:(NSString *)message;
 @end
+
+
+@interface ApiConfig(UnitTest)
+@property (strong, nonatomic, nonnull) NSString *appId;
+@property (strong, nonatomic, nonnull) NSString *accessKey;
+@end
