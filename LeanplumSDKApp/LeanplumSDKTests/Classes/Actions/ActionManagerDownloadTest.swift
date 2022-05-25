@@ -3,7 +3,7 @@
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 18.05.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import XCTest
 @testable import Leanplum

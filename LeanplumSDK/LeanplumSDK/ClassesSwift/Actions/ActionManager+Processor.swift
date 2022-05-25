@@ -1,9 +1,9 @@
 //
-//  ActionManager+VarCache.swift
+//  ActionManager+Processor.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 3.02.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 
