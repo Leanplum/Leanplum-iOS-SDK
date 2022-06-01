@@ -173,6 +173,90 @@ static long WEEK_SECONDS;
     }   
 }
 
+- (NSMutableArray<LPActionContext *> *)matchActions:(NSDictionary *)actions
+                                 withTrigger:(ActionsTrigger *)trigger
+                                  withFilter:(LeanplumActionFilter)filter
+                               fromMessageId:(NSString *)sourceMessage
+{
+    NSMutableArray *actionContexts = [NSMutableArray array];
+
+    for (NSString *messageId in [actions allKeys]) {
+        if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
+            continue;
+        }
+        NSDictionary *messageConfig = actions[messageId];
+        NSString *actionType = messageConfig[LP_PARAM_ACTION];
+        if (![actionType isKindOfClass:NSString.class]) {
+            continue;
+        }
+
+        NSString *internalMessageId;
+        if ([actionType isEqualToString:LP_HELD_BACK_ACTION]) {
+            // Spoof the message ID if this is a held back message.
+            internalMessageId = [LP_HELD_BACK_MESSAGE_PREFIX stringByAppendingString:messageId];
+        } else {
+            internalMessageId = messageId;
+        }
+
+        // Filter action types that don't match the filtering criteria.
+        BOOL isForeground = ![actionType isEqualToString:LP_PUSH_NOTIFICATION_ACTION];
+        if (isForeground) {
+            if (!(filter & kLeanplumActionFilterForeground)) {
+                continue;
+            }
+        } else {
+            if (!(filter & kLeanplumActionFilterBackground)) {
+                continue;
+            }
+        }
+
+        LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
+        for (NSString *when in trigger.condition) {
+            LeanplumMessageMatchResult conditionResult =
+            [[LPInternalState sharedState].actionManager shouldShowMessage:internalMessageId
+                                                                withConfig:messageConfig
+                                                                      when:when
+                                                             withEventName:trigger.eventName
+                                                          contextualValues:trigger.contextualValues];
+            result.matchedTrigger |= conditionResult.matchedTrigger;
+            result.matchedUnlessTrigger |= conditionResult.matchedUnlessTrigger;
+            result.matchedLimit |= conditionResult.matchedLimit;
+            result.matchedActivePeriod |= conditionResult.matchedActivePeriod;
+        }
+
+        // Make sure it's within the active period.
+        if (!result.matchedActivePeriod) {
+            continue;
+        }
+
+        // Make sure we cancel before matching in case the criteria overlap.
+        if (result.matchedUnlessTrigger) {
+            // Currently Unless Trigger is possible for Local Notifications only
+            if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:actionType]) {
+                [[LPLocalNotificationsManager sharedManager] cancelLocalNotification:messageId];
+            }
+        }
+        if (result.matchedTrigger) {
+            [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
+            if (result.matchedLimit) {
+                NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
+                LPActionContext *context = [LPActionContext
+                                            actionContextWithName:actionType
+                                            args:[messageConfig objectForKey:LP_KEY_VARS]
+                                            messageId:internalMessageId
+                                            originalMessageId:messageId
+                                            priority:priority];
+                context.contextualValues = trigger.contextualValues;
+                [actionContexts addObject:context];
+            }
+        }
+    }
+    
+    // Sort the action by priority
+    [LPActionContext sortByPriority:actionContexts];
+    return actionContexts;
+}
+
 + (BOOL)matchedTriggers:(NSDictionary *)triggerConfig
                    when:(NSString *)when
               eventName:(NSString *)eventName

@@ -1631,89 +1631,23 @@ void leanplumExceptionHandler(NSException *exception);
     NSDictionary *messages = [[ActionManager shared] messages];
 
     @synchronized (messages) {
-        NSMutableArray *actionContexts = [NSMutableArray array];
-
-        for (NSString *messageId in [messages allKeys]) {
-            if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
-                continue;
-            }
-            NSDictionary *messageConfig = messages[messageId];
-            NSString *actionType = messageConfig[@"action"];
-            if (![actionType isKindOfClass:NSString.class]) {
-                continue;
-            }
-
-            NSString *internalMessageId;
-            if ([actionType isEqualToString:LP_HELD_BACK_ACTION]) {
-                // Spoof the message ID if this is a held back message.
-                internalMessageId = [LP_HELD_BACK_MESSAGE_PREFIX stringByAppendingString:messageId];
-            } else {
-                internalMessageId = messageId;
-            }
-
-            // Filter action types that don't match the filtering criteria.
-            BOOL isForeground = ![actionType isEqualToString:LP_PUSH_NOTIFICATION_ACTION];
-            if (isForeground) {
-                if (!(filter & kLeanplumActionFilterForeground)) {
-                    continue;
-                }
-            } else {
-                if (!(filter & kLeanplumActionFilterBackground)) {
-                    continue;
-                }
-            }
-
-            LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
-            for (NSString *when in whenConditions) {
-                LeanplumMessageMatchResult conditionResult =
-                [[LPInternalState sharedState].actionManager shouldShowMessage:internalMessageId
-                                                                    withConfig:messageConfig
-                                                                          when:when
-                                                                 withEventName:eventName
-                                                              contextualValues:contextualValues];
-                result.matchedTrigger |= conditionResult.matchedTrigger;
-                result.matchedUnlessTrigger |= conditionResult.matchedUnlessTrigger;
-                result.matchedLimit |= conditionResult.matchedLimit;
-                result.matchedActivePeriod |= conditionResult.matchedActivePeriod;
-            }
-
-            // Make sure it's within the active period.
-            if (!result.matchedActivePeriod) {
-                continue;
-            }
-
-            // Make sure we cancel before matching in case the criteria overlap.
-            if (result.matchedUnlessTrigger) {
-                // Currently Unless Trigger is possible for Local Notifications only
-                if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:actionType]) {
-                    [[LPLocalNotificationsManager sharedManager] cancelLocalNotification:messageId];
-                }
-            }
-            if (result.matchedTrigger) {
-                [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
-                if (result.matchedLimit) {
-                    NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
-                    LPActionContext *context = [LPActionContext
-                                                actionContextWithName:actionType
-                                                args:[messageConfig objectForKey:LP_KEY_VARS]
-                                                messageId:internalMessageId
-                                                originalMessageId:messageId
-                                                priority:priority];
-                    context.contextualValues = contextualValues;
-                    [actionContexts addObject:context];
-                }
-            }
-        }
-
+        ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:eventName
+                                                                  condition:whenConditions
+                                                           contextualValues:contextualValues];
+        
+        NSMutableArray *actionContexts = [[LPActionManager sharedManager] matchActions:messages
+                                                                           withTrigger:trigger
+                                                                            withFilter:filter fromMessageId:sourceMessage];
+        
         // Return if there are no action to trigger.
         if ([actionContexts count] == 0) {
             return;
         }
 
-        // Sort the action by priority and only show one message.
-        // Make sure to capture the held back.
-        [LPActionContext sortByPriority:actionContexts];
         NSMutableArray *contexts = [[NSMutableArray alloc] init];
+        NSNumber *topPriority = [((LPActionContext *) [actionContexts firstObject]) priority];
+        NSMutableSet *countdowns = [NSMutableSet set];
+        // Make sure to capture the held back
         for (LPActionContext *actionContext in actionContexts) {
             if ([[actionContext actionName] isEqualToString:LP_HELD_BACK_ACTION]) {
                 [[LPInternalState sharedState].actionManager recordHeldBackImpression:[actionContext messageId]
@@ -1724,15 +1658,22 @@ void leanplumExceptionHandler(NSException *exception);
                     continue;
                 }
                 if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[actionContext actionName]]) {
+                    // Respect countdown for local notifications
+                    if ([actionContext priority] > topPriority) {
+                        continue;
+                    }
+                    NSNumber *currentCountdown = [[ActionManager shared] messages][actionContext.messageId][@"countdown"];
+                    if ([countdowns containsObject:currentCountdown]) {
+                        continue;
+                    }
+                    [countdowns addObject:currentCountdown];
                     [[LPLocalNotificationsManager sharedManager] scheduleLocalNotification:actionContext];
                 } else {
                     [contexts addObject:actionContext];
                 }
             }
         }
-        ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:eventName
-                                                                  condition:whenConditions
-                                                           contextualValues:contextualValues];
+
         [[ActionManager shared] triggerWithContexts:contexts priority:PriorityDefault trigger:trigger];
     }
 }

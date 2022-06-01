@@ -29,6 +29,8 @@
 #import <UserNotifications/UserNotifications.h>
 #import "LPLocalNotificationsManager.h"
 
+@class ActionsTrigger;
+
 NS_ASSUME_NONNULL_BEGIN
 
 struct LeanplumMessageMatchResult {
@@ -66,6 +68,11 @@ NS_SWIFT_NAME(shared());
                                            when:(NSString *)when
                                   withEventName:(NSString *)eventName
                                contextualValues:(LPContextualValues *)contextualValues;
+
+- (NSMutableArray<LPActionContext *> *)matchActions:(NSDictionary *)actions
+                                 withTrigger:(ActionsTrigger *)trigger
+                                  withFilter:(LeanplumActionFilter)filter
+                                      fromMessageId:(NSString *)sourceMessage;
 
 - (void)recordMessageTrigger:(NSString *)messageId;
 - (void)recordMessageImpression:(NSString *)messageId;

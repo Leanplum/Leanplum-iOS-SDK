@@ -24,12 +24,17 @@ extension ActionManager {
     }
 
     @objc public func trigger(contexts: [Any], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
-        
         guard let contexts = contexts as? [ActionContext] else {
             return
         }
         
-        let filteredActions = orderMessages?(contexts, trigger) ?? contexts
+        // Return if contexts is empty
+        guard let firstContext = contexts.first else {
+            return
+        }
+        
+        // By default, add only one message to queue if `orderMessages` is not implemented
+        let filteredActions = orderMessages?(contexts, trigger) ?? [firstContext]
         let actions: [Action] = filteredActions.map {
             .action(context: $0)
         }

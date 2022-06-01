@@ -9,9 +9,9 @@ import Foundation
 
 extension ActionManager {
     @objc public class ActionsTrigger: NSObject {
-        let eventName: String?
-        let condition: [String]?
-        let contextualValues: LPContextualValues?
+        @objc public let eventName: String?
+        @objc public let condition: [String]?
+        @objc public let contextualValues: LPContextualValues?
 
         @objc public required init(eventName: String?,
                                    condition: [String]?,
