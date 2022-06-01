@@ -27,6 +27,8 @@
 
 @interface LPVarCache(UnitTest)
 
+- (void)setHasReceivedDiffs:(BOOL) value;
+
 - (void)reset;
 
 - (void)initialize;

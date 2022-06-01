@@ -10,16 +10,32 @@ import XCTest
 
 class ActionManagerTest: XCTestCase {
 
+    let hasReceivedDiffs = VarCache.shared().hasReceivedDiffs()
+    
     override func setUpWithError() throws {
-
+        // Set actions as available, see `performAvailableActions` for details
+        VarCache.shared().setHasReceivedDiffs(true)
     }
 
     override func tearDownWithError() throws {
-
+        VarCache.shared().setHasReceivedDiffs(hasReceivedDiffs)
     }
-
+    
     func testAddActions() {
         let actionManager = ActionManager()
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name", args: [:], messageId: "id_1"),
+            ActionContext(name: "name", args: [:], messageId: "id_2")
+        ])
+        XCTAssertTrue(!actionManager.queue.empty())
+        XCTAssertEqual(actionManager.queue.count(), 1)
+    }
+    
+    func testAddActionsWithOrder() {
+        let actionManager = ActionManager()
+        actionManager.orderMessages { contexts, trigger in
+            return contexts
+        }
 
         actionManager.trigger(contexts: [
             ActionContext(name: "name", args: [:], messageId: "id_1"),
@@ -31,6 +47,26 @@ class ActionManagerTest: XCTestCase {
 
     func testAppendActions() {
         let actionManager = ActionManager()
+
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name_1", args: [:], messageId: "id_1"),
+            ActionContext(name: "name_2", args: [:], messageId: "id_2")
+        ])
+        
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name_3", args: [:], messageId: "id_3")
+        ], priority: .default)
+        
+        XCTAssertTrue(!actionManager.queue.empty())
+        XCTAssertEqual(actionManager.queue.last()?.context.messageId, "id_3")
+        XCTAssertEqual(actionManager.queue.count(), 2)
+    }
+    
+    func testAppendActionsWithOrder() {
+        let actionManager = ActionManager()
+        actionManager.orderMessages { contexts, trigger in
+            return contexts
+        }
         
         actionManager.trigger(contexts: [
             ActionContext(name: "name_1", args: [:], messageId: "id_1"),
@@ -48,6 +84,26 @@ class ActionManagerTest: XCTestCase {
     
     func testInsertActions() {
         let actionManager = ActionManager()
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name_1", args: [:], messageId: "id_1"),
+            ActionContext(name: "name_2", args: [:], messageId: "id_2")
+        ])
+        
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name_3", args: [:], messageId: "id_3")
+        ], priority: .high)
+
+        XCTAssertTrue(!actionManager.queue.empty())
+        XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_3")
+        XCTAssertEqual(actionManager.queue.last()?.context.messageId, "id_1")
+        XCTAssertEqual(actionManager.queue.count(), 2)
+    }
+    
+    func testInsertActionsWithOrder() {
+        let actionManager = ActionManager()
+        actionManager.orderMessages { contexts, trigger in
+            return contexts
+        }
         
         actionManager.trigger(contexts: [
             ActionContext(name: "name_1", args: [:], messageId: "id_1"),
@@ -207,6 +263,7 @@ class ActionManagerTest: XCTestCase {
     
     func testShouldDisplayDelayMessage() {
         let actionManager = ActionManager()
+        
         actionManager.defineAction(definition:
                 .message(name: #function,
                          args: [],
@@ -216,9 +273,8 @@ class ActionManagerTest: XCTestCase {
         }))
         
         let testContext: ActionContext = .init(name: #function, args: [:], messageId: #function)
-
         actionManager.shouldDisplayMessage { context in
-            return .delay(seconds: 1)
+                return .delay(seconds: 1)
         }
         
         let expectation = expectation(description: #function)
@@ -231,7 +287,131 @@ class ActionManagerTest: XCTestCase {
         actionManager.trigger(contexts: [testContext])
         XCTAssertEqual(actionManager.queue.count(), 1)
         waitForExpectations(timeout: 3.0)
-        // message should be readded
-        XCTAssertEqual(actionManager.queue.count(), 1)
+    }
+    
+    func testShouldDisplayActionDelayed() {
+        let actionManager = ActionManager()
+        
+        let testContext: ActionContext = .init(name: #function, args: [:], messageId: #function)
+        
+        let expectation = expectation(description: #function)
+        let scheduler = ActionManager.Scheduler()
+        scheduler.actionDelayed = { action in
+            XCTAssertEqual(action.context.messageId, testContext.messageId)
+            expectation.fulfill()
+        }
+        
+        actionManager.scheduler = scheduler
+        
+        actionManager.defineAction(definition:
+                .message(name: #function,
+                         args: [],
+                         options: [:],
+                         presentAction: { context in
+            return true
+        }))
+        
+        actionManager.shouldDisplayMessage { context in
+            return .delay(seconds: 1)
+        }
+        
+        actionManager.trigger(contexts: [testContext])
+        waitForExpectations(timeout: 3.0)
+    }
+    
+    func testShouldDisplayDelayIndefinitely() {
+        let actionManager = ActionManager()
+        
+        actionManager.defineAction(definition:
+                .message(name: #function,
+                         args: [],
+                         options: [:],
+                         presentAction: { context in
+            return true
+        }))
+        
+        let testContext: ActionContext = .init(name: #function, args: [:], messageId: #function)
+        actionManager.shouldDisplayMessage { context in
+            return .delay(seconds: -1)
+        }
+        
+        let expectation = expectation(description: #function)
+        expectation.isInverted = true
+        
+        actionManager.onMessageDisplayed { context in
+            XCTAssertEqual(context.messageId, testContext.messageId)
+            expectation.fulfill()
+        }
+        
+        actionManager.trigger(contexts: [testContext])
+        waitForExpectations(timeout: 3.0)
+        XCTAssertEqual(actionManager.delayedQueue.count(), 1)
+    }
+    
+    func testTriggerDelayedMessages() {
+        let actionManager = ActionManager()
+        actionManager.defineAction(definition:
+                .message(name: #function,
+                         args: [],
+                         options: [:],
+                         presentAction: { context in
+            return true
+        }))
+        
+        let testContext: ActionContext = .init(name: #function, args: [:], messageId: #function)
+        
+        let expectation = expectation(description: #function)
+        actionManager.onMessageDisplayed { context in
+            XCTAssertEqual(context.messageId, testContext.messageId)
+            expectation.fulfill()
+        }
+        
+        // Delay the message until triggered
+        actionManager.shouldDisplayMessage { context in
+            return .delay(seconds: -1)
+        }
+        
+        actionManager.trigger(contexts: [testContext])
+        // Ensure the message is in the delayedQueue
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            XCTAssertEqual(actionManager.delayedQueue.count(), 1)
+        }
+        
+        // Display the message now
+        actionManager.shouldDisplayMessage { context in
+            return .show()
+        }
+
+        actionManager.triggerDelayedMessages()
+        
+        waitForExpectations(timeout: 3.0)
+        XCTAssertEqual(actionManager.delayedQueue.count(), 0)
+    }
+    
+    func testActionExecuted() {
+        let actionManager = ActionManager()
+        actionManager.defineAction(definition:
+                .message(name: #function,
+                         args: [],
+                         options: [:],
+                         presentAction: { context in
+            return true
+        }))
+        
+        let testContext: ActionContext = .init(name: #function, args: [:], messageId: #function)
+        
+        let expectation = expectation(description: #function)
+        actionManager.onMessageAction { actionName, context in
+            XCTAssertEqual(actionName, #function)
+            XCTAssertEqual(context.parent?.messageId, testContext.messageId)
+            expectation.fulfill()
+        }
+
+        actionManager.onMessageDisplayed { context in
+            context.runAction(name: #function)
+        }
+        actionManager.trigger(contexts: [testContext])
+        
+        waitForExpectations(timeout: 3.0)
     }
 }
