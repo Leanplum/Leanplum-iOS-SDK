@@ -80,6 +80,7 @@ class NotificationsManagerTest: XCTestCase {
     }
     
     override func tearDown() {
+        ActionManager.shared.definitions = []
         LPInternalState.shared().issuedStart = false
         NotificationsManagerTest.showExecuted = false
         VarCache.shared().reset()

@@ -67,7 +67,7 @@
   },
   "3": {
     "action": "__Push Notification",
-    "countdown": 30,
+    "countdown": 10,
     "vars": {
       "Dismiss action": "",
       "Message": "priority-5-b",

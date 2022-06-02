@@ -118,6 +118,35 @@ class ActionManagerTest: XCTestCase {
         XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_3")
         XCTAssertEqual(actionManager.queue.count(), 3)
     }
+    
+    func testTriggerActions() {
+        let actionManager = ActionManager()
+        
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name_1", args: [:], messageId: "id_1"),
+            ActionContext(name: "name_2", args: [:], messageId: "id_2")
+        ])
+
+        XCTAssertTrue(!actionManager.queue.empty())
+        XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_1")
+        XCTAssertEqual(actionManager.queue.count(), 1)
+    }
+    
+    func testTriggerActionsMultiple() {
+        let actionManager = ActionManager()
+        actionManager.configuration = ActionManager.Configuration.init(dismissOnPushArrival: true,
+                                                         resumeOnEnterForeground: true,
+                                                         triggerOneAction: false)
+        
+        actionManager.trigger(contexts: [
+            ActionContext(name: "name_1", args: [:], messageId: "id_1"),
+            ActionContext(name: "name_2", args: [:], messageId: "id_2")
+        ])
+
+        XCTAssertTrue(!actionManager.queue.empty())
+        XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_1")
+        XCTAssertEqual(actionManager.queue.count(), 2)
+    }
 
     func testEnabledActionManager() {
         let actionManager = ActionManager()

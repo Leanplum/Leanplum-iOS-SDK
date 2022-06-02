@@ -126,6 +126,7 @@
 		6A2FE16027958D6000E4A8FE /* GeofencingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2FE15F27958D6000E4A8FE /* GeofencingTest.m */; };
 		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
+		6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */; };
 		6A9D0A9627342BA300466133 /* NotificationsProxyiOS9Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */; };
 		6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */; };
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
@@ -263,6 +264,7 @@
 		6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyTest.swift; sourceTree = "<group>"; };
 		6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerTest.swift; sourceTree = "<group>"; };
+		6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDelay.json; sourceTree = "<group>"; };
 		6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyiOS9Test.swift; sourceTree = "<group>"; };
 		6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerMock.swift; sourceTree = "<group>"; };
 		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
@@ -519,6 +521,7 @@
 				075AB14E2684AB9D007CA1BD /* ChainedMessage.json */,
 				075AB14F2684AB9D007CA1BD /* NoPriorities.json */,
 				075AB1502684AB9D007CA1BD /* sample_action_notification.json */,
+				6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */,
 				075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */,
 			);
 			path = TestData;
@@ -717,6 +720,7 @@
 				075AB1912684AB9D007CA1BD /* sample_action_notification.json in Resources */,
 				07828DB1268B4A5E0029A339 /* local_caps_response.json in Resources */,
 				075AB1732684AB9D007CA1BD /* newsfeed_response.json in Resources */,
+				6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */,
 				075AB1832684AB9D007CA1BD /* SingleMessage.json in Resources */,
 				075AB1532684AB9D007CA1BD /* MainAppIcon.png in Resources */,
 				075AB15B2684AB9D007CA1BD /* complex_start_response.json in Resources */,

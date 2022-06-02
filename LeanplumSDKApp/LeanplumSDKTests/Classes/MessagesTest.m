@@ -36,8 +36,10 @@
 #import <Leanplum/LeanplumInternal.h>
 #import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 @interface MessagesTest : XCTestCase
+
 @property (nonatomic) LeanplumMessageMatchResult mockResult;
 @property (nonatomic) id mockActionManager;
 @property (nonatomic) id mockLPInternalState;
@@ -46,8 +48,44 @@
 @property (nonatomic) LeanplumActionFilter mockFilter;
 @property (nonatomic) NSString *mockFromMessageId;
 @property (nonatomic) LPContextualValues *mockContextualValues;
+
 @end
 
+@interface LPActionTriggerManagerMock: LPActionManager
+
+@property (nonatomic, strong, nullable) void (^actionsMatched)(NSArray<LPActionContext *> *context);
+
+@end
+
+@implementation LPActionTriggerManagerMock
+
+- (NSMutableArray<LPActionContext *> *)matchActions:(NSDictionary *)actions withTrigger:(ActionsTrigger *)trigger withFilter:(LeanplumActionFilter)filter fromMessageId:(NSString *)sourceMessage
+{
+    NSMutableArray *contexts = [super matchActions:actions withTrigger:trigger withFilter:filter fromMessageId:sourceMessage];
+    
+    if (self.actionsMatched) {
+        self.actionsMatched(contexts);
+    }
+    return contexts;
+}
+
+@end
+
+@interface LPLocalNotificationsManagerMock: LPLocalNotificationsManager
+
+@property (nonatomic, strong, nullable) void (^notificationScheduled)(LPActionContext *context);
+
+@end
+
+@implementation LPLocalNotificationsManagerMock
+
+- (void)scheduleLocalNotification:(LPActionContext *)context {
+    if (self.notificationScheduled) {
+        self.notificationScheduled(context);
+    }
+}
+
+@end
 
 @implementation MessagesTest
 
@@ -66,6 +104,8 @@
 {
     [super tearDown];
     [LeanplumHelper clean_up];
+    [self.mockActionManager stopMocking];
+    [self.mockLPInternalState stopMocking];
 }
 
 - (void)setMockResult
@@ -126,29 +166,32 @@
 - (void)runInAppMessagePrioritizationTest:(NSDictionary *)messageConfigs
                    withExpectedMessageIds:(NSSet *)expectedMessageIds
 {
-    id mockLPVarCache = OCMPartialMock([LPVarCache sharedCache]);
-    OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
-    XCTAssertEqual([[ActionManager shared] messages], messageConfigs);
-
-    __block NSMutableSet *calledMessageIds = [NSMutableSet set];
-    id mockLeanplum = OCMClassMock([Leanplum class]);
-//    OCMStub([mockLeanplum triggerAction:[OCMArg any]
-//                           handledBlock:[OCMArg any]]).andDo(^(NSInvocation *invocation){
-//        // __unsafe_unretained prevents double-release.
-//        __unsafe_unretained LPActionContext *actionContext;
-//        [invocation getArgument:&actionContext atIndex:2];
-//        [calledMessageIds addObject:[actionContext messageId]];
-//    });
-
-    [Leanplum maybePerformActions:self.mockWhenCondtions
-                    withEventName:self.mockEventName
-                       withFilter:self.mockFilter
-                    fromMessageId:self.mockFromMessageId
-             withContextualValues:self.mockContextualValues];
-
-    XCTAssertTrue([calledMessageIds isEqualToSet:expectedMessageIds]);
+    [[ActionManager shared] setMessages:messageConfigs];
+    XCTestExpectation *expectation = [self expectationWithDescription:@"wait_for_match_action_contexts"];
+    LPActionTriggerManagerMock *mock = [LPActionTriggerManagerMock new];
+    [mock setActionsMatched:^(NSArray<LPActionContext *> *contexts) {
+        
+        __block NSMutableSet *calledMessageIds = [NSMutableSet set];
+//        [contexts enumerateObjectsUsingBlock:^(LPActionContext * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+//            [calledMessageIds addObject:obj.messageId];
+//        }];
+        if (contexts.count > 0) {
+            [calledMessageIds addObject:contexts[0].messageId];
+        }
+        XCTAssertTrue([calledMessageIds isEqualToSet:expectedMessageIds]);
+        [expectation fulfill];
+    }];
     
-    [mockLeanplum stopMocking];
+    ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:self.mockEventName
+                                                              condition:self.mockWhenCondtions
+                                                       contextualValues:self.mockContextualValues];
+    
+    [mock matchActions:messageConfigs
+           withTrigger:trigger
+            withFilter:self.mockFilter
+         fromMessageId:self.mockFromMessageId];
+
+    [self waitForExpectations:@[expectation] timeout:5.0];
 }
 
 - (void) test_single_message
@@ -218,14 +261,64 @@
                      withExpectedMessageIds:[NSSet setWithObjects:@"1", nil]];
 }
 
-- (void) test_tied_priorities_identical_different_time
+- (void) test_tied_priorities_identical_different_countdown
 {
     // Testing three messages with the same priority.
     NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPrioritiesDifferentDelay"
                                                               ofType:@"json"];
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
-    [self runInAppMessagePrioritizationTest:messageConfigs
-                     withExpectedMessageIds:[NSSet setWithObjects:@"1", @"2", @"3", nil]];
+    [[ActionManager shared] setMessages:messageConfigs];
+    id mockLPLocalNotificationsManager = OCMClassMock([LPLocalNotificationsManager class]);
+    // Countdown is valid only for local notifications.
+    XCTestExpectation *expectation = [self expectationWithDescription:@"wait_for_local_notification_schedule"];
+    LPLocalNotificationsManagerMock *mockManager = [LPLocalNotificationsManagerMock new];
+    
+    __block NSMutableSet *scheduled = [NSMutableSet set];
+    [mockManager setNotificationScheduled:^(LPActionContext *context) {
+        [scheduled addObject:context.messageId];
+        if ([scheduled isEqualToSet:[NSSet setWithObjects:@"1", @"2", @"3", nil]]) {
+            [expectation fulfill];
+        }
+    }];
+    
+    OCMStub(ClassMethod([mockLPLocalNotificationsManager sharedManager])).andReturn(mockManager);
+    
+    [Leanplum maybePerformActions:self.mockWhenCondtions withEventName:self.mockEventName withFilter:self.mockFilter fromMessageId:self.mockFromMessageId withContextualValues:self.mockContextualValues];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+    [mockLPLocalNotificationsManager stopMocking];
+}
+
+- (void) test_tied_priorities_identical_countdown
+{
+    // Testing three messages with the same priority.
+    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPrioritiesDelay"
+                                                              ofType:@"json"];
+    NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
+    
+    [[ActionManager shared] setMessages:messageConfigs];
+    id mockLPLocalNotificationsManager = OCMClassMock([LPLocalNotificationsManager class]);
+    // Countdown is valid only for local notifications.
+    XCTestExpectation *expectation = [self expectationWithDescription:@"wait_for_local_notification_schedule"];
+    LPLocalNotificationsManagerMock *mockManager = [LPLocalNotificationsManagerMock new];
+    
+    __block NSMutableSet *scheduled = [NSMutableSet set];
+    [mockManager setNotificationScheduled:^(LPActionContext *context) {
+        [scheduled addObject:context.messageId];
+        // "1" and "3" have the same priority and countdown, only one of them will be added
+        // which one is undetermined since actions are ordered by priority only
+        if ([scheduled containsObject:@"2"]
+            && ([scheduled containsObject:@"3"] || [scheduled containsObject:@"1"])) {
+            [expectation fulfill];
+        }
+    }];
+    
+    OCMStub(ClassMethod([mockLPLocalNotificationsManager sharedManager])).andReturn(mockManager);
+    
+    [Leanplum maybePerformActions:self.mockWhenCondtions withEventName:self.mockEventName withFilter:self.mockFilter fromMessageId:self.mockFromMessageId withContextualValues:self.mockContextualValues];
+    
+    [self waitForExpectations:@[expectation] timeout:5.0];
+    [mockLPLocalNotificationsManager stopMocking];
 }
 
 - (void) test_different_priorities_with_missing_values
@@ -246,11 +339,7 @@
                             retrieve_string_from_file:@"ChainedMessage"
                             ofType:@"json"];
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
-
-    // Mock LPVarCache messages.
-    id mockLPVarCache = OCMPartialMock([LPVarCache sharedCache]);
-    OCMStub([mockLPVarCache messages]).andReturn(messageConfigs);
-    XCTAssertEqual([[ActionManager shared] messages], messageConfigs);
+    [[ActionManager shared] setMessages:messageConfigs];
 
     LPActionContext *context1 = [Leanplum createActionContextForMessageId:@"1"];
     LPActionContext *context2 = [Leanplum createActionContextForMessageId:@"2"];
