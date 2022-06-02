@@ -33,8 +33,13 @@ extension ActionManager {
             return
         }
         
-        // By default, add only one message to queue if `orderMessages` is not implemented
-        let filteredActions = orderMessages?(contexts, trigger) ?? [firstContext]
+        var defaultContextsToTrigger = contexts
+        // Add only one action to queue if `triggerOneAction` configuration is true
+        if configuration.triggerOneAction {
+            defaultContextsToTrigger = [firstContext]
+        }
+        
+        let filteredActions = orderMessages?(contexts, trigger) ?? defaultContextsToTrigger
         let actions: [Action] = filteredActions.map {
             .action(context: $0)
         }
