@@ -26,6 +26,8 @@
             template.context = context;
             [template openURL];
 
+            [context actionDismissed];
+            
             return YES;
         }
         @catch (NSException *exception) {

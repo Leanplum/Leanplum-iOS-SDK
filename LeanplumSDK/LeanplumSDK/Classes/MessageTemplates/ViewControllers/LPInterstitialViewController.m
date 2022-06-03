@@ -88,7 +88,9 @@
 -(void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
     [super dismissViewControllerAnimated:flag completion:^{
         [self.context actionDismissed];
-        completion();
+        if (completion) {
+            completion();
+        }
     }];
 }
 

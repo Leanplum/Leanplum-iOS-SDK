@@ -58,12 +58,14 @@
                                                      style:UIAlertActionStyleCancel
                                                    handler:^(UIAlertAction *action) {
         [context runActionNamed:LPMT_ARG_CANCEL_ACTION];
+        [context actionDismissed];
     }];
     [alertViewController addAction:cancel];
     UIAlertAction *accept = [UIAlertAction actionWithTitle:NSLocalizedString([context stringNamed:LPMT_ARG_ACCEPT_TEXT], nil)
                                                      style:UIAlertActionStyleDefault
                                                    handler:^(UIAlertAction *action) {
         [context runTrackedActionNamed:LPMT_ARG_ACCEPT_ACTION];
+        [context actionDismissed];
     }];
     [alertViewController addAction:accept];
     return alertViewController;

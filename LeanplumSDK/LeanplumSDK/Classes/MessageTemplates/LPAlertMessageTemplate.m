@@ -55,6 +55,7 @@
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction *action) {
         [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
+        [context actionDismissed];
     }];
     [alertViewController addAction:dismiss];
     return alertViewController;
