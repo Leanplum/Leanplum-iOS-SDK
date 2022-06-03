@@ -33,7 +33,7 @@ class ActionManagerTest: XCTestCase {
     
     func testAddActionsWithOrder() {
         let actionManager = ActionManager()
-        actionManager.orderMessages { contexts, trigger in
+        actionManager.prioritizeMessages { contexts, trigger in
             return contexts
         }
 
@@ -64,7 +64,7 @@ class ActionManagerTest: XCTestCase {
     
     func testAppendActionsWithOrder() {
         let actionManager = ActionManager()
-        actionManager.orderMessages { contexts, trigger in
+        actionManager.prioritizeMessages { contexts, trigger in
             return contexts
         }
         
@@ -101,7 +101,7 @@ class ActionManagerTest: XCTestCase {
     
     func testInsertActionsWithOrder() {
         let actionManager = ActionManager()
-        actionManager.orderMessages { contexts, trigger in
+        actionManager.prioritizeMessages { contexts, trigger in
             return contexts
         }
         
@@ -117,35 +117,6 @@ class ActionManagerTest: XCTestCase {
         XCTAssertTrue(!actionManager.queue.empty())
         XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_3")
         XCTAssertEqual(actionManager.queue.count(), 3)
-    }
-    
-    func testTriggerActions() {
-        let actionManager = ActionManager()
-        
-        actionManager.trigger(contexts: [
-            ActionContext(name: "name_1", args: [:], messageId: "id_1"),
-            ActionContext(name: "name_2", args: [:], messageId: "id_2")
-        ])
-
-        XCTAssertTrue(!actionManager.queue.empty())
-        XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_1")
-        XCTAssertEqual(actionManager.queue.count(), 1)
-    }
-    
-    func testTriggerActionsMultiple() {
-        let actionManager = ActionManager()
-        actionManager.configuration = ActionManager.Configuration.init(dismissOnPushArrival: true,
-                                                         resumeOnEnterForeground: true,
-                                                         triggerOneAction: false)
-        
-        actionManager.trigger(contexts: [
-            ActionContext(name: "name_1", args: [:], messageId: "id_1"),
-            ActionContext(name: "name_2", args: [:], messageId: "id_2")
-        ])
-
-        XCTAssertTrue(!actionManager.queue.empty())
-        XCTAssertEqual(actionManager.queue.first()?.context.messageId, "id_1")
-        XCTAssertEqual(actionManager.queue.count(), 2)
     }
 
     func testEnabledActionManager() {
@@ -177,7 +148,7 @@ class ActionManagerTest: XCTestCase {
             .init(name: "third", args: [:], messageId: "third"),
         ]
         
-        actionManager.orderMessages { contexts, trigger in
+        actionManager.prioritizeMessages { contexts, trigger in
             XCTAssertEqual(contexts.count, testContexts.count)
             return contexts
         }
@@ -196,7 +167,7 @@ class ActionManagerTest: XCTestCase {
             .init(name: "third", args: [:], messageId: "third"),
         ]
         
-        actionManager.orderMessages { contexts, trigger in
+        actionManager.prioritizeMessages { contexts, trigger in
             XCTAssertEqual(contexts.count, testContexts.count)
             var ordered = contexts
             ordered.swapAt(0, 2)

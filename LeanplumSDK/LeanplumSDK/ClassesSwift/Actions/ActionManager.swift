@@ -82,9 +82,9 @@ import Foundation
         onMessageAction = callback
     }
 
-    var orderMessages: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?
-    @objc public func orderMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
-        orderMessages = callback
+    var prioritizeMessages: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?
+    @objc public func prioritizeMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
+        prioritizeMessages = callback
     }
     
     func performAvailableActions() {

@@ -32,14 +32,10 @@ extension ActionManager {
         guard let firstContext = contexts.first else {
             return
         }
-        
-        var defaultContextsToTrigger = contexts
-        // Add only one action to queue if `triggerOneAction` configuration is true
-        if configuration.triggerOneAction {
-            defaultContextsToTrigger = [firstContext]
-        }
-        
-        let filteredActions = orderMessages?(contexts, trigger) ?? defaultContextsToTrigger
+
+        // By default, add only one message to queue if `prioritizeMessages` is not implemented
+        // This ensures backwards compatibility
+        let filteredActions = prioritizeMessages?(contexts, trigger) ?? [firstContext]
         let actions: [Action] = filteredActions.map {
             .action(context: $0)
         }
