@@ -949,11 +949,11 @@ void leanplumExceptionHandler(NSException *exception);
                 [state.registration registerDevice:registrationEmail];
             } else if ([response[LP_KEY_IS_REGISTERED_FROM_OTHER_APP] boolValue]) {
                 // Show if registered from another app ID.
-                [LPUIAlert showWithTitle:@"Leanplum"
+                [UIAlert showWithTitle:@"Leanplum"
                                  message:@"Your device is registered."
                        cancelButtonTitle:NSLocalizedString(@"OK", nil)
-                       otherButtonTitles:nil
-                                   block:nil];
+                       otherButtonTitles:@[]
+                           actionBlock:nil];
             } else {
                 // Check for updates.
                 NSString *latestVersion = response[LP_KEY_LATEST_VERSION];

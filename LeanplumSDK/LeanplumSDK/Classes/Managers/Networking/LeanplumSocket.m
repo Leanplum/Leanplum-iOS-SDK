@@ -204,11 +204,11 @@ static dispatch_once_t leanplum_onceToken;
         NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
         NSString *email = packetData[@"email"];
         [Leanplum onHasStartedAndRegisteredAsDeveloper];
-        [LPUIAlert showWithTitle:@"Leanplum"
-                         message:[NSString stringWithFormat:@"Your device is registered to %@.", email]
-               cancelButtonTitle:NSLocalizedString(@"OK", nil)
-               otherButtonTitles:nil
-                           block:nil];
+        [UIAlert showWithTitle:@"Leanplum"
+                       message:[NSString stringWithFormat:@"Your device is registered to %@.", email]
+             cancelButtonTitle:NSLocalizedString(@"OK", nil)
+             otherButtonTitles:@[]
+                   actionBlock:nil];
     } else if ([packet.name isEqualToString:@"applyVars"]) {
         NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
         [[LPVarCache sharedCache] applyVariableDiffs:packetData
