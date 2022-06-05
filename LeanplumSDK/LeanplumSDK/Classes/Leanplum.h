@@ -36,7 +36,6 @@
 #import "Leanplum_SocketIO.h"
 #import "LeanplumSocket.h"
 #import "LeanplumCompatibility.h"
-#import "LPUIAlert.h"
 #import "LPSwizzle.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"

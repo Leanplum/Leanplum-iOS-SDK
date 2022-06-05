@@ -39,7 +39,6 @@
 #import "LPRevenueManager.h"
 #import "LPSwizzle.h"
 #import "LPInbox.h"
-#import "LPUIAlert.h"
 #import "LPUtils.h"
 #import "LPAppIconManager.h"
 #import "LPCountAggregator.h"
