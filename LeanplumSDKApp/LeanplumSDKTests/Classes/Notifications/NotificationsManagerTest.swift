@@ -99,19 +99,6 @@ class NotificationsManagerTest: XCTestCase {
         LPRequestSender.unswizzle_methods()
     }
     
-    // MARK: LPUIAlert:show mock
-    func show(withTitle title: String, message: String, cancelButtonTitle: String, otherButtonTitles: [Any]?, block: LeanplumUIAlertCompletionBlock? = nil) {
-        // self is LPUIAlert
-        NotificationsManagerTest.showExecuted = true
-        let info = NotificationsManagerTest.userInfo as NSDictionary
-        let appName = "LeanplumSDKApp"
-        let body = info.value(forKeyPath: "aps.alert.body") as! String
-        XCTAssertEqual(title, appName)
-        XCTAssertEqual(message, body)
-        XCTAssertEqual(cancelButtonTitle, "Cancel")
-        XCTAssertEqual(otherButtonTitles as! [String], ["View"])
-    }
-    
     // MARK: Tests
     func test_notification_open_run_action() {
         let onRunActionNamedExpectation = expectation(description: "Notification Open Action")
@@ -144,22 +131,6 @@ class NotificationsManagerTest: XCTestCase {
         
         Leanplum.notificationsManager().notificationOpened(userInfo: NotificationsManagerTest.userInfo, action: "MyAction")
         wait(for: [onRunActionNamedExpectation], timeout: timeout)
-    }
-    
-    /**
-     * Tests LPUIAlert is shown with correct data when notification is received when the app is in foreground and the notification is not muted
-     */
-    func test_notification_foreground_alert_shown() {
-        let lpAlertShowMethod = class_getClassMethod(LPUIAlert.self, #selector(LPUIAlert.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
-        let testShowMethod = class_getInstanceMethod(NotificationsManagerTest.self, #selector(NotificationsManagerTest.show(withTitle:message:cancelButtonTitle:otherButtonTitles:block:)))!
-        let lpAlertShowImp = method_setImplementation(lpAlertShowMethod, method_getImplementation(testShowMethod))
-        defer {
-            method_setImplementation(lpAlertShowMethod, lpAlertShowImp)
-        }
-        
-        Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
-        XCTAssertTrue(NotificationsManagerTest.showExecuted)
-        method_setImplementation(lpAlertShowMethod, lpAlertShowImp)
     }
     
     /**
