@@ -26,7 +26,7 @@
 #import "LeanplumInternal.h"
 #import "LPConstants.h"
 #import "LPVarCache.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 #import "LPCountAggregator.h"
 #import <Leanplum/Leanplum-Swift.h>
 

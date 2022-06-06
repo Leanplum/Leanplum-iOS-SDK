@@ -26,7 +26,7 @@
 #import "LPFileManager.h"
 #import "LPVarCache.h"
 #import "LeanplumInternal.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 #import "FileMD5Hash.h"
 #import "LPKeychainWrapper.h"
 #import "LPAES.h"
@@ -462,7 +462,7 @@ static dispatch_once_t leanplum_onceToken;
             } else {
                 NSSet *foregroundRegionNames;
                 NSSet *backgroundRegionNames;
-                [LPActionManager getForegroundRegionNames:&foregroundRegionNames
+                [LPActionTriggerManager getForegroundRegionNames:&foregroundRegionNames
                                  andBackgroundRegionNames:&backgroundRegionNames];
                 self.regionInitBlock(self.regions, foregroundRegionNames, backgroundRegionNames);
             }

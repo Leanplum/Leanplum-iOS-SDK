@@ -29,7 +29,7 @@
 #import <OCMock/OCMArg.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
-#import <Leanplum/LPActionManager.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LPCountAggregator.h>
 #import <Leanplum/LPFeatureFlagManager.h>
 #import <Leanplum/LPFileTransferManager.h>

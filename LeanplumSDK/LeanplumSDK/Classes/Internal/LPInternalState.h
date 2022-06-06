@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 #import "LPRegisterDevice.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 
 @interface LPInternalState : NSObject
 
@@ -20,7 +20,7 @@
 @property(assign, nonatomic) NSUncaughtExceptionHandler *customExceptionHandler;
 @property(strong, nonatomic) LPRegisterDevice *registration;
 @property(assign, nonatomic) BOOL calledStart, hasStarted, hasStartedAndRegisteredAsDeveloper, startSuccessful, issuedStart;
-@property(strong, nonatomic) LPActionManager *actionManager;
+@property(strong, nonatomic) LPActionTriggerManager *actionManager;
 @property(strong, nonatomic) NSString *appVersion;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
 @property(assign, nonatomic) BOOL isVariantDebugInfoEnabled;

@@ -1,9 +1,9 @@
 //
-//  LPActionManager.m
+//  LPActionTriggerManager.m
 //  Leanplum
 //
 //  Created by Andrew First on 9/12/13.
-//  Copyright (c) 2013 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2022 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,7 +22,7 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 
 #import "LPConstants.h"
 #import "LPSwizzle.h"
@@ -48,7 +48,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     return result;
 }
 
-@interface LPActionManager()
+@interface LPActionTriggerManager()
 
 @property (nonatomic, strong) NSMutableDictionary *messageImpressionOccurrences;
 @property (nonatomic, strong) NSMutableDictionary *messageTriggerOccurrences;
@@ -57,16 +57,16 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 @end
 
-@implementation LPActionManager
+@implementation LPActionTriggerManager
 
-static LPActionManager *leanplum_sharedActionManager = nil;
+static LPActionTriggerManager *leanplum_sharedActionManager = nil;
 static dispatch_once_t leanplum_onceToken;
 
 static long HOUR_SECONDS;
 static long DAY_SECONDS;
 static long WEEK_SECONDS;
 
-+ (LPActionManager *)sharedManager
++ (LPActionTriggerManager *)sharedManager
 {
     dispatch_once(&leanplum_onceToken, ^{
         leanplum_sharedActionManager = [[self alloc] init];
@@ -353,9 +353,9 @@ static long WEEK_SECONDS;
             } else {
                 regionNames = *foregroundRegionNames;
             }
-            [LPActionManager addRegionNamesFromTriggers:messageConfig[@"whenTriggers"]
+            [LPActionTriggerManager addRegionNamesFromTriggers:messageConfig[@"whenTriggers"]
                                                   toSet:regionNames];
-            [LPActionManager addRegionNamesFromTriggers:messageConfig[@"unlessTriggers"]
+            [LPActionTriggerManager addRegionNamesFromTriggers:messageConfig[@"unlessTriggers"]
                                                   toSet:regionNames];
         }
     }
@@ -382,11 +382,11 @@ static long WEEK_SECONDS;
     LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
 
     // 1. Must match at least one trigger.
-    result.matchedTrigger = [LPActionManager matchedTriggers:messageConfig[@"whenTriggers"]
+    result.matchedTrigger = [LPActionTriggerManager matchedTriggers:messageConfig[@"whenTriggers"]
                                                         when:when
                                                    eventName:eventName
                                             contextualValues:contextualValues];
-    result.matchedUnlessTrigger = [LPActionManager matchedTriggers:messageConfig[@"unlessTriggers"]
+    result.matchedUnlessTrigger = [LPActionTriggerManager matchedTriggers:messageConfig[@"unlessTriggers"]
                                                               when:when
                                                          eventName:eventName
                                                   contextualValues:contextualValues];

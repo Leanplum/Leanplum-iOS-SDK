@@ -29,7 +29,7 @@
 #import "LeanplumHelper.h"
 #import <Leanplum/LPConstants.h>
 #import <Leanplum/LPJSON.h>
-#import <Leanplum/LPActionManager.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LPVarCache.h>
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/Leanplum-Swift.h>
@@ -51,7 +51,7 @@
 
 @end
 
-@interface LPActionTriggerManagerMock: LPActionManager
+@interface LPActionTriggerManagerMock: LPActionTriggerManager
 
 @property (nonatomic, strong, nullable) void (^actionsMatched)(NSArray<LPActionContext *> *context);
 
@@ -128,7 +128,7 @@
 
 - (void)setMockActionManager
 {
-    self.mockActionManager = OCMClassMock([LPActionManager class]);
+    self.mockActionManager = OCMClassMock([LPActionTriggerManager class]);
     OCMStub([self.mockActionManager shouldShowMessage:[OCMArg any]
                                       withConfig:[OCMArg any]
                                             when:[OCMArg any]

@@ -1,9 +1,9 @@
 //
-//  LPActionManager.h
+//  LPActionTriggerManager.h
 //  Leanplum
 //
 //  Created by Andrew First on 9/12/13.
-//  Copyright (c) 2013 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2022 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -51,11 +51,11 @@ typedef NS_OPTIONS(NSUInteger, LeanplumActionFilter) {
 
 #define LP_HELD_BACK_ACTION @"__held_back"
 
-@interface LPActionManager : NSObject {
+@interface LPActionTriggerManager : NSObject {
     
 }
 
-+ (LPActionManager*) sharedManager
++ (LPActionTriggerManager*) sharedManager
 NS_SWIFT_NAME(shared());
 
 + (void)getForegroundRegionNames:(NSMutableSet * _Nonnull * _Nullable)foregroundRegionNames

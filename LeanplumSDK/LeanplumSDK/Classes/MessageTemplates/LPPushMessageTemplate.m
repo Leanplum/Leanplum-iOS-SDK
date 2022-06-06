@@ -6,7 +6,7 @@
 //
 
 #import "LPPushMessageTemplate.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 #import "LPLogManager.h"
 #import "LeanplumInternal.h"
 #import <Leanplum/Leanplum-Swift.h>

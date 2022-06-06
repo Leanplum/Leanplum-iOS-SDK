@@ -33,7 +33,7 @@
 #import "LPNetworkEngine+Category.h"
 #import "Leanplum+Extensions.h"
 #import "LeanplumReachability+Category.h"
-#import <Leanplum/LPActionManager.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LPConstants.h>
 #import <Leanplum/LPRegisterDevice.h>
 

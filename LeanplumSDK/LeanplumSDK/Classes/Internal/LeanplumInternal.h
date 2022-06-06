@@ -26,7 +26,7 @@
 #import "LPActionContext-Internal.h"
 #import "LPVar-Internal.h"
 #import "LPConstants.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 #import "LPJSON.h"
 #import "LPInternalState.h"
 #import "LPCountAggregator.h"

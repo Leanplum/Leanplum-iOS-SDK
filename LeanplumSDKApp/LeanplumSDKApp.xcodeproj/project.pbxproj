@@ -22,7 +22,7 @@
 		075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */; };
 		075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */; };
 		075AB1142684AAD9007CA1BD /* MessagesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E62684AAD9007CA1BD /* MessagesTest.m */; };
-		075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */; };
+		075AB1152684AAD9007CA1BD /* LPActionTriggerManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E72684AAD9007CA1BD /* LPActionTriggerManagerTest.m */; };
 		075AB1162684AAD9007CA1BD /* ExceptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */; };
 		075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E92684AAD9007CA1BD /* LPRequestTest.m */; };
 		075AB1182684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */; };
@@ -185,7 +185,7 @@
 		075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUtilsTest.m; sourceTree = "<group>"; };
 		075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventDataManagerTest.m; sourceTree = "<group>"; };
 		075AB0E62684AAD9007CA1BD /* MessagesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesTest.m; sourceTree = "<group>"; };
-		075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionManagerTest.m; sourceTree = "<group>"; };
+		075AB0E72684AAD9007CA1BD /* LPActionTriggerManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionTriggerManagerTest.m; sourceTree = "<group>"; };
 		075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionsTest.m; sourceTree = "<group>"; };
 		075AB0E92684AAD9007CA1BD /* LPRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialViewControllerTest.m; sourceTree = "<group>"; };
@@ -388,7 +388,7 @@
 				075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */,
 				075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */,
 				075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */,
-				075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */,
+				075AB0E72684AAD9007CA1BD /* LPActionTriggerManagerTest.m */,
 				075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */,
 				075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */,
 				075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */,
@@ -832,7 +832,7 @@
 				075AB1242684AAD9007CA1BD /* LeanplumReachability+Category.m in Sources */,
 				6A07FDAE283544CE00995BE3 /* ActionManagerDownloadTest.swift in Sources */,
 				075AB1142684AAD9007CA1BD /* MessagesTest.m in Sources */,
-				075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */,
+				075AB1152684AAD9007CA1BD /* LPActionTriggerManagerTest.m in Sources */,
 				075AB1272684AAD9007CA1BD /* LPNetworkOperation+Category.m in Sources */,
 				C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */,
 				075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */,

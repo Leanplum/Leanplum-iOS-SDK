@@ -1,5 +1,5 @@
 //
-//  LPActionManagerTest.m
+//  LPActionTriggerManager.m
 //  Leanplum
 //
 //  Created by Alexis Oyama on 11/3/16.
@@ -22,13 +22,11 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-
 #import <XCTest/XCTest.h>
 #import <OCMock/OCMock.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
-#import <Leanplum/LPActionManager.h>
-#import <Leanplum/LPUIAlert.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LPOperationQueue.h>
 #import "Leanplum+Extensions.h"
 #import "LeanplumHelper.h"
@@ -36,19 +34,11 @@
 #import "LPRequestFactory+Extension.h"
 #import "LPNetworkEngine+Category.h"
 
-@interface LPActionManager (UnitTest)
+@interface LPActionTriggerManagerTest : XCTestCase
 
 @end
 
-@interface LPActionManager (UnitTest)
-
-@end
-
-@interface LPActionManagerTest : XCTestCase
-
-@end
-
-@implementation LPActionManagerTest
+@implementation LPActionTriggerManagerTest
 
 + (void)setUp
 {
@@ -77,7 +67,7 @@
 
 - (void)test_matched_trigger
 {
-    LPActionManager *manager = [LPActionManager sharedManager];
+    LPActionTriggerManager *manager = [LPActionTriggerManager sharedManager];
 
     // Message Object
     NSDictionary *config = @{@"whenLimits":@{@"children":@[],
@@ -153,7 +143,7 @@
 
 - (void)test_matched_trigger_with_boolean_parameter
 {
-    LPActionManager *manager = [LPActionManager sharedManager];
+    LPActionTriggerManager *manager = [LPActionTriggerManager sharedManager];
     
     NSDictionary *config = @{@"whenLimits":@{@"children":@[],
                                              @"objects":@[],
@@ -206,7 +196,7 @@
 
 - (void)test_active_period_false
 {
-    LPActionManager *manager = [LPActionManager sharedManager];
+    LPActionTriggerManager *manager = [LPActionTriggerManager sharedManager];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
     
     NSDictionary *config = [self messageConfigInActivePeriod:NO];
@@ -221,7 +211,7 @@
 
 - (void)test_active_period_true
 {
-    LPActionManager *manager = [LPActionManager sharedManager];
+    LPActionTriggerManager *manager = [LPActionTriggerManager sharedManager];
     LPContextualValues *contextualValues = [[LPContextualValues alloc] init];
 
     NSDictionary *config = [self messageConfigInActivePeriod:YES];
@@ -264,16 +254,16 @@
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
     }
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#2"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#4"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#5"];
-    XCTAssertTrue([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    XCTAssertTrue([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
 }
 
 - (void)testShouldSuppressMessagesDayLimit
@@ -304,42 +294,42 @@
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
     }
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#1"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#2"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#3"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#4"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#5"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#5"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#5"];
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#5"];
-    XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionManager sharedManager] recordMessageImpression:@"message#5"];
-    XCTAssertTrue([[LPActionManager sharedManager] shouldSuppressMessages]);
+    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    XCTAssertTrue([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
 }
 
 - (void)testShouldSuppressMessagesWeekLimit
@@ -373,12 +363,12 @@
     for (int i = 1; i<=5; i++) {
         NSString *messageId = [NSString stringWithFormat:@"message#%d", i];
         for (int j = 0; j < 20; j++) {
-            [[LPActionManager sharedManager] recordMessageImpression:messageId];
+            [[LPActionTriggerManager sharedManager] recordMessageImpression:messageId];
         }
         if (i == 5) {
-            XCTAssertTrue([[LPActionManager sharedManager] shouldSuppressMessages]);
+            XCTAssertTrue([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
         } else {
-            XCTAssertFalse([[LPActionManager sharedManager] shouldSuppressMessages]);
+            XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
         }
     }
 }

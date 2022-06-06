@@ -34,7 +34,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "LPFileManager.h"
 #import "NSTimer+Blocks.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 #import "LPMessageTemplates.h"
 #import "LPRevenueManager.h"
 #import "LPSwizzle.h"
@@ -156,7 +156,7 @@ void leanplumExceptionHandler(NSException *exception);
 
 + (void)_initPush
 {
-    [LPActionManager sharedManager];
+    [LPActionTriggerManager sharedManager];
 }
 
 + (void)setApiHostName:(NSString *)hostName
@@ -793,7 +793,7 @@ void leanplumExceptionHandler(NSException *exception);
     dispatch_async(dispatch_get_main_queue(), ^{
         [Leanplum trackCrashes];
     });
-    state.actionManager = [LPActionManager sharedManager];
+    state.actionManager = [LPActionTriggerManager sharedManager];
 
     [[LPVarCache sharedCache] setSilent:YES];
     [[LPVarCache sharedCache] loadDiffs];
@@ -1634,7 +1634,7 @@ void leanplumExceptionHandler(NSException *exception);
                                                                   condition:whenConditions
                                                            contextualValues:contextualValues];
         
-        NSMutableArray *actionContexts = [[LPActionManager sharedManager] matchActions:messages
+        NSMutableArray *actionContexts = [[LPActionTriggerManager sharedManager] matchActions:messages
                                                                            withTrigger:trigger
                                                                             withFilter:filter fromMessageId:sourceMessage];
         
@@ -2577,7 +2577,7 @@ void leanplumExceptionHandler(NSException *exception)
         return NO;
     }
     // checks if message caps are reached
-    return [[LPActionManager sharedManager] shouldSuppressMessages];
+    return [[LPActionTriggerManager sharedManager] shouldSuppressMessages];
 }
 
 + (void)enablePushNotifications

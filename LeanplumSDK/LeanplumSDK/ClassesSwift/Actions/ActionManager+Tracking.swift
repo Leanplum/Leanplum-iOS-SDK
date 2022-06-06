@@ -17,15 +17,15 @@ extension ActionManager {
             
             let actionKind: Kind = .init(rawValue: getActionDefinitionType(name: action.context.name))
             switch actionKind {
-                case .action:
-                    LPActionManager.shared().recordChainedActionImpression(action.context.messageId)
-                case .message:
-                    LPActionManager.shared().recordMessageImpression(action.context.messageId)
-                default:
-                    break
+            case .action:
+                LPActionTriggerManager.shared().recordChainedActionImpression(action.context.messageId)
+            case .message:
+                LPActionTriggerManager.shared().recordMessageImpression(action.context.messageId)
+            default:
+                break
             }
         } else {
-            LPActionManager.shared().recordMessageImpression(action.context.messageId)
+            LPActionTriggerManager.shared().recordMessageImpression(action.context.messageId)
         }
     }
 }
