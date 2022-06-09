@@ -372,17 +372,19 @@ class ActionManagerTest: XCTestCase {
         }
         
         actionManager.trigger(contexts: [testContext])
-        // Ensure the message is in the delayedQueue
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            XCTAssertEqual(actionManager.delayedQueue.count(), 1)
-        }
         
-        // Display the message now
-        actionManager.shouldDisplayMessage { context in
-            return .show()
+        // Wait for performActions so message is actually delayed first
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            
+            // Display the message now
+            actionManager.shouldDisplayMessage { context in
+                return .show()
+            }
+            
+            // Ensure the message is in the delayedQueue
+            XCTAssertEqual(actionManager.delayedQueue.count(), 1)
+            actionManager.triggerDelayedMessages()
         }
-
-        actionManager.triggerDelayedMessages()
         
         waitForExpectations(timeout: 3.0)
         XCTAssertEqual(actionManager.delayedQueue.count(), 0)
