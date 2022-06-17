@@ -173,9 +173,9 @@ static long WEEK_SECONDS;
 }
 
 - (NSMutableArray<LPActionContext *> *)matchActions:(NSDictionary *)actions
-                                 withTrigger:(ActionsTrigger *)trigger
-                                  withFilter:(LeanplumActionFilter)filter
-                               fromMessageId:(NSString *)sourceMessage
+                                        withTrigger:(ActionsTrigger *)trigger
+                                         withFilter:(LeanplumActionFilter)filter
+                                      fromMessageId:(NSString *)sourceMessage
 {
     NSMutableArray *actionContexts = [NSMutableArray array];
 

@@ -70,8 +70,8 @@ NS_SWIFT_NAME(shared());
                                contextualValues:(LPContextualValues *)contextualValues;
 
 - (NSMutableArray<LPActionContext *> *)matchActions:(NSDictionary *)actions
-                                 withTrigger:(ActionsTrigger *)trigger
-                                  withFilter:(LeanplumActionFilter)filter
+                                        withTrigger:(ActionsTrigger *)trigger
+                                         withFilter:(LeanplumActionFilter)filter
                                       fromMessageId:(NSString *)sourceMessage;
 
 - (void)recordMessageTrigger:(NSString *)messageId;
