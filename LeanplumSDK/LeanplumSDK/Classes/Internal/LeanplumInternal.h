@@ -26,7 +26,7 @@
 #import "LPActionContext-Internal.h"
 #import "LPVar-Internal.h"
 #import "LPConstants.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 #import "LPJSON.h"
 #import "LPInternalState.h"
 #import "LPCountAggregator.h"
@@ -94,9 +94,6 @@ NS_SWIFT_NAME(track(event:value:info:args:params:));
                              responseHandler:(nullable LeanplumSetLocationBlock)response;
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId;
-+ (void)triggerAction:(LPActionContext *)context;
-+ (void)triggerAction:(LPActionContext *)context
-         handledBlock:(nullable LeanplumHandledBlock)handledBlock;
 + (void)maybePerformActions:(NSArray<NSString *> *)whenConditions
               withEventName:(nullable NSString *)eventName
                  withFilter:(LeanplumActionFilter)filter

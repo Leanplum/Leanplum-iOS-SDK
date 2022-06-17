@@ -1,9 +1,9 @@
 //
-//  LPActionManager.m
+//  LPActionTriggerManager.m
 //  Leanplum
 //
 //  Created by Andrew First on 9/12/13.
-//  Copyright (c) 2013 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2022 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -22,18 +22,18 @@
 //  specific language governing permissions and limitations
 //  under the License.
 
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 
 #import "LPConstants.h"
 #import "LPSwizzle.h"
 #import "LeanplumInternal.h"
 #import "LPFileManager.h"
 #import "LPVarCache.h"
-#import "LPUIAlert.h"
 #import "LPMessageTemplates.h"
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 #import <objc/runtime.h>
 #import <objc/message.h>
@@ -48,7 +48,7 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
     return result;
 }
 
-@interface LPActionManager()
+@interface LPActionTriggerManager()
 
 @property (nonatomic, strong) NSMutableDictionary *messageImpressionOccurrences;
 @property (nonatomic, strong) NSMutableDictionary *messageTriggerOccurrences;
@@ -57,16 +57,16 @@ LeanplumMessageMatchResult LeanplumMessageMatchResultMake(BOOL matchedTrigger, B
 
 @end
 
-@implementation LPActionManager
+@implementation LPActionTriggerManager
 
-static LPActionManager *leanplum_sharedActionManager = nil;
+static LPActionTriggerManager *leanplum_sharedActionManager = nil;
 static dispatch_once_t leanplum_onceToken;
 
 static long HOUR_SECONDS;
 static long DAY_SECONDS;
 static long WEEK_SECONDS;
 
-+ (LPActionManager *)sharedManager
++ (LPActionTriggerManager *)sharedManager
 {
     dispatch_once(&leanplum_onceToken, ^{
         leanplum_sharedActionManager = [[self alloc] init];
@@ -172,6 +172,90 @@ static long WEEK_SECONDS;
     }   
 }
 
+- (NSMutableArray<LPActionContext *> *)matchActions:(NSDictionary *)actions
+                                        withTrigger:(ActionsTrigger *)trigger
+                                         withFilter:(LeanplumActionFilter)filter
+                                      fromMessageId:(NSString *)sourceMessage
+{
+    NSMutableArray *actionContexts = [NSMutableArray array];
+
+    for (NSString *messageId in [actions allKeys]) {
+        if (sourceMessage != nil && [messageId isEqualToString:sourceMessage]) {
+            continue;
+        }
+        NSDictionary *messageConfig = actions[messageId];
+        NSString *actionType = messageConfig[LP_PARAM_ACTION];
+        if (![actionType isKindOfClass:NSString.class]) {
+            continue;
+        }
+
+        NSString *internalMessageId;
+        if ([actionType isEqualToString:LP_HELD_BACK_ACTION]) {
+            // Spoof the message ID if this is a held back message.
+            internalMessageId = [LP_HELD_BACK_MESSAGE_PREFIX stringByAppendingString:messageId];
+        } else {
+            internalMessageId = messageId;
+        }
+
+        // Filter action types that don't match the filtering criteria.
+        BOOL isForeground = ![actionType isEqualToString:LP_PUSH_NOTIFICATION_ACTION];
+        if (isForeground) {
+            if (!(filter & kLeanplumActionFilterForeground)) {
+                continue;
+            }
+        } else {
+            if (!(filter & kLeanplumActionFilterBackground)) {
+                continue;
+            }
+        }
+
+        LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
+        for (NSString *when in trigger.condition) {
+            LeanplumMessageMatchResult conditionResult =
+            [[LPInternalState sharedState].actionManager shouldShowMessage:internalMessageId
+                                                                withConfig:messageConfig
+                                                                      when:when
+                                                             withEventName:trigger.eventName
+                                                          contextualValues:trigger.contextualValues];
+            result.matchedTrigger |= conditionResult.matchedTrigger;
+            result.matchedUnlessTrigger |= conditionResult.matchedUnlessTrigger;
+            result.matchedLimit |= conditionResult.matchedLimit;
+            result.matchedActivePeriod |= conditionResult.matchedActivePeriod;
+        }
+
+        // Make sure it's within the active period.
+        if (!result.matchedActivePeriod) {
+            continue;
+        }
+
+        // Make sure we cancel before matching in case the criteria overlap.
+        if (result.matchedUnlessTrigger) {
+            // Currently Unless Trigger is possible for Local Notifications only
+            if ([LP_PUSH_NOTIFICATION_ACTION isEqualToString:actionType]) {
+                [[LPLocalNotificationsManager sharedManager] cancelLocalNotification:messageId];
+            }
+        }
+        if (result.matchedTrigger) {
+            [[LPInternalState sharedState].actionManager recordMessageTrigger:internalMessageId];
+            if (result.matchedLimit) {
+                NSNumber *priority = messageConfig[@"priority"] ?: @(DEFAULT_PRIORITY);
+                LPActionContext *context = [LPActionContext
+                                            actionContextWithName:actionType
+                                            args:[messageConfig objectForKey:LP_KEY_VARS]
+                                            messageId:internalMessageId
+                                            originalMessageId:messageId
+                                            priority:priority];
+                context.contextualValues = trigger.contextualValues;
+                [actionContexts addObject:context];
+            }
+        }
+    }
+    
+    // Sort the action by priority
+    [LPActionContext sortByPriority:actionContexts];
+    return actionContexts;
+}
+
 + (BOOL)matchedTriggers:(NSDictionary *)triggerConfig
                    when:(NSString *)when
               eventName:(NSString *)eventName
@@ -258,7 +342,7 @@ static long WEEK_SECONDS;
 {
     *foregroundRegionNames = [NSMutableSet set];
     *backgroundRegionNames = [NSMutableSet set];
-    NSDictionary *messages = [[LPVarCache sharedCache] messages];
+    NSDictionary *messages = [[ActionManager shared] messages];
     for (NSString *messageId in messages) {
         NSDictionary *messageConfig = messages[messageId];
         NSMutableSet *regionNames;
@@ -269,9 +353,9 @@ static long WEEK_SECONDS;
             } else {
                 regionNames = *foregroundRegionNames;
             }
-            [LPActionManager addRegionNamesFromTriggers:messageConfig[@"whenTriggers"]
+            [LPActionTriggerManager addRegionNamesFromTriggers:messageConfig[@"whenTriggers"]
                                                   toSet:regionNames];
-            [LPActionManager addRegionNamesFromTriggers:messageConfig[@"unlessTriggers"]
+            [LPActionTriggerManager addRegionNamesFromTriggers:messageConfig[@"unlessTriggers"]
                                                   toSet:regionNames];
         }
     }
@@ -297,18 +381,12 @@ static long WEEK_SECONDS;
 {
     LeanplumMessageMatchResult result = LeanplumMessageMatchResultMake(NO, NO, NO, NO);
 
-    // 1. Must not be muted.
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:
-         [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]]) {
-        return result;
-    }
-
-    // 2. Must match at least one trigger.
-    result.matchedTrigger = [LPActionManager matchedTriggers:messageConfig[@"whenTriggers"]
+    // 1. Must match at least one trigger.
+    result.matchedTrigger = [LPActionTriggerManager matchedTriggers:messageConfig[@"whenTriggers"]
                                                         when:when
                                                    eventName:eventName
                                             contextualValues:contextualValues];
-    result.matchedUnlessTrigger = [LPActionManager matchedTriggers:messageConfig[@"unlessTriggers"]
+    result.matchedUnlessTrigger = [LPActionTriggerManager matchedTriggers:messageConfig[@"unlessTriggers"]
                                                               when:when
                                                          eventName:eventName
                                                   contextualValues:contextualValues];
@@ -316,11 +394,11 @@ static long WEEK_SECONDS;
         return result;
     }
 
-    // 3. Must match all limit conditions.
+    // 2. Must match all limit conditions.
     NSDictionary *limitConfig = messageConfig[@"whenLimits"];
     result.matchedLimit = [self matchesLimits:limitConfig messageId:messageId];
 
-    // 4. Must be within active period.
+    // 3. Must be within active period.
     NSTimeInterval now = [[NSDate date] timeIntervalSince1970];
     NSTimeInterval startTime = [messageConfig[@"startTime"] doubleValue] / 1000.0;
     NSTimeInterval endTime = [messageConfig[@"endTime"] doubleValue] / 1000.0;
@@ -507,14 +585,6 @@ static long WEEK_SECONDS;
     
     // Record cross-session occurrences.
     [self incrementMessageImpressionOccurrences:messageId];
-}
-
-- (void)muteFutureMessagesOfKind:(NSString *)messageId
-{
-    if (messageId) {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setBool:YES forKey:[NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_MUTED_KEY, messageId]];
-    }
 }
 
 /**

@@ -46,6 +46,9 @@ NS_SWIFT_NAME(ActionContext)
  */
 @property (readonly, nonatomic, strong, nullable) LPActionContext *parentContext;
 
+/// Bool indicating if the message is a chained message
+@property (readonly) BOOL isChainedMessage;
+
 - (id)objectNamed:(NSString *)name
 NS_SWIFT_NAME(object(name:));
 
@@ -83,11 +86,6 @@ NS_SWIFT_NAME(htmlTemplate(name:));
 NS_SWIFT_NAME(runAction(name:));
 
 /**
- * Executes a block when action is run.
- */
-- (void)setActionNamedResponder:(LeanplumActionBlock)block;
-
-/**
  * Runs and tracks an event for the action given by the "name" key.
  * This will track an event if no action is set.
  */
@@ -113,14 +111,12 @@ NS_SWIFT_NAME(track(event:value:params:));
 NS_SWIFT_NAME(trackMessage(event:value:info:params:));
 
 /**
- * Prevents the currently active message from appearing again in the future.
- */
-- (void)muteFutureMessagesOfSameKind;
-
-/**
  * Checks if the action context has any missing files that still need to be downloaded.
  */
 - (BOOL)hasMissingFiles;
+
+/// Needs to be called when action was dismissed
+- (void)actionDismissed;
 
 @end
 

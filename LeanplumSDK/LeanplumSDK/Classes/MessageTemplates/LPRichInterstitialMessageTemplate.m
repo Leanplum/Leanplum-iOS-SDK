@@ -13,14 +13,16 @@
 
 + (void)defineAction
 {
-    BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
+    __block UIViewController *viewController = NULL;
+    
+    BOOL (^presentHandler)(LPActionContext *) = ^(LPActionContext *context) {
         if ([context hasMissingFiles]) {
             return NO;
         }
 
         @try {
             LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
-            UIViewController *viewController = [template viewControllerWithContext:context];
+            viewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:viewController];
             return YES;
@@ -30,20 +32,27 @@
         }
     };
     [Leanplum defineAction:LPMT_HTML_NAME
-                    ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
+                    ofKind:kLeanplumActionKindAction | kLeanplumActionKindMessage
              withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_URL_CLOSE withString:LPMT_DEFAULT_CLOSE_URL],
-                 [LPActionArg argNamed:LPMT_ARG_URL_OPEN withString:LPMT_DEFAULT_OPEN_URL],
-                 [LPActionArg argNamed:LPMT_ARG_URL_TRACK withString:LPMT_DEFAULT_TRACK_URL],
-                 [LPActionArg argNamed:LPMT_ARG_URL_ACTION withString:LPMT_DEFAULT_ACTION_URL],
-                 [LPActionArg argNamed:LPMT_ARG_URL_TRACK_ACTION withString:LPMT_DEFAULT_TRACK_ACTION_URL],
-                 [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
-                 [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
-                 [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
-                 [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
-                 [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
-                 [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]]
-             withResponder:responder];
+        [LPActionArg argNamed:LPMT_ARG_URL_CLOSE withString:LPMT_DEFAULT_CLOSE_URL],
+        [LPActionArg argNamed:LPMT_ARG_URL_OPEN withString:LPMT_DEFAULT_OPEN_URL],
+        [LPActionArg argNamed:LPMT_ARG_URL_TRACK withString:LPMT_DEFAULT_TRACK_URL],
+        [LPActionArg argNamed:LPMT_ARG_URL_ACTION withString:LPMT_DEFAULT_ACTION_URL],
+        [LPActionArg argNamed:LPMT_ARG_URL_TRACK_ACTION withString:LPMT_DEFAULT_TRACK_ACTION_URL],
+        [LPActionArg argNamed:LPMT_ARG_HTML_ALIGN withString:LPMT_ARG_HTML_ALIGN_TOP],
+        [LPActionArg argNamed:LPMT_ARG_HTML_HEIGHT withNumber:@0],
+        [LPActionArg argNamed:LPMT_ARG_HTML_WIDTH withString:@"100%"],
+        [LPActionArg argNamed:LPMT_ARG_HTML_TAP_OUTSIDE_TO_CLOSE withBool:NO],
+        [LPActionArg argNamed:LPMT_HAS_DISMISS_BUTTON withBool:NO],
+        [LPActionArg argNamed:LPMT_ARG_HTML_TEMPLATE withFile:nil]
+    ]
+               withOptions:@{}
+            presentHandler:presentHandler
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        [viewController dismissViewControllerAnimated:YES completion:nil];
+        return YES;
+    }];
+
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context

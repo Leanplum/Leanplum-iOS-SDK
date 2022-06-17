@@ -26,8 +26,7 @@
 #import "LeanplumInternal.h"
 #import "LPConstants.h"
 #import "LPVarCache.h"
-#import "LPActionManager.h"
-#import "LPUIAlert.h"
+#import "LPActionTriggerManager.h"
 #import "LPCountAggregator.h"
 #import <Leanplum/Leanplum-Swift.h>
 
@@ -173,9 +172,10 @@ static dispatch_once_t leanplum_onceToken;
             NSString *messageId = [payload[LP_PARAM_MESSAGE_ID] description];
             BOOL isRooted = [payload[@"isRooted"] boolValue];
             NSString *actionType = action[LP_VALUE_ACTION_ARG];
-            NSDictionary *defaultArgs = [LPVarCache sharedCache].actionDefinitions
-                                          [action[LP_VALUE_ACTION_ARG]] [@"values"];
-            action = [[LPVarCache sharedCache] mergeHelper:defaultArgs withDiffs:action];
+            
+            NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:action[LP_VALUE_ACTION_ARG]] values];
+            action = [ContentMerger mergeWithVars:defaultArgs diff:action];
+            
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
                                                                          args:action
                                                                     messageId:messageId];
@@ -183,8 +183,10 @@ static dispatch_once_t leanplum_onceToken;
             context.preventRealtimeUpdating = YES;
             [context setIsRooted:isRooted];
             [context maybeDownloadFiles];
-            [Leanplum triggerAction:context];
-            [[LPActionManager sharedManager] recordMessageImpression:messageId];
+            ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:@"Preview"
+                                                                      condition:nil
+                                                               contextualValues:nil];
+            [[ActionManager shared] triggerWithContexts:@[context] priority:PriorityHigh trigger:trigger];
         }
 
     } else if ([packet.name isEqualToString:@"getVariables"]) {
@@ -201,11 +203,11 @@ static dispatch_once_t leanplum_onceToken;
         NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
         NSString *email = packetData[@"email"];
         [Leanplum onHasStartedAndRegisteredAsDeveloper];
-        [LPUIAlert showWithTitle:@"Leanplum"
-                         message:[NSString stringWithFormat:@"Your device is registered to %@.", email]
-               cancelButtonTitle:NSLocalizedString(@"OK", nil)
-               otherButtonTitles:nil
-                           block:nil];
+        [UIAlert showWithTitle:@"Leanplum"
+                       message:[NSString stringWithFormat:@"Your device is registered to %@.", email]
+             cancelButtonTitle:NSLocalizedString(@"OK", nil)
+             otherButtonTitles:@[]
+                   actionBlock:nil];
     } else if ([packet.name isEqualToString:@"applyVars"]) {
         NSDictionary *packetData = packet.dataAsJSON[@"args"][0];
         [[LPVarCache sharedCache] applyVariableDiffs:packetData

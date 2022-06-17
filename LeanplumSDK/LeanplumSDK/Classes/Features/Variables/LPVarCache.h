@@ -60,7 +60,6 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (nullable id)getValueFromComponentArray:(NSArray<NSString *> *) components fromDict:(NSDictionary<NSString *, id> *)values;
 - (nullable id)getMergedValueFromComponentArray:(NSArray<NSString *> *) components;
 - (nullable NSDictionary<NSString *, id> *)diffs;
-- (nullable NSDictionary<NSString *, id> *)messageDiffs;
 - (BOOL)hasReceivedDiffs;
 - (void)applyVariableDiffs:(nullable NSDictionary<NSString *, id> *)diffs_
                   messages:(nullable NSDictionary<NSString *, id> *)messages_
@@ -73,7 +72,6 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (void)onUpdate:(CacheUpdateBlock)block;
 - (void)setSilent:(BOOL)silent;
 - (BOOL)silent;
-- (id)mergeHelper:(id)vars withDiffs:(id)diff;
 - (int)contentVersion;
 - (nullable NSArray<NSString *> *)variants;
 - (nullable NSDictionary<NSString *, id> *)regions;
@@ -85,13 +83,6 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (void)clearUserContent;
 
 - (NSArray<NSDictionary *> *)getLocalCaps;
-// Handling actions.
-- (nullable NSDictionary<NSString *, id> *)actionDefinitions;
-- (nullable NSDictionary<NSString *, id> *)messages;
-- (void)registerActionDefinition:(NSString *)name
-                          ofKind:(int)kind
-                   withArguments:(nullable NSArray<NSString *> *)args
-                      andOptions:(nullable NSDictionary<NSString *, id> *)options;
 
 // Development mode.
 - (void)setDevModeValuesFromServer:(nullable NSDictionary<NSString *, id> *)values
@@ -109,8 +100,6 @@ NS_SWIFT_NAME(define(name:value:kind:));
 - (void)saveUserAttributes;
 
 - (LPSecuredVars *)securedVars;
-
-- (NSUInteger)getActionDefinitionType:(NSString *)actionName;
 
 @end
 

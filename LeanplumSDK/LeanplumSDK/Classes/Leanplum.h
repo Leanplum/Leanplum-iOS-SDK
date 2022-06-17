@@ -36,7 +36,6 @@
 #import "Leanplum_SocketIO.h"
 #import "LeanplumSocket.h"
 #import "LeanplumCompatibility.h"
-#import "LPUIAlert.h"
 #import "LPSwizzle.h"
 #import "LPEventDataManager.h"
 #import "LPEventCallbackManager.h"
@@ -356,13 +355,6 @@ NS_SWIFT_NAME(start(userId:attributes:completion:));
  */
 + (void)onceVariablesChangedAndNoDownloadsPending:(LeanplumVariablesChangedBlock)block;
 
-typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *messageArchiveData);
-
-/**
- * Block to call when a message is displayed to the user.
- */
-+ (void)onMessageDisplayed:(LeanplumMessageDisplayedCallbackBlock)block;
-
 /**
  * Clears cached values for messages, variables and test assignments.
  * Use sparingly as if the app is updated, you'll have to deal with potentially
@@ -370,55 +362,14 @@ typedef void (^LeanplumMessageDisplayedCallbackBlock)(LPMessageArchiveData *mess
  */
 + (void)clearUserContent;
 
-/**
- * @{
- * Defines new action and message types to be performed at points set up on the Leanplum dashboard.
- */
+/// Defines new action and message types to be performed at points set up on the Leanplum dashboard.
 + (void)defineAction:(NSString *)name
               ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-NS_SWIFT_NAME(defineAction(name:kind:args:));
-
-+ (void)defineAction:(NSString *)name
-              ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-         withOptions:(NSDictionary *)options
-NS_SWIFT_NAME(defineAction(name:kind:args:options:));
-
-+ (void)defineAction:(NSString *)name
-              ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-       withResponder:(nullable LeanplumActionBlock)responder
-NS_SWIFT_NAME(defineAction(name:kind:args:completion:));
-
-+ (void)defineAction:(NSString *)name
-              ofKind:(LeanplumActionKind)kind
-       withArguments:(NSArray *)args
-         withOptions:(NSDictionary *)options
-       withResponder:(nullable LeanplumActionBlock)responder
-NS_SWIFT_NAME(defineAction(name:kind:args:options:completion:));
-/**@}*/
-
-/**
- * Defer message display from specified view controllers.
- * Defers all actions on those controllers unless specific action names are provided using deferMessagesWithActionNames
- * @see deferMessagesWithActionNames:
- * @param controllers The view controller classes not to display messages on
- */
-+ (void)deferMessagesForViewControllers:(NSArray<Class> *)controllers
-NS_SWIFT_NAME(deferMessagesForViewControllers(_:));
-
-/**
- * Defer only specific actions
- * @param actionNames The names of the actions to defer
- */
-+ (void)deferMessagesWithActionNames:(NSArray<NSString *> *)actionNames
-NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
-
-/**
- * Block to call when an action is received, such as to show a message to the user.
- */
-+ (void)onAction:(NSString *)actionName invoke:(LeanplumActionBlock)block;
+       withArguments:(NSArray<LPActionArg *> *)args
+         withOptions:(NSDictionary<NSString *, id> *)options
+      presentHandler:(nullable LeanplumActionBlock)presentHandler
+      dismissHandler:(nullable LeanplumActionBlock)dismissHandler
+NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
 
 + (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
@@ -497,11 +448,9 @@ NS_SWIFT_NAME(deferMessagesWithActionNames(_:));
 + (void)addStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)addVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
-+ (void)addResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 + (void)removeStartResponseResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedResponder:(id)responder withSelector:(SEL)selector;
 + (void)removeVariablesChangedAndNoDownloadsPendingResponder:(id)responder withSelector:(SEL)selector;
-+ (void)removeResponder:(id)responder withSelector:(SEL)selector forActionNamed:(NSString *)actionName;
 /**@}*/
 
 /**

@@ -1,9 +1,9 @@
 //
-//  TimerTargetSwift.swift
+//  WeakTimer.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.02.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 

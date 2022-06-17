@@ -34,7 +34,7 @@
 #import "LeanplumHelper.h"
 #import "LPRequestSender+Categories.h"
 #import "LPVarCache+Extensions.h"
-#import <Leanplum/LPActionManager.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import "LeanplumReachability+Category.h"
 #import "LPNetworkEngine+Category.h"
 #import "LPNetworkOperation+Category.h"
@@ -150,7 +150,7 @@ static BOOL swizzled = NO;
     [Leanplum reset];
     [[LPVarCache sharedCache] reset];
     [[LPVarCache sharedCache] initialize];
-    [LPActionManager reset];
+    [LPActionTriggerManager reset];
     [[Leanplum user] setDeviceId:nil];
     [[Leanplum user] setUserId:nil];
     

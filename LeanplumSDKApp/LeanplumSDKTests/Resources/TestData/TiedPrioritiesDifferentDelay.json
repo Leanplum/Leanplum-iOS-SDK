@@ -1,6 +1,6 @@
 {
   "1": {
-    "action": "Alert",
+    "action": "__Push Notification",
     "countdown": 10,
     "vars": {
       "Dismiss action": "",
@@ -33,7 +33,7 @@
     }
   },
   "2": {
-    "action": "Alert",
+    "action": "__Push Notification",
     "countdown": 20,
     "vars": {
       "Dismiss action": "",
@@ -66,7 +66,7 @@
     }
   },
   "3": {
-    "action": "Alert",
+    "action": "__Push Notification",
     "countdown": 30,
     "vars": {
       "Dismiss action": "",

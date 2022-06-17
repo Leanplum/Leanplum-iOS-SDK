@@ -7,17 +7,20 @@
 
 #import <Foundation/Foundation.h>
 #import "LPRegisterDevice.h"
-#import "LPActionManager.h"
+#import "LPActionTriggerManager.h"
 
 @interface LPInternalState : NSObject
 
-@property(strong, nonatomic) NSMutableArray *startBlocks, *variablesChangedBlocks, *noDownloadsBlocks, *onceNoDownloadsBlocks, *startIssuedBlocks, *messageDisplayedBlocks;
-@property(strong, nonatomic) NSMutableDictionary *actionBlocks, *actionResponders;
+@property(strong, nonatomic) NSMutableArray *startBlocks;
+@property(strong, nonatomic) NSMutableArray *variablesChangedBlocks;
+@property(strong, nonatomic) NSMutableArray *noDownloadsBlocks;
+@property(strong, nonatomic) NSMutableArray *onceNoDownloadsBlocks;
+@property(strong, nonatomic) NSMutableArray *startIssuedBlocks;
 @property(strong, nonatomic) NSMutableSet *startResponders, *variablesChangedResponders, *noDownloadsResponders;
 @property(assign, nonatomic) NSUncaughtExceptionHandler *customExceptionHandler;
 @property(strong, nonatomic) LPRegisterDevice *registration;
 @property(assign, nonatomic) BOOL calledStart, hasStarted, hasStartedAndRegisteredAsDeveloper, startSuccessful, issuedStart;
-@property(strong, nonatomic) LPActionManager *actionManager;
+@property(strong, nonatomic) LPActionTriggerManager *actionManager;
 @property(strong, nonatomic) NSString *appVersion;
 @property(strong, nonatomic) NSMutableArray *userAttributeChanges;
 @property(assign, nonatomic) BOOL isVariantDebugInfoEnabled;

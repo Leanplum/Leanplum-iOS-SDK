@@ -32,8 +32,7 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import "PublicHeader.h"
 #import "LPActionContext-Internal.h"
-#import "LPActionManager.h"
-#import "LPUIAlert.h"
+#import "LPActionTriggerManager.h"
 #import "LPEventCallback.h"
 #import "LPEventCallbackManager.h"
 #import "LPEventDataManager.h"
@@ -56,7 +55,6 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 #import "LPVar.h"
 #import "LPAppIconManager.h"
 #import "LPCountAggregator.h"
-#import "LPDeferMessageManager.h"
 #import "LPFileManager.h"
 #import "LPLogManager.h"
 #import "LPRegisterDevice.h"

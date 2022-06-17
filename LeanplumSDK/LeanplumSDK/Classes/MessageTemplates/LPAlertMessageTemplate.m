@@ -13,10 +13,11 @@
 
 + (void)defineAction
 {
+    __block UIViewController *alertViewController = NULL;
     BOOL (^responder)(LPActionContext *) = ^(LPActionContext *context) {
         @try {
             LPAlertMessageTemplate *template = [[LPAlertMessageTemplate alloc] init];
-            UIViewController *alertViewController = [template viewControllerWithContext:context];
+            alertViewController = [template viewControllerWithContext:context];
 
             [LPMessageTemplateUtilities presentOverVisible:alertViewController];
             return YES;
@@ -29,12 +30,19 @@
     [Leanplum defineAction:LPMT_ALERT_NAME
                     ofKind:kLeanplumActionKindMessage | kLeanplumActionKindAction
              withArguments:@[
-                 [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
-                 [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_ALERT_MESSAGE],
-                 [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
-                 [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
-             ]
-             withResponder:responder];
+        [LPActionArg argNamed:LPMT_ARG_TITLE withString:APP_NAME],
+        [LPActionArg argNamed:LPMT_ARG_MESSAGE withString:LPMT_DEFAULT_ALERT_MESSAGE],
+        [LPActionArg argNamed:LPMT_ARG_DISMISS_TEXT withString:LPMT_DEFAULT_OK_BUTTON_TEXT],
+        [LPActionArg argNamed:LPMT_ARG_DISMISS_ACTION withAction:nil]
+    ]
+               withOptions:@{}
+            presentHandler:responder
+            dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        [alertViewController dismissViewControllerAnimated:YES completion:^{
+            [context actionDismissed];
+        }];
+        return YES;
+    }];
 }
 
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context
@@ -47,6 +55,7 @@
                                                       style:UIAlertActionStyleDefault
                                                     handler:^(UIAlertAction *action) {
         [context runActionNamed:LPMT_ARG_DISMISS_ACTION];
+        [context actionDismissed];
     }];
     [alertViewController addAction:dismiss];
     return alertViewController;

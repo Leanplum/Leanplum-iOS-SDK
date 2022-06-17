@@ -22,12 +22,11 @@
 		075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */; };
 		075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */; };
 		075AB1142684AAD9007CA1BD /* MessagesTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E62684AAD9007CA1BD /* MessagesTest.m */; };
-		075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */; };
+		075AB1152684AAD9007CA1BD /* LPActionTriggerManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E72684AAD9007CA1BD /* LPActionTriggerManagerTest.m */; };
 		075AB1162684AAD9007CA1BD /* ExceptionsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */; };
 		075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0E92684AAD9007CA1BD /* LPRequestTest.m */; };
 		075AB1182684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */; };
 		075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EB2684AAD9007CA1BD /* LPFeatureFlagManagerTest.m */; };
-		075AB11A2684AAD9007CA1BD /* LPDeferMessageManagerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EC2684AAD9007CA1BD /* LPDeferMessageManagerTest.m */; };
 		075AB11B2684AAD9007CA1BD /* LPRequestBatchTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */; };
 		075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */; };
 		075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */; };
@@ -120,9 +119,14 @@
 		07828DB4268B4A630029A339 /* local_caps_day_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAA268B4A5E0029A339 /* local_caps_day_response.json */; };
 		07828DB5268B4A630029A339 /* local_caps_session_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 07828DAB268B4A5E0029A339 /* local_caps_session_response.json */; };
 		07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */; };
+		39C081A8278D95ED00C1DBD6 /* ActionManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */; };
+		6A07FDA52811AF3800995BE3 /* ContentMergerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */; };
+		6A07FDAE283544CE00995BE3 /* ActionManagerDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDAD283544CE00995BE3 /* ActionManagerDownloadTest.swift */; };
+		6A07FDB0283544E300995BE3 /* DictionaryValueKeyPathTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */; };
 		6A2FE16027958D6000E4A8FE /* GeofencingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2FE15F27958D6000E4A8FE /* GeofencingTest.m */; };
 		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
+		6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */; };
 		6A9D0A9627342BA300466133 /* NotificationsProxyiOS9Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */; };
 		6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */; };
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
@@ -181,12 +185,11 @@
 		075AB0E42684AAD9007CA1BD /* LPUtilsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPUtilsTest.m; sourceTree = "<group>"; };
 		075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPEventDataManagerTest.m; sourceTree = "<group>"; };
 		075AB0E62684AAD9007CA1BD /* MessagesTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MessagesTest.m; sourceTree = "<group>"; };
-		075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionManagerTest.m; sourceTree = "<group>"; };
+		075AB0E72684AAD9007CA1BD /* LPActionTriggerManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPActionTriggerManagerTest.m; sourceTree = "<group>"; };
 		075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExceptionsTest.m; sourceTree = "<group>"; };
 		075AB0E92684AAD9007CA1BD /* LPRequestTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestTest.m; sourceTree = "<group>"; };
 		075AB0EA2684AAD9007CA1BD /* LPWebInterstitialViewControllerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPWebInterstitialViewControllerTest.m; sourceTree = "<group>"; };
 		075AB0EB2684AAD9007CA1BD /* LPFeatureFlagManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPFeatureFlagManagerTest.m; sourceTree = "<group>"; };
-		075AB0EC2684AAD9007CA1BD /* LPDeferMessageManagerTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPDeferMessageManagerTest.m; sourceTree = "<group>"; };
 		075AB0ED2684AAD9007CA1BD /* LPRequestBatchTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestBatchTest.m; sourceTree = "<group>"; };
 		075AB0EE2684AAD9007CA1BD /* LPRequestFactoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPRequestFactoryTest.m; sourceTree = "<group>"; };
 		075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LeanplumTest.m; sourceTree = "<group>"; };
@@ -252,11 +255,16 @@
 		07828DAC268B4A5E0029A339 /* local_caps_week_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_week_response.json; sourceTree = "<group>"; };
 		07828DAD268B4A5E0029A339 /* local_caps_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = local_caps_response.json; sourceTree = "<group>"; };
 		07828DB6268B4AA00029A339 /* LPLocalCapsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LPLocalCapsTest.m; sourceTree = "<group>"; };
+		39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionManagerTest.swift; sourceTree = "<group>"; };
 		4747227FD8352F14AF070969 /* Pods-LeanplumSDKTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.debug.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMergerTest.swift; sourceTree = "<group>"; };
+		6A07FDAD283544CE00995BE3 /* ActionManagerDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionManagerDownloadTest.swift; sourceTree = "<group>"; };
+		6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryValueKeyPathTest.swift; sourceTree = "<group>"; };
 		6A2FE15F27958D6000E4A8FE /* GeofencingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeofencingTest.m; sourceTree = "<group>"; };
 		6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyTest.swift; sourceTree = "<group>"; };
 		6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerTest.swift; sourceTree = "<group>"; };
+		6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDelay.json; sourceTree = "<group>"; };
 		6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyiOS9Test.swift; sourceTree = "<group>"; };
 		6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerMock.swift; sourceTree = "<group>"; };
 		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
@@ -373,14 +381,16 @@
 		075AAFC726849AE9007CA1BD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6A07FDAC2835441200995BE3 /* Notifications */,
+				6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */,
+				39C081A6278D939800C1DBD6 /* Actions */,
 				6A2FE1822795994000E4A8FE /* LocationAndBeacons */,
 				075AB0E82684AAD9007CA1BD /* ExceptionsTest.m */,
 				075AB0EF2684AAD9007CA1BD /* LeanplumTest.m */,
 				075AB0F42684AAD9007CA1BD /* LPActionContextTest.m */,
-				075AB0E72684AAD9007CA1BD /* LPActionManagerTest.m */,
+				075AB0E72684AAD9007CA1BD /* LPActionTriggerManagerTest.m */,
 				075AB0DF2684AAD8007CA1BD /* LPAppIconManagerTest.m */,
 				075AB0F02684AAD9007CA1BD /* LPCountAggregatorTest.m */,
-				075AB0EC2684AAD9007CA1BD /* LPDeferMessageManagerTest.m */,
 				075AB0E12684AAD8007CA1BD /* LPEventCallbackManagerTest.m */,
 				075AB0E52684AAD9007CA1BD /* LPEventDataManagerTest.m */,
 				075AB0EB2684AAD9007CA1BD /* LPFeatureFlagManagerTest.m */,
@@ -401,12 +411,8 @@
 				075AB0E62684AAD9007CA1BD /* MessagesTest.m */,
 				075AB0F62684AAD9007CA1BD /* Extensions */,
 				075AB1082684AAD9007CA1BD /* Utilities */,
-				6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */,
 				6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */,
-				6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */,
-				6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */,
-				C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */,
-				C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */,
+				6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -439,7 +445,6 @@
 				075AB1032684AAD9007CA1BD /* LPRequestSender+Categories.m */,
 				075AB1042684AAD9007CA1BD /* LPNetworkEngine+Category.h */,
 				075AB1052684AAD9007CA1BD /* LeanplumReachability+Category.h */,
-				6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -516,9 +521,32 @@
 				075AB14E2684AB9D007CA1BD /* ChainedMessage.json */,
 				075AB14F2684AB9D007CA1BD /* NoPriorities.json */,
 				075AB1502684AB9D007CA1BD /* sample_action_notification.json */,
+				6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */,
 				075AB1512684AB9D007CA1BD /* DifferentPriorities1.json */,
 			);
 			path = TestData;
+			sourceTree = "<group>";
+		};
+		39C081A6278D939800C1DBD6 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				39C081A7278D95ED00C1DBD6 /* ActionManagerTest.swift */,
+				6A07FDAD283544CE00995BE3 /* ActionManagerDownloadTest.swift */,
+			);
+			path = Actions;
+			sourceTree = "<group>";
+		};
+		6A07FDAC2835441200995BE3 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */,
+				6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */,
+				6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */,
+				C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */,
+				C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */,
+				6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */,
+			);
+			path = Notifications;
 			sourceTree = "<group>";
 		};
 		6A2FE1822795994000E4A8FE /* LocationAndBeacons */ = {
@@ -692,6 +720,7 @@
 				075AB1912684AB9D007CA1BD /* sample_action_notification.json in Resources */,
 				07828DB1268B4A5E0029A339 /* local_caps_response.json in Resources */,
 				075AB1732684AB9D007CA1BD /* newsfeed_response.json in Resources */,
+				6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */,
 				075AB1832684AB9D007CA1BD /* SingleMessage.json in Resources */,
 				075AB1532684AB9D007CA1BD /* MainAppIcon.png in Resources */,
 				075AB15B2684AB9D007CA1BD /* complex_start_response.json in Resources */,
@@ -788,6 +817,7 @@
 				075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */,
 				075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */,
 				075AB1292684AAD9007CA1BD /* LPRequestSender+Categories.m in Sources */,
+				6A07FDB0283544E300995BE3 /* DictionaryValueKeyPathTest.swift in Sources */,
 				075AB1252684AAD9007CA1BD /* LPNetworkEngine+Category.m in Sources */,
 				6A2FE16027958D6000E4A8FE /* GeofencingTest.m in Sources */,
 				075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */,
@@ -800,9 +830,9 @@
 				075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */,
 				075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */,
 				075AB1242684AAD9007CA1BD /* LeanplumReachability+Category.m in Sources */,
+				6A07FDAE283544CE00995BE3 /* ActionManagerDownloadTest.swift in Sources */,
 				075AB1142684AAD9007CA1BD /* MessagesTest.m in Sources */,
-				075AB1152684AAD9007CA1BD /* LPActionManagerTest.m in Sources */,
-				075AB11A2684AAD9007CA1BD /* LPDeferMessageManagerTest.m in Sources */,
+				075AB1152684AAD9007CA1BD /* LPActionTriggerManagerTest.m in Sources */,
 				075AB1272684AAD9007CA1BD /* LPNetworkOperation+Category.m in Sources */,
 				C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */,
 				075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */,
@@ -811,6 +841,8 @@
 				075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */,
 				6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */,
 				075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */,
+				39C081A8278D95ED00C1DBD6 /* ActionManagerTest.swift in Sources */,
+				6A07FDA52811AF3800995BE3 /* ContentMergerTest.swift in Sources */,
 				075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */,
 				075AB11C2684AAD9007CA1BD /* LPRequestFactoryTest.m in Sources */,
 			);

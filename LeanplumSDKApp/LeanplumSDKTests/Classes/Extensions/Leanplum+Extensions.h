@@ -26,7 +26,6 @@
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPRequestFactory.h>
-#import <Leanplum/LPDeferMessageManager.h>
 #import <Leanplum/Leanplum-Swift.h>
 
 @interface Leanplum(UnitTest)
@@ -68,12 +67,8 @@
 + (void)maybeSendLog:(NSString *)message;
 @end
 
-@interface LPDeferMessageManager(UnitTest)
-+ (void)triggerDeferredMessage;
-+ (void)reset;
-@end
 
 @interface ApiConfig(UnitTest)
-@property (nonatomic, strong)  NSString * _Nullable appId;
-@property (nonatomic, strong)  NSString * _Nullable accessKey;
+@property (strong, nonatomic, nonnull) NSString *appId;
+@property (strong, nonatomic, nonnull) NSString *accessKey;
 @end

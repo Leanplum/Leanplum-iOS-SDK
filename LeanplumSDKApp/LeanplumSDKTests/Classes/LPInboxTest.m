@@ -34,7 +34,7 @@
 #import "LPRequestSender+Categories.h"
 #import "LPNetworkEngine+Category.h"
 #import <Leanplum/LPFileManager.h>
-#import <Leanplum/LPActionManager.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LPInbox.h>
 #import <Leanplum/LPRequestFactory.h>
 #import <Leanplum/LPRequestSender.h>

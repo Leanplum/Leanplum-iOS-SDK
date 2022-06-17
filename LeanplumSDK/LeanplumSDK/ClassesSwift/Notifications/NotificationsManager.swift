@@ -153,10 +153,10 @@ import Foundation
         
         // Display the Notification as Confirm in-app message
         if let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo) {
-            LPUIAlert.show(withTitle: Bundle.appName,
-                           message: notifMessage,
-                           cancelButtonTitle: NSLocalizedString("Cancel", comment: ""),
-                           otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
+            UIAlert.show(title: Bundle.appName,
+                         message: notifMessage,
+                         cancelButtonTitle: NSLocalizedString("Cancel", comment: ""),
+                         otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
                 if buttonIndex == 1 {
                     openNotificationHandler()
                 }

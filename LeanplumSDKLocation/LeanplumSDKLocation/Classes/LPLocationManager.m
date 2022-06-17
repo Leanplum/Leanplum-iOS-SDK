@@ -25,7 +25,7 @@
 
 #import <Leanplum/Leanplum.h>
 #import <Leanplum/LPConstants.h>
-#import <Leanplum/LPActionManager.h>
+#import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPVarCache.h>
 
