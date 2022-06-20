@@ -14,7 +14,8 @@ Pod::Spec.new do |s|
   s.source_files = 'LeanplumSDKLocation/LeanplumSDKLocation/Classes/**/*'
   s.frameworks = 'CoreLocation'
   s.documentation_url = 'https://docs.leanplum.com/'
-  s.dependency 'Leanplum-iOS-SDK'
+  s.dependency 'Leanplum-iOS-SDK', `cat sdk-version.txt`
   s.module_name = 'LeanplumLocationAndBeacons'
   s.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'LP_BEACON=1' }
+  s.swift_versions = '5.0'
 end
