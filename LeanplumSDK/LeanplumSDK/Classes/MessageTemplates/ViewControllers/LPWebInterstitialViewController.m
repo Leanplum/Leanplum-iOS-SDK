@@ -3,13 +3,14 @@
 //  LeanplumSDK-iOS
 //
 //  Created by Milos Jakovljevic on 03/04/2020.
-//  Copyright © 2020 Leanplum. All rights reserved.
+//  Copyright © 2022 Leanplum. All rights reserved.
 //
 
 #import "LPWebInterstitialViewController.h"
 #import "LPMessageTemplateConstants.h"
 #import "LPHitView.h"
 #import "LPActionContext.h"
+#import "LPRichInterstitialMessageTemplate.h"
 
 @interface LPWebInterstitialViewController ()
 
@@ -50,8 +51,7 @@
         [self configureFullscreen];
         [self loadURL];
     } else if ([actionName isEqualToString:LPMT_HTML_NAME]) {
-        CGFloat height = [[self.context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
-        self.isBanner = height > 0;
+        self.isBanner = [LPRichInterstitialMessageTemplate isBannerTemplate:self.context];
 
         if (self.isBanner) {
             [self configureBannerTemplate];
@@ -425,6 +425,14 @@
 
 - (void)dismiss:(BOOL)animated
 {
+    if (self.isBanner) {
+        [self didMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+        [self.context actionDismissed];
+        return;
+    }
+    
     if (self.navigationController) {
         [self.navigationController dismissViewControllerAnimated:animated completion:^{
             [self.context actionDismissed];
@@ -435,6 +443,17 @@
 }
 
 -(void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    if (self.isBanner) {
+        [self didMoveToParentViewController:nil];
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+        [self.context actionDismissed];
+        if (completion) {
+            completion();
+        }
+        return;
+    }
+    
     [super dismissViewControllerAnimated:flag completion:^{
         [self.context actionDismissed];
         if (completion) {
