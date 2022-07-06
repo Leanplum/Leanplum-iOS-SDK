@@ -417,7 +417,7 @@ static dispatch_once_t leanplum_onceToken;
         if (diffs_ || (!self.silent && !self.hasReceivedDiffs)) {
             // Prevent overriding variables if API returns null
             // If no variables are defined, API returns {}
-            if (!(diffs_ == nil || [diffs_ isEqual:[NSNull null]])) {
+            if (diffs_ != nil && ![diffs_ isEqual:[NSNull null]]) {
                 self.diffs = diffs_;
                 // Merger helper will mutate diffs.
                 // We need to lock it in case multiple threads will be accessing this.
