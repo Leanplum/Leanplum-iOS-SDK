@@ -3,7 +3,7 @@
 //  LeanplumSDK-iOS
 //
 //  Created by Milos Jakovljevic on 09/04/2020.
-//  Copyright © 2020 Leanplum. All rights reserved.
+//  Copyright © 2022 Leanplum. All rights reserved.
 //
 
 #import "LPMessageTemplateUtilities.h"
@@ -13,18 +13,43 @@
 
 @implementation LPMessageTemplateUtilities
 
-+(void)presentOverVisible:(UIViewController *) viewController
++(void)presentOverVisible:(UIViewController *)viewController
+{
+    [self present:viewController asChild:NO];
+}
+
++(void)presentOverVisibleAsChild:(UIViewController *)viewController
+{
+    [self present:viewController asChild:YES];
+}
+
++(void)present:(UIViewController *)viewController asChild:(BOOL)presentAsChild
 {
     [self dismissExisitingViewController:^{
         UIViewController *topViewController = [self visibleViewController];
         // if topViewController is getting dismissed, get view controller that presented it and let it present our new view controller,
         // otherwise we can assume that our topViewController will be in view hierarchy when presenting new view controller
         if (topViewController.isBeingDismissed) {
-            [[topViewController presentingViewController] presentViewController:viewController animated:YES completion:nil];
+            if (!presentAsChild) {
+                [[topViewController presentingViewController] presentViewController:viewController animated:YES completion:nil];
+            } else {
+                [self displayContentController:viewController withParent:[topViewController presentingViewController]];
+            }
         } else {
-            [topViewController presentViewController:viewController animated:YES completion:nil];
+            if (!presentAsChild) {
+                [topViewController presentViewController:viewController animated:YES completion:nil];
+            } else {
+                [self displayContentController:viewController withParent:topViewController];
+            }
         }
     }];
+}
+
++(void)displayContentController:(UIViewController*)content withParent:(UIViewController*)parent
+{
+    [parent addChildViewController:content];
+    [parent.view addSubview:content.view];
+    [content didMoveToParentViewController:parent];
 }
 
 +(void)dismissExisitingViewController:(nullable void (^)(void)) completion
