@@ -50,6 +50,7 @@ extension ActionManager {
         }
     }
     
+    /// Triggers all postponed messages when indefinite time was used with `MessageDisplayChoice`
     @objc public func triggerDelayedMessages() {
         appendActions(actions: delayedQueue.popAll())
     }
@@ -59,6 +60,7 @@ extension ActionManager {
     enum MessageDisplay {
         case show
         case discard
+        /// Delay with seconds: 0 to delay indefinitely
         case delay(seconds: Int)
     }
     
@@ -75,6 +77,11 @@ extension ActionManager {
         
         @objc public static func delay(seconds: Int) -> Self {
             .init(decision: .delay(seconds: seconds))
+        }
+        
+        /// Delays the action indefinitely - until `triggerDelayedMessages` is called
+        @objc public static func delayIndefinitely() -> Self {
+            .init(decision: .delay(seconds: 0))
         }
         
         required init(decision: MessageDisplay) {
