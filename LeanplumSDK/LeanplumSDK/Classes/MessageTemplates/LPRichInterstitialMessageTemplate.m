@@ -3,7 +3,7 @@
 //  LeanplumSDK-iOS
 //
 //  Created by Milos Jakovljevic on 06/04/2020.
-//  Copyright © 2020 Leanplum. All rights reserved.
+//  Copyright © 2022 Leanplum. All rights reserved.
 //
 
 #import "LPRichInterstitialMessageTemplate.h"
@@ -24,7 +24,12 @@
             LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
             viewController = [template viewControllerWithContext:context];
 
-            [LPMessageTemplateUtilities presentOverVisible:viewController];
+            if (![self isBannerTemplate:context]) {
+                [LPMessageTemplateUtilities presentOverVisible:viewController];
+            } else {
+                [LPMessageTemplateUtilities presentOverVisibleAsChild:viewController];
+            }
+            
             return YES;
         } @catch (NSException *exception) {
             LOG_LP_MESSAGE_EXCEPTION;
@@ -61,6 +66,12 @@
     viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
     viewController.context = context;
     return viewController;
+}
+
++(BOOL)isBannerTemplate:(LPActionContext *)context
+{
+    CGFloat height = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
+    return height > 0;
 }
 
 @end

@@ -415,23 +415,24 @@ static dispatch_once_t leanplum_onceToken;
 {
     @synchronized (self.vars) {
         if (diffs_ || (!self.silent && !self.hasReceivedDiffs)) {
-            self.diffs = diffs_;
-            
-            if (!self.diffs) {
-                self.merged = [ContentMerger mergeWithVars:self.valuesFromClient diff:self.diffs];
-            } else {
+            // Prevent overriding variables if API returns null
+            // If no variables are defined, API returns {}
+            if (diffs_ != nil && ![diffs_ isEqual:[NSNull null]]) {
+                self.diffs = diffs_;
                 // Merger helper will mutate diffs.
                 // We need to lock it in case multiple threads will be accessing this.
                 @synchronized (self.diffs) {
                     self.merged = [ContentMerger mergeWithVars:self.valuesFromClient diff:self.diffs];
                 }
-            }
-
-            // Update variables with new values.
-            // Have to extract the keys because a dictionary variable may add a new sub-variable,
-            // modifying the variable dictionary.
-            for (NSString *name in [self.vars allKeys]) {
-                [self.vars[name] update];
+                
+                // Update variables with new values.
+                // Have to extract the keys because a dictionary variable may add a new sub-variable,
+                // modifying the variable dictionary.
+                for (NSString *name in [self.vars allKeys]) {
+                    [self.vars[name] update];
+                }
+            } else {
+                LPLog(LPError, @"No variable values were received from the server. Please contact us to investigate.");
             }
         }
         

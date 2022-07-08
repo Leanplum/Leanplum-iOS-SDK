@@ -10,6 +10,8 @@ import Foundation
 @objcMembers public class ActionManager: NSObject {
     public static let shared: ActionManager = .init()
 
+    /// `ActionManager.Configuration` of the `ActionManager`
+    /// Set a new configuration to override a configuration option
     public var configuration: Configuration = .default
 
     lazy var queue: Queue = Queue()
@@ -23,11 +25,15 @@ import Foundation
     public var messagesDataFromServer: [AnyHashable: Any] = [:]
     public var actionDefinitionsFromServer: [AnyHashable: Any] = [:]
 
+    /// When disabled, it stops executing actions and new actions will not be added to the queue.
     public var isEnabled: Bool = true {
         didSet {
             Log.info("[ActionManager] isEnabled: \(isEnabled)")
         }
     }
+    
+    /// When paused, it stops executing actions but new actions will continue to be added to the queue
+    /// Value will be changed to `false` when app is in background and to `true` when app enters foreground
     public var isPaused: Bool = false {
         didSet {
             if isPaused == false {
@@ -63,26 +69,42 @@ import Foundation
     }
 
     var shouldDisplayMessage: ((ActionContext) -> MessageDisplayChoice)?
+    /// Called per message to decide whether to show, discard or delay it.
+    /// - Note: to delay a message indefinitely, use delay with value -1
     @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageDisplayChoice) {
         shouldDisplayMessage = callback
     }
 
     var onMessageDisplayed: ((ActionContext) -> Void)?
+    /// Called when the message is displayed.
     @objc public func onMessageDisplayed(_ callback: @escaping (ActionContext) -> Void) {
         onMessageDisplayed = callback
     }
 
     var onMessageDismissed: ((ActionContext) -> Void)?
+    /// Called when the message is dismissed.
     @objc public func onMessageDismissed(_ callback: @escaping (ActionContext) -> Void) {
         onMessageDismissed = callback
     }
 
     var onMessageAction: ((_ actionName: String, _ context: ActionContext) -> Void)?
+    /// Called when a message action is executed.
     @objc public func onMessageAction(_ callback: @escaping (_ actionName: String, _ context: ActionContext) -> Void) {
         onMessageAction = callback
     }
 
     var prioritizeMessages: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?
+    /// Called when there are multiple messages to be displayed. Messages are ordered by Priority.
+    /// Messages can be reordered or removed if desired. Removed messages will not be presented.
+    /// Messages will be presented one after another in the order returned.
+    ///
+    /// - Note: If this function is not implemented, the first message is presented only.
+    ///
+    /// - Parameters:
+    ///     - contexts: messages' contexts
+    ///     - trigger: the action trigger that triggered the messages
+    ///
+    /// - Returns: the messages that should be presented in that order
     @objc public func prioritizeMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
         prioritizeMessages = callback
     }

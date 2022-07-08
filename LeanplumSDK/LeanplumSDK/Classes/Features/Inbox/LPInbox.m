@@ -355,8 +355,13 @@ static NSObject *updatingLock;
     [archiver encodeObject:[self messages] forKey:LP_PARAM_INBOX_MESSAGES];
     [archiver finishEncoding];
     
-    NSData *encryptedData = [LPAES encryptedDataFromData:data];
-    
+    NSData *encryptedData;
+    if (@available(iOS 12.0, *)) {
+        encryptedData = [LPAES encryptedDataFromData:[archiver encodedData]];
+    } else {
+        encryptedData = [LPAES encryptedDataFromData:data];
+    }
+
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
     [defaults setObject:encryptedData forKey:LEANPLUM_DEFAULTS_INBOX_KEY];
