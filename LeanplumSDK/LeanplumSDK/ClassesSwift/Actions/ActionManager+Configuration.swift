@@ -8,10 +8,22 @@
 import Foundation
 import UIKit
 
-
 extension ActionManager {
+    /// Configuration of the `ActionManager`
+    /// - Precondition: set a new `Configuration` to the `ActionManager` with the defined options
     public class Configuration {
+        
+        /// Keep or dismiss in-app message when push notification is opened. If kept, the action from the
+        /// push notification will go into the queue and will be presented after in-app dismissal, otherwise
+        /// the in-app is dismissed and the push notification's action is presented.
+        ///
+        /// - Default value: `true`
         public let dismissOnPushArrival: Bool
+        
+        /// Message queue is paused when app is backgrounded and resumed when app is foregrounded
+        /// Set to `false` to prevent resuming the message queue when app enters foreground
+        ///
+        /// - Default value: `true`
         public let resumeOnEnterForeground: Bool
         
         public init(dismissOnPushArrival: Bool,
