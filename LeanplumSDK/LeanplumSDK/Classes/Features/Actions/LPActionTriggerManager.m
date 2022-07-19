@@ -342,7 +342,7 @@ static long WEEK_SECONDS;
 {
     *foregroundRegionNames = [NSMutableSet set];
     *backgroundRegionNames = [NSMutableSet set];
-    NSDictionary *messages = [[ActionManager shared] messages];
+    NSDictionary *messages = [[LPActionManager shared] messages];
     for (NSString *messageId in messages) {
         NSDictionary *messageConfig = messages[messageId];
         NSMutableSet *regionNames;

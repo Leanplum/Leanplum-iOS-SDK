@@ -7,6 +7,7 @@
 
 import Foundation
 
+@objc(LPActionManager)
 @objcMembers public class ActionManager: NSObject {
     public static let shared: ActionManager = .init()
 
