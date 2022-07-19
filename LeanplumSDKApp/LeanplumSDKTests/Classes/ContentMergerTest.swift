@@ -36,26 +36,10 @@ class ContentMergerTest: XCTestCase {
         XCTAssertEqual(arrMixed, result)
     }
         
-    func testMergeArrayWithDict() {
+    func testMergeArraysWithDict() {
         let arr: [AnyHashable] = [1, 2, 3, 4]
         let arrDiff: AnyDictionary = ["[0]": 5, "[3]": 6]
         let expected: [AnyHashable] = [5, 2, 3, 6]
-        let result = ContentMerger.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
-        XCTAssertEqual(expected, result)
-    }
-    
-    func testMergeArrayWithDictAdditionalValue() {
-        let arr: [AnyHashable] = [1, 2, 3, 4]
-        let arrDiff: AnyDictionary = ["[4]": 5]
-        let expected: [AnyHashable] = [1, 2, 3, 4, 5]
-        let result = ContentMerger.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
-        XCTAssertEqual(expected, result)
-    }
-    
-    func testMergeEmptyArrayWithDict() {
-        let arr: [AnyHashable] = []
-        let arrDiff: AnyDictionary = ["[4]": 5]
-        let expected: [AnyHashable] = [NSNull(), NSNull(), NSNull(), NSNull(), 5]
         let result = ContentMerger.merge(vars: arr, diff: arrDiff) as! [AnyHashable]
         XCTAssertEqual(expected, result)
     }
