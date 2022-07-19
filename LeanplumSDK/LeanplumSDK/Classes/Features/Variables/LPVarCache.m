@@ -377,7 +377,7 @@ static dispatch_once_t leanplum_onceToken;
         NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:diffsData];
 #pragma clang diagnostic pop
         [archiver encodeObject:self.diffs forKey:LEANPLUM_DEFAULTS_VARIABLES_KEY];
-        NSDictionary *messages = [[ActionManager shared] messages];
+        NSDictionary *messages = [[LPActionManager shared] messages];
         [archiver encodeObject:messages forKey:LEANPLUM_DEFAULTS_MESSAGES_KEY];
         [archiver encodeObject:self.variants forKey:LP_KEY_VARIANTS];
         [archiver encodeObject:self.variantDebugInfo forKey:LP_KEY_VARIANT_DEBUG_INFO];
@@ -444,10 +444,10 @@ static dispatch_once_t leanplum_onceToken;
         if (messages_) {
             if (!self.silent) {
                 // Save unmodified message data from API
-                [[ActionManager shared] setMessagesDataFromServer:messages_];
+                [[LPActionManager shared] setMessagesDataFromServer:messages_];
             }
             // Process messages data
-            [[ActionManager shared] processMessagesAndDownloadFiles: messages_];
+            [[LPActionManager shared] processMessagesAndDownloadFiles: messages_];
         }
     
         // If LeanplumLocation is linked in, setup region monitoring.
@@ -541,13 +541,13 @@ static dispatch_once_t leanplum_onceToken;
         changed = YES;
     }
     
-    NSArray<ActionDefinition*> *definitions = [[ActionManager shared] definitions];
+    NSArray<ActionDefinition*> *definitions = [[LPActionManager shared] definitions];
     NSMutableDictionary<NSString *, id> *actionDefinitions = [NSMutableDictionary dictionary];
     for (ActionDefinition *def in definitions) {
         actionDefinitions[def.name] = def.json;
     }
     if (actions && ![self areActionDefinitionsEqual:actionDefinitions
-                                              other:[[ActionManager shared] actionDefinitionsFromServer]]) {
+                                              other:[[LPActionManager shared] actionDefinitionsFromServer]]) {
         changed = YES;
     }
     
@@ -641,7 +641,7 @@ static dispatch_once_t leanplum_onceToken;
 {
     self.devModeValuesFromServer = values;
     self.devModeFileAttributesFromServer = fileAttributes;
-    [[ActionManager shared] setActionDefinitionsFromServer: actionDefinitions];
+    [[LPActionManager shared] setActionDefinitionsFromServer: actionDefinitions];
 }
 
 - (void)onUpdate:(CacheUpdateBlock) block
@@ -741,9 +741,9 @@ static dispatch_once_t leanplum_onceToken;
     self.devModeValuesFromServer = nil;
     self.devModeFileAttributesFromServer = nil;
     
-    [ActionManager shared].messages = [NSMutableDictionary dictionary];
-    [ActionManager shared].messagesDataFromServer = [NSMutableDictionary dictionary];
-    [ActionManager shared].actionDefinitionsFromServer = [NSMutableDictionary dictionary];
+    [LPActionManager shared].messages = [NSMutableDictionary dictionary];
+    [LPActionManager shared].messagesDataFromServer = [NSMutableDictionary dictionary];
+    [LPActionManager shared].actionDefinitionsFromServer = [NSMutableDictionary dictionary];
 }
 
 // Resets the VarCache to stock state. Used for testing purposes.

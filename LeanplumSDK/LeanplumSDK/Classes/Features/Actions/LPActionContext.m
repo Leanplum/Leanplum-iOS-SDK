@@ -84,7 +84,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 - (NSDictionary *)defaultValues
 {
-    return [[[ActionManager shared] definitionWithName:_name] values];
+    return [[[LPActionManager shared] definitionWithName:_name] values];
 }
 
 /**
@@ -92,14 +92,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
  */
 - (void)maybeDownloadFiles
 {
-    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
-    [[ActionManager shared] downloadFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
+    NSDictionary *kinds = [[[LPActionManager shared] definitionWithName:_name] kinds];
+    [[LPActionManager shared] downloadFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (BOOL)hasMissingFiles
 {
-    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
-    return [[ActionManager shared] hasMissingFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
+    NSDictionary *kinds = [[[LPActionManager shared] definitionWithName:_name] kinds];
+    return [[LPActionManager shared] hasMissingFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (NSString *)actionName
@@ -120,7 +120,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if (parent) {
             _args = [parent getChildArgs:_key];
         } else if (_messageId) {
-            NSDictionary *message = [[ActionManager shared] messages][_messageId];
+            NSDictionary *message = [[LPActionManager shared] messages][_messageId];
             if (message) {
                 _args = message[LP_KEY_VARS];
             }
@@ -185,10 +185,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if ([obj isKindOfClass:[NSDictionary class]]) {
             // Ensure obj is mutable as well
             vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] preserveFileNamed:reserveName];
-        } else if ([key hasPrefix:ActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
+        } else if ([key hasPrefix:LPActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
                    && [obj length] > 0 && ![key isEqualToString:reserveName]) {
             NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
-            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:ActionManager.ActionArgFilePrefix
+            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:LPActionManager.ActionArgFilePrefix
                                                                  withString:@""];
             vars[prunedKey] = [self asciiEncodedFileURL:filePath];
             [vars removeObjectForKey:key];
@@ -378,7 +378,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         return nil;
     }
 
-    NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
+    NSDictionary *defaultArgs = [[[LPActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
     actionArgs = [ContentMerger mergeWithVars:defaultArgs diff:actionArgs];
     
     return actionArgs;
@@ -442,7 +442,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                           actionContextWithName:name
                                           args:args messageId:_messageId];
         actionNamedContext->_parentContext = weakSelf;
-        // notifies our ActionManager that the action was executed
+        // notifies our LPActionManager that the action was executed
         self.actionDidExecute(actionNamedContext);
     }
     
@@ -462,24 +462,24 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         chainedActionContext->_isChainedMessage = YES;
         chainedActionContext->_parentContext = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
+            [[LPActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
         });
     };
 
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
-        NSDictionary *message = [[ActionManager shared] messages][messageId];
+        NSDictionary *message = [[LPActionManager shared] messages][messageId];
         if (message) {
             executeChainedMessage();
         } else {
-            ActionManager.shared.isPaused = YES;
+            LPActionManager.shared.isPaused = YES;
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
-                NSDictionary *message = [[ActionManager shared] messages][messageId];
+                NSDictionary *message = [[LPActionManager shared] messages][messageId];
                 if (message) {
                     executeChainedMessage();
                 }
-                ActionManager.shared.isPaused = NO;
+                LPActionManager.shared.isPaused = NO;
             }];
         }
     } else {
@@ -493,7 +493,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         childContext->_parentContext = weakSelf;
         childContext->_key = name;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
+            [[LPActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
             
         });
     }

@@ -49,7 +49,7 @@
     } dismissAction:^BOOL(LPActionContext * _Nonnull ct) {
         return YES;
     }];
-    [[ActionManager shared] defineActionWithDefinition:definition];
+    [[LPActionManager shared] defineActionWithDefinition:definition];
 }
 
 - (void)tearDown {
