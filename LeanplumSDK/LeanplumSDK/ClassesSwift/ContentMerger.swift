@@ -91,13 +91,15 @@ import Foundation
                     
                     let newValue = diffDict[keyStr] ?? NSNull()
                     // Value index is bigger than default array count
-                    // the value is a new one, append it to the array
-                    if merged.count <= i {
-                        merged.append(merge(vars: merged[i], diff: newValue))
-                    } else {
-                        // The new value overrides existing value at index
-                        merged[i] = merge(vars: merged[i], diff: newValue)
+                    // Fill the array with null values
+                    if i >= merged.count {
+                        while i >= merged.count {
+                            merged.append(NSNull())
+                        }
                     }
+                    
+                    // Override the default value at index
+                    merged[i] = merge(vars: merged[i], diff: newValue)
                 }
             }
             return merged
