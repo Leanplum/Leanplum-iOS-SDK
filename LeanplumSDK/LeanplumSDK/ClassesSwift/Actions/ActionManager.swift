@@ -7,6 +7,7 @@
 
 import Foundation
 
+@objc(LPActionManager)
 @objcMembers public class ActionManager: NSObject {
     public static let shared: ActionManager = .init()
 
@@ -71,25 +72,25 @@ import Foundation
     var shouldDisplayMessage: ((ActionContext) -> MessageDisplayChoice)?
     /// Called per message to decide whether to show, discard or delay it.
     /// - Note: to delay a message indefinitely, use delay with value -1
-    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageDisplayChoice) {
+    @objc public func shouldDisplayMessage(_ callback: ((ActionContext) -> MessageDisplayChoice)?) {
         shouldDisplayMessage = callback
     }
 
     var onMessageDisplayed: ((ActionContext) -> Void)?
     /// Called when the message is displayed.
-    @objc public func onMessageDisplayed(_ callback: @escaping (ActionContext) -> Void) {
+    @objc public func onMessageDisplayed(_ callback: ((ActionContext) -> Void)?) {
         onMessageDisplayed = callback
     }
 
     var onMessageDismissed: ((ActionContext) -> Void)?
     /// Called when the message is dismissed.
-    @objc public func onMessageDismissed(_ callback: @escaping (ActionContext) -> Void) {
+    @objc public func onMessageDismissed(_ callback: ((ActionContext) -> Void)?) {
         onMessageDismissed = callback
     }
 
     var onMessageAction: ((_ actionName: String, _ context: ActionContext) -> Void)?
     /// Called when a message action is executed.
-    @objc public func onMessageAction(_ callback: @escaping (_ actionName: String, _ context: ActionContext) -> Void) {
+    @objc public func onMessageAction(_ callback: ((_ actionName: String, _ context: ActionContext) -> Void)?) {
         onMessageAction = callback
     }
 
@@ -105,7 +106,7 @@ import Foundation
     ///     - trigger: the action trigger that triggered the messages
     ///
     /// - Returns: the messages that should be presented in that order
-    @objc public func prioritizeMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
+    @objc public func prioritizeMessages(_ callback: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?) {
         prioritizeMessages = callback
     }
     

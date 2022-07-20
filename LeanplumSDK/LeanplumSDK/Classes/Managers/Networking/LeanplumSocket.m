@@ -173,7 +173,7 @@ static dispatch_once_t leanplum_onceToken;
             BOOL isRooted = [payload[@"isRooted"] boolValue];
             NSString *actionType = action[LP_VALUE_ACTION_ARG];
             
-            NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:action[LP_VALUE_ACTION_ARG]] values];
+            NSDictionary *defaultArgs = [[[LPActionManager shared] definitionWithName:action[LP_VALUE_ACTION_ARG]] values];
             action = [ContentMerger mergeWithVars:defaultArgs diff:action];
             
             LPActionContext *context = [LPActionContext actionContextWithName:actionType
@@ -186,7 +186,7 @@ static dispatch_once_t leanplum_onceToken;
             ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:@"Preview"
                                                                       condition:nil
                                                                contextualValues:nil];
-            [[ActionManager shared] triggerWithContexts:@[context] priority:PriorityHigh trigger:trigger];
+            [[LPActionManager shared] triggerWithContexts:@[context] priority:PriorityHigh trigger:trigger];
         }
 
     } else if ([packet.name isEqualToString:@"getVariables"]) {

@@ -41,7 +41,7 @@
 @interface MessagesTest : XCTestCase
 
 @property (nonatomic) LeanplumMessageMatchResult mockResult;
-@property (nonatomic) id mockActionManager;
+@property (nonatomic) id mockLPActionManager;
 @property (nonatomic) id mockLPInternalState;
 @property (nonatomic) NSArray *mockWhenCondtions;
 @property (nonatomic) NSString *mockEventName;
@@ -95,7 +95,7 @@
     // Automatically sets up AppId and AccessKey for development mode.
     [LeanplumHelper setup_development_test];
     [self setMockResult];
-    [self setMockActionManager];
+    [self setMockLPActionManager];
     [self setMockLPInternalState];
     [self setParametersForMaybePerformAction];
 }
@@ -104,7 +104,7 @@
 {
     [super tearDown];
     [LeanplumHelper clean_up];
-    [self.mockActionManager stopMocking];
+    [self.mockLPActionManager stopMocking];
     [self.mockLPInternalState stopMocking];
 }
 
@@ -126,17 +126,17 @@
     XCTAssertFalse(self.mockResult.matchedActivePeriod);
 }
 
-- (void)setMockActionManager
+- (void)setMockLPActionManager
 {
-    self.mockActionManager = OCMClassMock([LPActionTriggerManager class]);
-    OCMStub([self.mockActionManager shouldShowMessage:[OCMArg any]
+    self.mockLPActionManager = OCMClassMock([LPActionTriggerManager class]);
+    OCMStub([self.mockLPActionManager shouldShowMessage:[OCMArg any]
                                       withConfig:[OCMArg any]
                                             when:[OCMArg any]
                                    withEventName:[OCMArg any]
                                 contextualValues:[OCMArg any]]).andReturn(self.mockResult);
 
     LeanplumMessageMatchResult testResult =
-        [self.mockActionManager shouldShowMessage:@"test"
+        [self.mockLPActionManager shouldShowMessage:@"test"
                                        withConfig:[NSDictionary dictionary]
                                              when:@"test"
                                     withEventName:@"test"
@@ -149,7 +149,7 @@
 - (void)setMockLPInternalState
 {
     LPInternalState *lp = [[LPInternalState alloc] init];
-    lp.actionManager = self.mockActionManager;
+    lp.actionManager = self.mockLPActionManager;
     self.mockLPInternalState = OCMClassMock([LPInternalState class]);
     OCMStub([self.mockLPInternalState sharedState]).andReturn(lp);
 }
@@ -166,7 +166,7 @@
 - (void)runInAppMessagePrioritizationTest:(NSDictionary *)messageConfigs
                    withExpectedMessageIds:(NSSet *)expectedMessageIds
 {
-    [[ActionManager shared] setMessages:messageConfigs];
+    [[LPActionManager shared] setMessages:messageConfigs];
     XCTestExpectation *expectation = [self expectationWithDescription:@"wait_for_match_action_contexts"];
     LPActionTriggerManagerMock *mock = [LPActionTriggerManagerMock new];
     [mock setActionsMatched:^(NSArray<LPActionContext *> *contexts) {
@@ -267,7 +267,7 @@
     NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"TiedPrioritiesDifferentDelay"
                                                               ofType:@"json"];
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
-    [[ActionManager shared] setMessages:messageConfigs];
+    [[LPActionManager shared] setMessages:messageConfigs];
     id mockLPLocalNotificationsManager = OCMClassMock([LPLocalNotificationsManager class]);
     // Countdown is valid only for local notifications.
     XCTestExpectation *expectation = [self expectationWithDescription:@"wait_for_local_notification_schedule"];
@@ -296,7 +296,7 @@
                                                               ofType:@"json"];
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
     
-    [[ActionManager shared] setMessages:messageConfigs];
+    [[LPActionManager shared] setMessages:messageConfigs];
     id mockLPLocalNotificationsManager = OCMClassMock([LPLocalNotificationsManager class]);
     // Countdown is valid only for local notifications.
     XCTestExpectation *expectation = [self expectationWithDescription:@"wait_for_local_notification_schedule"];
@@ -339,7 +339,7 @@
                             retrieve_string_from_file:@"ChainedMessage"
                             ofType:@"json"];
     NSDictionary *messageConfigs = [LPJSON JSONFromString:jsonString];
-    [[ActionManager shared] setMessages:messageConfigs];
+    [[LPActionManager shared] setMessages:messageConfigs];
 
     LPActionContext *context1 = [Leanplum createActionContextForMessageId:@"1"];
     LPActionContext *context2 = [Leanplum createActionContextForMessageId:@"2"];
@@ -380,7 +380,7 @@
 - (void) test_active_period_false
 {
     [self setMockResultActivePeriodFalse];
-    [self setMockActionManager];
+    [self setMockLPActionManager];
     [self setMockLPInternalState];
     
     NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"SingleMessage"
