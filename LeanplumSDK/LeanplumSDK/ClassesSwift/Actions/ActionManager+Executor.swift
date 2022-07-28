@@ -9,9 +9,9 @@ import Foundation
 
 extension ActionManager {
     func performActions() {
-        // If we are paused, exit as we will continue execution
+        // If we are paused or disabled, exit as we will continue execution
         // when we are resumed.
-        guard isPaused == false else {
+        guard !isPaused, isEnabled else {
             return
         }
         

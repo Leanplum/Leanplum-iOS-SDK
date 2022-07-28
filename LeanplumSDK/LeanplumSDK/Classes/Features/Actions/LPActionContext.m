@@ -494,7 +494,6 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         childContext->_key = name;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[LPActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
-            
         });
     }
 
