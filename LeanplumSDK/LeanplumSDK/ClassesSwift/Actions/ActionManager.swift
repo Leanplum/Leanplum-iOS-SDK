@@ -46,9 +46,6 @@ import Foundation
 
     override init() {
         super.init()
-        queue.didChange = {
-            self.performAvailableActions()
-        }
         scheduler.actionDelayed = {
             self.appendActions(actions: [$0])
         }
@@ -113,7 +110,9 @@ import Foundation
     func performAvailableActions() {
         Log.debug("[ActionManager]: performing all available actions.")
         Leanplum.onceVariablesChangedAndNoDownloadsPending {
-            self.performActions()
+            DispatchQueue.main.async {
+                self.performActions()
+            }
         }
     }
 }
@@ -123,6 +122,7 @@ extension ActionManager {
     func appendActions(actions: [Action]) {
         guard isEnabled else { return }
         actions.forEach(queue.pushBack(_:))
+        performAvailableActions()
     }
 
     /// Adds action to front of the queue
@@ -131,5 +131,6 @@ extension ActionManager {
         actions
             .reversed()
             .forEach(queue.pushFront(_:))
+        performAvailableActions()
     }
 }

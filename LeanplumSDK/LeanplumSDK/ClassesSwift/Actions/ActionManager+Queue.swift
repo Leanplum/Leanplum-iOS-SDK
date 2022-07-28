@@ -10,15 +10,8 @@ import Foundation
 extension ActionManager {
     final class Queue {
         let lock = DispatchQueue(label: "leanplum.access_dispatch_queue", attributes: .concurrent)
-        var didChange: (() -> Void)?
-        var queue: [Action] = [] {
-            didSet {
-                DispatchQueue.main.async {
-                    self.didChange?()
-                }
-            }
-        }
-
+        var queue: [Action] = []
+        
         func pushBack(_ item: Action) {
             lock.async(flags: .barrier) {
                 self.queue.append(item)
