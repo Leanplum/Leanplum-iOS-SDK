@@ -99,8 +99,7 @@ import Foundation
     /// - Note: If this function is not implemented, the first message is presented only.
     ///
     /// - Parameters:
-    ///     - contexts: messages' contexts
-    ///     - trigger: the action trigger that triggered the messages
+    ///     - callback: contexts - messages' contexts and trigger - the action trigger that triggered the messages
     ///
     /// - Returns: the messages that should be presented in that order
     @objc public func prioritizeMessages(_ callback: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?) {
