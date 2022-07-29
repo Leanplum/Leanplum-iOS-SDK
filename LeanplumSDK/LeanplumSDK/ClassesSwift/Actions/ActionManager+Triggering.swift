@@ -9,7 +9,7 @@ import Foundation
 
 extension ActionManager {
     
-    @objc public enum Priority: Int {
+    @objc public enum Priority: Int, Equatable, Hashable, RawRepresentable {
         case high
         case `default`
         
