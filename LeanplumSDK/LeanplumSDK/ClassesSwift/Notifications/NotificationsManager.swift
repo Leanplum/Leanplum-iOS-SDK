@@ -32,6 +32,7 @@ import Foundation
         notificationSettings.getSettings(completionHandler: completionHandler)
     }
     
+    @available(iOS, deprecated: 10.0)
     @objc(didRegisterUserNotificationSettings:)
     public func didRegister(_ settings: UIUserNotificationSettings) {
         isAskToAskDisabled = true
