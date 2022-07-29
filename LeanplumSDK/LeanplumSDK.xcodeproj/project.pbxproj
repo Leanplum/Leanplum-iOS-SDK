@@ -2040,6 +2040,7 @@
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -module-interface-preserve-types-as-written";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDK;
 				PRODUCT_NAME = Leanplum;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2072,6 +2073,7 @@
 					"@loader_path/Frameworks",
 				);
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -module-interface-preserve-types-as-written";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDK;
 				PRODUCT_NAME = Leanplum;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2146,6 +2148,7 @@
 				);
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -module-interface-preserve-types-as-written";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDK;
 				PRODUCT_NAME = Leanplum;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2179,6 +2182,7 @@
 				);
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
+				OTHER_SWIFT_FLAGS = "-Xfrontend -module-interface-preserve-types-as-written";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDK;
 				PRODUCT_NAME = Leanplum;
 				PROVISIONING_PROFILE_SPECIFIER = "";
