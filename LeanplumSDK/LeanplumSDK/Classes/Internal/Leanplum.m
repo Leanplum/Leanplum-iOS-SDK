@@ -393,6 +393,9 @@ void leanplumExceptionHandler(NSException *exception);
     } else {
        [[Leanplum user] setDeviceId:deviceId];
     }
+    
+    [[MigrationManager shared] setDeviceId:deviceId];
+    
     LP_END_TRY
 }
 
@@ -753,20 +756,7 @@ void leanplumExceptionHandler(NSException *exception);
     if (IS_NOOP) {
         state.hasStarted = YES;
         state.startSuccessful = YES;
-        [[LPVarCache sharedCache] applyVariableDiffs:@{}
-                                            messages:@{}
-                                            variants:@[]
-                                           localCaps:@[]
-                                             regions:@{}
-                                    variantDebugInfo:@{}
-                                            varsJson:@""
-                                       varsSignature:@""];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self triggerStartResponse:YES];
-            [self triggerVariablesChanged];
-            [self triggerVariablesChangedAndNoDownloadsPending];
-            [[self inbox] updateMessages:[[NSMutableDictionary alloc] init] unreadCount:0];
-        });
+        [self handleStartNOOP];
         return;
     }
 
@@ -782,7 +772,9 @@ void leanplumExceptionHandler(NSException *exception);
         return;
     }
 
+    // Define Leanplum message templates
     [LPMessageTemplatesClass sharedTemplates];
+    
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     if (attributes != nil) {
         @synchronized([LPInternalState sharedState].userAttributeChanges) {
@@ -790,9 +782,9 @@ void leanplumExceptionHandler(NSException *exception);
         }
     }
     state.calledStart = YES;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [Leanplum trackCrashes];
-    });
+//    dispatch_async(dispatch_get_main_queue(), ^{
+//        [Leanplum trackCrashes];
+//    });
     state.actionManager = [LPActionTriggerManager sharedManager];
 
     [[LPVarCache sharedCache] setSilent:YES];
@@ -812,84 +804,9 @@ void leanplumExceptionHandler(NSException *exception);
         [self triggerVariablesChangedAndNoDownloadsPending];
     }];
 
-    // Set device ID.
-    NSString *deviceId = [Leanplum user].deviceId;
-    // This is the device ID set when the MAC address is used on iOS 7.
-    // This is to allow apps who upgrade to the new ID to forget the old one.
-    if ([deviceId isEqualToString:@"0f607264fc6318a92b9e13c65db7cd3c"]) {
-        deviceId = nil;
-    }
-    if (!deviceId) {
-        deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-        if (!deviceId) {
-            deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
-        }
-        [[Leanplum user] setDeviceId:deviceId];
-    }
+    [self setupUserWithUserId:userId];
 
-    // Set user ID.
-    if (!userId) {
-        userId = [Leanplum user].userId;
-        if (!userId) {
-            userId = [Leanplum user].deviceId;
-        }
-    }
-    [[Leanplum user] setUserId:userId];
-
-    // Setup parameters.
-    NSString *versionName = [self appVersion];
-    UIDevice *device = [UIDevice currentDevice];
-    NSString *currentLocaleString = [self.locale localeIdentifier];
-
-    // Set the device name. But only if running in development mode.
-    NSString *deviceName = @"";
-    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        deviceName = device.name ?: @"";
-    }
-    NSTimeZone *localTimeZone = [NSTimeZone localTimeZone];
-    NSNumber *timezoneOffsetSeconds =
-        [NSNumber numberWithInteger:[localTimeZone secondsFromGMTForDate:[NSDate date]]];
-    NSMutableDictionary *params = [@{
-        LP_PARAM_INCLUDE_DEFAULTS: @(NO),
-        LP_PARAM_VERSION_NAME: versionName,
-        LP_PARAM_DEVICE_NAME: deviceName,
-        LP_PARAM_DEVICE_MODEL: [self platform],
-        LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
-        LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
-        LP_KEY_LOCALE: currentLocaleString,
-        LP_KEY_TIMEZONE: [localTimeZone name],
-        LP_KEY_TIMEZONE_OFFSET_SECONDS: timezoneOffsetSeconds,
-        LP_KEY_COUNTRY: LP_VALUE_DETECT,
-        LP_KEY_REGION: LP_VALUE_DETECT,
-        LP_KEY_CITY: LP_VALUE_DETECT,
-        LP_KEY_LOCATION: LP_VALUE_DETECT,
-        LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
-    } mutableCopy];
-    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
-        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
-    }
-
-    if (attributes != nil) {
-        params[LP_PARAM_USER_ATTRIBUTES] = attributes ?
-                [LPJSON stringFromJSON:attributes] : @"";
-    }
-    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-        params[LP_PARAM_DEV_MODE] = @(YES);
-    }
-
-    NSDictionary *timeParams = [self initializePreLeanplumInstall];
-    if (timeParams) {
-        [params addEntriesFromDictionary:timeParams];
-    }
-
-    // Get the current Inbox messages on the device.
-    params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
-    
-    // Push token.
-    NSString *pushToken = [[Leanplum user] pushToken];
-    if (pushToken) {
-        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
-    }
+    NSDictionary* params = [self setupStartParameters:attributes];
 
     // Issue start API call.
     LPRequest *request = [[LPRequestFactory startWithParams:params] andRequestType:Immediate];
@@ -1015,9 +932,151 @@ void leanplumExceptionHandler(NSException *exception);
                     fromMessageId:nil
              withContextualValues:nil];
     }];
-    [[LPRequestSender sharedInstance] send:request];
+    
+    [[MigrationManager shared] onMigrationStateLoadedWithCompletion:^{
+        NSLog(@"[MigrationLog] send start");
+        [[LPRequestSender sharedInstance] send:request];
+        
+        [[MigrationManager shared] start];
+    }];
+
     [self triggerStartIssued];
 
+    [self addUIApplicationObservers];
+    [self swizzleExtensionClose];
+
+    [self maybeRegisterForNotifications];
+    LP_END_TRY
+    
+    LP_TRY
+    [LPUtils initExceptionHandling];
+    LP_END_TRY
+}
+
++ (void)handleStartNOOP
+{
+    // TODO: handle migration state
+    [[LPVarCache sharedCache] applyVariableDiffs:@{}
+                                        messages:@{}
+                                        variants:@[]
+                                       localCaps:@[]
+                                         regions:@{}
+                                variantDebugInfo:@{}
+                                        varsJson:@""
+                                   varsSignature:@""];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self triggerStartResponse:YES];
+        [self triggerVariablesChanged];
+        [self triggerVariablesChangedAndNoDownloadsPending];
+        [[self inbox] updateMessages:[[NSMutableDictionary alloc] init] unreadCount:0];
+    });
+}
+
++ (void)setupUserWithUserId:(NSString *)userId
+{
+    // Set device ID.
+    NSString *deviceId = [Leanplum user].deviceId;
+    // This is the device ID set when the MAC address is used on iOS 7.
+    // This is to allow apps who upgrade to the new ID to forget the old one.
+    if ([deviceId isEqualToString:@"0f607264fc6318a92b9e13c65db7cd3c"]) {
+        deviceId = nil;
+    }
+    if (!deviceId) {
+        deviceId = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
+        if (!deviceId) {
+            deviceId = [[UIDevice currentDevice] leanplum_uniqueGlobalDeviceIdentifier];
+        }
+        [[Leanplum user] setDeviceId:deviceId];
+    }
+
+    // Set user ID.
+    if (!userId) {
+        userId = [Leanplum user].userId;
+        if (!userId) {
+            userId = [Leanplum user].deviceId;
+        }
+    }
+    [[Leanplum user] setUserId:userId];
+}
+
++ (NSDictionary *)setupStartParameters:(NSDictionary *)attributes
+{
+    // Setup parameters.
+    NSString *versionName = [self appVersion];
+    UIDevice *device = [UIDevice currentDevice];
+    NSString *currentLocaleString = [self.locale localeIdentifier];
+
+    // Set the device name. But only if running in development mode.
+    NSString *deviceName = @"";
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        deviceName = device.name ?: @"";
+    }
+    NSTimeZone *localTimeZone = [NSTimeZone localTimeZone];
+    NSNumber *timezoneOffsetSeconds =
+        [NSNumber numberWithInteger:[localTimeZone secondsFromGMTForDate:[NSDate date]]];
+    NSMutableDictionary *params = [@{
+        LP_PARAM_INCLUDE_DEFAULTS: @(NO),
+        LP_PARAM_VERSION_NAME: versionName,
+        LP_PARAM_DEVICE_NAME: deviceName,
+        LP_PARAM_DEVICE_MODEL: [self platform],
+        LP_PARAM_DEVICE_SYSTEM_NAME: device.systemName,
+        LP_PARAM_DEVICE_SYSTEM_VERSION: device.systemVersion,
+        LP_KEY_LOCALE: currentLocaleString,
+        LP_KEY_TIMEZONE: [localTimeZone name],
+        LP_KEY_TIMEZONE_OFFSET_SECONDS: timezoneOffsetSeconds,
+        LP_KEY_COUNTRY: LP_VALUE_DETECT,
+        LP_KEY_REGION: LP_VALUE_DETECT,
+        LP_KEY_CITY: LP_VALUE_DETECT,
+        LP_KEY_LOCATION: LP_VALUE_DETECT,
+        LP_PARAM_RICH_PUSH_ENABLED: @([self isRichPushEnabled])
+    } mutableCopy];
+    if ([LPInternalState sharedState].isVariantDebugInfoEnabled) {
+        params[LP_PARAM_INCLUDE_VARIANT_DEBUG_INFO] = @(YES);
+    }
+
+    if (attributes != nil) {
+        params[LP_PARAM_USER_ATTRIBUTES] = attributes ?
+                [LPJSON stringFromJSON:attributes] : @"";
+    }
+    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+        params[LP_PARAM_DEV_MODE] = @(YES);
+    }
+
+    NSDictionary *timeParams = [self initializePreLeanplumInstall];
+    if (timeParams) {
+        [params addEntriesFromDictionary:timeParams];
+    }
+
+    // Get the current Inbox messages on the device.
+    params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
+    
+    // Push token.
+    NSString *pushToken = [[Leanplum user] pushToken];
+    if (pushToken) {
+        params[LP_PARAM_DEVICE_PUSH_TOKEN] = pushToken;
+    }
+    
+    return params;
+}
+
++ (void)swizzleExtensionClose
+{
+    // Extension close.
+    if (_extensionContext) {
+        [LPSwizzle
+            swizzleMethod:@selector(completeRequestReturningItems:completionHandler:)
+               withMethod:@selector(leanplum_completeRequestReturningItems:completionHandler:)
+                    error:nil
+                    class:[NSExtensionContext class]];
+        [LPSwizzle swizzleMethod:@selector(cancelRequestWithError:)
+                      withMethod:@selector(leanplum_cancelRequestWithError:)
+                           error:nil
+                           class:[NSExtensionContext class]];
+    }
+}
+
++ (void)addUIApplicationObservers
+{
     // Pause.
     [[NSNotificationCenter defaultCenter]
         addObserverForName:UIApplicationDidEnterBackgroundNotification
@@ -1045,7 +1104,7 @@ void leanplumExceptionHandler(NSException *exception);
                     //if they are changed the new valeus will be updated to server as well
                     [[Leanplum notificationsManager] updateNotificationSettings];
         
-                    [Leanplum resume];
+               //     [Leanplum resume];
         
                     // Used for push notifications iOS 9
                     [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
@@ -1069,25 +1128,6 @@ void leanplumExceptionHandler(NSException *exception);
                     [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
                 }];
-
-    // Extension close.
-    if (_extensionContext) {
-        [LPSwizzle
-            swizzleMethod:@selector(completeRequestReturningItems:completionHandler:)
-               withMethod:@selector(leanplum_completeRequestReturningItems:completionHandler:)
-                    error:nil
-                    class:[NSExtensionContext class]];
-        [LPSwizzle swizzleMethod:@selector(cancelRequestWithError:)
-                      withMethod:@selector(leanplum_cancelRequestWithError:)
-                           error:nil
-                           class:[NSExtensionContext class]];
-    }
-    [self maybeRegisterForNotifications];
-    LP_END_TRY
-    
-    LP_TRY
-    [LPUtils initExceptionHandling];
-    LP_END_TRY
 }
 
 // On first run with Leanplum, determine if this app was previously installed without Leanplum.
@@ -1129,6 +1169,7 @@ void leanplumExceptionHandler(NSException *exception);
 // sending push tokens to server.
 + (void)maybeRegisterForNotifications
 {
+    // if user has registered their own LPMessageTemplates
     Class userMessageTemplatesClass = NSClassFromString(@"LPMessageTemplates");
     if (userMessageTemplatesClass
         && [[userMessageTemplatesClass sharedTemplates]
@@ -1175,21 +1216,21 @@ void leanplumExceptionHandler(NSException *exception);
     [[LPRequestSender sharedInstance] send:request];
 }
 
-+ (void)trackCrashes
-{
-    LP_TRY
-    Class crittercism = NSClassFromString(@"Crittercism");
-    SEL selector = NSSelectorFromString(@"didCrashOnLastLoad:");
-    if (crittercism && [crittercism respondsToSelector:selector]) {
-        IMP imp = [crittercism methodForSelector:selector];
-        BOOL (*func)(id, SEL) = (void *)imp;
-        BOOL didCrash = func(crittercism, selector);
-        if (didCrash) {
-            [Leanplum track:@"Crash"];
-        }
-    }
-    LP_END_TRY
-}
+//+ (void)trackCrashes
+//{
+//    LP_TRY
+//    Class crittercism = NSClassFromString(@"Crittercism");
+//    SEL selector = NSSelectorFromString(@"didCrashOnLastLoad:");
+//    if (crittercism && [crittercism respondsToSelector:selector]) {
+//        IMP imp = [crittercism methodForSelector:selector];
+//        BOOL (*func)(id, SEL) = (void *)imp;
+//        BOOL didCrash = func(crittercism, selector);
+//        if (didCrash) {
+//            [Leanplum track:@"Crash"];
+//        }
+//    }
+//    LP_END_TRY
+//}
 
 + (BOOL)hasStarted
 {
@@ -1774,6 +1815,9 @@ void leanplumExceptionHandler(NSException *exception);
     
     [self onStartIssued:^{
         [self trackInternal:event withArgs:arguments andParameters:params];
+        
+        [[MigrationManager shared] track:event value:value info:info args:args params:params];
+        
     }];
     LP_END_TRY
     
@@ -1926,6 +1970,12 @@ andParameters:(NSDictionary *)params
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     [self onStartIssued:^{
         [self setUserIdInternal:userId withAttributes:attributes];
+        
+        if ([userId isEqualToString:@""]) {
+            [[MigrationManager shared] setUserId:userId];
+        } else {
+            [[MigrationManager shared] setUserAttributes:attributes];
+        }
     }];
     LP_END_TRY
     LP_BEGIN_USER_CODE

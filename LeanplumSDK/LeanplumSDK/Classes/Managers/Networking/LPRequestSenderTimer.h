@@ -23,6 +23,7 @@ typedef enum : NSUInteger {
 @property (assign) LPEventsUploadInterval timerInterval;
 + (instancetype)sharedInstance;
 - (void)start;
+- (void)invalidate;
 @end
 
 NS_ASSUME_NONNULL_END

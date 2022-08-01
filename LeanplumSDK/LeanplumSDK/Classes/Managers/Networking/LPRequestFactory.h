@@ -57,6 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (LPRequest *)getNewsfeedMessagesWithParams:(nullable NSDictionary *)params;
 + (LPRequest *)markNewsfeedMessageAsReadWithParams:(nullable NSDictionary *)params;
 + (LPRequest *)deleteNewsfeedMessageWithParams:(nullable NSDictionary *)params;
++ (LPRequest *)getMigrationState:(nullable NSDictionary *)params;
 
 @end
 
