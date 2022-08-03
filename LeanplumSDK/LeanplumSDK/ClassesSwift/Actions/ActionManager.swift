@@ -53,7 +53,7 @@ import Foundation
         NotificationCenter
             .default
             .addObserver(forName: UIApplication.didBecomeActiveNotification,
-                         object: self,
+                         object: nil,
                          queue: .main) { [weak self] _ in
                 guard let `self` = self else { return }
                 if self.configuration.resumeOnEnterForeground {
