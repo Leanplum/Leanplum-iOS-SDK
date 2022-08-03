@@ -24,10 +24,11 @@
         @try {
             LPOpenUrlMessageTemplate *template = [[LPOpenUrlMessageTemplate alloc] init];
             template.context = context;
-            [template openURL];
-
-            [context actionDismissed];
             
+            [template openURLWithCompletion:^(BOOL success) {
+                [context actionDismissed];
+            }];
+
             return YES;
         }
         @catch (NSException *exception) {
@@ -40,14 +41,13 @@
     }];
 }
 
-- (void) openURL
+- (void)openURLWithCompletion:(void (^ __nonnull)(BOOL success))completion
 {
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *encodedURLString = [self urlEncodedStringFromString:[self.context stringNamed:LPMT_ARG_URL]];
         NSURL *url = [NSURL URLWithString: encodedURLString];
-        [LPUtils openURL:url];
+        [LPUtils openURL:url completionHandler:completion];
     });
-
 }
 
 - (NSString *)urlEncodedStringFromString:(NSString *)urlString {

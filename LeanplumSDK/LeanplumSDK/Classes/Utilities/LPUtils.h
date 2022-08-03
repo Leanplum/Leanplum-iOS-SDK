@@ -70,7 +70,12 @@
 /**
  * Open URLs from SDK
  */
-+ (void)openURL:(NSURL*)url;
++ (void)openURL:(NSURL *)url;
+
+/**
+ * Open URLs from SDK and calls the completionHandler
+ */
++ (void)openURL:(NSURL *)url completionHandler:(void (^ __nullable)(BOOL success))completion;
 
 /**
  * Checks if given value is a NSNumber with bool value
