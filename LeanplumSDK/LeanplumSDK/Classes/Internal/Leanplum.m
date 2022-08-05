@@ -2564,12 +2564,6 @@ void leanplumExceptionHandler(NSException *exception)
     return [[LPVarCache sharedCache] securedVars];;
 }
 
-
-/**
- * Checks if message should be suppressed based on the local IAM caps.
- * @param context The message context to check.
- * @return True if message should  be suppressed, false otherwise.
-*/
 + (BOOL)shouldSuppressMessage:(LPActionContext *)context
 {
     if([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[context actionName]]) {
