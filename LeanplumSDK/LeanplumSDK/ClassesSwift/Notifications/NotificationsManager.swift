@@ -6,6 +6,7 @@
 //  Copyright © 2021 Leanplum. All rights reserved.
 
 import Foundation
+import UIKit
 
 /// Manager responsible for handling push (remote) and local notifications
 @objc public class NotificationsManager: NSObject {
@@ -142,27 +143,34 @@ import Foundation
     }
     
     func showNotificationInForeground(userInfo: [AnyHashable: Any]) {
-        let openNotificationHandler = {
-            self.notificationOpened(userInfo: userInfo)
-        }
-        
         // Execute custom block
         if let block = shouldHandleNotificationBlock {
-            block(userInfo, openNotificationHandler)
+            block(userInfo, {
+                self.notificationOpened(userInfo: userInfo)
+            })
+            return
+        }
+        
+        guard let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo),
+              let messageId = Utilities.messageIdFromUserInfo(userInfo) else {
             return
         }
         
         // Display the Notification as Confirm in-app message
-        if let notifMessage = Leanplum.notificationsManager().getNotificationText(userInfo) {
-            UIAlert.show(title: Bundle.appName,
-                         message: notifMessage,
-                         cancelButtonTitle: NSLocalizedString("Cancel", comment: ""),
-                         otherButtonTitles: [NSLocalizedString("View", comment: "")]) { buttonIndex in
-                if buttonIndex == 1 {
-                    openNotificationHandler()
-                }
-            }
-        }
+        let confirmArgs: [String: Any] = [
+            LPMT_ARG_TITLE: Bundle.appName,
+            LPMT_ARG_MESSAGE: notifMessage,
+            LPMT_ARG_ACCEPT_TEXT: NSLocalizedString("View", comment: ""),
+            LPMT_ARG_CANCEL_TEXT: NSLocalizedString("Cancel", comment: ""),
+            LP_VALUE_DEFAULT_PUSH_ACTION: userInfo[LP_KEY_PUSH_ACTION] ?? ""
+        ]
+        
+        let context: ActionContextNotification = .init(LPMT_CONFIRM_NAME,
+                                                       args: confirmArgs,
+                                                       messageId: messageId,
+                                                       preventRealtimeUpdating: true)
+        
+        ActionManager.shared.trigger(contexts: [context], priority: .high, trigger: nil)
     }
     
     // MARK: - Delivery Tracking
