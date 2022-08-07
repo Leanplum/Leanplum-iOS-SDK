@@ -56,10 +56,6 @@
 + (NSSet<NSString *> *)parseEnabledCountersFromResponse:(NSDictionary *)response;
 + (NSSet<NSString *> *)parseEnabledFeatureFlagsFromResponse:(NSDictionary *)response;
 + (NSDictionary *)parseFileURLsFromResponse:(NSDictionary *)response;
-+ (void)triggerMessageDisplayed:(LPActionContext *)context;
-+ (LPMessageArchiveData *)messageArchiveDataFromContext:(LPActionContext *)context;
-+ (NSString *)messageBodyFromContext:(LPActionContext *)context;
-
 + (void)trackGeofence:(LPGeofenceEventType *)event withValue:(double)value andInfo:(NSString *)info andArgs:(NSDictionary *)args andParameters:(NSDictionary *)params;
 
 @end
@@ -71,7 +67,7 @@
 @end
 
 @interface LeanplumTest : XCTestCase
-
+- (NSString *)messageBodyFromContext:(LPActionContext *)context;
 @end
 
 @interface NotificationsManager(UnitTest)
@@ -105,6 +101,25 @@
 + (void)tearDown {
     [super tearDown];
     [LeanplumHelper restore_method_swizzling];
+}
+
+- (NSString *)messageBodyFromContext:(LPActionContext *)context {
+    NSString *messageBody = @"";
+    NSString *messageKey = @"Message";
+    id messageObject = [context.args valueForKey:messageKey];
+    if (messageObject) {
+        if ([messageObject isKindOfClass:[NSString class]]) {
+            messageBody = messageObject;
+        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
+            NSDictionary *messageDict = (NSDictionary *) messageObject;
+            if ([[messageDict objectForKey:@"Text"] isKindOfClass:[NSString class]]) {
+                messageBody = [messageDict objectForKey:@"Text"];
+            } else if ([[messageDict objectForKey:@"Text value"] isKindOfClass:[NSString class]]) {
+                messageBody = [messageDict objectForKey:@"Text value"];
+            }
+        }
+    }
+    return messageBody;
 }
 
 /**
@@ -2325,7 +2340,7 @@
     OCMStub([actionContextMock messageId]).andReturn(messageID);
     OCMStub([actionContextMock args]).andReturn(@{@"Message":messageBody});
 
-    XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
+    XCTAssertTrue([[self messageBodyFromContext:actionContext] isEqualToString:messageBody]);
 }
 
 /**
@@ -2343,7 +2358,7 @@
     OCMStub([actionContextMock messageId]).andReturn(messageID);
     OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text":messageBody}});
 
-    XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
+    XCTAssertTrue([[self messageBodyFromContext:actionContext] isEqualToString:messageBody]);
 }
 
 /**
@@ -2361,7 +2376,7 @@
     OCMStub([actionContextMock messageId]).andReturn(messageID);
     OCMStub([actionContextMock args]).andReturn(@{@"Message":@{@"Text value":messageBody}});
 
-    XCTAssertTrue([[Leanplum messageBodyFromContext:actionContext] isEqualToString:messageBody]);
+    XCTAssertTrue([[self messageBodyFromContext:actionContext] isEqualToString:messageBody]);
 }
 
 - (void) test_forceContentUpdateVariants
