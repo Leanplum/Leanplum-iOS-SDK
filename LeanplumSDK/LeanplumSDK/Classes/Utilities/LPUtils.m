@@ -112,12 +112,20 @@
 
 + (void)openURL:(NSURL *)url
 {
+    [self openURL:url completionHandler:nil];
+}
+
++ (void)openURL:(NSURL *)url completionHandler:(void (^ __nullable)(BOOL success))completion
+{
     if (@available(iOS 10.0, *)) {
-        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:completion];
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
         [[UIApplication sharedApplication] openURL:url];
+        if (completion) {
+            completion(YES);
+        }
 #pragma clang diagnostic pop
     }
 }

@@ -37,6 +37,14 @@ extension ActionManager {
         }
         
         Log.debug("[ActionManager]: running action with name: \(action.context).")
+        
+        if action.type == .single,
+           Leanplum.shouldSuppressMessage(action.context) {
+            Log.info("[ActionManager]: local IAM caps reached, suppressing \(action.context).")
+            state.currentAction = nil
+            performAvailableActions()
+            return
+        }
 
         // decide if we are going to display the message
         // by calling delegate and let it decide what are we supposed to do

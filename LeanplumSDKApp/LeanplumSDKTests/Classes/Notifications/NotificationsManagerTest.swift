@@ -134,37 +134,36 @@ class NotificationsManagerTest: XCTestCase {
     }
     
     /**
-     * Tests LPUIAlert tap on View executes Notification Open action
+     * Tests Confirm is presented when push is received when app is in foreground
+     * Tap on Accept executes Notification Open action
      */
-    func test_notification_foreground_alert_open() {
-        let onRunActionNamedExpectation = expectation(description: "Notification Alert -> Alert View -> Open Action")
-        let dismissControllerExp = expectation(description: "Dismiss Controller")
+    func test_notification_foreground_confirm_open() {
+        let pushOpenExpectation = expectation(description: "Notification Alert -> Confirm -> Open Action")
+        let confirmPresentedExpectation = expectation(description: "Push Confirm Presented Foreground")
         Leanplum.defineAction(name: LPMT_OPEN_URL_NAME, kind: .action, args: []) { context in
-            let lpx = NotificationsManagerTest.userInfo["_lpx"] as! [AnyHashable:Any]
+            let lpx = NotificationsManagerTest.userInfo[LP_KEY_PUSH_ACTION] as! [AnyHashable:Any]
             XCTAssertEqual(String(describing: lpx[LPMT_ARG_URL]!), context.string(name: LPMT_ARG_URL)!)
-            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo["_lpm"]!), context.messageId)
-            XCTAssertEqual(LP_PUSH_NOTIFICATION_ACTION, context.parent?.name)
-            onRunActionNamedExpectation.fulfill()
+            XCTAssertEqual(String(describing: NotificationsManagerTest.userInfo[LP_KEY_PUSH_MESSAGE_ID]!), context.messageId)
+            pushOpenExpectation.fulfill()
             return false
         }
         
-        if UIApplication.shared.keyWindow == nil {
-            let window = UIWindow()
-            window.rootViewController = UIViewController()
-            window.makeKeyAndVisible()
+        Leanplum.defineAction(name: LPMT_CONFIRM_NAME,
+                              kind: .action,
+                              args: [ActionArg(name: LPMT_ARG_ACCEPT_ACTION, action: "")]) { context in
+            context.runTrackedAction(name: LPMT_ARG_ACCEPT_ACTION)
+            confirmPresentedExpectation.fulfill()
+            // return false otherwise dismiss
+            return false
         }
         
-        // Other UIAlertControllers can block the notification LPUIAlert
-        // Dismiss all controllers so after notificationReceived is executed, the top one will be the LPUIAlert
-        dismissAllPresentedControllers(block: {
-            Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
-            self.getTopController()?.tapButton(atIndex: 1)
-            self.getTopController()?.dismiss(animated: false, completion: {
-                dismissControllerExp.fulfill()
-            })
-        })
+        // Ensure action will be executed
+        ActionManager.shared.queue = ActionManager.Queue()
+        ActionManager.shared.state.currentAction = nil
+        // Trigger showing notification in app foreground
+        Leanplum.notificationsManager().notificationReceived(userInfo: NotificationsManagerTest.userInfo, isForeground: true)
         
-        wait(for: [onRunActionNamedExpectation, dismissControllerExp], timeout: timeout)
+        wait(for: [pushOpenExpectation, confirmPresentedExpectation], timeout: timeout)
     }
     
     func test_notification_foreground_custom_block() {
@@ -331,37 +330,5 @@ class NotificationsManagerTest: XCTestCase {
         XCTAssertEqual(result, XCTWaiter.Result.timedOut)
         Leanplum.setPushDeliveryTrackingEnabled(true)
         tearDown_request()
-    }
-    
-    // MARK: View Controller Helper Functions
-    func getTopController() -> UIAlertController? {
-        var ctrl = UIApplication.shared.keyWindow?.rootViewController?.presentedViewController
-        while(ctrl?.presentedViewController != nil){
-            ctrl = ctrl?.presentedViewController
-        }
-        return (ctrl as? UIAlertController)
-    }
-    
-    /**
-     * Dismisses all presentedViewControllers then executes the block
-     */
-    func dismissAllPresentedControllers(block: @escaping () -> Void) {
-        if let ctrl = getTopController() {
-            ctrl.dismiss(animated: false, completion: {
-                self.dismissAllPresentedControllers(block: block)
-            })
-        } else {
-            block()
-        }
-    }
-}
-
-extension UIAlertController {
-    typealias AlertHandler = @convention(block) (UIAlertAction) -> Void
-    
-    func tapButton(atIndex index: Int) {
-        guard let block = actions[index].value(forKey: "handler") else { return }
-        let handler = unsafeBitCast(block as AnyObject, to: AlertHandler.self)
-        handler(actions[index])
     }
 }

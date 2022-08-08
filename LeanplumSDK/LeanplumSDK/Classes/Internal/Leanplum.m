@@ -583,25 +583,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_USER_CODE
 }
 
-+ (NSString *)messageBodyFromContext:(LPActionContext *)context {
-    NSString *messageBody = @"";
-    NSString *messageKey = @"Message";
-    id messageObject = [context.args valueForKey:messageKey];
-    if (messageObject) {
-        if ([messageObject isKindOfClass:[NSString class]]) {
-            messageBody = messageObject;
-        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *messageDict = (NSDictionary *) messageObject;
-            if ([[messageDict objectForKey:@"Text"] isKindOfClass:[NSString class]]) {
-                messageBody = [messageDict objectForKey:@"Text"];
-            } else if ([[messageDict objectForKey:@"Text value"] isKindOfClass:[NSString class]]) {
-                messageBody = [messageDict objectForKey:@"Text value"];
-            }
-        }
-    }
-    return messageBody;
-}
-
 + (void)onHasStartedAndRegisteredAsDeveloper
 {
     if ([LPFileManager initializing]) {
@@ -2564,12 +2545,6 @@ void leanplumExceptionHandler(NSException *exception)
     return [[LPVarCache sharedCache] securedVars];;
 }
 
-
-/**
- * Checks if message should be suppressed based on the local IAM caps.
- * @param context The message context to check.
- * @return True if message should  be suppressed, false otherwise.
-*/
 + (BOOL)shouldSuppressMessage:(LPActionContext *)context
 {
     if([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[context actionName]]) {

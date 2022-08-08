@@ -27,7 +27,6 @@
 #import "LPInbox.h"
 #import "LPActionArg.h"
 #import "LPVar.h"
-#import "LPMessageArchiveData.h"
 #import "LPEnumConstants.h"
 #import "Leanplum_WebSocket.h"
 #import "LPNetworkOperation.h"
@@ -370,6 +369,13 @@ NS_SWIFT_NAME(start(userId:attributes:completion:));
       presentHandler:(nullable LeanplumActionBlock)presentHandler
       dismissHandler:(nullable LeanplumActionBlock)dismissHandler
 NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
+
+/**
+ * Checks if message should be suppressed based on the local IAM caps.
+ * @param context The message context to check.
+ * @return True if message should  be suppressed, false otherwise.
+*/
++ (BOOL)shouldSuppressMessage:(LPActionContext *)context;
 
 + (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;

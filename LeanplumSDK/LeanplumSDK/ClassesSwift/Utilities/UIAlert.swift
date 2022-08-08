@@ -13,7 +13,10 @@ import Foundation
     
     @objc public class func show(title: String, message: String, cancelButtonTitle: String, otherButtonTitles: [String], actionBlock: LeanplumUIAlertCompletionBlock?) {
         
-        guard !ActionManager.shared.isPaused else { return }
+        guard !ActionManager.shared.isPaused,
+              ActionManager.shared.isEnabled else {
+            return
+        }
         
         let unpauseQueue: () -> () = {
             Log.debug("[ActionManager]: UIAlert dismissed, continuing queue.")
