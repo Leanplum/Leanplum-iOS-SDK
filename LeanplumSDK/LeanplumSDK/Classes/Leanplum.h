@@ -27,7 +27,6 @@
 #import "LPInbox.h"
 #import "LPActionArg.h"
 #import "LPVar.h"
-#import "LPMessageArchiveData.h"
 #import "LPEnumConstants.h"
 #import "Leanplum_WebSocket.h"
 #import "LPNetworkOperation.h"
