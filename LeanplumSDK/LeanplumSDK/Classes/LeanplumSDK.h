@@ -93,7 +93,6 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 #import "LPPopupViewController.h"
 #import "LPWebInterstitialViewController.h"
 #import "LPHitView.h"
-#import "LPMessageArchiveData.h"
 #import "LPLocalNotificationsManager.h"
 #import "LPNotificationsConstants.h"
 #import "LPAES.h"

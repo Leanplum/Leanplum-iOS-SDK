@@ -1997,6 +1997,9 @@
                            color_argument
                            ];
 
+    
+    XCTestExpectation *setVarsExpectation = [self expectationWithDescription:@"waiting_for_set_vars"];
+    
     // Validate request.
     [LPRequestSender validate_request:^BOOL(NSString *method, NSString *apiMethod,
                                         NSDictionary *params) {
@@ -2029,6 +2032,8 @@
         XCTAssertEqualObjects(values[number_argument_name], [number_argument defaultValue]);
         XCTAssertEqualObjects(values[string_argument_name], [string_argument defaultValue]);
 
+        [setVarsExpectation fulfill];
+        
         return YES;
     }];
 
@@ -2041,50 +2046,17 @@
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
 
-//    // Define action and send it.
-//    [Leanplum defineAction:action_name ofKind:kLeanplumActionKindAction withArguments:arguments];
-//    [[LPVarCache sharedCache] sendActionsIfChanged];
-//
-//    // Test whether notification parsing is working correctly.
-//    NSString *jsonString = [LeanplumHelper retrieve_string_from_file:@"sample_action_notification"
-//                                                              ofType:@"json"];
-//    NSDictionary *userInfo = [LPJSON JSONFromString:jsonString];
-//
-//    // Expectation for onAction block.
-//    XCTestExpectation *expects = [self expectationWithDescription:@"waiting_for_action"];
-
-    // Add responder.
-//    [Leanplum addResponder:self withSelector:@selector(on_action_named:)
-//            forActionNamed:action_name];
-    // Verify that responder is added.
-//    NSMutableSet *responders = [LPInternalState sharedState].actionResponders[action_name];
-//    XCTAssertTrue(responders.count == 1);
-//
-//    // Test action received via notification.
-//    [Leanplum onAction:action_name invoke:^BOOL(LPActionContext *context) {
-//        XCTAssertEqualObjects(action_name, [context actionName]);
-//        XCTAssertEqualObjects([context stringNamed:string_argument_name], @"test_string_2");
-//        XCTAssertEqualObjects([context numberNamed:number_argument_name], @15);
-//        XCTAssertEqual([context boolNamed:bool_argument_name], YES);
-//        XCTAssertEqualObjects([context dictionaryNamed:dict_argument_name],
-//                                @{@"test_value": @"test_value_2"});
-//        XCTAssertEqualObjects([context arrayNamed:array_argument_name], (@[@9, @8, @7, @6]));
-//        XCTAssertNotNil([context colorNamed:color_argument_name]);
-//
-//        [expects fulfill];
-//        return YES;
-//    }];
-//    // Perform action with notification.
-//    [[Leanplum notificationsManager] notificationOpened:userInfo action:LP_VALUE_DEFAULT_PUSH_ACTION];
+    // Define action and send it.
+    [Leanplum defineAction:action_name ofKind:kLeanplumActionKindAction withArguments:arguments withOptions:@{} presentHandler:^BOOL(LPActionContext * _Nonnull context) {
+        return YES;
+    } dismissHandler:^BOOL(LPActionContext * _Nonnull context) {
+        return YES;
+    }];
+    
+    [[LPVarCache sharedCache] sendActionsIfChanged];
 
     // Wait for action to be received before finishing.
-//    [self waitForExpectationsWithTimeout:10 handler:nil];
-
-    // Remove responder.
-//    [Leanplum removeResponder:self withSelector:@selector(on_action_named:)
-//               forActionNamed:action_name];
-    // Verify that responder is removed.
-//    XCTAssertTrue(responders.count == 0);
+    [self waitForExpectationsWithTimeout:10 handler:nil];
 }
 
 - (void)test_device_registration
