@@ -24,6 +24,8 @@
     [super tearDown];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
 - (void)test_event_callback
 {
     // Test invoke methods.
@@ -164,5 +166,6 @@
     [self waitForExpectations:@[response3Expectation] timeout:2];
     XCTAssertTrue(eventCallbackMap.count == 0);
 }
+#pragma clang diagnostic pop
 
 @end

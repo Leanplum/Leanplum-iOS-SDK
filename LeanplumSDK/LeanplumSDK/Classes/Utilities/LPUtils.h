@@ -29,23 +29,23 @@
 /**
  * Checks if the object is null or empty.
  */
-+ (BOOL)isNullOrEmpty:(id)obj;
++ (BOOL)isNullOrEmpty:(id _Nullable)obj;
 
 /**
  * Checks if the string is empty or have spaces.
  */
-+ (BOOL)isBlank:(id)obj;
++ (BOOL)isBlank:(id _Nullable)obj;
 
 /**
  * Computes MD5 of NSData. Mostly used for uploading images.
  */
-+ (NSString *)md5OfData:(NSData *)data;
++ (NSString * _Nonnull)md5OfData:(NSData * _Nullable)data;
 
 /**
  * Returns base64 encoded string from NSData. Convenience method
  * that supports iOS6.
  */
-+ (NSString *)base64EncodedStringFromData:(NSData *)data;
++ (NSString * _Nonnull)base64EncodedStringFromData:(NSData * _Nonnull)data;
 
 /**
  * Initialize exception handling
@@ -55,7 +55,7 @@
 /**
  * Report an exception
  */
-+ (void)handleException:(NSException *)exception;
++ (void)handleException:(NSException * _Nonnull)exception;
 
 /**
  * Whether swizzling flag is setup in plist file
@@ -65,21 +65,21 @@
 /**
  * Returns Leanplum bundle
  */
-+ (NSBundle *)leanplumBundle;
++ (NSBundle * _Nullable)leanplumBundle;
 
 /**
  * Open URLs from SDK
  */
-+ (void)openURL:(NSURL *)url;
++ (void)openURL:(NSURL * _Nonnull)url;
 
 /**
  * Open URLs from SDK and calls the completionHandler
  */
-+ (void)openURL:(NSURL *)url completionHandler:(void (^ __nullable)(BOOL success))completion;
++ (void)openURL:(NSURL * _Nonnull)url completionHandler:(void (^ __nullable)(BOOL success))completion;
 
 /**
  * Checks if given value is a NSNumber with bool value
  */
-+ (BOOL)isBoolNumber:(NSNumber *)value;
++ (BOOL)isBoolNumber:(NSNumber * _Nonnull)value;
 
 @end

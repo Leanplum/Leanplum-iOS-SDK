@@ -158,8 +158,11 @@ static BOOL swizzled = NO;
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];
     
     // Reset values directly
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     [ApiConfig shared].appId = nil;
     [ApiConfig shared].accessKey = nil;
+#pragma clang diagnostic pop
     
     [LPRequest reset];
     [LPRequestSender reset];

@@ -71,8 +71,6 @@ extern NSInteger DISPATCH_WAIT_TIME;
 /// retrieve data from a file
 + (NSData *)retrieve_data_from_file:(NSString *)file ofType:(NSString *)type;
 
-+ (void)dismissPresentedViewControllers;
-
 + (void)mockThrowErrorToThrow;
 
 + (void)stopMockThrowErrorToThrow;
