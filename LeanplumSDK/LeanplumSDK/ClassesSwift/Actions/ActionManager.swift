@@ -29,6 +29,9 @@ import Foundation
     /// When disabled, it stops executing actions and new actions will not be added to the queue.
     public var isEnabled: Bool = true {
         didSet {
+            if isEnabled && !oldValue {
+                performAvailableActions()
+            }
             Log.info("[ActionManager] isEnabled: \(isEnabled)")
         }
     }
