@@ -105,7 +105,7 @@
 }
 
 - (void)migrationStateDidChanged:(NSNotification * _Nonnull)notification {
-    id status = [notification userInfo][@"migrationStatus"];
+    id status = [notification userInfo][MigrationManager.lpMigrateStateNotificationInfo];
     if (status) {
         // Migration status is NSNumber
         if (![status respondsToSelector:@selector(intValue)])
@@ -120,6 +120,7 @@
             case MigrationStatusUndefined:
                 break;
             case MigrationStatusLeanplum:
+                // TODO: not possible right now, since status comes from LP API
                 if (oldValue == MigrationStatusCleverTap) {
                     // Previous state was CT only, initialize the LP sender
                     [self initialize];
@@ -135,6 +136,7 @@
                 }
                 break;
             case MigrationStatusCleverTap:
+                // flush? [self sendRequests];
                 [[LPOperationQueue serialQueue] cancelAllOperations];
                 [self reset];
                 break;
@@ -223,6 +225,11 @@
 
             NSMutableDictionary *args = [request createArgsDictionary];
             args[LP_PARAM_UUID] = uuid;
+            
+            if (self->_migrationStatus == MigrationStatusDuplicate ||
+                self->_migrationStatus == MigrationStatusCleverTap) {
+                args[MigrationManager.lpCleverTapParam] = @YES;
+            }
             
             [LPEventDataManager addEvent:args];
 
@@ -340,18 +347,6 @@
                 return;
             }
             
-            id migrationJson = @{
-                @"response": @[],
-                @"migrationState": @{
-                    @"traffic": @{
-                      @"sdk": @"lp+ct"
-                    },
-                    @"accountId": @"-",
-                    @"accountToken": @"-"
-                  }
-            };
-            
-            
             // Delete events on success.
             [LPRequestBatchFactory deleteFinishedBatch:batch];
 
@@ -366,14 +361,8 @@
                                                                 operation:operation];
             }
             
-            
             // TODO: execute change of state after all callbacks are executed?
-            if ([[MigrationManager shared] useMigrationJson]) {
-                [[MigrationManager shared] updateMigrationStatusWithApiResponse:migrationJson];
-            } else {
-                [[MigrationManager shared] updateMigrationStatusWithApiResponse:json];
-            }
-
+            [[MigrationManager shared] updateMigrationStatusWithMultiApiResponse:json];
             
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
@@ -384,7 +373,7 @@
                 dispatch_semaphore_signal(semaphore);
                 return;
             }
-
+            
             // Retry on 500 and other network failures.
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408

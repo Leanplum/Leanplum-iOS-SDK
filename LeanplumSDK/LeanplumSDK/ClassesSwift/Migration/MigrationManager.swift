@@ -13,89 +13,38 @@ import Foundation
         addObserver(self)
     }
     
-    @objc public var useMigrationJson = false
-    
-    public func migrationState(didChanged notification: NSNotification) {
-        let intState = notification.userInfo?["migrationStatus"] as? Int
-        if let intState = intState, let value = MigrationStatus(rawValue: intState) {
-            switch value {
-            case .undefined, .leanplum:
-                wrapper = nil
-            case .duplicate, .cleverTap:
-                guard let id = accountId, let token = accountToken else {
-                    // TODO: log keys not present cannot init wrapper
-                    return
-                }
-
-                wrapper = CTWrapper(accountId: id, accountToken: token, migrationStatus: value)
-                if Leanplum.hasStarted() {
-                    wrapper?.launch()
-                }
-            }
-        }
-    }
-    
-//    public func migrationState(didChangedToValue value: MigrationStatus) {
-//        switch value {
-//        case .undefined, .leanplum:
-//            wrapper = nil
-//        case .duplicate, .cleverTap:
-//            guard let id = accountId, let token = accountToken else {
-//                // TODO: log keys not present cannot init wrapper
-//                return
-//            }
-//
-//            wrapper = CTWrapper(accountId: id, accountToken: token, migrationStatus: value)
-//        }
-//    }
-    
-    deinit {
-        removeObserver(self)
-    }
-    
-    @objc public static let shared: MigrationManager = .init()
-    
-    var wrapper: CTWrapper? = nil    
-    
-//    let observers = AtomicDictionary<UUID, MigrationStateObserver>()
-//    let _observers = AtomicDictionary<UUID, ((MigrationStatusInt) -> Void)>()
-    
+    // TODO: reset varcache when ct only but persist userId, deviceId, token
     
     enum Constants {
         static let AccountIdKey = "__leanplum_ct_account_key"
         static let AccountTokenKey = "__leanplum_ct_account_token"
         static let MigrationStateKey = "__leanplum_migration_state"
         
-        static let GetMigrationStateTimeout = 2.0
+        static let MigrateStateResponseParam = "migrateState"
+        static let MigrateStateNotificationInfo = "migrateState"
+        static let SdkResponseParam = "sdk"
+        static let CTResponseParam = "ct"
+        static let AccountIdResponseParam = "accountId"
+        static let AccountTokenResponseParam = "token"
+        
+        static let CleverTapParam = "ct"
     }
-
-    @objc public enum MigrationStatus: Int, CustomStringConvertible, CaseIterable {
-        
-        case undefined = 0,
-             leanplum,
-             duplicate,
-             cleverTap
-        
-        public var description: String {
-            switch self {
-            case .undefined:
-                return "undefined"
-            case .leanplum:
-                return "lp"
-            case .duplicate:
-                return "lp+ct"
-            case .cleverTap:
-                return "ct"
-            }
-        }
-        
-        public init(stringValue: String) {
-            let value = Self.allCases.first {
-                $0.description == stringValue
-            }
-            self = value ?? .undefined
-        }
+    
+    @objc
+    public class func lpMigrateStateNotificationInfo() -> String {
+        return Constants.MigrateStateNotificationInfo
     }
+    
+    @objc
+    public class func lpCleverTapParam() -> String {
+        return Constants.CleverTapParam
+    }
+    
+    private let lock = NSLock()
+    
+    @objc public static let shared: MigrationManager = .init()
+    
+    var wrapper: CTWrapper? = nil
     
     @objc private(set) var accountId: String? {
         get {
@@ -129,7 +78,7 @@ import Foundation
         }
     }
     
-    private(set) var migrationState: MigrationStatus {
+    public private(set) var migrationState: MigrationStatus {
         get {
             if let savedState = UserDefaults.standard.string(forKey: Constants.MigrationStateKey) {
                 _migrationState = MigrationStatus.init(stringValue: savedState)
@@ -139,13 +88,12 @@ import Foundation
         }
         set {
             if migrationState != newValue {
-                UserDefaults.standard.setValue(newValue.rawValue, forKey: Constants.MigrationStateKey)
+                UserDefaults.standard.setValue(newValue.description, forKey: Constants.MigrationStateKey)
                 _migrationState = newValue
             }
         }
     }
     
-    private let lock = NSLock()
     var onMigrationStateLoadedBlocks:[(() -> Void)] = [] {
         willSet {
             lock.lock()
@@ -158,6 +106,53 @@ import Foundation
                 fetchMigrationState { [weak self] in
                     NSLog("[MigrationLog] triggerOnMigrationStateLoaded")
                     self?.triggerOnMigrationStateLoaded()
+                }
+            }
+        }
+    }
+    
+    @objc public enum MigrationStatus: Int, CustomStringConvertible, CaseIterable {
+        
+        case undefined = 0,
+             leanplum,
+             duplicate,
+             cleverTap
+        
+        public var description: String {
+            switch self {
+            case .undefined:
+                return "undefined"
+            case .leanplum:
+                return "lp"
+            case .duplicate:
+                return "lp+ct"
+            case .cleverTap:
+                return "ct"
+            }
+        }
+        
+        public init(stringValue: String) {
+            let value = Self.allCases.first {
+                $0.description == stringValue
+            }
+            self = value ?? .undefined
+        }
+    }
+    
+    public func migrationState(didChanged notification: NSNotification) {
+        let intState = notification.userInfo?[Constants.MigrateStateNotificationInfo] as? Int
+        if let intState = intState, let value = MigrationStatus(rawValue: intState) {
+            switch value {
+            case .undefined, .leanplum:
+                wrapper = nil
+            case .duplicate, .cleverTap:
+                guard let id = accountId, let token = accountToken else {
+                    Log.error("Missing CleverTap Account Id and Account Token. Cannot initialize CleverTap.")
+                    return
+                }
+                wrapper = CTWrapper(accountId: id, accountToken: token, migrationStatus: value)
+                if Leanplum.hasStarted() {
+                    wrapper?.launch()
                 }
             }
         }
@@ -181,22 +176,29 @@ import Foundation
     }
     
     func fetchMigrationState(completion: @escaping ()->()) {
-        let request = LPRequestFactory.getMigrationState([:])
+        let request = LPRequestFactory.getMigrateState()
         request.requestType = .Immediate
         request.onResponse { operation, response in
-            print("[MigrationLog] success")
+            Log.info("[MigrationLog] getMigrateState success: \(response ?? "")")
             
-            self.migrationState = .leanplum
+            guard let response = response else {
+                Log.error("[MigrationLog] No response received for getMigrateState")
+                return
+            }
+            
+            self.updateMigrationStatus(apiResponse: response)
             completion()
         }
         
         request.onError { err in
-            print("[MigrationLog] error")
-            
-            self.migrationState = .leanplum
+            Log.error("[MigrationLog] Error getting migrate state")
             completion()
         }
         LPRequestSender.sharedInstance().send(request)
+    }
+    
+    deinit {
+        removeObserver(self)
     }
 }
 
@@ -223,27 +225,39 @@ fileprivate extension Notification.Name {
     }
     
     func notifyObservers(value: MigrationStatus) {
-        NotificationCenter.default.post(name: .migrationStateChanged, object: self, userInfo: ["migrationStatus": value.rawValue])
+        NotificationCenter.default.post(name: .migrationStateChanged, object: self, userInfo: [Constants.MigrateStateNotificationInfo: value.rawValue])
     }
 }
 
 @objc public extension MigrationManager {
+//    {
+//        migrateState =     {
+//            ct =         {
+//                accountId = id;
+//                regionCode = eu;
+//                token = token;
+//            };
+//            sdk = "lp+ct";
+//        };
+//    }
+    @objc func updateMigrationStatus(multiApiResponse: Any) {
+        guard let migrateState = getValue(dict: multiApiResponse, key: Constants.MigrateStateResponseParam) else { return }
+        
+        updateMigrationStatus(apiResponse: migrateState)
+    }
     
     @objc func updateMigrationStatus(apiResponse: Any) {
-        
-        if let state = getValue(dict: apiResponse, key: "migrationState"),
-           let id = getValue(dict: state, key: "accountId") as? String {
-            accountId = id
+        if let ct = getValue(dict: apiResponse, key: Constants.CTResponseParam) {
+            if let id = getValue(dict: ct, key: Constants.AccountIdResponseParam) as? String {
+                accountId = id
+            }
+            
+            if let token = getValue(dict: ct, key: Constants.AccountTokenResponseParam) as? String {
+                accountToken = token
+            }
         }
         
-        if let state = getValue(dict: apiResponse, key: "migrationState"),
-           let token = getValue(dict: state, key: "accountToken") as? String {
-            accountToken = token
-        }
-        
-        if let state = getValue(dict: apiResponse, key: "migrationState"),
-           let traffic = getValue(dict: state, key: "traffic"),
-           let sdk = getValue(dict: traffic, key: "sdk") as? String {
+        if let sdk = getValue(dict: apiResponse, key: Constants.SdkResponseParam) as? String {
             migrationState = MigrationStatus(stringValue: sdk)
         }
     }
@@ -277,5 +291,9 @@ fileprivate extension Notification.Name {
     
     func setDeviceId(_ deviceId: String) {
         wrapper?.setDeviceId(deviceId)
+    }
+    
+    func getProfileID() {
+        wrapper?.cleverTapInstance?.profileGetID()
     }
 }

@@ -1969,13 +1969,19 @@ andParameters:(NSDictionary *)params
     LP_TRY
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     [self onStartIssued:^{
+        NSString *currentUserId = [[Leanplum user] userId];
         [self setUserIdInternal:userId withAttributes:attributes];
         
-        if ([userId isEqualToString:@""]) {
+        if (![userId isEqualToString:currentUserId]) {
             [[MigrationManager shared] setUserId:userId];
+            // TODO: test case where userId changes and attributes are also passed
+            if ([attributes count] > 0) {
+                [[MigrationManager shared] setUserAttributes:attributes];
+            }
         } else {
             [[MigrationManager shared] setUserAttributes:attributes];
         }
+        
     }];
     LP_END_TRY
     LP_BEGIN_USER_CODE

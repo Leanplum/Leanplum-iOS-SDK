@@ -67,7 +67,9 @@ public class CTWrapper {
             return
         }
         
+        // TODO: can we check if already initialized with custom clever tap id before?
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken)
+        config.useCustomCleverTapId = true
         if let cleverTapID = cleverTapID {
             cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: cleverTapID)
         } else {
