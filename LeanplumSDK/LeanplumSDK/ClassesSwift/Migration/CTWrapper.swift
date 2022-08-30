@@ -147,6 +147,9 @@ public class CTWrapper {
     }
     
     public func setUserId(_ userId: String) {
+        
+        // TODO: if both id is changed and attrbiutes passed - set the attributes in the onUserLogin map?
+        
         // Precondition: userId is already set and preserved in LP
         guard let cleverTapID = cleverTapID else { return }
         cleverTapInstance?.onUserLogin([Constants.Identity: userId], withCleverTapID: cleverTapID)
