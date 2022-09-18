@@ -257,8 +257,8 @@ zip_ios() {
     $(find . -maxdepth 2 -type d -name "LeanplumLocation*")
   mv LeanplumLocation.framework.zip ..
 
-  echo "zipping dynamic xcframework for SPM"
-  cd dynamic
+  echo "zipping static xcframework for SPM"
+  cd static
   zip -q -r Leanplum.xcframework.zip \
     Leanplum.xcframework
   cd ../..
@@ -268,7 +268,7 @@ update_spm_info(){
   echo "updating SPM checksum and url"
   package_file=Package.swift
   package_tmp_file=Package_tmp.swift
-  checksum=`swift package compute-checksum Release/dynamic/Leanplum.xcframework.zip`
+  checksum=`swift package compute-checksum Release/static/Leanplum.xcframework.zip`
   awk -v value="\"$checksum\"" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
       && mv $package_tmp_file $package_file
   
