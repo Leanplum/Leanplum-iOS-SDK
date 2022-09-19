@@ -156,7 +156,7 @@ typedef void (^LeanplumPushSetupBlock)(void);
 typedef NS_OPTIONS(NSUInteger, LeanplumActionKind) {
     kLeanplumActionKindMessage = 0b1,
     kLeanplumActionKindAction = 0b10,
-} NS_SWIFT_NAME(Leanplum.ActionKind);
+} NS_SWIFT_NAME(LeanplumActionKind);
 
 #define LP_PURCHASE_EVENT @"Purchase"
 

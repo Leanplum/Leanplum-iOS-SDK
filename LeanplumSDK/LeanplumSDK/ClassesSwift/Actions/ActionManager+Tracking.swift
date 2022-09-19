@@ -9,7 +9,7 @@ import Foundation
 
 extension ActionManager {
     func recordImpression(action: Action) {
-        typealias Kind = Leanplum.ActionKind
+        typealias Kind = LeanplumActionKind
         
         switch action.type {
             
