@@ -203,6 +203,12 @@ build_ios_static() {
   -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework \
   -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$productName.framework \
   -output Release/static/$productName.xcframework
+  
+  # Remove module name from xcframework swiftinterface
+  # It prevents error X is not a member of type Leanplum.Leanplum
+  # This happens when a class name is same as the module name
+  # https://stackoverflow.com/a/62310245
+  find Release/static/Leanplum.xcframework -name "*.swiftinterface" -exec sed -i -e "s/Leanplum\.//g" {} \;
 
   echo "Removing arm64 from simulator slice ..."
   lipo -remove arm64 \
