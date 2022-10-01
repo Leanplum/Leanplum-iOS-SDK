@@ -113,7 +113,7 @@ build_ios_dylib() {
   -scheme $scheme \
   -archivePath $archivePath-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
-  -destination generic/platform=iOS \
+  -destination 'generic/platform=iOS Simulator' \
   SKIP_INSTALL=NO
 
   echo "Building $scheme dynamic (device) target ..."
@@ -186,7 +186,7 @@ build_ios_static() {
   -scheme $scheme \
   -archivePath $archivePath-iphonesimulator.xcarchive \
   -sdk iphonesimulator \
-  -destination generic/platform=iOS \
+  -destination 'generic/platform=iOS Simulator' \
   SKIP_INSTALL=NO
 
   echo "Building $scheme static (device) target ..."
