@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import CleverTapSDK
+@_implementationOnly import CleverTapSDK
 
 public class CTWrapper {
     
@@ -30,6 +30,9 @@ public class CTWrapper {
         static let StatePrefix = "state_"
         static let ValueParamName = "value"
         static let InfoParamName = "info"
+        
+        static let FirstLoginUserIdKey = "__leanplum_lp_first_user_id"
+        static let FirstLoginDeviceIdKey = "__leanplum_lp_first_device_id"
     }
     
     // TODO: get instance properly
@@ -47,19 +50,50 @@ public class CTWrapper {
     
     var cleverTapInstance: CleverTap?
     
-    
-    var status: MigrationManager.MigrationStatus
     var accountId: String
     var accountToken: String
+    var accountRegion: String
+    var userId: String
+    var deviceId: String
+    
+    @StringOptionalUserDefaults(key: Constants.FirstLoginUserIdKey)
+    var firstLoginUserId: String?
+    
+    @StringOptionalUserDefaults(key: Constants.FirstLoginDeviceIdKey)
+    var firstLoginDeviceId: String?
     
     // MARK: Initialization
-    public init(accountId: String, accountToken: String, migrationStatus: MigrationManager.MigrationStatus) {
-        status = migrationStatus
+    public init(accountId: String, accountToken: String, accountRegion: String, userId: String, deviceId: String) {
+        Log.debug("Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
+        self.accountRegion = accountRegion
+        self.userId = userId
+        self.deviceId = deviceId
     }
     
-    func launch() {
+    var cleverTapID: String {
+        if !isAnonymous, userId != firstLoginUserId {
+            return "\(deviceId)_\(userId)"
+        }
+        
+        if userId == firstLoginUserId,
+        let firstDeviceId = firstLoginDeviceId {
+            return firstDeviceId
+        }
+            
+        return deviceId
+    }
+    
+    var isAnonymous: Bool {
+        userId == deviceId
+    }
+    
+    public func getInstance() -> Any? {
+        return cleverTapInstance
+    }
+    
+    public func launch() {
         guard Thread.isMainThread else {
             DispatchQueue.main.async { [self] in
                 launch()
@@ -68,26 +102,17 @@ public class CTWrapper {
         }
         
         // TODO: can we check if already initialized with custom clever tap id before?
-        let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken)
+        let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
         config.useCustomCleverTapId = true
-        if let cleverTapID = cleverTapID {
-            cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: cleverTapID)
-        } else {
-            cleverTapInstance = CleverTap.instance(with: config)
-        }
-        cleverTapInstance!.setLibrary("Leanplum")
-//
-//        CleverTap.sharedInstance(withCleverTapID: <#T##String#>)
-//        CleverTap.setCredentialsWithAccountID("", andToken: "")
-//        CleverTap.sharedInstance()?.setLibrary("Leanplum")
-//
-//        CleverTap.autoIntegrate(withCleverTapID: cleverTapID!)
+        cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: cleverTapID)
+        cleverTapInstance?.setLibrary("Leanplum")
         
+        Log.debug("CleverTap instance created by Leanplum")
         //CleverTap.sharedInstance()?.notifyApplicationLaunched(withOptions: nil)
     }
 
     // MARK: Events
-    func track(_ eventName: String?, value: Double, info: String?, args: [String: Any], params: [String: Any]) {
+    public func track(_ eventName: String?, value: Double, info: String?, args: [String: Any], params: [String: Any]) {
         
         // message impression events come with event: nil
         guard let eventName = eventName else {
@@ -109,8 +134,10 @@ public class CTWrapper {
             // keep original value in params if key exists
             eventParams.merge(args){ (current, _) in current }
             // TODO: if is purchase use recordChargedEvent?
+            //cleverTapInstance?.recordChargedEvent(withDetails: eventParams, andItems: [])
         }
 
+        Log.debug("Leanplum.track will call recordEvent with \(eventName) and \(eventParams)")
         cleverTapInstance?.recordEvent(eventName, withProps: eventParams)
     }
     
@@ -120,13 +147,60 @@ public class CTWrapper {
         }
         
         let eventName = Constants.StatePrefix + stateName
+        Log.debug("Leanplum.advance will call recordEvent with \(eventName) and \(params)")
         track(eventName, value: 0.0, info: info, args: [:], params: params)
     }
     
     func setUserAttributes(_ attributes: [AnyHashable: Any]) {
-        cleverTapInstance?.profilePush(attributes)
+        // .compactMapValues { $0 } will not work on not optional type Any which can still hold nil
+        let profileAttributes = attributes
+            .filter { !isAnyNil($0.value) }
+            .mapValues(transformAttributeValues)
+            .mapKeys(transformAttributeKeys)
+        
+        Log.debug("Wrapper: Leanplum.setUserAttributes will call profilePush with \(profileAttributes)")
+        cleverTapInstance?.profilePush(profileAttributes)
+        
+        attributes
+            .filter { isAnyNil($0.value) }
+            .mapKeys(transformAttributeKeys)
+            .forEach {
+                Log.debug("Wrapper: Leanplum.setUserAttributes will call profileRemoveValue forKey: \($0.key)")
+                cleverTapInstance?.profileRemoveValue(forKey: String(describing: $0.key))
+            }
     }
     
+    func isAnyNil(_ value: Any) -> Bool {
+        if case Optional<Any>.none = value {
+            return true
+        }
+        return false
+    }
+    
+    var transformAttributeValues: ((Any) -> Any) {
+        return { value in
+            if let arr = value as? Array<Any> {
+                let arrString = arr.map {
+                    String(describing: $0)
+                }
+                return ("[\(arrString.joined(separator: ","))]") as Any
+            }
+            return value
+        }
+    }
+    
+    var transformAttributeKeys: ((AnyHashable) -> AnyHashable) {
+        return { key in
+            guard let keyStr = key as? String,
+            let newKey = MigrationManager.shared.attributeMappings[keyStr]
+            else {
+                return key
+            }
+
+            return newKey
+        }
+    }
+
     func isPurchase(args: [String: Any]) -> Bool {
         return args[LP_PARAM_CURRENCY_CODE] != nil
     }
@@ -135,37 +209,73 @@ public class CTWrapper {
     // MARK: Identity
     
     public func setDeviceId(_ deviceId: String) {
-        // Precondition: deviceId is already set and preserved in LP
-        guard let cleverTapID = cleverTapID else { return }
-        
-        var identity = deviceId
-        if let userId = Leanplum.userId() {
-            identity = userId
-        }
-        
-        cleverTapInstance?.onUserLogin([Constants.Identity: identity], withCleverTapID: cleverTapID)
+        self.deviceId = deviceId
+        var identity = deviceId != userId ? userId : deviceId
+
+        Log.debug("""
+                  Wrapper: Leanplum.setDeviceId will call onUserLogin \
+                  with identity: \(identity) and CleverTapID: \(cleverTapID)
+                """)
+        cleverTapInstance?.onUserLogin([Constants.Identity: identity],
+                                       withCleverTapID: cleverTapID)
     }
     
     public func setUserId(_ userId: String) {
+        guard userId != self.userId else { return }
         
-        // TODO: if both id is changed and attrbiutes passed - set the attributes in the onUserLogin map?
+        let anon = isAnonymous
+        self.userId = userId
         
-        // Precondition: userId is already set and preserved in LP
-        guard let cleverTapID = cleverTapID else { return }
+        if anon {
+            firstLoginUserId = userId
+            firstLoginDeviceId = deviceId
+            Log.debug("Wrapper: anonymous user on device \(deviceId) will be merged to \(userId)")
+        }
+        
+        Log.debug("""
+                Wrapper: Leanplum.setUserId will call onUserLogin with identity: \(userId) and CleverTapID:  \(cleverTapID)")
+                """)
         cleverTapInstance?.onUserLogin([Constants.Identity: userId], withCleverTapID: cleverTapID)
     }
-    
-    var cleverTapID: String? {
-        guard let deviceId = Leanplum.deviceId() else {
-            return nil
-        }
-        
-        if let userId = Leanplum.userId(),
-            userId != deviceId {
-            return "\(deviceId)_\(userId)"
-        }
-        
-        return deviceId
+}
+
+public extension Dictionary {
+    /// Transforms dictionary keys without modifying values.
+    /// Deduplicates transformed keys, by choosing the first value.
+    ///
+    /// Example:
+    /// ```
+    /// ["one": 1, "two": 2, "three": 3, "": 4].mapKeys({ $0.first })
+    /// // [Optional("o"): 1, Optional("t"): 2, nil: 4]
+    /// ```
+    ///
+    /// - Parameters:
+    ///   - transform: A closure that accepts each key of the dictionary as
+    ///   its parameter and returns a transformed key of the same or of a different type.
+    /// - Returns: A dictionary containing the transformed keys and values of this dictionary.
+    func mapKeys<T>(_ transform: (Key) throws -> T) rethrows -> [T: Value] {
+        try .init(map { (try transform($0.key), $0.value) },
+                  uniquingKeysWith: { (a, b) in a })
     }
     
+    /// Transforms dictionary keys without modifying values.
+    /// Deduplicates transformed keys.
+    ///
+    /// Example:
+    /// ```
+    /// ["one": 1, "two": 2, "three": 3, "": 4].mapKeys({ $0.first }, uniquingKeysWith: { max($0, $1) })
+    /// // [Optional("o"): 1, Optional("t"): 3, nil: 4]
+    /// ```
+    /// Credits:  https://forums.swift.org/t/mapping-dictionary-keys/15342/4
+    ///
+    /// - Parameters:
+    ///   - transform: A closure that accepts each key of the dictionary as
+    ///   its parameter and returns a transformed key of the same or of a different type.
+    ///   - combine:A closure that is called with the values for any duplicate
+    ///   keys that are encountered. The closure returns the desired value for
+    ///   the final dictionary.
+    /// - Returns: A dictionary containing the transformed keys and values of this dictionary.
+    func mapKeys<T>(_ transform: (Key) throws -> T, uniquingKeysWith combine: (Value, Value) throws -> Value) rethrows -> [T: Value] {
+          try .init(map { (try transform($0.key), $0.value) }, uniquingKeysWith: combine)
+      }
 }

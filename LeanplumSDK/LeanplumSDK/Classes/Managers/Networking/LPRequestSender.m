@@ -36,12 +36,10 @@
 #import "LPRequestBatchFactory.h"
 #import <Leanplum/Leanplum-Swift.h>
 
-@interface LPRequestSender() <MigrationStateObserver>
+@interface LPRequestSender()
 
 @property (nonatomic, strong) id<LPNetworkEngineProtocol> engine;
 @property (nonatomic, strong) NSDictionary *requestHeaders;
-
-@property (nonatomic, assign) MigrationStatus migrationStatus;
 
 @property (nonatomic, strong) NSTimer *uiTimeoutTimer;
 @property (nonatomic, assign) BOOL didUiTimeout;
@@ -68,7 +66,6 @@
 {
     self = [super init];
     if (self) {
-        _migrationStatus = [[MigrationManager shared] addObserver:self];
         [self initialize];
     }
     return self;
@@ -76,10 +73,6 @@
 
 - (void)initialize
 {
-    if (_migrationStatus == MigrationStatusCleverTap) {
-        return;
-    }
-    
     if (_engine == nil) {
         if (!_requestHeaders) {
             _requestHeaders = [LPNetworkEngine createHeaders];
@@ -90,65 +83,51 @@
     _countAggregator = [LPCountAggregator sharedAggregator];
 }
 
-- (void)dealloc
-{
-    [[MigrationManager shared] removeObserver:self];
-}
-
-- (void)reset
-{
-    _engine = nil;
-    _requestHeaders = nil;
-    // TODO: test invalidate timer
-    [[LPRequestSenderTimer sharedInstance] invalidate];
-    _countAggregator = nil;
-}
-
-- (void)migrationStateDidChanged:(NSNotification * _Nonnull)notification {
-    id status = [notification userInfo][MigrationManager.lpMigrateStateNotificationInfo];
-    if (status) {
-        // Migration status is NSNumber
-        if (![status respondsToSelector:@selector(intValue)])
-            return;
-        
-        int value = [status intValue];
-        NSLog(@"[MigrationLog] sender migrationStateDidChanged");
-        MigrationStatus oldValue = _migrationStatus;
-        _migrationStatus = value;
-        
-        switch (value) {
-            case MigrationStatusUndefined:
-                break;
-            case MigrationStatusLeanplum:
-                // TODO: not possible right now, since status comes from LP API
-                if (oldValue == MigrationStatusCleverTap) {
-                    // Previous state was CT only, initialize the LP sender
-                    [self initialize];
-                }
-                break;
-            case MigrationStatusDuplicate:
-                if (oldValue == MigrationStatusCleverTap) {
-                    // Previous state was CT only, initialize the LP sender
-                    [self initialize];
-                } else {
-                    // send any already saved requests
-                    [self sendRequests];
-                }
-                break;
-            case MigrationStatusCleverTap:
-                // flush? [self sendRequests];
-                [[LPOperationQueue serialQueue] cancelAllOperations];
-                [self reset];
-                break;
-            default:
-                break;
-        }
-    }
-}
+//- (void)migrationStateDidChanged:(NSNotification * _Nonnull)notification {
+//    id status = [notification userInfo][MigrationManager.lpMigrateStateNotificationInfo];
+//    if (status) {
+//        // Migration status is NSNumber
+//        if (![status respondsToSelector:@selector(intValue)])
+//            return;
+//
+//        int value = [status intValue];
+//        NSLog(@"[MigrationLog] sender migrationStateDidChanged");
+//        MigrationState oldValue = _migrationStatus;
+//        _migrationStatus = value;
+//
+//        switch (value) {
+//            case MigrationStateUndefined:
+//                break;
+//            case MigrationStateLeanplum:
+//                // TODO: not possible right now, since status comes from LP API
+//                if (oldValue == MigrationStateCleverTap) {
+//                    // Previous state was CT only, initialize the LP sender
+//                    [self initialize];
+//                }
+//                break;
+//            case MigrationStateDuplicate:
+//                if (oldValue == MigrationStateCleverTap) {
+//                    // Previous state was CT only, initialize the LP sender
+//                    [self initialize];
+//                } else {
+//                    // send any already saved requests
+//                    [self sendRequests];
+//                }
+//                break;
+//            case MigrationStateCleverTap:
+//                // flush? [self sendRequests];
+//                [[LPOperationQueue serialQueue] cancelAllOperations];
+//                [self reset];
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//}
 
 - (void)send:(LPRequest *)request
 {
-    if (_migrationStatus == MigrationStatusCleverTap)
+    if (![[MigrationManager shared] useLeanplum])
         return;
     
     [self saveRequest:request];
@@ -193,9 +172,9 @@
 {
     RETURN_IF_TEST_MODE;
     
-    if (_migrationStatus == MigrationStatusCleverTap)
+    if (![[MigrationManager shared] useLeanplum])
         return;
-
+    
     [self sendRequests];
     
     [self.countAggregator incrementCount:@"send_now_lp"];
@@ -226,9 +205,8 @@
             NSMutableDictionary *args = [request createArgsDictionary];
             args[LP_PARAM_UUID] = uuid;
             
-            if (self->_migrationStatus == MigrationStatusDuplicate ||
-                self->_migrationStatus == MigrationStatusCleverTap) {
-                args[MigrationManager.lpCleverTapParam] = @YES;
+            if ([[MigrationManager shared] useCleverTap]) {
+                args[MigrationManager.lpCleverTapRequestArg] = @YES;
             }
             
             [LPEventDataManager addEvent:args];
@@ -347,6 +325,9 @@
                 return;
             }
             
+            // TODO: execute change of state after all callbacks are executed?
+            [[MigrationManager shared] handleMigrateStateWithMultiApiResponse:json];
+            
             // Delete events on success.
             [LPRequestBatchFactory deleteFinishedBatch:batch];
 
@@ -360,9 +341,6 @@
                                                                  requests:batch.requestsToSend
                                                                 operation:operation];
             }
-            
-            // TODO: execute change of state after all callbacks are executed?
-            [[MigrationManager shared] updateMigrationStatusWithMultiApiResponse:json];
             
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
