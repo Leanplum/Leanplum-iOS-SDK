@@ -13,8 +13,6 @@ import Foundation
         super.init()
     }
     
-    // TODO: reset varcache when ct only but persist userId, deviceId, token
-    
     @objc public static let shared: MigrationManager = .init()
     
     var wrapper: CTWrapper? = nil
@@ -78,15 +76,15 @@ import Foundation
     }
     
     func handleMigrationStateChanged(oldValue: MigrationState) {
-        // TODO: not possible to go from CT only back to LP or LP+CT right now, since status comes from LP API
+        // Note: It is not possible to return from CT only state since status comes from LP API
         
         if (!oldValue.useCleverTap && migrationState.useCleverTap) {
-            LPOperationQueue.serialQueue().addOperation { [self] in
+           // LPOperationQueue.serialQueue().addOperation { [self] in
                 // Flush all saved requests to Leanplum
                 LPRequestSender.sharedInstance().sendRequests()
                 // Create wrapper
                 initWrapper()
-            }
+           // }
         }
         
         if (oldValue.useLeanplum && !migrationState.useLeanplum) {
@@ -168,12 +166,22 @@ import Foundation
 
 @objc public extension MigrationManager {
     
-    @objc func start() {
+    @objc func launch() {
         wrapper?.launch()
     }
     
-    @objc func track(_ eventName: String?, value: Double, info: String?, args: [String: Any], params: [String: Any]) {
-        wrapper?.track(eventName, value: value, info: info, args: args, params: params)
+    @objc func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
+        wrapper?.track(eventName, value: value, info: info, params: params)
+    }
+    
+    @objc func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
+        wrapper?.trackPurchase(eventName, value: value, currencyCode: currencyCode, params: params)
+    }
+    
+    @objc func trackInAppPurchase(_ eventName: String?, value: Double, currencyCode: String?,
+                            iOSTransactionIdentifier: String?, iOSReceiptData: String?,
+                                  iOSSandbox: Bool, params: [String: Any]) {
+        wrapper?.trackInAppPurchase(eventName, value: value, currencyCode: currencyCode, iOSTransactionIdentifier: iOSTransactionIdentifier, iOSReceiptData: iOSReceiptData, iOSSandbox: iOSSandbox, params: params)
     }
     
     @objc func advance(_ eventName: String?, info: String?, params: [String: Any]) {
@@ -194,5 +202,9 @@ import Foundation
     
     func getProfileID() {
         wrapper?.cleverTapInstance?.profileGetID()
+    }
+    
+    func setLogLevel(_ level: LeanplumLogLevel) {
+        wrapper?.setLogLevel(level)
     }
 }

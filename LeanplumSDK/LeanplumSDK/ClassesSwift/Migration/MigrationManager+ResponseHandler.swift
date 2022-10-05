@@ -52,20 +52,16 @@ import Foundation
     //        }
     //    );
     func handleGetMigrateState(apiResponse: Any) {
-        // TODO: set all values
         if let ct = getValue(dict: apiResponse, key: Constants.CTResponseParam) {
             if let id = getValue(dict: ct, key: Constants.AccountIdResponseParam) as? String {
                 accountId = id
             }
-            
             if let token = getValue(dict: ct, key: Constants.AccountTokenResponseParam) as? String {
                 accountToken = token
             }
-            
             if let region = getValue(dict: ct, key: Constants.RegionCodeResponseParam) as? String {
                 regionCode = region
             }
-            
             if let mappings = getValue(dict: ct, key: Constants.AttributeMappingsResponseParam) as? [String: String] {
                 attributeMappings = mappings
             }
@@ -74,7 +70,6 @@ import Foundation
         if let sdk = getValue(dict: apiResponse, key: Constants.SdkResponseParam) as? String {
             migrationState = MigrationState(stringValue: sdk)
         }
-        
         if let hash = getValue(dict: apiResponse, key: Constants.HashKey) as? String {
             migrationHash = hash
         }

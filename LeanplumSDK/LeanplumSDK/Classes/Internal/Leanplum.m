@@ -207,6 +207,7 @@ void leanplumExceptionHandler(NSException *exception);
 {
     LP_TRY
     [LPLogManager setLogLevel:level];
+    [[MigrationManager shared] setLogLevel:level];
     LP_END_TRY
 }
 
@@ -389,13 +390,14 @@ void leanplumExceptionHandler(NSException *exception);
     // If Leanplum start has been called already, changing the deviceId results in a new device
     // Ensure the id is updated and the new device has all attributes set
     if ([LPInternalState sharedState].hasStarted && ![[Leanplum user].deviceId isEqualToString:deviceId]) {
+        if ([[MigrationManager shared] useCleverTap]) {
+            LPLog(LPInfo, @"Setting new device ID is not allowed when migration to CleverTap is turned on.");
+        }
+        LPLog(LPInfo, @"Warning: When migration of data to CleverTap is turned on calling this method with different device ID would not work any more.");
         [self setDeviceIdInternal:deviceId];
     } else {
-       [[Leanplum user] setDeviceId:deviceId];
+        [[Leanplum user] setDeviceId:deviceId];
     }
-    
-    [[MigrationManager shared] setDeviceId:deviceId];
-    
     LP_END_TRY
 }
 
@@ -775,6 +777,12 @@ void leanplumExceptionHandler(NSException *exception);
     // Define Leanplum message templates
     [LPMessageTemplatesClass sharedTemplates];
     
+    if ([attributes count] > 0) {
+        [Leanplum onStartIssued:^{
+            [[MigrationManager shared] setUserAttributes:attributes];
+        }];
+    }
+    
     attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     if (attributes != nil) {
         @synchronized([LPInternalState sharedState].userAttributeChanges) {
@@ -782,9 +790,12 @@ void leanplumExceptionHandler(NSException *exception);
         }
     }
     state.calledStart = YES;
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        [Leanplum trackCrashes];
-//    });
+    
+    // TODO: delete dead code
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [Leanplum trackCrashes];
+    });
+    
     state.actionManager = [LPActionTriggerManager sharedManager];
 
     [[LPVarCache sharedCache] setSilent:YES];
@@ -850,8 +861,6 @@ void leanplumExceptionHandler(NSException *exception);
             [LPConstantsState sharedState].loggingEnabled = YES;
         }
 
-        // TODO: Need to call this if we fix encryption.
-        // [LPVarCache saveUserAttributes];
         [self triggerStartResponse:YES];
 
         // Allow bidirectional realtime variable updates.
@@ -934,13 +943,20 @@ void leanplumExceptionHandler(NSException *exception);
     }];
     
     [[MigrationManager shared] onMigrationStateLoadedWithCompletion:^{
-        NSLog(@"[MigrationLog] send start");
-        [[LPRequestSender sharedInstance] send:request];
-        
-        [[MigrationManager shared] start];
+        if ([[MigrationManager shared] useCleverTap]) {
+            [[MigrationManager shared] launch];
+        }
+    
+        if ([[MigrationManager shared] useLeanplum]) {
+            [[LPRequestSender sharedInstance] send:request];
+            [Leanplum triggerStartIssued];
+        } else {
+            [[LPInternalState sharedState] setCalledStart:YES];
+            [[LPInternalState sharedState] setStartSuccessful:YES];
+            [Leanplum triggerStartIssued];
+            [Leanplum triggerStartResponse:YES];
+        }
     }];
-
-    [self triggerStartIssued];
 
     [self addUIApplicationObservers];
     [self swizzleExtensionClose];
@@ -949,13 +965,13 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_TRY
     
     LP_TRY
+    // TODO: delete dead code
     [LPUtils initExceptionHandling];
     LP_END_TRY
 }
 
 + (void)handleStartNOOP
 {
-    // TODO: handle migration state
     [[LPVarCache sharedCache] applyVariableDiffs:@{}
                                         messages:@{}
                                         variants:@[]
@@ -1104,7 +1120,7 @@ void leanplumExceptionHandler(NSException *exception);
                     //if they are changed the new valeus will be updated to server as well
                     [[Leanplum notificationsManager] updateNotificationSettings];
         
-               //     [Leanplum resume];
+                    [Leanplum resume];
         
                     // Used for push notifications iOS 9
                     [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
@@ -1216,21 +1232,22 @@ void leanplumExceptionHandler(NSException *exception);
     [[LPRequestSender sharedInstance] send:request];
 }
 
-//+ (void)trackCrashes
-//{
-//    LP_TRY
-//    Class crittercism = NSClassFromString(@"Crittercism");
-//    SEL selector = NSSelectorFromString(@"didCrashOnLastLoad:");
-//    if (crittercism && [crittercism respondsToSelector:selector]) {
-//        IMP imp = [crittercism methodForSelector:selector];
-//        BOOL (*func)(id, SEL) = (void *)imp;
-//        BOOL didCrash = func(crittercism, selector);
-//        if (didCrash) {
-//            [Leanplum track:@"Crash"];
-//        }
-//    }
-//    LP_END_TRY
-//}
+// TODO: delete dead code
++ (void)trackCrashes
+{
+    LP_TRY
+    Class crittercism = NSClassFromString(@"Crittercism");
+    SEL selector = NSSelectorFromString(@"didCrashOnLastLoad:");
+    if (crittercism && [crittercism respondsToSelector:selector]) {
+        IMP imp = [crittercism methodForSelector:selector];
+        BOOL (*func)(id, SEL) = (void *)imp;
+        BOOL didCrash = func(crittercism, selector);
+        if (didCrash) {
+            [Leanplum track:@"Crash"];
+        }
+    }
+    LP_END_TRY
+}
 
 + (BOOL)hasStarted
 {
@@ -1744,6 +1761,10 @@ void leanplumExceptionHandler(NSException *exception);
     if (currencyCode) {
         arguments[LP_PARAM_CURRENCY_CODE] = currencyCode;
     }
+    
+    [self onStartIssued:^{
+        [[MigrationManager shared] trackPurchase:event value:value currencyCode:currencyCode params:params];
+    }];
 
     [Leanplum track:event
           withValue:value
@@ -1815,9 +1836,6 @@ void leanplumExceptionHandler(NSException *exception);
     
     [self onStartIssued:^{
         [self trackInternal:event withArgs:arguments andParameters:params];
-        
-        [[MigrationManager shared] track:event value:value info:info args:args params:params];
-        
     }];
     LP_END_TRY
     
@@ -1929,6 +1947,10 @@ andParameters:(NSDictionary *)params
       andInfo:(NSString *)info
 andParameters:(NSDictionary *)params
 {
+    [self onStartIssued:^{
+        [[MigrationManager shared] track:event value:value info:info params:params];
+    }];
+
     [self track:event withValue:value andInfo:info andArgs:nil andParameters:params];
 }
 
@@ -1967,21 +1989,19 @@ andParameters:(NSDictionary *)params
     }
     LP_END_USER_CODE // Catch when setUser is called in start response.
     LP_TRY
-    attributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
+    NSDictionary *validAttributes = [self validateAttributes:attributes named:@"userAttributes" allowLists:YES];
     [self onStartIssued:^{
         NSString *currentUserId = [[Leanplum user] userId];
-        [self setUserIdInternal:userId withAttributes:attributes];
-        
-        if (![userId isEqualToString:currentUserId]) {
+        [self setUserIdInternal:userId withAttributes:validAttributes];
+
+        if (![userId isEqualToString:currentUserId] && ![userId isEqual: @""]) {
+            // new userId is passed, login
             [[MigrationManager shared] setUserId:userId];
-            // TODO: test case where userId changes and attributes are also passed
-            if ([attributes count] > 0) {
-                [[MigrationManager shared] setUserAttributes:attributes];
-            }
-        } else {
+        }
+        if ([attributes count] > 0) {
+            // use raw attributes passed instead of validated ones to prevent any transformation
             [[MigrationManager shared] setUserAttributes:attributes];
         }
-        
     }];
     LP_END_TRY
     LP_BEGIN_USER_CODE
@@ -2139,13 +2159,16 @@ static NSLocale * _locale;
     if (info) {
         args[LP_PARAM_INFO] = info;
     }
+
+    NSDictionary *validParams = params;
     if (params) {
-        params = [Leanplum validateAttributes:params named:@"params" allowLists:NO];
-        args[LP_PARAM_PARAMS] = [LPJSON stringFromJSON:params];
+        validParams = [Leanplum validateAttributes:params named:@"params" allowLists:NO];
+        args[LP_PARAM_PARAMS] = [LPJSON stringFromJSON:validParams];
     }
 
     [self onStartIssued:^{
-        [self advanceToInternal:state withArgs:args andParameters:params];
+        [self advanceToInternal:state withArgs:args andParameters:validParams];
+        [[MigrationManager shared] advance:state info:info params:params];
     }];
     LP_END_TRY
     

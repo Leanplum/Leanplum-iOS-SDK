@@ -10,43 +10,24 @@ import Foundation
 
 public class CTWrapper {
     
-    
-    // TODO: value > 0 -> config?
-    // TODO: info -> config?
-    // TODO: value and info names capitalized?
-    
-    // TODO: check if CT needs to be initialized with identity if userId != deviceId
     // TODO: check app launched event when ct is initialized mid-session
-    
-    
-    // TODO: or static methods which call instance method and instance is controlled by status didSet
-    
-    // TODO: launch CT if status changes mid session
-    
-    // TODO: migration status change can most probably happen on app background when request is sent
+    // TODO: test byte and short
     
     enum Constants {
         static let Identity = "Identity"
+        
         static let StatePrefix = "state_"
         static let ValueParamName = "value"
         static let InfoParamName = "info"
+        static let ChargedEventParam = "event"
+        static let CurrencyCodeParam = "currencyCode"
+        static let iOSTransactionIdentifierParam = "iOSTransactionIdentifier"
+        static let iOSReceiptDataParam = "iOSReceiptData"
+        static let iOSSandboxParam = "iOSSandbox"
         
         static let FirstLoginUserIdKey = "__leanplum_lp_first_user_id"
         static let FirstLoginDeviceIdKey = "__leanplum_lp_first_device_id"
     }
-    
-    // TODO: get instance properly
-//    lazy var cleverTapInstance: CleverTap = {
-//        let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken)
-//        var instance: CleverTap
-//        if let cleverTapID = cleverTapID {
-//            instance = CleverTap.instance(with: config, andCleverTapID: cleverTapID)
-//        } else {
-//            instance = CleverTap.instance(with: config)
-//        }
-//        instance.setLibrary("Leanplum")
-//        return instance
-//    }()
     
     var cleverTapInstance: CleverTap?
     
@@ -64,12 +45,14 @@ public class CTWrapper {
     
     // MARK: Initialization
     public init(accountId: String, accountToken: String, accountRegion: String, userId: String, deviceId: String) {
-        Log.debug("Wrapper Instantiated")
+        Log.debug("Wrapper: Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
         self.userId = userId
         self.deviceId = deviceId
+        
+        setLogLevel(LPLogManager.logLevel())
     }
     
     var cleverTapID: String {
@@ -100,41 +83,40 @@ public class CTWrapper {
             }
             return
         }
-        
-        // TODO: can we check if already initialized with custom clever tap id before?
+
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
         config.useCustomCleverTapId = true
         cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: cleverTapID)
         cleverTapInstance?.setLibrary("Leanplum")
         
-        Log.debug("CleverTap instance created by Leanplum")
+        Log.debug("Wrapper: CleverTap instance created with accountId: \(accountId) and accountToken: \(accountToken)")
         //CleverTap.sharedInstance()?.notifyApplicationLaunched(withOptions: nil)
+        
+        if !isAnonymous {
+            Log.debug("Wrapper: will call onUserLogin with identity: \(userId) and cleverTapId: \(cleverTapID)")
+            cleverTapInstance?.onUserLogin([Constants.Identity: userId],
+                                           withCleverTapID: cleverTapID)
+        }
+        triggerInstanceCallback()
+    }
+    
+    func triggerInstanceCallback() {
+        // TODO: implement callback
     }
 
     // MARK: Events
-    public func track(_ eventName: String?, value: Double, info: String?, args: [String: Any], params: [String: Any]) {
+    func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
         
         // message impression events come with event: nil
         guard let eventName = eventName else {
             return
         }
     
-        var eventParams = params
-        // TODO: disregard value == 0.0 ?
-        if value != 0 {
-            eventParams[Constants.ValueParamName] = value
-        }
+        var eventParams = params.mapValues(transformAttributeValues)
+        eventParams[Constants.ValueParamName] = value
         
         if let info = info {
             eventParams[Constants.InfoParamName] = info
-        }
-        
-        if isPurchase(args: args) {
-            // copy arguments to params
-            // keep original value in params if key exists
-            eventParams.merge(args){ (current, _) in current }
-            // TODO: if is purchase use recordChargedEvent?
-            //cleverTapInstance?.recordChargedEvent(withDetails: eventParams, andItems: [])
         }
 
         Log.debug("Leanplum.track will call recordEvent with \(eventName) and \(eventParams)")
@@ -147,8 +129,57 @@ public class CTWrapper {
         }
         
         let eventName = Constants.StatePrefix + stateName
-        Log.debug("Leanplum.advance will call recordEvent with \(eventName) and \(params)")
-        track(eventName, value: 0.0, info: info, args: [:], params: params)
+        Log.debug("Leanplum.advance will call track with \(eventName) and \(params)")
+        track(eventName, value: 0.0, info: info, params: params)
+    }
+    
+    func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
+        guard let eventName = eventName else {
+            return
+        }
+    
+        var details = params.mapValues(transformAttributeValues)
+        details[Constants.ChargedEventParam] = eventName
+        details[Constants.ValueParamName] = value
+        
+        if let currencyCode = currencyCode {
+            details[Constants.CurrencyCodeParam] = currencyCode
+        }
+        
+        let items: [Any] = []
+
+        Log.debug("Wrapper: Leanplum.trackPurchase will call recordChargedEvent with \(details) and \(items)")
+        cleverTapInstance?.recordChargedEvent(withDetails: details, andItems: items)
+    }
+    
+    func trackInAppPurchase(_ eventName: String?, value: Double, currencyCode: String?,
+                            iOSTransactionIdentifier: String?, iOSReceiptData: String?,
+                            iOSSandbox: Bool, params: [String: Any]) {
+        guard let eventName = eventName else {
+            return
+        }
+        
+        // item and quantity are already in the parameters
+        // and they are the only ones
+        var details = params.mapValues(transformAttributeValues)
+        details[Constants.ChargedEventParam] = eventName
+        details[Constants.ValueParamName] = value
+        
+        if let currencyCode = currencyCode {
+            details[Constants.CurrencyCodeParam] = currencyCode
+        }
+        if let iOSTransactionIdentifier = iOSTransactionIdentifier {
+            details[Constants.iOSTransactionIdentifierParam] = iOSTransactionIdentifier
+        }
+        if let iOSReceiptData = iOSReceiptData {
+            details[Constants.iOSReceiptDataParam] = iOSReceiptData
+        }
+        details[Constants.iOSSandboxParam] = iOSSandbox
+        
+        let items: [Any] = []
+
+        Log.debug("Wrapper: Leanplum.trackInAppPurchase will call recordChargedEvent with \(details) and \(items)")
+        cleverTapInstance?.recordChargedEvent(withDetails: details, andItems: items)
     }
     
     func setUserAttributes(_ attributes: [AnyHashable: Any]) {
@@ -210,7 +241,7 @@ public class CTWrapper {
     
     public func setDeviceId(_ deviceId: String) {
         self.deviceId = deviceId
-        var identity = deviceId != userId ? userId : deviceId
+        let identity = deviceId != userId ? userId : deviceId
 
         Log.debug("""
                   Wrapper: Leanplum.setDeviceId will call onUserLogin \
@@ -236,6 +267,19 @@ public class CTWrapper {
                 Wrapper: Leanplum.setUserId will call onUserLogin with identity: \(userId) and CleverTapID:  \(cleverTapID)")
                 """)
         cleverTapInstance?.onUserLogin([Constants.Identity: userId], withCleverTapID: cleverTapID)
+    }
+    
+    func setLogLevel(_ level: LeanplumLogLevel) {
+        switch level {
+        case .off:
+            CleverTap.setDebugLevel(CleverTapLogLevel.off.rawValue)
+        case .error, .info:
+            CleverTap.setDebugLevel(CleverTapLogLevel.info.rawValue)
+        case .debug:
+            CleverTap.setDebugLevel(CleverTapLogLevel.debug.rawValue)
+        default:
+            CleverTap.setDebugLevel(CleverTapLogLevel.info.rawValue)
+        }
     }
 }
 
