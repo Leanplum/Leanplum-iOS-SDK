@@ -283,7 +283,6 @@
                 return;
             }
             
-            // TODO: execute change of state after all callbacks are executed?
             [[MigrationManager shared] handleMigrateStateWithMultiApiResponse:json];
             
             // Delete events on success.

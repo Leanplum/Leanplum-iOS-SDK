@@ -6,13 +6,10 @@
 //
 
 import Foundation
+// Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
 @_implementationOnly import CleverTapSDK
 
 public class CTWrapper {
-    
-    // TODO: check app launched event when ct is initialized mid-session
-    // TODO: test byte and short
-    
     enum Constants {
         static let Identity = "Identity"
         

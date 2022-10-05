@@ -8,16 +8,15 @@
 import Foundation
 
 @objc public extension MigrationManager {
-
-//    migrateState =     {
-//        sha256 = 31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8;
-//    };
+    //    migrateState =     {
+    //        sha256 = 31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8;
+    //    };
     @objc
     func handleMigrateState(multiApiResponse: Any) {
         guard let migrateState = getValue(dict: multiApiResponse,
                                           key: Constants.MigrateStateResponseParam)
         else { return }
-
+        
         if let hash = getValue(dict: migrateState, key: Constants.HashKey) as? String,
            hash != self.migrationHash {
             Log.debug("CleverTap Hash changed")
@@ -35,12 +34,12 @@ import Foundation
     //                profile = "lp+ct";
     //            };
     //            ct =             {
-    //                accountId = "W84-WW7-756Z";
+    //                accountId = "accId";
     //                attributeMappings =                 {
     //                    name1 = "ct-name1";
     //                };
     //                regionCode = eu1;
-    //                token = "a00-4b0";
+    //                token = "token";
     //            };
     //            eventsUploadStartedTs = "2022-10-02T17:46:01.356Z";
     //            profileUploadStartedTs = "2022-10-02T17:46:01.356Z";

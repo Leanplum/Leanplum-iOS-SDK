@@ -942,7 +942,7 @@ void leanplumExceptionHandler(NSException *exception);
              withContextualValues:nil];
     }];
     
-    [[MigrationManager shared] onMigrationStateLoadedWithCompletion:^{
+    [[MigrationManager shared] fetchMigrationState:^{
         if ([[MigrationManager shared] useCleverTap]) {
             [[MigrationManager shared] launch];
         }

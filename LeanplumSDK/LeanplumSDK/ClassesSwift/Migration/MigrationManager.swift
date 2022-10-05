@@ -66,10 +66,17 @@ import Foundation
                 Log.error("Missing CleverTap Credentials. Cannot initialize CleverTap.")
                 return
             }
-            // TODO: fix optionals
-            wrapper = CTWrapper(accountId: id, accountToken: token, accountRegion: accountRegion, userId: Leanplum.userId()!, deviceId: Leanplum.deviceId()!)
+            guard let user = Leanplum.userId(), let device = Leanplum.deviceId() else {
+                Log.error("Missing Leanplum userId and deviceId. Cannot initialize CleverTap.")
+                return
+            }
+
+            wrapper = CTWrapper(accountId: id, accountToken: token,
+                                accountRegion: accountRegion,
+                                userId: user, deviceId: device)
             
             if Leanplum.hasStarted() {
+                Log.debug("Leanplum has already started, launching CleverTap as well.")
                 wrapper?.launch()
             }
         }
@@ -79,26 +86,24 @@ import Foundation
         // Note: It is not possible to return from CT only state since status comes from LP API
         
         if (!oldValue.useCleverTap && migrationState.useCleverTap) {
-           // LPOperationQueue.serialQueue().addOperation { [self] in
-                // Flush all saved requests to Leanplum
-                LPRequestSender.sharedInstance().sendRequests()
-                // Create wrapper
-                initWrapper()
-           // }
+            // Flush all saved requests to Leanplum
+            LPRequestSender.sharedInstance().sendRequests()
+            // Create wrapper
+            initWrapper()
         }
         
         if (oldValue.useLeanplum && !migrationState.useLeanplum) {
             LPOperationQueue.serialQueue().addOperation {
-                // flush all saved data to LP
+                // Flush all saved data to LP
                 LPRequestSender.sharedInstance().sendRequests()
-                // delete LP data
+                // Delete LP data
                 VarCache.shared().clearUserContent()
                 VarCache.shared().saveDiffs()
             }
         }
         
         if (oldValue.useCleverTap && !migrationState.useCleverTap) {
-            // remove wrapper
+            // Remove wrapper
             wrapper = nil
         }
     }
@@ -106,17 +111,17 @@ import Foundation
     
     // onMigrationStateLoaded
     
-    @objc public func onMigrationStateLoaded(completion: @escaping ()->()) {
+    @objc public func fetchMigrationState(_ completion: @escaping ()->()) {
         if migrationState != .undefined {
             initWrapper()
             completion()
             return
         }
         
-        onMigrationStateLoadedBlocks.append(completion)
+        fetchMigrationStateClosures.append(completion)
     }
     
-    var onMigrationStateLoadedBlocks:[(() -> Void)] = [] {
+    var fetchMigrationStateClosures:[(() -> Void)] = [] {
         willSet {
             lock.lock()
         }
@@ -124,20 +129,20 @@ import Foundation
             defer {
                 lock.unlock()
             }
-            if oldValue.isEmpty && onMigrationStateLoadedBlocks.count > 0 {
+            if oldValue.isEmpty && fetchMigrationStateClosures.count > 0 {
                 fetchMigrationStateAsync { [weak self] in
                     NSLog("[MigrationLog] triggerOnMigrationStateLoaded")
-                    self?.triggerOnMigrationStateLoaded()
+                    self?.triggerFetchMigrationState()
                 }
             }
         }
     }
     
-    private func triggerOnMigrationStateLoaded() {
-        let blocks = onMigrationStateLoadedBlocks
-        onMigrationStateLoadedBlocks = []
-        for block in blocks {
-            block()
+    private func triggerFetchMigrationState() {
+        let closures = fetchMigrationStateClosures
+        fetchMigrationStateClosures = []
+        for closure in closures {
+            closure()
         }
     }
     
