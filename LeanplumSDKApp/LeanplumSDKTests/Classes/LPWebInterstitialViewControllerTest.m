@@ -32,26 +32,6 @@
     [super tearDown];
 }
 
-/*
- * Use this for Xcode13 instead of [LPWebInterstitialViewController instantiateFromStoryboard]
- * Xcode13 cannot find the bundle using the current logic in LPUtils:leanplumBundle
- * NSBundle for Leanplum class returns the xctest from the app bundle:
- * ../LeanplumSDKApp.app/PlugIns/LeanplumSDKTests.xctest
- */
-- (LPWebInterstitialViewController*)webInterstitialController
-{
-    NSBundle *bundle = [NSBundle mainBundle];
-    NSURL *bundleUrl = [bundle URLForResource:@"Leanplum-iOS-SDK" withExtension:@".bundle" subdirectory:@"Frameworks/Leanplum.framework"];
-    if (bundleUrl != nil)
-    {
-        NSBundle *lpBundle = [NSBundle bundleWithURL:bundleUrl];
-        bundle = lpBundle;
-    }
-    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:bundle];
-    
-    return [storyboard instantiateInitialViewController];
-}
-
 // Blocks for decidePolicyForNavigationAction
 typedef void (^AfterBlock)(UIApplication *mockApplication, WKNavigationActionPolicy policy);
 typedef void (^BeforeBlock)(UIApplication *mockApplication);
@@ -65,7 +45,8 @@ typedef void (^BeforeBlock)(UIApplication *mockApplication);
  */
 - (void) execute_decidePolicyForNavigationAction:(NSURL *)url withInitialPolicy:(WKNavigationActionPolicy)initialPolicy withBeforeBlock:(BeforeBlock)beforeBlock withAfterBlock:(AfterBlock)afterBlock
 {
-    LPWebInterstitialViewController *viewController = [self webInterstitialController];
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"WebInterstitial" bundle:[LPUtils leanplumBundle]];
+    LPWebInterstitialViewController *viewController = [storyboard instantiateInitialViewController];
     
     WKWebView *currentWebView;
     for (id view in viewController.view.subviews) {
