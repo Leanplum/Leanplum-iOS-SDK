@@ -22,6 +22,8 @@ public class CTWrapper {
         static let iOSReceiptDataParam = "iOSReceiptData"
         static let iOSSandboxParam = "iOSSandbox"
         
+        static let UTMVisitedEvent = "UTM Visited"
+        
         static let FirstLoginUserIdKey = "__leanplum_lp_first_user_id"
         static let FirstLoginDeviceIdKey = "__leanplum_lp_first_device_id"
     }
@@ -275,6 +277,30 @@ public class CTWrapper {
                 Wrapper: Leanplum.setUserId will call onUserLogin with identity: \(userId) and CleverTapID:  \(cleverTapID)")
                 """)
         cleverTapInstance?.onUserLogin([Constants.Identity: userId], withCleverTapID: cleverTapID)
+    }
+    
+    func setTrafficSourceInfo(_ info: [AnyHashable: Any]) {
+        let trafficSourceInfoMappings = [
+            "publisherId": "utm_source_id",
+            "publisherName": "utm_source",
+            "publisherSubPublisher": "utm_medium",
+            "publisherSubSite": "utm_subscribe.site",
+            "publisherSubCampaign": "utm_campaign",
+            "publisherSubAdGroup": "utm_sourcepublisher.ad_group",
+            "publisherSubAd": "utm_SourcePublisher.ad"
+        ]
+        
+        let props = info.mapKeys({ key in
+            guard let keyStr = key as? String,
+            let newKey = trafficSourceInfoMappings[keyStr]
+            else {
+                return key
+            }
+            return newKey
+        })
+        
+        Log.debug("Wrapper: Leanplum.setTrafficSourceInfo will call pushEvent with \(Constants.UTMVisitedEvent) and \(props)")
+        cleverTapInstance?.recordEvent(Constants.UTMVisitedEvent, withProps: props)
     }
     
     func setLogLevel(_ level: LeanplumLogLevel) {

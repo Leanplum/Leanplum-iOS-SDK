@@ -223,4 +223,8 @@ import Foundation
     func setLogLevel(_ level: LeanplumLogLevel) {
         wrapper?.setLogLevel(level)
     }
+    
+    func setTrafficSourceInfo(_ info: [AnyHashable: Any]) {
+        wrapper?.setTrafficSourceInfo(info)
+    }
 }

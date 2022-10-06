@@ -2090,6 +2090,7 @@ andParameters:(NSDictionary *)params
     info = [self validateAttributes:info named:@"info" allowLists:NO];
     [self onStartIssued:^{
         [self setTrafficSourceInfoInternal:info];
+        [[MigrationManager shared] setTrafficSourceInfo:info];
     }];
     LP_END_TRY
 }
