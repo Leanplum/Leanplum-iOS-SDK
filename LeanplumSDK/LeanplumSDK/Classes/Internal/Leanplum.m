@@ -2669,6 +2669,11 @@ void leanplumExceptionHandler(NSException *exception)
     [[Leanplum notificationsManager] enableProvisionalPush];
 }
 
++ (void)onCleverTapInstanceInitialized:(LeanplumCleverTapInstanceBlock)block
+{
+    [[MigrationManager shared] setInstanceCallback:block];
+}
+
 - (void) dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[Leanplum notificationsManager].proxy removeDidFinishLaunchingObserver];

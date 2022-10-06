@@ -27,13 +27,14 @@ public class CTWrapper {
     }
     
     var cleverTapInstance: CleverTap?
+    var instanceCallback: ((Any) -> Void)?
     
     var accountId: String
     var accountToken: String
     var accountRegion: String
     var userId: String
     var deviceId: String
-    
+
     @StringOptionalUserDefaults(key: Constants.FirstLoginUserIdKey)
     var firstLoginUserId: String?
     
@@ -41,13 +42,19 @@ public class CTWrapper {
     var firstLoginDeviceId: String?
     
     // MARK: Initialization
-    public init(accountId: String, accountToken: String, accountRegion: String, userId: String, deviceId: String) {
+    public init(accountId: String,
+                accountToken: String,
+                accountRegion: String,
+                userId: String,
+                deviceId: String,
+                callback: ((Any) -> Void)?) {
         Log.debug("Wrapper: Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
         self.userId = userId
         self.deviceId = deviceId
+        self.instanceCallback = callback
         
         setLogLevel(LPLogManager.logLevel())
     }
@@ -98,7 +105,16 @@ public class CTWrapper {
     }
     
     func triggerInstanceCallback() {
-        // TODO: implement callback
+        guard let callback = instanceCallback, let instance = cleverTapInstance else {
+            return
+        }
+        
+        callback(instance)
+    }
+    
+    func setInstanceCallback(_ callback: ((Any) -> Void)?) {
+        instanceCallback = callback
+        triggerInstanceCallback()
     }
 
     // MARK: Events
@@ -228,11 +244,6 @@ public class CTWrapper {
             return newKey
         }
     }
-
-    func isPurchase(args: [String: Any]) -> Bool {
-        return args[LP_PARAM_CURRENCY_CODE] != nil
-    }
-    
     
     // MARK: Identity
     

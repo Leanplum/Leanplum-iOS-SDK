@@ -17,6 +17,12 @@ import Foundation
     
     var wrapper: CTWrapper? = nil
     
+    var instanceCallback: ((Any) -> Void)? {
+        didSet {
+            wrapper?.setInstanceCallback(instanceCallback)
+        }
+    }
+    
     @StringOptionalUserDefaults(key: Constants.HashKey)
     var migrationHash: String?
     
@@ -73,7 +79,8 @@ import Foundation
 
             wrapper = CTWrapper(accountId: id, accountToken: token,
                                 accountRegion: accountRegion,
-                                userId: user, deviceId: device)
+                                userId: user, deviceId: device,
+                                callback: instanceCallback)
             
             if Leanplum.hasStarted() {
                 Log.debug("Leanplum has already started, launching CleverTap as well.")
@@ -171,26 +178,30 @@ import Foundation
 
 @objc public extension MigrationManager {
     
-    @objc func launch() {
+    func launch() {
         wrapper?.launch()
     }
     
-    @objc func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
+    func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
         wrapper?.track(eventName, value: value, info: info, params: params)
     }
     
-    @objc func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
+    func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
         wrapper?.trackPurchase(eventName, value: value, currencyCode: currencyCode, params: params)
     }
     
-    @objc func trackInAppPurchase(_ eventName: String?, value: Double, currencyCode: String?,
+    func trackInAppPurchase(_ eventName: String?, value: Double, currencyCode: String?,
                             iOSTransactionIdentifier: String?, iOSReceiptData: String?,
                                   iOSSandbox: Bool, params: [String: Any]) {
         wrapper?.trackInAppPurchase(eventName, value: value, currencyCode: currencyCode, iOSTransactionIdentifier: iOSTransactionIdentifier, iOSReceiptData: iOSReceiptData, iOSSandbox: iOSSandbox, params: params)
     }
     
-    @objc func advance(_ eventName: String?, info: String?, params: [String: Any]) {
+    func advance(_ eventName: String?, info: String?, params: [String: Any]) {
         wrapper?.advance(eventName, info: info, params: params)
+    }
+    
+    func setInstanceCallback(_ callback: @escaping ((Any) -> Void)) {
+        instanceCallback = callback
     }
     
     func setUserAttributes(_ attributes: [AnyHashable: Any]) {
