@@ -17,40 +17,35 @@ import Foundation
     
     var wrapper: CTWrapper? = nil
     
-    var instanceCallback: ((Any) -> Void)? {
-        didSet {
-            wrapper?.setInstanceCallback(instanceCallback)
-        }
-    }
-    
     @StringOptionalUserDefaults(key: Constants.HashKey)
     var migrationHash: String?
     
     @StringOptionalUserDefaults(key: Constants.AccountIdKey)
-    //@objc private(set)
     var accountId: String?
     
     @StringOptionalUserDefaults(key: Constants.AccountTokenKey)
-    //@objc private(set)
     var accountToken: String?
     
     @StringOptionalUserDefaults(key: Constants.RegionCodeKey)
-    //@objc private(set)
     var regionCode: String?
     
     @PropUserDefaults(key: Constants.AttributeMappingsKey, defaultValue: [:])
-    //@objc private(set)
     var attributeMappings: [String: String]
     
     @MigrationStateUserDefaults(key: Constants.HashKey, defaultValue: .undefined)
-    @objc
-    public
-    //private(set)
     var migrationState: MigrationState {
         didSet {
             if oldValue != migrationState {
                 handleMigrationStateChanged(oldValue: oldValue)
             }
+        }
+    }
+    
+    private let lock = NSLock()
+    
+    var instanceCallback: ((Any) -> Void)? {
+        didSet {
+            wrapper?.setInstanceCallback(instanceCallback)
         }
     }
     
@@ -63,8 +58,6 @@ import Foundation
     @objc public var useCleverTap: Bool {
         migrationState.useCleverTap
     }
-    
-    private let lock = NSLock()
     
     func initWrapper() {
         if migrationState.useCleverTap {

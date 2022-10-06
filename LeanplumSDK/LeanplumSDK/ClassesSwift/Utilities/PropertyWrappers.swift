@@ -1,5 +1,5 @@
 //
-//  StringOptionalUserDefaults.swift
+//  PropertyWrappers.swift
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 2.10.22.
@@ -10,8 +10,7 @@ import Foundation
 @propertyWrapper
 struct StringOptionalUserDefaults {
     private var key: String
-    //    private var defaultValue: String?
-    
+
     var wrappedValue: String? {
         get { UserDefaults.standard.string(forKey: key) }
         set { UserDefaults.standard.setValue(newValue, forKey: key) }
@@ -20,16 +19,10 @@ struct StringOptionalUserDefaults {
     init(key: String) {
         self.key = key
     }
-    
-    
-//    init(key: String, defaultValue: String?) {
-//        self.key = key
-//        self.defaultValue = defaultValue
-//    }
 }
 
 @propertyWrapper
-public struct MigrationStateUserDefaults {
+struct MigrationStateUserDefaults {
     private var key: String
     private var defaultValue: MigrationState
     
