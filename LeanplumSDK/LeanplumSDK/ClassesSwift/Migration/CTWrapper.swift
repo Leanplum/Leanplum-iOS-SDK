@@ -9,11 +9,11 @@ import Foundation
 // Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
 @_implementationOnly import CleverTapSDK
 
-public class CTWrapper {
+class CTWrapper {
     enum Constants {
-        static let Identity = "Identity"
-        
         static let StatePrefix = "state_"
+        static let UTMVisitedEvent = "UTM Visited"
+        
         static let ValueParamName = "value"
         static let InfoParamName = "info"
         static let ChargedEventParam = "event"
@@ -21,11 +21,6 @@ public class CTWrapper {
         static let iOSTransactionIdentifierParam = "iOSTransactionIdentifier"
         static let iOSReceiptDataParam = "iOSReceiptData"
         static let iOSSandboxParam = "iOSSandbox"
-        
-        static let UTMVisitedEvent = "UTM Visited"
-        
-        static let FirstLoginUserIdKey = "__leanplum_lp_first_user_id"
-        static let FirstLoginDeviceIdKey = "__leanplum_lp_first_device_id"
     }
     
     var cleverTapInstance: CleverTap?
@@ -34,14 +29,7 @@ public class CTWrapper {
     var accountId: String
     var accountToken: String
     var accountRegion: String
-    var userId: String
-    var deviceId: String
-
-    @StringOptionalUserDefaults(key: Constants.FirstLoginUserIdKey)
-    var firstLoginUserId: String?
-    
-    @StringOptionalUserDefaults(key: Constants.FirstLoginDeviceIdKey)
-    var firstLoginDeviceId: String?
+    var identityManager: IdentityManager
     
     // MARK: Initialization
     public init(accountId: String,
@@ -54,32 +42,10 @@ public class CTWrapper {
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
-        self.userId = userId
-        self.deviceId = deviceId
         self.instanceCallback = callback
         
+        identityManager = IdentityManager(userId: userId, deviceId: deviceId)
         setLogLevel(LPLogManager.logLevel())
-    }
-    
-    var cleverTapID: String {
-        if !isAnonymous, userId != firstLoginUserId {
-            return "\(deviceId)_\(userId)"
-        }
-        
-        if userId == firstLoginUserId,
-        let firstDeviceId = firstLoginDeviceId {
-            return firstDeviceId
-        }
-            
-        return deviceId
-    }
-    
-    var isAnonymous: Bool {
-        userId == deviceId
-    }
-    
-    public func getInstance() -> Any? {
-        return cleverTapInstance
     }
     
     public func launch() {
@@ -92,16 +58,16 @@ public class CTWrapper {
 
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
         config.useCustomCleverTapId = true
-        cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: cleverTapID)
+        cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
         cleverTapInstance?.setLibrary("Leanplum")
         
         Log.debug("Wrapper: CleverTap instance created with accountId: \(accountId) and accountToken: \(accountToken)")
         //CleverTap.sharedInstance()?.notifyApplicationLaunched(withOptions: nil)
         
-        if !isAnonymous {
-            Log.debug("Wrapper: will call onUserLogin with identity: \(userId) and cleverTapId: \(cleverTapID)")
-            cleverTapInstance?.onUserLogin([Constants.Identity: userId],
-                                           withCleverTapID: cleverTapID)
+        if !identityManager.isAnonymous {
+            Log.debug("Wrapper: will call onUserLogin with identity: \(identityManager.userId) and cleverTapId: \(identityManager.cleverTapID)")
+            cleverTapInstance?.onUserLogin(identityManager.profile,
+                                           withCleverTapID: identityManager.cleverTapID)
         }
         triggerInstanceCallback()
     }
@@ -249,34 +215,20 @@ public class CTWrapper {
     
     // MARK: Identity
     
-    public func setDeviceId(_ deviceId: String) {
-        self.deviceId = deviceId
-        let identity = deviceId != userId ? userId : deviceId
-
-        Log.debug("""
-                  Wrapper: Leanplum.setDeviceId will call onUserLogin \
-                  with identity: \(identity) and CleverTapID: \(cleverTapID)
-                """)
-        cleverTapInstance?.onUserLogin([Constants.Identity: identity],
-                                       withCleverTapID: cleverTapID)
-    }
-    
     public func setUserId(_ userId: String) {
-        guard userId != self.userId else { return }
+        guard userId != identityManager.userId else { return }
         
-        let anon = isAnonymous
-        self.userId = userId
+        identityManager.setUserId(userId)
         
-        if anon {
-            firstLoginUserId = userId
-            firstLoginDeviceId = deviceId
-            Log.debug("Wrapper: anonymous user on device \(deviceId) will be merged to \(userId)")
-        }
+        let profile = identityManager.profile
+        let cleverTapID = identityManager.cleverTapID
         
         Log.debug("""
-                Wrapper: Leanplum.setUserId will call onUserLogin with identity: \(userId) and CleverTapID:  \(cleverTapID)")
+                Wrapper: Leanplum.setUserId will call onUserLogin \
+                with identity: \(profile) \
+                and CleverTapID:  \(cleverTapID)")
                 """)
-        cleverTapInstance?.onUserLogin([Constants.Identity: userId], withCleverTapID: cleverTapID)
+        cleverTapInstance?.onUserLogin(profile, withCleverTapID: cleverTapID)
     }
     
     func setTrafficSourceInfo(_ info: [AnyHashable: Any]) {

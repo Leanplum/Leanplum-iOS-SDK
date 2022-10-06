@@ -214,6 +214,8 @@
 		6A29EABF28EA13B60024880E /* PropertyWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EABD28EA13B60024880E /* PropertyWrappers.swift */; };
 		6A29EAC428EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */; };
 		6A29EAC528EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */; };
+		6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
+		6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
 		6A3C1EB228D7B3C700D51E44 /* CleverTapSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; };
 		6A3C1EB328D7B3C700D51E44 /* CleverTapSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A3C1EB428D7B3C700D51E44 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */; };
@@ -811,6 +813,7 @@
 		6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+Constants.swift"; sourceTree = "<group>"; };
 		6A29EABD28EA13B60024880E /* PropertyWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyWrappers.swift; sourceTree = "<group>"; };
 		6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+ResponseHandler.swift"; sourceTree = "<group>"; };
+		6A29EAF428EF37090024880E /* IdentityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManager.swift; sourceTree = "<group>"; };
 		6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CleverTapSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1348,6 +1351,7 @@
 				6A29EAB728EA09470024880E /* MigrationState.swift */,
 				6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */,
 				6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */,
+				6A29EAF428EF37090024880E /* IdentityManager.swift */,
 			);
 			path = Migration;
 			sourceTree = "<group>";
@@ -1916,6 +1920,7 @@
 				075AAE9D26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
 				075AAE2026847EC4007CA1BD /* LPLogManager.m in Sources */,
 				39C0819F2781D3D000C1DBD6 /* ActionManager+Queue.swift in Sources */,
+				6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */,
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				6AB10938284B3FBD00B72FDA /* UIAlert.swift in Sources */,
@@ -2039,6 +2044,7 @@
 				6A714B8426F8B317004A34A9 /* LPAppIconManager.m in Sources */,
 				6A714B8526F8B317004A34A9 /* NSTimer+Blocks.m in Sources */,
 				6A714B8626F8B317004A34A9 /* LPLogManager.m in Sources */,
+				6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */,
 				6A714B8726F8B317004A34A9 /* LPSecuredVars.m in Sources */,
 				6A714B8826F8B317004A34A9 /* LPConfirmMessageTemplate.m in Sources */,
 				6AB10939284B3FBD00B72FDA /* UIAlert.swift in Sources */,

@@ -211,11 +211,7 @@ import Foundation
     func setUserId(_ userId: String) {
         wrapper?.setUserId(userId)
     }
-    
-    func setDeviceId(_ deviceId: String) {
-        wrapper?.setDeviceId(deviceId)
-    }
-    
+
     func getProfileID() {
         wrapper?.cleverTapInstance?.profileGetID()
     }
