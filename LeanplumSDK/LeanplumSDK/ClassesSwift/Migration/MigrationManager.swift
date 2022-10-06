@@ -15,7 +15,7 @@ import Foundation
     
     @objc public static let shared: MigrationManager = .init()
     
-    var wrapper: CTWrapper? = nil
+    var wrapper: Wrapper?
     
     @StringOptionalUserDefaults(key: Constants.HashKey)
     var migrationHash: String?
@@ -166,54 +166,5 @@ import Foundation
             completion()
         }
         LPRequestSender.sharedInstance().send(request)
-    }
-}
-
-@objc public extension MigrationManager {
-    
-    func launch() {
-        wrapper?.launch()
-    }
-    
-    func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
-        wrapper?.track(eventName, value: value, info: info, params: params)
-    }
-    
-    func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
-        wrapper?.trackPurchase(eventName, value: value, currencyCode: currencyCode, params: params)
-    }
-    
-    func trackInAppPurchase(_ eventName: String?, value: Double, currencyCode: String?,
-                            iOSTransactionIdentifier: String?, iOSReceiptData: String?,
-                                  iOSSandbox: Bool, params: [String: Any]) {
-        wrapper?.trackInAppPurchase(eventName, value: value, currencyCode: currencyCode, iOSTransactionIdentifier: iOSTransactionIdentifier, iOSReceiptData: iOSReceiptData, iOSSandbox: iOSSandbox, params: params)
-    }
-    
-    func advance(_ eventName: String?, info: String?, params: [String: Any]) {
-        wrapper?.advance(eventName, info: info, params: params)
-    }
-    
-    func setInstanceCallback(_ callback: @escaping ((Any) -> Void)) {
-        instanceCallback = callback
-    }
-    
-    func setUserAttributes(_ attributes: [AnyHashable: Any]) {
-        wrapper?.setUserAttributes(attributes)
-    }
-    
-    func setUserId(_ userId: String) {
-        wrapper?.setUserId(userId)
-    }
-
-    func getProfileID() {
-        wrapper?.cleverTapInstance?.profileGetID()
-    }
-    
-    func setLogLevel(_ level: LeanplumLogLevel) {
-        wrapper?.setLogLevel(level)
-    }
-    
-    func setTrafficSourceInfo(_ info: [AnyHashable: Any]) {
-        wrapper?.setTrafficSourceInfo(info)
     }
 }

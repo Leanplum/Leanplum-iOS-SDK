@@ -216,6 +216,14 @@
 		6A29EAC528EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */; };
 		6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
 		6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
+		6A37A89628EF6E6C00F4339F /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89528EF6E6C00F4339F /* Wrapper.swift */; };
+		6A37A89728EF6E6C00F4339F /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89528EF6E6C00F4339F /* Wrapper.swift */; };
+		6A37A89928EF738200F4339F /* MigrationManager+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89828EF738200F4339F /* MigrationManager+API.swift */; };
+		6A37A89A28EF738200F4339F /* MigrationManager+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89828EF738200F4339F /* MigrationManager+API.swift */; };
+		6A37A89C28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */; };
+		6A37A89D28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */; };
+		6A37A8A028EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */; };
+		6A37A8A128EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */; };
 		6A3C1EB228D7B3C700D51E44 /* CleverTapSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; };
 		6A3C1EB328D7B3C700D51E44 /* CleverTapSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A3C1EB428D7B3C700D51E44 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */; };
@@ -814,6 +822,10 @@
 		6A29EABD28EA13B60024880E /* PropertyWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyWrappers.swift; sourceTree = "<group>"; };
 		6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+ResponseHandler.swift"; sourceTree = "<group>"; };
 		6A29EAF428EF37090024880E /* IdentityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManager.swift; sourceTree = "<group>"; };
+		6A37A89528EF6E6C00F4339F /* Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wrapper.swift; sourceTree = "<group>"; };
+		6A37A89828EF738200F4339F /* MigrationManager+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+API.swift"; sourceTree = "<group>"; };
+		6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+MapKeys.swift"; sourceTree = "<group>"; };
+		6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CTWrapper+Utilities.swift"; sourceTree = "<group>"; };
 		6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CleverTapSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1346,14 +1358,25 @@
 		6A2109DE28BE88CA00DBF4A9 /* Migration */ = {
 			isa = PBXGroup;
 			children = (
-				6A2109DF28BE88D900DBF4A9 /* CTWrapper.swift */,
+				6A37A89E28EF749F00F4339F /* Wrapper */,
 				6A2109E028BE88D900DBF4A9 /* MigrationManager.swift */,
 				6A29EAB728EA09470024880E /* MigrationState.swift */,
 				6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */,
 				6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */,
-				6A29EAF428EF37090024880E /* IdentityManager.swift */,
+				6A37A89828EF738200F4339F /* MigrationManager+API.swift */,
 			);
 			path = Migration;
+			sourceTree = "<group>";
+		};
+		6A37A89E28EF749F00F4339F /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				6A2109DF28BE88D900DBF4A9 /* CTWrapper.swift */,
+				6A29EAF428EF37090024880E /* IdentityManager.swift */,
+				6A37A89528EF6E6C00F4339F /* Wrapper.swift */,
+				6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */,
+			);
+			path = Wrapper;
 			sourceTree = "<group>";
 		};
 		6A714BFF26F8B7DC004A34A9 /* ClassesSwift */ = {
@@ -1431,6 +1454,7 @@
 				6A9DEC9D27B54B7200052807 /* LPRequestSender+UUID.swift */,
 				6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */,
 				6A07FD9E280F27C700995BE3 /* NSRegularExpression+Matches.swift */,
+				6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1859,6 +1883,7 @@
 				075AAE7F26847EC4007CA1BD /* LPDatabase.m in Sources */,
 				075AAE1E26847EC4007CA1BD /* LPRequestBatch.m in Sources */,
 				075AAEB926847EC4007CA1BD /* LPActionContext.m in Sources */,
+				6A37A8A028EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */,
 				075AAE6026847EC4007CA1BD /* LPPushAskToAskMessageTemplate.m in Sources */,
 				6AD978492774BE7500A7C6C6 /* Logging.swift in Sources */,
 				075AAEDE26847EC4007CA1BD /* LPConstants.m in Sources */,
@@ -1876,6 +1901,7 @@
 				075AAEC926847EC4007CA1BD /* LPInternalState.m in Sources */,
 				6A96032D27C8DD1300F34BA0 /* User.swift in Sources */,
 				075AAE4E26847EC4007CA1BD /* LPMessageTemplateUtilities.m in Sources */,
+				6A37A89928EF738200F4339F /* MigrationManager+API.swift in Sources */,
 				075AAE9A26847EC4007CA1BD /* Leanplum_Reachability.m in Sources */,
 				075AAE3426847EC4007CA1BD /* LPPushMessageTemplate.m in Sources */,
 				075AAED326847EC4007CA1BD /* LeanplumCompatibility.m in Sources */,
@@ -1884,6 +1910,7 @@
 				6A29EAB828EA09470024880E /* MigrationState.swift in Sources */,
 				6A9DECA227B6929200052807 /* ApiConfig.swift in Sources */,
 				075AAEA826847EC4007CA1BD /* LPInbox.m in Sources */,
+				6A37A89628EF6E6C00F4339F /* Wrapper.swift in Sources */,
 				C90C489D2707299D00E33F1F /* NotificationSettings.swift in Sources */,
 				39C081912781D30300C1DBD6 /* ActionManager+Action.swift in Sources */,
 				075AAED826847EC4007CA1BD /* LPContextualValues.m in Sources */,
@@ -1925,6 +1952,7 @@
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				6AB10938284B3FBD00B72FDA /* UIAlert.swift in Sources */,
 				075AAE0126847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
+				6A37A89C28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */,
 				6A714C0126F8B88A004A34A9 /* NotificationsManager+Utilities.swift in Sources */,
 				075AAE2826847EC4007CA1BD /* LPRevenueManager.m in Sources */,
 				075AAE3226847EC4007CA1BD /* LPAlertMessageTemplate.m in Sources */,
@@ -1983,6 +2011,7 @@
 				6A714B5926F8B317004A34A9 /* LPRequest.m in Sources */,
 				6A714B5A26F8B317004A34A9 /* LPVar.m in Sources */,
 				C90C48A727072AD800E33F1F /* UNNotificationSettings+Transform.swift in Sources */,
+				6A37A8A128EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */,
 				6A714B5C26F8B317004A34A9 /* LPRegisterForPushMessageTemplate.m in Sources */,
 				6A714B5D26F8B317004A34A9 /* LPDatabase.m in Sources */,
 				6A714B5E26F8B317004A34A9 /* LPRequestBatch.m in Sources */,
@@ -2000,6 +2029,7 @@
 				39C081AA278D995300C1DBD6 /* ActionManager.swift in Sources */,
 				39C081B3278D995300C1DBD6 /* ActionManager+Action.swift in Sources */,
 				6A714B6826F8B317004A34A9 /* LPKeychainWrapper.m in Sources */,
+				6A37A89A28EF738200F4339F /* MigrationManager+API.swift in Sources */,
 				6A714B6926F8B317004A34A9 /* LPHitView.m in Sources */,
 				6A714B6A26F8B317004A34A9 /* Leanplum_WebSocket.m in Sources */,
 				6A714B6B26F8B317004A34A9 /* LPMessageArchiveData.m in Sources */,
@@ -2008,6 +2038,7 @@
 				6A29EAB928EA09470024880E /* MigrationState.swift in Sources */,
 				6A07FDA0280F27C700995BE3 /* NSRegularExpression+Matches.swift in Sources */,
 				6A714B6D26F8B317004A34A9 /* LPInternalState.m in Sources */,
+				6A37A89728EF6E6C00F4339F /* Wrapper.swift in Sources */,
 				6A96032E27C8DD1300F34BA0 /* User.swift in Sources */,
 				6A714B7026F8B317004A34A9 /* LPMessageTemplateUtilities.m in Sources */,
 				6A714B7126F8B317004A34A9 /* Leanplum_Reachability.m in Sources */,
@@ -2049,6 +2080,7 @@
 				6A714B8826F8B317004A34A9 /* LPConfirmMessageTemplate.m in Sources */,
 				6AB10939284B3FBD00B72FDA /* UIAlert.swift in Sources */,
 				6A714B8926F8B317004A34A9 /* LPRequestSenderTimer.m in Sources */,
+				6A37A89D28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */,
 				6A714C0226F8B88A004A34A9 /* NotificationsManager+Utilities.swift in Sources */,
 				39C081B2278D995300C1DBD6 /* ActionManager+Tracking.swift in Sources */,
 				6A714B8A26F8B317004A34A9 /* LPRevenueManager.m in Sources */,

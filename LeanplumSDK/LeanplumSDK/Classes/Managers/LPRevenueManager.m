@@ -200,7 +200,13 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
     };
     
     [Leanplum onStartIssued:^{
-        [[MigrationManager shared] trackInAppPurchase:eventName value:value currencyCode:currencyCode iOSTransactionIdentifier:transactionId iOSReceiptData:receiptData iOSSandbox:isSandbox params:params];
+        [[MigrationManager shared] trackInAppPurchase:eventName
+                                                value:value
+                                         currencyCode:currencyCode
+                             iOSTransactionIdentifier:transactionId
+                                       iOSReceiptData:receiptData
+                                           iOSSandbox:isSandbox
+                                               params:params];
     }];
     
     [Leanplum track:eventName
