@@ -84,8 +84,4 @@ class WrapperTest: XCTestCase {
         print(expected)
         XCTAssertTrue(actual.isEqual(expected))
     }
-    
-    func t() {
-        MigrationManager.shared.migrationState = .leanplum 
-    }
 }
