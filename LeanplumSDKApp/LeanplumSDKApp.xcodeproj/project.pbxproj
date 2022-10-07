@@ -130,8 +130,6 @@
 		6A37A8AE28F0164700F4339F /* IdentityManagerMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A8AD28F0164700F4339F /* IdentityManagerMocks.swift */; };
 		6A37A8D128F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; };
 		6A37A8D228F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6A37A8EC28F08B0800F4339F /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEAEE592795B68700680F84 /* Leanplum.framework */; };
-		6A37A8ED28F08B0800F4339F /* Leanplum.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AEAEE592795B68700680F84 /* Leanplum.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
 		6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */; };
@@ -160,13 +158,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6A2FE16627958F0400E4A8FE;
 			remoteInfo = LeanplumLocationAndBeacons;
-		};
-		6A37A8F128F08B0E00F4339F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 075AAD0726847C23007CA1BD;
-			remoteInfo = Leanplum;
 		};
 		6A37A8F628F08B0E00F4339F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -233,7 +224,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				6A37A8ED28F08B0800F4339F /* Leanplum.framework in Embed Frameworks */,
 				6A37A8D228F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -364,7 +354,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A37A8EC28F08B0800F4339F /* Leanplum.framework in Frameworks */,
 				6A37A8D128F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -700,7 +689,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				6A37A8F228F08B0E00F4339F /* PBXTargetDependency */,
 				6A37A8D428F03C9400F4339F /* PBXTargetDependency */,
 			);
 			name = LeanplumSDKApp;
@@ -1066,11 +1054,6 @@
 			isa = PBXTargetDependency;
 			name = LeanplumLocationAndBeacons;
 			targetProxy = 6A37A8D328F03C9400F4339F /* PBXContainerItemProxy */;
-		};
-		6A37A8F228F08B0E00F4339F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = Leanplum;
-			targetProxy = 6A37A8F128F08B0E00F4339F /* PBXContainerItemProxy */;
 		};
 		6AF543A128E8834E0025F2A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
