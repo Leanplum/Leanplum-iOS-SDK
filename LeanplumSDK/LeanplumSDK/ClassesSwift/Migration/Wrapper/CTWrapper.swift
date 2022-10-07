@@ -214,7 +214,7 @@ class CTWrapper: Wrapper {
             "publisherSubAd": "utm_SourcePublisher.ad"
         ]
         
-        let props = info.mapKeys({ key in
+        let props = info.mapKeys({ key -> AnyHashable in
             guard let keyStr = key as? String,
             let newKey = trafficSourceInfoMappings[keyStr]
             else {
