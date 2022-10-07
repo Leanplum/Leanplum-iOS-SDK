@@ -59,7 +59,7 @@ class IdentityManager {
     func setUserId(_ userId: String) {
         if (state == IdentityState.anonymous()) {
             anonymousLoginUserId = userId
-            Log.debug("Wrapper: anonymous user on device \(deviceId) will be merged to \(userId)")
+            Log.debug("[Wrapper] Anonymous user on device \(deviceId) will be merged to \(userId)")
             state = IdentityState.identified()
         }
         self.userId = userId

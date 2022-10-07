@@ -39,7 +39,7 @@ class CTWrapper: Wrapper {
                 userId: String,
                 deviceId: String,
                 callback: ((Any) -> Void)?) {
-        Log.debug("Wrapper: Wrapper Instantiated")
+        Log.debug("[Wrapper] Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
@@ -62,10 +62,13 @@ class CTWrapper: Wrapper {
         cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
         cleverTapInstance?.setLibrary("Leanplum")
         
-        Log.debug("Wrapper: CleverTap instance created with accountId: \(accountId) and accountToken: \(accountToken)")
+        Log.debug("[Wrapper] CleverTap instance created with accountId: \(accountId)")
         
         if !identityManager.isAnonymous {
-            Log.debug("Wrapper: will call onUserLogin with identity: \(identityManager.userId) and cleverTapId: \(identityManager.cleverTapID)")
+            Log.debug("""
+                    [Wrapper] will call onUserLogin with \
+                    Identity: \(identityManager.userId) and cleverTapId: \(identityManager.cleverTapID)"
+                    """)
             cleverTapInstance?.onUserLogin(identityManager.profile,
                                            withCleverTapID: identityManager.cleverTapID)
         }
@@ -128,7 +131,7 @@ class CTWrapper: Wrapper {
         
         let items: [Any] = []
 
-        Log.debug("Wrapper: Leanplum.trackPurchase will call recordChargedEvent with \(details) and \(items)")
+        Log.debug("[Wrapper] Leanplum.trackPurchase will call recordChargedEvent with \(details) and \(items)")
         cleverTapInstance?.recordChargedEvent(withDetails: details, andItems: items)
     }
     
@@ -158,7 +161,7 @@ class CTWrapper: Wrapper {
         
         let items: [Any] = []
 
-        Log.debug("Wrapper: Leanplum.trackInAppPurchase will call recordChargedEvent with \(details) and \(items)")
+        Log.debug("[Wrapper] Leanplum.trackInAppPurchase will call recordChargedEvent with \(details) and \(items)")
         cleverTapInstance?.recordChargedEvent(withDetails: details, andItems: items)
     }
     
@@ -170,14 +173,14 @@ class CTWrapper: Wrapper {
             .mapValues(transformAttributeValues)
             .mapKeys(transformAttributeKeys)
         
-        Log.debug("Wrapper: Leanplum.setUserAttributes will call profilePush with \(profileAttributes)")
+        Log.debug("[Wrapper] Leanplum.setUserAttributes will call profilePush with \(profileAttributes)")
         cleverTapInstance?.profilePush(profileAttributes)
         
         attributes
             .filter { isAnyNil($0.value) }
             .mapKeys(transformAttributeKeys)
             .forEach {
-                Log.debug("Wrapper: Leanplum.setUserAttributes will call profileRemoveValue forKey: \($0.key)")
+                Log.debug("[Wrapper] Leanplum.setUserAttributes will call profileRemoveValue forKey: \($0.key)")
                 cleverTapInstance?.profileRemoveValue(forKey: String(describing: $0.key))
             }
     }
@@ -191,7 +194,7 @@ class CTWrapper: Wrapper {
         let cleverTapID = identityManager.cleverTapID
         
         Log.debug("""
-                Wrapper: Leanplum.setUserId will call onUserLogin \
+                [Wrapper] Leanplum.setUserId will call onUserLogin \
                 with identity: \(profile) \
                 and CleverTapID:  \(cleverTapID)")
                 """)
@@ -219,7 +222,7 @@ class CTWrapper: Wrapper {
             return newKey
         })
         
-        Log.debug("Wrapper: Leanplum.setTrafficSourceInfo will call pushEvent with \(Constants.UTMVisitedEvent) and \(props)")
+        Log.debug("[Wrapper] Leanplum.setTrafficSourceInfo will call pushEvent with \(Constants.UTMVisitedEvent) and \(props)")
         cleverTapInstance?.recordEvent(Constants.UTMVisitedEvent, withProps: props)
     }
     

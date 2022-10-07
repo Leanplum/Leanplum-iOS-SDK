@@ -62,11 +62,11 @@ import Foundation
     func initWrapper() {
         if migrationState.useCleverTap {
             guard let id = accountId, let token = accountToken, let accountRegion = regionCode else {
-                Log.error("Missing CleverTap Credentials. Cannot initialize CleverTap.")
+                Log.error("[Wrapper] Missing CleverTap Credentials. Cannot initialize CleverTap.")
                 return
             }
             guard let user = Leanplum.userId(), let device = Leanplum.deviceId() else {
-                Log.error("Missing Leanplum userId and deviceId. Cannot initialize CleverTap.")
+                Log.error("[Wrapper] Missing Leanplum userId and deviceId. Cannot initialize CleverTap.")
                 return
             }
 
@@ -76,7 +76,7 @@ import Foundation
                                 callback: instanceCallback)
             
             if Leanplum.hasStarted() {
-                Log.debug("Leanplum has already started, launching CleverTap as well.")
+                Log.debug("[Wrapper] Leanplum has already started, launching CleverTap as well.")
                 wrapper?.launch()
             }
         }
@@ -131,7 +131,6 @@ import Foundation
             }
             if oldValue.isEmpty && fetchMigrationStateClosures.count > 0 {
                 fetchMigrationStateAsync { [weak self] in
-                    NSLog("[MigrationLog] triggerOnMigrationStateLoaded")
                     self?.triggerFetchMigrationState()
                 }
             }
@@ -150,19 +149,18 @@ import Foundation
         let request = LPRequestFactory.getMigrateState()
         request.requestType = .Immediate
         request.onResponse { operation, response in
-            Log.debug("[MigrationLog] getMigrateState success: \(response ?? "")")
-            
             guard let response = response else {
-                Log.error("[MigrationLog] No response received for getMigrateState")
+                Log.error("[Wrapper] No response received for getMigrateState")
                 return
             }
             
+            Log.debug("[Wrapper] getMigrateState success: \(response)")
             self.handleGetMigrateState(apiResponse: response)
             completion()
         }
         
         request.onError { err in
-            Log.error("[MigrationLog] Error getting migrate state")
+            Log.error("[Wrapper] Error on getMigrateState: \(err?.localizedDescription ?? "nil")")
             completion()
         }
         LPRequestSender.sharedInstance().send(request)

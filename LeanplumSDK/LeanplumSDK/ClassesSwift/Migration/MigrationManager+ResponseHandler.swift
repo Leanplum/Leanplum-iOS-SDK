@@ -19,7 +19,7 @@ import Foundation
         
         if let hash = getValue(dict: migrateState, key: Constants.HashKey) as? String,
            hash != self.migrationHash {
-            Log.debug("CleverTap Hash changed")
+            Log.debug("[Wrapper] CleverTap Hash changed")
             
             self.migrationHash = hash
             
