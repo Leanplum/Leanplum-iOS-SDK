@@ -1,0 +1,1 @@
+// Empty source file for SwiftPM binary target dependencies wrapper

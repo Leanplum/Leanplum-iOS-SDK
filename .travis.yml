@@ -44,7 +44,7 @@ deploy:
     file: 
       - Leanplum.framework.zip
       - LeanplumLocation.framework.zip
-      - Release/dynamic/Leanplum.xcframework.zip
+      - Release/static/Leanplum.xcframework.zip
     draft: true
     on:
       tags: true

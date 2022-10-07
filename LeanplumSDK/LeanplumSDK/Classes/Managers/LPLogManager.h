@@ -15,13 +15,13 @@ typedef NS_ENUM(NSUInteger, LPLogLevel) {
     LPLogLevelError,
     LPLogLevelInfo,
     LPLogLevelDebug
-} NS_SWIFT_NAME(Leanplum.LogLevel);
+} NS_SWIFT_NAME(LeanplumLogLevel);
 
 typedef NS_ENUM(NSUInteger, LPLogType) {
     LPError,
     LPInfo,
     LPDebug
-} NS_SWIFT_NAME(Leanplum.LogType);
+} NS_SWIFT_NAME(LeanplumLogType);
 
 @interface LPLogManager : NSObject
 @property (nonatomic, assign) LPLogLevel logLevel;

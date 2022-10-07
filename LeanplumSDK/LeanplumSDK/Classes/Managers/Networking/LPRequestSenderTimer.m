@@ -12,6 +12,10 @@
 #import "LPRequestFactory.h"
 #import "LPRequestSender.h"
 
+@interface LPRequestSenderTimer()
+@property (weak) NSTimer *intervalTimer;
+@end
+
 @implementation LPRequestSenderTimer
 
 + (instancetype)sharedInstance {
@@ -37,7 +41,7 @@
 {
     NSTimeInterval heartbeatInterval = self.timerInterval * 60;
     // Heartbeat.
-    [LPTimerBlocks scheduledTimerWithTimeInterval:heartbeatInterval block:^() {
+    _intervalTimer = [LPTimerBlocks scheduledTimerWithTimeInterval:heartbeatInterval block:^() {
         RETURN_IF_NOOP;
         LP_TRY
         if ([[UIApplication sharedApplication] applicationState] == UIApplicationStateActive) {
@@ -47,6 +51,11 @@
         }
         LP_END_TRY
     } repeats:YES];
+}
+
+- (void)invalidate
+{
+    [_intervalTimer invalidate];
 }
 
 @end

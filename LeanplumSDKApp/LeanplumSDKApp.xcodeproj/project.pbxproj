@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -123,8 +123,13 @@
 		6A07FDA52811AF3800995BE3 /* ContentMergerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */; };
 		6A07FDAE283544CE00995BE3 /* ActionManagerDownloadTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDAD283544CE00995BE3 /* ActionManagerDownloadTest.swift */; };
 		6A07FDB0283544E300995BE3 /* DictionaryValueKeyPathTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */; };
-		6A29EAA828E89D950024880E /* LeanplumLocationAndBeacons.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF543E728E89C1E0025F2A9 /* LeanplumLocationAndBeacons.framework */; };
+		6A29EACD28EDA8DE0024880E /* CTWrapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EACC28EDA8DE0024880E /* CTWrapperTest.swift */; };
 		6A2FE16027958D6000E4A8FE /* GeofencingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2FE15F27958D6000E4A8FE /* GeofencingTest.m */; };
+		6A37A8AA28F0078500F4339F /* Migration+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A8A928F0078500F4339F /* Migration+Extensions.swift */; };
+		6A37A8AC28F00B5800F4339F /* IdentityManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A8AB28F00B5800F4339F /* IdentityManagerTest.swift */; };
+		6A37A8AE28F0164700F4339F /* IdentityManagerMocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A8AD28F0164700F4339F /* IdentityManagerMocks.swift */; };
+		6A37A8D128F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; };
+		6A37A8D228F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
 		6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */; };
@@ -133,6 +138,7 @@
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
 		6A9DECA527B6ABFB00052807 /* change_host_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A9DECA427B69D8800052807 /* change_host_response.json */; };
 		6A9DECA627B6ABFB00052807 /* change_host_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A9DECA427B69D8800052807 /* change_host_response.json */; };
+		6AF543A228E883AD0025F2A9 /* LeanplumLocationAndBeacons.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; };
 		779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */; };
 		C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */; };
 		C9D503672754C9DC0034C5B3 /* PushNotificationSettingsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */; };
@@ -146,50 +152,79 @@
 			remoteGlobalIDString = 075AACE626847BF3007CA1BD;
 			remoteInfo = LeanplumSDKApp;
 		};
-		6A29EAA628E89D280024880E /* PBXContainerItemProxy */ = {
+		6A37A8D328F03C9400F4339F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+			containerPortal = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
 			proxyType = 1;
 			remoteGlobalIDString = 6A2FE16627958F0400E4A8FE;
 			remoteInfo = LeanplumLocationAndBeacons;
 		};
-		6AF543E428E89C1E0025F2A9 /* PBXContainerItemProxy */ = {
+		6A37A8F628F08B0E00F4339F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+			containerPortal = 6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 075AAD0826847C23007CA1BD;
+			remoteInfo = Leanplum;
+		};
+		6A37A8F828F08B0E00F4339F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 075AAEEC26847FE1007CA1BD;
+			remoteInfo = "Leanplum-Bundle";
+		};
+		6A37A8FA28F08B0E00F4339F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6A714BA326F8B317004A34A9;
+			remoteInfo = "Leanplum-Static";
+		};
+		6AF5439428E882CA0025F2A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6A2FE146279578F800E4A8FE;
 			remoteInfo = LeanplumLocation;
 		};
-		6AF543E628E89C1E0025F2A9 /* PBXContainerItemProxy */ = {
+		6AF5439628E882CA0025F2A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+			containerPortal = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6A2FE17427958F0400E4A8FE;
 			remoteInfo = LeanplumLocationAndBeacons;
 		};
-		6AF543E828E89C1E0025F2A9 /* PBXContainerItemProxy */ = {
+		6AF5439828E882CA0025F2A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+			containerPortal = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6AEAEE712795D89D00680F84;
 			remoteInfo = "LeanplumLocation-Static";
 		};
-		6AF543EA28E89C1E0025F2A9 /* PBXContainerItemProxy */ = {
+		6AF5439A28E882CA0025F2A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+			containerPortal = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 6AEAEE7F2795D8E700680F84;
 			remoteInfo = "LeanplumLocationAndBeacons-Static";
 		};
+		6AF543A028E8834E0025F2A9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 6A2FE16627958F0400E4A8FE;
+			remoteInfo = LeanplumLocationAndBeacons;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6A54E9D5273D814100DE0E61 /* Embed Frameworks */ = {
+		6A37A8CD28F03C2A00F4339F /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				6A37A8D228F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -291,7 +326,12 @@
 		6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMergerTest.swift; sourceTree = "<group>"; };
 		6A07FDAD283544CE00995BE3 /* ActionManagerDownloadTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionManagerDownloadTest.swift; sourceTree = "<group>"; };
 		6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryValueKeyPathTest.swift; sourceTree = "<group>"; };
+		6A29EACC28EDA8DE0024880E /* CTWrapperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CTWrapperTest.swift; sourceTree = "<group>"; };
 		6A2FE15F27958D6000E4A8FE /* GeofencingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeofencingTest.m; sourceTree = "<group>"; };
+		6A37A8A928F0078500F4339F /* Migration+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Migration+Extensions.swift"; sourceTree = "<group>"; };
+		6A37A8AB28F00B5800F4339F /* IdentityManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManagerTest.swift; sourceTree = "<group>"; };
+		6A37A8AD28F0164700F4339F /* IdentityManagerMocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManagerMocks.swift; sourceTree = "<group>"; };
+		6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDK.xcodeproj; path = "/Users/nikolazagorchev/Downloads/Leanplum-iOS-SDK/LeanplumSDK/LeanplumSDK.xcodeproj"; sourceTree = "<absolute>"; };
 		6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LeanplumSDKTests-Bridging-Header.h"; sourceTree = "<group>"; };
 		6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyTest.swift; sourceTree = "<group>"; };
 		6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerTest.swift; sourceTree = "<group>"; };
@@ -302,7 +342,7 @@
 		6A9DECA427B69D8800052807 /* change_host_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = change_host_response.json; sourceTree = "<group>"; };
 		6AEAEE592795B68700680F84 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEAEE612795B72A00680F84 /* LeanplumLocationAndBeacons.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LeanplumLocationAndBeacons.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDKLocation.xcodeproj; path = ../LeanplumSDKLocation/LeanplumSDKLocation.xcodeproj; sourceTree = "<group>"; };
+		6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDKLocation.xcodeproj; path = ../LeanplumSDKLocation/LeanplumSDKLocation.xcodeproj; sourceTree = "<group>"; };
 		B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.release.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManagerUtilsTest.swift; sourceTree = "<group>"; };
 		C9D503662754C9DC0034C5B3 /* PushNotificationSettingsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationSettingsTest.swift; sourceTree = "<group>"; };
@@ -314,6 +354,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A37A8D128F03C8D00F4339F /* LeanplumLocationAndBeacons.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,7 +362,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A29EAA828E89D950024880E /* LeanplumLocationAndBeacons.framework in Frameworks */,
+				6AF543A228E883AD0025F2A9 /* LeanplumLocationAndBeacons.framework in Frameworks */,
 				779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -332,12 +373,13 @@
 		075AACDE26847BF3007CA1BD = {
 			isa = PBXGroup;
 			children = (
-				6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */,
+				6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */,
 				075AACE926847BF3007CA1BD /* LeanplumSDKApp */,
 				075AAFBD26849AC1007CA1BD /* LeanplumSDKTests */,
 				075AACE826847BF3007CA1BD /* Products */,
 				075AAFB326849A74007CA1BD /* Frameworks */,
 				E0CB0FD8F4E44175F7CB3EEF /* Pods */,
+				6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -412,6 +454,7 @@
 		075AAFC726849AE9007CA1BD /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				6A37A8A228F0074700F4339F /* Migration */,
 				6A07FDAC2835441200995BE3 /* Notifications */,
 				6A07FDA42811AF3800995BE3 /* ContentMergerTest.swift */,
 				39C081A6278D939800C1DBD6 /* Actions */,
@@ -588,13 +631,34 @@
 			path = LocationAndBeacons;
 			sourceTree = "<group>";
 		};
-		6AF543DE28E89C1E0025F2A9 /* Products */ = {
+		6A37A8A228F0074700F4339F /* Migration */ = {
 			isa = PBXGroup;
 			children = (
-				6AF543E528E89C1E0025F2A9 /* LeanplumLocation.framework */,
-				6AF543E728E89C1E0025F2A9 /* LeanplumLocationAndBeacons.framework */,
-				6AF543E928E89C1E0025F2A9 /* LeanplumLocation.framework */,
-				6AF543EB28E89C1E0025F2A9 /* LeanplumLocationAndBeacons.framework */,
+				6A29EACC28EDA8DE0024880E /* CTWrapperTest.swift */,
+				6A37A8A928F0078500F4339F /* Migration+Extensions.swift */,
+				6A37A8AB28F00B5800F4339F /* IdentityManagerTest.swift */,
+				6A37A8AD28F0164700F4339F /* IdentityManagerMocks.swift */,
+			);
+			path = Migration;
+			sourceTree = "<group>";
+		};
+		6A37A8EF28F08B0E00F4339F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6A37A8F728F08B0E00F4339F /* Leanplum.framework */,
+				6A37A8F928F08B0E00F4339F /* Leanplum-iOS-SDK.bundle */,
+				6A37A8FB28F08B0E00F4339F /* Leanplum.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6AF5438E28E882CA0025F2A9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				6AF5439528E882CA0025F2A9 /* LeanplumLocation.framework */,
+				6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */,
+				6AF5439928E882CA0025F2A9 /* LeanplumLocation.framework */,
+				6AF5439B28E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -619,11 +683,13 @@
 				075AACE326847BF3007CA1BD /* Sources */,
 				075AACE426847BF3007CA1BD /* Frameworks */,
 				075AACE526847BF3007CA1BD /* Resources */,
-				6A54E9D5273D814100DE0E61 /* Embed Frameworks */,
+				6A37A8CD28F03C2A00F4339F /* Embed Frameworks */,
+				6A37A8D028F03C5A00F4339F /* Codesign Embedded Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				6A37A8D428F03C9400F4339F /* PBXTargetDependency */,
 			);
 			name = LeanplumSDKApp;
 			productName = LeanplumSDKApp;
@@ -643,7 +709,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				6A29EAA728E89D280024880E /* PBXTargetDependency */,
+				6AF543A128E8834E0025F2A9 /* PBXTargetDependency */,
 				075AAFC226849AC1007CA1BD /* PBXTargetDependency */,
 			);
 			name = LeanplumSDKTests;
@@ -684,8 +750,12 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = 6AF543DE28E89C1E0025F2A9 /* Products */;
-					ProjectRef = 6AF543DD28E89C1E0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
+					ProductGroup = 6A37A8EF28F08B0E00F4339F /* Products */;
+					ProjectRef = 6A37A8EE28F08B0E00F4339F /* LeanplumSDK.xcodeproj */;
+				},
+				{
+					ProductGroup = 6AF5438E28E882CA0025F2A9 /* Products */;
+					ProjectRef = 6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -697,32 +767,53 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		6AF543E528E89C1E0025F2A9 /* LeanplumLocation.framework */ = {
+		6A37A8F728F08B0E00F4339F /* Leanplum.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Leanplum.framework;
+			remoteRef = 6A37A8F628F08B0E00F4339F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6A37A8F928F08B0E00F4339F /* Leanplum-iOS-SDK.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = "Leanplum-iOS-SDK.bundle";
+			remoteRef = 6A37A8F828F08B0E00F4339F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6A37A8FB28F08B0E00F4339F /* Leanplum.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Leanplum.framework;
+			remoteRef = 6A37A8FA28F08B0E00F4339F /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		6AF5439528E882CA0025F2A9 /* LeanplumLocation.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = LeanplumLocation.framework;
-			remoteRef = 6AF543E428E89C1E0025F2A9 /* PBXContainerItemProxy */;
+			remoteRef = 6AF5439428E882CA0025F2A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6AF543E728E89C1E0025F2A9 /* LeanplumLocationAndBeacons.framework */ = {
+		6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = LeanplumLocationAndBeacons.framework;
-			remoteRef = 6AF543E628E89C1E0025F2A9 /* PBXContainerItemProxy */;
+			remoteRef = 6AF5439628E882CA0025F2A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6AF543E928E89C1E0025F2A9 /* LeanplumLocation.framework */ = {
+		6AF5439928E882CA0025F2A9 /* LeanplumLocation.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = LeanplumLocation.framework;
-			remoteRef = 6AF543E828E89C1E0025F2A9 /* PBXContainerItemProxy */;
+			remoteRef = 6AF5439828E882CA0025F2A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		6AF543EB28E89C1E0025F2A9 /* LeanplumLocationAndBeacons.framework */ = {
+		6AF5439B28E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = LeanplumLocationAndBeacons.framework;
-			remoteRef = 6AF543EA28E89C1E0025F2A9 /* PBXContainerItemProxy */;
+			remoteRef = 6AF5439A28E882CA0025F2A9 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -826,6 +917,25 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		6A37A8D028F03C5A00F4339F /* Codesign Embedded Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Codesign Embedded Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Populate a variable with the current code signing identity if it's available in the environment.\nSIGNING_IDENTITY=\"${EXPANDED_CODE_SIGN_IDENTITY:-$CODE_SIGN_IDENTITY}\"\n\n# Populate a variable with the current code signing flags and options in the environment.\nOTHER_CODE_SIGN_FLAGS=${OTHER_CODE_SIGN_FLAGS:-}\nTARGET_FRAMEWORKS_PATH=\"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/\"\n# Re-sign the packaged frameworks using the application's details.\nif [ -n \"${SIGNING_IDENTITY}\" ]; then\n    if [[ -d $TARGET_FRAMEWORKS_PATH ]]\n    then\n        find \"$TARGET_FRAMEWORKS_PATH\" \\\n        -name \"*.framework\" \\\n        -type d \\\n        -exec codesign ${OTHER_CODE_SIGN_FLAGS} \\\n            --force \\\n            --sign \"${SIGNING_IDENTITY}\" \\\n            --options runtime \\\n            --deep \\\n            {} \\;\n    fi\nfi\n";
+		};
 		CCAE818569231C43601E87E0 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -895,9 +1005,11 @@
 				075AB11B2684AAD9007CA1BD /* LPRequestBatchTest.m in Sources */,
 				075AB11E2684AAD9007CA1BD /* LPCountAggregatorTest.m in Sources */,
 				075AB11D2684AAD9007CA1BD /* LeanplumTest.m in Sources */,
+				6A37A8AC28F00B5800F4339F /* IdentityManagerTest.swift in Sources */,
 				075AB11F2684AAD9007CA1BD /* LPNetworkOperationTest.m in Sources */,
 				075AB1292684AAD9007CA1BD /* LPRequestSender+Categories.m in Sources */,
 				6A07FDB0283544E300995BE3 /* DictionaryValueKeyPathTest.swift in Sources */,
+				6A37A8AA28F0078500F4339F /* Migration+Extensions.swift in Sources */,
 				075AB1252684AAD9007CA1BD /* LPNetworkEngine+Category.m in Sources */,
 				6A2FE16027958D6000E4A8FE /* GeofencingTest.m in Sources */,
 				075AB10F2684AAD9007CA1BD /* LPEventCallbackManagerTest.m in Sources */,
@@ -915,8 +1027,10 @@
 				075AB1152684AAD9007CA1BD /* LPActionTriggerManagerTest.m in Sources */,
 				075AB1272684AAD9007CA1BD /* LPNetworkOperation+Category.m in Sources */,
 				C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */,
+				6A29EACD28EDA8DE0024880E /* CTWrapperTest.swift in Sources */,
 				075AB10D2684AAD9007CA1BD /* LPAppIconManagerTest.m in Sources */,
 				6A9D0A9627342BA300466133 /* NotificationsProxyiOS9Test.swift in Sources */,
+				6A37A8AE28F0164700F4339F /* IdentityManagerMocks.swift in Sources */,
 				075AB10B2684AAD9007CA1BD /* LPJSONTest.m in Sources */,
 				075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */,
 				6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */,
@@ -936,10 +1050,15 @@
 			target = 075AACE626847BF3007CA1BD /* LeanplumSDKApp */;
 			targetProxy = 075AAFC126849AC1007CA1BD /* PBXContainerItemProxy */;
 		};
-		6A29EAA728E89D280024880E /* PBXTargetDependency */ = {
+		6A37A8D428F03C9400F4339F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LeanplumLocationAndBeacons;
-			targetProxy = 6A29EAA628E89D280024880E /* PBXContainerItemProxy */;
+			targetProxy = 6A37A8D328F03C9400F4339F /* PBXContainerItemProxy */;
+		};
+		6AF543A128E8834E0025F2A9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = LeanplumLocationAndBeacons;
+			targetProxy = 6AF543A028E8834E0025F2A9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

@@ -40,6 +40,7 @@
 #import "LPNetworkOperation+Category.h"
 #import <Leanplum/LPOperationQueue.h>
 #import <Leanplum/Leanplum-Swift.h>
+#import "LeanplumSDKTests-Swift.h"
 
 // Keys also used in Leanplum-Info.plist file
 NSString *APPLICATION_ID = @"app_nLiaLr3lXvCjXhsztS1Gw8j281cPLO6sZetTDxYnaSk";
@@ -94,10 +95,14 @@ static BOOL swizzled = NO;
 + (void)setup_development_test {
     [Leanplum setLogLevel:LPLogLevelDebug];
     [Leanplum setAppId:APPLICATION_ID withDevelopmentKey:DEVELOPMENT_KEY];
+    
+    [[MigrationManager shared] setMigrationState:MigrationStateLeanplum];
 }
 
 + (void)setup_production_test {
     [Leanplum setAppId:APPLICATION_ID withProductionKey:PRODUCTION_KEY];
+    
+    [[MigrationManager shared] setMigrationState:MigrationStateLeanplum];
 }
 
 + (BOOL)start_development_test {

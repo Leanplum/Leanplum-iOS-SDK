@@ -32,4 +32,6 @@
 
 - (void)send:(LPRequest *)request;
 
+- (void)sendRequests;
+
 @end

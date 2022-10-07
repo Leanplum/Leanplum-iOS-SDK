@@ -54,32 +54,40 @@
 @implementation LPRequestSender
 
 + (instancetype)sharedInstance {
-    static LPRequestSender *sharedManager = nil;
+    static LPRequestSender *sharedSender = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedManager = [[self alloc] init];
+        sharedSender = [[self alloc] init];
     });
-    return sharedManager;
+    return sharedSender;
 }
 
 - (id)init
 {
     self = [super init];
     if (self) {
-        if (_engine == nil) {
-            if (!_requestHeaders) {
-                _requestHeaders = [LPNetworkEngine createHeaders];
-            }
-            _engine = [LPNetworkFactory engineWithCustomHeaderFields:_requestHeaders];
-        }
-        [[LPRequestSenderTimer sharedInstance] start];
-        _countAggregator = [LPCountAggregator sharedAggregator];
+        [self initialize];
     }
     return self;
 }
 
+- (void)initialize
+{
+    if (_engine == nil) {
+        if (!_requestHeaders) {
+            _requestHeaders = [LPNetworkEngine createHeaders];
+        }
+        _engine = [LPNetworkFactory engineWithCustomHeaderFields:_requestHeaders];
+    }
+    [[LPRequestSenderTimer sharedInstance] start];
+    _countAggregator = [LPCountAggregator sharedAggregator];
+}
+
 - (void)send:(LPRequest *)request
 {
+    if (![[MigrationManager shared] useLeanplum])
+        return;
+    
     [self saveRequest:request];
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled || request.requestType == Immediate) {
         if ([self validateConfigFor:request]) {
@@ -121,7 +129,10 @@
 - (void)sendNow:(LPRequest *)request
 {
     RETURN_IF_TEST_MODE;
-
+    
+    if (![[MigrationManager shared] useLeanplum])
+        return;
+    
     [self sendRequests];
     
     [self.countAggregator incrementCount:@"send_now_lp"];
@@ -151,6 +162,10 @@
 
             NSMutableDictionary *args = [request createArgsDictionary];
             args[LP_PARAM_UUID] = uuid;
+            
+            if ([[MigrationManager shared] useCleverTap]) {
+                args[MigrationManager.lpCleverTapRequestArg] = @YES;
+            }
             
             [LPEventDataManager addEvent:args];
 
@@ -268,6 +283,8 @@
                 return;
             }
             
+            [[MigrationManager shared] handleMigrateStateWithMultiApiResponse:json];
+            
             // Delete events on success.
             [LPRequestBatchFactory deleteFinishedBatch:batch];
 
@@ -281,6 +298,7 @@
                                                                  requests:batch.requestsToSend
                                                                 operation:operation];
             }
+            
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
 
@@ -290,7 +308,7 @@
                 dispatch_semaphore_signal(semaphore);
                 return;
             }
-
+            
             // Retry on 500 and other network failures.
             NSInteger httpStatusCode = completedOperation.HTTPStatusCode;
             if (httpStatusCode == 408
@@ -327,7 +345,10 @@
 
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-            [[LPOperationQueue serialQueue] cancelAllOperations];
+          //  [[LPOperationQueue serialQueue] cancelAllOperations];
+            
+
+            
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
         }];
@@ -345,7 +366,7 @@
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-            [[LPOperationQueue serialQueue] cancelAllOperations];
+//            [[LPOperationQueue serialQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY

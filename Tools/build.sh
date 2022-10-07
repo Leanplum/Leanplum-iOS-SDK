@@ -64,6 +64,9 @@ run() {
 #######################################
 main() {
   rm -rf Release
+
+  pod install
+
   build_ios_dylib 'Leanplum' 'Release/dynamic/LeanplumSDK'
   build_ios_dylib 'LeanplumLocation' 'Release/dynamic/LeanplumSDKLocation'
   build_ios_dylib 'LeanplumLocationAndBeacons' 'Release/dynamic/LeanplumSDKLocationAndBeacons'
@@ -210,6 +213,12 @@ build_ios_static() {
   # https://stackoverflow.com/a/62310245
   find Release/static/Leanplum.xcframework -name "*.swiftinterface" -exec sed -i -e "s/Leanplum\.//g" {} \;
 
+  # Remove module name from xcframework swiftinterface
+  # It prevents error X is not a member of type Leanplum.Leanplum
+  # This happens when a class name is same as the module name
+  # https://stackoverflow.com/a/62310245
+  find Release/static/Leanplum.xcframework -name "*.swiftinterface" -exec sed -i -e "s/Leanplum\.//g" {} \;
+
   echo "Removing arm64 from simulator slice ..."
   lipo -remove arm64 \
     $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework/$productName \
@@ -254,8 +263,8 @@ zip_ios() {
     $(find . -maxdepth 2 -type d -name "LeanplumLocation*")
   mv LeanplumLocation.framework.zip ..
 
-  echo "zipping dynamic xcframework for SPM"
-  cd dynamic
+  echo "zipping static xcframework for SPM"
+  cd static
   zip -q -r Leanplum.xcframework.zip \
     Leanplum.xcframework
   cd ../..
@@ -265,7 +274,7 @@ update_spm_info(){
   echo "updating SPM checksum and url"
   package_file=Package.swift
   package_tmp_file=Package_tmp.swift
-  checksum=`swift package compute-checksum Release/dynamic/Leanplum.xcframework.zip`
+  checksum=`swift package compute-checksum Release/static/Leanplum.xcframework.zip`
   awk -v value="\"$checksum\"" '!x{x=sub(/checksum:.*/, "checksum: "value)}1' $package_file > $package_tmp_file \
       && mv $package_tmp_file $package_file
   

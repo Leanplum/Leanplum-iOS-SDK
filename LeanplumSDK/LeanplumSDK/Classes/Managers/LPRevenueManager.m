@@ -28,6 +28,7 @@
 #import "LPConstants.h"
 #import "LPUtils.h"
 #import "LPCountAggregator.h"
+#import <Leanplum/Leanplum-Swift.h>
 
 #pragma mark - SKPaymentQueue(LPSKPaymentQueueExtension) implementation
 
@@ -187,18 +188,36 @@ void leanplum_finishTransaction(id self, SEL _cmd, SKPaymentTransaction *transac
         eventName = LP_PURCHASE_EVENT;
     }
 
+    
+    double value = [product.price doubleValue] * [transaction[@"quantity"] integerValue];
+    NSNumber *isSandbox = [NSNumber numberWithBool:[LPConstantsState sharedState].isDevelopmentModeEnabled];
+    NSString *transactionId = transaction[@"transactionIdentifier"];
+    NSString *receiptData = transaction[@"receiptData"];
+    
+    NSDictionary *params = @{
+        @"item": transaction[@"productIdentifier"],
+        @"quantity": transaction[@"quantity"]
+    };
+    
+    [Leanplum onStartIssued:^{
+        [[MigrationManager shared] trackInAppPurchase:eventName
+                                                value:value
+                                         currencyCode:currencyCode
+                             iOSTransactionIdentifier:transactionId
+                                       iOSReceiptData:receiptData
+                                           iOSSandbox:isSandbox
+                                               params:params];
+    }];
+    
     [Leanplum track:eventName
-          withValue:[product.price doubleValue] * [transaction[@"quantity"] integerValue]
+          withValue:value
             andArgs:@{
                       LP_PARAM_CURRENCY_CODE: currencyCode,
-                      @"iOSTransactionIdentifier": transaction[@"transactionIdentifier"],
-                      @"iOSReceiptData": transaction[@"receiptData"],
-                      @"iOSSandbox": [NSNumber numberWithBool:[LPConstantsState sharedState].isDevelopmentModeEnabled]
+                      @"iOSTransactionIdentifier": transactionId,
+                      @"iOSReceiptData": receiptData,
+                      @"iOSSandbox": isSandbox
                       }
-      andParameters:@{
-                      @"item": transaction[@"productIdentifier"],
-                      @"quantity": transaction[@"quantity"]
-                      }];
+      andParameters:params];
 
     [self.transactions removeObjectForKey:transactionIdentifier];
     [self saveTransactions];

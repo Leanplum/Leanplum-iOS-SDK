@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -196,10 +196,36 @@
 		6A07FDA32811911000995BE3 /* ActionManager+FileDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA12811911000995BE3 /* ActionManager+FileDownload.swift */; };
 		6A07FDAA28352DCE00995BE3 /* ContentMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA928352DCE00995BE3 /* ContentMerger.swift */; };
 		6A07FDAB28352DCE00995BE3 /* ContentMerger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A07FDA928352DCE00995BE3 /* ContentMerger.swift */; };
+		6A2109E128BE88D900DBF4A9 /* CTWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2109DF28BE88D900DBF4A9 /* CTWrapper.swift */; };
+		6A2109E228BE88D900DBF4A9 /* CTWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2109DF28BE88D900DBF4A9 /* CTWrapper.swift */; };
+		6A2109E328BE88D900DBF4A9 /* MigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2109E028BE88D900DBF4A9 /* MigrationManager.swift */; };
+		6A2109E428BE88D900DBF4A9 /* MigrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2109E028BE88D900DBF4A9 /* MigrationManager.swift */; };
 		6A265E2727187EBB0074354F /* NotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* NotificationsProxy.swift */; };
 		6A265E2827187EBB0074354F /* NotificationsProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2527187EBB0074354F /* NotificationsProxy.swift */; };
 		6A265E2927187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
 		6A265E2A27187EBB0074354F /* NSObject+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A265E2627187EBB0074354F /* NSObject+Notifications.swift */; };
+		6A29EAB828EA09470024880E /* MigrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAB728EA09470024880E /* MigrationState.swift */; };
+		6A29EAB928EA09470024880E /* MigrationState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAB728EA09470024880E /* MigrationState.swift */; };
+		6A29EABB28EA12D30024880E /* MigrationManager+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */; };
+		6A29EABC28EA12D30024880E /* MigrationManager+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */; };
+		6A29EABE28EA13B60024880E /* PropertyWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EABD28EA13B60024880E /* PropertyWrappers.swift */; };
+		6A29EABF28EA13B60024880E /* PropertyWrappers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EABD28EA13B60024880E /* PropertyWrappers.swift */; };
+		6A29EAC428EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */; };
+		6A29EAC528EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */; };
+		6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
+		6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
+		6A37A89628EF6E6C00F4339F /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89528EF6E6C00F4339F /* Wrapper.swift */; };
+		6A37A89728EF6E6C00F4339F /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89528EF6E6C00F4339F /* Wrapper.swift */; };
+		6A37A89928EF738200F4339F /* MigrationManager+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89828EF738200F4339F /* MigrationManager+API.swift */; };
+		6A37A89A28EF738200F4339F /* MigrationManager+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89828EF738200F4339F /* MigrationManager+API.swift */; };
+		6A37A89C28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */; };
+		6A37A89D28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */; };
+		6A37A8A028EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */; };
+		6A37A8A128EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */; };
+		6A3C1EB228D7B3C700D51E44 /* CleverTapSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; };
+		6A3C1EB328D7B3C700D51E44 /* CleverTapSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6A3C1EB428D7B3C700D51E44 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */; };
+		6A3C1EB528D7B3C700D51E44 /* SDWebImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A714AF326F8B317004A34A9 /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADDA26847EC4007CA1BD /* LPConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF426F8B317004A34A9 /* LPActionTriggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADC726847EC3007CA1BD /* LPActionTriggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF526F8B317004A34A9 /* LPWebInterstitialViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD7426847EC3007CA1BD /* LPWebInterstitialViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -463,6 +489,7 @@
 		6AD978582774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */; };
 		6ADC90C72807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
 		6ADC90C82807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
+		A0371C8C3E1D6D0AB924FF99 /* libPods-Leanplum-Static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 897B64EE76852A68ECECB184 /* libPods-Leanplum-Static.a */; };
 		C90C489D2707299D00E33F1F /* NotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489C2707299D00E33F1F /* NotificationSettings.swift */; };
 		C90C489E2707299D00E33F1F /* NotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489C2707299D00E33F1F /* NotificationSettings.swift */; };
 		C90C48A027072A0200E33F1F /* UIUserNotificationSettings+Transform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */; };
@@ -475,6 +502,7 @@
 		C9374A3A272C36B200F4915A /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9374A38272C36B200F4915A /* Utilities.swift */; };
 		C9D064DC2775DB1100A7A5F9 /* Dictionary+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D064DB2775DB1100A7A5F9 /* Dictionary+Equatable.swift */; };
 		C9D064DD2775DB1100A7A5F9 /* Dictionary+Equatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D064DB2775DB1100A7A5F9 /* Dictionary+Equatable.swift */; };
+		EF8C42881E834252F5F5ABA6 /* Pods_Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6C2FB1913D58B5EF901363C9 /* Pods_Leanplum.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -495,6 +523,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		6A3C1EB628D7B3C700D51E44 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				6A3C1EB528D7B3C700D51E44 /* SDWebImage.framework in Embed Frameworks */,
+				6A3C1EB328D7B3C700D51E44 /* CleverTapSDK.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6A714BA526F8B4E6004A34A9 /* Copy Headers */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -752,6 +792,7 @@
 		077C538E2685CFB90090D88D /* Leanplum.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = Leanplum.modulemap; sourceTree = "<group>"; };
 		077C53972685D9DB0090D88D /* Leanplum-iOS-SDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; name = "Leanplum-iOS-SDK.podspec"; path = "../Leanplum-iOS-SDK.podspec"; sourceTree = "<group>"; };
 		077C53982685D9DB0090D88D /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = "<group>"; };
+		219B9B64F683F15530F5F56E /* Pods-Leanplum.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum.release.xcconfig"; path = "Target Support Files/Pods-Leanplum/Pods-Leanplum.release.xcconfig"; sourceTree = "<group>"; };
 		39C081902781D30300C1DBD6 /* ActionManager+Action.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Action.swift"; sourceTree = "<group>"; };
 		39C081922781D31F00C1DBD6 /* ActionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionManager.swift; sourceTree = "<group>"; };
 		39C081942781D34700C1DBD6 /* ActionManager+ActionDefinition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+ActionDefinition.swift"; sourceTree = "<group>"; };
@@ -764,11 +805,25 @@
 		39C081A22781D40200C1DBD6 /* ActionManager+Definition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+Definition.swift"; sourceTree = "<group>"; };
 		39C081A42781D46200C1DBD6 /* ActionManager+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+State.swift"; sourceTree = "<group>"; };
 		39D0AA1327760842003C7192 /* Bundle+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Bundle+Extensions.swift"; sourceTree = "<group>"; };
+		55FCDCE6D98B7EDDB33867FA /* Pods-Leanplum-Static.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-Static.debug.xcconfig"; path = "Target Support Files/Pods-Leanplum-Static/Pods-Leanplum-Static.debug.xcconfig"; sourceTree = "<group>"; };
 		6A07FD9E280F27C700995BE3 /* NSRegularExpression+Matches.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSRegularExpression+Matches.swift"; sourceTree = "<group>"; };
 		6A07FDA12811911000995BE3 /* ActionManager+FileDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ActionManager+FileDownload.swift"; sourceTree = "<group>"; };
 		6A07FDA928352DCE00995BE3 /* ContentMerger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentMerger.swift; sourceTree = "<group>"; };
+		6A2109DF28BE88D900DBF4A9 /* CTWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CTWrapper.swift; sourceTree = "<group>"; };
+		6A2109E028BE88D900DBF4A9 /* MigrationManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MigrationManager.swift; sourceTree = "<group>"; };
 		6A265E2527187EBB0074354F /* NotificationsProxy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsProxy.swift; sourceTree = "<group>"; };
 		6A265E2627187EBB0074354F /* NSObject+Notifications.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSObject+Notifications.swift"; sourceTree = "<group>"; };
+		6A29EAB728EA09470024880E /* MigrationState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationState.swift; sourceTree = "<group>"; };
+		6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+Constants.swift"; sourceTree = "<group>"; };
+		6A29EABD28EA13B60024880E /* PropertyWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyWrappers.swift; sourceTree = "<group>"; };
+		6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+ResponseHandler.swift"; sourceTree = "<group>"; };
+		6A29EAF428EF37090024880E /* IdentityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManager.swift; sourceTree = "<group>"; };
+		6A37A89528EF6E6C00F4339F /* Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wrapper.swift; sourceTree = "<group>"; };
+		6A37A89828EF738200F4339F /* MigrationManager+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+API.swift"; sourceTree = "<group>"; };
+		6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+MapKeys.swift"; sourceTree = "<group>"; };
+		6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CTWrapper+Utilities.swift"; sourceTree = "<group>"; };
+		6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = CleverTapSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = SDWebImage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A714BA326F8B317004A34A9 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6A714C0026F8B88A004A34A9 /* NotificationsManager+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsManager+Utilities.swift"; sourceTree = "<group>"; };
 		6A7B2F50289BC8FC00F73EC7 /* LPActionContextNotification.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LPActionContextNotification.h; sourceTree = "<group>"; };
@@ -786,6 +841,10 @@
 		6AD978532774F2F700A7C6C6 /* NotificationsProxy+iOS9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsProxy+iOS9.swift"; sourceTree = "<group>"; };
 		6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsProxy+Utilities.swift"; sourceTree = "<group>"; };
 		6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+ValueKeyPath.swift"; sourceTree = "<group>"; };
+		6C2FB1913D58B5EF901363C9 /* Pods_Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		897B64EE76852A68ECECB184 /* libPods-Leanplum-Static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-Static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B335B24E5DF5CE017C0BE58D /* Pods-Leanplum-Static.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-Static.release.xcconfig"; path = "Target Support Files/Pods-Leanplum-Static/Pods-Leanplum-Static.release.xcconfig"; sourceTree = "<group>"; };
+		C73AA976764CAC7D649E137B /* Pods-Leanplum.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum.debug.xcconfig"; path = "Target Support Files/Pods-Leanplum/Pods-Leanplum.debug.xcconfig"; sourceTree = "<group>"; };
 		C90C489C2707299D00E33F1F /* NotificationSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettings.swift; sourceTree = "<group>"; };
 		C90C489F27072A0200E33F1F /* UIUserNotificationSettings+Transform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIUserNotificationSettings+Transform.swift"; sourceTree = "<group>"; };
 		C90C48A227072A5200E33F1F /* Data+EncodedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+EncodedString.swift"; sourceTree = "<group>"; };
@@ -799,6 +858,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A3C1EB228D7B3C700D51E44 /* CleverTapSDK.framework in Frameworks */,
+				6A3C1EB428D7B3C700D51E44 /* SDWebImage.framework in Frameworks */,
+				EF8C42881E834252F5F5ABA6 /* Pods_Leanplum.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,6 +868,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0371C8C3E1D6D0AB924FF99 /* libPods-Leanplum-Static.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,6 +882,8 @@
 				075AAD0A26847C23007CA1BD /* LeanplumSDK */,
 				075AAEED26847FE1007CA1BD /* LeanplumSDKBundle */,
 				075AAD0926847C23007CA1BD /* Products */,
+				830C77E30DBF54561D95CE52 /* Pods */,
+				34C58C2C6E3180DDD898BF2B /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1240,6 +1305,17 @@
 			name = Packages;
 			sourceTree = "<group>";
 		};
+		34C58C2C6E3180DDD898BF2B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */,
+				6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */,
+				6C2FB1913D58B5EF901363C9 /* Pods_Leanplum.framework */,
+				897B64EE76852A68ECECB184 /* libPods-Leanplum-Static.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		39C0818E2781D27700C1DBD6 /* Actions */ = {
 			isa = PBXGroup;
 			children = (
@@ -1269,9 +1345,34 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		6A2109DE28BE88CA00DBF4A9 /* Migration */ = {
+			isa = PBXGroup;
+			children = (
+				6A37A89E28EF749F00F4339F /* Wrapper */,
+				6A2109E028BE88D900DBF4A9 /* MigrationManager.swift */,
+				6A29EAB728EA09470024880E /* MigrationState.swift */,
+				6A29EABA28EA12D30024880E /* MigrationManager+Constants.swift */,
+				6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */,
+				6A37A89828EF738200F4339F /* MigrationManager+API.swift */,
+			);
+			path = Migration;
+			sourceTree = "<group>";
+		};
+		6A37A89E28EF749F00F4339F /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				6A2109DF28BE88D900DBF4A9 /* CTWrapper.swift */,
+				6A29EAF428EF37090024880E /* IdentityManager.swift */,
+				6A37A89528EF6E6C00F4339F /* Wrapper.swift */,
+				6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */,
+			);
+			path = Wrapper;
+			sourceTree = "<group>";
+		};
 		6A714BFF26F8B7DC004A34A9 /* ClassesSwift */ = {
 			isa = PBXGroup;
 			children = (
+				6A2109DE28BE88CA00DBF4A9 /* Migration */,
 				39C0818E2781D27700C1DBD6 /* Actions */,
 				C9D064DA2775C85600A7A5F9 /* Extensions */,
 				6AD9785B2774FCB500A7C6C6 /* Utilities */,
@@ -1315,8 +1416,21 @@
 				C9374A38272C36B200F4915A /* Utilities.swift */,
 				6A96032927C69F3C00F34BA0 /* WeakTimer.swift */,
 				6AB10937284B3FBD00B72FDA /* UIAlert.swift */,
+				6A29EABD28EA13B60024880E /* PropertyWrappers.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		830C77E30DBF54561D95CE52 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C73AA976764CAC7D649E137B /* Pods-Leanplum.debug.xcconfig */,
+				219B9B64F683F15530F5F56E /* Pods-Leanplum.release.xcconfig */,
+				55FCDCE6D98B7EDDB33867FA /* Pods-Leanplum-Static.debug.xcconfig */,
+				B335B24E5DF5CE017C0BE58D /* Pods-Leanplum-Static.release.xcconfig */,
+			);
+			name = Pods;
+			path = ../Pods;
 			sourceTree = "<group>";
 		};
 		C9D064DA2775C85600A7A5F9 /* Extensions */ = {
@@ -1330,6 +1444,7 @@
 				6A9DEC9D27B54B7200052807 /* LPRequestSender+UUID.swift */,
 				6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */,
 				6A07FD9E280F27C700995BE3 /* NSRegularExpression+Matches.swift */,
+				6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1520,10 +1635,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 075AAD1026847C23007CA1BD /* Build configuration list for PBXNativeTarget "Leanplum" */;
 			buildPhases = (
+				6F7CCB8DAE13D687016AB7D9 /* [CP] Check Pods Manifest.lock */,
 				075AAD0326847C23007CA1BD /* Headers */,
 				075AAD0426847C23007CA1BD /* Sources */,
 				075AAD0526847C23007CA1BD /* Frameworks */,
 				075AAD0626847C23007CA1BD /* Resources */,
+				6A3C1EAF28D7B30400D51E44 /* Copy Frameworks */,
+				6A3C1EB628D7B3C700D51E44 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1554,11 +1672,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6A714BA026F8B317004A34A9 /* Build configuration list for PBXNativeTarget "Leanplum-Static" */;
 			buildPhases = (
+				3222E433DFAEC0FB8BECFB6B /* [CP] Check Pods Manifest.lock */,
 				6A714AF226F8B317004A34A9 /* Headers */,
 				6A714B4C26F8B317004A34A9 /* Sources */,
 				6A714B9C26F8B317004A34A9 /* Frameworks */,
 				6A714B9D26F8B317004A34A9 /* Resources */,
 				6A714BA526F8B4E6004A34A9 /* Copy Headers */,
+				E7595406E1AAD26E354A140C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1640,6 +1760,89 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		3222E433DFAEC0FB8BECFB6B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Leanplum-Static-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		6A3C1EAF28D7B30400D51E44 /* Copy Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Copy dependency Pods Frameworks to top level so they can be found and embedded.\n# This Run Script Phase needs to run before \"Embed Frameworks\" built-in one.\n# When a framework is linked both dynamically and statically, name of the linking is added to the framework folder name\nCOPY_FRAMEWORKS_TO_EMBED=(\"CleverTap-iOS-SDK-framework\" \"SDWebImage-framework\")\n\nfor FRAMEWORK in ${COPY_FRAMEWORKS_TO_EMBED[@]};\ndo\n cp -R -L \"${BUILT_PRODUCTS_DIR}/$FRAMEWORK/\" ${BUILT_PRODUCTS_DIR}/\ndone\n";
+		};
+		6F7CCB8DAE13D687016AB7D9 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Leanplum-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E7595406E1AAD26E354A140C /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-Static/Pods-Leanplum-Static-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Leanplum-Static/Pods-Leanplum-Static-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Leanplum-Static/Pods-Leanplum-Static-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		075AAD0426847C23007CA1BD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -1647,8 +1850,10 @@
 			files = (
 				075AAECF26847EC4007CA1BD /* LPFeatureFlagManager.m in Sources */,
 				075AAE0C26847EC4007CA1BD /* LPResponse.m in Sources */,
+				6A29EABB28EA12D30024880E /* MigrationManager+Constants.swift in Sources */,
 				6A98A9BC272A941D00D8753A /* NotificationsManager.swift in Sources */,
 				C9374A39272C36B200F4915A /* Utilities.swift in Sources */,
+				6A2109E128BE88D900DBF4A9 /* CTWrapper.swift in Sources */,
 				39C081952781D34700C1DBD6 /* ActionManager+ActionDefinition.swift in Sources */,
 				075AAEC426847EC4007CA1BD /* LPEventDataManager.m in Sources */,
 				6A7B2F54289BC8FC00F73EC7 /* LPActionContextNotification.m in Sources */,
@@ -1670,6 +1875,7 @@
 				075AAE7F26847EC4007CA1BD /* LPDatabase.m in Sources */,
 				075AAE1E26847EC4007CA1BD /* LPRequestBatch.m in Sources */,
 				075AAEB926847EC4007CA1BD /* LPActionContext.m in Sources */,
+				6A37A8A028EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */,
 				075AAE6026847EC4007CA1BD /* LPPushAskToAskMessageTemplate.m in Sources */,
 				6AD978492774BE7500A7C6C6 /* Logging.swift in Sources */,
 				075AAEDE26847EC4007CA1BD /* LPConstants.m in Sources */,
@@ -1686,18 +1892,23 @@
 				075AAEC926847EC4007CA1BD /* LPInternalState.m in Sources */,
 				6A96032D27C8DD1300F34BA0 /* User.swift in Sources */,
 				075AAE4E26847EC4007CA1BD /* LPMessageTemplateUtilities.m in Sources */,
+				6A37A89928EF738200F4339F /* MigrationManager+API.swift in Sources */,
 				075AAE9A26847EC4007CA1BD /* Leanplum_Reachability.m in Sources */,
 				075AAE3426847EC4007CA1BD /* LPPushMessageTemplate.m in Sources */,
 				075AAED326847EC4007CA1BD /* LeanplumCompatibility.m in Sources */,
+				6A29EABE28EA13B60024880E /* PropertyWrappers.swift in Sources */,
 				6A07FD9F280F27C700995BE3 /* NSRegularExpression+Matches.swift in Sources */,
+				6A29EAB828EA09470024880E /* MigrationState.swift in Sources */,
 				6A9DECA227B6929200052807 /* ApiConfig.swift in Sources */,
 				075AAEA826847EC4007CA1BD /* LPInbox.m in Sources */,
+				6A37A89628EF6E6C00F4339F /* Wrapper.swift in Sources */,
 				C90C489D2707299D00E33F1F /* NotificationSettings.swift in Sources */,
 				39C081912781D30300C1DBD6 /* ActionManager+Action.swift in Sources */,
 				075AAED826847EC4007CA1BD /* LPContextualValues.m in Sources */,
 				39C081992781D39000C1DBD6 /* ActionManager+Triggering.swift in Sources */,
 				075AAE2A26847EC4007CA1BD /* LPRegisterDevice.m in Sources */,
 				075AAE7C26847EC4007CA1BD /* LPAES.m in Sources */,
+				6A2109E328BE88D900DBF4A9 /* MigrationManager.swift in Sources */,
 				C90C48A027072A0200E33F1F /* UIUserNotificationSettings+Transform.swift in Sources */,
 				075AAE4326847EC4007CA1BD /* LPInterstitialMessageTemplate.m in Sources */,
 				075AAE2E26847EC4007CA1BD /* LPCountAggregator.m in Sources */,
@@ -1715,6 +1926,7 @@
 				075AAEC026847EC4007CA1BD /* LPEventCallback.m in Sources */,
 				075AAE0826847EC4007CA1BD /* LPRequestBatchFactory.m in Sources */,
 				6A265E2927187EBB0074354F /* NSObject+Notifications.swift in Sources */,
+				6A29EAC428EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */,
 				39C081972781D36100C1DBD6 /* ActionManager+ActionsTrigger.swift in Sources */,
 				39C081A52781D46200C1DBD6 /* ActionManager+State.swift in Sources */,
 				075AADFD26847EC4007CA1BD /* LPRequestFactory.m in Sources */,
@@ -1726,10 +1938,12 @@
 				075AAE9D26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
 				075AAE2026847EC4007CA1BD /* LPLogManager.m in Sources */,
 				39C0819F2781D3D000C1DBD6 /* ActionManager+Queue.swift in Sources */,
+				6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */,
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
 				075AAE5C26847EC4007CA1BD /* LPConfirmMessageTemplate.m in Sources */,
 				6AB10938284B3FBD00B72FDA /* UIAlert.swift in Sources */,
 				075AAE0126847EC4007CA1BD /* LPRequestSenderTimer.m in Sources */,
+				6A37A89C28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */,
 				6A714C0126F8B88A004A34A9 /* NotificationsManager+Utilities.swift in Sources */,
 				075AAE2826847EC4007CA1BD /* LPRevenueManager.m in Sources */,
 				075AAE3226847EC4007CA1BD /* LPAlertMessageTemplate.m in Sources */,
@@ -1764,8 +1978,10 @@
 			files = (
 				6A714B4D26F8B317004A34A9 /* LPFeatureFlagManager.m in Sources */,
 				6A714B4E26F8B317004A34A9 /* LPResponse.m in Sources */,
+				6A29EABC28EA12D30024880E /* MigrationManager+Constants.swift in Sources */,
 				6A98A9BD272A941D00D8753A /* NotificationsManager.swift in Sources */,
 				C9374A3A272C36B200F4915A /* Utilities.swift in Sources */,
+				6A2109E228BE88D900DBF4A9 /* CTWrapper.swift in Sources */,
 				6A714B4F26F8B317004A34A9 /* LPEventDataManager.m in Sources */,
 				6A714B5026F8B317004A34A9 /* LPInterstitialViewController.m in Sources */,
 				6A7B2F55289BC8FC00F73EC7 /* LPActionContextNotification.m in Sources */,
@@ -1787,6 +2003,7 @@
 				6A714B5926F8B317004A34A9 /* LPRequest.m in Sources */,
 				6A714B5A26F8B317004A34A9 /* LPVar.m in Sources */,
 				C90C48A727072AD800E33F1F /* UNNotificationSettings+Transform.swift in Sources */,
+				6A37A8A128EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */,
 				6A714B5C26F8B317004A34A9 /* LPRegisterForPushMessageTemplate.m in Sources */,
 				6A714B5D26F8B317004A34A9 /* LPDatabase.m in Sources */,
 				6A714B5E26F8B317004A34A9 /* LPRequestBatch.m in Sources */,
@@ -1804,17 +2021,22 @@
 				39C081AA278D995300C1DBD6 /* ActionManager.swift in Sources */,
 				39C081B3278D995300C1DBD6 /* ActionManager+Action.swift in Sources */,
 				6A714B6826F8B317004A34A9 /* LPKeychainWrapper.m in Sources */,
+				6A37A89A28EF738200F4339F /* MigrationManager+API.swift in Sources */,
 				6A714B6926F8B317004A34A9 /* LPHitView.m in Sources */,
 				6A714B6A26F8B317004A34A9 /* Leanplum_WebSocket.m in Sources */,
+				6A29EABF28EA13B60024880E /* PropertyWrappers.swift in Sources */,
 				6A714B6C26F8B317004A34A9 /* LPRichInterstitialMessageTemplate.m in Sources */,
+				6A29EAB928EA09470024880E /* MigrationState.swift in Sources */,
 				6A07FDA0280F27C700995BE3 /* NSRegularExpression+Matches.swift in Sources */,
 				6A714B6D26F8B317004A34A9 /* LPInternalState.m in Sources */,
+				6A37A89728EF6E6C00F4339F /* Wrapper.swift in Sources */,
 				6A96032E27C8DD1300F34BA0 /* User.swift in Sources */,
 				6A714B7026F8B317004A34A9 /* LPMessageTemplateUtilities.m in Sources */,
 				6A714B7126F8B317004A34A9 /* Leanplum_Reachability.m in Sources */,
 				6A714B7226F8B317004A34A9 /* LPPushMessageTemplate.m in Sources */,
 				6A714B7326F8B317004A34A9 /* LeanplumCompatibility.m in Sources */,
 				6A9DECA327B6929300052807 /* ApiConfig.swift in Sources */,
+				6A2109E428BE88D900DBF4A9 /* MigrationManager.swift in Sources */,
 				6A714B7426F8B317004A34A9 /* LPInbox.m in Sources */,
 				C90C489E2707299D00E33F1F /* NotificationSettings.swift in Sources */,
 				6A714B7526F8B317004A34A9 /* LPContextualValues.m in Sources */,
@@ -1832,6 +2054,7 @@
 				6A714B7C26F8B317004A34A9 /* FileMD5Hash.c in Sources */,
 				39D0AA1527760842003C7192 /* Bundle+Extensions.swift in Sources */,
 				6A714B7D26F8B317004A34A9 /* LPOpenUrlMessageTemplate.m in Sources */,
+				6A29EAC528EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */,
 				6A714B7E26F8B317004A34A9 /* LPEventCallback.m in Sources */,
 				6A714B7F26F8B317004A34A9 /* LPRequestBatchFactory.m in Sources */,
 				6A265E2A27187EBB0074354F /* NSObject+Notifications.swift in Sources */,
@@ -1843,10 +2066,12 @@
 				6A714B8426F8B317004A34A9 /* LPAppIconManager.m in Sources */,
 				6A714B8526F8B317004A34A9 /* NSTimer+Blocks.m in Sources */,
 				6A714B8626F8B317004A34A9 /* LPLogManager.m in Sources */,
+				6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */,
 				6A714B8726F8B317004A34A9 /* LPSecuredVars.m in Sources */,
 				6A714B8826F8B317004A34A9 /* LPConfirmMessageTemplate.m in Sources */,
 				6AB10939284B3FBD00B72FDA /* UIAlert.swift in Sources */,
 				6A714B8926F8B317004A34A9 /* LPRequestSenderTimer.m in Sources */,
+				6A37A89D28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */,
 				6A714C0226F8B88A004A34A9 /* NotificationsManager+Utilities.swift in Sources */,
 				39C081B2278D995300C1DBD6 /* ActionManager+Tracking.swift in Sources */,
 				6A714B8A26F8B317004A34A9 /* LPRevenueManager.m in Sources */,
@@ -2011,6 +2236,7 @@
 		};
 		075AAD1126847C23007CA1BD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C73AA976764CAC7D649E137B /* Pods-Leanplum.debug.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -2044,6 +2270,7 @@
 		};
 		075AAD1226847C23007CA1BD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 219B9B64F683F15530F5F56E /* Pods-Leanplum.release.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -2118,6 +2345,7 @@
 		};
 		6A714BA126F8B317004A34A9 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 55FCDCE6D98B7EDDB33867FA /* Pods-Leanplum-Static.debug.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -2138,7 +2366,6 @@
 				);
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
-				OTHER_SWIFT_FLAGS = "-Xfrontend -module-interface-preserve-types-as-written";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDK;
 				PRODUCT_NAME = Leanplum;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2152,6 +2379,7 @@
 		};
 		6A714BA226F8B317004A34A9 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B335B24E5DF5CE017C0BE58D /* Pods-Leanplum-Static.release.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ENABLE_MODULES = YES;
@@ -2172,7 +2400,6 @@
 				);
 				MACH_O_TYPE = staticlib;
 				MODULEMAP_FILE = "LeanplumSDK/Supporting Files/Leanplum.modulemap";
-				OTHER_SWIFT_FLAGS = "-Xfrontend -module-interface-preserve-types-as-written";
 				PRODUCT_BUNDLE_IDENTIFIER = com.leanplum.LeanplumSDK;
 				PRODUCT_NAME = Leanplum;
 				PROVISIONING_PROFILE_SPECIFIER = "";

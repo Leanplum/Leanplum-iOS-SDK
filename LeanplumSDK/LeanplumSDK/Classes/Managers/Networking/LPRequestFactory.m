@@ -193,6 +193,12 @@
     return [LPRequestFactory createPostForApiMethod:LP_API_METHOD_DELETE_INBOX_MESSAGE params:params];
 }
 
++ (LPRequest *)getMigrateState
+{
+    [[LPCountAggregator sharedAggregator] incrementCount:@"get_migrate_state"];
+    return [LPRequestFactory createGetForApiMethod:LP_API_METHOD_GET_MIGRATE_STATE params:nil];
+}
+
 #pragma mark Private methods
 
 + (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(NSDictionary *)params {
