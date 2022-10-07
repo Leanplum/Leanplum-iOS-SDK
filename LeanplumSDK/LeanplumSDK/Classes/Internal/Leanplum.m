@@ -392,6 +392,7 @@ void leanplumExceptionHandler(NSException *exception);
     if ([LPInternalState sharedState].hasStarted && ![[Leanplum user].deviceId isEqualToString:deviceId]) {
         if ([[MigrationManager shared] useCleverTap]) {
             LPLog(LPInfo, @"Setting new device ID is not allowed when migration to CleverTap is turned on.");
+            return;
         }
         LPLog(LPInfo, @"Warning: When migration of data to CleverTap is turned on calling this method with different device ID would not work any more.");
         [self setDeviceIdInternal:deviceId];
