@@ -59,6 +59,7 @@ class CTWrapper: Wrapper {
 
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
         config.useCustomCleverTapId = true
+        config.logLevel = CleverTapLogLevel(LPLogManager.logLevel())
         cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
         cleverTapInstance?.setLibrary("Leanplum")
         
@@ -228,15 +229,8 @@ class CTWrapper: Wrapper {
     
     // MARK: Log Level
     func setLogLevel(_ level: LeanplumLogLevel) {
-        switch level {
-        case .off:
-            CleverTap.setDebugLevel(CleverTapLogLevel.off.rawValue)
-        case .error, .info:
-            CleverTap.setDebugLevel(CleverTapLogLevel.info.rawValue)
-        case .debug:
-            CleverTap.setDebugLevel(CleverTapLogLevel.debug.rawValue)
-        default:
-            CleverTap.setDebugLevel(CleverTapLogLevel.info.rawValue)
-        }
+        let ctLevel = CleverTapLogLevel(level)
+        CleverTap.setDebugLevel(ctLevel.rawValue)
+        cleverTapInstance?.config.logLevel = ctLevel
     }
 }

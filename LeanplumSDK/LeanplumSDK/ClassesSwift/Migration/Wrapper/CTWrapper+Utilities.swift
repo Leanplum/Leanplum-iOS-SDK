@@ -6,6 +6,8 @@
 //
 
 import Foundation
+// Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
+@_implementationOnly import CleverTapSDK
 
 extension CTWrapper {
     func isAnyNil(_ value: Any) -> Bool {
@@ -36,6 +38,21 @@ extension CTWrapper {
             }
 
             return newKey
+        }
+    }
+}
+
+extension CleverTapLogLevel {
+    init(_ level: LeanplumLogLevel) {
+        switch level {
+        case .off:
+            self = .off
+        case .error, .info:
+            self = .info
+        case .debug:
+            self = .debug
+        default:
+            self = .info
         }
     }
 }
