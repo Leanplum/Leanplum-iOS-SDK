@@ -9,9 +9,9 @@ import Foundation
 
 extension ActionManager {
     func performActions() {
-        // If we are paused, exit as we will continue execution
+        // If we are paused or disabled, exit as we will continue execution
         // when we are resumed.
-        guard isPaused == false else {
+        guard !isPaused, isEnabled else {
             return
         }
         
@@ -37,6 +37,14 @@ extension ActionManager {
         }
         
         Log.debug("[ActionManager]: running action with name: \(action.context).")
+        
+        if action.type == .single,
+           Leanplum.shouldSuppressMessage(action.context) {
+            Log.info("[ActionManager]: local IAM caps reached, suppressing \(action.context).")
+            state.currentAction = nil
+            performAvailableActions()
+            return
+        }
 
         // decide if we are going to display the message
         // by calling delegate and let it decide what are we supposed to do

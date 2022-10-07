@@ -163,8 +163,11 @@ static BOOL swizzled = NO;
     [[LPConstantsState sharedState] setIsInPermanentFailureState:NO];
     
     // Reset values directly
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wnonnull"
     [ApiConfig shared].appId = nil;
     [ApiConfig shared].accessKey = nil;
+#pragma clang diagnostic pop
     
     [LPRequest reset];
     [LPRequestSender reset];
@@ -212,12 +215,7 @@ static BOOL swizzled = NO;
     }
 }
 
-+ (void)dismissPresentedViewControllers
-{
-    [[UIApplication sharedApplication].keyWindow.rootViewController dismissViewControllerAnimated:false completion:nil];
-}
-
-+ (void) throwError:(NSString *) err
++ (void)throwError:(NSString *) err
 {
     [LeanplumHelper setLastErrorMessage:err];
     @throw([NSException exceptionWithName:err reason:nil userInfo:nil]);
@@ -229,7 +227,7 @@ static BOOL swizzled = NO;
     @throw(ex);
 }
 
-+ (void) mockThrowErrorToThrow
++ (void)mockThrowErrorToThrow
 {
     [LeanplumHelper setLeanplumClassMock:OCMClassMock([Leanplum class])];
     [OCMStub(ClassMethod([[LeanplumHelper leanplumClassMock] throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
@@ -240,12 +238,12 @@ static BOOL swizzled = NO;
     [OCMStub(ClassMethod([mockLPUtilsClass handleException:[OCMArg any]])) andCall:@selector(handleException:) onObject:self];
 }
 
-+ (void) stopMockThrowErrorToThrow
++ (void)stopMockThrowErrorToThrow
 {
     [[LeanplumHelper leanplumClassMock] stopMocking];
 }
 
-+ (void) restore_method_swizzling
++ (void)restore_method_swizzling
 {
     [LPRequestSender unswizzle_methods];
     [LPRequestFactory unswizzle_methods];

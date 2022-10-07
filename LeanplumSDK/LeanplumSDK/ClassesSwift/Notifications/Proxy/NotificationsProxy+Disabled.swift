@@ -29,6 +29,7 @@ extension NotificationsProxy {
         self.leanplum_userNotificationCenter(UNUserNotificationCenter.current(), willPresent: notification, withCompletionHandler: completionHandler)
     }
     
+    @available(iOS, deprecated: 10.0)
     @objc public func application(didReceive notification: UILocalNotification) {
         self.leanplum_application(UIApplication.shared, didReceive: notification)
     }
@@ -37,6 +38,7 @@ extension NotificationsProxy {
         Leanplum.notificationsManager().notificationOpened(userInfo: notification, action: identifier)
     }
     
+    @available(iOS, deprecated: 10.0)
     @objc public func handleActionWithIdentifier(_ identifier: String, forLocalNotification notification: UILocalNotification) {
         if let userInfo = notification.userInfo {
             Leanplum.notificationsManager().notificationOpened(userInfo: userInfo, action: identifier)

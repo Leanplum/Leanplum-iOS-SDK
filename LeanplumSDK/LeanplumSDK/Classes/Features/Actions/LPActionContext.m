@@ -38,17 +38,45 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
 
 @implementation LPActionContext
 
-@synthesize name=_name;
-@synthesize messageId=_messageId;
-@synthesize originalMessageId=_originalMessageId;
-@synthesize priority=_priority;
 @synthesize args=_args;
-@synthesize parentContext=_parentContext;
-@synthesize contentVersion=_contentVersion;
-@synthesize key=_key;
-@synthesize preventRealtimeUpdating=_preventRealtimeUpdating;
-@synthesize contextualValues=_contextualValues;
-@synthesize countAggregator=_countAggregator;
+
+- (instancetype)initWithName:(NSString *)name
+                        args:(NSDictionary *)args
+                   messageId:(NSString *)messageId
+           originalMessageId:(NSString *)originalMessageId
+                    priority:(NSNumber *)priority
+{
+    self = [super init];
+    if (self) {
+        _name = name;
+        _args = args;
+        _messageId = messageId;
+        _originalMessageId = originalMessageId;
+        _contentVersion = [[LPVarCache sharedCache] contentVersion];
+        _preventRealtimeUpdating = NO;
+        _isRooted = YES;
+        _isPreview = NO;
+        _priority = priority;
+        _countAggregator = [LPCountAggregator sharedAggregator];
+    }
+    
+    return self;
+}
+
+- (instancetype)init:(NSString *)name
+                args:(NSDictionary *)args
+           messageId:(NSString *)messageId
+preventRealtimeUpdating:(BOOL)preventRealtimeUpdating;
+{
+    self = [self initWithName:name
+                         args:args
+                    messageId:messageId
+            originalMessageId:nil
+                     priority:[NSNumber numberWithInt:DEFAULT_PRIORITY]];
+    _preventRealtimeUpdating = preventRealtimeUpdating;
+    
+    return self;
+}
 
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(NSDictionary *)args
@@ -68,23 +96,16 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                   priority:(NSNumber *)priority
 
 {
-    LPActionContext *context = [[LPActionContext alloc] init];
-    context->_name = name;
-    context->_args = args;
-    context->_messageId = messageId;
-    context->_originalMessageId = originalMessageId;
-    context->_contentVersion = [[LPVarCache sharedCache] contentVersion];
-    context->_preventRealtimeUpdating = NO;
-    context->_isRooted = YES;
-    context->_isPreview = NO;
-    context->_priority = priority;
-    context->_countAggregator = [LPCountAggregator sharedAggregator];
-    return context;
+    return [[LPActionContext alloc] initWithName:name
+                                            args:args
+                                       messageId:messageId
+                               originalMessageId:originalMessageId
+                                        priority:priority];
 }
 
 - (NSDictionary *)defaultValues
 {
-    return [[[ActionManager shared] definitionWithName:_name] values];
+    return [[[LPActionManager shared] definitionWithName:_name] values];
 }
 
 /**
@@ -92,14 +113,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
  */
 - (void)maybeDownloadFiles
 {
-    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
-    [[ActionManager shared] downloadFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
+    NSDictionary *kinds = [[[LPActionManager shared] definitionWithName:_name] kinds];
+    [[LPActionManager shared] downloadFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (BOOL)hasMissingFiles
 {
-    NSDictionary *kinds = [[[ActionManager shared] definitionWithName:_name] kinds];
-    return [[ActionManager shared] hasMissingFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
+    NSDictionary *kinds = [[[LPActionManager shared] definitionWithName:_name] kinds];
+    return [[LPActionManager shared] hasMissingFilesWithActionArgs:_args defaultValues:[self defaultValues] definitionKinds:kinds];
 }
 
 - (NSString *)actionName
@@ -120,7 +141,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if (parent) {
             _args = [parent getChildArgs:_key];
         } else if (_messageId) {
-            NSDictionary *message = [[ActionManager shared] messages][_messageId];
+            NSDictionary *message = [[LPActionManager shared] messages][_messageId];
             if (message) {
                 _args = message[LP_KEY_VARS];
             }
@@ -133,7 +154,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     LP_TRY
     [self setProperArgs];
     return [[LPVarCache sharedCache] getValueFromComponentArray:[[LPVarCache sharedCache] getNameComponents:name]
-                                         fromDict:_args];
+                                                       fromDict:_args];
     LP_END_TRY
     return nil;
 }
@@ -152,9 +173,9 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if (!_contextualValues || !value || [value rangeOfString:@"##"].location == NSNotFound) {
         return value;
     }
-
+    
     NSDictionary *parameters = _contextualValues.parameters;
-
+    
     for (NSString *parameterName in [parameters keyEnumerator]) {
         NSString *placeholder = [NSString stringWithFormat:@"##Parameter %@##", parameterName];
         value = [value stringByReplacingOccurrencesOfString:placeholder
@@ -165,7 +186,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         value = [value
                  stringByReplacingOccurrencesOfString:@"##Previous Value##"
                  withString:[_contextualValues
-                             .previousAttributeValue description]];
+                     .previousAttributeValue description]];
     }
     if (_contextualValues.attributeValue) {
         value = [value stringByReplacingOccurrencesOfString:@"##Value##"
@@ -185,10 +206,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         if ([obj isKindOfClass:[NSDictionary class]]) {
             // Ensure obj is mutable as well
             vars[key] = [self replaceFileNameToLocalFilePath:[obj mutableCopy] preserveFileNamed:reserveName];
-        } else if ([key hasPrefix:ActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
+        } else if ([key hasPrefix:LPActionManager.ActionArgFilePrefix] && [obj isKindOfClass:[NSString class]]
                    && [obj length] > 0 && ![key isEqualToString:reserveName]) {
             NSString *filePath = [LPFileManager fileValue:obj withDefaultValue:@""];
-            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:ActionManager.ActionArgFilePrefix
+            NSString *prunedKey = [key stringByReplacingOccurrencesOfString:LPActionManager.ActionArgFilePrefix
                                                                  withString:@""];
             vars[prunedKey] = [self asciiEncodedFileURL:filePath];
             [vars removeObjectForKey:key];
@@ -204,30 +225,30 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
          "Empty name parameter provided."];
         return nil;
     }
-
+    
     LP_TRY
     [self setProperArgs];
-
+    
     NSMutableDictionary *htmlVars = [self replaceFileNameToLocalFilePath:[_args mutableCopy]
                                                        preserveFileNamed:templateName];
     htmlVars[@"messageId"] = self.messageId;
-
+    
     // Triggering Event.
     if (self.contextualValues && self.contextualValues.arguments) {
         htmlVars[@"displayEvent"] = self.contextualValues.arguments;
     }
-
+    
     // Add HTML Vars.
     NSString *jsonString = [LPJSON stringFromJSON:htmlVars];
     jsonString = [jsonString stringByReplacingOccurrencesOfString:@"\\/" withString:@"/"];
-
+    
     // Template.
     NSString *htmlString = [self htmlStringContentsOfFile:[self fileNamed:templateName]];
     if (!htmlString) {
         LPLog(LPError, @"Fail to get HTML template.");
         return nil;
     }
-
+    
     if ([[htmlVars valueForKey:@"Height"] isEqualToString:@"100%"] && [[htmlVars valueForKey:@"Width"] isEqualToString:@"100%"]) {
         htmlString = [htmlString stringByReplacingOccurrencesOfString:@"/*##MEDIAQUERY##" withString:@""];
         htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##MEDIAQUERY##*/" withString:@""];
@@ -239,16 +260,16 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     
     htmlString = [htmlString stringByReplacingOccurrencesOfString:@"##Vars##"
                                                        withString:jsonString];
-
+    
     htmlString = [self fillTemplate:htmlString];
-
+    
     // Save filled template to temp file which will be used by WebKit
     NSString *randomUUID = [[[NSUUID UUID] UUIDString] lowercaseString];
     NSString *tmpPath = [LPFileManager fileRelativeToDocuments:randomUUID createMissingDirectories:YES];
     NSURL *tmpURL = [[NSURL fileURLWithPath:tmpPath] URLByAppendingPathExtension:@"html"];
-
+    
     [htmlString writeToURL:tmpURL atomically:YES encoding:NSUTF8StringEncoding error:nil];
-
+    
     return tmpURL;
     LP_END_TRY
     return nil;
@@ -344,7 +365,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if ([object isKindOfClass:[NSDictionary class]]) {
         return (NSDictionary *) object;
     }
-
+    
     if ([object isKindOfClass:[NSString class]]) {
         return [LPJSON JSONFromString:object];
     }
@@ -377,8 +398,8 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
     if (![actionArgs isKindOfClass:[NSDictionary class]]) {
         return nil;
     }
-
-    NSDictionary *defaultArgs = [[[ActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
+    
+    NSDictionary *defaultArgs = [[[LPActionManager shared] definitionWithName:actionArgs[LP_VALUE_ACTION_ARG]] values];
     actionArgs = [ContentMerger mergeWithVars:defaultArgs diff:actionArgs];
     
     return actionArgs;
@@ -415,14 +436,14 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
                                                               options:NSCaseInsensitiveSearch
                                                                 range:NSMakeRange(0,
                                                                                   actionName.length)
-                      ];
-
+        ];
+        
         if (fullEventName.length) {
             [fullEventName appendString:@" "];
         }
         [fullEventName appendString:actionName];
     }
-
+    
     return fullEventName;
     LP_END_TRY
 }
@@ -435,25 +456,25 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         return;
     }
     NSDictionary *args = [self getChildArgs:name];
-
+    
     __weak LPActionContext *weakSelf = self;
     if ([self actionDidExecute]) {
         LPActionContext *actionNamedContext = [LPActionContext
-                                          actionContextWithName:name
-                                          args:args messageId:_messageId];
+                                               actionContextWithName:name
+                                               args:args messageId:_messageId];
         actionNamedContext->_parentContext = weakSelf;
-        // notifies our ActionManager that the action was executed
+        // notifies our LPActionManager that the action was executed
         self.actionDidExecute(actionNamedContext);
     }
     
     if (!args) {
         return;
     }
-
+    
     // Chain to existing message.
     NSString *messageId = args[LP_VALUE_CHAIN_MESSAGE_ARG];
     NSString *actionType = args[LP_VALUE_ACTION_ARG];
-
+    
     void (^executeChainedMessage)(void) = ^void(void) {
         LPActionContext *chainedActionContext = [Leanplum createActionContextForMessageId:messageId];
         chainedActionContext.contextualValues = self.contextualValues;
@@ -462,24 +483,25 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         chainedActionContext->_isChainedMessage = YES;
         chainedActionContext->_parentContext = weakSelf;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
+            [[LPActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
         });
     };
-
+    
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
-        NSDictionary *message = [[ActionManager shared] messages][messageId];
+        NSDictionary *message = [[LPActionManager shared] messages][messageId];
         if (message) {
             executeChainedMessage();
         } else {
-            ActionManager.shared.isPaused = YES;
+            BOOL previousPauseState = LPActionManager.shared.isPaused;
+            LPActionManager.shared.isPaused = YES;
             // Message doesn't seem to be on the device,
             // so let's forceContentUpdate and retry showing it.
             [Leanplum forceContentUpdate: ^(void) {
-                NSDictionary *message = [[ActionManager shared] messages][messageId];
+                NSDictionary *message = [[LPActionManager shared] messages][messageId];
                 if (message) {
                     executeChainedMessage();
                 }
-                ActionManager.shared.isPaused = NO;
+                LPActionManager.shared.isPaused = previousPauseState;
             }];
         }
     } else {
@@ -493,11 +515,10 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
         childContext->_parentContext = weakSelf;
         childContext->_key = name;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[ActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
-            
+            [[LPActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
         });
     }
-
+    
     LP_END_TRY
     
     [self.countAggregator incrementCount:@"run_action_named"];
@@ -511,6 +532,7 @@ typedef void (^LPFileCallback)(NSString* value, NSString *defaultValue);
              @"provided."];
             return;
         }
+        
         [self trackMessageEvent:name withValue:0.0 andInfo:nil andParameters:nil];
     }
     [self runActionNamed:name];

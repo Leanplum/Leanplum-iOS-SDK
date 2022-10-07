@@ -14,6 +14,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface LPActionContext ()
 
+- (instancetype)init:(NSString *)name
+                args:(NSDictionary *)args
+           messageId:(NSString *)messageId
+preventRealtimeUpdating:(BOOL)preventRealtimeUpdating;
+
 + (LPActionContext *)actionContextWithName:(NSString *)name
                                       args:(nullable NSDictionary *)args
                                  messageId:(nullable NSString *)messageId;

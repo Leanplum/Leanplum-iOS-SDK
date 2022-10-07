@@ -588,25 +588,6 @@ void leanplumExceptionHandler(NSException *exception);
     LP_END_USER_CODE
 }
 
-+ (NSString *)messageBodyFromContext:(LPActionContext *)context {
-    NSString *messageBody = @"";
-    NSString *messageKey = @"Message";
-    id messageObject = [context.args valueForKey:messageKey];
-    if (messageObject) {
-        if ([messageObject isKindOfClass:[NSString class]]) {
-            messageBody = messageObject;
-        } else if ([messageObject isKindOfClass:[NSDictionary class]]) {
-            NSDictionary *messageDict = (NSDictionary *) messageObject;
-            if ([[messageDict objectForKey:@"Text"] isKindOfClass:[NSString class]]) {
-                messageBody = [messageDict objectForKey:@"Text"];
-            } else if ([[messageDict objectForKey:@"Text value"] isKindOfClass:[NSString class]]) {
-                messageBody = [messageDict objectForKey:@"Text value"];
-            }
-        }
-    }
-    return messageBody;
-}
-
 + (void)onHasStartedAndRegisteredAsDeveloper
 {
     if ([LPFileManager initializing]) {
@@ -1507,7 +1488,7 @@ void leanplumExceptionHandler(NSException *exception);
                                                                   options:options
                                                             presentAction:presentHandler
                                                             dismissAction:dismissHandler];
-    [[ActionManager shared] defineActionWithDefinition:definition];
+    [[LPActionManager shared] defineActionWithDefinition:definition];
     [[LPCountAggregator sharedAggregator] incrementCount:@"define_action"];
 }
 
@@ -1685,7 +1666,7 @@ void leanplumExceptionHandler(NSException *exception);
               fromMessageId:(NSString *)sourceMessage
        withContextualValues:(LPContextualValues *)contextualValues
 {
-    NSDictionary *messages = [[ActionManager shared] messages];
+    NSDictionary *messages = [[LPActionManager shared] messages];
 
     @synchronized (messages) {
         ActionsTrigger *trigger = [[ActionsTrigger alloc] initWithEventName:eventName
@@ -1719,7 +1700,7 @@ void leanplumExceptionHandler(NSException *exception);
                     if ([actionContext priority] > topPriority) {
                         continue;
                     }
-                    NSNumber *currentCountdown = [[ActionManager shared] messages][actionContext.messageId][@"countdown"];
+                    NSNumber *currentCountdown = [[LPActionManager shared] messages][actionContext.messageId][@"countdown"];
                     if ([countdowns containsObject:currentCountdown]) {
                         continue;
                     }
@@ -1731,13 +1712,13 @@ void leanplumExceptionHandler(NSException *exception);
             }
         }
 
-        [[ActionManager shared] triggerWithContexts:contexts priority:PriorityDefault trigger:trigger];
+        [[LPActionManager shared] triggerWithContexts:contexts priority:PriorityDefault trigger:trigger];
     }
 }
 
 + (LPActionContext *)createActionContextForMessageId:(NSString *)messageId
 {
-    NSDictionary *messageConfig = [[ActionManager shared] messages][messageId];
+    NSDictionary *messageConfig = [[LPActionManager shared] messages][messageId];
     LPActionContext *context =
         [LPActionContext actionContextWithName:messageConfig[@"action"]
                                           args:messageConfig[LP_KEY_VARS]
@@ -2280,7 +2261,7 @@ static NSLocale * _locale;
         NSArray *localCaps = response[LP_KEY_LOCAL_CAPS];
         
         if (![values isEqualToDictionary:[LPVarCache sharedCache].diffs] ||
-            ![messages isEqualToDictionary:[[ActionManager shared] messagesDataFromServer]] ||
+            ![messages isEqualToDictionary:[[LPActionManager shared] messagesDataFromServer]] ||
             ![variants isEqualToArray:[LPVarCache sharedCache].variants] ||
             ![localCaps isEqualToArray:[[LPVarCache sharedCache] getLocalCaps]] ||
             ![regions isEqualToDictionary:[LPVarCache sharedCache].regions]) {
@@ -2416,7 +2397,7 @@ void leanplumExceptionHandler(NSException *exception)
 + (NSDictionary *)messageMetadata
 {
     LP_TRY
-    NSDictionary *messages = [[ActionManager shared] messages];
+    NSDictionary *messages = [[LPActionManager shared] messages];
     if (messages) {
         return messages;
     }
@@ -2644,12 +2625,6 @@ void leanplumExceptionHandler(NSException *exception)
     return [[LPVarCache sharedCache] securedVars];;
 }
 
-
-/**
- * Checks if message should be suppressed based on the local IAM caps.
- * @param context The message context to check.
- * @return True if message should  be suppressed, false otherwise.
-*/
 + (BOOL)shouldSuppressMessage:(LPActionContext *)context
 {
     if([LP_PUSH_NOTIFICATION_ACTION isEqualToString:[context actionName]]) {

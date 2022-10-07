@@ -11,7 +11,7 @@ extension ActionManager {
     @objc public class ActionDefinition: NSObject {
         @objc public let name: String
         public let args: [ActionArg]
-        public let kind: Leanplum.ActionKind
+        public let kind: LeanplumActionKind
         public let options: [String: String]
 
         public var presentAction: ((ActionContext) -> (Bool))?
@@ -28,7 +28,7 @@ extension ActionManager {
 
         @objc public required init(name: String,
                                    args: [Any],
-                                   kind: Leanplum.ActionKind,
+                                   kind: LeanplumActionKind,
                                    options: [String: String],
                                    presentAction: ((ActionContext) -> (Bool))? = nil,
                                    dismissAction: ((ActionContext) -> (Bool))? = nil) {

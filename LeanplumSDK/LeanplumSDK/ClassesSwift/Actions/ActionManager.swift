@@ -7,6 +7,7 @@
 
 import Foundation
 
+@objc(LPActionManager)
 @objcMembers public class ActionManager: NSObject {
     public static let shared: ActionManager = .init()
 
@@ -28,6 +29,9 @@ import Foundation
     /// When disabled, it stops executing actions and new actions will not be added to the queue.
     public var isEnabled: Bool = true {
         didSet {
+            if isEnabled && !oldValue {
+                performAvailableActions()
+            }
             Log.info("[ActionManager] isEnabled: \(isEnabled)")
         }
     }
@@ -45,9 +49,6 @@ import Foundation
 
     override init() {
         super.init()
-        queue.didChange = {
-            self.performAvailableActions()
-        }
         scheduler.actionDelayed = {
             self.appendActions(actions: [$0])
         }
@@ -55,7 +56,7 @@ import Foundation
         NotificationCenter
             .default
             .addObserver(forName: UIApplication.didBecomeActiveNotification,
-                         object: self,
+                         object: nil,
                          queue: .main) { [weak self] _ in
                 guard let `self` = self else { return }
                 if self.configuration.resumeOnEnterForeground {
@@ -71,25 +72,25 @@ import Foundation
     var shouldDisplayMessage: ((ActionContext) -> MessageDisplayChoice)?
     /// Called per message to decide whether to show, discard or delay it.
     /// - Note: to delay a message indefinitely, use delay with value -1
-    @objc public func shouldDisplayMessage(_ callback: @escaping (ActionContext) -> MessageDisplayChoice) {
+    @objc public func shouldDisplayMessage(_ callback: ((ActionContext) -> MessageDisplayChoice)?) {
         shouldDisplayMessage = callback
     }
 
     var onMessageDisplayed: ((ActionContext) -> Void)?
     /// Called when the message is displayed.
-    @objc public func onMessageDisplayed(_ callback: @escaping (ActionContext) -> Void) {
+    @objc public func onMessageDisplayed(_ callback: ((ActionContext) -> Void)?) {
         onMessageDisplayed = callback
     }
 
     var onMessageDismissed: ((ActionContext) -> Void)?
     /// Called when the message is dismissed.
-    @objc public func onMessageDismissed(_ callback: @escaping (ActionContext) -> Void) {
+    @objc public func onMessageDismissed(_ callback: ((ActionContext) -> Void)?) {
         onMessageDismissed = callback
     }
 
     var onMessageAction: ((_ actionName: String, _ context: ActionContext) -> Void)?
     /// Called when a message action is executed.
-    @objc public func onMessageAction(_ callback: @escaping (_ actionName: String, _ context: ActionContext) -> Void) {
+    @objc public func onMessageAction(_ callback: ((_ actionName: String, _ context: ActionContext) -> Void)?) {
         onMessageAction = callback
     }
 
@@ -101,18 +102,19 @@ import Foundation
     /// - Note: If this function is not implemented, the first message is presented only.
     ///
     /// - Parameters:
-    ///     - contexts: messages' contexts
-    ///     - trigger: the action trigger that triggered the messages
+    ///     - callback: contexts - messages' contexts and trigger - the action trigger that triggered the messages
     ///
     /// - Returns: the messages that should be presented in that order
-    @objc public func prioritizeMessages(_ callback:  @escaping (_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext]) {
+    @objc public func prioritizeMessages(_ callback: ((_ contexts: [ActionContext], _ trigger: ActionsTrigger?) -> [ActionContext])?) {
         prioritizeMessages = callback
     }
     
     func performAvailableActions() {
         Log.debug("[ActionManager]: performing all available actions.")
         Leanplum.onceVariablesChangedAndNoDownloadsPending {
-            self.performActions()
+            DispatchQueue.main.async {
+                self.performActions()
+            }
         }
     }
 }
@@ -122,6 +124,7 @@ extension ActionManager {
     func appendActions(actions: [Action]) {
         guard isEnabled else { return }
         actions.forEach(queue.pushBack(_:))
+        performAvailableActions()
     }
 
     /// Adds action to front of the queue
@@ -130,5 +133,6 @@ extension ActionManager {
         actions
             .reversed()
             .forEach(queue.pushFront(_:))
+        performAvailableActions()
     }
 }

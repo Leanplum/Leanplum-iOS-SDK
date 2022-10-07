@@ -28,6 +28,8 @@
 #import <Leanplum/LPRequestFactory.h>
 #import <Leanplum/Leanplum-Swift.h>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface Leanplum(UnitTest)
 
 @property (class, readonly) User* _Nonnull user;
@@ -48,23 +50,25 @@
 
 @end
 
+NS_ASSUME_NONNULL_END
+
 @interface LPActionContext(UnitTest)
 
-+ (LPActionContext *)actionContextWithName:(NSString *)name
-                                      args:(NSDictionary *)args
-                                 messageId:(NSString *)messageId;
++ (nullable  LPActionContext *)actionContextWithName:(nonnull NSString *)name
+                                      args:(nullable NSDictionary *)args
+                                 messageId:(nullable NSString *)messageId;
 
--(NSString *)htmlStringContentsOfFile:(NSString *)file;
+-(nullable NSString *)htmlStringContentsOfFile:(nonnull NSString *)file;
 
 @end
 
 @interface LPRequestFactory(UnitTest)
-+ (LPRequest *)createGetForApiMethod:(NSString *)apiMethod params:(nullable NSDictionary *)params;
++ (nullable LPRequest *)createGetForApiMethod:(nonnull NSString *)apiMethod params:(nullable NSDictionary *)params;
 + (nullable LPRequest *)createPostForApiMethod:(nonnull NSString *)apiMethod params:(nullable NSDictionary *)params;
 @end
 
 @interface LPLogManager(UnitTest)
-+ (void)maybeSendLog:(NSString *)message;
++ (void)maybeSendLog:(nonnull NSString *)message;
 @end
 
 

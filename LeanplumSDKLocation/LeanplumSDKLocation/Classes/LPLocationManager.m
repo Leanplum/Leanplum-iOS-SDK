@@ -29,6 +29,7 @@
 #import <Leanplum/LeanplumInternal.h>
 #import <Leanplum/LPVarCache.h>
 
+#define LP_LOCATION_DISABLE_AUTO_AUTHORIZE_KEY @"LeanplumLocationDisableAutoAuthorize"
 #define LP_REGION_IDENTIFIER_PREFIX @"__leanplum"
 #define LP_REGION_DISTANCE_NEAR 1
 #define LP_REGION_DISTANCE_IMMEDIATE 2
@@ -81,6 +82,11 @@
     LP_TRY
     if (self = [super init]) {
         _authorizeAutomatically = YES;
+        NSNumber *disableAutoAuthorize = [[NSBundle mainBundle] objectForInfoDictionaryKey:LP_LOCATION_DISABLE_AUTO_AUTHORIZE_KEY];
+        if ([disableAutoAuthorize boolValue] == YES) {
+            _authorizeAutomatically = NO;
+        }
+        
         _maxGeofences = LP_DEFAULT_MAX_GEOFENCES;
         _geofenceDistanceUpperBound = LP_DEFAULT_GEOFENCE_DISTANCE_UPPER_BOUND;
         _monitoringSignificantLocationChanges = NO;
@@ -167,12 +173,14 @@
 
     [self requestAuthorization];
 
-    // Update monitored regions.
-    _isForeground =
+    dispatch_async(dispatch_get_main_queue(), ^{
+        // Update monitored regions.
+        self->_isForeground =
         [[UIApplication sharedApplication] applicationState] == UIApplicationStateActive;
-    [self updateMaxGeofences];
-    [self setMonitoredRegions];
-    [self setApplicationStateObserversForGeofences];
+        [self updateMaxGeofences];
+        [self setMonitoredRegions];
+        [self setApplicationStateObserversForGeofences];
+    });
 }
 
 - (void)requestAuthorization
