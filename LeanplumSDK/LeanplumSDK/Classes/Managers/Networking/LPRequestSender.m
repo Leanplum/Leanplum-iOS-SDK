@@ -345,9 +345,6 @@
 
             // Invoke errors on all requests.
             [LPEventCallbackManager invokeErrorCallbacksWithError:err];
-          //  [[LPOperationQueue serialQueue] cancelAllOperations];
-            
-
             
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
@@ -366,7 +363,6 @@
             NSError *error = [NSError errorWithDomain:@"Leanplum" code:1
                                              userInfo:@{NSLocalizedDescriptionKey: @"Request timed out"}];
             [LPEventCallbackManager invokeErrorCallbacksWithError:error];
-//            [[LPOperationQueue serialQueue] cancelAllOperations];
             LP_END_TRY
         }
         LP_END_TRY
