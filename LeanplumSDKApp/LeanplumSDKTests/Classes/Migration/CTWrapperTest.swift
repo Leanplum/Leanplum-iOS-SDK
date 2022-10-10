@@ -25,8 +25,8 @@ class WrapperTest: XCTestCase {
         let `nil` = nilString as Any
         
         XCTAssertFalse(wrapper.isAnyNil(notNil))
-        XCTAssertFalse(wrapper.isAnyNil(notNilOptional))
-        XCTAssertTrue(wrapper.isAnyNil(nilString))
+        XCTAssertFalse(wrapper.isAnyNil(notNilOptional as Any))
+        XCTAssertTrue(wrapper.isAnyNil(nilString as Any))
         XCTAssertTrue(wrapper.isAnyNil(`nil`))
     }
     
@@ -60,13 +60,15 @@ class WrapperTest: XCTestCase {
     }
     
     func testAttributeValues() {
-        let attributes = ["lpName": "ct value",
+        let values = ["lpName": "ct value",
                           "number": 4,
                           "arr": ["a", 1, "b", 2],
                           "arrStr": ["a", "b"],
                           "arrNumber": [0.5, 1.2, 2.5],
                           "lpName2": "ct value 2",
-                          "empty": nil] as [AnyHashable : Any]
+                      "empty": nil] as [String : Any?]
+        
+        let attributes = values as [AnyHashable : Any]
         
         
         let actual = attributes.mapValues(wrapper.transformArrayValues)
@@ -78,9 +80,9 @@ class WrapperTest: XCTestCase {
                         "arrStr": "[a,b]",
                         "arrNumber": "[0.5,1.2,2.5]",
                         "ctName2": "ct value 2",
-                        "empty": nil] as [AnyHashable : Any]
+                        "empty": nil] as [String : Any?]
         
-        XCTAssertTrue(actual.isEqual(expected))
+        XCTAssertTrue(actual.isEqual(expected as [AnyHashable : Any]))
     }
     
     func testAttributeValuesNil() {
