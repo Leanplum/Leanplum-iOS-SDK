@@ -14,3 +14,9 @@ import Foundation
         migrationState = state
     }
 }
+
+@objcMembers public class MigrationManagerUtil: NSObject {
+    static func setSharedMigrateState(_ state: MigrationState) {
+        MigrationManager.shared.migrationState = state
+    }
+}
