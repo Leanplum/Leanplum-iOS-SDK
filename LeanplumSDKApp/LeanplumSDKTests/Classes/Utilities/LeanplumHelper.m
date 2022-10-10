@@ -96,13 +96,22 @@ static BOOL swizzled = NO;
     [Leanplum setLogLevel:LPLogLevelDebug];
     [Leanplum setAppId:APPLICATION_ID withDevelopmentKey:DEVELOPMENT_KEY];
     
-    [[MigrationManager shared] setMigrationState:MigrationStateLeanplum];
+    if (@available(iOS 13.0, *)) {
+        [[MigrationManager shared] setMigrationState:MigrationStateLeanplum];
+    } else {
+        [MigrationManagerUtil setSharedMigrateState:MigrationStateLeanplum];
+    }
 }
 
 + (void)setup_production_test {
+    [Leanplum setLogLevel:LPLogLevelDebug];
     [Leanplum setAppId:APPLICATION_ID withProductionKey:PRODUCTION_KEY];
     
-    [[MigrationManager shared] setMigrationState:MigrationStateLeanplum];
+    if (@available(iOS 13.0, *)) {
+        [[MigrationManager shared] setMigrationState:MigrationStateLeanplum];
+    } else {
+        [MigrationManagerUtil setSharedMigrateState:MigrationStateLeanplum];
+    }
 }
 
 + (BOOL)start_development_test {

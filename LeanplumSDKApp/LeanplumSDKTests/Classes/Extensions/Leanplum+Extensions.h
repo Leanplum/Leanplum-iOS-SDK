@@ -71,7 +71,6 @@ NS_ASSUME_NONNULL_END
 + (void)maybeSendLog:(nonnull NSString *)message;
 @end
 
-
 @interface ApiConfig(UnitTest)
 @property (strong, nonatomic, nonnull) NSString *appId;
 @property (strong, nonatomic, nonnull) NSString *accessKey;
