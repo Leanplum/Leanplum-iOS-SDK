@@ -13,7 +13,6 @@ class CTWrapper: Wrapper {
     // MARK: Constants
     enum Constants {
         static let StatePrefix = "state_"
-        static let UTMVisitedEvent = "UTM Visited"
         
         static let ValueParamName = "value"
         static let InfoParamName = "info"
@@ -206,27 +205,15 @@ class CTWrapper: Wrapper {
     
     // MARK: Traffic Source
     func setTrafficSourceInfo(_ info: [AnyHashable: Any]) {
-        let trafficSourceInfoMappings = [
-            "publisherId": "utm_source_id",
-            "publisherName": "utm_source",
-            "publisherSubPublisher": "utm_medium",
-            "publisherSubSite": "utm_subscribe.site",
-            "publisherSubCampaign": "utm_campaign",
-            "publisherSubAdGroup": "utm_sourcepublisher.ad_group",
-            "publisherSubAd": "utm_SourcePublisher.ad"
-        ]
+        let source = info["publisherName"] as? String
+        let medium = info["publisherSubPublisher"] as? String
+        let campaign = info["publisherSubCampaign"] as? String
         
-        let props = info.mapKeys({ key -> AnyHashable in
-            guard let keyStr = key as? String,
-            let newKey = trafficSourceInfoMappings[keyStr]
-            else {
-                return key
-            }
-            return newKey
-        })
-        
-        Log.debug("[Wrapper] Leanplum.setTrafficSourceInfo will call pushEvent with \(Constants.UTMVisitedEvent) and \(props)")
-        cleverTapInstance?.recordEvent(Constants.UTMVisitedEvent, withProps: props)
+        Log.debug("""
+                [Wrapper] Leanplum.setTrafficSourceInfo will call pushInstallReferrerSource \
+                with \(source ?? "null"), \(medium ?? "null") and \(campaign ?? "null")
+                """)
+        cleverTapInstance?.pushInstallReferrerSource(source, medium: medium, campaign: campaign)
     }
     
     // MARK: Log Level
