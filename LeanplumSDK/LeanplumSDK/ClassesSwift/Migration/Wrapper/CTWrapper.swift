@@ -63,6 +63,8 @@ class CTWrapper: Wrapper {
         cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
         cleverTapInstance?.setLibrary("Leanplum")
         
+        cleverTapInstance?.notifyApplicationLaunched(withOptions: [:])
+        
         Log.debug("[Wrapper] CleverTap instance created with accountId: \(accountId)")
         
         if !identityManager.isAnonymous {
@@ -96,7 +98,7 @@ class CTWrapper: Wrapper {
             return
         }
     
-        var eventParams = params.mapValues(transformAttributeValues)
+        var eventParams = params.mapValues(transformArrayValues)
         eventParams[Constants.ValueParamName] = value
         
         if let info = info {
@@ -122,7 +124,7 @@ class CTWrapper: Wrapper {
             return
         }
     
-        var details = params.mapValues(transformAttributeValues)
+        var details = params.mapValues(transformArrayValues)
         details[Constants.ChargedEventParam] = eventName
         details[Constants.ValueParamName] = value
         
@@ -145,7 +147,7 @@ class CTWrapper: Wrapper {
         
         // item and quantity are already in the parameters
         // and they are the only ones
-        var details = params.mapValues(transformAttributeValues)
+        var details = params.mapValues(transformArrayValues)
         details[Constants.ChargedEventParam] = eventName
         details[Constants.ValueParamName] = value
         
@@ -171,7 +173,7 @@ class CTWrapper: Wrapper {
         // .compactMapValues { $0 } will not work on not optional type Any which can still hold nil
         let profileAttributes = attributes
             .filter { !isAnyNil($0.value) }
-            .mapValues(transformAttributeValues)
+            .mapValues(transformArrayValues)
             .mapKeys(transformAttributeKeys)
         
         Log.debug("[Wrapper] Leanplum.setUserAttributes will call profilePush with \(profileAttributes)")
