@@ -69,7 +69,7 @@ class WrapperTest: XCTestCase {
                           "empty": nil] as [AnyHashable : Any]
         
         
-        let actual = attributes.mapValues(wrapper.transformAttributeValues)
+        let actual = attributes.mapValues(wrapper.transformArrayValues)
             .mapKeys(wrapper.transformAttributeKeys)
         
         let expected = ["ctName": "ct value",
@@ -80,8 +80,40 @@ class WrapperTest: XCTestCase {
                         "ctName2": "ct value 2",
                         "empty": nil] as [AnyHashable : Any]
         
-        print(actual)
-        print(expected)
         XCTAssertTrue(actual.isEqual(expected))
+    }
+    
+    func testAttributeValuesNil() {
+        let attributes = ["arr": ["a", 1, "b", 2.0, true, nil]] as [AnyHashable : Any]
+        
+        let actual = attributes.mapValues(wrapper.transformArrayValues)
+            .mapKeys(wrapper.transformAttributeKeys)
+        
+        let expected = ["arr": "[a,1,b,2.0,true]"] as [AnyHashable : Any]
+        XCTAssertTrue(actual.isEqual(expected))
+    }
+    
+    func testAttributeValuesNotNil() {
+        let attributes = ["arr": ["a", 1, "b", 2.0, true]] as [AnyHashable : Any]
+        
+        let actual = attributes.mapValues(wrapper.transformArrayValues)
+            .mapKeys(wrapper.transformAttributeKeys)
+        
+        let expected = ["arr": "[a,1,b,2.0,true]"] as [AnyHashable : Any]
+        XCTAssertTrue(actual.isEqual(expected))
+    }
+    
+    func testAttributeValuesNSNull() {
+        let attributes = ["arr": ["a", 1.99, "b", 2, true, false, 0, NSNull()]] as [AnyHashable : Any]
+        let attributesWithNil = ["arr": ["a", 1.99, "b", 2, nil, true, false, 0, NSNull(), nil]] as [AnyHashable : Any]
+        
+        let actual = attributes.mapValues(wrapper.transformArrayValues)
+            .mapKeys(wrapper.transformAttributeKeys)
+        let actualWithNil = attributesWithNil.mapValues(wrapper.transformArrayValues)
+            .mapKeys(wrapper.transformAttributeKeys)
+        
+        let expected = ["arr": "[a,1.99,b,2,true,false,0,<null>]"] as [AnyHashable : Any]
+        XCTAssertTrue(actual.isEqual(expected))
+        XCTAssertTrue(actualWithNil.isEqual(expected))
     }
 }

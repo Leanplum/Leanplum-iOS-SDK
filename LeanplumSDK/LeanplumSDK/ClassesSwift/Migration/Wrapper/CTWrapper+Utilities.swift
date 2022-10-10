@@ -17,12 +17,14 @@ extension CTWrapper {
         return false
     }
     
-    var transformAttributeValues: ((Any) -> Any) {
+    var transformArrayValues: ((Any) -> Any) {
         return { value in
-            if let arr = value as? Array<Any> {
-                let arrString = arr.map {
-                    String(describing: $0)
-                }
+            if let arr = value as? Array<Any?> {
+                let arrString = arr
+                    .compactMap{ $0 }
+                    .map {
+                        String(describing: $0!)
+                    }
                 return ("[\(arrString.joined(separator: ","))]") as Any
             }
             return value
