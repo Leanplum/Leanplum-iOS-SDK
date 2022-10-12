@@ -60,7 +60,7 @@ import Foundation
     }
     
     func initWrapper() {
-        if migrationState.useCleverTap {
+        if migrationState.useCleverTap, wrapper == nil {
             guard let id = accountId, let token = accountToken, let accountRegion = regionCode else {
                 Log.error("[Wrapper] Missing CleverTap Credentials. Cannot initialize CleverTap.")
                 return

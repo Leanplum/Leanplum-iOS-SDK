@@ -119,12 +119,12 @@ void leanplumExceptionHandler(NSException *exception);
 #endif
 }
 
-+ (NotificationsManager*)notificationsManager
++ (LPCTNotificationsManager*)notificationsManager
 {
-    static NotificationsManager *managerInstance = nil;
+    static LPCTNotificationsManager *managerInstance = nil;
     static dispatch_once_t onceLPInternalStateToken;
     dispatch_once(&onceLPInternalStateToken, ^{
-        managerInstance = [NotificationsManager new];
+        managerInstance = [LPCTNotificationsManager new];
     });
     return managerInstance;
 }
@@ -514,6 +514,7 @@ void leanplumExceptionHandler(NSException *exception);
 
 + (void)triggerStartIssued
 {
+    LPLog(LPDebug, @"Triggering blocks on start issued");
     [LPInternalState sharedState].issuedStart = YES;
     NSMutableArray* startIssuedBlocks = [LPInternalState sharedState].startIssuedBlocks;
 
@@ -933,7 +934,7 @@ void leanplumExceptionHandler(NSException *exception);
             [[LPRequestSender sharedInstance] send:request];
             [Leanplum triggerStartIssued];
         } else {
-            [[LPInternalState sharedState] setCalledStart:YES];
+            [[LPInternalState sharedState] setHasStarted:YES];
             [[LPInternalState sharedState] setStartSuccessful:YES];
             [Leanplum triggerStartIssued];
             [Leanplum triggerStartResponse:YES];

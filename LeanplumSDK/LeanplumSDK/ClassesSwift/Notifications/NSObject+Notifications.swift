@@ -74,11 +74,6 @@ extension NSObject {
             }
         }
         
-        // Do not handle non-Leanplum notifications
-        guard Utilities.messageIdFromUserInfo(userInfo) != nil else {
-            return
-        }
-        
         let state = UIApplication.shared.applicationState
         // Call notification received or perform action
         if #available(iOS 10, *) {
@@ -154,11 +149,6 @@ extension NSObject {
             }
         }
         
-        // Do not handle non-Leanplum notifications
-        guard Utilities.messageIdFromUserInfo(userInfo) != nil else {
-            return
-        }
-        
         // Handle UNNotificationDefaultActionIdentifier and Custom Actions
         if response.actionIdentifier != UNNotificationDismissActionIdentifier {
             let notifWasOpenedFromStart = notificationsProxy.isEqualToHandledNotification(userInfo: userInfo) && notificationsProxy.notificationOpenedFromStart
@@ -190,11 +180,6 @@ extension NSObject {
             }
         }
         
-        // Do not handle non-Leanplum notifications
-        guard Utilities.messageIdFromUserInfo(notification.request.content.userInfo) != nil else {
-            return
-        }
-        
         // Notification is received while app is running on foreground
         Leanplum.notificationsManager().notificationReceived(userInfo: notification.request.content.userInfo, isForeground: true)
     }
@@ -211,8 +196,7 @@ extension NSObject {
             }
         }
         
-        // Do not handle non-Leanplum notifications
-        guard let userInfo = notification.userInfo, Utilities.messageIdFromUserInfo(userInfo) != nil else {
+        guard let userInfo = notification.userInfo else {
             return
         }
         
