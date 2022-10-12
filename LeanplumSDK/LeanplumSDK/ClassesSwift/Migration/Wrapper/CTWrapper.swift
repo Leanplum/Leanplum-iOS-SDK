@@ -49,22 +49,16 @@ class CTWrapper: Wrapper {
     }
     
     func launch() {
-        guard Thread.isMainThread else {
-            DispatchQueue.main.async { [self] in
-                launch()
-            }
-            return
-        }
-
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
         config.useCustomCleverTapId = true
         config.logLevel = CleverTapLogLevel(LPLogManager.logLevel())
         cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
         cleverTapInstance?.setLibrary("Leanplum")
-        
+        // Track App Launched
         cleverTapInstance?.notifyApplicationLaunched(withOptions: [:])
-        
         Log.debug("[Wrapper] CleverTap instance created with accountId: \(accountId)")
+        // Set the current push token registered in Leanplum
+        setCurrentPushToken()
         
         if !identityManager.isAnonymous {
             Log.debug("""
@@ -77,17 +71,17 @@ class CTWrapper: Wrapper {
         triggerInstanceCallback()
     }
     
+    // MARK: Callback
+    func setInstanceCallback(_ callback: ((Any) -> Void)?) {
+        instanceCallback = callback
+        triggerInstanceCallback()
+    }
+    
     private func triggerInstanceCallback() {
         guard let callback = instanceCallback, let instance = cleverTapInstance else {
             return
         }
-        
         callback(instance)
-    }
-    
-    func setInstanceCallback(_ callback: ((Any) -> Void)?) {
-        instanceCallback = callback
-        triggerInstanceCallback()
     }
 
     // MARK: Tracking
@@ -201,6 +195,18 @@ class CTWrapper: Wrapper {
                 and CleverTapID:  \(cleverTapID)")
                 """)
         cleverTapInstance?.onUserLogin(profile, withCleverTapID: cleverTapID)
+    }
+    
+    func setPushToken(_ token: Data) {
+        Log.debug("[Wrapper] Calling CleverTap.setPushToken")
+        cleverTapInstance?.setPushToken(token)
+    }
+    
+    func setCurrentPushToken() {
+        if let token = Leanplum.user.pushToken {
+            Log.debug("[Wrapper] Setting current push token using setPushTokenAs")
+            cleverTapInstance?.setPushTokenAs(token)
+        }
     }
     
     // MARK: Traffic Source
