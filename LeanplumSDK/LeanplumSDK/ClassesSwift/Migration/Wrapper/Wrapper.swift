@@ -31,6 +31,8 @@ protocol Wrapper {
     
     func setUserId(_ userId: String)
     
+    func setPushToken(_ token: Data)
+    
     func setTrafficSourceInfo(_ info: [AnyHashable: Any])
     
     func setLogLevel(_ level: LeanplumLogLevel)

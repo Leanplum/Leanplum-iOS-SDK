@@ -8,7 +8,11 @@
 @objc public extension MigrationManager {
 
     func launch() {
-        wrapper?.launch()
+        guard let wrapper = wrapper else {
+            Log.debug("[Wrapper] Calling launch before wrapper is initialized.")
+            return
+        }
+        wrapper.launch()
     }
     
     var state: MigrationState {
@@ -49,6 +53,10 @@
 
     func setUserId(_ userId: String) {
         wrapper?.setUserId(userId)
+    }
+    
+    func setPushToken(_ token: Data) {
+        wrapper?.setPushToken(token)
     }
     
     func setTrafficSourceInfo(_ info: [AnyHashable: Any]) {
