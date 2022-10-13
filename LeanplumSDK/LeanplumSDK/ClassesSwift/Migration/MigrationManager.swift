@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 13.07.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 

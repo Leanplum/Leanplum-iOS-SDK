@@ -3,7 +3,7 @@
 //  Leanplum-iOS-SDK
 //
 //  Created by Nikola Zagorchev on 30.09.21.
-//  Copyright © 2021 Leanplum. All rights reserved.
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 import UIKit
