@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 9.07.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 // Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
@@ -87,7 +87,8 @@ class CTWrapper: Wrapper {
     // MARK: Tracking
     func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
         // message impression events come with event: nil
-        guard let eventName = eventName else {
+        // do not track Push Delivered in CT
+        guard let eventName = eventName, eventName != PUSH_DELIVERED_EVENT_NAME else {
             return
         }
     
