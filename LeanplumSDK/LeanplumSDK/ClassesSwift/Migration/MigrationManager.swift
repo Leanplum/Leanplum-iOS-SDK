@@ -32,7 +32,7 @@ import Foundation
     @PropUserDefaults(key: Constants.AttributeMappingsKey, defaultValue: [:])
     var attributeMappings: [String: String]
     
-    @MigrationStateUserDefaults(key: Constants.HashKey, defaultValue: .undefined)
+    @MigrationStateUserDefaults(key: Constants.MigrationStateKey, defaultValue: .undefined)
     var migrationState: MigrationState {
         didSet {
             if oldValue != migrationState {
