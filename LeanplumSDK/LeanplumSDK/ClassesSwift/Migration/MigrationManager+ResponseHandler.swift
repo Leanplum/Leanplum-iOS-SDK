@@ -17,7 +17,7 @@ import Foundation
                                           key: Constants.MigrateStateResponseParam)
         else { return }
         
-        if let hash = getValue(dict: migrateState, key: Constants.HashKey) as? String,
+        if let hash = getValue(dict: migrateState, key: Constants.HashResponseParam) as? String,
            hash != self.migrationHash {
             Log.debug("[Wrapper] CleverTap Hash changed")
             fetchMigrationStateAsync {}
@@ -66,7 +66,7 @@ import Foundation
         if let sdk = getValue(dict: apiResponse, key: Constants.SdkResponseParam) as? String {
             migrationState = MigrationState(stringValue: sdk)
         }
-        if let hash = getValue(dict: apiResponse, key: Constants.HashKey) as? String {
+        if let hash = getValue(dict: apiResponse, key: Constants.HashResponseParam) as? String {
             migrationHash = hash
         }
     }

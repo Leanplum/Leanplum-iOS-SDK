@@ -17,7 +17,6 @@ import Foundation
         static let AttributeMappingsKey = "__leanplum_attribute_mappings"
         
         static let MigrateStateResponseParam = "migrateState"
-        static let MigrateStateNotificationInfo = "migrateState"
         static let SdkResponseParam = "sdk"
         static let CTResponseParam = "ct"
         static let AccountIdResponseParam = "accountId"
@@ -27,11 +26,6 @@ import Foundation
         static let HashResponseParam = "sha256";
         
         static let CleverTapRequestArg = "ct"
-    }
-    
-    @objc
-    public class func lpMigrateStateNotificationInfo() -> String {
-        return Constants.MigrateStateNotificationInfo
     }
     
     @objc
