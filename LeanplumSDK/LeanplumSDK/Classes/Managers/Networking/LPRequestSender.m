@@ -283,8 +283,6 @@
                 return;
             }
             
-            [[MigrationManager shared] handleMigrateStateWithMultiApiResponse:json];
-            
             // Delete events on success.
             [LPRequestBatchFactory deleteFinishedBatch:batch];
 
@@ -298,6 +296,8 @@
                                                                  requests:batch.requestsToSend
                                                                 operation:operation];
             }
+            
+            [[MigrationManager shared] handleMigrateStateWithMultiApiResponse:json];
             
             dispatch_semaphore_signal(semaphore);
             LP_END_TRY
