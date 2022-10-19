@@ -48,16 +48,6 @@
 + (NSString * _Nonnull)base64EncodedStringFromData:(NSData * _Nonnull)data;
 
 /**
- * Initialize exception handling
- */
-+ (void)initExceptionHandling;
-
-/**
- * Report an exception
- */
-+ (void)handleException:(NSException * _Nonnull)exception;
-
-/**
  * Whether swizzling flag is setup in plist file
  */
 + (BOOL)isSwizzlingEnabled;

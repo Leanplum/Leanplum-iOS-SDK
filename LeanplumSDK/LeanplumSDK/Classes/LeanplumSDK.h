@@ -46,7 +46,6 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 #import "LPContextualValues.h"
 #import "LPEnumConstants.h"
 #import "LPInternalState.h"
-#import "LPExceptionHandler.h"
 #import "Leanplum.h"
 #import "LeanplumCompatibility.h"
 #import "LPActionArg.h"

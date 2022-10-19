@@ -75,6 +75,16 @@ static id _leanplumClassMock = nil;
     _leanplumClassMock = leanplumClassMock;
 }
 
+static id _lpLogManagerMock = nil;
+
++ (id)lpLogManagerMock {
+  return _lpLogManagerMock;
+}
+
++ (void)setLpLogManagerMock:(id)lpLogManagerMock {
+    _lpLogManagerMock = lpLogManagerMock;
+}
+
 static BOOL swizzled = NO;
 
 + (BOOL)swizzled {
@@ -224,13 +234,13 @@ static BOOL swizzled = NO;
     }
 }
 
-+ (void)throwError:(NSString *) err
++ (void)throwError:(NSString *)err
 {
     [LeanplumHelper setLastErrorMessage:err];
     @throw([NSException exceptionWithName:err reason:nil userInfo:nil]);
 }
 
-+ (void) handleException:(NSException *) ex
++ (void)logInternalError:(NSException *)ex
 {
     [LeanplumHelper setLastErrorMessage:[ex name]];
     @throw(ex);
@@ -240,16 +250,15 @@ static BOOL swizzled = NO;
 {
     [LeanplumHelper setLeanplumClassMock:OCMClassMock([Leanplum class])];
     [OCMStub(ClassMethod([[LeanplumHelper leanplumClassMock] throwError:[OCMArg any]])) andCall:@selector(throwError:) onObject:self];
-
-    // Cannot mock leanplumInternalError(NSException *e) since it is a function
-    // Mocking [LPUtils handleException:e] which is used inside leanplumInternalError first
-    id mockLPUtilsClass = OCMClassMock([LPUtils class]);
-    [OCMStub(ClassMethod([mockLPUtilsClass handleException:[OCMArg any]])) andCall:@selector(handleException:) onObject:self];
+    
+    [LeanplumHelper setLpLogManagerMock:OCMClassMock([LPLogManager class])];
+    [OCMStub(ClassMethod([[LeanplumHelper lpLogManagerMock] logInternalError:[OCMArg any]])) andCall:@selector(logInternalError:) onObject:self];
 }
 
 + (void)stopMockThrowErrorToThrow
 {
     [[LeanplumHelper leanplumClassMock] stopMocking];
+    [[LeanplumHelper lpLogManagerMock] stopMocking];
 }
 
 + (void)restore_method_swizzling
