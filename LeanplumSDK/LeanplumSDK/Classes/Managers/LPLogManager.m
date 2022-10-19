@@ -63,7 +63,6 @@ static LPLogLevel logLevel = LPLogLevelInfo;
 
 + (void)logInternalError:(NSException *)e
 {
-    [LPUtils handleException:e];
     if ([e.name isEqualToString:@"Leanplum Error"]) {
         @throw e;
     }

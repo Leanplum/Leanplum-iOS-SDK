@@ -75,16 +75,6 @@
 
 }
 
-+ (void)initExceptionHandling
-{
-    [LPExceptionHandler sharedExceptionHandler];
-}
-
-+ (void)handleException:(NSException *)exception
-{
-    [[LPExceptionHandler sharedExceptionHandler] reportException:exception];
-}
-
 +(BOOL)isSwizzlingEnabled
 {
     BOOL swizzlingEnabled = YES;

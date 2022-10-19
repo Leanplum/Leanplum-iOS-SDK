@@ -772,12 +772,8 @@ void leanplumExceptionHandler(NSException *exception);
             [state.userAttributeChanges addObject:attributes];
         }
     }
-    state.calledStart = YES;
     
-    // TODO: delete dead code
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [Leanplum trackCrashes];
-    });
+    state.calledStart = YES;
     
     state.actionManager = [LPActionTriggerManager sharedManager];
 
@@ -945,11 +941,6 @@ void leanplumExceptionHandler(NSException *exception);
     [self swizzleExtensionClose];
 
     [self maybeRegisterForNotifications];
-    LP_END_TRY
-    
-    LP_TRY
-    // TODO: delete dead code
-    [LPUtils initExceptionHandling];
     LP_END_TRY
 }
 
@@ -1215,23 +1206,6 @@ void leanplumExceptionHandler(NSException *exception);
 {
     LPRequest *request = [[LPRequestFactory resumeSessionWithParams:nil] andRequestType:Immediate];
     [[LPRequestSender sharedInstance] send:request];
-}
-
-// TODO: delete dead code
-+ (void)trackCrashes
-{
-    LP_TRY
-    Class crittercism = NSClassFromString(@"Crittercism");
-    SEL selector = NSSelectorFromString(@"didCrashOnLastLoad:");
-    if (crittercism && [crittercism respondsToSelector:selector]) {
-        IMP imp = [crittercism methodForSelector:selector];
-        BOOL (*func)(id, SEL) = (void *)imp;
-        BOOL didCrash = func(crittercism, selector);
-        if (didCrash) {
-            [Leanplum track:@"Crash"];
-        }
-    }
-    LP_END_TRY
 }
 
 + (BOOL)hasStarted
