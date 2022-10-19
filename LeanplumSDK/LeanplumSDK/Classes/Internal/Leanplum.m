@@ -152,13 +152,6 @@ void leanplumExceptionHandler(NSException *exception);
     }
 }
 
-// _initPush is a hidden method so that Unity can do swizzling early enough
-
-+ (void)_initPush
-{
-    [LPActionTriggerManager sharedManager];
-}
-
 + (void)setApiHostName:(NSString *)hostName
               withPath:(NSString *)apiPath
               usingSsl:(BOOL)ssl
