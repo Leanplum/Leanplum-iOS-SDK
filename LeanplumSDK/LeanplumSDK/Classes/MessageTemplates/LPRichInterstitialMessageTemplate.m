@@ -23,12 +23,8 @@
         @try {
             LPRichInterstitialMessageTemplate *template = [[LPRichInterstitialMessageTemplate alloc] init];
             viewController = [template viewControllerWithContext:context];
-
-            if (![self isBannerTemplate:context]) {
-                [LPMessageTemplateUtilities presentOverVisible:viewController];
-            } else {
-                [LPMessageTemplateUtilities presentOverVisibleAsChild:viewController];
-            }
+            
+            [LPMessageTemplateUtilities presentOverVisible:viewController];
             
             return YES;
         } @catch (NSException *exception) {
@@ -63,12 +59,16 @@
 - (UIViewController *)viewControllerWithContext:(LPActionContext *)context
 {
     LPWebInterstitialViewController *viewController = [LPWebInterstitialViewController instantiateFromStoryboard];
-    viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    if ([LPRichInterstitialMessageTemplate isBannerTemplate:context]) {
+        viewController.modalPresentationStyle = UIModalPresentationOverCurrentContext;
+    } else {
+        viewController.modalPresentationStyle = UIModalPresentationOverFullScreen;
+    }
     viewController.context = context;
     return viewController;
 }
 
-+(BOOL)isBannerTemplate:(LPActionContext *)context
++ (BOOL)isBannerTemplate:(LPActionContext *)context
 {
     CGFloat height = [[context numberNamed:LPMT_ARG_HTML_HEIGHT] doubleValue];
     return height > 0;
