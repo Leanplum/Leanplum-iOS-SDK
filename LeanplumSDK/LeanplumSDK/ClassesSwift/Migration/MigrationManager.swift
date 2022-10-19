@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 13.07.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -32,7 +32,7 @@ import Foundation
     @PropUserDefaults(key: Constants.AttributeMappingsKey, defaultValue: [:])
     var attributeMappings: [String: String]
     
-    @MigrationStateUserDefaults(key: Constants.HashKey, defaultValue: .undefined)
+    @MigrationStateUserDefaults(key: Constants.MigrationStateKey, defaultValue: .undefined)
     var migrationState: MigrationState {
         didSet {
             if oldValue != migrationState {

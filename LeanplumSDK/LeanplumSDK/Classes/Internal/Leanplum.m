@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Andrew First on 4/30/12.
-//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2022 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -1103,7 +1103,9 @@ void leanplumExceptionHandler(NSException *exception);
                     //if they are changed the new valeus will be updated to server as well
                     [[Leanplum notificationsManager] updateNotificationSettings];
         
-                    [Leanplum resume];
+                    if ([Leanplum hasStarted]) {
+                        [Leanplum resume];
+                    }
         
                     // Used for push notifications iOS 9
                     [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];

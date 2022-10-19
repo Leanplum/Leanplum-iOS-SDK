@@ -2,7 +2,7 @@
 //  Leanplum.h
 //  Leanplum iOS SDK Version 2.0.6
 //
-//  Copyright (c) 2012 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2022 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
