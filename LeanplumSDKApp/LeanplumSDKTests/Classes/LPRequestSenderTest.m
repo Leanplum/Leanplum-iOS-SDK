@@ -41,10 +41,11 @@
 {
     [super setUp];
     // Called only once to setup method swizzling.
-
 }
 
 - (void)setUp {
+    [Leanplum setApiHostName:API_HOST withPath:API_PATH usingSsl:YES];
+    [Leanplum setSocketHostName:@"dev.leanplum.com" withPortNumber:443];
     [LeanplumHelper setup_development_test];
     [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:YES];
     [Leanplum setAppId:@"test" withDevelopmentKey:@"test"];
@@ -172,7 +173,7 @@
 }
 
 - (void)testSendRequestsUpdateHost {
-    id changeHostStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    __block __weak id changeHostStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         [HTTPStubs removeStub:changeHostStub];
@@ -206,7 +207,7 @@
 }
 
 - (void)testUpdateSocketHost {
-    id changeSocketStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.absoluteString hasPrefix:@"https://dev.leanplum.com:443/socket.io/1/?t="];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *success = @"abcD12Efj3d64oMN18cX-:60:60:websocket,xhr-polling,jsonp-polling";
@@ -214,7 +215,7 @@
         return [HTTPStubsResponse responseWithData:data statusCode:200 headers:@{@"Content-Type":@"text/plain"}];
     }];
     
-    id changeHostStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"change_host_response.json", self.class);
