@@ -8,7 +8,6 @@
 import Foundation
 import CommonCrypto
 
-// TODO: Remove Utilities class when we add proper models
 public class Utilities: NSObject {    
     /**
      * Returns Leanplum message Id from Notification userInfo.

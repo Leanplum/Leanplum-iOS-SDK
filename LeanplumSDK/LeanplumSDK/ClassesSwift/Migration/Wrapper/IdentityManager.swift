@@ -9,17 +9,18 @@ import Foundation
 // Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
 @_implementationOnly import CleverTapSDK
 
-// TODO: fix description
 /**
  * Identity mapping between Leanplum userId and deviceId and CleverTap Identity and CTID.
  *
  *  Mappings:
  *  - anonymous: <CTID=deviceId, Identity=null>
- *  - non-anonymous to <CTID=deviceId_userId, Identity=userId>
+ *  - non-anonymous to <CTID=deviceId_userIdHash, Identity=userId>
+ *
+ *  UserId Hash is generated using the first 10 chars of the userId SHA256 string.
  *
  *  - Note: On login of anonymous user, a merge should happen. CleverTap SDK allows merges
  *  only when the CTID remains the same, meaning that the merged profile would get the anonymous
- *  profile's CTID: <CTID=deviceId, Identity=userId>.
+ *  profile's CTID: <CTID=deviceId, Identity=userIdHash>.
  *  In order to keep track which is that userId, it is saved into `anonymousLoginUserId`.
  *  For this userId, the CTID is always set to deviceId.
  *  Leanplum UserId can be set through Leanplum.start and Leanplum.setUserId
@@ -33,7 +34,7 @@ class IdentityManager {
         static let AnonymousLoginUserIdKey = "__leanplum_anonymous_login_user_id"
         static let IdentityStateKey = "__leanplum_identity_state"
         
-        static let CTIDLengthLimit = 50
+        static let DeviceIdLengthLimit = 50
         static let IdentityHashLength = 10
     }
     
@@ -87,37 +88,46 @@ class IdentityManager {
         state = IdentityState.identified()
     }
     
-    var identity: String {
-        // TODO: handle errors
-        guard let str = Utilities.sha256(string: userId) else { return userId }
+    var userIdHash: String {
+        guard let str = Utilities.sha256(string: userId) else {
+            Log.error("[Wrapper] Failed to generate SHA256 for userId: \(userId)")
+            return userId
+        }
         
         let endIndex = str.index(str.startIndex, offsetBy: Constants.IdentityHashLength)
         return String(str[..<endIndex])
     }
+
+    var isValidCleverTapID: Bool {
+        // Only the deviceId could be invalid, since the userIdHash should always be valid,
+        // but we still validate the whole CTID to be safe
+        CleverTap.isValidCleverTapId(originalCleverTapID) &&
+        deviceId.count <= Constants.DeviceIdLengthLimit
+    }
     
+    var originalCleverTapID: String {
+        if shouldAppendUserId {
+            return "\(deviceId)_\(userIdHash)"
+        }
+        
+        return deviceId
+    }
+
     var cleverTapID: String {
         if isValidCleverTapID {
             return originalCleverTapID
         }
         
-        // TODO: handle errors
-        let sha256_128 = Utilities.sha256_128(string: deviceId)!
-        
-        return "\(sha256_128)_\(identity)"
-    }
-    
-    var isValidCleverTapID: Bool {
-        CleverTap.isValidCleverTapId(originalCleverTapID) &&
-        deviceId.count <= Constants.CTIDLengthLimit
-    }
-    
-    var originalCleverTapID: String {
-        if userId != anonymousLoginUserId,
-           userId != deviceId {
-            return "\(deviceId)_\(identity)"
+        guard let ctDevice = Utilities.sha256_128(string: deviceId) else {
+            Log.error("[Wrapper] Failed to generate SHA256 for deviceId: \(deviceId)")
+            return originalCleverTapID
         }
         
-        return deviceId
+        if shouldAppendUserId {
+            return "\(ctDevice)_\(userIdHash)"
+        }
+        
+        return ctDevice
     }
     
     var profile: [AnyHashable: Any] {
@@ -126,5 +136,9 @@ class IdentityManager {
     
     var isAnonymous: Bool {
         userId == deviceId
+    }
+    
+    var shouldAppendUserId: Bool {
+        userId != anonymousLoginUserId && userId != deviceId
     }
 }

@@ -217,12 +217,8 @@ class CTWrapper: Wrapper {
     }
     
     func setDevicesProperty() {
-        if !identityManager.isValidCleverTapID {
-            if let devices = cleverTapInstance?.profileGet(Constants.DevicesUserProperty) as? [String],
-               devices.contains(identityManager.deviceId) {
-                cleverTapInstance?.profileAddMultiValue(identityManager.deviceId, forKey: Constants.DevicesUserProperty)
-            }
-        }
+        // CleverTap SDK ensures the values are unique locally
+        cleverTapInstance?.profileAddMultiValue(identityManager.deviceId, forKey: Constants.DevicesUserProperty)
     }
     
     // MARK: Traffic Source
