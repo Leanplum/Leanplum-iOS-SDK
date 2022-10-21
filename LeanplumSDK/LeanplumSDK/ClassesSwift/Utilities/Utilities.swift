@@ -6,6 +6,7 @@
 //  Copyright © 2021 Leanplum. All rights reserved.
 
 import Foundation
+import CommonCrypto
 
 // TODO: Remove Utilities class when we add proper models
 public class Utilities: NSObject {    
@@ -21,5 +22,27 @@ public class Utilities: NSObject {
             return String(describing: messageId)
         }
         return nil
+    }
+    
+    @objc public static func sha256(data: Data) -> Data {
+        var hash = [UInt8](repeating: 0, count: Int(CC_SHA256_DIGEST_LENGTH))
+        data.withUnsafeBytes {
+            _ = CC_SHA256($0.baseAddress, CC_LONG(data.count), &hash)
+        }
+        return Data(hash)
+    }
+    
+    @objc public static func sha256(string: String) -> String? {
+        guard let messageData = string.data(using: String.Encoding.utf8) else { return nil }
+        let hashedData = sha256(data: messageData)
+        return hashedData.hexEncodedString()
+    }
+    
+    @objc public static func sha256_128(string: String) -> String? {
+        guard let str = sha256(string: string) else { return nil }
+        
+        let length = 256/2/4
+        let endIndex = str.index(str.startIndex, offsetBy: length)
+        return String(str[..<endIndex])
     }
 }

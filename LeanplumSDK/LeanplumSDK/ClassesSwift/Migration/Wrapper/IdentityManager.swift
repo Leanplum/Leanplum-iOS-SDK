@@ -6,7 +6,10 @@
 //  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
+// Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
+@_implementationOnly import CleverTapSDK
 
+// TODO: fix description
 /**
  * Identity mapping between Leanplum userId and deviceId and CleverTap Identity and CTID.
  *
@@ -29,6 +32,9 @@ class IdentityManager {
         static let Identity = "Identity"
         static let AnonymousLoginUserIdKey = "__leanplum_anonymous_login_user_id"
         static let IdentityStateKey = "__leanplum_identity_state"
+        
+        static let CTIDLengthLimit = 50
+        static let IdentityHashLength = 10
     }
     
     enum IdentityState: String  {
@@ -81,12 +87,36 @@ class IdentityManager {
         state = IdentityState.identified()
     }
     
+    var identity: String {
+        // TODO: handle errors
+        guard let str = Utilities.sha256(string: userId) else { return userId }
+        
+        let endIndex = str.index(str.startIndex, offsetBy: Constants.IdentityHashLength)
+        return String(str[..<endIndex])
+    }
+    
     var cleverTapID: String {
+        if isValidCleverTapID {
+            return originalCleverTapID
+        }
+        
+        // TODO: handle errors
+        let sha256_128 = Utilities.sha256_128(string: deviceId)!
+        
+        return "\(sha256_128)_\(identity)"
+    }
+    
+    var isValidCleverTapID: Bool {
+        CleverTap.isValidCleverTapId(originalCleverTapID) &&
+        deviceId.count <= Constants.CTIDLengthLimit
+    }
+    
+    var originalCleverTapID: String {
         if userId != anonymousLoginUserId,
            userId != deviceId {
-            return "\(deviceId)_\(userId)"
+            return "\(deviceId)_\(identity)"
         }
-         
+        
         return deviceId
     }
     

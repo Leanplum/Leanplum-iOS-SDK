@@ -21,6 +21,8 @@ class CTWrapper: Wrapper {
         static let iOSTransactionIdentifierParam = "iOSTransactionIdentifier"
         static let iOSReceiptDataParam = "iOSReceiptData"
         static let iOSSandboxParam = "iOSSandbox"
+        
+        static let DevicesUserProperty = "devices"
     }
     
     // MARK: Initialization
@@ -67,6 +69,8 @@ class CTWrapper: Wrapper {
                     """)
             cleverTapInstance?.onUserLogin(identityManager.profile,
                                            withCleverTapID: identityManager.cleverTapID)
+            
+            setDevicesProperty()
         }
         triggerInstanceCallback()
     }
@@ -196,6 +200,8 @@ class CTWrapper: Wrapper {
                 and CleverTapID:  \(cleverTapID)")
                 """)
         cleverTapInstance?.onUserLogin(profile, withCleverTapID: cleverTapID)
+        
+        setDevicesProperty()
     }
     
     func setPushToken(_ token: Data) {
@@ -207,6 +213,15 @@ class CTWrapper: Wrapper {
         if let token = Leanplum.user.pushToken {
             Log.debug("[Wrapper] Setting current push token using setPushTokenAs")
             cleverTapInstance?.setPushTokenAs(token)
+        }
+    }
+    
+    func setDevicesProperty() {
+        if !identityManager.isValidCleverTapID {
+            if let devices = cleverTapInstance?.profileGet(Constants.DevicesUserProperty) as? [String],
+               devices.contains(identityManager.deviceId) {
+                cleverTapInstance?.profileAddMultiValue(identityManager.deviceId, forKey: Constants.DevicesUserProperty)
+            }
         }
     }
     

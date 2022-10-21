@@ -3,7 +3,7 @@
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 7.10.22.
-//
+//  Copyright © 2022 Leanplum. All rights reserved.
 
 import Foundation
 import XCTest
@@ -31,20 +31,23 @@ class IdentityManagerTest: XCTestCase {
     func testIdentified() {
         let identityManager = IdentityManagerMock(userId: "userId", deviceId: "deviceId")
         
+        let userId_sha = "6ccb21214f"
+        
         XCTAssertFalse(identityManager.isAnonymous)
         XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
-        XCTAssertEqual(identityManager.cleverTapID, "deviceId_userId")
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId_sha)")
     }
     
     func testIdentifiedNewUser() {
         let identityManager = IdentityManagerMock(userId: "userId", deviceId: "deviceId")
         
         identityManager.setUserId("userId2")
+        let userId2_sha = "c9430313f8"
         
         XCTAssertFalse(identityManager.isAnonymous)
         XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
         XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
-        XCTAssertEqual(identityManager.cleverTapID, "deviceId_userId2")
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId2_sha)")
     }
     
     func testAnonymousLogin() {
@@ -64,11 +67,12 @@ class IdentityManagerTest: XCTestCase {
         identityManager.setUserId("userId")
         
         identityManager.setUserId("userId2")
+        let userId2_sha = "c9430313f8"
         
         XCTAssertFalse(identityManager.isAnonymous)
         XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
         XCTAssertEqual(identityManager.anonymousLoginUserId, "userId")
-        XCTAssertEqual(identityManager.cleverTapID, "deviceId_userId2")
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId2_sha)")
     }
     
     func testAnonymousLoginBack() {
@@ -94,5 +98,44 @@ class IdentityManagerTest: XCTestCase {
         XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
         XCTAssertEqual(identityManager.anonymousLoginUserId, "userId")
         XCTAssertEqual(identityManager.cleverTapID, "deviceId")
+    }
+    
+    func testIdentifiedLimitDeviceId() {
+        let deviceId = Array(repeating: "1", count: 50).joined()
+        let identityManager = IdentityManagerMock(userId: "userId", deviceId: deviceId)
+        
+        let userId_sha = "6ccb21214f"
+        
+        XCTAssertEqual(identityManager.cleverTapID, "\(deviceId)_\(userId_sha)")
+    }
+    
+    func testIdentifiedLongDeviceId() {
+        let deviceId = Array(repeating: "1", count: 51).joined()
+        let identityManager = IdentityManagerMock(userId: "userId", deviceId: deviceId)
+        
+        let userId_sha = "6ccb21214f"
+        let deviceId_sha = "c383f53b5708fc0975ba1ac052c650c0"
+        
+        XCTAssertEqual(identityManager.cleverTapID, "\(deviceId_sha)_\(userId_sha)")
+    }
+    
+    func testIdentifiedLongerDeviceId() {
+        let deviceId = Array(repeating: "1", count: 60).joined()
+        let identityManager = IdentityManagerMock(userId: "userId", deviceId: deviceId)
+        
+        let userId_sha = "6ccb21214f"
+        let deviceId_sha = "70d36dedb311176c76ecd7f78d72340d"
+        
+        XCTAssertEqual(identityManager.cleverTapID, "\(deviceId_sha)_\(userId_sha)")
+    }
+    
+    func testIdentifiedInvalidDeviceId() {
+        let deviceId = Array(repeating: "&", count: 10).joined()
+        let identityManager = IdentityManagerMock(userId: "userId", deviceId: deviceId)
+        
+        let userId_sha = "6ccb21214f"
+        let deviceId_sha = "595b6f123778a4903ea51b67b2aaac9e"
+        
+        XCTAssertEqual(identityManager.cleverTapID, "\(deviceId_sha)_\(userId_sha)")
     }
 }

@@ -11,6 +11,11 @@ target 'LeanplumSDKTests' do
     pod 'OHHTTPStubs', '~> 9.0.0'
 end
 
+def clever_tap
+  ## TODO: use official version when released
+  pod 'CleverTap-iOS-SDK', :git => 'https://github.com/CleverTap/clevertap-ios-sdk.git', :branch => 'task/SDK-2331-custom-ctid-changes'
+end
+
 target 'Leanplum' do
   project 'LeanplumSDK/LeanplumSDK.xcodeproj'
   workspace 'Leanplum.xcworkspace'
@@ -18,7 +23,7 @@ target 'Leanplum' do
   use_frameworks!
 
   # Pods for Leanplum
-  pod 'CleverTap-iOS-SDK', '~> 4.1.1'
+  clever_tap
 end
 #
 
@@ -26,7 +31,7 @@ target 'Leanplum-Static' do
   project 'LeanplumSDK/LeanplumSDK.xcodeproj'
 
   # Pods for Leanplum-Static
-  pod 'CleverTap-iOS-SDK', '~> 4.1.1'
+  clever_tap
 end
 
 post_install do |installer|
