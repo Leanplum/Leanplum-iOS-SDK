@@ -186,7 +186,9 @@ void leanplumExceptionHandler(NSException *exception);
         [ApiConfig shared].socketPort != port) {
         [ApiConfig shared].socketHost = hostName;
         [ApiConfig shared].socketPort = port;
-        [[LeanplumSocket sharedSocket] connectToNewSocket];
+        if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
+            [[LeanplumSocket sharedSocket] connectToNewSocket];
+        }
     }
 }
 
