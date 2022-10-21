@@ -133,6 +133,7 @@
 		6A39C48F27283EE8000D5320 /* NotificationsProxyTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */; };
 		6A54E9CD273B156600DE0E61 /* NotificationsManagerTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */; };
 		6A81EDDE284681D8001B4BE9 /* TiedPrioritiesDelay.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */; };
+		6A8411BB2903080A009F0431 /* UtilitiesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A8411BA2903080A009F0431 /* UtilitiesTest.swift */; };
 		6A9D0A9627342BA300466133 /* NotificationsProxyiOS9Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */; };
 		6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */; };
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
@@ -335,6 +336,7 @@
 		6A39C48E27283EE8000D5320 /* NotificationsProxyTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyTest.swift; sourceTree = "<group>"; };
 		6A54E9CC273B156600DE0E61 /* NotificationsManagerTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerTest.swift; sourceTree = "<group>"; };
 		6A81EDDD284681D8001B4BE9 /* TiedPrioritiesDelay.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = TiedPrioritiesDelay.json; sourceTree = "<group>"; };
+		6A8411BA2903080A009F0431 /* UtilitiesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilitiesTest.swift; sourceTree = "<group>"; };
 		6A9D0A9527342BA300466133 /* NotificationsProxyiOS9Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsProxyiOS9Test.swift; sourceTree = "<group>"; };
 		6A9D0A9727342EE300466133 /* NotificationsManagerMock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsManagerMock.swift; sourceTree = "<group>"; };
 		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
@@ -487,6 +489,7 @@
 				075AB1082684AAD9007CA1BD /* Utilities */,
 				6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */,
 				6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */,
+				6A8411BA2903080A009F0431 /* UtilitiesTest.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1018,6 +1021,7 @@
 				C9D503672754C9DC0034C5B3 /* PushNotificationSettingsTest.swift in Sources */,
 				075AB1262684AAD9007CA1BD /* LPRequest+Extension.m in Sources */,
 				6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */,
+				6A8411BB2903080A009F0431 /* UtilitiesTest.swift in Sources */,
 				075AB12B2684AAD9007CA1BD /* LPOpenUrlMessageTemplateTest.m in Sources */,
 				075AB1132684AAD9007CA1BD /* LPEventDataManagerTest.m in Sources */,
 				075AB1122684AAD9007CA1BD /* LPUtilsTest.m in Sources */,
