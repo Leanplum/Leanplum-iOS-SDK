@@ -11,6 +11,10 @@ target 'LeanplumSDKTests' do
     pod 'OHHTTPStubs', '~> 9.0.0'
 end
 
+def clever_tap
+  pod 'CleverTap-iOS-SDK', '~> 4.1.4'
+end
+
 target 'Leanplum' do
   project 'LeanplumSDK/LeanplumSDK.xcodeproj'
   workspace 'Leanplum.xcworkspace'
@@ -18,7 +22,7 @@ target 'Leanplum' do
   use_frameworks!
 
   # Pods for Leanplum
-  pod 'CleverTap-iOS-SDK', '~> 4.1.1'
+  clever_tap
 end
 #
 
@@ -26,7 +30,7 @@ target 'Leanplum-Static' do
   project 'LeanplumSDK/LeanplumSDK.xcodeproj'
 
   # Pods for Leanplum-Static
-  pod 'CleverTap-iOS-SDK', '~> 4.1.1'
+  clever_tap
 end
 
 post_install do |installer|
