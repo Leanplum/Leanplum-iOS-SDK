@@ -8,7 +8,7 @@
 import Foundation
 import CommonCrypto
 
-public class Utilities: NSObject {    
+public class Utilities: NSObject {
     /**
      * Returns Leanplum message Id from Notification userInfo.
      * Use this method to identify Leanplum Notifications
@@ -40,8 +40,19 @@ public class Utilities: NSObject {
     @objc public static func sha256_128(string: String) -> String? {
         guard let str = sha256(string: string) else { return nil }
         
-        let length = 256/2/4
-        let endIndex = str.index(str.startIndex, offsetBy: length)
-        return String(str[..<endIndex])
+        let hexLength = 256/2/4
+        return substring(string: str, openEndIndex: hexLength)
+    }
+    
+    @objc public static func sha256_40(string: String) -> String? {
+        guard let str = sha256(string: string) else { return nil }
+        
+        let hexLength = 40/4
+        return substring(string: str, openEndIndex: hexLength)
+    }
+    
+    static func substring(string: String, openEndIndex: Int) -> String {
+        let endIndex = string.index(string.startIndex, offsetBy: openEndIndex)
+        return String(string[..<endIndex])
     }
 }

@@ -68,7 +68,12 @@ class IdentityManager {
     
     func setUserId(_ userId: String) {
         if (state == IdentityState.anonymous()) {
-            anonymousLoginUserId = userId
+            if let hash = Utilities.sha256_40(string: userId) {
+                anonymousLoginUserId = hash
+            } else {
+                Log.error("[Wrapper] Failed to generate SHA256 for userId: \(userId)")
+                anonymousLoginUserId = userIdHash
+            }
             Log.debug("[Wrapper] Anonymous user on device \(deviceId) will be merged to \(userId)")
             state = IdentityState.identified()
         }
@@ -86,19 +91,18 @@ class IdentityManager {
     func identifyNonAnonymous() {
         if let state = state,
            state == IdentityState.anonymous() {
-            anonymousLoginUserId = userId
+            anonymousLoginUserId = userIdHash
         }
         state = IdentityState.identified()
     }
     
     var userIdHash: String {
-        guard let str = Utilities.sha256(string: userId) else {
+        guard let hash = Utilities.sha256_40(string: userId) else {
             Log.error("[Wrapper] Failed to generate SHA256 for userId: \(userId)")
             return userId
         }
-        
-        let endIndex = str.index(str.startIndex, offsetBy: Constants.IdentityHashLength)
-        return String(str[..<endIndex])
+
+        return hash
     }
 
     var isValidCleverTapID: Bool {
@@ -142,6 +146,6 @@ class IdentityManager {
     }
     
     var shouldAppendUserId: Bool {
-        userId != anonymousLoginUserId && userId != deviceId
+        userIdHash != anonymousLoginUserId && userId != deviceId
     }
 }
