@@ -45,8 +45,9 @@
 }
 
 - (void)setUp {
+    [Leanplum setApiHostName:API_HOST withPath:API_PATH usingSsl:YES];
+    [Leanplum setSocketHostName:@"dev.leanplum.com" withPortNumber:443];
     [LeanplumHelper setup_development_test];
-    [[LPConstantsState sharedState] setIsDevelopmentModeEnabled:YES];
     [Leanplum setAppId:@"test" withDevelopmentKey:@"test"];
 }
 
@@ -172,28 +173,38 @@
 }
 
 - (void)testSendRequestsUpdateHost {
-    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+    // use production, socket is not needed
+    [Leanplum setAppId:@"test" withProductionKey:@"test"];
+    
+    __block __weak id changeHostStub = [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        [HTTPStubs removeStub:changeHostStub];
         NSString *response_file = OHPathForFile(@"change_host_response.json", self.class);
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
     XCTestExpectation *expectRetryOnNewHost = [self expectationWithDescription:@"request_update_host_expectation"];
+
+    __block BOOL newHostCalled = 0;
+    LPRequest *request = [[LPRequest post:@"testChangeHost" params:@{}] andRequestType:Immediate];
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        if (newHostCalled) {
+            [expectRetryOnNewHost fulfill];
+        }
+    }];
+    // Use shared instance
+    [[LPRequestSender sharedInstance] send:request];
     
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
         return [request.URL.host isEqualToString:@"api2.leanplum.com"];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        [expectRetryOnNewHost fulfill];
+        newHostCalled = 1;
         NSString *response_file = OHPathForFile(@"action_response.json", self.class);
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                  headers:@{@"Content-Type":@"application/json"}];
     }];
-    
-    LPRequest *request = [[LPRequest post:@"testChangeHost" params:@{}] andRequestType:Immediate];
-    // Use shared instance
-    [[LPRequestSender sharedInstance] send:request];
 
     [self waitForExpectations:@[expectRetryOnNewHost] timeout:10];
 }
@@ -208,31 +219,45 @@
     }];
     
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.absoluteString hasPrefix:@"https://api.leanplum.com"];
+        return [request.URL.host isEqualToString:API_HOST];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
         NSString *response_file = OHPathForFile(@"change_host_response.json", self.class);
         return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
                                                    headers:@{@"Content-Type":@"application/json"}];
     }];
     
-    XCTestExpectation *expectRetryOnNewHost = [self expectationWithDescription:@"request_update_socket_host_expectation"];    
-    
     [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.absoluteString hasPrefix:@"https://dev2.leanplum.com:443/socket.io/1/?t="];
+        return [request.URL.host isEqualToString:@"api2.leanplum.com"];
     } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        [expectRetryOnNewHost fulfill];
-        NSString *successHandshake = @"zxcO67HekOa88oKI0cX-:60:60:websocket,xhr-polling,jsonp-polling";
-        NSData *data = [successHandshake dataUsingEncoding:NSUTF8StringEncoding];
-        return [HTTPStubsResponse responseWithData:data statusCode:200 headers:@{@"Content-Type":@"text/plain"}];
+        NSString *response_file = OHPathForFile(@"action_response.json", self.class);
+        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
+                                                 headers:@{@"Content-Type":@"application/json"}];
     }];
+    
+    XCTestExpectation *expectRetryOnNewHost = [self expectationWithDescription:@"request_update_socket_host_expectation"];    
     
     // Connect to socket
     [[LeanplumSocket sharedSocket] connectToAppId:@"test" deviceId:@"test"];
 
     // Trigger host change through request sender
+    __block BOOL newHostCalled = 0;
     LPRequest *request = [[LPRequest post:@"testChangeHost" params:@{}] andRequestType:Immediate];
+    [request onResponse:^(id<LPNetworkOperationProtocol> operation, id json) {
+        if (newHostCalled) {
+            [expectRetryOnNewHost fulfill];
+        }
+    }];
     // Use shared instance
     [[LPRequestSender sharedInstance] send:request];
+    
+    [HTTPStubs stubRequestsPassingTest:^BOOL(NSURLRequest * _Nonnull request) {
+        return [request.URL.absoluteString hasPrefix:@"https://dev2.leanplum.com:443/socket.io/1/?t="];
+    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
+        newHostCalled = 1;
+        NSString *successHandshake = @"zxcO67HekOa88oKI0cX-:60:60:websocket,xhr-polling,jsonp-polling";
+        NSData *data = [successHandshake dataUsingEncoding:NSUTF8StringEncoding];
+        return [HTTPStubsResponse responseWithData:data statusCode:200 headers:@{@"Content-Type":@"text/plain"}];
+    }];
 
     [self waitForExpectations:@[expectRetryOnNewHost] timeout:10];
 }

@@ -45,6 +45,7 @@ extern NSInteger DISPATCH_WAIT_TIME;
 
 @property (class) NSString *lastErrorMessage;
 @property (class) id leanplumClassMock;
+@property (class) id lpLogManagerMock;
 
 /// called before starting any test, to swizzle methods
 + (void)setup_method_swizzling;

@@ -26,6 +26,7 @@
 #import <OCMock/OCMock.h>
 #import <OHHTTPStubs/HTTPStubs.h>
 #import <OHHTTPStubs/HTTPStubsPathHelpers.h>
+#import <OHHTTPStubs/HTTPStubsResponse+JSON.h>
 #import <Leanplum/LPActionTriggerManager.h>
 #import <Leanplum/LPOperationQueue.h>
 #import "Leanplum+Extensions.h"
@@ -38,31 +39,36 @@
 
 @end
 
+@interface LPActionTriggerManager(Test)
+
+- (void)recordImpression:(NSString *)messageId;
+
+@end
+
 @implementation LPActionTriggerManagerTest
-
-+ (void)setUp
-{
-    [super setUp];
-    // Called only once to setup method swizzling.
-    [LeanplumHelper setup_method_swizzling];
-}
-
-- (void)setUp
-{
-    [super setUp];
-    // Automatically sets up AppId and AccessKey for development mode.
-    [LeanplumHelper setup_development_test];
-}
 
 - (void)tearDown
 {
     [super tearDown];
-    [LeanplumHelper clean_up];
+    // Clear message impressions
+    for (int i = 1; i<=5; i++) {
+        NSString *prefix = [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY, @""];
+        NSString *key = [NSString stringWithFormat:@"%@message#%d", prefix, i];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
+    }
+    [LPActionTriggerManager reset];
 }
 
 + (void)tearDown {
     [super tearDown];
-    [LeanplumHelper restore_method_swizzling];
+    [[LPVarCache sharedCache] applyVariableDiffs:@{}
+                                        messages:@{}
+                                        variants:@[]
+                                       localCaps:@[]
+                                         regions:@{}
+                                variantDebugInfo:@{}
+                                        varsJson:@""
+                                   varsSignature:@""];
 }
 
 - (void)test_matched_trigger
@@ -227,143 +233,115 @@
 
 - (void)testShouldSuppressMessagesSessionLimit
 {
-    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
-                                           ^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"local_caps_session_response.json", self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
-    }];
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [Leanplum startWithResponseHandler:^(BOOL success) {
-        [HTTPStubs removeStub:startStub];
-        if (success) {
-            dispatch_semaphore_signal(semaphore);
+    NSArray *localCaps = @[
+        @{
+            @"channel": @"IN_APP",
+            @"limit": @5,
+            @"type": @"SESSION"
         }
-    }];
-    long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
-    if (timedOut > 0) {
-        NSLog(@"test failed");
-        XCTFail(@"timed out");
-    }
+    ];
+
+    [[LPVarCache sharedCache] applyVariableDiffs:@{}
+                                        messages:@{}
+                                        variants:@[]
+                                       localCaps:localCaps
+                                         regions:@{}
+                                variantDebugInfo:@{}
+                                        varsJson:@""
+                                   varsSignature:@""];
     
-    for (int i = 1; i<=5; i++) {
-        NSString *prefix = [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY, @""];
-        NSString *key = [NSString stringWithFormat:@"%@message#%d", prefix, i];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
-    }
-    
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#2"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#4"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#5"];
     XCTAssertTrue([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
 }
 
 - (void)testShouldSuppressMessagesDayLimit
 {
-    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
-                                           ^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"local_caps_day_response.json", self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
-    }];
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [Leanplum startWithResponseHandler:^(BOOL success) {
-        [HTTPStubs removeStub:startStub];
-        if (success) {
-            dispatch_semaphore_signal(semaphore);
+    NSArray *localCaps = @[
+        @{
+            @"channel": @"IN_APP",
+            @"limit": @25,
+            @"type": @"DAY"
         }
-    }];
-    long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
-    if (timedOut > 0) {
-        NSLog(@"test failed");
-        XCTFail(@"timed out");
-    }
-    for (int i = 1; i<=5; i++) {
-        NSString *prefix = [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY, @""];
-        NSString *key = [NSString stringWithFormat:@"%@message#%d", prefix, i];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
-    }
+    ];
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#1"];
+    [[LPVarCache sharedCache] applyVariableDiffs:@{}
+                                        messages:@{}
+                                        variants:@[]
+                                       localCaps:localCaps
+                                         regions:@{}
+                                variantDebugInfo:@{}
+                                        varsJson:@""
+                                   varsSignature:@""];
+    
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#1"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#1"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#2"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#2"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#3"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#3"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#4"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#4"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#5"];
     XCTAssertFalse([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
     
-    [[LPActionTriggerManager sharedManager] recordMessageImpression:@"message#5"];
+    [[LPActionTriggerManager sharedManager] recordImpression:@"message#5"];
     XCTAssertTrue([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
 }
 
 - (void)testShouldSuppressMessagesWeekLimit
 {
-    id<HTTPStubsDescriptor> startStub = [HTTPStubs stubRequestsPassingTest:
-                                           ^BOOL(NSURLRequest * _Nonnull request) {
-        return [request.URL.host isEqualToString:API_HOST];
-    } withStubResponse:^HTTPStubsResponse * _Nonnull(NSURLRequest * _Nonnull request) {
-        NSString *response_file = OHPathForFile(@"local_caps_week_response.json", self.class);
-        return [HTTPStubsResponse responseWithFileAtPath:response_file statusCode:200
-                                                   headers:@{@"Content-Type":@"application/json"}];
-    }];
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    [Leanplum startWithResponseHandler:^(BOOL success) {
-        [HTTPStubs removeStub:startStub];
-        if (success) {
-            dispatch_semaphore_signal(semaphore);
+    NSArray *localCaps = @[
+        @{
+          @"channel": @"IN_APP",
+          @"limit": @100,
+          @"type": @"WEEK"
         }
-    }];
-    long timedOut = dispatch_semaphore_wait(semaphore, [LeanplumHelper default_dispatch_time]);
-    if (timedOut > 0) {
-        NSLog(@"test failed");
-        XCTFail(@"timed out");
-    }
-    for (int i = 1; i<=5; i++) {
-        NSString *prefix = [NSString stringWithFormat:LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY, @""];
-        NSString *key = [NSString stringWithFormat:@"%@message#%d", prefix, i];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:key];
-    }
+    ];
+    
+    [[LPVarCache sharedCache] applyVariableDiffs:@{}
+                                        messages:@{}
+                                        variants:@[]
+                                       localCaps:localCaps
+                                         regions:@{}
+                                variantDebugInfo:@{}
+                                        varsJson:@""
+                                   varsSignature:@""];
     
     for (int i = 1; i<=5; i++) {
         NSString *messageId = [NSString stringWithFormat:@"message#%d", i];
         for (int j = 0; j < 20; j++) {
-            [[LPActionTriggerManager sharedManager] recordMessageImpression:messageId];
+            [[LPActionTriggerManager sharedManager] recordImpression:messageId];
         }
         if (i == 5) {
             XCTAssertTrue([[LPActionTriggerManager sharedManager] shouldSuppressMessages]);
