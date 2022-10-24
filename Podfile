@@ -12,7 +12,6 @@ target 'LeanplumSDKTests' do
 end
 
 def clever_tap
-  ## TODO: use official version when released
   pod 'CleverTap-iOS-SDK', '~> 4.1.4'
 end
 
