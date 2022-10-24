@@ -15,8 +15,11 @@ import Foundation
  *  Mappings:
  *  - anonymous: <CTID=deviceId, Identity=null>
  *  - non-anonymous to <CTID=deviceId_userIdHash, Identity=userId>
+ *  - if invalid deviceId <deviceId=deviceIdHash>
  *
- *  UserId Hash is generated using the first 10 chars of the userId SHA256 string.
+ *  UserId Hash is generated using the first 10 chars of the userId SHA256 string (hex).
+ *  If the deviceId does _not_ pass validation _or_ is _longer_ than 50 characters,
+ *  the first 32 chars of the deviceId SHA256 string (hex) are used as deviceIdHash.
  *
  *  - Note: On login of anonymous user, a merge should happen. CleverTap SDK allows merges
  *  only when the CTID remains the same, meaning that the merged profile would get the anonymous
