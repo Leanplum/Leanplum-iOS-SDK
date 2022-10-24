@@ -13,7 +13,7 @@ end
 
 def clever_tap
   ## TODO: use official version when released
-  pod 'CleverTap-iOS-SDK', :git => 'https://github.com/CleverTap/clevertap-ios-sdk.git', :branch => 'task/SDK-2331-custom-ctid-changes'
+  pod 'CleverTap-iOS-SDK', '~> 4.1.4'
 end
 
 target 'Leanplum' do
