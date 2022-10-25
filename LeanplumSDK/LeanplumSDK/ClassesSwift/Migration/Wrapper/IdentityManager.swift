@@ -106,9 +106,8 @@ class IdentityManager {
     }
 
     var isValidCleverTapID: Bool {
-        // Only the deviceId could be invalid, since the userIdHash should always be valid,
-        // but we still validate the whole CTID to be safe
-        CleverTap.isValidCleverTapId(originalCleverTapID) &&
+        // Only the deviceId could be invalid, since the userIdHash should always be valid
+        CleverTap.isValidCleverTapId(deviceId) &&
         deviceId.count <= Constants.DeviceIdLengthLimit
     }
     
@@ -125,7 +124,7 @@ class IdentityManager {
             return originalCleverTapID
         }
         
-        guard let ctDevice = Utilities.sha256_128(string: deviceId) else {
+        guard let ctDevice = Utilities.sha256_200(string: deviceId) else {
             Log.error("[Wrapper] Failed to generate SHA256 for deviceId: \(deviceId)")
             return originalCleverTapID
         }

@@ -91,8 +91,8 @@ class UtilitiesTest: XCTestCase {
         ]
         
         for (i, str) in strings.enumerated() {
-            let hash = Utilities.sha256_128(string: str)!
-            XCTAssertEqual(hash.count, 32)
+            let hash = Utilities.sha256_200(string: str)!
+            XCTAssertEqual(hash.count, 50)
             XCTAssertTrue(hashes[i].contains(hash))
         }
     }
