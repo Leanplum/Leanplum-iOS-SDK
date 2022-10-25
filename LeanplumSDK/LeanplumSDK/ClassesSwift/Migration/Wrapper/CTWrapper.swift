@@ -23,6 +23,7 @@ class CTWrapper: Wrapper {
         static let iOSSandboxParam = "iOSSandbox"
         
         static let DevicesUserProperty = "lp_devices"
+        static let AnonymousDeviceUserProperty = "lp_device"
     }
     
     // MARK: Initialization
@@ -69,8 +70,11 @@ class CTWrapper: Wrapper {
                     """)
             cleverTapInstance?.onUserLogin(identityManager.profile,
                                            withCleverTapID: identityManager.cleverTapID)
-            
             setDevicesProperty()
+        } else {
+            if !identityManager.isValidCleverTapID {
+                cleverTapInstance?.profilePush([Constants.AnonymousDeviceUserProperty: identityManager.deviceId])
+            }
         }
         triggerInstanceCallback()
     }
@@ -218,7 +222,9 @@ class CTWrapper: Wrapper {
     
     func setDevicesProperty() {
         // CleverTap SDK ensures the values are unique locally
-        cleverTapInstance?.profileAddMultiValue(identityManager.deviceId, forKey: Constants.DevicesUserProperty)
+        if !identityManager.isValidCleverTapID {
+            cleverTapInstance?.profileAddMultiValue(identityManager.deviceId, forKey: Constants.DevicesUserProperty)
+        }
     }
     
     // MARK: Traffic Source
