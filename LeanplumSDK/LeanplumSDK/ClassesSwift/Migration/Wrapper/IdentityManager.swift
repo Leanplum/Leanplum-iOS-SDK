@@ -106,9 +106,8 @@ class IdentityManager {
     }
 
     var isValidCleverTapID: Bool {
-        // Only the deviceId could be invalid, since the userIdHash should always be valid,
-        // but we still validate the whole CTID to be safe
-        CleverTap.isValidCleverTapId(originalCleverTapID) &&
+        // Only the deviceId could be invalid, since the userIdHash should always be valid
+        CleverTap.isValidCleverTapId(deviceId) &&
         deviceId.count <= Constants.DeviceIdLengthLimit
     }
     
