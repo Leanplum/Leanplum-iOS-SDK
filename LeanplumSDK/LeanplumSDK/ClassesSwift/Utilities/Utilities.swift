@@ -37,10 +37,10 @@ public class Utilities: NSObject {
         return hashedData.hexEncodedString()
     }
     
-    @objc public static func sha256_128(string: String) -> String? {
+    @objc public static func sha256_200(string: String) -> String? {
         guard let str = sha256(string: string) else { return nil }
         
-        let hexLength = 256/2/4
+        let hexLength = 200/4
         return substring(string: str, openEndIndex: hexLength)
     }
     
