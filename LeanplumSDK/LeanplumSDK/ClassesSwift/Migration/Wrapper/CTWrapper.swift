@@ -22,7 +22,7 @@ class CTWrapper: Wrapper {
         static let iOSReceiptDataParam = "iOSReceiptData"
         static let iOSSandboxParam = "iOSSandbox"
         
-        static let DevicesUserProperty = "devices"
+        static let DevicesUserProperty = "lp_devices"
     }
     
     // MARK: Initialization
