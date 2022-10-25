@@ -125,7 +125,7 @@ class IdentityManager {
             return originalCleverTapID
         }
         
-        guard let ctDevice = Utilities.sha256_128(string: deviceId) else {
+        guard let ctDevice = Utilities.sha256_200(string: deviceId) else {
             Log.error("[Wrapper] Failed to generate SHA256 for deviceId: \(deviceId)")
             return originalCleverTapID
         }

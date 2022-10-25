@@ -22,6 +22,7 @@ class IdentityManagerTest: XCTestCase {
     let userId2_hash = "c9430313f8"
     
     let totalIdLengthLimit = 61
+    let deviceIdHashLength = 50
     
     func testProfile() {
         let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId)
@@ -128,7 +129,7 @@ class IdentityManagerTest: XCTestCase {
     }
     
     func testAnonymousLimitDeviceId() {
-        let deviceId = Array(repeating: "1", count: 50).joined()
+        let deviceId = Array(repeating: "1", count: deviceIdHashLength).joined()
         let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId)
         
         XCTAssertEqual(identityManager.cleverTapID, deviceId)
@@ -136,7 +137,7 @@ class IdentityManagerTest: XCTestCase {
     }
     
     func testIdentifiedLimitDeviceId() {
-        let deviceId = Array(repeating: "1", count: 50).joined()
+        let deviceId = Array(repeating: "1", count: deviceIdHashLength).joined()
         let identityManager = IdentityManagerMock(userId: userId, deviceId: deviceId)
         
         XCTAssertEqual(identityManager.cleverTapID, "\(deviceId)_\(userId_hash)")
@@ -144,40 +145,41 @@ class IdentityManagerTest: XCTestCase {
     }
     
     func testAnonymousLongDeviceId() {
-        let deviceId = Array(repeating: "1", count: 51).joined()
+        let deviceId = Array(repeating: "1", count: deviceIdHashLength + 1).joined()
         let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId)
         
-        let deviceId_sha = Utilities.sha256_128(string: deviceId)!
+        let deviceId_sha = Utilities.sha256_200(string: deviceId)!
         
         XCTAssertEqual(identityManager.cleverTapID, deviceId_sha)
+        XCTAssertTrue(identityManager.cleverTapID.count == deviceIdHashLength)
         XCTAssertTrue(identityManager.cleverTapID.count <= totalIdLengthLimit)
     }
     
     func testIdentifiedLongDeviceId() {
-        let deviceId = Array(repeating: "1", count: 51).joined()
+        let deviceId = Array(repeating: "1", count: deviceIdHashLength + 1).joined()
         let identityManager = IdentityManagerMock(userId: userId, deviceId: deviceId)
         
-        let deviceId_sha = Utilities.sha256_128(string: deviceId)!
+        let deviceId_sha = Utilities.sha256_200(string: deviceId)!
         
         XCTAssertEqual(identityManager.cleverTapID, "\(deviceId_sha)_\(userId_hash)")
-        XCTAssertTrue(identityManager.cleverTapID.count <= totalIdLengthLimit)
+        XCTAssertTrue(identityManager.cleverTapID.count == totalIdLengthLimit)
     }
     
     func testIdentifiedLongerDeviceId() {
-        let deviceId = Array(repeating: "1", count: 60).joined()
+        let deviceId = Array(repeating: "1", count: deviceIdHashLength + 10).joined()
         let identityManager = IdentityManagerMock(userId: userId, deviceId: deviceId)
         
-        let deviceId_sha = Utilities.sha256_128(string: deviceId)!
+        let deviceId_sha = Utilities.sha256_200(string: deviceId)!
         
         XCTAssertEqual(identityManager.cleverTapID, "\(deviceId_sha)_\(userId_hash)")
-        XCTAssertTrue(identityManager.cleverTapID.count <= totalIdLengthLimit)
+        XCTAssertTrue(identityManager.cleverTapID.count == totalIdLengthLimit)
     }
     
     func testAnonymousInvalidDeviceId() {
         let deviceId = Array(repeating: "&", count: 10).joined()
         let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId)
         
-        let deviceId_sha = Utilities.sha256_128(string: deviceId)!
+        let deviceId_sha = Utilities.sha256_200(string: deviceId)!
         
         XCTAssertEqual(identityManager.cleverTapID, deviceId_sha)
         XCTAssertTrue(identityManager.cleverTapID.count <= totalIdLengthLimit)
@@ -187,7 +189,7 @@ class IdentityManagerTest: XCTestCase {
         let deviceId = Array(repeating: "&", count: 10).joined()
         let identityManager = IdentityManagerMock(userId: userId, deviceId: deviceId)
         
-        let deviceId_sha = Utilities.sha256_128(string: deviceId)!
+        let deviceId_sha = Utilities.sha256_200(string: deviceId)!
         
         XCTAssertEqual(identityManager.cleverTapID, "\(deviceId_sha)_\(userId_hash)")
         XCTAssertTrue(identityManager.cleverTapID.count <= totalIdLengthLimit)
@@ -226,7 +228,7 @@ class IdentityManagerTest: XCTestCase {
             "9d29641dc261454239456122f13de042b3a0cc3f45d4c27e7ddc97b300eb11aa"
         ]
         
-        let hashes = invalidDeviceIds.map(Utilities.sha256_128(string:))
+        let hashes = invalidDeviceIds.map(Utilities.sha256_200(string:))
         
         for (i, id) in invalidDeviceIds.enumerated() {
             let identityManager = IdentityManagerMock(userId: userId, deviceId: id)
