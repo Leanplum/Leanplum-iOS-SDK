@@ -425,14 +425,6 @@
 
 - (void)dismiss:(BOOL)animated
 {
-    if (self.isBanner) {
-        [self didMoveToParentViewController:nil];
-        [self.view removeFromSuperview];
-        [self removeFromParentViewController];
-        [self.context actionDismissed];
-        return;
-    }
-    
     if (self.navigationController) {
         [self.navigationController dismissViewControllerAnimated:animated completion:^{
             [self.context actionDismissed];
@@ -443,17 +435,6 @@
 }
 
 -(void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
-    if (self.isBanner) {
-        [self didMoveToParentViewController:nil];
-        [self.view removeFromSuperview];
-        [self removeFromParentViewController];
-        [self.context actionDismissed];
-        if (completion) {
-            completion();
-        }
-        return;
-    }
-    
     [super dismissViewControllerAnimated:flag completion:^{
         [self.context actionDismissed];
         if (completion) {
