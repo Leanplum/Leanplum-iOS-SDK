@@ -922,6 +922,8 @@ void leanplumExceptionHandler(NSException *exception);
         }
     
         if ([[MigrationManager shared] useLeanplum]) {
+            // hasStarted and startSuccessful will be set from the request callbacks
+            // triggerStartResponse will be called from the request callbacks
             [[LPRequestSender sharedInstance] send:request];
             [Leanplum triggerStartIssued];
         } else {
@@ -1089,17 +1091,18 @@ void leanplumExceptionHandler(NSException *exception);
                     //if they are changed the new valeus will be updated to server as well
                     [[Leanplum notificationsManager] updateNotificationSettings];
         
-                    if ([Leanplum hasStarted]) {
-                        [Leanplum resume];
-                    }
-        
                     // Used for push notifications iOS 9
                     [Leanplum notificationsManager].proxy.resumedTimeInterval = [[NSDate date] timeIntervalSince1970];
-                    [self maybePerformActions:@[@"resume"]
-                                withEventName:nil
-                                   withFilter:kLeanplumActionFilterAll
-                                fromMessageId:nil
-                         withContextualValues:nil];
+        
+                    if ([Leanplum hasStarted]) {
+                        [Leanplum resume];
+                        [self maybePerformActions:@[@"resume"]
+                                    withEventName:nil
+                                       withFilter:kLeanplumActionFilterAll
+                                    fromMessageId:nil
+                             withContextualValues:nil];
+                    }
+        
                     LP_END_TRY
                 }];
 
