@@ -11,13 +11,13 @@ let package = Package(
         .library(name: "LeanplumLocation", targets: ["LeanplumLocation"])
     ],
     dependencies: [
-        .package(url: "https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download/6.0.1-beta1/Leanplum.xcframework.zip",
+        .package(url: "https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download/6.0.1-beta2/Leanplum.xcframework.zip",
     ],
     targets: [
         .binaryTarget(
             name: "Leanplum",
             url: "https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download/5.0.0/Leanplum.xcframework.zip",
-            checksum: "39213ff4bc3e1eb8da2e04be9f0c785f13a1cfbcce86b0bc9e036376ccdbbd33"
+            checksum: "ff113e91e6935e77e050393e76a1c284c681157539300bc6ee0461f30131a73e"
         ),
         .target(
             name: "LeanplumLocation",
