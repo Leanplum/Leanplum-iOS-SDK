@@ -281,8 +281,10 @@ update_spm_info(){
   version=`cat sdk-version.txt`
   lp_framework="Leanplum.xcframework.zip"
   github_url="https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download"
+  github_url_escaped="https:\/\/github.com\/Leanplum\/Leanplum-iOS-SDK\/releases\/download"
   url="$github_url/$version/$lp_framework"
-  awk -v value="\"$url\"," '!x{x=sub(/url: .*/, "url: "value)}1' $package_file > $package_tmp_file \
+  sub="!x{x=sub(/url: \\\"${github_url_escaped}.*/, \"url: \"value)}1"
+  awk -v value="\"$url\"," "$sub" $package_file > $package_tmp_file \
     && mv $package_tmp_file $package_file
 }
 
