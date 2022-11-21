@@ -64,8 +64,7 @@
 #import "LPLogManager.h"
 #import "LPRequestSenderTimer.h"
 #import "LPRequestSender.h"
-// Forward declaration for CleverTap instance
-@class CleverTap;
+#import "CleverTapInstanceCallback.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -147,7 +146,6 @@ typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
 typedef void (^LeanplumHandleNotificationBlock)(void);
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
 typedef void (^LeanplumPushSetupBlock)(void);
-typedef void (^LeanplumCleverTapInstanceBlock)(CleverTap* instance);
 /**@}*/
 
 /**
@@ -805,12 +803,23 @@ NS_SWIFT_NAME(setDeviceLocation(latitude:longitude:city:region:country:type:));
 
 /**
  * Block to call when CleverTapAPI instance is created.
- * CleverTapSDK must be imported to use this method.
+ * __CleverTapSDK must be imported to use this method.__
  * Use the instance for any CleverTap work.
  *
- * @param block Null value will remove the callback.
+ * @remark CleverTapSDK must be imported to use the `CleverTapInstanceCallback`.
+ *
+ * @param callback Null value will remove the callback.
  */
-+ (void)onCleverTapInstanceInitialized:(LeanplumCleverTapInstanceBlock)block;
++ (void)addCleverTapInstanceCallback:(CleverTapInstanceCallback *)callback
+NS_SWIFT_NAME(addCleverTapInstance(callback:));
+
+/**
+ * Removes the callback for the CleverTap instance.
+ *
+ * @param callback Callback to remove.
+ */
++ (void)removeCleverTapInstanceCallback:(CleverTapInstanceCallback *)callback
+NS_SWIFT_NAME(removeCleverTapInstance(callback:));
 
 @end
 

@@ -109,3 +109,4 @@ FOUNDATION_EXPORT const unsigned char LeanplumSDKVersionString[];
 #import "UIDevice+IdentifierAddition.h"
 #import "Leanplum_AsyncSocket.h"
 #import "Leanplum_WebSocket.h"
+#import "CleverTapInstanceCallback.h"
