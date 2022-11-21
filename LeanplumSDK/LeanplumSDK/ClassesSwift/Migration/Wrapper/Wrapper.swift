@@ -10,8 +10,10 @@ protocol Wrapper {
     /// equivalent to Leanplum start
     func launch()
     
-    /// Sets instance callback when wrapper has initialized
-    func setInstanceCallback(_ callback: ((Any) -> Void)?)
+    /// Adds instance callback, executed when wrapper has initialized
+    func addInstanceCallback(_ callback: CleverTapInstanceCallback)
+    
+    func removeInstanceCallback(_ callback: CleverTapInstanceCallback)
     
     func track(_ eventName: String?, value: Double, info: String?, params: [String: Any])
     

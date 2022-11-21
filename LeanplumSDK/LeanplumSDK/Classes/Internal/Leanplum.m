@@ -2621,9 +2621,14 @@ void leanplumExceptionHandler(NSException *exception)
     [[Leanplum notificationsManager] enableProvisionalPush];
 }
 
-+ (void)onCleverTapInstanceInitialized:(LeanplumCleverTapInstanceBlock)block
++ (void)addCleverTapInstanceCallback:(CleverTapInstanceCallback *)callback
 {
-    [[MigrationManager shared] setInstanceCallback:block];
+    [[MigrationManager shared] addInstanceCallback:callback];
+}
+
++ (void)removeCleverTapInstanceCallback:(CleverTapInstanceCallback *)callback
+{
+    [[MigrationManager shared] removeInstanceCallback:callback];
 }
 
 - (void) dealloc {

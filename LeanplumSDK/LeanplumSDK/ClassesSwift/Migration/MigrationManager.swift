@@ -16,6 +16,7 @@ import Foundation
     @objc public static let shared: MigrationManager = .init()
     
     var wrapper: Wrapper?
+    var instanceCallbacks: [CleverTapInstanceCallback] = []
     
     @StringOptionalUserDefaults(key: Constants.HashKey)
     var migrationHash: String?
@@ -43,12 +44,6 @@ import Foundation
     
     private let lock = NSLock()
     
-    var instanceCallback: ((Any) -> Void)? {
-        didSet {
-            wrapper?.setInstanceCallback(instanceCallback)
-        }
-    }
-    
     // Expose to ObjC
     @objc public var useLeanplum: Bool {
         migrationState.useLeanplum
@@ -73,7 +68,7 @@ import Foundation
             wrapper = CTWrapper(accountId: id, accountToken: token,
                                 accountRegion: accountRegion,
                                 userId: user, deviceId: device,
-                                callback: instanceCallback)
+                                callbacks: instanceCallbacks)
             
             if Leanplum.hasStarted() {
                 Log.debug("[Wrapper] Leanplum has already started, launching CleverTap as well.")

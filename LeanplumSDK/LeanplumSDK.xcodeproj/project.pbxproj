@@ -214,6 +214,10 @@
 		6A29EAC528EB56AD0024880E /* MigrationManager+ResponseHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */; };
 		6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
 		6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A29EAF428EF37090024880E /* IdentityManager.swift */; };
+		6A2E4C20292BAB3400385536 /* CleverTapInstanceCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A2E4C1E292BAB3400385536 /* CleverTapInstanceCallback.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6A2E4C21292BAB3400385536 /* CleverTapInstanceCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A2E4C1E292BAB3400385536 /* CleverTapInstanceCallback.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6A2E4C22292BAB3400385536 /* CleverTapInstanceCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E4C1F292BAB3400385536 /* CleverTapInstanceCallback.m */; };
+		6A2E4C23292BAB3400385536 /* CleverTapInstanceCallback.m in Sources */ = {isa = PBXBuildFile; fileRef = 6A2E4C1F292BAB3400385536 /* CleverTapInstanceCallback.m */; };
 		6A37A89628EF6E6C00F4339F /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89528EF6E6C00F4339F /* Wrapper.swift */; };
 		6A37A89728EF6E6C00F4339F /* Wrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89528EF6E6C00F4339F /* Wrapper.swift */; };
 		6A37A89928EF738200F4339F /* MigrationManager+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89828EF738200F4339F /* MigrationManager+API.swift */; };
@@ -813,6 +817,8 @@
 		6A29EABD28EA13B60024880E /* PropertyWrappers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PropertyWrappers.swift; sourceTree = "<group>"; };
 		6A29EAC328EB56AD0024880E /* MigrationManager+ResponseHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+ResponseHandler.swift"; sourceTree = "<group>"; };
 		6A29EAF428EF37090024880E /* IdentityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManager.swift; sourceTree = "<group>"; };
+		6A2E4C1E292BAB3400385536 /* CleverTapInstanceCallback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CleverTapInstanceCallback.h; sourceTree = "<group>"; };
+		6A2E4C1F292BAB3400385536 /* CleverTapInstanceCallback.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CleverTapInstanceCallback.m; sourceTree = "<group>"; };
 		6A37A89528EF6E6C00F4339F /* Wrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Wrapper.swift; sourceTree = "<group>"; };
 		6A37A89828EF738200F4339F /* MigrationManager+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MigrationManager+API.swift"; sourceTree = "<group>"; };
 		6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+MapKeys.swift"; sourceTree = "<group>"; };
@@ -920,6 +926,8 @@
 				075AAD5B26847EC3007CA1BD /* MessageTemplates */,
 				075AAD8526847EC3007CA1BD /* Notifications */,
 				075AAD9526847EC3007CA1BD /* Utilities */,
+				6A2E4C1E292BAB3400385536 /* CleverTapInstanceCallback.h */,
+				6A2E4C1F292BAB3400385536 /* CleverTapInstanceCallback.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1468,6 +1476,7 @@
 				075AAE9C26847EC4007CA1BD /* Leanplum_Reachability.h in Headers */,
 				075AAE1826847EC4007CA1BD /* LPFileTransferManager.h in Headers */,
 				075AAE7E26847EC4007CA1BD /* LPAES.h in Headers */,
+				6A2E4C20292BAB3400385536 /* CleverTapInstanceCallback.h in Headers */,
 				075AAE9726847EC4007CA1BD /* Leanplum_SocketIO.h in Headers */,
 				075AAE3026847EC4007CA1BD /* LPVar.h in Headers */,
 				075AAE0626847EC4007CA1BD /* LPRequestBatch.h in Headers */,
@@ -1555,6 +1564,7 @@
 				6A714B0B26F8B317004A34A9 /* Leanplum_Reachability.h in Headers */,
 				6A714B0C26F8B317004A34A9 /* LPFileTransferManager.h in Headers */,
 				6A714B0D26F8B317004A34A9 /* LPAES.h in Headers */,
+				6A2E4C21292BAB3400385536 /* CleverTapInstanceCallback.h in Headers */,
 				6A714B0E26F8B317004A34A9 /* Leanplum_SocketIO.h in Headers */,
 				6A714B0F26F8B317004A34A9 /* LPVar.h in Headers */,
 				6A714B1026F8B317004A34A9 /* LPRequestBatch.h in Headers */,
@@ -1940,6 +1950,7 @@
 				6A07FDA22811911000995BE3 /* ActionManager+FileDownload.swift in Sources */,
 				075AAE8126847EC4007CA1BD /* LPSwizzle.m in Sources */,
 				6AD978542774F2F700A7C6C6 /* NotificationsProxy+iOS9.swift in Sources */,
+				6A2E4C22292BAB3400385536 /* CleverTapInstanceCallback.m in Sources */,
 				075AAE6A26847EC4007CA1BD /* LPLocalNotificationsManager.m in Sources */,
 				C9D064DC2775DB1100A7A5F9 /* Dictionary+Equatable.swift in Sources */,
 				075AAE1C26847EC4007CA1BD /* LPNetworkFactory.m in Sources */,
@@ -2068,6 +2079,7 @@
 				6A07FDA32811911000995BE3 /* ActionManager+FileDownload.swift in Sources */,
 				6A714B9126F8B317004A34A9 /* LPSwizzle.m in Sources */,
 				6AD978552774F2F700A7C6C6 /* NotificationsProxy+iOS9.swift in Sources */,
+				6A2E4C23292BAB3400385536 /* CleverTapInstanceCallback.m in Sources */,
 				6A714B9226F8B317004A34A9 /* LPLocalNotificationsManager.m in Sources */,
 				C9D064DD2775DB1100A7A5F9 /* Dictionary+Equatable.swift in Sources */,
 				6A714B9326F8B317004A34A9 /* LPNetworkFactory.m in Sources */,

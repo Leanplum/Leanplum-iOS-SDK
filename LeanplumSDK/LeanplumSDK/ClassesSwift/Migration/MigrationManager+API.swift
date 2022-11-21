@@ -63,8 +63,15 @@
         wrapper?.setTrafficSourceInfo(info)
     }
 
-    func setInstanceCallback(_ callback: @escaping ((Any) -> Void)) {
-        instanceCallback = callback
+    func addInstanceCallback(_ callback: CleverTapInstanceCallback) {
+        instanceCallbacks.append(callback)
+        wrapper?.addInstanceCallback(callback)
+    }
+    
+    func removeInstanceCallback(_ callback: CleverTapInstanceCallback) {
+        guard let index = instanceCallbacks.firstIndex(of: callback) else { return }
+        instanceCallbacks.remove(at: index)
+        wrapper?.removeInstanceCallback(callback)
     }
     
     func setLogLevel(_ level: LeanplumLogLevel) {

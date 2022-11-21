@@ -28,7 +28,7 @@ class CTWrapper: Wrapper {
     
     // MARK: Initialization
     var cleverTapInstance: CleverTap?
-    var instanceCallback: ((Any) -> Void)?
+    var instanceCallbacks: [CleverTapInstanceCallback]
     
     var accountId: String
     var accountToken: String
@@ -40,12 +40,12 @@ class CTWrapper: Wrapper {
                 accountRegion: String,
                 userId: String,
                 deviceId: String,
-                callback: ((Any) -> Void)?) {
+                callbacks: [CleverTapInstanceCallback]) {
         Log.debug("[Wrapper] Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
-        self.instanceCallback = callback
+        self.instanceCallbacks = callbacks
         
         identityManager = IdentityManager(userId: userId, deviceId: deviceId)
         setLogLevel(LPLogManager.logLevel())
@@ -76,20 +76,28 @@ class CTWrapper: Wrapper {
                 cleverTapInstance?.profilePush([Constants.AnonymousDeviceUserProperty: identityManager.deviceId])
             }
         }
-        triggerInstanceCallback()
+        triggerInstanceCallbacks()
     }
     
     // MARK: Callback
-    func setInstanceCallback(_ callback: ((Any) -> Void)?) {
-        instanceCallback = callback
-        triggerInstanceCallback()
+    func addInstanceCallback(_ callback: CleverTapInstanceCallback) {
+        instanceCallbacks.append(callback)
+        if let instance = cleverTapInstance {
+            callback.onInstance(instance)
+        }
     }
     
-    private func triggerInstanceCallback() {
-        guard let callback = instanceCallback, let instance = cleverTapInstance else {
-            return
+    func removeInstanceCallback(_ callback: CleverTapInstanceCallback) {
+        guard let index = instanceCallbacks.firstIndex(of: callback) else { return }
+        instanceCallbacks.remove(at: index)
+    }
+    
+    private func triggerInstanceCallbacks() {
+        guard let instance = cleverTapInstance else { return }
+        
+        for callback in instanceCallbacks {
+            callback.onInstance(instance)
         }
-        callback(instance)
     }
 
     // MARK: Tracking

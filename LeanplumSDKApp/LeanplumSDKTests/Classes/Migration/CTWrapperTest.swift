@@ -12,7 +12,7 @@ import XCTest
 class WrapperTest: XCTestCase {
     
     static let attributeMappings = ["lpName": "ctName", "lpName2": "ctName2"]
-    let wrapper = CTWrapper(accountId: "", accountToken: "", accountRegion: "", userId: "", deviceId: "", callback: nil)
+    let wrapper = CTWrapper(accountId: "", accountToken: "", accountRegion: "", userId: "", deviceId: "", callbacks: [])
     
     override class func setUp() {
         MigrationManager.shared.attributeMappings = attributeMappings
