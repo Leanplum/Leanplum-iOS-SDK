@@ -44,23 +44,19 @@ import Foundation
     
     private let lock = NSLock()
     
-    // Expose to ObjC
-    @objc public var useLeanplum: Bool {
-        migrationState.useLeanplum
-    }
-    
-    // Expose to ObjC
-    @objc public var useCleverTap: Bool {
-        migrationState.useCleverTap
-    }
-    
-    func initWrapper() {
+    @objc public func initWrapper() {
         if migrationState.useCleverTap, wrapper == nil {
             guard let id = accountId, let token = accountToken, let accountRegion = regionCode else {
                 Log.error("[Wrapper] Missing CleverTap Credentials. Cannot initialize CleverTap.")
                 return
             }
-            guard let user = Leanplum.userId(), let device = Leanplum.deviceId() else {
+            
+            if !LPInternalState.shared().calledStart {
+                Log.info("[Wrapper] Initializing before calling start. Loading user.")
+                loadUser()
+            }
+
+            guard let user = Leanplum.user.userId, let device = Leanplum.user.deviceId else {
                 Log.error("[Wrapper] Missing Leanplum userId and deviceId. Cannot initialize CleverTap.")
                 return
             }
@@ -69,12 +65,32 @@ import Foundation
                                 accountRegion: accountRegion,
                                 userId: user, deviceId: device,
                                 callbacks: instanceCallbacks)
-            
-            if Leanplum.hasStarted() {
-                Log.debug("[Wrapper] Leanplum has already started, launching CleverTap as well.")
-                wrapper?.launch()
-            }
+
+            wrapper?.launch()
         }
+    }
+    
+    func loadUser() {
+        guard let encryptedDiffs = UserDefaults.standard.data(forKey: LEANPLUM_DEFAULTS_VARIABLES_KEY),
+              let diffsData = LPAES.decryptedData(from: encryptedDiffs) else { return }
+        
+        var unarchiver: NSKeyedUnarchiver?
+        
+        if #available(iOS 11.0, *) {
+            do {
+                unarchiver = try NSKeyedUnarchiver(forReadingFrom: diffsData)
+            } catch {
+                Log.error("[Wrapper] Error unarchiving userId and deviceId.")
+            }
+        } else {
+            unarchiver = NSKeyedUnarchiver(forReadingWith: diffsData)
+        }
+
+        unarchiver?.requiresSecureCoding = false
+        
+        Leanplum.user.deviceId = unarchiver?.decodeObject(forKey: LP_PARAM_DEVICE_ID) as? String
+        
+        Leanplum.user.userId = unarchiver?.decodeObject(forKey: LP_PARAM_USER_ID) as? String
     }
     
     func handleMigrationStateChanged(oldValue: MigrationState) {

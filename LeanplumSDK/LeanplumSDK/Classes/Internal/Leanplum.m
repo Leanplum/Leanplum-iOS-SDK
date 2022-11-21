@@ -94,7 +94,7 @@ void leanplumExceptionHandler(NSException *exception);
 
 @implementation Leanplum
 
-+(void)load
++ (void)load
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -103,6 +103,11 @@ void leanplumExceptionHandler(NSException *exception);
         }
     });
     
+    [self setUsingPlist];
+}
+
++ (void)setUsingPlist
+{
     NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
     if (appKeysDictionary == nil) {
         return;

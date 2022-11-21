@@ -6,7 +6,17 @@
 //  Copyright © 2022 Leanplum. All rights reserved.
 
 @objc public extension MigrationManager {
-
+    
+    // Expose to ObjC
+    @objc var useLeanplum: Bool {
+        migrationState.useLeanplum
+    }
+    
+    // Expose to ObjC
+    @objc var useCleverTap: Bool {
+        migrationState.useCleverTap
+    }
+    
     func launch() {
         guard let wrapper = wrapper else {
             Log.debug("[Wrapper] Calling launch before wrapper is initialized.")
