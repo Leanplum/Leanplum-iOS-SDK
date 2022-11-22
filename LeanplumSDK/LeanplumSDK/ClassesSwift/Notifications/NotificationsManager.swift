@@ -85,8 +85,8 @@ import UIKit
     
     // MARK: - Notification Actions
     // MARK: Notification Open
-    @objc(notificationOpened:action:)
-    func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
+    @objc(notificationOpened:action:fromLaunch:)
+    func notificationOpened(userInfo: [AnyHashable: Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION, fromLaunch: Bool = false) {
         guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else {
             Log.debug("Push notification not handled, no message id found.")
             return

@@ -44,7 +44,7 @@ import Foundation
     
     private let lock = NSLock()
     
-    @objc public func initWrapper() {
+    @objc public func launchWrapper() {
         if migrationState.useCleverTap, wrapper == nil {
             guard let id = accountId, let token = accountToken, let accountRegion = regionCode else {
                 Log.error("[Wrapper] Missing CleverTap Credentials. Cannot initialize CleverTap.")
@@ -65,7 +65,6 @@ import Foundation
                                 accountRegion: accountRegion,
                                 userId: user, deviceId: device,
                                 callbacks: instanceCallbacks)
-
             wrapper?.launch()
         }
     }
@@ -100,7 +99,7 @@ import Foundation
             // Flush all saved requests to Leanplum
             LPRequestSender.sharedInstance().sendRequests()
             // Create wrapper
-            initWrapper()
+            launchWrapper()
         }
         
         if (oldValue.useLeanplum && !migrationState.useLeanplum) {
@@ -124,7 +123,7 @@ import Foundation
     
     @objc public func fetchMigrationState(_ completion: @escaping ()->()) {
         if migrationState != .undefined {
-            initWrapper()
+            launchWrapper()
             completion()
             return
         }

@@ -23,13 +23,19 @@ import Foundation
         }
     }
     
-    override func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
+    override func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION, fromLaunch: Bool = false) {
         if Utilities.messageIdFromUserInfo(userInfo) != nil {
             // Handle Leanplum notifications
             super.notificationOpened(userInfo: userInfo, action: action)
             return
         }
-        handlerCleverTapNotification(userInfo: userInfo, event: .opened)
+        // If the app is launched from notification and CT instance has already been created,
+        // CT will handle the notification from their UIApplication didFinishLaunchingNotification observer
+        if fromLaunch && MigrationManager.shared.hasLaunched {
+            return
+        }
+        
+        handleCleverTapNotification(userInfo: userInfo, event: .opened)
     }
     
     override func notificationReceived(userInfo: [AnyHashable : Any], isForeground: Bool) {
@@ -38,7 +44,7 @@ import Foundation
             super.notificationReceived(userInfo: userInfo, isForeground: isForeground)
             return
         }
-        handlerCleverTapNotification(userInfo: userInfo, event: .received)
+        handleCleverTapNotification(userInfo: userInfo, event: .received)
     }
     
     public override func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
@@ -53,7 +59,7 @@ import Foundation
         }
     }
     
-    func handlerCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
+    func handleCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
         Log.debug("[Wrapper] Will call CleverTap.handlePushNotification for Push \(event), when Leanplum has issued start.")
         // Leanplum.onStartIssued guarantees that Wrapper is initialized and CT instance is available, if migration has started.
         Leanplum.onStartIssued {

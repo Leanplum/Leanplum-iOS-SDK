@@ -921,11 +921,7 @@ void leanplumExceptionHandler(NSException *exception);
              withContextualValues:nil];
     }];
     
-    [[MigrationManager shared] fetchMigrationState:^{
-        if ([[MigrationManager shared] useCleverTap]) {
-            [[MigrationManager shared] launch];
-        }
-    
+    [[MigrationManager shared] fetchMigrationState:^{    
         if ([[MigrationManager shared] useLeanplum]) {
             // hasStarted and startSuccessful will be set from the request callbacks
             // triggerStartResponse will be called from the request callbacks

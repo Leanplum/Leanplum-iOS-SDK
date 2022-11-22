@@ -75,7 +75,7 @@ public class NotificationsProxy: NSObject {
                 Leanplum.notificationsManager().notificationReceived(userInfo: remoteNotification, isForeground: false)
             } else {
                 notificationOpenedFromStart = true
-                Leanplum.notificationsManager().notificationOpened(userInfo: remoteNotification)
+                Leanplum.notificationsManager().notificationOpened(userInfo: remoteNotification, action: LP_VALUE_DEFAULT_PUSH_ACTION, fromLaunch: true)
             }
         } else if
             let localNotification =

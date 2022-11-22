@@ -6,27 +6,24 @@
 //  Copyright © 2022 Leanplum. All rights reserved.
 
 @objc public extension MigrationManager {
-    
-    // Expose to ObjC
-    @objc var useLeanplum: Bool {
-        migrationState.useLeanplum
-    }
-    
-    // Expose to ObjC
-    @objc var useCleverTap: Bool {
-        migrationState.useCleverTap
-    }
-    
-    func launch() {
-        guard let wrapper = wrapper else {
-            Log.debug("[Wrapper] Calling launch before wrapper is initialized.")
-            return
-        }
-        wrapper.launch()
-    }
-    
     var state: MigrationState {
         return migrationState
+    }
+    
+    var hasLaunched: Bool {
+        guard let wrapper = wrapper else { return false }
+        
+        return wrapper.hasLaunched
+    }
+    
+    // Expose to ObjC
+    var useLeanplum: Bool {
+        migrationState.useLeanplum
+    }
+
+    // Expose to ObjC
+    var useCleverTap: Bool {
+        migrationState.useCleverTap
     }
 
     func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
