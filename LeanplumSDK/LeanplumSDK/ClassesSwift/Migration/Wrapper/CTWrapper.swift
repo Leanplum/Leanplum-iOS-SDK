@@ -79,6 +79,10 @@ class CTWrapper: Wrapper {
         triggerInstanceCallbacks()
     }
     
+    var hasLaunched: Bool {
+        return cleverTapInstance != nil
+    }
+    
     // MARK: Callback
     func addInstanceCallback(_ callback: CleverTapInstanceCallback) {
         instanceCallbacks.append(callback)

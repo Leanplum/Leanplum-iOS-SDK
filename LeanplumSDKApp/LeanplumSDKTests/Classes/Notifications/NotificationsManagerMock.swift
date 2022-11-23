@@ -22,7 +22,9 @@ class NotificationsManagerMock: NotificationsManager {
     public var methodInvocations = 0
     public var isPushEnabled: Bool?
     
-    override func notificationOpened(userInfo: [AnyHashable : Any], action: String = LP_VALUE_DEFAULT_PUSH_ACTION) {
+    override func notificationOpened(userInfo: [AnyHashable : Any],
+                                     action: String = LP_VALUE_DEFAULT_PUSH_ACTION,
+                                     fromLaunch: Bool = false) {
         userInfoProcessed = userInfo
         actionName = action
         methodInvocations += 1

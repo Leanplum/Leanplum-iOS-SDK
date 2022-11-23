@@ -94,7 +94,7 @@ void leanplumExceptionHandler(NSException *exception);
 
 @implementation Leanplum
 
-+(void)load
++ (void)load
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -103,6 +103,11 @@ void leanplumExceptionHandler(NSException *exception);
         }
     });
     
+    [self setUsingPlist];
+}
+
++ (void)setUsingPlist
+{
     NSDictionary *appKeysDictionary = [self getDefaultAppKeysPlist];
     if (appKeysDictionary == nil) {
         return;
@@ -916,11 +921,7 @@ void leanplumExceptionHandler(NSException *exception);
              withContextualValues:nil];
     }];
     
-    [[MigrationManager shared] fetchMigrationState:^{
-        if ([[MigrationManager shared] useCleverTap]) {
-            [[MigrationManager shared] launch];
-        }
-    
+    [[MigrationManager shared] fetchMigrationState:^{    
         if ([[MigrationManager shared] useLeanplum]) {
             // hasStarted and startSuccessful will be set from the request callbacks
             // triggerStartResponse will be called from the request callbacks

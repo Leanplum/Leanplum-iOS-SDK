@@ -10,6 +10,8 @@ protocol Wrapper {
     /// equivalent to Leanplum start
     func launch()
     
+    var hasLaunched: Bool { get }
+    
     /// Adds instance callback, executed when wrapper has initialized
     func addInstanceCallback(_ callback: CleverTapInstanceCallback)
     
