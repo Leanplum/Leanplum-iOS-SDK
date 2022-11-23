@@ -10,6 +10,22 @@
         return migrationState
     }
     
+    var cleverTapAccountId: String? {
+        return accountId
+    }
+    
+    var cleverTapAccountToken: String? {
+        return accountToken
+    }
+    
+    var cleverTapAccountRegion: String? {
+        return regionCode
+    }
+    
+    var cleverTapAttributeMappings: [String: String] {
+        return attributeMappings
+    }
+    
     var hasLaunched: Bool {
         guard let wrapper = wrapper else { return false }
         
