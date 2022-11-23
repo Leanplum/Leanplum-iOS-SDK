@@ -51,24 +51,31 @@ import Foundation
         super.didRegisterForRemoteNotificationsWithDeviceToken(deviceToken)
         
         Log.debug("[Wrapper] Will call CleverTap.setPushToken for didRegisterForRemoteNotifications, when Leanplum has issued start.")
-        // Leanplum.onStartIssued guarantees that Wrapper is initialized and CT instance is available, if migration has started.
-        Leanplum.onStartIssued {
-            if MigrationManager.shared.useCleverTap {
-                MigrationManager.shared.setPushToken(deviceToken)
-            }
+        handleWithCleverTapInstance {
+            MigrationManager.shared.setPushToken(deviceToken)
         }
     }
     
     func handleCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
         Log.debug("[Wrapper] Will call CleverTap.handlePushNotification for Push \(event), when Leanplum has issued start.")
-        // Leanplum.onStartIssued guarantees that Wrapper is initialized and CT instance is available, if migration has started.
-        Leanplum.onStartIssued {
-            if MigrationManager.shared.useCleverTap {
-                Log.debug("""
-                        [Wrapper] Calling CleverTap.handlePushNotification:openDeepLinksInForeground: \
-                        \(Constants.OpenDeepLinksInForeground) for Push \(event)
-                        """)
-                CleverTap.handlePushNotification(userInfo, openDeepLinksInForeground: Constants.OpenDeepLinksInForeground)
+        handleWithCleverTapInstance {
+            Log.debug("""
+                    [Wrapper] Calling CleverTap.handlePushNotification:openDeepLinksInForeground: \
+                    \(Constants.OpenDeepLinksInForeground) for Push \(event)
+                    """)
+            CleverTap.handlePushNotification(userInfo, openDeepLinksInForeground: Constants.OpenDeepLinksInForeground)
+        }
+    }
+    
+    func handleWithCleverTapInstance(action: @escaping () -> ()) {
+        if MigrationManager.shared.hasLaunched {
+            action()
+        } else {
+            // Leanplum.onStartIssued guarantees that Wrapper is initialized and CT instance is available, if migration has started.
+            Leanplum.onStartIssued {
+                if MigrationManager.shared.useCleverTap {
+                    action()
+                }
             }
         }
     }
