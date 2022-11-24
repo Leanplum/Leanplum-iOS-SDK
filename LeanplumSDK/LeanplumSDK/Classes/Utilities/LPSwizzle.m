@@ -148,7 +148,7 @@ static NSMutableDictionary *_methodTable;
 
 @end
 
-// Methods by Leanplum.
+#pragma mark - Methods by Leanplum
 @implementation LPSwizzle (LeanplumExtension)
 
 + (BOOL)hookInto:(SEL)originalSelector withSelector:(SEL)newSelector forObject:(id)object
@@ -162,7 +162,7 @@ static NSMutableDictionary *_methodTable;
                         method_getTypeEncoding(class_getInstanceMethod(
                                             NSObject.class, newSelector)));
         if (!methodAdded) {
-            LPLog(LPError, @"Method not added: %@", originalSelector);
+            LPLog(LPError, @"Method not added: %@", NSStringFromSelector(originalSelector));
         }
     } else {
         [LPSwizzle swizzleMethod:originalSelector withMethod:newSelector error:&error
