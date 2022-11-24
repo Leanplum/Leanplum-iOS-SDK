@@ -12,7 +12,7 @@ target 'LeanplumSDKTests' do
 end
 
 def clever_tap
-  pod 'CleverTap-iOS-SDK', '~> 4.1.4'
+  pod 'CleverTap-iOS-SDK', '~> 4.1.5'
 end
 
 target 'Leanplum' do
