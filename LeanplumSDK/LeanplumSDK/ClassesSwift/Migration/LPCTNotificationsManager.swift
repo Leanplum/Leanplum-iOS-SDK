@@ -50,14 +50,13 @@ import Foundation
     public override func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
         super.didRegisterForRemoteNotificationsWithDeviceToken(deviceToken)
         
-        Log.debug("[Wrapper] Will call CleverTap.setPushToken for didRegisterForRemoteNotifications, when Leanplum has issued start.")
         handleWithCleverTapInstance {
+            Log.debug("[Wrapper] Calling CleverTap.setPushToken for didRegisterForRemoteNotifications.")
             MigrationManager.shared.setPushToken(deviceToken)
         }
     }
     
     func handleCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
-        Log.debug("[Wrapper] Will call CleverTap.handlePushNotification for Push \(event), when Leanplum has issued start.")
         handleWithCleverTapInstance {
             Log.debug("""
                     [Wrapper] Calling CleverTap.handlePushNotification:openDeepLinksInForeground: \
