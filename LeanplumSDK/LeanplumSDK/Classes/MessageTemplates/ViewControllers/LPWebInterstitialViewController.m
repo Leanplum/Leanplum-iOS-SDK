@@ -435,6 +435,9 @@
 }
 
 -(void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion {
+    if ([LPMessageTemplateUtilities definesPresentationContextChanged]) {
+        [[self presentingViewController] setDefinesPresentationContext:NO];
+    }
     [super dismissViewControllerAnimated:flag completion:^{
         [self.context actionDismissed];
         if (completion) {

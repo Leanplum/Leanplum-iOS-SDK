@@ -18,6 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 +(void)presentOverVisible:(UIViewController *) viewController;
 +(void)dismissExisitingViewController:(nullable void (^)(void)) completion;
 +(UIViewController *) visibleViewController;
++(BOOL) definesPresentationContextChanged;
 @end
 
 NS_ASSUME_NONNULL_END

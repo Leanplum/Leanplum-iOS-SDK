@@ -10,6 +10,8 @@
 
 @implementation LPMessageTemplateUtilities
 
+static BOOL definesPresentationContextChanged = NO;
+
 +(void)presentOverVisible:(UIViewController *)viewController
 {
     [self present:viewController];
@@ -18,12 +20,22 @@
 +(void)present:(UIViewController *)viewController
 {
     [self dismissExisitingViewController:^{
+        definesPresentationContextChanged = NO;
         UIViewController *topViewController = [self visibleViewController];
         
         // if topViewController is getting dismissed, get view controller that presented it and let it present our new view controller,
         // otherwise we can assume that our topViewController will be in view hierarchy when presenting new view controller
         if (topViewController.isBeingDismissed) {
             topViewController = [topViewController presentingViewController];
+        }
+        
+        UIModalPresentationStyle style = [viewController modalPresentationStyle];
+        if (style == UIModalPresentationOverCurrentContext ||
+            style == UIModalPresentationCurrentContext) {
+            if (![topViewController definesPresentationContext]) {
+                definesPresentationContextChanged = YES;
+                [topViewController setDefinesPresentationContext:YES];
+            }
         }
         
         [topViewController presentViewController:viewController animated:YES completion:nil];
@@ -50,12 +62,17 @@
 +(UIViewController *) visibleViewController
 {
     UIViewController *topViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-
+    
     while (topViewController.presentedViewController) {
         topViewController = topViewController.presentedViewController;
     }
-
+    
     return topViewController;
+}
+
++(BOOL)definesPresentationContextChanged
+{
+    return definesPresentationContextChanged;
 }
 
 @end
