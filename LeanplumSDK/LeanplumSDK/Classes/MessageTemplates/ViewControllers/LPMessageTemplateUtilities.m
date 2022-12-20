@@ -7,49 +7,27 @@
 //
 
 #import "LPMessageTemplateUtilities.h"
-#import "LPPopupViewController.h"
-#import "LPInterstitialViewController.h"
-#import "LPWebInterstitialViewController.h"
 
 @implementation LPMessageTemplateUtilities
 
 +(void)presentOverVisible:(UIViewController *)viewController
 {
-    [self present:viewController asChild:NO];
+    [self present:viewController];
 }
 
-+(void)presentOverVisibleAsChild:(UIViewController *)viewController
-{
-    [self present:viewController asChild:YES];
-}
-
-+(void)present:(UIViewController *)viewController asChild:(BOOL)presentAsChild
++(void)present:(UIViewController *)viewController
 {
     [self dismissExisitingViewController:^{
         UIViewController *topViewController = [self visibleViewController];
+        
         // if topViewController is getting dismissed, get view controller that presented it and let it present our new view controller,
         // otherwise we can assume that our topViewController will be in view hierarchy when presenting new view controller
         if (topViewController.isBeingDismissed) {
-            if (!presentAsChild) {
-                [[topViewController presentingViewController] presentViewController:viewController animated:YES completion:nil];
-            } else {
-                [self displayContentController:viewController withParent:[topViewController presentingViewController]];
-            }
-        } else {
-            if (!presentAsChild) {
-                [topViewController presentViewController:viewController animated:YES completion:nil];
-            } else {
-                [self displayContentController:viewController withParent:topViewController];
-            }
+            topViewController = [topViewController presentingViewController];
         }
+        
+        [topViewController presentViewController:viewController animated:YES completion:nil];
     }];
-}
-
-+(void)displayContentController:(UIViewController*)content withParent:(UIViewController*)parent
-{
-    [parent addChildViewController:content];
-    [parent.view addSubview:content.view];
-    [content didMoveToParentViewController:parent];
 }
 
 +(void)dismissExisitingViewController:(nullable void (^)(void)) completion
@@ -77,37 +55,6 @@
         topViewController = topViewController.presentedViewController;
     }
 
-    return topViewController;
-}
-
-+ (UIViewController *) topViewController
-{
-    UIViewController *topViewController = [self visibleViewController];
-    
-    if ([topViewController isKindOfClass:[UITabBarController class]]) {
-        topViewController = [((UITabBarController *) topViewController) selectedViewController];
-    }
-    
-    if ([topViewController isKindOfClass:[UINavigationController class]]) {
-        topViewController = [((UINavigationController *) topViewController) visibleViewController];
-    }
-    
-    if ([topViewController isKindOfClass:[UIPageViewController class]]) {
-        topViewController = [[((UIPageViewController *) topViewController) viewControllers] objectAtIndex:0];
-    }
-    
-    // UISplitViewController is not handled at the moment
-    
-    while (topViewController.presentedViewController) {
-        topViewController = topViewController.presentedViewController;
-    }
-    
-    // if topViewController is getting dismissed, get view controller that presented it and let it present our new view controller,
-    // otherwise we can assume that our topViewController will be in view hierarchy when presenting new view controller
-    if (topViewController.beingDismissed) {
-        topViewController = [topViewController presentingViewController];
-    }
-    
     return topViewController;
 }
 
