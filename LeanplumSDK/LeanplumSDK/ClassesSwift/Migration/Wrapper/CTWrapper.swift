@@ -41,7 +41,7 @@ class CTWrapper: Wrapper {
                 userId: String,
                 deviceId: String,
                 callbacks: [CleverTapInstanceCallback]) {
-        Log.debug("[Wrapper] Wrapper Instantiated")
+        Log.info("[Wrapper] Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
