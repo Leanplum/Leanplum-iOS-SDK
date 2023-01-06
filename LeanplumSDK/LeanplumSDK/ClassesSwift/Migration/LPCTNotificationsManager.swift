@@ -58,7 +58,7 @@ import Foundation
     
     func handleCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
         handleWithCleverTapInstance {
-            Log.debug("""
+            Log.info("""
                     [Wrapper] Calling CleverTap.handlePushNotification:openDeepLinksInForeground: \
                     \(Constants.OpenDeepLinksInForeground) for Push \(event)
                     """)

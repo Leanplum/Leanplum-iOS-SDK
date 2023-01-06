@@ -120,12 +120,12 @@ extension NotificationsProxy {
                 }
                 
                 if conforms, let notifDelegate = applicationDelegate as? UNUserNotificationCenterDelegate {
-                    Log.debug("Setting \(userNotificationDelegateName).")
+                    Log.info("Setting \(userNotificationDelegateName).")
                     UNUserNotificationCenter.current().delegate = notifDelegate
                     swizzleUserNotificationDidReceiveNotificationResponseWithCompletionHandler()
                     swizzleUserNotificationWillPresentNotificationWithCompletionHandler()
                 } else {
-                    Log.debug("Failed to set \(userNotificationDelegateName).")
+                    Log.error("Failed to set \(userNotificationDelegateName).")
                 }
             }
         }
