@@ -67,6 +67,7 @@ public class NotificationsProxy: NSObject {
     
     func applicationLaunched(launchOptions: [AnyHashable: Any]) {
         if let remoteNotification = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable: Any] {
+            Log.info("Application Launched with notification: \(remoteNotification)")
             notificationHandledFromStart = remoteNotification
             
             // started in background, woken up by remote notification

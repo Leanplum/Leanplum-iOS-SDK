@@ -91,7 +91,7 @@ import UIKit
             Log.debug("Push notification not handled, no message id found.")
             return
         }
-        Log.debug("Notification Opened MessageId: \(messageId)")
+        Log.info("Notification Opened MessageId: \(messageId)")
         
         let isDefaultAction = action == LP_VALUE_DEFAULT_PUSH_ACTION
         
@@ -128,7 +128,7 @@ import UIKit
     // MARK: Notification Received
     func notificationReceived(userInfo: [AnyHashable: Any], isForeground: Bool) {
         guard let messageId = Utilities.messageIdFromUserInfo(userInfo) else { return }
-        Log.debug("Notification received - \(isForeground ? "Foreground" : "Background"). MessageId: \(messageId)")
+        Log.info("Notification received - \(isForeground ? "Foreground" : "Background"). MessageId: \(messageId)")
         
         trackDelivery(userInfo: userInfo)
         if isForeground {
