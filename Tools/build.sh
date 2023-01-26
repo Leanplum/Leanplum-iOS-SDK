@@ -274,17 +274,11 @@ build_ios_static() {
 # Returns:
 #   None
 #######################################
-zip_ios() {
+zip_ios() {  
   echo "zipping for iOS release"
   cd Release
-  zip -q -r Leanplum.framework.zip \
-    $(find . -maxdepth 2 -type d -name "Leanplum.*")
-  mv Leanplum.framework.zip ..
-  
-  echo "zipping for iOS Location release"
-  zip -q -r LeanplumLocation.framework.zip \
-    $(find . -maxdepth 2 -type d -name "LeanplumLocation*")
-  mv LeanplumLocation.framework.zip ..
+  zip -q -r Leanplum.zip .
+  mv Leanplum.zip ..
 
   echo "zipping static xcframework for SPM"
   cd static
