@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -226,10 +226,6 @@
 		6A37A89D28EF748800F4339F /* Dictionary+MapKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89B28EF748800F4339F /* Dictionary+MapKeys.swift */; };
 		6A37A8A028EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */; };
 		6A37A8A128EF74E900F4339F /* CTWrapper+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A37A89F28EF74E900F4339F /* CTWrapper+Utilities.swift */; };
-		6A3C1EB228D7B3C700D51E44 /* CleverTapSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; };
-		6A3C1EB328D7B3C700D51E44 /* CleverTapSDK.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB028D7B3C700D51E44 /* CleverTapSDK.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		6A3C1EB428D7B3C700D51E44 /* SDWebImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */; };
-		6A3C1EB528D7B3C700D51E44 /* SDWebImage.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6A3C1EB128D7B3C700D51E44 /* SDWebImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6A714AF326F8B317004A34A9 /* LPConstants.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADDA26847EC4007CA1BD /* LPConstants.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF426F8B317004A34A9 /* LPActionTriggerManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AADC726847EC3007CA1BD /* LPActionTriggerManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6A714AF526F8B317004A34A9 /* LPWebInterstitialViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 075AAD7426847EC3007CA1BD /* LPWebInterstitialViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -524,18 +520,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6A3C1EB628D7B3C700D51E44 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6A3C1EB528D7B3C700D51E44 /* SDWebImage.framework in Embed Frameworks */,
-				6A3C1EB328D7B3C700D51E44 /* CleverTapSDK.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6A714BA526F8B4E6004A34A9 /* Copy Headers */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -859,8 +843,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6A3C1EB228D7B3C700D51E44 /* CleverTapSDK.framework in Frameworks */,
-				6A3C1EB428D7B3C700D51E44 /* SDWebImage.framework in Frameworks */,
 				EF8C42881E834252F5F5ABA6 /* Pods_Leanplum.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1634,8 +1616,6 @@
 				075AAD0426847C23007CA1BD /* Sources */,
 				075AAD0526847C23007CA1BD /* Frameworks */,
 				075AAD0626847C23007CA1BD /* Resources */,
-				6A3C1EAF28D7B30400D51E44 /* Copy Frameworks */,
-				6A3C1EB628D7B3C700D51E44 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1776,25 +1756,6 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
-		};
-		6A3C1EAF28D7B30400D51E44 /* Copy Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Copy dependency Pods Frameworks to top level so they can be found and embedded.\n# This Run Script Phase needs to run before \"Embed Frameworks\" built-in one.\n# When a framework is linked both dynamically and statically, name of the linking is added to the framework folder name\nCOPY_FRAMEWORKS_TO_EMBED=(\"CleverTap-iOS-SDK-framework\" \"SDWebImage-framework\")\n\nfor FRAMEWORK in ${COPY_FRAMEWORKS_TO_EMBED[@]};\ndo\n cp -R -L \"${BUILT_PRODUCTS_DIR}/$FRAMEWORK/\" ${BUILT_PRODUCTS_DIR}/\ndone\n";
 		};
 		6F7CCB8DAE13D687016AB7D9 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

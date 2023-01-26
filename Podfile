@@ -3,16 +3,23 @@ use_modular_headers!
 
 workspace 'Leanplum.xcworkspace'
 
+def clever_tap
+  pod 'CleverTap-iOS-SDK', '~> 4.2.0'
+end
+
+target 'LeanplumSDKApp' do
+    project 'LeanplumSDKApp/LeanplumSDKApp.xcodeproj'
+    use_frameworks!
+
+    clever_tap
+end
+
 target 'LeanplumSDKTests' do
     project 'LeanplumSDKApp/LeanplumSDKApp.xcodeproj'
     use_frameworks!
 
     pod 'OCMock', '~> 3.3.1'
     pod 'OHHTTPStubs', '~> 9.0.0'
-end
-
-def clever_tap
-  pod 'CleverTap-iOS-SDK', '~> 4.2.0'
 end
 
 target 'Leanplum' do
