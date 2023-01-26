@@ -93,6 +93,30 @@ main() {
   echo "${GREEN} Done.${NORMAL}"
 }
 
+#######################################
+# Builds dynamic xcframework from device and simulator archives.
+# Globals:
+#   None
+# Arguments:
+#   archivePath
+#   framework
+# Returns:
+#   None
+#######################################
+create_dynamic_xcframework() {  
+  archivePath=$1
+  framework=$2
+
+  xcframework=${framework/"framework"/"xcframework"}
+
+  if [[ "$framework" != *"Pods_"* ]]; then
+    echo "Creating dynamic $xcframework ..."
+    xcodebuild -quiet -create-xcframework \
+    -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$framework \
+    -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$framework \
+    -output Release/dynamic/$xcframework
+  fi
+}
 
 #######################################
 # Builds the iOS dynamic library Target.
@@ -128,11 +152,10 @@ build_ios_dylib() {
   -destination generic/platform=iOS \
   SKIP_INSTALL=NO
 
-  echo "Creating $scheme dynamic xcframework ..."
-  xcodebuild -quiet -create-xcframework \
-  -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$scheme.framework \
-  -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$scheme.framework \
-  -output Release/dynamic/$scheme.xcframework
+  find "$archivePath-iphoneos.xcarchive/Products/Library/Frameworks" \
+  -name "*.framework" \
+  -type d \
+  -exec /bin/bash -c 'create_dynamic_xcframework "$1" "`basename $0`"' {} $archivePath \; 
   
   # Remove module name from xcframework swiftinterface
   # It prevents error X is not a member of type Leanplum.Leanplum
@@ -307,4 +330,5 @@ zip_unreal_engine() {
   cd -
 }
 
+export -f create_dynamic_xcframework
 main "$@"
