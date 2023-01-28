@@ -42,8 +42,6 @@ import Foundation
         }
     }
     
-    private let lock = NSLock()
-    
     @objc public func launchWrapper() {
         if migrationState.useCleverTap, wrapper == nil {
             guard let id = accountId, let token = accountToken, let accountRegion = regionCode else {
@@ -118,44 +116,19 @@ import Foundation
         }
     }
     
-    
-    // onMigrationStateLoaded
-    
-    @objc public func fetchMigrationState(_ completion: @escaping ()->()) {
+    @objc public func fetchMigrationState(_ completion: @escaping () -> ()) {
         if migrationState != .undefined {
             launchWrapper()
             completion()
             return
         }
         
-        fetchMigrationStateClosures.append(completion)
-    }
-    
-    var fetchMigrationStateClosures:[(() -> Void)] = [] {
-        willSet {
-            lock.lock()
-        }
-        didSet {
-            defer {
-                lock.unlock()
-            }
-            if oldValue.isEmpty && fetchMigrationStateClosures.count > 0 {
-                fetchMigrationStateAsync { [weak self] in
-                    self?.triggerFetchMigrationState()
-                }
-            }
+        fetchMigrationStateAsync {
+            completion()
         }
     }
     
-    private func triggerFetchMigrationState() {
-        let closures = fetchMigrationStateClosures
-        fetchMigrationStateClosures = []
-        for closure in closures {
-            closure()
-        }
-    }
-    
-    func fetchMigrationStateAsync(completion: @escaping ()->()) {
+    func fetchMigrationStateAsync(completion: @escaping () -> ()) {
         let request = LPRequestFactory.getMigrateState()
         request.requestType = .Immediate
         request.onResponse { operation, response in
