@@ -1,0 +1,14 @@
+{
+    "api": {
+        "events": "lp+ct",
+        "profile": "lp+ct",
+    },
+    "ct": {
+        "attributeMappings": {
+            "name1": "ct-name1",
+        },
+        "regionCode": "eu1",
+        "token": "token",
+    },
+    "success": 1,
+}

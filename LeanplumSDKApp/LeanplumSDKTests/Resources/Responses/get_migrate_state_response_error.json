@@ -1,0 +1,22 @@
+{
+    "api": {
+        "events": "lp+ct",
+        "profile": "lp+ct",
+    },
+    "ct": {
+        "accountId": "accId",
+        "attributeMappings": {
+            "name1": "ct-name1",
+        },
+        "identityKeys": "",
+        "regionCode": "eu1",
+        "token": "token",
+    },
+    "eventsUploadStartedTs": "2022-10-02T17:46:01.356Z",
+    "profileUploadStartedTs": "2022-10-02T17:46:01.356Z",
+    "reqId": "A285641F-9903-4182-8A10-EB42782CAE69",
+    "sdk": "lp+ct",
+    "sha256": "31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8",
+    "state": "EVENTS_UPLOAD_STARTED",
+    "success": 1,
+}

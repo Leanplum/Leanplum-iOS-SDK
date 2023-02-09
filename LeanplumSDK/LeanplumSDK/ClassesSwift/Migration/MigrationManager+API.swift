@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 6.10.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 @objc public extension MigrationManager {
     var state: MigrationState {
@@ -24,6 +24,10 @@
     
     var cleverTapAttributeMappings: [String: String] {
         return attributeMappings
+    }
+    
+    var cleverTapIdentityKeys: [String] {
+        return identityKeys
     }
     
     var hasLaunched: Bool {

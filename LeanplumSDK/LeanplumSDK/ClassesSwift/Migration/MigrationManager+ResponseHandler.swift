@@ -3,72 +3,128 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 3.10.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 
 @objc public extension MigrationManager {
-    //    migrateState =     {
+    
+    // MARK: - ResponseParams
+    enum ResponseParams {
+        static let MigrateState = "migrateState"
+        static let Hash = "sha256";
+    }
+    
+    // MARK: - MigrationData
+    struct MigrationData: Codable, Equatable {
+        let ct: CTConfig?
+        let migrationState: String?
+        let hash: String?
+        
+        enum CodingKeys: String, CodingKey {
+            case hash = "sha256"
+            case migrationState = "sdk"
+            case ct
+        }
+    }
+
+    // MARK: - CTConfig
+    struct CTConfig: Codable, Equatable {
+        let accountID: String?
+        let token: String?
+        let regionCode: String?
+        let attributeMappings: [String: String]?
+        let identityKeys: [String]?
+
+        enum CodingKeys: String, CodingKey {
+            case accountID = "accountId"
+            case token, regionCode, attributeMappings, identityKeys
+        }
+    }
+    
+    // MARK: - Handle Responses
+    //    migrateState = {
     //        sha256 = 31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8;
     //    };
     @objc
     func handleMigrateState(multiApiResponse: Any) {
         guard let migrateState = getValue(dict: multiApiResponse,
-                                          key: Constants.MigrateStateResponseParam)
+                                          key: ResponseParams.MigrateState)
         else { return }
         
-        if let hash = getValue(dict: migrateState, key: Constants.HashResponseParam) as? String,
+        if let hash = getValue(dict: migrateState, key: ResponseParams.Hash) as? String,
            hash != self.migrationHash {
             Log.debug("[Wrapper] CleverTap Hash changed")
             fetchMigrationStateAsync {}
         }
     }
     
-    //    response =     (
-    //                {
-    //            api =             {
-    //                events = "lp+ct";
-    //                profile = "lp+ct";
-    //            };
-    //            ct =             {
-    //                accountId = "accId";
-    //                attributeMappings =                 {
-    //                    name1 = "ct-name1";
-    //                };
-    //                regionCode = eu1;
-    //                token = "token";
-    //            };
-    //            eventsUploadStartedTs = "2022-10-02T17:46:01.356Z";
-    //            profileUploadStartedTs = "2022-10-02T17:46:01.356Z";
-    //            reqId = "A285641F-9903-4182-8A10-EB42782CAE69";
-    //            sdk = "lp+ct";
-    //            sha256 = 31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8;
-    //            state = "EVENTS_UPLOAD_STARTED";
-    //            success = 1;
+    //    "response": [
+    //        {
+    //            "api": {
+    //                "events": "lp+ct",
+    //                "profile": "lp+ct",
+    //            },
+    //            "ct": {
+    //                "accountId": "accId",
+    //                "attributeMappings": {
+    //                    "name1": "ct-name1",
+    //                },
+    //                "identityKeys": ["Identity", "Email"],
+    //                "regionCode": "eu1",
+    //                "token": "token",
+    //            },
+    //            "eventsUploadStartedTs": "2022-10-02T17:46:01.356Z",
+    //            "profileUploadStartedTs": "2022-10-02T17:46:01.356Z",
+    //            "reqId": "A285641F-9903-4182-8A10-EB42782CAE69",
+    //            "sdk": "lp+ct",
+    //            "sha256": "31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8",
+    //            "state": "EVENTS_UPLOAD_STARTED",
+    //            "success": 1,
     //        }
-    //    );
+    //    ]
     func handleGetMigrateState(apiResponse: Any) {
-        if let ct = getValue(dict: apiResponse, key: Constants.CTResponseParam) {
-            if let id = getValue(dict: ct, key: Constants.AccountIdResponseParam) as? String {
+        guard let migrationData = parseResponse(apiResponse: apiResponse) else {
+            return
+        }
+        
+        if let ct = migrationData.ct {
+            if let id = ct.accountID {
                 accountId = id
             }
-            if let token = getValue(dict: ct, key: Constants.AccountTokenResponseParam) as? String {
+            if let token = ct.token {
                 accountToken = token
             }
-            if let region = getValue(dict: ct, key: Constants.RegionCodeResponseParam) as? String {
+            if let region = ct.regionCode {
                 regionCode = region
             }
-            if let mappings = getValue(dict: ct, key: Constants.AttributeMappingsResponseParam) as? [String: String] {
+            if let mappings = ct.attributeMappings {
                 attributeMappings = mappings
+            }
+            if let keys = ct.identityKeys, keys.count > 0 {
+                identityKeys = keys
             }
         }
         
-        if let sdk = getValue(dict: apiResponse, key: Constants.SdkResponseParam) as? String {
+        if let sdk = migrationData.migrationState {
             migrationState = MigrationState(stringValue: sdk)
         }
-        if let hash = getValue(dict: apiResponse, key: Constants.HashResponseParam) as? String {
+        if let hash = migrationData.hash {
             migrationHash = hash
         }
+    }
+    
+    // MARK: - Utils
+    @nonobjc internal func parseResponse(apiResponse: Any) -> MigrationData? {
+        if let dict = apiResponse as? [String: Any] {
+            do {
+                let jsonData = try JSONSerialization.data(withJSONObject: dict, options: .prettyPrinted)
+                return try JSONDecoder().decode(MigrationData.self, from: jsonData)
+            } catch {
+                Log.error("[Wrapper] Error parsing getMigrateState response: \(error.localizedDescription), error: \(String(describing: error))")
+            }
+        }
+        return nil
     }
     
     private func getValue(dict: Any, key: String) -> Any? {
