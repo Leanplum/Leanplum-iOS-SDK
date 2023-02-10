@@ -139,6 +139,13 @@
 		6A9D0A9A273430A700466133 /* NotificationTestHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9D0A99273430A700466133 /* NotificationTestHelper.swift */; };
 		6A9DECA527B6ABFB00052807 /* change_host_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A9DECA427B69D8800052807 /* change_host_response.json */; };
 		6A9DECA627B6ABFB00052807 /* change_host_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 6A9DECA427B69D8800052807 /* change_host_response.json */; };
+		6AA3505B29953CFF008677C1 /* get_migrate_state_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AA3505529953CEF008677C1 /* get_migrate_state_response.json */; };
+		6AA3505C29953D00008677C1 /* get_migrate_state_response.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AA3505529953CEF008677C1 /* get_migrate_state_response.json */; };
+		6AA3505E29955FD4008677C1 /* get_migrate_state_response_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AA3505D29955FD4008677C1 /* get_migrate_state_response_error.json */; };
+		6AA3505F29955FD4008677C1 /* get_migrate_state_response_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AA3505D29955FD4008677C1 /* get_migrate_state_response_error.json */; };
+		6AA3506129956040008677C1 /* get_migrate_state_response_missing.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AA3506029956040008677C1 /* get_migrate_state_response_missing.json */; };
+		6AA3506229956040008677C1 /* get_migrate_state_response_missing.json in Resources */ = {isa = PBXBuildFile; fileRef = 6AA3506029956040008677C1 /* get_migrate_state_response_missing.json */; };
+		6AA3506429956AEC008677C1 /* MigrationResponsesTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA3506329956AEC008677C1 /* MigrationResponsesTest.swift */; };
 		6AF543A228E883AD0025F2A9 /* LeanplumLocationAndBeacons.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; };
 		6AF6426D298198160021A997 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AA13C7B2900546400EDCA69 /* Leanplum.framework */; };
 		6AF6426E298198160021A997 /* Leanplum.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AA13C7B2900546400EDCA69 /* Leanplum.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -355,6 +362,10 @@
 		6A9D0A99273430A700466133 /* NotificationTestHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationTestHelper.swift; sourceTree = "<group>"; };
 		6A9DECA427B69D8800052807 /* change_host_response.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = change_host_response.json; sourceTree = "<group>"; };
 		6AA13C742900546400EDCA69 /* LeanplumSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDK.xcodeproj; path = ../LeanplumSDK/LeanplumSDK.xcodeproj; sourceTree = "<group>"; };
+		6AA3505529953CEF008677C1 /* get_migrate_state_response.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = get_migrate_state_response.json; sourceTree = "<group>"; };
+		6AA3505D29955FD4008677C1 /* get_migrate_state_response_error.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = get_migrate_state_response_error.json; sourceTree = "<group>"; };
+		6AA3506029956040008677C1 /* get_migrate_state_response_missing.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = get_migrate_state_response_missing.json; sourceTree = "<group>"; };
+		6AA3506329956AEC008677C1 /* MigrationResponsesTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigrationResponsesTest.swift; sourceTree = "<group>"; };
 		6AEAEE592795B68700680F84 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEAEE612795B72A00680F84 /* LeanplumLocationAndBeacons.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LeanplumLocationAndBeacons.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDKLocation.xcodeproj; path = ../LeanplumSDKLocation/LeanplumSDKLocation.xcodeproj; sourceTree = "<group>"; };
@@ -589,6 +600,9 @@
 				075AB1342684AB9D007CA1BD /* variants_response.json */,
 				075AB13A2684AB9D007CA1BD /* Malformed */,
 				6A9DECA427B69D8800052807 /* change_host_response.json */,
+				6AA3505529953CEF008677C1 /* get_migrate_state_response.json */,
+				6AA3505D29955FD4008677C1 /* get_migrate_state_response_error.json */,
+				6AA3506029956040008677C1 /* get_migrate_state_response_missing.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -658,6 +672,7 @@
 				6A37A8A928F0078500F4339F /* Migration+Extensions.swift */,
 				6A37A8AB28F00B5800F4339F /* IdentityManagerTest.swift */,
 				6A37A8AD28F0164700F4339F /* IdentityManagerMocks.swift */,
+				6AA3506329956AEC008677C1 /* MigrationResponsesTest.swift */,
 			);
 			path = Migration;
 			sourceTree = "<group>";
@@ -856,13 +871,16 @@
 				07828DB2268B4A630029A339 /* local_caps_week_response.json in Resources */,
 				07828DB5268B4A630029A339 /* local_caps_session_response.json in Resources */,
 				075AACF726847BF4007CA1BD /* LaunchScreen.storyboard in Resources */,
+				6AA3505E29955FD4008677C1 /* get_migrate_state_response_error.json in Resources */,
 				075AB1842684AB9D007CA1BD /* TiedPriorities2.json in Resources */,
 				07828DB4268B4A630029A339 /* local_caps_day_response.json in Resources */,
 				07828DB3268B4A630029A339 /* local_caps_response.json in Resources */,
 				075AB1862684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */,
 				075AB15E2684AB9D007CA1BD /* action_response.json in Resources */,
 				075AB16C2684AB9D007CA1BD /* state_response.json in Resources */,
+				6AA3506129956040008677C1 /* get_migrate_state_response_missing.json in Resources */,
 				075AB0962684A1A4007CA1BD /* Leanplum-Info.plist in Resources */,
+				6AA3505B29953CFF008677C1 /* get_migrate_state_response.json in Resources */,
 				075AB1622684AB9D007CA1BD /* start_variables_response.json in Resources */,
 				075AB1702684AB9D007CA1BD /* batch_response.json in Resources */,
 				075AB1602684AB9D007CA1BD /* track_event_response.json in Resources */,
@@ -924,15 +942,18 @@
 				075AB1672684AB9D007CA1BD /* secured_vars_no_sign_response.json in Resources */,
 				075AB17F2684AB9D007CA1BD /* DifferentPriorities2.json in Resources */,
 				075AB1772684AB9D007CA1BD /* variables_response.json in Resources */,
+				6AA3506229956040008677C1 /* get_migrate_state_response_missing.json in Resources */,
 				075AB1572684AB9D007CA1BD /* test.pdf in Resources */,
 				075AB1792684AB9D007CA1BD /* secured_vars_response.json in Resources */,
 				075AB1892684AB9D007CA1BD /* TiedPriorities1.json in Resources */,
 				07828DAE268B4A5E0029A339 /* local_caps_day_response.json in Resources */,
 				075AB18B2684AB9D007CA1BD /* DifferentPrioritiesWithMissingValues.json in Resources */,
 				075AB1712684AB9D007CA1BD /* batch_response.json in Resources */,
+				6AA3505F29955FD4008677C1 /* get_migrate_state_response_error.json in Resources */,
 				075AB1692684AB9D007CA1BD /* malformed_track_event_response.json in Resources */,
 				075AB1592684AB9D007CA1BD /* test.file in Resources */,
 				075AB1872684AB9D007CA1BD /* TiedPrioritiesDifferentDelay.json in Resources */,
+				6AA3505C29953D00008677C1 /* get_migrate_state_response.json in Resources */,
 				075AB1652684AB9D007CA1BD /* start_with_variant_debug_info_response.json in Resources */,
 				075AB16F2684AB9D007CA1BD /* simple_start_response.json in Resources */,
 			);
@@ -1080,6 +1101,7 @@
 				075AB1172684AAD9007CA1BD /* LPRequestTest.m in Sources */,
 				6A9D0A9827342EE300466133 /* NotificationsManagerMock.swift in Sources */,
 				075AB1282684AAD9007CA1BD /* LPRequestFactory+Extension.m in Sources */,
+				6AA3506429956AEC008677C1 /* MigrationResponsesTest.swift in Sources */,
 				39C081A8278D95ED00C1DBD6 /* ActionManagerTest.swift in Sources */,
 				6A07FDA52811AF3800995BE3 /* ContentMergerTest.swift in Sources */,
 				075AB12A2684AAD9007CA1BD /* LPRequestSenderTimerTest.m in Sources */,

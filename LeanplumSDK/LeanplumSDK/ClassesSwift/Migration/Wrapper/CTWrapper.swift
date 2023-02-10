@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 9.07.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 // Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
@@ -53,6 +53,7 @@ class CTWrapper: Wrapper {
     
     func launch() {
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
+        config.identityKeys = MigrationManager.shared.identityKeys
         config.useCustomCleverTapId = true
         config.logLevel = CleverTapLogLevel(LPLogManager.logLevel())
         cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
