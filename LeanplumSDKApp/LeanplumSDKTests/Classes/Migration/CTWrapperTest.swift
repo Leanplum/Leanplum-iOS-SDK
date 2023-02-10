@@ -1,15 +1,15 @@
 //
-//  WrapperTest.swift
+//  CTWrapperTest.swift
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 5.10.22.
-//
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 import XCTest
 @testable import Leanplum
 
-class WrapperTest: XCTestCase {
+class CTWrapperTest: XCTestCase {
     
     static let attributeMappings = ["lpName": "ctName", "lpName2": "ctName2"]
     let wrapper = CTWrapper(accountId: "", accountToken: "", accountRegion: "", userId: "", deviceId: "", callbacks: [])
@@ -117,5 +117,9 @@ class WrapperTest: XCTestCase {
         let expected = ["arr": "[a,1.99,b,2,true,false,0,<null>]"] as [AnyHashable : Any]
         XCTAssertTrue(actual.isEqual(expected))
         XCTAssertTrue(actualWithNil.isEqual(expected))
+    }
+    
+    func testIdentityDefaultValue() {
+        XCTAssertEqual(MigrationManager.shared.identityKeys, ["Identity"])
     }
 }

@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 2.10.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -15,15 +15,9 @@ import Foundation
         static let MigrationStateKey = "__leanplum_migration_state"
         static let RegionCodeKey = "__leanplum_region_code"
         static let AttributeMappingsKey = "__leanplum_attribute_mappings"
+        static let IdentityKeysKey = "__leanplum_identity_keys"
         
-        static let MigrateStateResponseParam = "migrateState"
-        static let SdkResponseParam = "sdk"
-        static let CTResponseParam = "ct"
-        static let AccountIdResponseParam = "accountId"
-        static let AccountTokenResponseParam = "token"
-        static let RegionCodeResponseParam = "regionCode"
-        static let AttributeMappingsResponseParam = "attributeMappings"
-        static let HashResponseParam = "sha256";
+        static let DefaultIdentityKeys = [IdentityManager.Constants.Identity]
         
         static let CleverTapRequestArg = "ct"
     }
