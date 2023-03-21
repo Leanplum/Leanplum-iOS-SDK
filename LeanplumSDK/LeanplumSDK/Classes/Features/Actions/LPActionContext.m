@@ -578,12 +578,16 @@ preventRealtimeUpdating:(BOOL)preventRealtimeUpdating;
 
 - (void)actionDismissed
 {
-    self.actionDidDismiss();
+    if (self.actionDidDismiss) {
+        self.actionDidDismiss();
+    } else {
+        LPLog(LPError, @"%@: actionDidDismiss not set for context %@", [self class], self);
+    }
 }
 
 -(NSString *)description
 {
-    return [NSString stringWithFormat:@"%@:%@", self.name, self.messageId];
+    return [NSString stringWithFormat:@"<%p>%@:%@", self, self.name, self.messageId];
 }
 
 @end

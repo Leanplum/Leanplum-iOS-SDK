@@ -14,6 +14,8 @@ import Foundation
     /// `ActionManager.Configuration` of the `ActionManager`
     /// Set a new configuration to override a configuration option
     public var configuration: Configuration = .default
+    
+    public var useAsyncDecisionHandlers = false
 
     lazy var queue: Queue = Queue()
     lazy var delayedQueue: Queue = Queue()

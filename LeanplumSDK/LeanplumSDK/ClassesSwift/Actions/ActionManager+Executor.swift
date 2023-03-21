@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Milos Jakovljevic on 2.01.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -29,7 +29,7 @@ extension ActionManager {
             }
             return
         }
-
+        
         // gets the next action from the queue
         state.currentAction = queue.pop()
         guard let action = state.currentAction else {
@@ -45,71 +45,85 @@ extension ActionManager {
             performAvailableActions()
             return
         }
-
+        
         // decide if we are going to display the message
         // by calling delegate and let it decide what are we supposed to do
-        let messageDisplayDecision = shouldDisplayMessage?(action.context)
-
-        // if message is discarded, early exit
-        if case .discard = messageDisplayDecision?.decision {
-            state.currentAction = nil
-            performAvailableActions()
-            return
-        }
-
-        // if message is delayed, add it to the scheduler to be delayed
-        // by the amount of seconds, and exit
-        if case .delay(let amount) = messageDisplayDecision?.decision {
-            Log.debug("[ActionManager]: delaying action: \(action.context) for \(amount)s.")
-
-            if amount > 0 {
-                // Schedule for delayed time
-                scheduler.schedule(action: action, delay: amount)
-            } else {
-                // Insert in delayed queue
-                delayedQueue.pushBack(action)
+        shouldDisplayMessage(context: action.context) { [weak self] messageDisplayDecision in
+            // if message is discarded, early exit
+            if case .discard = messageDisplayDecision?.decision {
+                self?.state.currentAction = nil
+                self?.performAvailableActions()
+                return
             }
-            state.currentAction = nil
-            performAvailableActions()
-            return
+            
+            // if message is delayed, add it to the scheduler to be delayed
+            // by the amount of seconds, and exit
+            if case .delay(let amount) = messageDisplayDecision?.decision {
+                Log.debug("[ActionManager]: delaying action: \(action.context) for \(amount)s.")
+                
+                if amount > 0 {
+                    // Schedule for delayed time
+                    self?.scheduler.schedule(action: action, delay: amount)
+                } else {
+                    // Insert in delayed queue
+                    self?.delayedQueue.pushBack(action)
+                }
+                self?.state.currentAction = nil
+                self?.performAvailableActions()
+                return
+            }
+            
+            // logic:
+            // 1) ask client to show view controller
+            // 2) wait for client to execute action
+            // 3) ask and wait for client to dismiss view controller
+            
+            // get the action definition
+            let definition = self?.definitions.first { $0.name == action.context.name }
+            
+            // 2) set the execute block which will be called by client
+            action.context.actionDidExecute = { [weak self] context in
+                Log.debug("[ActionManager]: actionDidExecute: \(context).")
+                self?.onMessageAction?(context.name, context)
+            }
+            
+            // 3) set the dismiss block which will be called by client
+            action.context.actionDidDismiss = { [weak self] in
+                Log.debug("[ActionManager]: actionDidDismiss: \(action.context).")
+                self?.onMessageDismissed?(action.context)
+                self?.state.currentAction = nil
+                self?.performAvailableActions()
+            }
+            
+            // 1) ask to present, return if its not
+            guard let handled = definition?.presentAction?(action.context), handled else {
+                Log.debug("[ActionManager]: action NOT presented: \(action.context).")
+                self?.state.currentAction = nil
+                self?.performAvailableActions()
+                return
+            }
+            Log.info("[ActionManager]: action presented: \(action.context).")
+            
+            // iff handled track that message has been displayed
+            // propagate event that message is displayed
+            self?.onMessageDisplayed?(action.context)
+            
+            // record the impression
+            self?.recordImpression(action: action)
         }
-
-        // logic:
-        // 1) ask client to show view controller
-        // 2) wait for client to execute action
-        // 3) ask and wait for client to dismiss view controller
-
-        // get the action definition
-        let definition = definitions.first { $0.name == action.context.name }
-
-        // 2) set the execute block which will be called by client
-        action.context.actionDidExecute = { [weak self] context in
-            Log.debug("[ActionManager]: actionDidExecute: \(context).")
-            self?.onMessageAction?(context.name, context)
+    }
+    
+    func shouldDisplayMessage(context: ActionContext, callback: @escaping (MessageDisplayChoice?) -> ()) {
+        if useAsyncDecisionHandlers {
+            DispatchQueue.global(qos: .background).async { [weak self] in
+                let messageDisplayDecision = self?.shouldDisplayMessage?(context)
+                DispatchQueue.main.async {
+                    callback(messageDisplayDecision)
+                }
+            }
+        } else {
+            let messageDisplayDecision = self.shouldDisplayMessage?(context)
+            callback(messageDisplayDecision)
         }
-
-        // 3) set the dismiss block which will be called by client
-        action.context.actionDidDismiss = { [weak self] in
-            Log.debug("[ActionManager]: actionDidDismiss: \(action.context).")
-            self?.onMessageDismissed?(action.context)
-            self?.state.currentAction = nil
-            self?.performAvailableActions()
-        }
-
-        // 1) ask to present, return if its not
-        guard let handled = definition?.presentAction?(action.context), handled else {
-            Log.debug("[ActionManager]: action NOT presented: \(action.context).")
-            state.currentAction = nil
-            performAvailableActions()
-            return
-        }
-        Log.info("[ActionManager]: action presented: \(action.context).")
-
-        // iff handled track that message has been displayed
-        // propagate event that message is displayed
-        onMessageDisplayed?(action.context)
-
-        // record the impression
-        recordImpression(action: action)
     }
 }
