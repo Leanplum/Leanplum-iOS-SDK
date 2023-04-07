@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Milos Jakovljevic on 2.01.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -15,14 +15,14 @@ extension ActionManager {
         
         var name: String {
             switch self {
-                case .high:
-                    return "high"
-                default:
-                    return "default"
+            case .high:
+                return "high"
+            default:
+                return "default"
             }
         }
     }
-
+    
     @objc public func trigger(contexts: [Any], priority: Priority = .default, trigger: ActionsTrigger? = nil) {
         guard let contexts = contexts as? [ActionContext] else {
             return
@@ -32,21 +32,36 @@ extension ActionManager {
         guard let firstContext = contexts.first else {
             return
         }
-
+        
         // By default, add only one message to queue if `prioritizeMessages` is not implemented
         // This ensures backwards compatibility
-        let filteredActions = prioritizeMessages?(contexts, trigger) ?? [firstContext]
-        let actions: [Action] = filteredActions.map {
-            .action(context: $0)
-        }
-        
-        Log.debug("[ActionManager]: triggering actions with priority: \(priority.name).")
-        
-        switch priority {
+        prioritizeMessages(contexts: contexts, defaultContexts: [firstContext], trigger: trigger) { [self] filteredActions in
+            let actions: [Action] = filteredActions.map {
+                .action(context: $0)
+            }
+            
+            Log.debug("[ActionManager]: triggering actions with priority: \(priority.name).")
+            
+            switch priority {
             case .high:
-                insertActions(actions: actions)
+                self.insertActions(actions: actions)
             default:
-                appendActions(actions: actions)
+                self.appendActions(actions: actions)
+            }
+        }
+    }
+    
+    func prioritizeMessages(contexts: [ActionContext], defaultContexts: [ActionContext], trigger: ActionsTrigger? = nil, callback: @escaping ([ActionContext]) -> ()) {
+        if useAsyncDecisionHandlers {
+            DispatchQueue.global(qos: .background).async { [weak self] in
+                let filteredActions = self?.prioritizeMessages?(contexts, trigger) ?? defaultContexts
+                DispatchQueue.main.async {
+                    callback(filteredActions)
+                }
+            }
+        } else {
+            let filteredActions = self.prioritizeMessages?(contexts, trigger) ?? defaultContexts
+            callback(filteredActions)
         }
     }
     
@@ -90,4 +105,3 @@ extension ActionManager {
         }
     }
 }
-
