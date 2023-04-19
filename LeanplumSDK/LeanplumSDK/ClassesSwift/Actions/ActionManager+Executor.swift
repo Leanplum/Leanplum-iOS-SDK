@@ -25,7 +25,7 @@ extension ActionManager {
                 let definition = definitions.first { $0.name == action.context.name }
                 let _ = definition?.dismissAction?(action.context)
                 
-                Log.debug("[ActionManager]: asking for dismissal: \(action.context).")
+                Log.debug("\(ActionManager.logTag): asking for dismissal: \(action.context).")
             }
             return
         }
@@ -36,11 +36,11 @@ extension ActionManager {
             return
         }
         
-        Log.debug("[ActionManager]: running action with name: \(action.context).")
+        Log.debug("\(ActionManager.logTag): running action with name: \(action.context).")
         
         if action.type == .single,
            Leanplum.shouldSuppressMessage(action.context) {
-            Log.info("[ActionManager]: local IAM caps reached, suppressing \(action.context).")
+            Log.info("\(ActionManager.logTag): local IAM caps reached, suppressing \(action.context).")
             state.currentAction = nil
             performAvailableActions()
             return
@@ -59,7 +59,7 @@ extension ActionManager {
             // if message is delayed, add it to the scheduler to be delayed
             // by the amount of seconds, and exit
             if case .delay(let amount) = messageDisplayDecision?.decision {
-                Log.debug("[ActionManager]: delaying action: \(action.context) for \(amount)s.")
+                Log.debug("\(ActionManager.logTag): delaying action: \(action.context) for \(amount)s.")
                 
                 if amount > 0 {
                     // Schedule for delayed time
@@ -82,7 +82,7 @@ extension ActionManager {
             let definition = self?.definitions.first { $0.name == action.context.name }
             
             let actionDidExecute: (ActionContext) -> () = { [weak self] context in
-                Log.debug("[ActionManager]: actionDidExecute: \(context).")
+                Log.debug("\(ActionManager.logTag): actionDidExecute: \(context).")
                 self?.onMessageAction?(context.name, context)
             }
             
@@ -98,7 +98,7 @@ extension ActionManager {
             }
             
             let actionDidDismiss = { [weak self] in
-                Log.debug("[ActionManager]: actionDidDismiss: \(action.context).")
+                Log.debug("\(ActionManager.logTag): actionDidDismiss: \(action.context).")
                 self?.onMessageDismissed?(action.context)
                 self?.state.currentAction = nil
                 self?.performAvailableActions()
@@ -117,12 +117,12 @@ extension ActionManager {
             
             // 1) ask to present, return if its not
             guard let handled = definition?.presentAction?(action.context), handled else {
-                Log.debug("[ActionManager]: action NOT presented: \(action.context).")
+                Log.debug("\(ActionManager.logTag): action NOT presented: \(action.context).")
                 self?.state.currentAction = nil
                 self?.performAvailableActions()
                 return
             }
-            Log.info("[ActionManager]: action presented: \(action.context).")
+            Log.info("\(ActionManager.logTag): action presented: \(action.context).")
             
             // iff handled track that message has been displayed
             // propagate event that message is displayed
@@ -151,5 +151,9 @@ extension ActionManager {
             let messageDisplayDecision = self.shouldDisplayMessage?(context)
             callback(messageDisplayDecision)
         }
+    }
+    
+    static var logTag: String {
+        "[ActionManager][\(Thread.current.threadName)]"
     }
 }
