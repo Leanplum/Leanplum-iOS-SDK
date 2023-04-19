@@ -81,18 +81,38 @@ extension ActionManager {
             // get the action definition
             let definition = self?.definitions.first { $0.name == action.context.name }
             
-            // 2) set the execute block which will be called by client
-            action.context.actionDidExecute = { [weak self] context in
+            let actionDidExecute: (ActionContext) -> () = { [weak self] context in
                 Log.debug("[ActionManager]: actionDidExecute: \(context).")
                 self?.onMessageAction?(context.name, context)
             }
             
-            // 3) set the dismiss block which will be called by client
-            action.context.actionDidDismiss = { [weak self] in
+            // 2) set the execute block which will be called by client
+            action.context.actionDidExecute = { [weak self] context in
+                if self?.useAsyncDecisionHandlers == true {
+                    DispatchQueue.global(qos: .background).async {
+                        actionDidExecute(context)
+                    }
+                } else {
+                    actionDidExecute(context)
+                }
+            }
+            
+            let actionDidDismiss = { [weak self] in
                 Log.debug("[ActionManager]: actionDidDismiss: \(action.context).")
                 self?.onMessageDismissed?(action.context)
                 self?.state.currentAction = nil
                 self?.performAvailableActions()
+            }
+            
+            // 3) set the dismiss block which will be called by client
+            action.context.actionDidDismiss = { [weak self] in
+                if self?.useAsyncDecisionHandlers == true {
+                    DispatchQueue.global(qos: .background).async {
+                        actionDidDismiss()
+                    }
+                } else {
+                    actionDidDismiss()
+                }
             }
             
             // 1) ask to present, return if its not
@@ -106,7 +126,13 @@ extension ActionManager {
             
             // iff handled track that message has been displayed
             // propagate event that message is displayed
-            self?.onMessageDisplayed?(action.context)
+            if self?.useAsyncDecisionHandlers == true {
+                DispatchQueue.global(qos: .background).async { [weak self] in
+                    self?.onMessageDisplayed?(action.context)
+                }
+            } else {
+                self?.onMessageDisplayed?(action.context)
+            }
             
             // record the impression
             self?.recordImpression(action: action)
