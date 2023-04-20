@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Ben Marten on 6/6/16.
-//  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2023 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -124,6 +124,17 @@
    CFTypeID boolID = CFBooleanGetTypeID();
    CFTypeID numID = CFGetTypeID((__bridge CFTypeRef)(value));
    return numID == boolID;
+}
+
++ (void)dispatchOnMainQueue:(void (^_Nonnull)(void))block
+{
+    if ([NSThread isMainThread]) {
+        block();
+    } else {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            block();
+        });
+    }
 }
 
 @end

@@ -15,7 +15,8 @@ import Foundation
     /// Set a new configuration to override a configuration option
     public var configuration: Configuration = .default
     
-    public var useAsyncDecisionHandlers = false
+    public var useAsyncHandlers = false
+    public let actionQueue = DispatchQueue(label: "leanplum.background_action_queue", qos: .background, target: DispatchQueue.global())
 
     lazy var queue: Queue = Queue()
     lazy var delayedQueue: Queue = Queue()
