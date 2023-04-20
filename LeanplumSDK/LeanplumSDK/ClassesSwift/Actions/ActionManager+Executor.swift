@@ -88,8 +88,8 @@ extension ActionManager {
             
             // 2) set the execute block which will be called by client
             action.context.actionDidExecute = { [weak self] context in
-                if self?.useAsyncDecisionHandlers == true {
-                    DispatchQueue.global(qos: .background).async {
+                if self?.useAsyncHandlers == true {
+                    self?.actionQueue.async {
                         actionDidExecute(context)
                     }
                 } else {
@@ -106,8 +106,8 @@ extension ActionManager {
             
             // 3) set the dismiss block which will be called by client
             action.context.actionDidDismiss = { [weak self] in
-                if self?.useAsyncDecisionHandlers == true {
-                    DispatchQueue.global(qos: .background).async {
+                if self?.useAsyncHandlers == true {
+                    self?.actionQueue.async {
                         actionDidDismiss()
                     }
                 } else {
@@ -126,8 +126,8 @@ extension ActionManager {
             
             // iff handled track that message has been displayed
             // propagate event that message is displayed
-            if self?.useAsyncDecisionHandlers == true {
-                DispatchQueue.global(qos: .background).async { [weak self] in
+            if self?.useAsyncHandlers == true {
+                self?.actionQueue.async { [weak self] in
                     self?.onMessageDisplayed?(action.context)
                 }
             } else {
@@ -140,8 +140,8 @@ extension ActionManager {
     }
     
     func shouldDisplayMessage(context: ActionContext, callback: @escaping (MessageDisplayChoice?) -> ()) {
-        if useAsyncDecisionHandlers {
-            DispatchQueue.global(qos: .background).async { [weak self] in
+        if useAsyncHandlers {
+            actionQueue.async { [weak self] in
                 let messageDisplayDecision = self?.shouldDisplayMessage?(context)
                 DispatchQueue.main.async {
                     callback(messageDisplayDecision)

@@ -52,8 +52,8 @@ extension ActionManager {
     }
     
     func prioritizeMessages(contexts: [ActionContext], defaultContexts: [ActionContext], trigger: ActionsTrigger? = nil, callback: @escaping ([ActionContext]) -> ()) {
-        if useAsyncDecisionHandlers {
-            DispatchQueue.global(qos: .background).async { [weak self] in
+        if useAsyncHandlers {
+            actionQueue.async { [weak self] in
                 let filteredActions = self?.prioritizeMessages?(contexts, trigger) ?? defaultContexts
                 DispatchQueue.main.async {
                     callback(filteredActions)
