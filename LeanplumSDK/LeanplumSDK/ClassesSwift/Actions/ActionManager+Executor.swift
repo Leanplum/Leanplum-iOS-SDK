@@ -25,7 +25,7 @@ extension ActionManager {
                 let definition = definitions.first { $0.name == action.context.name }
                 let _ = definition?.dismissAction?(action.context)
                 
-                Log.debug("[ActionManager]: asking for dismissal: \(action.context).")
+                Log.debug("\(ActionManager.logTag): asking for dismissal: \(action.context).")
             }
             return
         }
@@ -36,11 +36,11 @@ extension ActionManager {
             return
         }
         
-        Log.debug("[ActionManager]: running action with name: \(action.context).")
+        Log.debug("\(ActionManager.logTag): running action with name: \(action.context).")
         
         if action.type == .single,
            Leanplum.shouldSuppressMessage(action.context) {
-            Log.info("[ActionManager]: local IAM caps reached, suppressing \(action.context).")
+            Log.info("\(ActionManager.logTag): local IAM caps reached, suppressing \(action.context).")
             state.currentAction = nil
             performAvailableActions()
             return
@@ -59,7 +59,7 @@ extension ActionManager {
             // if message is delayed, add it to the scheduler to be delayed
             // by the amount of seconds, and exit
             if case .delay(let amount) = messageDisplayDecision?.decision {
-                Log.debug("[ActionManager]: delaying action: \(action.context) for \(amount)s.")
+                Log.debug("\(ActionManager.logTag): delaying action: \(action.context) for \(amount)s.")
                 
                 if amount > 0 {
                     // Schedule for delayed time
@@ -81,32 +81,58 @@ extension ActionManager {
             // get the action definition
             let definition = self?.definitions.first { $0.name == action.context.name }
             
-            // 2) set the execute block which will be called by client
-            action.context.actionDidExecute = { [weak self] context in
-                Log.debug("[ActionManager]: actionDidExecute: \(context).")
+            let actionDidExecute: (ActionContext) -> () = { [weak self] context in
+                Log.debug("\(ActionManager.logTag): actionDidExecute: \(context).")
                 self?.onMessageAction?(context.name, context)
             }
             
-            // 3) set the dismiss block which will be called by client
-            action.context.actionDidDismiss = { [weak self] in
-                Log.debug("[ActionManager]: actionDidDismiss: \(action.context).")
+            // 2) set the execute block which will be called by client
+            action.context.actionDidExecute = { [weak self] context in
+                if self?.useAsyncHandlers == true {
+                    self?.actionQueue.async {
+                        actionDidExecute(context)
+                    }
+                } else {
+                    actionDidExecute(context)
+                }
+            }
+            
+            let actionDidDismiss = { [weak self] in
+                Log.debug("\(ActionManager.logTag): actionDidDismiss: \(action.context).")
                 self?.onMessageDismissed?(action.context)
                 self?.state.currentAction = nil
                 self?.performAvailableActions()
             }
             
+            // 3) set the dismiss block which will be called by client
+            action.context.actionDidDismiss = { [weak self] in
+                if self?.useAsyncHandlers == true {
+                    self?.actionQueue.async {
+                        actionDidDismiss()
+                    }
+                } else {
+                    actionDidDismiss()
+                }
+            }
+            
             // 1) ask to present, return if its not
             guard let handled = definition?.presentAction?(action.context), handled else {
-                Log.debug("[ActionManager]: action NOT presented: \(action.context).")
+                Log.debug("\(ActionManager.logTag): action NOT presented: \(action.context).")
                 self?.state.currentAction = nil
                 self?.performAvailableActions()
                 return
             }
-            Log.info("[ActionManager]: action presented: \(action.context).")
+            Log.info("\(ActionManager.logTag): action presented: \(action.context).")
             
             // iff handled track that message has been displayed
             // propagate event that message is displayed
-            self?.onMessageDisplayed?(action.context)
+            if self?.useAsyncHandlers == true {
+                self?.actionQueue.async { [weak self] in
+                    self?.onMessageDisplayed?(action.context)
+                }
+            } else {
+                self?.onMessageDisplayed?(action.context)
+            }
             
             // record the impression
             self?.recordImpression(action: action)
@@ -114,8 +140,8 @@ extension ActionManager {
     }
     
     func shouldDisplayMessage(context: ActionContext, callback: @escaping (MessageDisplayChoice?) -> ()) {
-        if useAsyncDecisionHandlers {
-            DispatchQueue.global(qos: .background).async { [weak self] in
+        if useAsyncHandlers {
+            actionQueue.async { [weak self] in
                 let messageDisplayDecision = self?.shouldDisplayMessage?(context)
                 DispatchQueue.main.async {
                     callback(messageDisplayDecision)
@@ -125,5 +151,9 @@ extension ActionManager {
             let messageDisplayDecision = self.shouldDisplayMessage?(context)
             callback(messageDisplayDecision)
         }
+    }
+    
+    static var logTag: String {
+        "[ActionManager][\(Thread.current.threadName)]"
     }
 }

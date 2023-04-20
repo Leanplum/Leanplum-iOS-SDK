@@ -3,7 +3,7 @@
 //  Leanplum-iOS-SDK-source
 //
 //  Created by Mayank Sanganeria on 4/24/18.
-//
+//  Copyright (c) 2023 Leanplum, Inc. All rights reserved.
 
 #import "LeanplumInternal.h"
 #import "LPVarCache.h"
@@ -482,9 +482,9 @@ preventRealtimeUpdating:(BOOL)preventRealtimeUpdating;
         chainedActionContext->_isRooted = self->_isRooted;
         chainedActionContext->_isChainedMessage = YES;
         chainedActionContext->_parentContext = weakSelf;
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [LPUtils dispatchOnMainQueue:^{
             [[LPActionManager shared] triggerWithContexts:@[chainedActionContext] priority:PriorityHigh trigger:nil];
-        });
+        }];
     };
     
     if (messageId && [actionType isEqualToString:LP_VALUE_CHAIN_MESSAGE_ACTION_NAME]) {
@@ -501,7 +501,15 @@ preventRealtimeUpdating:(BOOL)preventRealtimeUpdating;
                 if (message) {
                     executeChainedMessage();
                 }
-                LPActionManager.shared.isPaused = previousPauseState;
+                if ([[LPActionManager shared] useAsyncHandlers]) {
+                    dispatch_async([[LPActionManager shared] actionQueue], ^{
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            LPActionManager.shared.isPaused = previousPauseState;
+                        });
+                    });
+                } else {
+                    LPActionManager.shared.isPaused = previousPauseState;
+                }
             }];
         }
     } else {
@@ -514,9 +522,9 @@ preventRealtimeUpdating:(BOOL)preventRealtimeUpdating;
         childContext->_isRooted = _isRooted;
         childContext->_parentContext = weakSelf;
         childContext->_key = name;
-        dispatch_async(dispatch_get_main_queue(), ^{
+        [LPUtils dispatchOnMainQueue:^{
             [[LPActionManager shared] triggerWithContexts:@[childContext] priority:PriorityHigh trigger:nil];
-        });
+        }];
     }
     
     LP_END_TRY

@@ -3,7 +3,7 @@
 //  Leanplum
 //
 //  Created by Ben Marten on 6/6/16.
-//  Copyright (c) 2016 Leanplum, Inc. All rights reserved.
+//  Copyright (c) 2023 Leanplum, Inc. All rights reserved.
 //
 //  Licensed to the Apache Software Foundation (ASF) under one
 //  or more contributor license agreements.  See the NOTICE file
@@ -71,5 +71,7 @@
  * Checks if given value is a NSNumber with bool value
  */
 + (BOOL)isBoolNumber:(NSNumber * _Nonnull)value;
+
++ (void)dispatchOnMainQueue:(void (^_Nonnull)(void))block;
 
 @end
