@@ -38,7 +38,7 @@
 #define IS_NOOP (IS_JAILBROKEN || [LPConstantsState sharedState].isTestMode || [LPConstantsState sharedState].isInPermanentFailureState)
 #define RETURN_IF_NOOP if (IS_NOOP) return
 
-#define LEANPLUM_SDK_VERSION @"6.0.4"
+#define LEANPLUM_SDK_VERSION @"6.0.5"
 #define LEANPLUM_CLIENT @"ios"
 #define LEANPLUM_SUPPORTED_ENCODING @"gzip"
 

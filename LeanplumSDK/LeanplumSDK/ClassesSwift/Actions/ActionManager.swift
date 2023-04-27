@@ -15,6 +15,11 @@ import Foundation
     /// Set a new configuration to override a configuration option
     public var configuration: Configuration = .default
     
+    /// Setting `useAsyncHandlers` to `true` will have `prioritizeMessages` and
+    ///  `shouldDisplayMessage` handlers to be invoked in a background dispatch queue.
+    ///  OnMessage handlers will also be invoked in that background queue.
+    ///  Enabling `useAsyncHandlers` disables `ActionManager.Configuration.dismissOnPushArrival` and
+    ///  push notification open action will not dismiss currently shown message.
     public var useAsyncHandlers = false
     public let actionQueue = DispatchQueue(label: "leanplum.background_action_queue", qos: .background, target: DispatchQueue.global())
 

@@ -19,6 +19,7 @@ extension ActionManager {
             // ask user to dimiss current action so we can execute next one
             if
                 configuration.dismissOnPushArrival,
+                !useAsyncHandlers, // disable dismiss on push open action when using async handlers
                 let nextAction = queue.first(),
                 nextAction.notification
             {
