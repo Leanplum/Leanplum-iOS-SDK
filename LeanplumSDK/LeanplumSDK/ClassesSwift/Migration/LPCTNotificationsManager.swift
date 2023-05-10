@@ -10,9 +10,9 @@ import Foundation
 @_implementationOnly import CleverTapSDK
 
 @objc public class LPCTNotificationsManager: NotificationsManager {
-    struct Constants {
-        static let OpenDeepLinksInForeground = true
-    }
+    @objc public var openDeepLinksInForeground = false
+    @objc public var handleCleverTapNotificationBlock: LeanplumHandleCleverTapNotificationBlock?
+
     
     enum NotificationEvent: String, CustomStringConvertible {
         case opened = "Open"
@@ -57,13 +57,25 @@ import Foundation
     }
     
     func handleCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
-        handleWithCleverTapInstance {
-            Log.info("""
+        let handleNotification = {
+            let openInForeground = self.openDeepLinksInForeground
+            self.handleWithCleverTapInstance {
+                Log.info("""
                     [Wrapper] Calling CleverTap.handlePushNotification:openDeepLinksInForeground: \
-                    \(Constants.OpenDeepLinksInForeground) for Push \(event)
+                    \(openInForeground) for Push \(event)
                     """)
-            CleverTap.handlePushNotification(userInfo, openDeepLinksInForeground: Constants.OpenDeepLinksInForeground)
+                CleverTap.handlePushNotification(userInfo, openDeepLinksInForeground: openInForeground)
+            }
         }
+        
+        // Execute custom block
+        if let block = self.handleCleverTapNotificationBlock {
+            Log.info("[Wrapper] Calling custom handleCleverTapNotificationBlock")
+            block(userInfo, event == .opened, handleNotification)
+            return
+        }
+        
+        handleNotification()
     }
     
     func handleWithCleverTapInstance(action: @escaping () -> ()) {
