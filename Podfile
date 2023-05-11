@@ -4,7 +4,7 @@ use_modular_headers!
 workspace 'Leanplum.xcworkspace'
 
 def clever_tap
-  pod 'CleverTap-iOS-SDK', '~> 4.2.0'
+  pod 'CleverTap-iOS-SDK', '~> 5.0.0'
 end
 
 target 'LeanplumSDKApp' do
