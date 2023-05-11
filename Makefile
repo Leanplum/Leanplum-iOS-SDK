@@ -9,7 +9,7 @@ spm:
 
 updateVersion:
 	sed -i '' -e "s/#define LEANPLUM_SDK_VERSION @.*/#define LEANPLUM_SDK_VERSION @\"`cat sdk-version.txt`\"/g" "./LeanplumSDK/LeanplumSDK/Classes/Internal/LPConstants.h";\
-	minVersion=6.0.0; version=`cat sdk-version.txt`;\
+	minVersion=6.0; version=`cat sdk-version.txt`;\
 	if [[ "$$version" != *"beta"* ]]; then \
 		sed -i '' -e "s/s.dependency 'Leanplum-iOS-SDK', .*/s.dependency 'Leanplum-iOS-SDK', \"~> $$minVersion\"/g" "./Leanplum-iOS-Location.podspec";\
 		sed -i '' -e "s/s.dependency 'Leanplum-iOS-SDK', .*/s.dependency 'Leanplum-iOS-SDK', \"~> $$minVersion\"/g" "./Leanplum-iOS-LocationAndBeacons.podspec";\
