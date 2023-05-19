@@ -145,9 +145,10 @@ typedef void (^LeanplumSetLocationBlock)(BOOL success);
 typedef BOOL (^LeanplumActionBlock)(LPActionContext* context);
 typedef void (^LeanplumHandleNotificationBlock)(void);
 typedef void (^LeanplumShouldHandleNotificationBlock)(NSDictionary *userInfo, LeanplumHandleNotificationBlock response);
+typedef void (^LeanplumCleverTapNotificationBlock)(BOOL openDeeplink);
 typedef void (^LeanplumHandleCleverTapNotificationBlock)(NSDictionary *userInfo,
                                                          BOOL isNotificationOpen,
-                                                         LeanplumHandleNotificationBlock response);
+                                                         LeanplumCleverTapNotificationBlock response);
 typedef void (^LeanplumPushSetupBlock)(void);
 /**@}*/
 
@@ -453,7 +454,7 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
  * The block provides the notification userInfo, a bool if the push is received or opened, and a block with the default implementation.
  * @see LeanplumHandleCleverTapNotificationBlock for details.
  */
-+ (void)setHandleCleverTapNotification:(LeanplumHandleCleverTapNotificationBlock)block;
++ (void)setHandleCleverTapNotification:(_Nullable LeanplumHandleCleverTapNotificationBlock)block;
 
 /**
  * Sets if a Deliver event should be tracked when a Push Notification is received.
