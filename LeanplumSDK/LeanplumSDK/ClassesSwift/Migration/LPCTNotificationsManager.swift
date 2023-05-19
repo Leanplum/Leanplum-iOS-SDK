@@ -57,8 +57,7 @@ import Foundation
     }
     
     func handleCleverTapNotification(userInfo: [AnyHashable : Any], event: NotificationEvent) {
-        let handleNotification = {
-            let openInForeground = self.openDeepLinksInForeground
+        let handleNotification:LeanplumCleverTapNotificationBlock = { openInForeground in
             self.handleWithCleverTapInstance {
                 Log.info("""
                     [Wrapper] Calling CleverTap.handlePushNotification:openDeepLinksInForeground: \
@@ -75,10 +74,10 @@ import Foundation
             return
         }
         
-        handleNotification()
+        handleNotification(openDeepLinksInForeground)
     }
     
-    func handleWithCleverTapInstance(action: @escaping () -> ()) {
+    @objc public func handleWithCleverTapInstance(action: @escaping () -> ()) {
         if MigrationManager.shared.hasLaunched {
             action()
         } else {

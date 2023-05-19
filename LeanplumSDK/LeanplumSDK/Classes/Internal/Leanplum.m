@@ -1628,13 +1628,8 @@ void leanplumExceptionHandler(NSException *exception);
     [manager setOpenDeepLinksInForeground:openDeepLinksInForeground];
 }
 
-+ (void)setHandleCleverTapNotification:(LeanplumHandleCleverTapNotificationBlock)block
++ (void)setHandleCleverTapNotification:(_Nullable LeanplumHandleCleverTapNotificationBlock)block
 {
-    if (!block) {
-        [self throwError:@"[Leanplum setHandleCleverTapNotification:] Nil block parameter "
-         @"provided."];
-        return;
-    }
     LP_TRY
     ((LPCTNotificationsManager *)[Leanplum notificationsManager]).handleCleverTapNotificationBlock = block;
     LP_END_TRY
