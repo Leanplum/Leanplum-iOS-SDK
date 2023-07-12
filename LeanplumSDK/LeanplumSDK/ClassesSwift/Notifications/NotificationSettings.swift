@@ -10,30 +10,20 @@ import Foundation
 class NotificationSettings {
 
     func getSettings(updateToServer: Bool = false, completionHandler: ((_ settings: [AnyHashable: Any], _ areChanged: Bool)->())? = nil) {
-        if #available(iOS 10.0, *) {
-            self.getSettingsFromUserNotification { [weak self] settings in
-                guard let self = self else {
-                    completionHandler?([:], false)
-                    return
-                }
-                var settings_: [AnyHashable: Any] = [:]
-                for item in settings {
-                    settings_[item.key] = item.value != nil ? item.value : nil
-                }
-                let changed = !settings_.isEqual(Leanplum.user.notificationSettings ?? [:])
-                if changed {
-                    self.updateSettings(settings_, updateToServer: updateToServer)
-                }
-                completionHandler?(settings_, changed)
+        self.getSettingsFromUserNotification { [weak self] settings in
+            guard let self = self else {
+                completionHandler?([:], false)
+                return
             }
-        } else {
-            // Fallback on earlier versions
-            let settings = getSettingsFromUIApplication()
-            let changed = !settings.isEqual(Leanplum.user.notificationSettings ?? [:])
+            var settings_: [AnyHashable: Any] = [:]
+            for item in settings {
+                settings_[item.key] = item.value != nil ? item.value : nil
+            }
+            let changed = !settings_.isEqual(Leanplum.user.notificationSettings ?? [:])
             if changed {
-                updateSettings(settings, updateToServer: updateToServer)
+                self.updateSettings(settings_, updateToServer: updateToServer)
             }
-            completionHandler?(settings, changed)
+            completionHandler?(settings_, changed)
         }
     }
     
@@ -55,7 +45,6 @@ class NotificationSettings {
         }
     }
 
-    @available(iOS 10.0, *)
     private func getSettingsFromUserNotification(completionHandler: @escaping (_ settings: [AnyHashable: Any?])->()) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             let types = settings.toInt()
@@ -76,13 +65,5 @@ class NotificationSettings {
                 completionHandler(settings)
             }
         }
-    }
-
-    /// Retrieves notification settings from UIApplication. Used for iOS9 devices (older than iOS 10)
-    private func getSettingsFromUIApplication() -> [AnyHashable: Any] {
-        guard let settings = UIApplication.shared.currentUserNotificationSettings?.dictionary else {
-            return [:]
-        }
-        return settings
     }
 }

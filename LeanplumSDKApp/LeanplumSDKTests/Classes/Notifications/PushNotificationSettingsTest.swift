@@ -10,7 +10,6 @@ import Foundation
 import XCTest
 @testable import Leanplum
 
-@available(iOS 10.0, *)
 class PushNotificationSettingsTest: XCTestCase {
     
     var notificationSettings: NotificationSettings!
@@ -168,7 +167,6 @@ extension NotificationSettings: NotificationSettingsProtocol {
     }
 }
 
-@available(iOS 10.0, *)
 extension UNUserNotificationCenter {
     static var originalMethod: OpaquePointer?
     static var swizzledMethod: OpaquePointer?
@@ -195,7 +193,6 @@ extension UNUserNotificationCenter {
     }
 }
 
-@available(iOS 10.0, *)
 extension UNNotificationSettings {
     static var fakeAuthorizationStatus: UNAuthorizationStatus = .authorized
     
@@ -222,7 +219,6 @@ extension UNNotificationSettings {
     }
 }
 
-@available(iOS 10.0, *)
 class MockNSCoder: NSCoder {
     var authorizationStatus = UNAuthorizationStatus.authorized.rawValue
     

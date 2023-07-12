@@ -43,25 +43,19 @@ import Foundation
             block()
             return
         }
-        if #available(iOS 10.0, *) {
-            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
-                if let error = error {
-                    // Handle the error here.
-                    Log.error("Error: \(error.localizedDescription)")
-                }
-                
-                // Register for remote notification to create and send push token to server
-                // no metter if the request was granted or has error, push token will be generated
-                // and later if user decides to go into the settings and enables push notifications
-                // we will have token and will only update push types
-                DispatchQueue.main.async {
-                    UIApplication.shared.registerForRemoteNotifications()
-                }
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+            if let error = error {
+                // Handle the error here.
+                Log.error("Error: \(error.localizedDescription)")
             }
-        } else if #available(iOS 8.0, *) {
-            UIApplication.shared.registerUserNotificationSettings(UIUserNotificationSettings(types: [.badge, .sound, .alert],
-                                                                                             categories: nil))
-            UIApplication.shared.registerForRemoteNotifications()
+
+            // Register for remote notification to create and send push token to server
+            // no metter if the request was granted or has error, push token will be generated
+            // and later if user decides to go into the settings and enables push notifications
+            // we will have token and will only update push types
+            DispatchQueue.main.async {
+                UIApplication.shared.registerForRemoteNotifications()
+            }
         }
     
     }
