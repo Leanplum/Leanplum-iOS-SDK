@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 23.12.21.
-//  Copyright © 2021 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 
@@ -13,7 +13,8 @@ extension NotificationsProxy {
         if let fromStart = notificationHandledFromStart {
             let idA = Leanplum.notificationsManager().getNotificationId(fromStart)
             let idB = Leanplum.notificationsManager().getNotificationId(userInfo)
-            return idA == idB
+            // CleverTap notifications do not have notification Id
+            return idA == idB && idA != "-1"
         }
         return false
     }
