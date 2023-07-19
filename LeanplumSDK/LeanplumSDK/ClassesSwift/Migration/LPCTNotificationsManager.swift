@@ -3,14 +3,15 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 12.10.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 // Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
 @_implementationOnly import CleverTapSDK
 
 @objc public class LPCTNotificationsManager: NotificationsManager {
-    @objc public var openDeepLinksInForeground = false
+    // Using NSNumber since Optional Bool cannot be represented in Objective-C
+    @objc public var openDeepLinksInForeground: NSNumber?
     @objc public var handleCleverTapNotificationBlock: LeanplumHandleCleverTapNotificationBlock?
 
     
@@ -74,7 +75,8 @@ import Foundation
             return
         }
         
-        handleNotification(openDeepLinksInForeground)
+        // If `openDeepLinksInForeground` is not set explicitly, use `true` for notification Opens.
+        handleNotification(openDeepLinksInForeground?.boolValue ?? (event == .opened))
     }
     
     @objc public func handleWithCleverTapInstance(action: @escaping () -> ()) {
