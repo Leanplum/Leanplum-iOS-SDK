@@ -59,15 +59,27 @@ class IdentityManager {
     @StringOptionalUserDefaults(key: Constants.IdentityStateKey)
     var state: String?
     
-    init(userId: String, deviceId: String) {
+    @StringOptionalUserDefaults(key: "loggedInUserId")
+    var loggedInUserId: String?
+    
+    convenience init(userId: String, deviceId: String) {
+        self.init(userId: userId, deviceId: deviceId, loggedInUserId: nil)
+    }
+    
+    init(userId: String, deviceId: String, loggedInUserId: String?) {
         self.userId = userId
         self.deviceId = deviceId
+        self.loggedInUserId = loggedInUserId
         
         identify()
     }
     
     func setUserId(_ userId: String) {
-        if (state == IdentityState.anonymous()) {
+        if userId == deviceId && state == IdentityState.identified() {
+            return
+        }
+        
+        if state == IdentityState.anonymous() {
             if let hash = Utilities.sha256_40(string: userId) {
                 anonymousLoginUserId = hash
             } else {
@@ -81,7 +93,10 @@ class IdentityManager {
     }
     
     func identify() {
-        if isAnonymous {
+        if isAnonymous, let loggedInUserId = self.loggedInUserId {
+            self.userId = loggedInUserId
+            state = IdentityState.identified()
+        } else if isAnonymous {
             state = IdentityState.anonymous()
         } else {
             identifyNonAnonymous()

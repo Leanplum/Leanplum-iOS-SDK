@@ -36,6 +36,9 @@ import Foundation
     @PropUserDefaults(key: Constants.IdentityKeysKey, defaultValue: Constants.DefaultIdentityKeys)
     var identityKeys: [String]
     
+    @StringOptionalUserDefaults(key: Constants.LoggedInUserIdKey)
+    var loggedInUserId: String?
+    
     @MigrationStateUserDefaults(key: Constants.MigrationStateKey, defaultValue: .undefined)
     var migrationState: MigrationState {
         didSet {
@@ -61,10 +64,11 @@ import Foundation
                 Log.error("[Wrapper] Missing Leanplum userId and deviceId. Cannot initialize CleverTap.")
                 return
             }
-
+            
             wrapper = CTWrapper(accountId: id, accountToken: token,
                                 accountRegion: accountRegion,
-                                userId: user, deviceId: device,
+                                useCustomCleverTapId: state != .cleverTap,
+                                userId: user, deviceId: device, loggedInUserId: loggedInUserId,
                                 callbacks: instanceCallbacks)
             wrapper?.launch()
         }

@@ -20,11 +20,13 @@ import Foundation
         let ct: CTConfig?
         let migrationState: String?
         let hash: String?
+        let loggedInUserId: String?
         
         enum CodingKeys: String, CodingKey {
             case hash = "sha256"
             case migrationState = "sdk"
             case ct
+            case loggedInUserId
         }
     }
 
@@ -106,11 +108,20 @@ import Foundation
             }
         }
         
-        if let sdk = migrationData.migrationState {
-            migrationState = MigrationState(stringValue: sdk)
-        }
         if let hash = migrationData.hash {
             migrationHash = hash
+        }
+        
+        if let loggedInUser = migrationData.loggedInUserId {
+            loggedInUserId = loggedInUser
+            Leanplum.onStartIssued {
+                Leanplum.setUserId(loggedInUser)
+            }
+        }
+        
+        // Changing the migrationState value will initialize the Wrapper
+        if let sdk = migrationData.migrationState {
+            migrationState = MigrationState(stringValue: sdk)
         }
     }
     
