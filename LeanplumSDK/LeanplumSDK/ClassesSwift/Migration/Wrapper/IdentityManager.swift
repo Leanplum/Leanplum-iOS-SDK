@@ -3,7 +3,7 @@
 //  LeanplumSDK
 //
 //  Created by Nikola Zagorchev on 6.10.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 // Use @_implementationOnly to *not* expose CleverTapSDK to the Leanplum-Swift header
@@ -28,6 +28,18 @@ import Foundation
  *  For this userId, the CTID is always set to deviceId.
  *  Leanplum UserId can be set through Leanplum.start and Leanplum.setUserId
  *
+ *  - Note: There are cases where the deviceId can remain the same after app uninstall.
+ *  In this case, the SDK has lost the data on the anonymous and logged in user.
+ *  If there is already logged in user on that device, the API will return the logged in userId with the migration data.
+ *  Use this userId as Identified, so CTID is non-anonymous when the `Wrapper` is created.
+ *  The very first `CleverTap` instance must be created as non-anonymous <CTID=deviceId_userIdHash, Identity=userId>.
+ *  This ensures the data will go to the logged in user according to the Leanplum API.
+ *
+ *  - Note: Allow setting the userId to the deviceId if user has already logged in - non-anonymous.
+ *  If the user is anonymous, calling `setUserId` with <userId=deviceId> should be a NOOP.
+ *  If user has logged in on the device, and then `setUserId` is called with <userId=deviceId>,
+ *  treat this as a new user login <CTID=deviceId_deviceIdHash, Identity=deviceId>
+ *
  * - Precondition: DeviceId cannot be changed when CT is used,
  *  since CTID cannot be modified for the same Identity.
 */
@@ -36,6 +48,7 @@ class IdentityManager {
         static let Identity = "Identity"
         static let AnonymousLoginUserIdKey = "__leanplum_anonymous_login_user_id"
         static let IdentityStateKey = "__leanplum_identity_state"
+        static let LoggedInUserKey = "__leanplum_logged_in_user"
         
         static let DeviceIdLengthLimit = 50
         static let IdentityHashLength = 10
@@ -59,7 +72,7 @@ class IdentityManager {
     @StringOptionalUserDefaults(key: Constants.IdentityStateKey)
     var state: String?
     
-    @StringOptionalUserDefaults(key: "loggedInUserId")
+    @StringOptionalUserDefaults(key: Constants.LoggedInUserKey)
     var loggedInUserId: String?
     
     convenience init(userId: String, deviceId: String) {
@@ -75,7 +88,7 @@ class IdentityManager {
     }
     
     func setUserId(_ userId: String) {
-        if userId == deviceId && state == IdentityState.identified() {
+        if userId == deviceId && state == IdentityState.anonymous() {
             return
         }
         
@@ -156,10 +169,10 @@ class IdentityManager {
     }
     
     var isAnonymous: Bool {
-        userId == deviceId
+        userId == deviceId && state != IdentityState.identified()
     }
     
     var shouldAppendUserId: Bool {
-        userIdHash != anonymousLoginUserId && userId != deviceId
+        userIdHash != anonymousLoginUserId && (userId != deviceId || state == IdentityState.identified())
     }
 }
