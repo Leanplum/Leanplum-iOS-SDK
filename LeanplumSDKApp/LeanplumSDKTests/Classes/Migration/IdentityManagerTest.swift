@@ -3,7 +3,7 @@
 //  LeanplumSDKTests
 //
 //  Created by Nikola Zagorchev on 7.10.22.
-//  Copyright © 2022 Leanplum. All rights reserved.
+//  Copyright © 2023 Leanplum. All rights reserved.
 
 import Foundation
 import XCTest
@@ -152,7 +152,7 @@ class IdentityManagerTest: XCTestCase {
         XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId_hash)")
     }
     
-    func testLoggedInUserSetDeviceIdBackAsUserId() {
+    func testLoggedInUserSetDeviceIdAsUserId() {
         let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId, loggedInUserId: userId)
         
         XCTAssertFalse(identityManager.isAnonymous)
@@ -164,7 +164,7 @@ class IdentityManagerTest: XCTestCase {
         XCTAssertFalse(identityManager.isAnonymous)
         XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
         XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
-        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId_hash)")
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(deviceId_hash)")
 
         identityManager.setUserId(userId)
         
@@ -173,6 +173,38 @@ class IdentityManagerTest: XCTestCase {
         XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
         XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId_hash)")
         
+        identityManager.setUserId(userId2)
+        
+        XCTAssertFalse(identityManager.isAnonymous)
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
+        XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId2_hash)")
+    }
+    
+    func testLoggedInUserDeviceId() {
+        let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId, loggedInUserId: deviceId)
+        
+        XCTAssertFalse(identityManager.isAnonymous)
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(deviceId_hash)")
+        
+        // Set again the deviceId as userId
+        identityManager.setUserId(deviceId)
+        
+        XCTAssertFalse(identityManager.isAnonymous)
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
+        XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(deviceId_hash)")
+
+        // Set a new user Id
+        identityManager.setUserId(userId)
+        
+        XCTAssertFalse(identityManager.isAnonymous)
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
+        XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId_hash)")
+        
+        // Set another new user Id
         identityManager.setUserId(userId2)
         
         XCTAssertFalse(identityManager.isAnonymous)
@@ -213,22 +245,45 @@ class IdentityManagerTest: XCTestCase {
     
     func testAnonymousLoginDeviceId() {
         let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId)
+        // isAnonymous is true since userId=deviceId
+        XCTAssertTrue(identityManager.isAnonymous)
         
+        // Since is anonymous and set userId equals deviceId, this should be NOOP
         identityManager.setUserId(deviceId)
         
         // isAnonymous is true since userId=deviceId
         XCTAssertTrue(identityManager.isAnonymous)
-        // state is identified
-        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
-        XCTAssertEqual(identityManager.anonymousLoginUserId, deviceId_hash)
+        // state is still anonymous
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.anonymous())
+        XCTAssertEqual(identityManager.anonymousLoginUserId, nil)
         XCTAssertEqual(identityManager.cleverTapID, deviceId)
         
         identityManager.setUserId(userId)
         
         XCTAssertFalse(identityManager.isAnonymous)
         XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
-        XCTAssertEqual(identityManager.anonymousLoginUserId, deviceId_hash)
-        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(userId_hash)")
+        XCTAssertEqual(identityManager.anonymousLoginUserId, userId_hash)
+        XCTAssertEqual(identityManager.cleverTapID, deviceId)
+    }
+    
+    func testIdentifiedLoginDeviceId() {
+        let identityManager = IdentityManagerMock(userId: deviceId, deviceId: deviceId)
+        // isAnonymous is true since userId=deviceId
+        XCTAssertTrue(identityManager.isAnonymous)
+        
+        // Login a user
+        identityManager.setUserId(userId)
+        XCTAssertFalse(identityManager.isAnonymous)
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
+        XCTAssertEqual(identityManager.anonymousLoginUserId, userId_hash)
+        XCTAssertEqual(identityManager.cleverTapID, deviceId)
+        
+        // Login with deviceId. Since is not anonymous, create a new profile
+        identityManager.setUserId(deviceId)
+        XCTAssertFalse(identityManager.isAnonymous)
+        XCTAssertEqual(identityManager.state, IdentityManager.IdentityState.identified())
+        XCTAssertEqual(identityManager.anonymousLoginUserId, userId_hash)
+        XCTAssertEqual(identityManager.cleverTapID, "deviceId_\(deviceId_hash)")
     }
     
     func testAnonymousLoginNewUser() {
