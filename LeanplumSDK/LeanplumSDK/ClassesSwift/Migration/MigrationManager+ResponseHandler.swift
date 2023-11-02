@@ -82,6 +82,7 @@ import Foundation
     //            "sdk": "lp+ct",
     //            "sha256": "31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8",
     //            "state": "EVENTS_UPLOAD_STARTED",
+    //            "loggedInUserId": "9da5cdc6-m340-42a8-9110-1d4a1099f157",
     //            "success": 1,
     //        }
     //    ]
