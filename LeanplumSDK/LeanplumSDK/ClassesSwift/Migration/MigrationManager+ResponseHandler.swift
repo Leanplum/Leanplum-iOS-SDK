@@ -115,7 +115,7 @@ import Foundation
         
         if let loggedInUser = migrationData.loggedInUserId {
             loggedInUserId = loggedInUser
-            Leanplum.onStartIssued {
+            Leanplum.onStartResponse { _ in
                 Leanplum.setUserId(loggedInUser)
             }
         }
