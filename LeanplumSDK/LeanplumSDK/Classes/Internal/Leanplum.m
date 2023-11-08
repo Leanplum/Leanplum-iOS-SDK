@@ -701,7 +701,8 @@ void leanplumExceptionHandler(NSException *exception);
     free(answer);
 
     if ([results isEqualToString:@"i386"] ||
-        [results isEqualToString:@"x86_64"]) {
+        [results isEqualToString:@"x86_64"] ||
+        [results isEqualToString:@"arm64"]) {
         results = [[UIDevice currentDevice] model];
     }
 
