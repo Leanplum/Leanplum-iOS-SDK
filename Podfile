@@ -1,4 +1,4 @@
-platform :ios, '9.0'
+platform :ios, '11.0'
 use_modular_headers!
 
 workspace 'Leanplum.xcworkspace'
@@ -8,6 +8,7 @@ def clever_tap
 end
 
 target 'LeanplumSDKApp' do
+    platform :ios, '11.0'
     project 'LeanplumSDKApp/LeanplumSDKApp.xcodeproj'
     use_frameworks!
 
@@ -15,6 +16,7 @@ target 'LeanplumSDKApp' do
 end
 
 target 'LeanplumSDKTests' do
+    platform :ios, '11.0'
     project 'LeanplumSDKApp/LeanplumSDKApp.xcodeproj'
     use_frameworks!
 
