@@ -16,6 +16,7 @@ import Foundation
         static let RegionCodeKey = "__leanplum_region_code"
         static let AttributeMappingsKey = "__leanplum_attribute_mappings"
         static let IdentityKeysKey = "__leanplum_identity_keys"
+        static let LoggedInUserIdKey = "__leanplum_logged_in_user_id"
         
         static let DefaultIdentityKeys = [IdentityManager.Constants.Identity]
         

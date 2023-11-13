@@ -35,28 +35,48 @@ class CTWrapper: Wrapper {
     var accountRegion: String
     var identityManager: IdentityManager
     
+    var useCustomCleverTapId: Bool
+    
     public init(accountId: String,
                 accountToken: String,
                 accountRegion: String,
+                useCustomCleverTapId: Bool,
                 userId: String,
                 deviceId: String,
+                loggedInUserId: String?,
                 callbacks: [CleverTapInstanceCallback]) {
         Log.info("[Wrapper] Wrapper Instantiated")
         self.accountId = accountId
         self.accountToken = accountToken
         self.accountRegion = accountRegion
         self.instanceCallbacks = callbacks
+        self.useCustomCleverTapId = useCustomCleverTapId
         
-        identityManager = IdentityManager(userId: userId, deviceId: deviceId)
+        identityManager = IdentityManager(userId: userId, deviceId: deviceId, loggedInUserId: loggedInUserId)
         setLogLevel(LPLogManager.logLevel())
+    }
+    
+    func onUserLogin() {
+        if useCustomCleverTapId {
+            cleverTapInstance?.onUserLogin(identityManager.profile,
+                                           withCleverTapID: identityManager.cleverTapID)
+        } else {
+            cleverTapInstance?.onUserLogin(identityManager.profile)
+        }
     }
     
     func launch() {
         let config = CleverTapInstanceConfig.init(accountId: accountId, accountToken: accountToken, accountRegion: accountRegion)
         config.identityKeys = MigrationManager.shared.identityKeys
-        config.useCustomCleverTapId = true
         config.logLevel = CleverTapLogLevel(LPLogManager.logLevel())
-        cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
+        
+        if useCustomCleverTapId {
+            config.useCustomCleverTapId = true
+            cleverTapInstance = CleverTap.instance(with: config, andCleverTapID: identityManager.cleverTapID)
+        } else {
+            cleverTapInstance = CleverTap.instance(with: config)
+        }
+
         cleverTapInstance?.setLibrary("Leanplum")
         // Track App Launched
         cleverTapInstance?.notifyApplicationLaunched(withOptions: [:])
@@ -69,8 +89,7 @@ class CTWrapper: Wrapper {
                     [Wrapper] will call onUserLogin with \
                     Identity: \(identityManager.userId) and cleverTapId: \(identityManager.cleverTapID)"
                     """)
-            cleverTapInstance?.onUserLogin(identityManager.profile,
-                                           withCleverTapID: identityManager.cleverTapID)
+            onUserLogin()
             setDevicesProperty()
         } else {
             if !identityManager.isValidCleverTapID {
@@ -216,7 +235,7 @@ class CTWrapper: Wrapper {
                 with identity: \(profile) \
                 and CleverTapID:  \(cleverTapID)")
                 """)
-        cleverTapInstance?.onUserLogin(profile, withCleverTapID: cleverTapID)
+        onUserLogin()
         
         setDevicesProperty()
     }
