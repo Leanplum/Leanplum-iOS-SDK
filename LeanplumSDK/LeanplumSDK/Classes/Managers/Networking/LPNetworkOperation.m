@@ -197,14 +197,14 @@
     };
 
     // Use Upload Task for file & data upload, Data Task for others
-    self.request.HTTPBody = [self bodyData];
     if (self.requestFiles.count || self.requestDatas.count) {
         self.task = [self.session uploadTaskWithRequest:self.request
-                                               fromData:nil
+                                               fromData:[self bodyData]
                                       completionHandler:^(NSData * data, NSURLResponse * response, NSError * error) {
             responseBlock(data, response, error);
         }];
     } else {
+        self.request.HTTPBody = [self bodyData];
         self.task = [self.session dataTaskWithRequest:self.request
                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             responseBlock(data, response, error);
