@@ -51,11 +51,11 @@ class IdentityManagerMockStatic: IdentityManager {
         }
     }
     
-    init(userId: String, deviceId: String, anonymousLoginUserId: String?, state: String?) {
+    init(userId: String, deviceId: String, anonymousLoginUserId: String?, state: String?, loggedInUserId: String? = nil) {
         // Needs to be set before call to super.init
         IdentityManagerMockStatic._anonymousLoginUserId = anonymousLoginUserId
         IdentityManagerMockStatic._state = state
         
-        super.init(userId: userId, deviceId: deviceId)
+        super.init(userId: userId, deviceId: deviceId, loggedInUserId: loggedInUserId)
     }
 }

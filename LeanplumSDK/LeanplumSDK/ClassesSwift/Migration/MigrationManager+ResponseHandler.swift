@@ -20,11 +20,13 @@ import Foundation
         let ct: CTConfig?
         let migrationState: String?
         let hash: String?
+        let loggedInUserId: String?
         
         enum CodingKeys: String, CodingKey {
             case hash = "sha256"
             case migrationState = "sdk"
             case ct
+            case loggedInUserId
         }
     }
 
@@ -80,6 +82,7 @@ import Foundation
     //            "sdk": "lp+ct",
     //            "sha256": "31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8",
     //            "state": "EVENTS_UPLOAD_STARTED",
+    //            "loggedInUserId": "9da5cdc6-m340-42a8-9110-1d4a1099f157",
     //            "success": 1,
     //        }
     //    ]
@@ -106,11 +109,22 @@ import Foundation
             }
         }
         
-        if let sdk = migrationData.migrationState {
-            migrationState = MigrationState(stringValue: sdk)
-        }
         if let hash = migrationData.hash {
             migrationHash = hash
+        }
+        
+        if let loggedInUser = migrationData.loggedInUserId {
+            loggedInUserId = loggedInUser
+            Leanplum.onStartResponse { _ in
+                if Leanplum.userId() == Leanplum.deviceId() {
+                    Leanplum.setUserId(loggedInUser)
+                }
+            }
+        }
+        
+        // Changing the migrationState value will initialize the Wrapper
+        if let sdk = migrationData.migrationState {
+            migrationState = MigrationState(stringValue: sdk)
         }
     }
     

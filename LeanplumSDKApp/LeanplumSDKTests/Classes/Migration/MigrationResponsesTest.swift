@@ -33,7 +33,8 @@ class MigrationResponsesTest: XCTestCase {
                 
                 let expectedData = MigrationManager.MigrationData(ct: ctConfig,
                                                                   migrationState: "lp+ct",
-                                                                  hash: "31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8")
+                                                                  hash: "31484a565dcd3e1672922c7c4166bfeee0f500b6d6473fc412091304cc162ca8",
+                                                                  loggedInUserId: nil)
                 
                 XCTAssertEqual(migrationData, expectedData)
             } catch {
@@ -57,7 +58,8 @@ class MigrationResponsesTest: XCTestCase {
                 
                 let expectedData = MigrationManager.MigrationData(ct: ctConfig,
                                                                   migrationState: nil,
-                                                                  hash: nil)
+                                                                  hash: nil,
+                                                                  loggedInUserId: nil)
                 
                 XCTAssertEqual(migrationData, expectedData)
             } catch {

@@ -42,8 +42,7 @@ deploy:
     skip_cleanup: true
     api_key: $GITHUB_TOKEN
     file: 
-      - Leanplum.framework.zip
-      - LeanplumLocation.framework.zip
+      - Leanplum.zip
       - Release/static/Leanplum.xcframework.zip
     draft: true
     on:
