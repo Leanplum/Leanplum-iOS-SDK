@@ -488,6 +488,10 @@
 		6AD978582774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */; };
 		6ADC90C72807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
 		6ADC90C82807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
+		6B7B6E8C2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6B7B6E8D2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6B7B6E8E2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */; };
+		6B7B6E8F2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */; };
 		A0371C8C3E1D6D0AB924FF99 /* libPods-Leanplum-Static.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 897B64EE76852A68ECECB184 /* libPods-Leanplum-Static.a */; };
 		C90C489D2707299D00E33F1F /* NotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489C2707299D00E33F1F /* NotificationSettings.swift */; };
 		C90C489E2707299D00E33F1F /* NotificationSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90C489C2707299D00E33F1F /* NotificationSettings.swift */; };
@@ -829,6 +833,8 @@
 		6AD978532774F2F700A7C6C6 /* NotificationsProxy+iOS9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsProxy+iOS9.swift"; sourceTree = "<group>"; };
 		6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsProxy+Utilities.swift"; sourceTree = "<group>"; };
 		6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+ValueKeyPath.swift"; sourceTree = "<group>"; };
+		6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Leanplum_WebSocket+Utils.h"; sourceTree = "<group>"; };
+		6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Leanplum_WebSocket+Utils.m"; sourceTree = "<group>"; };
 		6C2FB1913D58B5EF901363C9 /* Pods_Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		897B64EE76852A68ECECB184 /* libPods-Leanplum-Static.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Leanplum-Static.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B335B24E5DF5CE017C0BE58D /* Pods-Leanplum-Static.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Leanplum-Static.release.xcconfig"; path = "Target Support Files/Pods-Leanplum-Static/Pods-Leanplum-Static.release.xcconfig"; sourceTree = "<group>"; };
@@ -1106,6 +1112,8 @@
 				075AADA826847EC3007CA1BD /* Leanplum_WebSocket.h */,
 				075AADA926847EC3007CA1BD /* AsyncSocket */,
 				075AADAC26847EC3007CA1BD /* Leanplum_WebSocket.m */,
+				6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */,
+				6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */,
 			);
 			path = WebSocket;
 			sourceTree = "<group>";
@@ -1454,6 +1462,7 @@
 				075AAE5526847EC4007CA1BD /* LPMessageTemplateUtilities.h in Headers */,
 				075AAE4026847EC4007CA1BD /* LPPushAskToAskMessageTemplate.h in Headers */,
 				075AAEA526847EC4007CA1BD /* UIDevice+IdentifierAddition.h in Headers */,
+				6B7B6E8C2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */,
 				075AAE3126847EC4007CA1BD /* LPOpenUrlMessageTemplate.h in Headers */,
 				075AADF926847EC4007CA1BD /* LeanplumSocket.h in Headers */,
 				075AAEAC26847EC4007CA1BD /* LPVar-Internal.h in Headers */,
@@ -1542,6 +1551,7 @@
 				6A714B0326F8B317004A34A9 /* LPMessageTemplateUtilities.h in Headers */,
 				6A714B0426F8B317004A34A9 /* LPPushAskToAskMessageTemplate.h in Headers */,
 				6A714B0526F8B317004A34A9 /* UIDevice+IdentifierAddition.h in Headers */,
+				6B7B6E8D2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */,
 				6A714B0626F8B317004A34A9 /* LPOpenUrlMessageTemplate.h in Headers */,
 				6A714B0726F8B317004A34A9 /* LeanplumSocket.h in Headers */,
 				6A714B0826F8B317004A34A9 /* LPVar-Internal.h in Headers */,
@@ -1896,6 +1906,7 @@
 				6A9DEC6E27ABD52D00052807 /* ActionManager+Processor.swift in Sources */,
 				075AAE9D26847EC4007CA1BD /* NSTimer+Blocks.m in Sources */,
 				075AAE2026847EC4007CA1BD /* LPLogManager.m in Sources */,
+				6B7B6E8E2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m in Sources */,
 				39C0819F2781D3D000C1DBD6 /* ActionManager+Queue.swift in Sources */,
 				6A29EAF528EF37090024880E /* IdentityManager.swift in Sources */,
 				075AAEB126847EC4007CA1BD /* LPSecuredVars.m in Sources */,
@@ -2026,6 +2037,7 @@
 				6A9DEC6F27ABD52D00052807 /* ActionManager+Processor.swift in Sources */,
 				6A714B8426F8B317004A34A9 /* LPAppIconManager.m in Sources */,
 				6A714B8526F8B317004A34A9 /* NSTimer+Blocks.m in Sources */,
+				6B7B6E8F2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m in Sources */,
 				6A714B8626F8B317004A34A9 /* LPLogManager.m in Sources */,
 				6A29EAF628EF37090024880E /* IdentityManager.swift in Sources */,
 				6A714B8726F8B317004A34A9 /* LPSecuredVars.m in Sources */,
