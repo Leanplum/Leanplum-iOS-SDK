@@ -18,11 +18,6 @@ NSString* const kConnectionHeaderExpected = @"upgrade";
 @implementation Leanplum_WebSocket (Utils)
 
 + (BOOL)isHandshakeSuccessful:(NSString *)response {
-    // Legacy check
-    if ([response hasPrefix:@"HTTP/1.1 101 Web Socket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
-        return YES;
-    }
-    
     /* 
      Check the status code and headers.
      Status code is the second value, after the protocol.

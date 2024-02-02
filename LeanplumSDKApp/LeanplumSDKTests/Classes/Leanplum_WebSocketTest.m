@@ -11,9 +11,7 @@
 
 - (void)testIsHandshakeSuccessfulLegacyResponse
 {
-    NSString *response = @"HTTP/1.1 101 Web Socket Protocol Handshake\r\n\
-Upgrade: WebSocket\r\n\
-Connection: Upgrade\r\n";
+    NSString *response = @"HTTP/1.1 101 Web Socket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n";
     XCTAssertTrue([Leanplum_WebSocket isHandshakeSuccessful:response]);
 }
 
