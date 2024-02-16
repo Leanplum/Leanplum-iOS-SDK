@@ -11,7 +11,7 @@ let package = Package(
         .library(name: "LeanplumLocation", targets: ["LeanplumLocation"])
     ],
     dependencies: [
-        .package(url: "https://github.com/CleverTap/clevertap-ios-sdk", from: "5.2.1")
+        .package(url: "https://github.com/CleverTap/clevertap-ios-sdk", from: "6.0.0")
     ],
     targets: [
         .binaryTarget(
