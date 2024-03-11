@@ -27,7 +27,8 @@
 
 #import "Leanplum_WebSocket.h"
 #import "Leanplum_AsyncSocket.h"
-
+#import "Leanplum_WebSocket+Utils.h"
+#import "LPLogManager.h"
 
 NSString* const Leanplum_WebSocketErrorDomain = @"WebSocketErrorDomain";
 NSString* const Leanplum_WebSocketException = @"WebSocketException";
@@ -160,7 +161,8 @@ enum {
 -(void)onSocket:(Leanplum_AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     if (tag == WebSocketTagHandshake) {
         NSString* response = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-        if ([response hasPrefix:@"HTTP/1.1 101 Web Socket Protocol Handshake\r\nUpgrade: WebSocket\r\nConnection: Upgrade\r\n"]) {
+        LPLog(LPDebug, @"Handshake response: %@", response);
+        if ([Leanplum_WebSocket isHandshakeSuccessful:response]) {
             connected = YES;
             [self _dispatchOpened];
 
@@ -174,6 +176,7 @@ enum {
         if (firstByte != 0x00) return; // Discard message
         NSString* message = [[NSString alloc] initWithData:[data subdataWithRange:NSMakeRange(1, [data length]-2)] encoding:NSUTF8StringEncoding];
 
+        LPLog(LPDebug, @"Socket message: %@", message);
         [self _dispatchMessageReceived:message];
         [self _readNextMessage];
     }

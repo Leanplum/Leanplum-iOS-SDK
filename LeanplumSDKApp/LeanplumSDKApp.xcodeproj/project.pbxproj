@@ -148,6 +148,7 @@
 		6AF543A228E883AD0025F2A9 /* LeanplumLocationAndBeacons.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF5439728E882CA0025F2A9 /* LeanplumLocationAndBeacons.framework */; };
 		6AF6426D298198160021A997 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AA13C7B2900546400EDCA69 /* Leanplum.framework */; };
 		6AF6426E298198160021A997 /* Leanplum.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6AA13C7B2900546400EDCA69 /* Leanplum.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		6B7B6E912B6A962000820306 /* Leanplum_WebSocketTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B6E902B6A962000820306 /* Leanplum_WebSocketTest.m */; };
 		779F1FAA8AA2F3872AC876B2 /* Pods_LeanplumSDKTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E3C9DA445D159EC6FF97D42D /* Pods_LeanplumSDKTests.framework */; };
 		82DC3FE9A5761B14AF26B301 /* Pods_LeanplumSDKApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 916957E1B3EE91A34170B5C7 /* Pods_LeanplumSDKApp.framework */; };
 		C9D064B1275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */; };
@@ -367,6 +368,7 @@
 		6AEAEE592795B68700680F84 /* Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEAEE612795B72A00680F84 /* LeanplumLocationAndBeacons.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = LeanplumLocationAndBeacons.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF5438D28E882CA0025F2A9 /* LeanplumSDKLocation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDKLocation.xcodeproj; path = ../LeanplumSDKLocation/LeanplumSDKLocation.xcodeproj; sourceTree = "<group>"; };
+		6B7B6E902B6A962000820306 /* Leanplum_WebSocketTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Leanplum_WebSocketTest.m; sourceTree = "<group>"; };
 		916957E1B3EE91A34170B5C7 /* Pods_LeanplumSDKApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LeanplumSDKApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6B7D6D71F9664181C09E727 /* Pods-LeanplumSDKTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LeanplumSDKTests.release.xcconfig"; path = "Target Support Files/Pods-LeanplumSDKTests/Pods-LeanplumSDKTests.release.xcconfig"; sourceTree = "<group>"; };
 		C9D064B0275DFB4B00A7A5F9 /* LeanplumNotificationsManagerUtilsTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeanplumNotificationsManagerUtilsTest.swift; sourceTree = "<group>"; };
@@ -516,6 +518,7 @@
 				6A39C48D27283EE7000D5320 /* LeanplumSDKTests-Bridging-Header.h */,
 				6A07FDAF283544E300995BE3 /* DictionaryValueKeyPathTest.swift */,
 				6A8411BA2903080A009F0431 /* UtilitiesTest.swift */,
+				6B7B6E902B6A962000820306 /* Leanplum_WebSocketTest.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -1057,6 +1060,7 @@
 				075AB1102684AAD9007CA1BD /* LPInboxTest.m in Sources */,
 				075AB1112684AAD9007CA1BD /* LPSecuredVarsTest.m in Sources */,
 				075AB1192684AAD9007CA1BD /* LPFeatureFlagManagerTest.m in Sources */,
+				6B7B6E912B6A962000820306 /* Leanplum_WebSocketTest.m in Sources */,
 				075AB1222684AAD9007CA1BD /* LPActionContextTest.m in Sources */,
 				07828DB7268B4AA00029A339 /* LPLocalCapsTest.m in Sources */,
 				075AB1232684AAD9007CA1BD /* LPFileManagerTest.m in Sources */,
