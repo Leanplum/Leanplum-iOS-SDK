@@ -27,6 +27,10 @@
 		6AEAEE832795DA2E00680F84 /* LPLocationManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 6A2FE1512795796A00E4A8FE /* LPLocationManager.h */; };
 		6AF543C928E899DD0025F2A9 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF543BB28E897090025F2A9 /* Leanplum.framework */; };
 		6AF6426A298197D00021A997 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF543BB28E897090025F2A9 /* Leanplum.framework */; };
+		6B00F60C2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
+		6B00F60D2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
+		6B00F60E2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
+		6B00F60F2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +121,7 @@
 		6AEAEE712795D89D00680F84 /* LeanplumLocation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LeanplumLocation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AEAEE7F2795D8E700680F84 /* LeanplumLocationAndBeacons.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = LeanplumLocationAndBeacons.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6AF543B428E897090025F2A9 /* LeanplumSDK.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = LeanplumSDK.xcodeproj; path = ../LeanplumSDK/LeanplumSDK.xcodeproj; sourceTree = "<group>"; };
+		6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +191,7 @@
 			isa = PBXGroup;
 			children = (
 				6A2FE15B2795878500E4A8FE /* Classes */,
+				6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */,
 			);
 			path = LeanplumSDKLocation;
 			sourceTree = "<group>";
@@ -409,6 +415,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B00F60C2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +423,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B00F60D2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,6 +431,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B00F60E2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -430,6 +439,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B00F60F2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
