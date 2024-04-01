@@ -488,8 +488,6 @@
 		6AD978582774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */; };
 		6ADC90C72807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
 		6ADC90C82807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
-		6B00F6092BB5B220000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F6082BB5B220000B1E26 /* PrivacyInfo.xcprivacy */; };
-		6B00F60A2BB5B220000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F6082BB5B220000B1E26 /* PrivacyInfo.xcprivacy */; };
 		6B7B6E8C2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B7B6E8D2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B7B6E8E2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */; };
@@ -1727,7 +1725,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B00F6092BB5B220000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 				075AAEFB268480E9007CA1BD /* Leanplum-iOS-SDK.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1747,7 +1744,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B00F60A2BB5B220000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 				6A714B9E26F8B317004A34A9 /* Leanplum-iOS-SDK.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
