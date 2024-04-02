@@ -376,13 +376,10 @@ LeanplumVariablesChangedBlock resourceSyncingReady;
 
 + (NSString *)bundleVersion
 {
-    NSFileManager *fm = [NSFileManager defaultManager];
-
-    NSString *path = [[NSBundle mainBundle] resourcePath];
-    NSDictionary *attrs = [fm attributesOfItemAtPath:path error:nil];
-    NSString *current = [attrs[NSFileModificationDate] description];
-
-    return current;
+    NSString *currentVersion = [[[NSBundle mainBundle] infoDictionary]
+     objectForKey:@"CFBundleVersion"];
+    
+    return currentVersion;
 }
 
 /**
