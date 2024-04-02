@@ -27,10 +27,6 @@
 		6AEAEE832795DA2E00680F84 /* LPLocationManager.h in Copy Headers */ = {isa = PBXBuildFile; fileRef = 6A2FE1512795796A00E4A8FE /* LPLocationManager.h */; };
 		6AF543C928E899DD0025F2A9 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF543BB28E897090025F2A9 /* Leanplum.framework */; };
 		6AF6426A298197D00021A997 /* Leanplum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AF543BB28E897090025F2A9 /* Leanplum.framework */; };
-		6B00F60C2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
-		6B00F60D2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
-		6B00F60E2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
-		6B00F60F2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F60B2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -415,7 +411,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B00F60C2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,7 +418,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B00F60D2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +425,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B00F60E2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,7 +432,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6B00F60F2BB5B9D9000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
