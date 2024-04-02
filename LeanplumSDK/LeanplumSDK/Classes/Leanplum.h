@@ -727,12 +727,6 @@ __attribute__((deprecated("Use [Leanplum setTestModeEnabled:YES] instead.")));
 + (nullable LeanplumPushSetupBlock)pushSetupBlock;
 
 /**
- * Returns YES if the app existed on the device more than a day previous to a version built with
- * Leanplum was installed.
- */
-+ (BOOL)isPreLeanplumInstall;
-
-/**
  * Returns the app version used by Leanplum.
  */
 + (nullable NSString *)appVersion;

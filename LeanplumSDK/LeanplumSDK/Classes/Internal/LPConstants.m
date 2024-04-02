@@ -76,7 +76,6 @@ NSString *LEANPLUM_DEFAULTS_MESSAGE_IMPRESSION_OCCURRENCES_KEY = @"__leanplum_me
 NSString *LEANPLUM_DEFAULTS_PUSH_TOKEN_KEY = @"__leanplum_push_token_%@-%@-%@";
 NSString *LEANPLUM_DEFAULTS_USER_NOTIFICATION_SETTINGS_KEY = @"__leanplum_user_notification_%@-%@-%@";
 NSString *LEANPLUM_DEFAULTS_REGION_STATE_KEY = @"__leanplum_region_state";
-NSString *LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY = @"__leanplum_pre_leanplum_install";
 NSString *LEANPLUM_DEFAULTS_SDK_VERSION = @"__leanplum_version";
 NSString *LEANPLUM_DEFAULTS_INBOX_KEY = @"__leanplum_newsfeed";
 NSString *LEANPLUM_DEFAULTS_APP_VERSION_KEY = @"leanplum_savedAppVersionKey";
