@@ -15,11 +15,7 @@
 
 -(BOOL)shouldShowPushMessage
 {
-    if ([Leanplum isPreLeanplumInstall]) {
-        LPLog(LPDebug, @"'Ask to ask' conservatively falls back to just 'ask' for pre-Leanplum installs");
-        [self showNativePushPrompt];
-        return NO;
-    } else if ([self isPushEnabled]) {
+    if ([self isPushEnabled]) {
         LPLog(LPDebug, @"Pushes already enabled");
         return NO;
     } else if ([self hasDisabledAskToAsk]) {

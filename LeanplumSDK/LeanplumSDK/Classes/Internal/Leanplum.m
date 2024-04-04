@@ -1031,11 +1031,6 @@ void leanplumExceptionHandler(NSException *exception);
         params[LP_PARAM_DEV_MODE] = @(YES);
     }
 
-    NSDictionary *timeParams = [self initializePreLeanplumInstall];
-    if (timeParams) {
-        [params addEntriesFromDictionary:timeParams];
-    }
-
     // Get the current Inbox messages on the device.
     params[LP_PARAM_INBOX_MESSAGES] = [self.inbox messagesIds];
     
@@ -1120,41 +1115,6 @@ void leanplumExceptionHandler(NSException *exception);
                     [[LPRequestSender sharedInstance] send:request];
                     LP_END_TRY
                 }];
-}
-
-// On first run with Leanplum, determine if this app was previously installed without Leanplum.
-// This is useful for detecting if the user may have already rejected notifications.
-+ (NSDictionary *)initializePreLeanplumInstall
-{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    if ([[[defaults dictionaryRepresentation] allKeys]
-            containsObject:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY]) {
-        return nil;
-    } else {
-        NSFileManager *fileManager = [NSFileManager defaultManager];
-        NSURL *urlToDocumentsFolder = [[fileManager URLsForDirectory:NSDocumentDirectory
-                                                           inDomains:NSUserDomainMask] lastObject];
-        __autoreleasing NSError *error;
-        NSDate *installDate =
-            [[fileManager attributesOfItemAtPath:urlToDocumentsFolder.path error:&error]
-                objectForKey:NSFileCreationDate];
-        NSString *pathToInfoPlist = [[NSBundle mainBundle] pathForResource:@"Info" ofType:@"plist"];
-        NSString *pathToAppBundle = [pathToInfoPlist stringByDeletingLastPathComponent];
-        NSDate *updateDate = [[fileManager attributesOfItemAtPath:pathToAppBundle error:&error]
-            objectForKey:NSFileModificationDate];
-
-        // Considered pre-Leanplum install if its been more than a day (86400 seconds) since
-        // install.
-        NSTimeInterval secondsBetween = [updateDate timeIntervalSinceDate:installDate];
-        [[NSUserDefaults standardUserDefaults] setBool:(secondsBetween > 86400)
-                                                forKey:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY];
-        return @{
-            LP_PARAM_INSTALL_DATE:
-                [NSString stringWithFormat:@"%f", [installDate timeIntervalSince1970]],
-            LP_PARAM_UPDATE_DATE:
-                [NSString stringWithFormat:@"%f", [updateDate timeIntervalSince1970]]
-        };
-    }
 }
 
 // If the app has already accepted notifications, register for this instance of the app and trigger
@@ -2410,19 +2370,6 @@ void leanplumExceptionHandler(NSException *exception)
     return pushSetupBlock;
     LP_END_TRY
     return nil;
-}
-
-+ (BOOL)isPreLeanplumInstall
-{
-    LP_TRY
-    if (![LPInternalState sharedState].calledStart) {
-        [self throwError:@"[Leanplum start] must be called before calling isPreLeanplumInstall"];
-        return NO;
-    }
-    return [[NSUserDefaults standardUserDefaults]
-            boolForKey:LEANPLUM_DEFAULTS_PRE_LEANPLUM_INSTALL_KEY];
-    LP_END_TRY
-    return NO;
 }
 
 + (NSString *)appVersion

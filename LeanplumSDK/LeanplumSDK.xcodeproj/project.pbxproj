@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -409,6 +409,7 @@
 		6AD978582774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */; };
 		6ADC90C72807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
 		6ADC90C82807461F00CE42C7 /* Dictionary+ValueKeyPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */; };
+		6B00F6962BBC459C000B1E26 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6B00F6082BB5B220000B1E26 /* PrivacyInfo.xcprivacy */; };
 		6B7B6E8C2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B7B6E8D2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6B7B6E8E2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */; };
@@ -662,6 +663,7 @@
 		6AD978532774F2F700A7C6C6 /* NotificationsProxy+iOS9.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsProxy+iOS9.swift"; sourceTree = "<group>"; };
 		6AD978562774F3F000A7C6C6 /* NotificationsProxy+Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NotificationsProxy+Utilities.swift"; sourceTree = "<group>"; };
 		6ADC90C62807461F00CE42C7 /* Dictionary+ValueKeyPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Dictionary+ValueKeyPath.swift"; sourceTree = "<group>"; };
+		6B00F6082BB5B220000B1E26 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6B7B6E8A2B6A7A5400820306 /* Leanplum_WebSocket+Utils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Leanplum_WebSocket+Utils.h"; sourceTree = "<group>"; };
 		6B7B6E8B2B6A7A5400820306 /* Leanplum_WebSocket+Utils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Leanplum_WebSocket+Utils.m"; sourceTree = "<group>"; };
 		6C2FB1913D58B5EF901363C9 /* Pods_Leanplum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Leanplum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1094,6 +1096,7 @@
 		075AAEFA26848059007CA1BD /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				6B00F6082BB5B220000B1E26 /* PrivacyInfo.xcprivacy */,
 				075AAEE026847EE0007CA1BD /* Assets.xcassets */,
 				075AAEE326847EE0007CA1BD /* Interstitial.storyboard */,
 				075AAEE126847EE0007CA1BD /* Popup.storyboard */,
@@ -1559,6 +1562,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6B00F6962BBC459C000B1E26 /* PrivacyInfo.xcprivacy in Resources */,
 				075AAEF326847FEA007CA1BD /* Interstitial.storyboard in Resources */,
 				075AAEF226847FEA007CA1BD /* Assets.xcassets in Resources */,
 				075AAEF426847FEA007CA1BD /* WebInterstitial.storyboard in Resources */,

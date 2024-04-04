@@ -23,6 +23,9 @@ let package = Package(
             name: "LeanplumLocation",
             dependencies: ["Leanplum"],
             path: "LeanplumSDKLocation",
+            resources: [
+                .copy("LeanplumSDKLocation/PrivacyInfo.xcprivacy")
+            ],
             publicHeadersPath: "LeanplumSDKLocation/include"
         ),
         .target(name: "LeanplumTargetWrapper",
