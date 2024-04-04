@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
     s.resource_bundle = {
       'Leanplum-iOS-SDK' => 'LeanplumSDK/LeanplumSDKBundle/Resources/**/*'
     }
-    s.dependency 'CleverTap-iOS-SDK', '~> 6.0'
+    s.dependency 'CleverTap-iOS-SDK', '~> 6.2'
     s.swift_version = '5.0'
   end
   
