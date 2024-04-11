@@ -12,7 +12,8 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.source = { :git => 'https://github.com/Leanplum/Leanplum-iOS-SDK.git', :tag => s.version.to_s}
   s.source_files = 'LeanplumSDKLocation/LeanplumSDKLocation/Classes/**/*'
-  s.resources = 'LeanplumSDKLocation/LeanplumSDKLocation/*.{cer,xcprivacy}'
+  s.resources = 'LeanplumSDKLocation/LeanplumSDKLocation/*.{cer}'
+  s.resource_bundles = {'LeanplumLocation' => ['LeanplumSDKLocation/LeanplumSDKLocation/*.{xcprivacy}']} 
   s.frameworks = 'CoreLocation'
   s.documentation_url = 'https://docs.leanplum.com/'
   s.dependency 'Leanplum-iOS-SDK', "~> 6.0"
