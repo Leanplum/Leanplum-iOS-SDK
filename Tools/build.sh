@@ -81,6 +81,15 @@ main() {
   # remove duplicate assets if any
   find "Release/" -name '_CodeSignature' -exec rm -rf {} +
 
+  # codesign
+  SIGNING_IDENTITY=$(security find-identity -v -p codesigning | grep "Distribution: Leanplum, Inc." | awk '{print $2}')
+  if [ -n "$SIGNING_IDENTITY" ]; then
+    echo "Codesigning xcframeworks"
+    find "Release/" -name '*.xcframework' -exec codesign --timestamp -s $SIGNING_IDENTITY {} +
+  else
+    echo "Signing Identity not found"
+  fi
+
   # zip all iOS frameworks
   zip_ios
 
