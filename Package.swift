@@ -17,7 +17,7 @@ let package = Package(
         .binaryTarget(
             name: "Leanplum",
             url: "https://storage.googleapis.com/leanplum-multi/Nikola/Leanplum_6.4.11.xcframework.zip",
-            checksum: "979f5e6503dcba5eafba77e82892fdbe53aacc090ed6aa366a3f6f5cc17cad86"
+            checksum: "40e097c798e7ba58a0fcf7a1391817c72b75b65992acad3a8ed3349e3946d050"
         ),
         .target(
             name: "LeanplumLocation",
