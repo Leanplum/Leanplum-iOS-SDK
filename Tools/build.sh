@@ -10,6 +10,8 @@ set -eo pipefail; [[ $DEBUG ]] && set -x
 # COMMON BEGIN
 #######################################
 
+XCODEBUILD_PATH="xcodebuild"
+
 #######################################
 # Print out error messages along with other status information.
 # Globals:
@@ -65,6 +67,11 @@ run() {
 main() {
   rm -rf Release
 
+  if [ -n "$1" ]; then
+    XCODEBUILD_PATH=$1
+    echo "Using xcodebuild path: $XCODEBUILD_PATH"
+  fi
+
   pod install
 
   build_ios_dylib 'Leanplum' 'Release/dynamic/LeanplumSDK'
@@ -99,6 +106,8 @@ main() {
   # zip static iOS framework for Unreal Engine
   zip_unreal_engine
 
+  echo "Built with Xcode path: $XCODEBUILD_PATH and version: `"$XCODEBUILD_PATH" -version`"
+
   echo "${GREEN} Done.${NORMAL}"
 }
 
@@ -120,7 +129,7 @@ create_dynamic_xcframework() {
 
   if [[ "$framework" != *"Pods_"* ]]; then
     echo "Creating dynamic $xcframework ..."
-    xcodebuild -quiet -create-xcframework \
+    "$XCODEBUILD_PATH" -quiet -create-xcframework \
     -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$framework \
     -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$framework \
     -output Release/dynamic/$xcframework
@@ -144,7 +153,7 @@ build_ios_dylib() {
   echo "Starting build for $scheme (iOS) dynamic framework"
 
   echo "Building $scheme dynamic (simulator) target ..."
-  xcodebuild archive \
+  "$XCODEBUILD_PATH" archive \
   -quiet \
   -scheme $scheme \
   -archivePath $archivePath-iphonesimulator.xcarchive \
@@ -153,7 +162,7 @@ build_ios_dylib() {
   SKIP_INSTALL=NO
 
   echo "Building $scheme dynamic (device) target ..."
-  xcodebuild archive \
+  "$XCODEBUILD_PATH" archive \
   -quiet \
   -scheme $scheme \
   -archivePath $archivePath-iphoneos.xcarchive \
@@ -216,7 +225,7 @@ build_ios_static() {
   echo "Starting build for $scheme static framework"
 
   echo "Building $scheme static (simulator) target ..."
-  xcodebuild archive \
+  "$XCODEBUILD_PATH" archive \
   -quiet \
   -scheme $scheme \
   -archivePath $archivePath-iphonesimulator.xcarchive \
@@ -225,7 +234,7 @@ build_ios_static() {
   SKIP_INSTALL=NO
 
   echo "Building $scheme static (device) target ..."
-  xcodebuild archive \
+  "$XCODEBUILD_PATH" archive \
   -quiet \
   -scheme $scheme \
   -archivePath $archivePath-iphoneos.xcarchive \
@@ -234,7 +243,7 @@ build_ios_static() {
   SKIP_INSTALL=NO
 
   echo "Creating $scheme static xcframework ..."
-  xcodebuild -quiet -create-xcframework \
+  "$XCODEBUILD_PATH" -quiet -create-xcframework \
   -framework $archivePath-iphonesimulator.xcarchive/Products/Library/Frameworks/$productName.framework \
   -framework $archivePath-iphoneos.xcarchive/Products/Library/Frameworks/$productName.framework \
   -output Release/static/$productName.xcframework
@@ -334,4 +343,5 @@ zip_unreal_engine() {
 }
 
 export -f create_dynamic_xcframework
+export XCODEBUILD_PATH
 main "$@"
