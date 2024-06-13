@@ -7,7 +7,6 @@
 
 import Foundation
 
-@available(iOS 10.0, *)
 extension UNNotificationSettings {
     func toInt() -> UInt? {
         
