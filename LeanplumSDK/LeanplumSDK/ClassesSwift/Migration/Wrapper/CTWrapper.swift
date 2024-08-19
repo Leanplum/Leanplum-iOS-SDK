@@ -15,7 +15,6 @@ class CTWrapper: Wrapper {
         static let StatePrefix = "state_"
         
         static let ValueParamName = "value"
-        static let InfoParamName = "info"
         static let ChargedEventParam = "event"
         static let CurrencyCodeParam = "currencyCode"
         static let iOSTransactionIdentifierParam = "iOSTransactionIdentifier"
@@ -125,7 +124,7 @@ class CTWrapper: Wrapper {
     }
 
     // MARK: Tracking
-    func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
+    func track(_ eventName: String?, value: Double, params: [String: Any]) {
         // message impression events come with event: nil
         // do not track Push Delivered in CT
         guard let eventName = eventName, eventName != PUSH_DELIVERED_EVENT_NAME else {
@@ -134,23 +133,19 @@ class CTWrapper: Wrapper {
     
         var eventParams = params.mapValues(transformArrayValues)
         eventParams[Constants.ValueParamName] = value
-        
-        if let info = info {
-            eventParams[Constants.InfoParamName] = info
-        }
 
         Log.debug("Leanplum.track will call recordEvent with \(eventName) and \(eventParams)")
         cleverTapInstance?.recordEvent(eventName, withProps: eventParams)
     }
     
-    func advance(_ stateName: String?, info: String?, params: [String: Any]) {
+    func advance(_ stateName: String?, params: [String: Any]) {
         guard let stateName = stateName else {
             return
         }
         
         let eventName = Constants.StatePrefix + stateName
         Log.debug("Leanplum.advance will call track with \(eventName) and \(params)")
-        track(eventName, value: 0.0, info: info, params: params)
+        track(eventName, value: 0.0, params: params)
     }
     
     func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
