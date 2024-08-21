@@ -13,7 +13,7 @@ import Foundation
     // Using NSNumber since Optional Bool cannot be represented in Objective-C
     @objc public var openDeepLinksInForeground: NSNumber?
     @objc public var handleCleverTapNotificationBlock: LeanplumHandleCleverTapNotificationBlock?
-    private(set) var handlePushNotificationFromCleverTap = false
+
     
     enum NotificationEvent: String, CustomStringConvertible {
         case opened = "Open"
@@ -33,16 +33,6 @@ import Foundation
         // If the app is launched from notification and CT instance has already been created,
         // CT will handle the notification from their UIApplication didFinishLaunchingNotification observer
         if fromLaunch && MigrationManager.shared.hasLaunched {
-            // If the app is using AppDelegate only, push notification at app launched will
-            // be handled from CleverTap. Setting `handlePushNotificationFromCleverTap` to true
-            // here ensures that app is launched from killed state and using AppDelegate file only.
-            handlePushNotificationFromCleverTap = true
-            return
-        }
-        
-        if handlePushNotificationFromCleverTap && MigrationManager.shared.hasLaunched {
-            Log.info("[Wrapper] Push Notification will be handled from CleverTap: \(userInfo)")
-            handlePushNotificationFromCleverTap = false
             return
         }
         
