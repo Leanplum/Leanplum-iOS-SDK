@@ -47,7 +47,7 @@
     }
 
     func track(_ eventName: String?, value: Double, info: String?, params: [String: Any]) {
-        wrapper?.track(eventName, value: value, info: info, params: params)
+        wrapper?.track(eventName, value: value, params: params)
     }
 
     func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any]) {
@@ -71,7 +71,7 @@
     }
 
     func advance(_ eventName: String?, info: String?, params: [String: Any]) {
-        wrapper?.advance(eventName, info: info, params: params)
+        wrapper?.advance(eventName, params: params)
     }
 
     func setUserAttributes(_ attributes: [AnyHashable: Any]) {

@@ -17,11 +17,11 @@ protocol Wrapper {
     
     func removeInstanceCallback(_ callback: CleverTapInstanceCallback)
     
-    func track(_ eventName: String?, value: Double, info: String?, params: [String: Any])
+    func track(_ eventName: String?, value: Double, params: [String: Any])
     
     func trackPurchase(_ eventName: String?, value: Double, currencyCode: String?, params: [String: Any])
     
-    func advance(_ stateName: String?, info: String?, params: [String: Any])
+    func advance(_ stateName: String?, params: [String: Any])
     
     func trackInAppPurchase(_ eventName: String?,
                             value: Double,
