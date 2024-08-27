@@ -11,13 +11,13 @@ let package = Package(
         .library(name: "LeanplumLocation", targets: ["LeanplumLocation"])
     ],
     dependencies: [
-        .package(url: "https://github.com/CleverTap/clevertap-ios-sdk", from: "7.0.0")
+        .package(url: "https://github.com/CleverTap/clevertap-ios-sdk", from: "7.0.1")
     ],
     targets: [
         .binaryTarget(
             name: "Leanplum",
-            url: "https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download/6.4.2/Leanplum.xcframework.zip",
-            checksum: "a4dcca57f72076e2334959cfa3e8821bfebbf6e9b5167241c909f6c9be5fc30e"
+            url: "https://github.com/Leanplum/Leanplum-iOS-SDK/releases/download/6.5.0/Leanplum.xcframework.zip",
+            checksum: "61c13073930fc28efb9004ddb97db1d2f9fb320bfd714840411087e3707ac848"
         ),
         .target(
             name: "LeanplumLocation",
