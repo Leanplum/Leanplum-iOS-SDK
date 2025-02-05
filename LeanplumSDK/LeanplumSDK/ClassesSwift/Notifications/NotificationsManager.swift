@@ -33,13 +33,6 @@ import UIKit
         notificationSettings.getSettings(completionHandler: completionHandler)
     }
     
-    @available(iOS, deprecated: 10.0)
-    @objc(didRegisterUserNotificationSettings:)
-    public func didRegister(_ settings: UIUserNotificationSettings) {
-        isAskToAskDisabled = true
-        notificationSettings.getSettings()
-    }
-    
     // MARK: - Push Token
     @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Data) {
         isAskToAskDisabled = true

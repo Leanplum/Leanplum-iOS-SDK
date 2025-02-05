@@ -384,11 +384,6 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
 + (void)applicationDidFinishLaunchingWithOptions:(NSDictionary<UIApplicationLaunchOptionsKey, id> *)launchOptions;
 + (void)didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)token;
 + (void)didFailToRegisterForRemoteNotificationsWithError:(NSError *)error;
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-+ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings;
-#pragma clang diagnostic pop
 /**
  * Call this method from application:didReceiveRemoteNotification:fetchCompletionHandler when Swizzling is Disabled.
  * Call the completionHandler yourself.
@@ -398,30 +393,7 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
  * Call this method from userNotificationCenter:didReceive:withCompletionHandler when Swizzling is Disabled.
  * Call the completionHandler yourself.
  */
-+ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response API_AVAILABLE(ios(10.0));
-/**
- * Call this method from userNotificationCenter:willPresent:withCompletionHandler when Swizzling is Disabled.
- * Call the completionHandler yourself.
- */
-+ (void)willPresentNotification:(UNNotification *)notification API_AVAILABLE(ios(10.0));
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-+ (void)didReceiveLocalNotification:(UILocalNotification *)localNotification;
-#pragma clang diagnostic pop
-
-/**
- * Call this to handle custom actions for local notifications.
- * Call the completionHandler yourself.
- */
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-+ (void)handleActionWithIdentifier:(NSString *)identifier
-              forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
-#pragma clang diagnostic pop
-
++ (void)didReceiveNotificationResponse:(UNNotificationResponse *)response;
 /**
  * Call this to handle custom actions for remote notifications.
  * Call the completionHandler yourself.
@@ -432,6 +404,11 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
              forRemoteNotification:(NSDictionary *)notification
                  completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler;
 #pragma clang diagnostic pop
+/**
+ * Call this method from userNotificationCenter:willPresent:withCompletionHandler when Swizzling is Disabled.
+ * Call the completionHandler yourself.
+ */
++ (void)willPresentNotification:(UNNotification *)notification;
 
 /**
  * Block to call that decides whether a notification should be displayed when it is
@@ -463,7 +440,7 @@ NS_SWIFT_NAME(defineAction(name:kind:args:options:present:dismiss:));
  */
 + (void)setPushDeliveryTrackingEnabled:(BOOL)enabled;
 
-+ (void)setPushNotificationPresentationOption:(UNNotificationPresentationOptions)options API_AVAILABLE(ios(10.0));
++ (void)setPushNotificationPresentationOption:(UNNotificationPresentationOptions)options;
 
 /**
  * @{

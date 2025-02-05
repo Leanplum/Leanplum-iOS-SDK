@@ -61,12 +61,6 @@ extension NSObject {
                     // Call method directly since the it requires 3 objects and performSelector supports only 2
                     // otherwise use Method IMP
                     self.leanplum_application(application, didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
-                } else {
-                    leanplumCompletionHandler = completionHandler
-                    
-                    if notificationsProxy.shouldFallbackToLegacyMethods {
-                        notificationsProxy.appDelegate?.application?(UIApplication.shared, didReceiveRemoteNotification: userInfo)
-                    }
                 }
                 
                 // Call completion handler
@@ -121,7 +115,7 @@ extension NSObject {
     }
     
     // MARK: - UserNotificationCenter
-    @objc @available(iOS 10.0, *)
+    @objc
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter,
                                          didReceive response: UNNotificationResponse,
                                          withCompletionHandler completionHandler: @escaping () -> Void) {
@@ -163,8 +157,8 @@ extension NSObject {
             }
         }
     }
-    
-    @objc @available(iOS 10.0, *)
+
+    @objc
     func leanplum_userNotificationCenter(_ center: UNUserNotificationCenter,
                                          willPresent notification: UNNotification,
                                          withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
@@ -182,39 +176,5 @@ extension NSObject {
         
         // Notification is received while app is running on foreground
         Leanplum.notificationsManager().notificationReceived(userInfo: notification.request.content.userInfo, isForeground: true)
-    }
-    
-    // MARK: - didReceive Local Notification
-    @objc func leanplum_application(_ application: UIApplication, didReceive notification: UILocalNotification) {
-        Log.debug("Called swizzled application:didReceive:localNotification")
-        
-        defer {
-            // Call overridden method
-            let selector = #selector(self.leanplum_application(_:didReceive:))
-            if swizzling.applicationDidReceiveLocalNotification && self.responds(to: selector) {
-                self.perform(selector, with: application, with: notification)
-            }
-        }
-        
-        guard let userInfo = notification.userInfo else {
-            return
-        }
-        
-        if UIApplication.shared.applicationState == .active {
-            Leanplum.notificationsManager().notificationReceived(userInfo: userInfo, isForeground: true)
-        } else {
-            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
-        }
-    }
-    
-    // MARK: - didRegister Notification Settings
-    @objc func leanplum_application(_ application: UIApplication, didRegister notificationSettings: UIUserNotificationSettings) {
-        Leanplum.notificationsManager().didRegister(notificationSettings)
-        
-        // Call overridden method
-        let selector = #selector(self.leanplum_application(_:didRegister:))
-        if swizzling.applicationDidRegisterUserNotificationSettings && self.responds(to: selector) {
-            self.perform(selector, with: application, with: notificationSettings)
-        }
     }
 }

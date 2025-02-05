@@ -38,7 +38,6 @@
 - (BOOL)schedule:(LPActionContext *)context
 {
     LP_END_USER_CODE
-    UIApplication *app = [UIApplication sharedApplication];
 
     BOOL contentAvailable = [context boolNamed:@"iOS options.Preload content"];
     NSString *message = [context stringNamed:@"Message"];
@@ -106,79 +105,42 @@
             mutableInfo[LP_KEY_PUSH_NO_ACTION] = messageId;
         }
     }
-    
-    if (@available(iOS 10.0, *)) {
-        UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
-        
-        if (message) {
-            content.body = message;
-        } else {
-            content.body = LP_VALUE_DEFAULT_PUSH_MESSAGE;
-        }
-        
-        if (category) {
-            content.categoryIdentifier = category;
-        }
-        
-        if (sound) {
-            content.sound = [UNNotificationSound soundNamed:sound];
-        } else {
-            content.sound = [UNNotificationSound defaultSound];
-        }
 
-        if (badge) {
-            content.badge = [NSNumber numberWithInt:[badge intValue]];
-        }
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
 
-        content.userInfo = mutableInfo;
-        
-        NSDateComponents *dateComponenets = [[NSDateComponents alloc] init];
-        [dateComponenets setSecond:countdownSeconds];
-        UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:dateComponenets repeats:NO];
-        
-        UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:messageId content:content trigger:trigger];
-        
-        [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
-            if (error) {
-                LPLog(LPError, error.localizedDescription);
-            }
-        }];
+    if (message) {
+        content.body = message;
     } else {
-        // Fallback on earlier versions
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-        UILocalNotification *localNotif = [[UILocalNotification alloc] init];
-        localNotif.fireDate = eta;
-        localNotif.timeZone = [NSTimeZone defaultTimeZone];
-        if (message) {
-            localNotif.alertBody = message;
-        } else {
-            localNotif.alertBody = LP_VALUE_DEFAULT_PUSH_MESSAGE;
-        }
-        localNotif.alertAction = @"View";
-
-        if ([localNotif respondsToSelector:@selector(setCategory:)]) {
-            if (category) {
-                localNotif.category = category;
-            }
-        }
-
-        if (sound) {
-            localNotif.soundName = sound;
-        } else {
-            localNotif.soundName = UILocalNotificationDefaultSoundName;
-        }
-
-        if (badge) {
-            localNotif.applicationIconBadgeNumber = [badge intValue];
-        }
-
-        localNotif.userInfo = mutableInfo;
-
-        // Schedule the notification
-        [app scheduleLocalNotification:localNotif];
-#pragma clang diagnostic pop
+        content.body = LP_VALUE_DEFAULT_PUSH_MESSAGE;
     }
+
+    if (category) {
+        content.categoryIdentifier = category;
+    }
+
+    if (sound) {
+        content.sound = [UNNotificationSound soundNamed:sound];
+    } else {
+        content.sound = [UNNotificationSound defaultSound];
+    }
+
+    if (badge) {
+        content.badge = [NSNumber numberWithInt:[badge intValue]];
+    }
+
+    content.userInfo = mutableInfo;
+
+    NSDateComponents *dateComponenets = [[NSDateComponents alloc] init];
+    [dateComponenets setSecond:countdownSeconds];
+    UNCalendarNotificationTrigger *trigger = [UNCalendarNotificationTrigger triggerWithDateMatchingComponents:dateComponenets repeats:NO];
+
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:messageId content:content trigger:trigger];
+
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        if (error) {
+            LPLog(LPError, error.localizedDescription);
+        }
+    }];
     
     if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
         LPLog(LPInfo, @"Scheduled notification");
@@ -190,45 +152,26 @@
 - (void)cancelLocalNotification:(NSString *)messageId
 {
     LP_END_USER_CODE
-    UIApplication *app = [UIApplication sharedApplication];
-    NSArray *notifications = [app scheduledLocalNotifications];
     BOOL canceled = NO;
-    if (@available(iOS 10.0, *)) {
-        __block BOOL didCancel = NO;
-        dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-        [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
-            for (UNNotificationRequest *request in requests) {
-                NSString *notificationMessageId = [Utilities messageIdFromUserInfo:[request.content userInfo]];
-                if ([notificationMessageId isEqualToString:messageId]) {
-                    [UNUserNotificationCenter.currentNotificationCenter removePendingNotificationRequestsWithIdentifiers:@[request.identifier]];
-                    if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
-                        LPLog(LPInfo, @"Cancelled notification");
-                    }
-                    didCancel = YES;
-                }
-            }
-            dispatch_semaphore_signal(semaphor);
-        }];
-        dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
-        dispatch_semaphore_wait(semaphor, waitTime);
-        LP_BEGIN_USER_CODE
-        canceled = didCancel;
-    } else {
-        // Fallback on earlier versions
-        BOOL didCancel = NO;
-        for (UILocalNotification *notification in notifications) {
-            NSString *notificationMessageId = [Utilities messageIdFromUserInfo:[notification userInfo]];
+    __block BOOL didCancel = NO;
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
+        for (UNNotificationRequest *request in requests) {
+            NSString *notificationMessageId = [Utilities messageIdFromUserInfo:[request.content userInfo]];
             if ([notificationMessageId isEqualToString:messageId]) {
-                [app cancelLocalNotification:notification];
+                [UNUserNotificationCenter.currentNotificationCenter removePendingNotificationRequestsWithIdentifiers:@[request.identifier]];
                 if ([LPConstantsState sharedState].isDevelopmentModeEnabled) {
                     LPLog(LPInfo, @"Cancelled notification");
                 }
                 didCancel = YES;
             }
         }
-        LP_BEGIN_USER_CODE
-        canceled = didCancel;
-    }
+        dispatch_semaphore_signal(semaphor);
+    }];
+    dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
+    dispatch_semaphore_wait(semaphor, waitTime);
+    LP_BEGIN_USER_CODE
+    canceled = didCancel;
     
     if (canceled) {
         // Track cancel
@@ -258,44 +201,27 @@
 {
     // If there's already one scheduled before the eta, discard this.
     // Otherwise, discard the scheduled one.
-    if (@available(iOS 10.0, *)) {
-        __block BOOL shouldDiscard = NO;
-        dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
-        [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
-            for (UNNotificationRequest *request in requests) {
-                NSString *messageId = [Utilities messageIdFromUserInfo:[request.content userInfo]];
-                if ([messageId isEqualToString:context.messageId]) {
-                    UNCalendarNotificationTrigger *trigger = (UNCalendarNotificationTrigger *)request.trigger;
-                    NSComparisonResult comparison = [trigger.nextTriggerDate compare:eta];
-                    if (comparison == NSOrderedAscending) {
-                        shouldDiscard = YES;
-                        break;
-                    } else {
-                        [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[request.identifier]];
-                    }
-                }
-            }
-            dispatch_semaphore_signal(semaphor);
-        }];
-        dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
-        dispatch_semaphore_wait(semaphor, waitTime);
-        return shouldDiscard;
-    } else {
-        // Fallback on earlier versions
-        NSArray *notifications = [[UIApplication sharedApplication] scheduledLocalNotifications];
-        for (UILocalNotification *notification in notifications) {
-            NSString *messageId = [Utilities messageIdFromUserInfo:[notification userInfo]];
+    __block BOOL shouldDiscard = NO;
+    dispatch_semaphore_t semaphor = dispatch_semaphore_create(0);
+    [UNUserNotificationCenter.currentNotificationCenter getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> * _Nonnull requests) {
+        for (UNNotificationRequest *request in requests) {
+            NSString *messageId = [Utilities messageIdFromUserInfo:[request.content userInfo]];
             if ([messageId isEqualToString:context.messageId]) {
-                NSComparisonResult comparison = [notification.fireDate compare:eta];
+                UNCalendarNotificationTrigger *trigger = (UNCalendarNotificationTrigger *)request.trigger;
+                NSComparisonResult comparison = [trigger.nextTriggerDate compare:eta];
                 if (comparison == NSOrderedAscending) {
-                    return YES;
+                    shouldDiscard = YES;
+                    break;
                 } else {
-                    [[UIApplication sharedApplication] cancelLocalNotification:notification];
+                    [UNUserNotificationCenter.currentNotificationCenter removeDeliveredNotificationsWithIdentifiers:@[request.identifier]];
                 }
             }
         }
-        return NO;
-    }
+        dispatch_semaphore_signal(semaphor);
+    }];
+    dispatch_time_t waitTime = dispatch_time(DISPATCH_TIME_NOW, 5.0 * NSEC_PER_SEC);
+    dispatch_semaphore_wait(semaphor, waitTime);
+    return shouldDiscard;
 }
 #pragma clang diagnostic pop
 
