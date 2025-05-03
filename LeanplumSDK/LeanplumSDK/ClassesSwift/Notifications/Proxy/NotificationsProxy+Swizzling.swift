@@ -67,7 +67,6 @@ extension NotificationsProxy {
     }
     
     // MARK: - Swizzle UNUserNotificationCenter methods
-    @available(iOS 10.0, *)
     func swizzleUNUserNotificationCenterMethods() {
         // userNotificationCenter:didReceive:withCompletionHandler:
         let userNotificationCenterDidReceiveNotificationResponseWithCompletionHandlerSelector = #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:withCompletionHandler:))

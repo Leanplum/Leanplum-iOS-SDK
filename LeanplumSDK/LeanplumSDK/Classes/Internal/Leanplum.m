@@ -1519,47 +1519,6 @@ void leanplumExceptionHandler(NSException *exception);
 }
 
 #pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-#pragma clang diagnostic ignored "-Wstrict-prototypes"
-+ (void)didRegisterUserNotificationSettings:(UIUserNotificationSettings *)notificationSettings
-{
-    LP_TRY
-    if (![LPUtils isSwizzlingEnabled])
-    {
-        [[Leanplum notificationsManager] didRegisterUserNotificationSettings:notificationSettings];
-    }
-    else
-    {
-        LPLog(LPDebug, @"Call to didRegisterUserNotificationSettings will be ignored due to swizzling.");
-    }
-    LP_END_TRY
-}
-
-+ (void)didReceiveLocalNotification:(UILocalNotification *)localNotification
-{
-    LP_TRY
-    if (![LPUtils isSwizzlingEnabled])
-    {
-        [[Leanplum notificationsManager].proxy applicationWithDidReceive:localNotification];
-    }
-    else
-    {
-        LPLog(LPDebug, @"Call to didReceiveLocalNotification will be ignored due to swizzling");
-    }
-    LP_END_TRY
-}
-
-+ (void)handleActionWithIdentifier:(NSString *)identifier
-              forLocalNotification:(UILocalNotification *)notification
-                 completionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
-{
-    LP_TRY
-    [[Leanplum notificationsManager].proxy handleActionWithIdentifier:identifier forLocalNotification:notification];
-    LP_END_TRY
-}
-#pragma clang diagnostic pop
-
-#pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstrict-prototypes"
 + (void)handleActionWithIdentifier:(NSString *)identifier
              forRemoteNotification:(NSDictionary *)notification

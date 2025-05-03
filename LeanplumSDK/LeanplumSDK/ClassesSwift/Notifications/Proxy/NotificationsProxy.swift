@@ -24,7 +24,7 @@ public class NotificationsProxy: NSObject {
     var isCustomAppDelegateUsed = false
     
     private var pushNotificationPresentationOptionWrapper: Any?
-    @objc @available(iOS 10.0, *)
+    @objc
     // UNNotificationPresentationOptionNone
     public var pushNotificationPresentationOption: UNNotificationPresentationOptions {
         get {
@@ -78,13 +78,6 @@ public class NotificationsProxy: NSObject {
                 notificationOpenedFromStart = true
                 Leanplum.notificationsManager().notificationOpened(userInfo: remoteNotification, action: LP_VALUE_DEFAULT_PUSH_ACTION, fromLaunch: true)
             }
-        } else if
-            let localNotification =
-                    launchOptions[UIApplication.LaunchOptionsKey.localNotification] as? UILocalNotification,
-                let userInfo = localNotification.userInfo {
-            notificationHandledFromStart = userInfo
-            notificationOpenedFromStart = true
-            Leanplum.notificationsManager().notificationOpened(userInfo: userInfo)
         }
     }
 
@@ -108,34 +101,18 @@ public class NotificationsProxy: NSObject {
         
         // Token methods are version agnostic
         swizzleTokenMethods()
-        
-        // Try to swizzle UNUserNotificationCenterDelegate methods
-        if #available(iOS 10.0, *) {
-            // Client's UNUserNotificationCenter delegate needs to be set before Leanplum starts
-            swizzleUNUserNotificationCenterMethods()
-            swizzleApplicationDidReceiveFetchCompletionHandler()
-            if !swizzled.applicationDidReceiveRemoteNotificationWithCompletionHandler {
-                // if background modes / content-available:1, swizzle for prefetch
-                swizzleApplicationDidReceiveFetchCompletionHandler(true)
-            } else if !hasImplementedNotificationCenterMethods {
-                // application:didReceiveRemoteNotification:fetchCompletionHandler: method is implemented and
-                // notificationCenter methods are not, we need to call that method manually,
-                // since we set our own notification center delegate
-                shouldFallbackToLegacyMethods = true
-            }
-        } else {
-            swizzleUserNotificationSettings()
-            swizzleLocalNotificationMethods()
-            
-            swizzleApplicationDidReceiveFetchCompletionHandler()
-            if !swizzled.applicationDidReceiveRemoteNotificationWithCompletionHandler {
-                // if it is not swizzled, add an implementation to listen for notifications
-                swizzleApplicationDidReceiveFetchCompletionHandler(true)
-                if hasImplementedApplicationDidReceive() {
-                    // need to call legacy
-                    shouldFallbackToLegacyMethods = true
-                }
-            }
+
+        // Client's UNUserNotificationCenter delegate needs to be set before Leanplum starts
+        swizzleUNUserNotificationCenterMethods()
+        swizzleApplicationDidReceiveFetchCompletionHandler()
+        if !swizzled.applicationDidReceiveRemoteNotificationWithCompletionHandler {
+            // if background modes / content-available:1, swizzle for prefetch
+            swizzleApplicationDidReceiveFetchCompletionHandler(true)
+        } else if !hasImplementedNotificationCenterMethods {
+            // application:didReceiveRemoteNotification:fetchCompletionHandler: method is implemented and
+            // notificationCenter methods are not, we need to call that method manually,
+            // since we set our own notification center delegate
+            shouldFallbackToLegacyMethods = true
         }
     }
 }
