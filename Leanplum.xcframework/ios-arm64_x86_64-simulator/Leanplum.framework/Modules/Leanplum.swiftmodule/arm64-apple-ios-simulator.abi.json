@@ -1329,16 +1329,6 @@
         ]
       },
       {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
         "kind": "TypeDecl",
         "name": "ContentMerger",
         "printedName": "ContentMerger",
@@ -1481,6 +1471,26 @@
             "usr": "s:s28CustomDebugStringConvertibleP",
             "mangledName": "$ss28CustomDebugStringConvertibleP"
           }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
         ]
       },
       {
@@ -1759,12 +1769,62 @@
       },
       {
         "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
         "name": "CleverTapSDK",
         "printedName": "CleverTapSDK",
         "declKind": "Import",
         "moduleName": "Leanplum",
         "declAttributes": [
           "ImplementationOnly",
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
           "RawDocComment"
         ]
       },
@@ -3785,6 +3845,685 @@
           },
           {
             "kind": "TypeDecl",
+            "name": "ActionsTrigger",
+            "printedName": "ActionsTrigger",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "eventName",
+                "printedName": "eventName",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvp",
+                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvp",
+                "moduleName": "Leanplum",
+                "declAttributes": [
+                  "Final",
+                  "HasStorage",
+                  "AccessControl",
+                  "ObjC"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "Swift.String?",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          }
+                        ],
+                        "usr": "s:Sq"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvg",
+                    "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvg",
+                    "moduleName": "Leanplum",
+                    "implicit": true,
+                    "declAttributes": [
+                      "Final",
+                      "ObjC"
+                    ],
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Var",
+                "name": "condition",
+                "printedName": "condition",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "[Swift.String]?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Array",
+                        "printedName": "[Swift.String]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          }
+                        ],
+                        "usr": "s:Sa"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvp",
+                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvp",
+                "moduleName": "Leanplum",
+                "declAttributes": [
+                  "Final",
+                  "HasStorage",
+                  "AccessControl",
+                  "ObjC"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "[Swift.String]?",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "Array",
+                            "printedName": "[Swift.String]",
+                            "children": [
+                              {
+                                "kind": "TypeNominal",
+                                "name": "String",
+                                "printedName": "Swift.String",
+                                "usr": "s:SS"
+                              }
+                            ],
+                            "usr": "s:Sa"
+                          }
+                        ],
+                        "usr": "s:Sq"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvg",
+                    "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvg",
+                    "moduleName": "Leanplum",
+                    "implicit": true,
+                    "declAttributes": [
+                      "Final",
+                      "ObjC"
+                    ],
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Var",
+                "name": "contextualValues",
+                "printedName": "contextualValues",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Leanplum.LPContextualValues?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "LPContextualValues",
+                        "printedName": "Leanplum.LPContextualValues",
+                        "usr": "c:objc(cs)LPContextualValues"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvp",
+                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvp",
+                "moduleName": "Leanplum",
+                "declAttributes": [
+                  "Final",
+                  "HasStorage",
+                  "AccessControl",
+                  "ObjC"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Optional",
+                        "printedName": "Leanplum.LPContextualValues?",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "LPContextualValues",
+                            "printedName": "Leanplum.LPContextualValues",
+                            "usr": "c:objc(cs)LPContextualValues"
+                          }
+                        ],
+                        "usr": "s:Sq"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvg",
+                    "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvg",
+                    "moduleName": "Leanplum",
+                    "implicit": true,
+                    "declAttributes": [
+                      "Final",
+                      "ObjC"
+                    ],
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Constructor",
+                "name": "init",
+                "printedName": "init(eventName:condition:contextualValues:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ActionsTrigger",
+                    "printedName": "Leanplum.ActionManager.ActionsTrigger",
+                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Swift.String?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "String",
+                        "printedName": "Swift.String",
+                        "usr": "s:SS"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "[Swift.String]?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Array",
+                        "printedName": "[Swift.String]",
+                        "children": [
+                          {
+                            "kind": "TypeNominal",
+                            "name": "String",
+                            "printedName": "Swift.String",
+                            "usr": "s:SS"
+                          }
+                        ],
+                        "usr": "s:Sa"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Leanplum.LPContextualValues?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "LPContextualValues",
+                        "printedName": "Leanplum.LPContextualValues",
+                        "usr": "c:objc(cs)LPContextualValues"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Constructor",
+                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9eventName9condition16contextualValuesAESSSg_SaySSGSgSo012LPContextualJ0CSgtcfc",
+                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9eventName9condition16contextualValuesAESSSg_SaySSGSgSo012LPContextualJ0CSgtcfc",
+                "moduleName": "Leanplum",
+                "objc_name": "initWithEventName:condition:contextualValues:",
+                "declAttributes": [
+                  "Required",
+                  "AccessControl",
+                  "ObjC"
+                ],
+                "init_kind": "Designated"
+              },
+              {
+                "kind": "Constructor",
+                "name": "init",
+                "printedName": "init()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ActionsTrigger",
+                    "printedName": "Leanplum.ActionManager.ActionsTrigger",
+                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC"
+                  }
+                ],
+                "declKind": "Constructor",
+                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerCAEycfc",
+                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerCAEycfc",
+                "moduleName": "Leanplum",
+                "overriding": true,
+                "implicit": true,
+                "objc_name": "init",
+                "declAttributes": [
+                  "Dynamic",
+                  "ObjC",
+                  "Override"
+                ],
+                "init_kind": "Designated"
+              }
+            ],
+            "declKind": "Class",
+            "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC",
+            "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "isFromExtension": true,
+            "superclassUsr": "c:objc(cs)NSObject",
+            "superclassNames": [
+              "ObjectiveC.NSObject"
+            ],
+            "conformances": [
+              {
+                "kind": "Conformance",
+                "name": "Copyable",
+                "printedName": "Copyable",
+                "usr": "s:s8CopyableP",
+                "mangledName": "$ss8CopyableP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Escapable",
+                "printedName": "Escapable",
+                "usr": "s:s9EscapableP",
+                "mangledName": "$ss9EscapableP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Equatable",
+                "printedName": "Equatable",
+                "usr": "s:SQ",
+                "mangledName": "$sSQ"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Hashable",
+                "printedName": "Hashable",
+                "usr": "s:SH",
+                "mangledName": "$sSH"
+              },
+              {
+                "kind": "Conformance",
+                "name": "CVarArg",
+                "printedName": "CVarArg",
+                "usr": "s:s7CVarArgP",
+                "mangledName": "$ss7CVarArgP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "_KeyValueCodingAndObservingPublishing",
+                "printedName": "_KeyValueCodingAndObservingPublishing",
+                "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+                "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "_KeyValueCodingAndObserving",
+                "printedName": "_KeyValueCodingAndObserving",
+                "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+                "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "CustomStringConvertible",
+                "printedName": "CustomStringConvertible",
+                "usr": "s:s23CustomStringConvertibleP",
+                "mangledName": "$ss23CustomStringConvertibleP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "CustomDebugStringConvertible",
+                "printedName": "CustomDebugStringConvertible",
+                "usr": "s:s28CustomDebugStringConvertibleP",
+                "mangledName": "$ss28CustomDebugStringConvertibleP"
+              }
+            ]
+          },
+          {
+            "kind": "TypeDecl",
+            "name": "Configuration",
+            "printedName": "Configuration",
+            "children": [
+              {
+                "kind": "Var",
+                "name": "dismissOnPushArrival",
+                "printedName": "dismissOnPushArrival",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvp",
+                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvp",
+                "moduleName": "Leanplum",
+                "declAttributes": [
+                  "Final",
+                  "HasStorage",
+                  "AccessControl",
+                  "RawDocComment"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvg",
+                    "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvg",
+                    "moduleName": "Leanplum",
+                    "implicit": true,
+                    "declAttributes": [
+                      "Final"
+                    ],
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Var",
+                "name": "resumeOnEnterForeground",
+                "printedName": "resumeOnEnterForeground",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvp",
+                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvp",
+                "moduleName": "Leanplum",
+                "declAttributes": [
+                  "Final",
+                  "HasStorage",
+                  "AccessControl",
+                  "RawDocComment"
+                ],
+                "isLet": true,
+                "hasStorage": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Bool",
+                        "printedName": "Swift.Bool",
+                        "usr": "s:Sb"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvg",
+                    "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvg",
+                    "moduleName": "Leanplum",
+                    "implicit": true,
+                    "declAttributes": [
+                      "Final"
+                    ],
+                    "accessorKind": "get"
+                  }
+                ]
+              },
+              {
+                "kind": "Constructor",
+                "name": "init",
+                "printedName": "init(dismissOnPushArrival:resumeOnEnterForeground:)",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Configuration",
+                    "printedName": "Leanplum.ActionManager.Configuration",
+                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Bool",
+                    "printedName": "Swift.Bool",
+                    "usr": "s:Sb"
+                  }
+                ],
+                "declKind": "Constructor",
+                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrival06resumeF15EnterForegroundAESb_Sbtcfc",
+                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrival06resumeF15EnterForegroundAESb_Sbtcfc",
+                "moduleName": "Leanplum",
+                "declAttributes": [
+                  "AccessControl"
+                ],
+                "init_kind": "Designated"
+              },
+              {
+                "kind": "Var",
+                "name": "default",
+                "printedName": "default",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Configuration",
+                    "printedName": "Leanplum.ActionManager.Configuration",
+                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC"
+                  }
+                ],
+                "declKind": "Var",
+                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC7defaultAEvpZ",
+                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC7defaultAEvpZ",
+                "moduleName": "Leanplum",
+                "static": true,
+                "declAttributes": [
+                  "Final",
+                  "AccessControl"
+                ],
+                "isFromExtension": true,
+                "accessors": [
+                  {
+                    "kind": "Accessor",
+                    "name": "Get",
+                    "printedName": "Get()",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "Configuration",
+                        "printedName": "Leanplum.ActionManager.Configuration",
+                        "usr": "s:8Leanplum13ActionManagerC13ConfigurationC"
+                      }
+                    ],
+                    "declKind": "Accessor",
+                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC7defaultAEvgZ",
+                    "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC7defaultAEvgZ",
+                    "moduleName": "Leanplum",
+                    "static": true,
+                    "declAttributes": [
+                      "Final"
+                    ],
+                    "isFromExtension": true,
+                    "accessorKind": "get"
+                  }
+                ]
+              }
+            ],
+            "declKind": "Class",
+            "usr": "s:8Leanplum13ActionManagerC13ConfigurationC",
+            "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "AccessControl",
+              "RawDocComment"
+            ],
+            "isFromExtension": true,
+            "conformances": [
+              {
+                "kind": "Conformance",
+                "name": "Copyable",
+                "printedName": "Copyable",
+                "usr": "s:s8CopyableP",
+                "mangledName": "$ss8CopyableP"
+              },
+              {
+                "kind": "Conformance",
+                "name": "Escapable",
+                "printedName": "Escapable",
+                "usr": "s:s9EscapableP",
+                "mangledName": "$ss9EscapableP"
+              }
+            ]
+          },
+          {
+            "kind": "Function",
+            "name": "defineAction",
+            "printedName": "defineAction(definition:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "ActionDefinition",
+                "printedName": "Leanplum.ActionManager.ActionDefinition",
+                "usr": "s:8Leanplum13ActionManagerC0B10DefinitionC"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@Leanplum@objc(cs)LPActionManager(im)defineActionWithDefinition:",
+            "mangledName": "$s8Leanplum13ActionManagerC06defineB010definitionyAC0B10DefinitionC_tF",
+            "moduleName": "Leanplum",
+            "objc_name": "defineActionWithDefinition:",
+            "declAttributes": [
+              "Dynamic",
+              "AccessControl",
+              "ObjC"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "definition",
+            "printedName": "definition(withName:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Leanplum.ActionManager.ActionDefinition?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ActionDefinition",
+                    "printedName": "Leanplum.ActionManager.ActionDefinition",
+                    "usr": "s:8Leanplum13ActionManagerC0B10DefinitionC"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@CM@Leanplum@objc(cs)LPActionManager(im)definitionWithName:",
+            "mangledName": "$s8Leanplum13ActionManagerC10definition8withNameAC0B10DefinitionCSgSS_tF",
+            "moduleName": "Leanplum",
+            "objc_name": "definitionWithName:",
+            "declAttributes": [
+              "Dynamic",
+              "AccessControl",
+              "ObjC"
+            ],
+            "isFromExtension": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "TypeDecl",
             "name": "ActionDefinition",
             "printedName": "ActionDefinition",
             "children": [
@@ -5140,217 +5879,6 @@
           },
           {
             "kind": "TypeDecl",
-            "name": "Configuration",
-            "printedName": "Configuration",
-            "children": [
-              {
-                "kind": "Var",
-                "name": "dismissOnPushArrival",
-                "printedName": "dismissOnPushArrival",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvp",
-                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvp",
-                "moduleName": "Leanplum",
-                "declAttributes": [
-                  "Final",
-                  "HasStorage",
-                  "AccessControl",
-                  "RawDocComment"
-                ],
-                "isLet": true,
-                "hasStorage": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Bool",
-                        "printedName": "Swift.Bool",
-                        "usr": "s:Sb"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvg",
-                    "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrivalSbvg",
-                    "moduleName": "Leanplum",
-                    "implicit": true,
-                    "declAttributes": [
-                      "Final"
-                    ],
-                    "accessorKind": "get"
-                  }
-                ]
-              },
-              {
-                "kind": "Var",
-                "name": "resumeOnEnterForeground",
-                "printedName": "resumeOnEnterForeground",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvp",
-                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvp",
-                "moduleName": "Leanplum",
-                "declAttributes": [
-                  "Final",
-                  "HasStorage",
-                  "AccessControl",
-                  "RawDocComment"
-                ],
-                "isLet": true,
-                "hasStorage": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Bool",
-                        "printedName": "Swift.Bool",
-                        "usr": "s:Sb"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvg",
-                    "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC23resumeOnEnterForegroundSbvg",
-                    "moduleName": "Leanplum",
-                    "implicit": true,
-                    "declAttributes": [
-                      "Final"
-                    ],
-                    "accessorKind": "get"
-                  }
-                ]
-              },
-              {
-                "kind": "Constructor",
-                "name": "init",
-                "printedName": "init(dismissOnPushArrival:resumeOnEnterForeground:)",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Configuration",
-                    "printedName": "Leanplum.ActionManager.Configuration",
-                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Bool",
-                    "printedName": "Swift.Bool",
-                    "usr": "s:Sb"
-                  }
-                ],
-                "declKind": "Constructor",
-                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrival06resumeF15EnterForegroundAESb_Sbtcfc",
-                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC20dismissOnPushArrival06resumeF15EnterForegroundAESb_Sbtcfc",
-                "moduleName": "Leanplum",
-                "declAttributes": [
-                  "AccessControl"
-                ],
-                "init_kind": "Designated"
-              },
-              {
-                "kind": "Var",
-                "name": "default",
-                "printedName": "default",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Configuration",
-                    "printedName": "Leanplum.ActionManager.Configuration",
-                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:8Leanplum13ActionManagerC13ConfigurationC7defaultAEvpZ",
-                "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC7defaultAEvpZ",
-                "moduleName": "Leanplum",
-                "static": true,
-                "declAttributes": [
-                  "Final",
-                  "AccessControl"
-                ],
-                "isFromExtension": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Configuration",
-                        "printedName": "Leanplum.ActionManager.Configuration",
-                        "usr": "s:8Leanplum13ActionManagerC13ConfigurationC"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:8Leanplum13ActionManagerC13ConfigurationC7defaultAEvgZ",
-                    "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC7defaultAEvgZ",
-                    "moduleName": "Leanplum",
-                    "static": true,
-                    "declAttributes": [
-                      "Final"
-                    ],
-                    "isFromExtension": true,
-                    "accessorKind": "get"
-                  }
-                ]
-              }
-            ],
-            "declKind": "Class",
-            "usr": "s:8Leanplum13ActionManagerC13ConfigurationC",
-            "mangledName": "$s8Leanplum13ActionManagerC13ConfigurationC",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "AccessControl",
-              "RawDocComment"
-            ],
-            "isFromExtension": true,
-            "conformances": [
-              {
-                "kind": "Conformance",
-                "name": "Copyable",
-                "printedName": "Copyable",
-                "usr": "s:s8CopyableP",
-                "mangledName": "$ss8CopyableP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "Escapable",
-                "printedName": "Escapable",
-                "usr": "s:s9EscapableP",
-                "mangledName": "$ss9EscapableP"
-              }
-            ]
-          },
-          {
-            "kind": "TypeDecl",
             "name": "Priority",
             "printedName": "Priority",
             "children": [
@@ -5868,435 +6396,6 @@
             ]
           },
           {
-            "kind": "TypeDecl",
-            "name": "Scheduler",
-            "printedName": "Scheduler",
-            "declKind": "Class",
-            "usr": "s:8Leanplum13ActionManagerC9SchedulerC",
-            "mangledName": "$s8Leanplum13ActionManagerC9SchedulerC",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "isFromExtension": true,
-            "hasMissingDesignatedInitializers": true,
-            "conformances": [
-              {
-                "kind": "Conformance",
-                "name": "Copyable",
-                "printedName": "Copyable",
-                "usr": "s:s8CopyableP",
-                "mangledName": "$ss8CopyableP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "Escapable",
-                "printedName": "Escapable",
-                "usr": "s:s9EscapableP",
-                "mangledName": "$ss9EscapableP"
-              }
-            ]
-          },
-          {
-            "kind": "TypeDecl",
-            "name": "ActionsTrigger",
-            "printedName": "ActionsTrigger",
-            "children": [
-              {
-                "kind": "Var",
-                "name": "eventName",
-                "printedName": "eventName",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "Swift.String?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "String",
-                        "printedName": "Swift.String",
-                        "usr": "s:SS"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvp",
-                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvp",
-                "moduleName": "Leanplum",
-                "declAttributes": [
-                  "Final",
-                  "HasStorage",
-                  "AccessControl",
-                  "ObjC"
-                ],
-                "isLet": true,
-                "hasStorage": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Optional",
-                        "printedName": "Swift.String?",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "String",
-                            "printedName": "Swift.String",
-                            "usr": "s:SS"
-                          }
-                        ],
-                        "usr": "s:Sq"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvg",
-                    "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9eventNameSSSgvg",
-                    "moduleName": "Leanplum",
-                    "implicit": true,
-                    "declAttributes": [
-                      "Final",
-                      "ObjC"
-                    ],
-                    "accessorKind": "get"
-                  }
-                ]
-              },
-              {
-                "kind": "Var",
-                "name": "condition",
-                "printedName": "condition",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "[Swift.String]?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Array",
-                        "printedName": "[Swift.String]",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "String",
-                            "printedName": "Swift.String",
-                            "usr": "s:SS"
-                          }
-                        ],
-                        "usr": "s:Sa"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvp",
-                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvp",
-                "moduleName": "Leanplum",
-                "declAttributes": [
-                  "Final",
-                  "HasStorage",
-                  "AccessControl",
-                  "ObjC"
-                ],
-                "isLet": true,
-                "hasStorage": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Optional",
-                        "printedName": "[Swift.String]?",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "Array",
-                            "printedName": "[Swift.String]",
-                            "children": [
-                              {
-                                "kind": "TypeNominal",
-                                "name": "String",
-                                "printedName": "Swift.String",
-                                "usr": "s:SS"
-                              }
-                            ],
-                            "usr": "s:Sa"
-                          }
-                        ],
-                        "usr": "s:Sq"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvg",
-                    "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9conditionSaySSGSgvg",
-                    "moduleName": "Leanplum",
-                    "implicit": true,
-                    "declAttributes": [
-                      "Final",
-                      "ObjC"
-                    ],
-                    "accessorKind": "get"
-                  }
-                ]
-              },
-              {
-                "kind": "Var",
-                "name": "contextualValues",
-                "printedName": "contextualValues",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "Leanplum.LPContextualValues?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "LPContextualValues",
-                        "printedName": "Leanplum.LPContextualValues",
-                        "usr": "c:objc(cs)LPContextualValues"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "declKind": "Var",
-                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvp",
-                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvp",
-                "moduleName": "Leanplum",
-                "declAttributes": [
-                  "Final",
-                  "HasStorage",
-                  "AccessControl",
-                  "ObjC"
-                ],
-                "isLet": true,
-                "hasStorage": true,
-                "accessors": [
-                  {
-                    "kind": "Accessor",
-                    "name": "Get",
-                    "printedName": "Get()",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Optional",
-                        "printedName": "Leanplum.LPContextualValues?",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "LPContextualValues",
-                            "printedName": "Leanplum.LPContextualValues",
-                            "usr": "c:objc(cs)LPContextualValues"
-                          }
-                        ],
-                        "usr": "s:Sq"
-                      }
-                    ],
-                    "declKind": "Accessor",
-                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvg",
-                    "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC16contextualValuesSo012LPContextualG0CSgvg",
-                    "moduleName": "Leanplum",
-                    "implicit": true,
-                    "declAttributes": [
-                      "Final",
-                      "ObjC"
-                    ],
-                    "accessorKind": "get"
-                  }
-                ]
-              },
-              {
-                "kind": "Constructor",
-                "name": "init",
-                "printedName": "init(eventName:condition:contextualValues:)",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ActionsTrigger",
-                    "printedName": "Leanplum.ActionManager.ActionsTrigger",
-                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "Swift.String?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "String",
-                        "printedName": "Swift.String",
-                        "usr": "s:SS"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "[Swift.String]?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Array",
-                        "printedName": "[Swift.String]",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "String",
-                            "printedName": "Swift.String",
-                            "usr": "s:SS"
-                          }
-                        ],
-                        "usr": "s:Sa"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Optional",
-                    "printedName": "Leanplum.LPContextualValues?",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "LPContextualValues",
-                        "printedName": "Leanplum.LPContextualValues",
-                        "usr": "c:objc(cs)LPContextualValues"
-                      }
-                    ],
-                    "usr": "s:Sq"
-                  }
-                ],
-                "declKind": "Constructor",
-                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC9eventName9condition16contextualValuesAESSSg_SaySSGSgSo012LPContextualJ0CSgtcfc",
-                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC9eventName9condition16contextualValuesAESSSg_SaySSGSgSo012LPContextualJ0CSgtcfc",
-                "moduleName": "Leanplum",
-                "objc_name": "initWithEventName:condition:contextualValues:",
-                "declAttributes": [
-                  "Required",
-                  "AccessControl",
-                  "ObjC"
-                ],
-                "init_kind": "Designated"
-              },
-              {
-                "kind": "Constructor",
-                "name": "init",
-                "printedName": "init()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ActionsTrigger",
-                    "printedName": "Leanplum.ActionManager.ActionsTrigger",
-                    "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC"
-                  }
-                ],
-                "declKind": "Constructor",
-                "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerCAEycfc",
-                "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerCAEycfc",
-                "moduleName": "Leanplum",
-                "overriding": true,
-                "implicit": true,
-                "objc_name": "init",
-                "declAttributes": [
-                  "Dynamic",
-                  "ObjC",
-                  "Override"
-                ],
-                "init_kind": "Designated"
-              }
-            ],
-            "declKind": "Class",
-            "usr": "s:8Leanplum13ActionManagerC14ActionsTriggerC",
-            "mangledName": "$s8Leanplum13ActionManagerC14ActionsTriggerC",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "isFromExtension": true,
-            "superclassUsr": "c:objc(cs)NSObject",
-            "superclassNames": [
-              "ObjectiveC.NSObject"
-            ],
-            "conformances": [
-              {
-                "kind": "Conformance",
-                "name": "Copyable",
-                "printedName": "Copyable",
-                "usr": "s:s8CopyableP",
-                "mangledName": "$ss8CopyableP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "Escapable",
-                "printedName": "Escapable",
-                "usr": "s:s9EscapableP",
-                "mangledName": "$ss9EscapableP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "Equatable",
-                "printedName": "Equatable",
-                "usr": "s:SQ",
-                "mangledName": "$sSQ"
-              },
-              {
-                "kind": "Conformance",
-                "name": "Hashable",
-                "printedName": "Hashable",
-                "usr": "s:SH",
-                "mangledName": "$sSH"
-              },
-              {
-                "kind": "Conformance",
-                "name": "CVarArg",
-                "printedName": "CVarArg",
-                "usr": "s:s7CVarArgP",
-                "mangledName": "$ss7CVarArgP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "_KeyValueCodingAndObservingPublishing",
-                "printedName": "_KeyValueCodingAndObservingPublishing",
-                "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
-                "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "_KeyValueCodingAndObserving",
-                "printedName": "_KeyValueCodingAndObserving",
-                "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
-                "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "CustomStringConvertible",
-                "printedName": "CustomStringConvertible",
-                "usr": "s:s23CustomStringConvertibleP",
-                "mangledName": "$ss23CustomStringConvertibleP"
-              },
-              {
-                "kind": "Conformance",
-                "name": "CustomDebugStringConvertible",
-                "printedName": "CustomDebugStringConvertible",
-                "usr": "s:s28CustomDebugStringConvertibleP",
-                "mangledName": "$ss28CustomDebugStringConvertibleP"
-              }
-            ]
-          },
-          {
             "kind": "Function",
             "name": "processMessagesAndDownloadFiles",
             "printedName": "processMessagesAndDownloadFiles(_:)",
@@ -6629,73 +6728,34 @@
             "funcSelfKind": "NonMutating"
           },
           {
-            "kind": "Function",
-            "name": "defineAction",
-            "printedName": "defineAction(definition:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "ActionDefinition",
-                "printedName": "Leanplum.ActionManager.ActionDefinition",
-                "usr": "s:8Leanplum13ActionManagerC0B10DefinitionC"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@CM@Leanplum@objc(cs)LPActionManager(im)defineActionWithDefinition:",
-            "mangledName": "$s8Leanplum13ActionManagerC06defineB010definitionyAC0B10DefinitionC_tF",
+            "kind": "TypeDecl",
+            "name": "Scheduler",
+            "printedName": "Scheduler",
+            "declKind": "Class",
+            "usr": "s:8Leanplum13ActionManagerC9SchedulerC",
+            "mangledName": "$s8Leanplum13ActionManagerC9SchedulerC",
             "moduleName": "Leanplum",
-            "objc_name": "defineActionWithDefinition:",
             "declAttributes": [
-              "Dynamic",
-              "AccessControl",
-              "ObjC"
+              "AccessControl"
             ],
             "isFromExtension": true,
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "definition",
-            "printedName": "definition(withName:)",
-            "children": [
+            "hasMissingDesignatedInitializers": true,
+            "conformances": [
               {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Leanplum.ActionManager.ActionDefinition?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "ActionDefinition",
-                    "printedName": "Leanplum.ActionManager.ActionDefinition",
-                    "usr": "s:8Leanplum13ActionManagerC0B10DefinitionC"
-                  }
-                ],
-                "usr": "s:Sq"
+                "kind": "Conformance",
+                "name": "Copyable",
+                "printedName": "Copyable",
+                "usr": "s:s8CopyableP",
+                "mangledName": "$ss8CopyableP"
               },
               {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
+                "kind": "Conformance",
+                "name": "Escapable",
+                "printedName": "Escapable",
+                "usr": "s:s9EscapableP",
+                "mangledName": "$ss9EscapableP"
               }
-            ],
-            "declKind": "Func",
-            "usr": "c:@CM@Leanplum@objc(cs)LPActionManager(im)definitionWithName:",
-            "mangledName": "$s8Leanplum13ActionManagerC10definition8withNameAC0B10DefinitionCSgSS_tF",
-            "moduleName": "Leanplum",
-            "objc_name": "definitionWithName:",
-            "declAttributes": [
-              "Dynamic",
-              "AccessControl",
-              "ObjC"
-            ],
-            "isFromExtension": true,
-            "funcSelfKind": "NonMutating"
+            ]
           }
         ],
         "declKind": "Class",
@@ -6778,6 +6838,514 @@
             "usr": "s:s28CustomDebugStringConvertibleP",
             "mangledName": "$ss28CustomDebugStringConvertibleP"
           }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "MigrationState",
+        "printedName": "MigrationState",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "undefined",
+            "printedName": "undefined",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MigrationState",
+                    "printedName": "Leanplum.MigrationState",
+                    "usr": "c:@M@Leanplum@E@MigrationState"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "Leanplum.MigrationState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MigrationState",
+                        "printedName": "Leanplum.MigrationState",
+                        "usr": "c:@M@Leanplum@E@MigrationState"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateUndefined",
+            "mangledName": "$s8Leanplum14MigrationStateO9undefinedyA2CmF",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "ObjC"
+            ],
+            "fixedbinaryorder": 0
+          },
+          {
+            "kind": "Var",
+            "name": "leanplum",
+            "printedName": "leanplum",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MigrationState",
+                    "printedName": "Leanplum.MigrationState",
+                    "usr": "c:@M@Leanplum@E@MigrationState"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "Leanplum.MigrationState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MigrationState",
+                        "printedName": "Leanplum.MigrationState",
+                        "usr": "c:@M@Leanplum@E@MigrationState"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateLeanplum",
+            "mangledName": "$s8Leanplum14MigrationStateO8leanplumyA2CmF",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "ObjC"
+            ],
+            "fixedbinaryorder": 1
+          },
+          {
+            "kind": "Var",
+            "name": "duplicate",
+            "printedName": "duplicate",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MigrationState",
+                    "printedName": "Leanplum.MigrationState",
+                    "usr": "c:@M@Leanplum@E@MigrationState"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "Leanplum.MigrationState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MigrationState",
+                        "printedName": "Leanplum.MigrationState",
+                        "usr": "c:@M@Leanplum@E@MigrationState"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateDuplicate",
+            "mangledName": "$s8Leanplum14MigrationStateO9duplicateyA2CmF",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "ObjC"
+            ],
+            "fixedbinaryorder": 2
+          },
+          {
+            "kind": "Var",
+            "name": "cleverTap",
+            "printedName": "cleverTap",
+            "children": [
+              {
+                "kind": "TypeFunc",
+                "name": "Function",
+                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MigrationState",
+                    "printedName": "Leanplum.MigrationState",
+                    "usr": "c:@M@Leanplum@E@MigrationState"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Metatype",
+                    "printedName": "Leanplum.MigrationState.Type",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MigrationState",
+                        "printedName": "Leanplum.MigrationState",
+                        "usr": "c:@M@Leanplum@E@MigrationState"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ],
+            "declKind": "EnumElement",
+            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateCleverTap",
+            "mangledName": "$s8Leanplum14MigrationStateO9cleverTapyA2CmF",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "ObjC"
+            ],
+            "fixedbinaryorder": 3
+          },
+          {
+            "kind": "Var",
+            "name": "description",
+            "printedName": "description",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:8Leanplum14MigrationStateO11descriptionSSvp",
+            "mangledName": "$s8Leanplum14MigrationStateO11descriptionSSvp",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:8Leanplum14MigrationStateO11descriptionSSvg",
+                "mangledName": "$s8Leanplum14MigrationStateO11descriptionSSvg",
+                "moduleName": "Leanplum",
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(stringValue:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "MigrationState",
+                "printedName": "Leanplum.MigrationState",
+                "usr": "c:@M@Leanplum@E@MigrationState"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:8Leanplum14MigrationStateO11stringValueACSS_tcfc",
+            "mangledName": "$s8Leanplum14MigrationStateO11stringValueACSS_tcfc",
+            "moduleName": "Leanplum",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(rawValue:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Leanplum.MigrationState?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MigrationState",
+                    "printedName": "Leanplum.MigrationState",
+                    "usr": "c:@M@Leanplum@E@MigrationState"
+                  }
+                ],
+                "usr": "s:Sq"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:8Leanplum14MigrationStateO8rawValueACSgSi_tcfc",
+            "mangledName": "$s8Leanplum14MigrationStateO8rawValueACSgSi_tcfc",
+            "moduleName": "Leanplum",
+            "implicit": true,
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "rawValue",
+            "printedName": "rawValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:8Leanplum14MigrationStateO8rawValueSivp",
+            "mangledName": "$s8Leanplum14MigrationStateO8rawValueSivp",
+            "moduleName": "Leanplum",
+            "implicit": true,
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:8Leanplum14MigrationStateO8rawValueSivg",
+                "mangledName": "$s8Leanplum14MigrationStateO8rawValueSivg",
+                "moduleName": "Leanplum",
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "allCases",
+            "printedName": "allCases",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[Leanplum.MigrationState]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "MigrationState",
+                    "printedName": "Leanplum.MigrationState",
+                    "usr": "c:@M@Leanplum@E@MigrationState"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "s:8Leanplum14MigrationStateO8allCasesSayACGvpZ",
+            "mangledName": "$s8Leanplum14MigrationStateO8allCasesSayACGvpZ",
+            "moduleName": "Leanplum",
+            "static": true,
+            "implicit": true,
+            "declAttributes": [
+              "Nonisolated"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[Leanplum.MigrationState]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MigrationState",
+                        "printedName": "Leanplum.MigrationState",
+                        "usr": "c:@M@Leanplum@E@MigrationState"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "s:8Leanplum14MigrationStateO8allCasesSayACGvgZ",
+                "mangledName": "$s8Leanplum14MigrationStateO8allCasesSayACGvgZ",
+                "moduleName": "Leanplum",
+                "static": true,
+                "implicit": true,
+                "accessorKind": "get"
+              }
+            ]
+          }
+        ],
+        "declKind": "Enum",
+        "usr": "c:@M@Leanplum@E@MigrationState",
+        "mangledName": "$s8Leanplum14MigrationStateO",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC"
+        ],
+        "enumRawTypeName": "Int",
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "RawRepresentable",
+            "printedName": "RawRepresentable",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "RawValue",
+                "printedName": "RawValue",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Int",
+                    "printedName": "Swift.Int",
+                    "usr": "s:Si"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:SY",
+            "mangledName": "$sSY"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CaseIterable",
+            "printedName": "CaseIterable",
+            "children": [
+              {
+                "kind": "TypeWitness",
+                "name": "AllCases",
+                "printedName": "AllCases",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Array",
+                    "printedName": "[Leanplum.MigrationState]",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "MigrationState",
+                        "printedName": "Leanplum.MigrationState",
+                        "usr": "c:@M@Leanplum@E@MigrationState"
+                      }
+                    ],
+                    "usr": "s:Sa"
+                  }
+                ]
+              }
+            ],
+            "usr": "s:s12CaseIterableP",
+            "mangledName": "$ss12CaseIterableP"
+          }
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "Foundation",
+        "printedName": "Foundation",
+        "declKind": "Import",
+        "moduleName": "Leanplum",
+        "declAttributes": [
+          "RawDocComment"
         ]
       },
       {
@@ -7462,504 +8030,6 @@
             "printedName": "CustomDebugStringConvertible",
             "usr": "s:s28CustomDebugStringConvertibleP",
             "mangledName": "$ss28CustomDebugStringConvertibleP"
-          }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "TypeDecl",
-        "name": "MigrationState",
-        "printedName": "MigrationState",
-        "children": [
-          {
-            "kind": "Var",
-            "name": "undefined",
-            "printedName": "undefined",
-            "children": [
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "MigrationState",
-                    "printedName": "Leanplum.MigrationState",
-                    "usr": "c:@M@Leanplum@E@MigrationState"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Metatype",
-                    "printedName": "Leanplum.MigrationState.Type",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "MigrationState",
-                        "printedName": "Leanplum.MigrationState",
-                        "usr": "c:@M@Leanplum@E@MigrationState"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "declKind": "EnumElement",
-            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateUndefined",
-            "mangledName": "$s8Leanplum14MigrationStateO9undefinedyA2CmF",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "ObjC"
-            ],
-            "fixedbinaryorder": 0
-          },
-          {
-            "kind": "Var",
-            "name": "leanplum",
-            "printedName": "leanplum",
-            "children": [
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "MigrationState",
-                    "printedName": "Leanplum.MigrationState",
-                    "usr": "c:@M@Leanplum@E@MigrationState"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Metatype",
-                    "printedName": "Leanplum.MigrationState.Type",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "MigrationState",
-                        "printedName": "Leanplum.MigrationState",
-                        "usr": "c:@M@Leanplum@E@MigrationState"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "declKind": "EnumElement",
-            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateLeanplum",
-            "mangledName": "$s8Leanplum14MigrationStateO8leanplumyA2CmF",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "ObjC"
-            ],
-            "fixedbinaryorder": 1
-          },
-          {
-            "kind": "Var",
-            "name": "duplicate",
-            "printedName": "duplicate",
-            "children": [
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "MigrationState",
-                    "printedName": "Leanplum.MigrationState",
-                    "usr": "c:@M@Leanplum@E@MigrationState"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Metatype",
-                    "printedName": "Leanplum.MigrationState.Type",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "MigrationState",
-                        "printedName": "Leanplum.MigrationState",
-                        "usr": "c:@M@Leanplum@E@MigrationState"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "declKind": "EnumElement",
-            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateDuplicate",
-            "mangledName": "$s8Leanplum14MigrationStateO9duplicateyA2CmF",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "ObjC"
-            ],
-            "fixedbinaryorder": 2
-          },
-          {
-            "kind": "Var",
-            "name": "cleverTap",
-            "printedName": "cleverTap",
-            "children": [
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "(Leanplum.MigrationState.Type) -> Leanplum.MigrationState",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "MigrationState",
-                    "printedName": "Leanplum.MigrationState",
-                    "usr": "c:@M@Leanplum@E@MigrationState"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Metatype",
-                    "printedName": "Leanplum.MigrationState.Type",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "MigrationState",
-                        "printedName": "Leanplum.MigrationState",
-                        "usr": "c:@M@Leanplum@E@MigrationState"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "declKind": "EnumElement",
-            "usr": "c:@M@Leanplum@E@MigrationState@MigrationStateCleverTap",
-            "mangledName": "$s8Leanplum14MigrationStateO9cleverTapyA2CmF",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "ObjC"
-            ],
-            "fixedbinaryorder": 3
-          },
-          {
-            "kind": "Var",
-            "name": "description",
-            "printedName": "description",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:8Leanplum14MigrationStateO11descriptionSSvp",
-            "mangledName": "$s8Leanplum14MigrationStateO11descriptionSSvp",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:8Leanplum14MigrationStateO11descriptionSSvg",
-                "mangledName": "$s8Leanplum14MigrationStateO11descriptionSSvg",
-                "moduleName": "Leanplum",
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(stringValue:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "MigrationState",
-                "printedName": "Leanplum.MigrationState",
-                "usr": "c:@M@Leanplum@E@MigrationState"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:8Leanplum14MigrationStateO11stringValueACSS_tcfc",
-            "mangledName": "$s8Leanplum14MigrationStateO11stringValueACSS_tcfc",
-            "moduleName": "Leanplum",
-            "declAttributes": [
-              "AccessControl"
-            ],
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init(rawValue:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Leanplum.MigrationState?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "MigrationState",
-                    "printedName": "Leanplum.MigrationState",
-                    "usr": "c:@M@Leanplum@E@MigrationState"
-                  }
-                ],
-                "usr": "s:Sq"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "s:8Leanplum14MigrationStateO8rawValueACSgSi_tcfc",
-            "mangledName": "$s8Leanplum14MigrationStateO8rawValueACSgSi_tcfc",
-            "moduleName": "Leanplum",
-            "implicit": true,
-            "init_kind": "Designated"
-          },
-          {
-            "kind": "Var",
-            "name": "rawValue",
-            "printedName": "rawValue",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:8Leanplum14MigrationStateO8rawValueSivp",
-            "mangledName": "$s8Leanplum14MigrationStateO8rawValueSivp",
-            "moduleName": "Leanplum",
-            "implicit": true,
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Int",
-                    "printedName": "Swift.Int",
-                    "usr": "s:Si"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:8Leanplum14MigrationStateO8rawValueSivg",
-                "mangledName": "$s8Leanplum14MigrationStateO8rawValueSivg",
-                "moduleName": "Leanplum",
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          },
-          {
-            "kind": "Var",
-            "name": "allCases",
-            "printedName": "allCases",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Array",
-                "printedName": "[Leanplum.MigrationState]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "MigrationState",
-                    "printedName": "Leanplum.MigrationState",
-                    "usr": "c:@M@Leanplum@E@MigrationState"
-                  }
-                ],
-                "usr": "s:Sa"
-              }
-            ],
-            "declKind": "Var",
-            "usr": "s:8Leanplum14MigrationStateO8allCasesSayACGvpZ",
-            "mangledName": "$s8Leanplum14MigrationStateO8allCasesSayACGvpZ",
-            "moduleName": "Leanplum",
-            "static": true,
-            "implicit": true,
-            "declAttributes": [
-              "Nonisolated"
-            ],
-            "accessors": [
-              {
-                "kind": "Accessor",
-                "name": "Get",
-                "printedName": "Get()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Array",
-                    "printedName": "[Leanplum.MigrationState]",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "MigrationState",
-                        "printedName": "Leanplum.MigrationState",
-                        "usr": "c:@M@Leanplum@E@MigrationState"
-                      }
-                    ],
-                    "usr": "s:Sa"
-                  }
-                ],
-                "declKind": "Accessor",
-                "usr": "s:8Leanplum14MigrationStateO8allCasesSayACGvgZ",
-                "mangledName": "$s8Leanplum14MigrationStateO8allCasesSayACGvgZ",
-                "moduleName": "Leanplum",
-                "static": true,
-                "implicit": true,
-                "accessorKind": "get"
-              }
-            ]
-          }
-        ],
-        "declKind": "Enum",
-        "usr": "c:@M@Leanplum@E@MigrationState",
-        "mangledName": "$s8Leanplum14MigrationStateO",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "AccessControl",
-          "ObjC"
-        ],
-        "enumRawTypeName": "Int",
-        "conformances": [
-          {
-            "kind": "Conformance",
-            "name": "Copyable",
-            "printedName": "Copyable",
-            "usr": "s:s8CopyableP",
-            "mangledName": "$ss8CopyableP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Escapable",
-            "printedName": "Escapable",
-            "usr": "s:s9EscapableP",
-            "mangledName": "$ss9EscapableP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Equatable",
-            "printedName": "Equatable",
-            "usr": "s:SQ",
-            "mangledName": "$sSQ"
-          },
-          {
-            "kind": "Conformance",
-            "name": "Hashable",
-            "printedName": "Hashable",
-            "usr": "s:SH",
-            "mangledName": "$sSH"
-          },
-          {
-            "kind": "Conformance",
-            "name": "RawRepresentable",
-            "printedName": "RawRepresentable",
-            "children": [
-              {
-                "kind": "TypeWitness",
-                "name": "RawValue",
-                "printedName": "RawValue",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Int",
-                    "printedName": "Swift.Int",
-                    "usr": "s:Si"
-                  }
-                ]
-              }
-            ],
-            "usr": "s:SY",
-            "mangledName": "$sSY"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CustomStringConvertible",
-            "printedName": "CustomStringConvertible",
-            "usr": "s:s23CustomStringConvertibleP",
-            "mangledName": "$ss23CustomStringConvertibleP"
-          },
-          {
-            "kind": "Conformance",
-            "name": "CaseIterable",
-            "printedName": "CaseIterable",
-            "children": [
-              {
-                "kind": "TypeWitness",
-                "name": "AllCases",
-                "printedName": "AllCases",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Array",
-                    "printedName": "[Leanplum.MigrationState]",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "MigrationState",
-                        "printedName": "Leanplum.MigrationState",
-                        "usr": "c:@M@Leanplum@E@MigrationState"
-                      }
-                    ],
-                    "usr": "s:Sa"
-                  }
-                ]
-              }
-            ],
-            "usr": "s:s12CaseIterableP",
-            "mangledName": "$ss12CaseIterableP"
           }
         ]
       },
@@ -8865,36 +8935,6 @@
             "usr": "s:s28CustomDebugStringConvertibleP",
             "mangledName": "$ss28CustomDebugStringConvertibleP"
           }
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
         ]
       },
       {
@@ -10659,46 +10699,6 @@
         "printedName": "UIKit",
         "declKind": "Import",
         "moduleName": "Leanplum"
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
-      },
-      {
-        "kind": "Import",
-        "name": "Foundation",
-        "printedName": "Foundation",
-        "declKind": "Import",
-        "moduleName": "Leanplum",
-        "declAttributes": [
-          "RawDocComment"
-        ]
       },
       {
         "kind": "Import",
@@ -12874,6 +12874,27 @@
       "value": "\"lp_device\""
     },
     {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Extensions\/Dictionary+ValueKeyPath.swift",
+      "kind": "StringLiteral",
+      "offset": 271,
+      "length": 3,
+      "value": "\".\""
+    },
+    {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Executor.swift",
+      "kind": "StringLiteral",
+      "offset": 6328,
+      "length": 47,
+      "value": "\"[ActionManager][\""
+    },
+    {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Executor.swift",
+      "kind": "StringLiteral",
+      "offset": 6373,
+      "length": 1,
+      "value": "\"]\""
+    },
+    {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/Models\/ActionManager+ActionDefinition.swift",
       "kind": "Dictionary",
       "offset": 640,
@@ -12944,11 +12965,25 @@
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Extensions\/Dictionary+ValueKeyPath.swift",
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Triggering.swift",
+      "kind": "IntegerLiteral",
+      "offset": 311,
+      "length": 9,
+      "value": "1"
+    },
+    {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Queue.swift",
       "kind": "StringLiteral",
-      "offset": 271,
-      "length": 3,
-      "value": "\".\""
+      "offset": 257,
+      "length": 32,
+      "value": "\"leanplum.access_dispatch_queue\""
+    },
+    {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Queue.swift",
+      "kind": "Array",
+      "offset": 346,
+      "length": 2,
+      "value": "[]"
     },
     {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/Proxy\/NotificationsProxy+Swizzling.swift",
@@ -13252,20 +13287,6 @@
       "value": "443"
     },
     {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NotificationSettings.swift",
-      "kind": "BooleanLiteral",
-      "offset": 209,
-      "length": 5,
-      "value": "false"
-    },
-    {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Triggering.swift",
-      "kind": "IntegerLiteral",
-      "offset": 311,
-      "length": 9,
-      "value": "1"
-    },
-    {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Migration\/MigrationManager.swift",
       "kind": "Array",
       "offset": 433,
@@ -13278,6 +13299,13 @@
       "offset": 893,
       "length": 3,
       "value": "[]"
+    },
+    {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NotificationSettings.swift",
+      "kind": "BooleanLiteral",
+      "offset": 209,
+      "length": 5,
+      "value": "false"
     },
     {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Extensions\/LPRequestSender+UUID.swift",
@@ -13322,27 +13350,6 @@
       "value": "[]"
     },
     {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NSObject+Notifications.swift",
-      "kind": "StringLiteral",
-      "offset": 2125,
-      "length": 141,
-      "value": "\"Called swizzled application:didReceiveRemoteNotification:fetchCompletionHandler AppState: \""
-    },
-    {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NSObject+Notifications.swift",
-      "kind": "StringLiteral",
-      "offset": 2265,
-      "length": 2,
-      "value": "\"\""
-    },
-    {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NSObject+Notifications.swift",
-      "kind": "BooleanLiteral",
-      "offset": 4422,
-      "length": 5,
-      "value": "false"
-    },
-    {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Migration\/MigrationManager+ResponseHandler.swift",
       "kind": "StringLiteral",
       "offset": 319,
@@ -13378,18 +13385,25 @@
       "value": "\"accountId\""
     },
     {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Queue.swift",
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NSObject+Notifications.swift",
       "kind": "StringLiteral",
-      "offset": 257,
-      "length": 32,
-      "value": "\"leanplum.access_dispatch_queue\""
+      "offset": 2125,
+      "length": 141,
+      "value": "\"Called swizzled application:didReceiveRemoteNotification:fetchCompletionHandler AppState: \""
     },
     {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Queue.swift",
-      "kind": "Array",
-      "offset": 346,
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NSObject+Notifications.swift",
+      "kind": "StringLiteral",
+      "offset": 2265,
       "length": 2,
-      "value": "[]"
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Notifications\/NSObject+Notifications.swift",
+      "kind": "BooleanLiteral",
+      "offset": 4422,
+      "length": 5,
+      "value": "false"
     },
     {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Migration\/Wrapper\/IdentityManager.swift",
@@ -13446,20 +13460,6 @@
       "offset": 2893,
       "length": 12,
       "value": "\"identified\""
-    },
-    {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Executor.swift",
-      "kind": "StringLiteral",
-      "offset": 6328,
-      "length": 47,
-      "value": "\"[ActionManager][\""
-    },
-    {
-      "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+Executor.swift",
-      "kind": "StringLiteral",
-      "offset": 6373,
-      "length": 1,
-      "value": "\"]\""
     },
     {
       "filePath": "\/Users\/akash.malhotra\/Leanplum-iOS-SDK\/LeanplumSDK\/LeanplumSDK\/ClassesSwift\/Actions\/ActionManager+FileDownload.swift",
