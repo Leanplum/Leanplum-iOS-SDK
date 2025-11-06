@@ -58,7 +58,7 @@ public class NotificationsProxy: NSObject {
     }
     
     @objc func leanplum_applicationDidFinishLaunching(notification: Notification) {
-        Log.debug("Called leanplum_applicationDidFinishLaunching: \(notification.userInfo ?? [:]), state \(UIApplication.shared.applicationState.rawValue))")
+        Log.notificationDebug("Called leanplum_applicationDidFinishLaunching: \(notification.userInfo ?? [:]), state \(UIApplication.shared.applicationState.rawValue))")
         
         if let userInfo = notification.userInfo {
             applicationLaunched(launchOptions: userInfo)
@@ -67,7 +67,7 @@ public class NotificationsProxy: NSObject {
     
     func applicationLaunched(launchOptions: [AnyHashable: Any]) {
         if let remoteNotification = launchOptions[UIApplication.LaunchOptionsKey.remoteNotification] as? [AnyHashable: Any] {
-            Log.info("Application Launched with notification: \(remoteNotification)")
+            Log.notificationInfo("Application Launched with notification: \(remoteNotification)")
             notificationHandledFromStart = remoteNotification
             
             // started in background, woken up by remote notification

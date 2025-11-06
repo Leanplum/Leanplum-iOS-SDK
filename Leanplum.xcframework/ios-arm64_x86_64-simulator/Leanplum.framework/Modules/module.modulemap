@@ -1,0 +1,11 @@
+framework module Leanplum {
+  umbrella header "LeanplumSDK.h"
+
+  export *
+  module * { export * }
+}
+
+module Leanplum.Swift {
+  header "Leanplum-Swift.h"
+  requires objc
+}

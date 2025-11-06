@@ -1,0 +1,369 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.1.2 effective-5.10 (swiftlang-6.1.2.1.2 clang-1700.0.13.5)
+// swift-module-flags: -target arm64-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-experimental-feature DebugDescriptionMacro -enable-bare-slash-regex -module-name Leanplum
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface -interface-compiler-version 6.1.2
+import CommonCrypto
+import Foundation
+@_exported import Leanplum
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@objc extension MigrationManager {
+  @objc dynamic public class func lpCleverTapRequestArg() -> Swift.String
+}
+@_inheritsConvenienceInitializers @objc public class NotificationsManager : ObjectiveC.NSObject {
+  @objc public var shouldHandleNotificationBlock: LeanplumShouldHandleNotificationBlock?
+  @objc public var isPushDeliveryTrackingEnabled: Swift.Bool
+  @objc public func updateNotificationSettings()
+  @objc public func saveNotificationSettings(_ settings: [Swift.AnyHashable : Any])
+  @objc public func removeNotificationSettings()
+  @objc public func getNotificationSettings(completionHandler: @escaping (_ settings: [Swift.AnyHashable : Any], _ areChanged: Swift.Bool) -> ())
+  @available(iOS, deprecated: 10.0)
+  @objc(didRegisterUserNotificationSettings:) public func didRegister(_ settings: UIKit.UIUserNotificationSettings)
+  @objc public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Foundation.Data)
+  @objc public func didFailToRegisterForRemoteNotificationsWithError(_ error: any Swift.Error)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers public class Utilities : ObjectiveC.NSObject {
+  @objc public static func messageIdFromUserInfo(_ userInfo: [Swift.AnyHashable : Any]) -> Swift.String?
+  @objc public static func sha256(data: Foundation.Data) -> Foundation.Data
+  @objc public static func sha256(string: Swift.String) -> Swift.String?
+  @objc public static func sha256_200(string: Swift.String) -> Swift.String?
+  @objc public static func sha256_40(string: Swift.String) -> Swift.String?
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc public class ContentMerger : ObjectiveC.NSObject {
+  @objc public class func merge(vars: Any, diff: Any) -> Any
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension ActionManager {
+  @objc public class ActionsTrigger : ObjectiveC.NSObject {
+    @objc final public let eventName: Swift.String?
+    @objc final public let condition: [Swift.String]?
+    @objc final public let contextualValues: LPContextualValues?
+    @objc required public init(eventName: Swift.String?, condition: [Swift.String]?, contextualValues: LPContextualValues?)
+    @objc deinit
+  }
+}
+public struct ValueKeyPath {
+  public static let defaultSeparator: Swift.String
+}
+extension ValueKeyPath : Swift.ExpressibleByStringLiteral {
+  public init(stringLiteral value: Swift.String)
+  public init(unicodeScalarLiteral value: Swift.String)
+  public init(extendedGraphemeClusterLiteral value: Swift.String)
+  public typealias ExtendedGraphemeClusterLiteralType = Swift.String
+  public typealias StringLiteralType = Swift.String
+  public typealias UnicodeScalarLiteralType = Swift.String
+}
+extension Swift.Dictionary where Key == Swift.AnyHashable {
+  public subscript(valueKeyPath keyPath: ValueKeyPath) -> Any? {
+    get
+    set
+  }
+  public subscript(stringKeyPath keyPath: Swift.String) -> Any? {
+    get
+    set
+  }
+}
+extension ActionManager {
+  public class Configuration {
+    final public let dismissOnPushArrival: Swift.Bool
+    final public let resumeOnEnterForeground: Swift.Bool
+    public init(dismissOnPushArrival: Swift.Bool, resumeOnEnterForeground: Swift.Bool)
+    @objc deinit
+  }
+}
+extension ActionManager.Configuration {
+  public static var `default`: ActionManager.Configuration {
+    get
+  }
+}
+extension ActionManager {
+  @objc dynamic public func defineAction(definition: ActionManager.ActionDefinition)
+  @objc dynamic public func definition(withName name: Swift.String) -> ActionManager.ActionDefinition?
+}
+extension ActionManager {
+  @objc public class ActionDefinition : ObjectiveC.NSObject {
+    @objc final public let name: Swift.String
+    final public let args: [ActionArg]
+    final public let kind: LeanplumActionKind
+    final public let options: [Swift.String : Swift.String]
+    public var presentAction: ((ActionContext) -> Swift.Bool)?
+    public var dismissAction: ((ActionContext) -> Swift.Bool)?
+    @objc public var values: [Swift.AnyHashable : Any]
+    @objc public var kinds: [Swift.String : Swift.String]
+    @objc required public init(name: Swift.String, args: [Any], kind: LeanplumActionKind, options: [Swift.String : Swift.String], presentAction: ((ActionContext) -> Swift.Bool)? = nil, dismissAction: ((ActionContext) -> Swift.Bool)? = nil)
+    @objc public var json: [Swift.String : Any] {
+      @objc get
+    }
+    @objc deinit
+  }
+}
+extension ActionManager.ActionDefinition {
+  @objc public static func action(name: Swift.String, args: [ActionArg] = [], options: [Swift.String : Swift.String], presentAction: ((ActionContext) -> Swift.Bool)? = nil, dismissAction: ((ActionContext) -> Swift.Bool)? = nil) -> Self
+  @objc public static func message(name: Swift.String, args: [ActionArg] = [], options: [Swift.String : Swift.String], presentAction: ((ActionContext) -> Swift.Bool)? = nil, dismissAction: ((ActionContext) -> Swift.Bool)? = nil) -> Self
+}
+extension ActionManager {
+  @objc public enum Priority : Swift.Int, Swift.Equatable, Swift.Hashable, Swift.RawRepresentable {
+    case high
+    case `default`
+    public init?(rawValue: Swift.Int)
+    public typealias RawValue = Swift.Int
+    public var rawValue: Swift.Int {
+      get
+    }
+  }
+  @objc dynamic public func trigger(contexts: [Any], priority: ActionManager.Priority = .default, trigger: ActionManager.ActionsTrigger? = nil)
+  @objc dynamic public func triggerDelayedMessages()
+}
+extension ActionManager {
+  @_hasMissingDesignatedInitializers @objc public class MessageDisplayChoice : ObjectiveC.NSObject {
+    @objc public static func show() -> Self
+    @objc public static func discard() -> Self
+    @objc public static func delay(seconds: Swift.Int) -> Self
+    @objc public static func delayIndefinitely() -> Self
+    @objc deinit
+  }
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class NotificationsProxy : ObjectiveC.NSObject {
+  @objc public var resumedTimeInterval: Swift.Double
+  @available(iOS 10.0, *)
+  @objc public var pushNotificationPresentationOption: UserNotifications.UNNotificationPresentationOptions {
+    @objc get
+    @objc set
+  }
+  @objc public func addDidFinishLaunchingObserver()
+  @objc public func removeDidFinishLaunchingObserver()
+  @objc public func setupNotificationSwizzling()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(LPActionManager) @objcMembers public class ActionManager : ObjectiveC.NSObject {
+  @objc public static let shared: ActionManager
+  public var configuration: ActionManager.Configuration
+  @objc public var useAsyncHandlers: Swift.Bool
+  @objc final public let actionQueue: Dispatch.DispatchQueue
+  @objc public var definitions: [ActionManager.ActionDefinition]
+  @objc public var messages: [Swift.AnyHashable : Any]
+  @objc public var messagesDataFromServer: [Swift.AnyHashable : Any]
+  @objc public var actionDefinitionsFromServer: [Swift.AnyHashable : Any]
+  @objc public var isEnabled: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc public var isPaused: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+  @objc public func shouldDisplayMessage(_ callback: ((ActionContext) -> ActionManager.MessageDisplayChoice)?)
+  @objc public func onMessageDisplayed(_ callback: ((ActionContext) -> Swift.Void)?)
+  @objc public func onMessageDismissed(_ callback: ((ActionContext) -> Swift.Void)?)
+  @objc public func onMessageAction(_ callback: ((_ actionName: Swift.String, _ context: ActionContext) -> Swift.Void)?)
+  @objc public func prioritizeMessages(_ callback: ((_ contexts: [ActionContext], _ trigger: ActionManager.ActionsTrigger?) -> [ActionContext])?)
+}
+@objc extension MigrationManager {
+  @objc dynamic public var state: MigrationState {
+    @objc get
+  }
+  @objc dynamic public var cleverTapAccountId: Swift.String? {
+    @objc get
+  }
+  @objc dynamic public var cleverTapAccountToken: Swift.String? {
+    @objc get
+  }
+  @objc dynamic public var cleverTapAccountRegion: Swift.String? {
+    @objc get
+  }
+  @objc dynamic public var cleverTapAttributeMappings: [Swift.String : Swift.String] {
+    @objc get
+  }
+  @objc dynamic public var cleverTapIdentityKeys: [Swift.String] {
+    @objc get
+  }
+  @objc dynamic public var hasLaunched: Swift.Bool {
+    @objc get
+  }
+  @objc dynamic public var useLeanplum: Swift.Bool {
+    @objc get
+  }
+  @objc dynamic public var useCleverTap: Swift.Bool {
+    @objc get
+  }
+  @objc dynamic public func track(_ eventName: Swift.String?, value: Swift.Double, info: Swift.String?, params: [Swift.String : Any])
+  @objc dynamic public func trackPurchase(_ eventName: Swift.String?, value: Swift.Double, currencyCode: Swift.String?, params: [Swift.String : Any])
+  @objc dynamic public func trackInAppPurchase(_ eventName: Swift.String?, value: Swift.Double, currencyCode: Swift.String?, iOSTransactionIdentifier: Swift.String?, iOSReceiptData: Swift.String?, iOSSandbox: Swift.Bool, params: [Swift.String : Any])
+  @objc dynamic public func advance(_ eventName: Swift.String?, info: Swift.String?, params: [Swift.String : Any])
+  @objc dynamic public func setUserAttributes(_ attributes: [Swift.AnyHashable : Any])
+  @objc dynamic public func setUserId(_ userId: Swift.String)
+  @objc dynamic public func setPushToken(_ token: Foundation.Data)
+  @objc dynamic public func setTrafficSourceInfo(_ info: [Swift.AnyHashable : Any])
+  @objc dynamic public func addInstanceCallback(_ callback: CleverTapInstanceCallback)
+  @objc dynamic public func removeInstanceCallback(_ callback: CleverTapInstanceCallback)
+  @objc dynamic public func setLogLevel(_ level: LeanplumLogLevel)
+}
+@objc public enum MigrationState : Swift.Int, Swift.CustomStringConvertible, Swift.CaseIterable {
+  case undefined = 0, leanplum, duplicate, cleverTap
+  public var description: Swift.String {
+    get
+  }
+  public init(stringValue: Swift.String)
+  public init?(rawValue: Swift.Int)
+  public typealias AllCases = [MigrationState]
+  public typealias RawValue = Swift.Int
+  nonisolated public static var allCases: [MigrationState] {
+    get
+  }
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objc public class User : ObjectiveC.NSObject {
+  public struct UserKey {
+    public let appId: Swift.String
+    public let userId: Swift.String
+    public let deviceId: Swift.String
+  }
+  @objc public var userId: Swift.String?
+  @objc public var deviceId: Swift.String?
+  @objc public var pushToken: Swift.String? {
+    @objc get
+    @objc set
+  }
+  public var key: User.UserKey? {
+    get
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class ApiConfig : ObjectiveC.NSObject {
+  @objc public static let shared: ApiConfig
+  @objc public var appId: Swift.String? {
+    get
+  }
+  @objc public var accessKey: Swift.String? {
+    get
+  }
+  @objc public var socketPort: Swift.Int
+  @objc public var apiSSL: Swift.Bool
+  @objc public var token: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var apiHostName: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var apiPath: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var socketHost: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public func setAppId(_ appId: Swift.String, accessKey: Swift.String)
+  @objc public static func attachApiKeys(dict: Foundation.NSMutableDictionary)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc public class MigrationManager : ObjectiveC.NSObject {
+  @objc public static let shared: MigrationManager
+  @objc public func launchWrapper()
+  @objc public func fetchMigrationState(_ completion: @escaping () -> ())
+  @objc deinit
+}
+extension LPRequestSender {
+  @objc dynamic public var uuid: Swift.String {
+    @objc get
+    @objc set
+  }
+}
+extension NotificationsProxy {
+  @objc dynamic public func setCustomAppDelegate(_ delegate: any UIKit.UIApplicationDelegate)
+}
+extension NotificationsProxy {
+  @objc dynamic public func applicationDidFinishLaunching(launchOptions: [UIKit.UIApplication.LaunchOptionsKey : Any]?)
+  @objc dynamic public func didReceiveRemoteNotification(userInfo: [Swift.AnyHashable : Any], fetchCompletionHandler: @escaping (UIKit.UIBackgroundFetchResult) -> Swift.Void)
+  @available(iOS 10.0, *)
+  @objc dynamic public func userNotificationCenter(didReceive response: UserNotifications.UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Swift.Void)
+  @available(iOS 10.0, *)
+  @objc dynamic public func userNotificationCenter(willPresent notification: UserNotifications.UNNotification, withCompletionHandler completionHandler: @escaping (UserNotifications.UNNotificationPresentationOptions) -> Swift.Void)
+  @available(iOS, deprecated: 10.0)
+  @objc dynamic public func application(didReceive notification: UIKit.UILocalNotification)
+  @objc dynamic public func handleActionWithIdentifier(_ identifier: Swift.String, forRemoteNotification notification: [Swift.AnyHashable : Any])
+  @available(iOS, deprecated: 10.0)
+  @objc dynamic public func handleActionWithIdentifier(_ identifier: Swift.String, forLocalNotification notification: UIKit.UILocalNotification)
+}
+extension Leanplum {
+  @objc public static var actionManager: ActionManager {
+    @objc get
+  }
+}
+@objc extension MigrationManager {
+  public enum ResponseParams {
+  }
+  public struct MigrationData : Swift.Codable, Swift.Equatable {
+    public static func == (a: MigrationManager.MigrationData, b: MigrationManager.MigrationData) -> Swift.Bool
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  public struct CTConfig : Swift.Codable, Swift.Equatable {
+    public static func == (a: MigrationManager.CTConfig, b: MigrationManager.CTConfig) -> Swift.Bool
+    public func encode(to encoder: any Swift.Encoder) throws
+    public init(from decoder: any Swift.Decoder) throws
+  }
+  @objc dynamic public func handleMigrateState(multiApiResponse: Any)
+  @objc dynamic public func handleGetMigrateState(apiResponse: Any)
+}
+extension ActionManager {
+  @objc dynamic public func processMessagesAndDownloadFiles(_ messages: [Swift.AnyHashable : Any])
+}
+@_inheritsConvenienceInitializers @objc public class UIAlert : ObjectiveC.NSObject {
+  public typealias LeanplumUIAlertCompletionBlock = (Swift.Int) -> ()
+  @objc public class func show(title: Swift.String, message: Swift.String, cancelButtonTitle: Swift.String, otherButtonTitles: [Swift.String], actionBlock: UIAlert.LeanplumUIAlertCompletionBlock?)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc extension NotificationsManager {
+  @objc dynamic public var isAskToAskDisabled: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc dynamic public func enableSystemPush()
+  @available(iOS 12.0, *)
+  @objc dynamic public func enableProvisionalPush()
+  @objc dynamic public func isPushEnabled() -> Swift.Bool
+  @objc dynamic public func refreshPushPermissions()
+  @objc dynamic public func notificationSettingsToRequestParams(_ settings: [Swift.AnyHashable : Any]) -> [Swift.AnyHashable : Any]?
+}
+extension ActionManager {
+  @objc public static let ActionArgFilePrefix: Swift.String
+  @objc dynamic public func downloadFiles(actionArgs: [Swift.AnyHashable : Any], defaultValues: [Swift.AnyHashable : Any], definition: ActionManager.ActionDefinition)
+  @objc dynamic public func downloadFiles(actionArgs: [Swift.AnyHashable : Any], defaultValues: [Swift.AnyHashable : Any], definitionKinds: [Swift.String : Swift.String])
+  @objc dynamic public func hasMissingFiles(actionArgs: [Swift.AnyHashable : Any], defaultValues: [Swift.AnyHashable : Any], definitionKinds: [Swift.String : Swift.String]) -> Swift.Bool
+}
+@_hasMissingDesignatedInitializers @objc(LPWeakTimer) public class WeakTimer : ObjectiveC.NSObject {
+  @objc(scheduledTimerWithTimeInterval:target:userInfo:repeats:block:) public static func scheduledTimer(timeInterval: Foundation.TimeInterval, target: Swift.AnyObject, userInfo: Any?, repeats: Swift.Bool, action: @escaping (Foundation.Timer) -> Swift.Void) -> Foundation.Timer
+  @objc deinit
+}
+extension ActionManager {
+  @_hasMissingDesignatedInitializers public class Scheduler {
+    @objc deinit
+  }
+}
+@_inheritsConvenienceInitializers @objc public class LPCTNotificationsManager : NotificationsManager {
+  @objc public var openDeepLinksInForeground: Foundation.NSNumber?
+  @objc public var handleCleverTapNotificationBlock: LeanplumHandleCleverTapNotificationBlock?
+  @objc override public func didRegisterForRemoteNotificationsWithDeviceToken(_ deviceToken: Foundation.Data)
+  @objc public func handleWithCleverTapInstance(action: @escaping () -> ())
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension MigrationState : Swift.Equatable {}
+extension MigrationState : Swift.Hashable {}
+extension MigrationState : Swift.RawRepresentable {}
