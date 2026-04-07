@@ -30,7 +30,7 @@
 
 #import <sys/socket.h>
 #import <netinet/in.h>
-#import <netinet6/in6.h>
+//#import <netinet6/in6.h>
 #import <arpa/inet.h>
 #import <netdb.h>
 
